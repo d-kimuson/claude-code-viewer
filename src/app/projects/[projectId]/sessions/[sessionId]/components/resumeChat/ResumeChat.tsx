@@ -24,10 +24,17 @@ export const ResumeChat: FC<{
     mutationFn: async (options: { message: string }) => {
       const response = await honoClient.api.projects[":projectId"].sessions[
         ":sessionId"
-      ].resume.$post({
-        param: { projectId, sessionId },
-        json: { resumeMessage: options.message },
-      });
+      ].resume.$post(
+        {
+          param: { projectId, sessionId },
+          json: { resumeMessage: options.message },
+        },
+        {
+          init: {
+            signal: AbortSignal.timeout(10 * 1000),
+          },
+        },
+      );
 
       if (!response.ok) {
         throw new Error(response.statusText);

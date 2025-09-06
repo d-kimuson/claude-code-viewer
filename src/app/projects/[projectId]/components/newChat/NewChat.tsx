@@ -21,10 +21,17 @@ export const NewChat: FC<{
     mutationFn: async (options: { message: string }) => {
       const response = await honoClient.api.projects[":projectId"][
         "new-session"
-      ].$post({
-        param: { projectId },
-        json: { message: options.message },
-      });
+      ].$post(
+        {
+          param: { projectId },
+          json: { message: options.message },
+        },
+        {
+          init: {
+            signal: AbortSignal.timeout(10 * 1000),
+          },
+        },
+      );
 
       if (!response.ok) {
         throw new Error(response.statusText);

@@ -1,12 +1,10 @@
 import { AlertCircleIcon, LoaderIcon, SendIcon } from "lucide-react";
-import { type FC, useId, useRef, useState } from "react";
+import { type FC, useCallback, useId, useRef, useState } from "react";
 import { Button } from "../../../../../components/ui/button";
 import { Textarea } from "../../../../../components/ui/textarea";
-import {
-  CommandCompletion,
-  type CommandCompletionRef,
-} from "./CommandCompletion";
-import { FileCompletion, type FileCompletionRef } from "./FileCompletion";
+import type { CommandCompletionRef } from "./CommandCompletion";
+import type { FileCompletionRef } from "./FileCompletion";
+import { InlineCompletion } from "./InlineCompletion";
 
 export interface ChatInputProps {
   projectId: string;
@@ -33,8 +31,14 @@ export const ChatInput: FC<ChatInputProps> = ({
   disabled = false,
   buttonSize = "lg",
 }) => {
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [message, setMessage] = useState("");
+  const [cursorPosition, setCursorPosition] = useState<{
+    relative: { top: number; left: number };
+    absolute: { top: number; left: number };
+  }>({ relative: { top: 0, left: 0 }, absolute: { top: 0, left: 0 } });
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const commandCompletionRef = useRef<CommandCompletionRef>(null);
   const fileCompletionRef = useRef<FileCompletionRef>(null);
   const helpId = useId();
@@ -60,6 +64,65 @@ export const ChatInput: FC<ChatInputProps> = ({
     }
   };
 
+  const getCursorPosition = useCallback(() => {
+    const textarea = textareaRef.current;
+    const container = containerRef.current;
+    if (textarea === null || container === null) return undefined;
+
+    const cursorPos = textarea.selectionStart;
+    const textBeforeCursor = textarea.value.substring(0, cursorPos);
+    const textAfterCursor = textarea.value.substring(cursorPos);
+
+    const pre = document.createTextNode(textBeforeCursor);
+    const post = document.createTextNode(textAfterCursor);
+    const caret = document.createElement("span");
+    caret.innerHTML = "&nbsp;";
+
+    const mirrored = document.createElement("div");
+
+    mirrored.innerHTML = "";
+    mirrored.append(pre, caret, post);
+
+    const textareaStyles = window.getComputedStyle(textarea);
+    for (const property of [
+      "border",
+      "boxSizing",
+      "fontFamily",
+      "fontSize",
+      "fontWeight",
+      "letterSpacing",
+      "lineHeight",
+      "padding",
+      "textDecoration",
+      "textIndent",
+      "textTransform",
+      "whiteSpace",
+      "wordSpacing",
+      "wordWrap",
+    ] as const) {
+      mirrored.style[property] = textareaStyles[property];
+    }
+
+    mirrored.style.visibility = "hidden";
+    container.prepend(mirrored);
+
+    const caretRect = caret.getBoundingClientRect();
+    const containerRect = container.getBoundingClientRect();
+
+    container.removeChild(mirrored);
+
+    return {
+      relative: {
+        top: caretRect.top - containerRect.top - textarea.scrollTop,
+        left: caretRect.left - containerRect.left - textarea.scrollLeft,
+      },
+      absolute: {
+        top: caretRect.top - textarea.scrollTop,
+        left: caretRect.left - textarea.scrollLeft,
+      },
+    };
+  }, []);
+
   const handleCommandSelect = (command: string) => {
     setMessage(command);
     textareaRef.current?.focus();
@@ -80,11 +143,23 @@ export const ChatInput: FC<ChatInputProps> = ({
       )}
 
       <div className="space-y-3">
-        <div className="relative">
+        <div className="relative" ref={containerRef}>
           <Textarea
             ref={textareaRef}
             value={message}
-            onChange={(e) => setMessage(e.target.value)}
+            onChange={(e) => {
+              if (
+                e.target.value.endsWith("@") ||
+                e.target.value.endsWith("/")
+              ) {
+                const position = getCursorPosition();
+                if (position) {
+                  setCursorPosition(position);
+                }
+              }
+
+              setMessage(e.target.value);
+            }}
             onKeyDown={handleKeyDown}
             placeholder={placeholder}
             className={`${minHeight} resize-none`}
@@ -97,22 +172,15 @@ export const ChatInput: FC<ChatInputProps> = ({
             role="combobox"
             aria-autocomplete="list"
           />
-          <CommandCompletion
-            ref={commandCompletionRef}
+          <InlineCompletion
             projectId={projectId}
-            inputValue={message}
-            onCommandSelect={handleCommandSelect}
-            className="absolute top-full left-0 right-0"
+            message={message}
+            commandCompletionRef={commandCompletionRef}
+            fileCompletionRef={fileCompletionRef}
+            handleCommandSelect={handleCommandSelect}
+            handleFileSelect={handleFileSelect}
+            cursorPosition={cursorPosition}
           />
-          {
-            <FileCompletion
-              ref={fileCompletionRef}
-              projectId={projectId}
-              inputValue={message}
-              onFileSelect={handleFileSelect}
-              className="absolute top-full left-0 right-0"
-            />
-          }
         </div>
 
         <div className="flex items-center justify-between">

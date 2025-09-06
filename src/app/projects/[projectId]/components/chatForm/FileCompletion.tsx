@@ -148,19 +148,19 @@ export const FileCompletion = forwardRef<
   );
 
   // Scroll to selected entry
-  const scrollToSelected = useCallback(() => {
-    if (selectedIndex >= 0 && listRef.current) {
-      const selectedElement = listRef.current.children[
-        selectedIndex + 1
-      ] as HTMLElement; // +1 for header
-      if (selectedElement) {
-        selectedElement.scrollIntoView({
+  const scrollToSelected = useCallback((index: number) => {
+    if (index >= 0 && listRef.current) {
+      // ボタン要素を直接検索
+      const buttons = listRef.current.querySelectorAll('button[role="option"]');
+      const selectedButton = buttons[index] as HTMLElement;
+      if (selectedButton) {
+        selectedButton.scrollIntoView({
           block: "nearest",
           behavior: "smooth",
         });
       }
     }
-  }, [selectedIndex]);
+  }, []);
 
   // Keyboard navigation
   const handleKeyboardNavigation = useCallback(
@@ -172,7 +172,7 @@ export const FileCompletion = forwardRef<
           e.preventDefault();
           setSelectedIndex((prev) => {
             const newIndex = prev < filteredEntries.length - 1 ? prev + 1 : 0;
-            setTimeout(scrollToSelected, 0);
+            requestAnimationFrame(() => scrollToSelected(newIndex));
             return newIndex;
           });
           return true;
@@ -180,7 +180,7 @@ export const FileCompletion = forwardRef<
           e.preventDefault();
           setSelectedIndex((prev) => {
             const newIndex = prev > 0 ? prev - 1 : filteredEntries.length - 1;
-            setTimeout(scrollToSelected, 0);
+            requestAnimationFrame(() => scrollToSelected(newIndex));
             return newIndex;
           });
           return true;
@@ -283,7 +283,7 @@ export const FileCompletion = forwardRef<
                     variant="ghost"
                     size="sm"
                     className={cn(
-                      "w-full justify-start text-left font-mono text-sm h-8 px-2",
+                      "w-full justify-start text-left font-mono text-sm h-8 px-2 min-w-0",
                       index === selectedIndex &&
                         "bg-accent text-accent-foreground",
                     )}
@@ -294,18 +294,23 @@ export const FileCompletion = forwardRef<
                     role="option"
                     aria-selected={index === selectedIndex}
                     aria-label={`${entry.type}: ${entry.name}`}
+                    title={entry.path}
                   >
                     {entry.type === "directory" ? (
-                      <FolderIcon className="w-3 h-3 mr-2 text-blue-500" />
+                      <FolderIcon className="w-3 h-3 mr-2 text-blue-500 flex-shrink-0" />
                     ) : (
-                      <FileIcon className="w-3 h-3 mr-2 text-gray-500" />
+                      <FileIcon className="w-3 h-3 mr-2 text-gray-500 flex-shrink-0" />
                     )}
-                    <span className="font-medium">{entry.name}</span>
+                    <span className="font-medium truncate min-w-0">
+                      {entry.name}
+                    </span>
                     {entry.type === "directory" && (
-                      <span className="text-muted-foreground ml-1">/</span>
+                      <span className="text-muted-foreground ml-1 flex-shrink-0">
+                        /
+                      </span>
                     )}
                     {index === selectedIndex && (
-                      <CheckIcon className="w-3 h-3 ml-auto text-primary" />
+                      <CheckIcon className="w-3 h-3 ml-auto text-primary flex-shrink-0" />
                     )}
                   </Button>
                 ))}

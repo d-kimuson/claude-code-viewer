@@ -54,7 +54,7 @@ export const SessionSidebar: FC<{
       case "mcp":
         return <McpTab />;
       case "settings":
-        return <SettingsTab />;
+        return <SettingsTab openingProjectId={projectId} />;
       default:
         return null;
     }

@@ -3,7 +3,9 @@
 import type { FC } from "react";
 import { SettingsControls } from "@/components/SettingsControls";
 
-export const SettingsTab: FC = () => {
+export const SettingsTab: FC<{
+  openingProjectId: string;
+}> = ({ openingProjectId }) => {
   return (
     <div className="h-full flex flex-col">
       <div className="border-b border-sidebar-border p-4">
@@ -20,7 +22,7 @@ export const SettingsTab: FC = () => {
             Session Display
           </h3>
 
-          <SettingsControls />
+          <SettingsControls openingProjectId={openingProjectId} />
         </div>
       </div>
     </div>

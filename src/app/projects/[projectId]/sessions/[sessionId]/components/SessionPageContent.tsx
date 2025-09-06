@@ -104,7 +104,7 @@ export const SessionPageContent: FC<{
 
           <div className="space-y-3">
             <div className="flex items-center gap-3">
-              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold break-words overflow-ellipsis line-clamp-1 px-2 sm:px-5">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold break-all overflow-ellipsis line-clamp-1 px-2 sm:px-5">
                 {session.meta.firstCommand !== null
                   ? firstCommandToTitle(session.meta.firstCommand)
                   : sessionId}

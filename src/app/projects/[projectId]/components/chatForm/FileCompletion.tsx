@@ -128,13 +128,15 @@ export const FileCompletion = forwardRef<
       const fullPath = entry.path;
 
       // For directories, add a trailing slash to continue completion (unless forced to close)
-      const pathToInsert =
-        entry.type === "directory" && !forceClose ? `${fullPath}/` : fullPath;
+      // For files or when forced to close, add a space to end completion
 
       // Reconstruct the message with the selected path
-      const newMessage = `${beforeAt}@${pathToInsert}${afterAt.split(/\s/).slice(1).join(" ")}`;
+      const remainingText = afterAt.split(/\s/).slice(1).join(" ");
+      const newMessage =
+        `${beforeAt}@${fullPath}${remainingText}`.trim() +
+        (entry.type === "directory" && !forceClose ? "/" : " ");
 
-      onFileSelect(newMessage.trim());
+      onFileSelect(newMessage);
 
       // Close completion if it's a file, or if forced to close
       if (entry.type === "file" || forceClose) {

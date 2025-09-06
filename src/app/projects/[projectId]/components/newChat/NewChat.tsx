@@ -9,6 +9,7 @@ import {
   CommandCompletion,
   type CommandCompletionRef,
 } from "./CommandCompletion";
+import { FileCompletion, type FileCompletionRef } from "./FileCompletion";
 
 export const NewChat: FC<{
   projectId: string;
@@ -51,6 +52,7 @@ export const NewChat: FC<{
 
   const [message, setMessage] = useState("");
   const completionRef = useRef<CommandCompletionRef>(null);
+  const fileCompletionRef = useRef<FileCompletionRef>(null);
   const helpId = useId();
 
   const handleSubmit = () => {
@@ -59,7 +61,12 @@ export const NewChat: FC<{
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    // まずコマンド補完のキーボードイベントを処理
+    // まずファイル補完のキーボードイベントを処理
+    if (fileCompletionRef.current?.handleKeyDown(e)) {
+      return;
+    }
+
+    // 次にコマンド補完のキーボードイベントを処理
     if (completionRef.current?.handleKeyDown(e)) {
       return;
     }
@@ -73,6 +80,11 @@ export const NewChat: FC<{
 
   const handleCommandSelect = (command: string) => {
     setMessage(command);
+    textareaRef.current?.focus();
+  };
+
+  const handleFileSelect = (filePath: string) => {
+    setMessage(filePath);
     textareaRef.current?.focus();
   };
 
@@ -92,13 +104,13 @@ export const NewChat: FC<{
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Type your message here... (Start with / for commands, Shift+Enter to send)"
+            placeholder="Type your message here... (Start with / for commands, @ for files, Shift+Enter to send)"
             className="min-h-[100px] resize-none"
             disabled={startNewChat.isPending}
             maxLength={4000}
             aria-label="Message input with command completion"
             aria-describedby={helpId}
-            aria-expanded={message.startsWith("/")}
+            aria-expanded={message.startsWith("/") || message.includes("@")}
             aria-haspopup="listbox"
             role="combobox"
             aria-autocomplete="list"
@@ -110,12 +122,19 @@ export const NewChat: FC<{
             onCommandSelect={handleCommandSelect}
             className="absolute top-full left-0 right-0"
           />
+          <FileCompletion
+            ref={fileCompletionRef}
+            projectId={projectId}
+            inputValue={message}
+            onFileSelect={handleFileSelect}
+            className="absolute top-full left-0 right-0"
+          />
         </div>
 
         <div className="flex items-center justify-between">
           <span className="text-xs text-muted-foreground" id={helpId}>
             {message.length}/4000 characters • Use arrow keys to navigate
-            commands
+            completions
           </span>
 
           <Button

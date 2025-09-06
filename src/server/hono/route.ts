@@ -11,6 +11,7 @@ import type { SerializableAliveTask } from "../service/claude-code/types";
 import { getEventBus } from "../service/events/EventBus";
 import { getFileWatcher } from "../service/events/fileWatcher";
 import { sseEventResponse } from "../service/events/sseEventResponse";
+import { getFileCompletion } from "../service/file-completion/getFileCompletion";
 import { getMcpList } from "../service/mcp/getMcpList";
 import { getProject } from "../service/project/getProject";
 import { getProjects } from "../service/project/getProjects";
@@ -134,6 +135,37 @@ export const routes = (app: HonoAppType) => {
         const { session } = await getSession(projectId, sessionId);
         return c.json({ session });
       })
+
+      .get(
+        "/projects/:projectId/file-completion",
+        zValidator(
+          "query",
+          z.object({
+            basePath: z.string().optional().default("/"),
+          }),
+        ),
+        async (c) => {
+          const { projectId } = c.req.param();
+          const { basePath } = c.req.valid("query");
+
+          const { project } = await getProject(projectId);
+
+          if (project.meta.projectPath === null) {
+            return c.json({ error: "Project path not found" }, 400);
+          }
+
+          try {
+            const result = await getFileCompletion(
+              project.meta.projectPath,
+              basePath,
+            );
+            return c.json(result);
+          } catch (error) {
+            console.error("File completion error:", error);
+            return c.json({ error: "Failed to get file completion" }, 500);
+          }
+        },
+      )
 
       .get("/projects/:projectId/claude-commands", async (c) => {
         const { projectId } = c.req.param();

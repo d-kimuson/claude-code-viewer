@@ -3,6 +3,7 @@
 import { useMutation } from "@tanstack/react-query";
 import {
   ExternalLinkIcon,
+  GitCompareIcon,
   LoaderIcon,
   MenuIcon,
   PauseIcon,
@@ -19,6 +20,7 @@ import { firstCommandToTitle } from "../../../services/firstCommandToTitle";
 import { useAliveTask } from "../hooks/useAliveTask";
 import { useSession } from "../hooks/useSession";
 import { ConversationList } from "./conversationList/ConversationList";
+import { DiffModal } from "./diffModal";
 import { ResumeChat } from "./resumeChat/ResumeChat";
 import { SessionSidebar } from "./sessionSidebar/SessionSidebar";
 
@@ -51,6 +53,7 @@ export const SessionPageContent: FC<{
   const [previousConversationLength, setPreviousConversationLength] =
     useState(0);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [isDiffModalOpen, setIsDiffModalOpen] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   // 自動スクロール処理
@@ -177,6 +180,23 @@ export const SessionPageContent: FC<{
               getToolResult={getToolResult}
             />
 
+            {isRunningTask && (
+              <div className="flex justify-start items-center py-8">
+                <div className="flex flex-col items-center gap-4">
+                  <div className="flex items-center gap-2">
+                    <div className="flex gap-1">
+                      <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
+                      <div className="w-2 h-2 bg-primary rounded-full animate-bounce [animation-delay:0.1s]"></div>
+                      <div className="w-2 h-2 bg-primary rounded-full animate-bounce [animation-delay:0.2s]"></div>
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground font-medium">
+                    Claude Code is processing...
+                  </p>
+                </div>
+              </div>
+            )}
+
             <ResumeChat
               projectId={projectId}
               sessionId={sessionId}
@@ -186,6 +206,22 @@ export const SessionPageContent: FC<{
           </main>
         </div>
       </div>
+
+      {/* Fixed Diff Button */}
+      <Button
+        onClick={() => setIsDiffModalOpen(true)}
+        className="fixed bottom-6 right-6 w-14 h-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 z-50"
+        size="lg"
+      >
+        <GitCompareIcon className="w-6 h-6" />
+      </Button>
+
+      {/* Diff Modal */}
+      <DiffModal
+        projectId={projectId}
+        isOpen={isDiffModalOpen}
+        onOpenChange={setIsDiffModalOpen}
+      />
     </div>
   );
 };

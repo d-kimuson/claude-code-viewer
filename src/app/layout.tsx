@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Toaster } from "../components/ui/sonner";
 import { QueryClientProviderWrapper } from "../lib/api/QueryClientProviderWrapper";
 import { RootErrorBoundary } from "./components/RootErrorBoundary";
 import { ServerEventsProvider } from "./components/ServerEventsProvider";
@@ -47,6 +48,7 @@ export default async function RootLayout({
             <ServerEventsProvider>{children}</ServerEventsProvider>
           </QueryClientProviderWrapper>
         </RootErrorBoundary>
+        <Toaster position="top-right" />
       </body>
     </html>
   );

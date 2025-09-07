@@ -18,6 +18,7 @@ export type AssistantMessageContent = z.infer<
 export const AssistantMessageSchema = z
   .object({
     id: z.string(),
+    container: z.null().optional(),
     type: z.literal("message"),
     role: z.literal("assistant"),
     model: z.string(),

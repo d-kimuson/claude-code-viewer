@@ -13,6 +13,7 @@ import Link from "next/link";
 import type { FC } from "react";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useTaskNotifications } from "@/hooks/useTaskNotifications";
 import { Badge } from "../../../../../../components/ui/badge";
 import { honoClient } from "../../../../../../lib/api/client";
 import { useProject } from "../../../hooks/useProject";
@@ -49,6 +50,9 @@ export const SessionPageContent: FC<{
   });
 
   const { isRunningTask, isPausedTask } = useAliveTask(sessionId);
+
+  // Set up task completion notifications
+  useTaskNotifications(isRunningTask);
 
   const [previousConversationLength, setPreviousConversationLength] =
     useState(0);

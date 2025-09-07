@@ -1,6 +1,7 @@
 "use client";
 
 import type { FC } from "react";
+import { NotificationSettings } from "@/components/NotificationSettings";
 import { SettingsControls } from "@/components/SettingsControls";
 
 export const SettingsTab: FC<{
@@ -23,6 +24,15 @@ export const SettingsTab: FC<{
           </h3>
 
           <SettingsControls openingProjectId={openingProjectId} />
+        </div>
+
+        {/* Notification Settings */}
+        <div className="space-y-4">
+          <h3 className="font-medium text-sm text-sidebar-foreground">
+            Notifications
+          </h3>
+
+          <NotificationSettings />
         </div>
       </div>
     </div>

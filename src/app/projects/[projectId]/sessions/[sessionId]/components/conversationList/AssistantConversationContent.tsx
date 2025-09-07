@@ -1,6 +1,7 @@
 import { ChevronDown, Lightbulb, Settings } from "lucide-react";
 import Image from "next/image";
 import type { FC } from "react";
+import { useEffect, useState } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { Badge } from "@/components/ui/badge";
@@ -19,11 +20,37 @@ import {
 import type { ToolResultContent } from "@/lib/conversation-schema/content/ToolResultContentSchema";
 import type { AssistantMessageContent } from "@/lib/conversation-schema/message/AssistantMessageSchema";
 import { MarkdownContent } from "../../../../../../components/MarkdownContent";
+import { useConfig } from "../../../../../../hooks/useConfig";
 
 export const AssistantConversationContent: FC<{
   content: AssistantMessageContent;
   getToolResult: (toolUseId: string) => ToolResultContent | undefined;
 }> = ({ content, getToolResult }) => {
+  const { config } = useConfig();
+
+  // Hydration対応: 初期状態を統一し、設定は後から適用
+  // TODO: 将来的にはCustom Hook化やServer Components移行を検討
+  // - useCollapsibleState(configKey) のような再利用可能なフック
+  // - Server ComponentsでSSR時に設定を解決
+  // - 外部状態管理ライブラリ(Zustand/Jotai)での設定管理
+  // 現在は既存コードベースのパターンに合わせてuseState/useEffectを使用
+  const [isThinkingOpen, setIsThinkingOpen] = useState(false);
+  const [isToolUseOpen, setIsToolUseOpen] = useState(false);
+  const [isToolResultOpen, setIsToolResultOpen] = useState(false);
+
+  // Hydration完了後に設定を適用
+  useEffect(() => {
+    if (config?.expandThinking !== undefined) {
+      setIsThinkingOpen(config.expandThinking);
+    }
+    if (config?.expandToolUse !== undefined) {
+      setIsToolUseOpen(config.expandToolUse);
+    }
+    if (config?.expandToolResult !== undefined) {
+      setIsToolResultOpen(config.expandToolResult);
+    }
+  }, [config?.expandThinking, config?.expandToolUse, config?.expandToolResult]);
+
   if (content.type === "text") {
     return (
       <div className="w-full mx-1 sm:mx-2 my-4 sm:my-6">
@@ -35,7 +62,7 @@ export const AssistantConversationContent: FC<{
   if (content.type === "thinking") {
     return (
       <Card className="bg-muted/50 border-dashed gap-2 py-3 mb-2">
-        <Collapsible>
+        <Collapsible open={isThinkingOpen} onOpenChange={setIsThinkingOpen}>
           <CollapsibleTrigger asChild>
             <CardHeader className="cursor-pointer hover:bg-muted/80 rounded-t-lg transition-colors py-0 px-4">
               <div className="flex items-center gap-2">
@@ -78,7 +105,7 @@ export const AssistantConversationContent: FC<{
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-2 py-0 px-4">
-          <Collapsible>
+          <Collapsible open={isToolUseOpen} onOpenChange={setIsToolUseOpen}>
             <CollapsibleTrigger asChild>
               <div className="flex items-center justify-between cursor-pointer hover:bg-muted/50 rounded p-2 -mx-2">
                 <h4 className="text-xs font-medium text-muted-foreground">
@@ -99,7 +126,10 @@ export const AssistantConversationContent: FC<{
             </CollapsibleContent>
           </Collapsible>
           {toolResult && (
-            <Collapsible>
+            <Collapsible
+              open={isToolResultOpen}
+              onOpenChange={setIsToolResultOpen}
+            >
               <CollapsibleTrigger asChild>
                 <div className="flex items-center justify-between cursor-pointer hover:bg-muted/50 rounded p-2 -mx-2">
                   <h4 className="text-xs font-medium text-muted-foreground">

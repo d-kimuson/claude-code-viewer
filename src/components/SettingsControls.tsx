@@ -1,26 +1,39 @@
 "use client";
 
 import { useQueryClient } from "@tanstack/react-query";
-import { type FC, useId } from "react";
+import { type FC, useCallback, useId } from "react";
 import { configQueryConfig, useConfig } from "@/app/hooks/useConfig";
 import { Checkbox } from "@/components/ui/checkbox";
+import { projectQueryConfig } from "../app/projects/[projectId]/hooks/useProject";
 
 interface SettingsControlsProps {
+  openingProjectId: string;
   showLabels?: boolean;
   showDescriptions?: boolean;
   className?: string;
-  onConfigChange?: () => void;
 }
 
 export const SettingsControls: FC<SettingsControlsProps> = ({
+  openingProjectId,
   showLabels = true,
   showDescriptions = true,
   className = "",
-  onConfigChange,
 }: SettingsControlsProps) => {
   const checkboxId = useId();
   const { config, updateConfig } = useConfig();
   const queryClient = useQueryClient();
+
+  const onConfigChanged = useCallback(async () => {
+    await queryClient.invalidateQueries({
+      queryKey: configQueryConfig.queryKey,
+    });
+    await queryClient.invalidateQueries({
+      queryKey: ["projects"],
+    });
+    void queryClient.invalidateQueries({
+      queryKey: projectQueryConfig(openingProjectId).queryKey,
+    });
+  }, [queryClient, openingProjectId]);
 
   const handleHideNoUserMessageChange = async () => {
     const newConfig = {
@@ -28,13 +41,7 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
       hideNoUserMessageSession: !config?.hideNoUserMessageSession,
     };
     updateConfig(newConfig);
-    await queryClient.invalidateQueries({
-      queryKey: configQueryConfig.queryKey,
-    });
-    await queryClient.invalidateQueries({
-      queryKey: ["projects"],
-    });
-    onConfigChange?.();
+    await onConfigChanged();
   };
 
   const handleUnifySameTitleChange = async () => {
@@ -43,13 +50,7 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
       unifySameTitleSession: !config?.unifySameTitleSession,
     };
     updateConfig(newConfig);
-    await queryClient.invalidateQueries({
-      queryKey: configQueryConfig.queryKey,
-    });
-    await queryClient.invalidateQueries({
-      queryKey: ["projects"],
-    });
-    onConfigChange?.();
+    await onConfigChanged();
   };
 
   return (

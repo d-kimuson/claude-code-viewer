@@ -37,7 +37,7 @@ const getConversationKey = (conversation: Conversation) => {
 const SchemaErrorDisplay: FC<{ errorLine: string }> = ({ errorLine }) => {
   return (
     <li className="w-full flex justify-start">
-      <div className="w-full max-w-4xl sm:w-[90%] md:w-[85%] px-2">
+      <div className="w-full max-w-3xl lg:max-w-4xl sm:w-[90%] md:w-[85%] px-2">
         <Collapsible>
           <CollapsibleTrigger asChild>
             <div className="flex items-center justify-between cursor-pointer hover:bg-muted/50 rounded p-2 -mx-2 border-l-2 border-red-400">
@@ -146,7 +146,9 @@ export const ConversationList: FC<ConversationListProps> = ({
             }`}
             key={getConversationKey(conversation)}
           >
-            <div className="w-full max-w-4xl sm:w-[90%] md:w-[85%]">{elm}</div>
+            <div className="w-full max-w-3xl lg:max-w-4xl sm:w-[90%] md:w-[85%]">
+              {elm}
+            </div>
           </li>,
         ];
       })}

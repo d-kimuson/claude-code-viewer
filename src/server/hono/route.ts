@@ -11,6 +11,10 @@ import type { SerializableAliveTask } from "../service/claude-code/types";
 import { getEventBus } from "../service/events/EventBus";
 import { getFileWatcher } from "../service/events/fileWatcher";
 import { sseEventResponse } from "../service/events/sseEventResponse";
+import { getFileCompletion } from "../service/file-completion/getFileCompletion";
+import { getBranches } from "../service/git/getBranches";
+import { getCommits } from "../service/git/getCommits";
+import { getDiff } from "../service/git/getDiff";
 import { getMcpList } from "../service/mcp/getMcpList";
 import { getProject } from "../service/project/getProject";
 import { getProjects } from "../service/project/getProjects";
@@ -135,6 +139,37 @@ export const routes = (app: HonoAppType) => {
         return c.json({ session });
       })
 
+      .get(
+        "/projects/:projectId/file-completion",
+        zValidator(
+          "query",
+          z.object({
+            basePath: z.string().optional().default("/"),
+          }),
+        ),
+        async (c) => {
+          const { projectId } = c.req.param();
+          const { basePath } = c.req.valid("query");
+
+          const { project } = await getProject(projectId);
+
+          if (project.meta.projectPath === null) {
+            return c.json({ error: "Project path not found" }, 400);
+          }
+
+          try {
+            const result = await getFileCompletion(
+              project.meta.projectPath,
+              basePath,
+            );
+            return c.json(result);
+          } catch (error) {
+            console.error("File completion error:", error);
+            return c.json({ error: "Failed to get file completion" }, 500);
+          }
+        },
+      )
+
       .get("/projects/:projectId/claude-commands", async (c) => {
         const { projectId } = c.req.param();
         const { project } = await getProject(projectId);
@@ -169,6 +204,81 @@ export const routes = (app: HonoAppType) => {
           defaultCommands: ["init", "compact"],
         });
       })
+
+      .get("/projects/:projectId/git/branches", async (c) => {
+        const { projectId } = c.req.param();
+        const { project } = await getProject(projectId);
+
+        if (project.meta.projectPath === null) {
+          return c.json({ error: "Project path not found" }, 400);
+        }
+
+        try {
+          const result = await getBranches(project.meta.projectPath);
+          return c.json(result);
+        } catch (error) {
+          console.error("Get branches error:", error);
+          if (error instanceof Error) {
+            return c.json({ error: error.message }, 400);
+          }
+          return c.json({ error: "Failed to get branches" }, 500);
+        }
+      })
+
+      .get("/projects/:projectId/git/commits", async (c) => {
+        const { projectId } = c.req.param();
+        const { project } = await getProject(projectId);
+
+        if (project.meta.projectPath === null) {
+          return c.json({ error: "Project path not found" }, 400);
+        }
+
+        try {
+          const result = await getCommits(project.meta.projectPath);
+          return c.json(result);
+        } catch (error) {
+          console.error("Get commits error:", error);
+          if (error instanceof Error) {
+            return c.json({ error: error.message }, 400);
+          }
+          return c.json({ error: "Failed to get commits" }, 500);
+        }
+      })
+
+      .post(
+        "/projects/:projectId/git/diff",
+        zValidator(
+          "json",
+          z.object({
+            fromRef: z.string().min(1, "fromRef is required"),
+            toRef: z.string().min(1, "toRef is required"),
+          }),
+        ),
+        async (c) => {
+          const { projectId } = c.req.param();
+          const { fromRef, toRef } = c.req.valid("json");
+          const { project } = await getProject(projectId);
+
+          if (project.meta.projectPath === null) {
+            return c.json({ error: "Project path not found" }, 400);
+          }
+
+          try {
+            const result = await getDiff(
+              project.meta.projectPath,
+              fromRef,
+              toRef,
+            );
+            return c.json(result);
+          } catch (error) {
+            console.error("Get diff error:", error);
+            if (error instanceof Error) {
+              return c.json({ error: error.message }, 400);
+            }
+            return c.json({ error: "Failed to get diff" }, 500);
+          }
+        },
+      )
 
       .get("/mcp/list", async (c) => {
         const { servers } = await getMcpList();

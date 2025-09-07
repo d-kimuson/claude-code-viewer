@@ -76,7 +76,7 @@ export const SidechainConversationModal: FC<
           </div>
         </Button>
       </DialogTrigger>
-      <DialogContent className="!w-[1200px] !max-w-none max-h-[80vh] overflow-hidden flex flex-col">
+      <DialogContent className="w-[95vw] md:w-[90vw] max-h-[80vh] overflow-hidden flex flex-col px-2 md:px-8">
         <DialogHeader>
           <DialogTitle>
             {title.length > 100 ? `${title.slice(0, 100)}...` : title}

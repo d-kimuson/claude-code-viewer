@@ -12,4 +12,4 @@ export const AssistantEntrySchema = BaseEntrySchema.extend({
   // optional
   requestId: z.string().optional(),
   isApiErrorMessage: z.boolean().optional(),
-}).strict();
+});

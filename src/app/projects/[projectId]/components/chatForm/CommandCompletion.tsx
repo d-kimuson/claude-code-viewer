@@ -93,19 +93,19 @@ export const CommandCompletion = forwardRef<
   );
 
   // スクロール処理
-  const scrollToSelected = useCallback(() => {
-    if (selectedIndex >= 0 && listRef.current) {
-      const selectedElement = listRef.current.children[
-        selectedIndex + 1
-      ] as HTMLElement; // +1 for header
-      if (selectedElement) {
-        selectedElement.scrollIntoView({
+  const scrollToSelected = useCallback((index: number) => {
+    if (index >= 0 && listRef.current) {
+      // ボタン要素を直接検索
+      const buttons = listRef.current.querySelectorAll('button[role="option"]');
+      const selectedButton = buttons[index] as HTMLElement;
+      if (selectedButton) {
+        selectedButton.scrollIntoView({
           block: "nearest",
           behavior: "smooth",
         });
       }
     }
-  }, [selectedIndex]);
+  }, []);
 
   // メモ化されたキーボードナビゲーション処理
   const handleKeyboardNavigation = useCallback(
@@ -117,8 +117,8 @@ export const CommandCompletion = forwardRef<
           e.preventDefault();
           setSelectedIndex((prev) => {
             const newIndex = prev < filteredCommands.length - 1 ? prev + 1 : 0;
-            // スクロールを次のタイクで実行
-            setTimeout(scrollToSelected, 0);
+            // スクロールを次のフレームで実行
+            requestAnimationFrame(() => scrollToSelected(newIndex));
             return newIndex;
           });
           return true;
@@ -126,8 +126,8 @@ export const CommandCompletion = forwardRef<
           e.preventDefault();
           setSelectedIndex((prev) => {
             const newIndex = prev > 0 ? prev - 1 : filteredCommands.length - 1;
-            // スクロールを次のタイクで実行
-            setTimeout(scrollToSelected, 0);
+            // スクロールを次のフレームで実行
+            requestAnimationFrame(() => scrollToSelected(newIndex));
             return newIndex;
           });
           return true;
@@ -214,7 +214,7 @@ export const CommandCompletion = forwardRef<
                     variant="ghost"
                     size="sm"
                     className={cn(
-                      "w-full justify-start text-left font-mono text-sm h-8 px-2",
+                      "w-full justify-start text-left font-mono text-sm h-8 px-2 min-w-0",
                       index === selectedIndex &&
                         "bg-accent text-accent-foreground",
                     )}
@@ -223,11 +223,16 @@ export const CommandCompletion = forwardRef<
                     role="option"
                     aria-selected={index === selectedIndex}
                     aria-label={`Command: /${command}`}
+                    title={`/${command}`}
                   >
-                    <span className="text-muted-foreground mr-1">/</span>
-                    <span className="font-medium">{command}</span>
+                    <span className="text-muted-foreground mr-1 flex-shrink-0">
+                      /
+                    </span>
+                    <span className="font-medium truncate min-w-0">
+                      {command}
+                    </span>
                     {index === selectedIndex && (
-                      <CheckIcon className="w-3 h-3 ml-auto text-primary" />
+                      <CheckIcon className="w-3 h-3 ml-auto text-primary flex-shrink-0" />
                     )}
                   </Button>
                 ))}

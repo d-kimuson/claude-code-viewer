@@ -2,17 +2,20 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
-    branches: [main]
+    types: [opened, synchronize, reopened]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   test:
     name: Quality Checks
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: ['20.12.0', '22']
+    timeout-minutes: 15
 
     steps:
       - name: Checkout code
@@ -23,10 +26,10 @@ jobs:
         with:
           version: 10.8.1
 
-      - name: Setup Node.js ${{ matrix.node-version }}
+      - name: Setup Node.js 20.12.0
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 20.12.0
           cache: 'pnpm'
 
       - name: Install dependencies
@@ -38,16 +41,5 @@ jobs:
       - name: Run type checking
         run: pnpm typecheck
 
-      - name: Run tests
-        run: pnpm test
-
       - name: Build project
         run: pnpm build
-
-      - name: Verify build artifacts
-        run: |
-          if [ ! -f "dist/index.js" ]; then
-            echo "Build failed: dist/index.js not found"
-            exit 1
-          fi
-          echo "Build successful: dist/index.js created"

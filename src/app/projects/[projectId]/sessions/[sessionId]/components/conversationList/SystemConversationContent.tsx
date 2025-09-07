@@ -1,16 +1,29 @@
 import { ChevronDown } from "lucide-react";
 import type { FC, PropsWithChildren } from "react";
+import { useState, useEffect } from "react";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { useConfig } from "../../../../../../hooks/useConfig";
 
 export const SystemConversationContent: FC<PropsWithChildren> = ({
   children,
 }) => {
+  const { config } = useConfig();
+  const [isOpen, setIsOpen] = useState(
+    config?.expandSystemMessage ?? false
+  );
+
+  useEffect(() => {
+    if (config?.expandSystemMessage !== undefined) {
+      setIsOpen(config.expandSystemMessage);
+    }
+  }, [config?.expandSystemMessage]);
+
   return (
-    <Collapsible>
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
       <CollapsibleTrigger asChild>
         <div className="flex items-center justify-between cursor-pointer hover:bg-muted/50 rounded p-2 -mx-2">
           <h4 className="text-xs font-medium text-muted-foreground">

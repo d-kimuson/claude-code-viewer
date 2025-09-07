@@ -50,11 +50,11 @@ export const getProjectMeta = async (
     .map(
       (d) =>
         ({
-          fullPath: resolve(d.parentPath, d.name),
-          stats: statSync(resolve(d.parentPath, d.name)),
+          fullPath: resolve(claudeProjectPath, d.name),
+          stats: statSync(resolve(claudeProjectPath, d.name)),
         }) as const,
     )
-    .toSorted((a, b) => {
+    .sort((a, b) => {
       return a.stats.ctime.getTime() - b.stats.ctime.getTime();
     });
 

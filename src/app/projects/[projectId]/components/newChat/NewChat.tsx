@@ -19,7 +19,7 @@ export const NewChat: FC<{
       error={startNewChat.error}
       placeholder="Type your message here... (Start with / for commands, @ for files, Shift+Enter to send)"
       buttonText="Start Chat"
-      minHeight="min-h-[100px]"
+      minHeight="min-h-[200px]"
       containerClassName="space-y-4"
     />
   );

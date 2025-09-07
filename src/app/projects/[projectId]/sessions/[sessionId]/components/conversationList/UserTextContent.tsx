@@ -42,7 +42,7 @@ export const UserTextContent: FC<{ text: string; id?: string }> = ({
                       Arguments:
                     </span>
                     <div className="bg-background rounded border p-2 mt-1">
-                      <code className="text-xs whitespace-pre-line">
+                      <code className="text-xs whitespace-pre-line break-all">
                         {parsed.commandArgs}
                       </code>
                     </div>
@@ -54,7 +54,7 @@ export const UserTextContent: FC<{ text: string; id?: string }> = ({
                       Message:
                     </span>
                     <div className="bg-background rounded border p-2 mt-1">
-                      <code className="text-xs whitespace-pre-line">
+                      <code className="text-xs whitespace-pre-line break-all">
                         {parsed.commandMessage}
                       </code>
                     </div>

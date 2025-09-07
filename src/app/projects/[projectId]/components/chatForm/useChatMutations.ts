@@ -19,7 +19,7 @@ export const useNewChatMutation = (
         },
         {
           init: {
-            signal: AbortSignal.timeout(10 * 1000),
+            signal: AbortSignal.timeout(20 * 1000),
           },
         },
       );
@@ -53,7 +53,7 @@ export const useResumeChatMutation = (projectId: string, sessionId: string) => {
         },
         {
           init: {
-            signal: AbortSignal.timeout(10 * 1000),
+            signal: AbortSignal.timeout(20 * 1000),
           },
         },
       );

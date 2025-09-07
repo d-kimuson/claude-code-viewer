@@ -1,6 +1,12 @@
 "use client";
 
-import { MessageSquareIcon, PlugIcon, SettingsIcon } from "lucide-react";
+import {
+  MessageSquareIcon,
+  PlugIcon,
+  SettingsIcon,
+  Undo2Icon,
+} from "lucide-react";
+import { useRouter } from "next/navigation";
 import { type FC, useState } from "react";
 import { cn } from "@/lib/utils";
 import { useProject } from "../../../../hooks/useProject";
@@ -22,6 +28,7 @@ export const SessionSidebar: FC<{
   isMobileOpen = false,
   onMobileOpenChange,
 }) => {
+  const router = useRouter();
   const {
     data: { sessions },
   } = useProject(projectId);
@@ -70,6 +77,21 @@ export const SessionSidebar: FC<{
       {/* Vertical Icon Menu - Always Visible */}
       <div className="w-12 flex flex-col border-r border-sidebar-border bg-sidebar/50">
         <div className="flex flex-col p-2 space-y-1">
+          <button
+            type="button"
+            onClick={() => {
+              router.push(`/projects/${projectId}`);
+            }}
+            className={cn(
+              "w-8 h-8 flex items-center justify-center rounded-md transition-colors",
+              "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+              "text-sidebar-foreground/70",
+            )}
+            title="Back to Project"
+          >
+            <Undo2Icon className="w-4 h-4" />
+          </button>
+
           <button
             type="button"
             onClick={() => handleTabClick("sessions")}

@@ -32,7 +32,7 @@ export const ResumeChat: FC<{
         error={resumeChat.error}
         placeholder="Type your message... (Start with / for commands, Shift+Enter to send)"
         buttonText={getButtonText()}
-        minHeight="min-h-[60px]"
+        minHeight="min-h-[100px]"
         containerClassName="space-y-2"
         buttonSize="default"
       />

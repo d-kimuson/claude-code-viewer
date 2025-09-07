@@ -1,5 +1,6 @@
 import { useAtomValue } from "jotai";
 import { useEffect, useRef } from "react";
+import { toast } from "sonner";
 import {
   notificationSettingsAtom,
   soundNotificationsEnabledAtom,
@@ -26,9 +27,13 @@ export const useTaskNotifications = (isRunningTask: boolean) => {
     prevIsRunningRef.current = currentIsRunning;
 
     // Detect task completion: was running, now not running
-    if (prevIsRunning && !currentIsRunning && soundEnabled) {
-      // Play notification sound
-      playNotificationSound(settings.soundType);
+    if (prevIsRunning && !currentIsRunning) {
+      toast.success("Task completed");
+
+      if (soundEnabled) {
+        // Play notification sound
+        playNotificationSound(settings.soundType);
+      }
     }
   }, [isRunningTask, soundEnabled, settings.soundType]);
 };

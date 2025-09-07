@@ -12,9 +12,7 @@ export const MetaConversationContent: FC<PropsWithChildren> = ({
   children,
 }) => {
   const { config } = useConfig();
-  const [isOpen, setIsOpen] = useState(
-    config?.expandMetaInformation ?? false
-  );
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     if (config?.expandMetaInformation !== undefined) {

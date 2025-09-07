@@ -12,9 +12,7 @@ export const SummaryConversationContent: FC<PropsWithChildren> = ({
   children,
 }) => {
   const { config } = useConfig();
-  const [isOpen, setIsOpen] = useState(
-    config?.expandSummary ?? false
-  );
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     if (config?.expandSummary !== undefined) {

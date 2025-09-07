@@ -12,9 +12,7 @@ export const SystemConversationContent: FC<PropsWithChildren> = ({
   children,
 }) => {
   const { config } = useConfig();
-  const [isOpen, setIsOpen] = useState(
-    config?.expandSystemMessage ?? false
-  );
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     if (config?.expandSystemMessage !== undefined) {

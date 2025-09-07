@@ -1,3 +1,5 @@
+import { readFile } from "node:fs/promises";
+import { resolve } from "node:path";
 import parseGitDiff, {
   type AnyChunk,
   type AnyFileChange,
@@ -10,7 +12,7 @@ import type {
   GitDiffLine,
   GitResult,
 } from "./types";
-import { executeGitCommand, parseLines } from "./utils";
+import { executeGitCommand, parseLines, stripAnsiColors } from "./utils";
 
 /**
  * Convert parse-git-diff file change to GitDiffFile
@@ -150,6 +152,87 @@ const extractRef = (refText: string) => {
 };
 
 /**
+ * Get untracked files using git status
+ */
+async function getUntrackedFiles(cwd: string): Promise<GitResult<string[]>> {
+  const statusResult = await executeGitCommand(
+    ["status", "--untracked-files=all", "--short"],
+    cwd,
+  );
+
+  console.log("debug statusResult stdout", statusResult);
+
+  if (!statusResult.success) {
+    return statusResult;
+  }
+
+  try {
+    const untrackedFiles = parseLines(statusResult.data)
+      .map((line) => stripAnsiColors(line)) // Remove ANSI color codes first
+      .filter((line) => line.startsWith("??"))
+      .map((line) => line.slice(3));
+
+    return {
+      success: true,
+      data: untrackedFiles,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: {
+        code: "PARSE_ERROR",
+        message: `Failed to parse status output: ${error instanceof Error ? error.message : "Unknown error"}`,
+      },
+    };
+  }
+}
+
+/**
+ * Create artificial diff for an untracked file (all lines as additions)
+ */
+async function createUntrackedFileDiff(
+  cwd: string,
+  filePath: string,
+): Promise<GitDiff | null> {
+  try {
+    const fullPath = resolve(cwd, filePath);
+    const content = await readFile(fullPath, "utf8");
+    const lines = content.split("\n");
+
+    const diffLines: GitDiffLine[] = lines.map((line, index) => ({
+      type: "added" as const,
+      content: line,
+      newLineNumber: index + 1,
+    }));
+
+    const file: GitDiffFile = {
+      filePath,
+      status: "added",
+      additions: lines.length,
+      deletions: 0,
+    };
+
+    const hunk: GitDiffHunk = {
+      oldStart: 0,
+      oldCount: 0,
+      newStart: 1,
+      newCount: lines.length,
+      header: `@@ -0,0 +1,${lines.length} @@`,
+      lines: diffLines,
+    };
+
+    return {
+      file,
+      hunks: [hunk],
+    };
+  } catch (error) {
+    // Skip files that can't be read (e.g., binary files, permission errors)
+    console.warn(`Failed to read untracked file ${filePath}:`, error);
+    return null;
+  }
+}
+
+/**
  * Get Git diff between two references (branches, commits, tags)
  */
 export const getDiff = async (
@@ -246,6 +329,25 @@ export const getDiff = async (
 
       totalAdditions += file.additions;
       totalDeletions += file.deletions;
+    }
+
+    // Include untracked files when comparing to working directory
+    if (toRef === undefined) {
+      const untrackedResult = await getUntrackedFiles(cwd);
+      console.log("debug untrackedResult", untrackedResult);
+      if (untrackedResult.success) {
+        for (const untrackedFile of untrackedResult.data) {
+          const untrackedDiff = await createUntrackedFileDiff(
+            cwd,
+            untrackedFile,
+          );
+          if (untrackedDiff) {
+            files.push(untrackedDiff.file);
+            diffs.push(untrackedDiff);
+            totalAdditions += untrackedDiff.file.additions;
+          }
+        }
+      }
     }
 
     return {

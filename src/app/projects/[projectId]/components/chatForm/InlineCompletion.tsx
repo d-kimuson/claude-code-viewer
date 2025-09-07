@@ -24,10 +24,6 @@ const calculateOptimalPosition = (
   const estimatedCompletionHeight = 200;
 
   // Determine preferred placement based on viewport position
-  console.log("debug cursor and viewport", {
-    absoluteCursorTop: absoluteCursorPosition.top,
-    viewportCenter,
-  });
   const isInUpperHalf = absoluteCursorPosition.top < viewportCenter;
 
   // Check if there's enough space for preferred placement

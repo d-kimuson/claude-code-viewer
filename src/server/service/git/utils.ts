@@ -84,6 +84,15 @@ export function isGitRepository(cwd: string): boolean {
 }
 
 /**
+ * Remove ANSI color codes from a string
+ */
+export function stripAnsiColors(text: string): string {
+  // ANSI escape sequence pattern: \x1B[...m
+  // biome-ignore lint/suspicious/noControlCharactersInRegex: this is a valid regex
+  return text.replace(/\x1B\[[0-9;]*m/g, "");
+}
+
+/**
  * Safely parse git command output that might be empty
  */
 export function parseLines(output: string): string[] {

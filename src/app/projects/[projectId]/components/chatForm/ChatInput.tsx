@@ -8,7 +8,7 @@ import { InlineCompletion } from "./InlineCompletion";
 
 export interface ChatInputProps {
   projectId: string;
-  onSubmit: (message: string) => void;
+  onSubmit: (message: string) => Promise<void>;
   isPending: boolean;
   error?: Error | null;
   placeholder: string;
@@ -43,9 +43,9 @@ export const ChatInput: FC<ChatInputProps> = ({
   const fileCompletionRef = useRef<FileCompletionRef>(null);
   const helpId = useId();
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!message.trim()) return;
-    onSubmit(message.trim());
+    await onSubmit(message.trim());
     setMessage("");
   };
 

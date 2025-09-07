@@ -12,8 +12,8 @@ export const ResumeChat: FC<{
 }> = ({ projectId, sessionId, isPausedTask, isRunningTask }) => {
   const resumeChat = useResumeChatMutation(projectId, sessionId);
 
-  const handleSubmit = (message: string) => {
-    resumeChat.mutate({ message });
+  const handleSubmit = async (message: string) => {
+    await resumeChat.mutateAsync({ message });
   };
 
   const getButtonText = () => {

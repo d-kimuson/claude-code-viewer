@@ -7,8 +7,8 @@ export const NewChat: FC<{
 }> = ({ projectId, onSuccess }) => {
   const startNewChat = useNewChatMutation(projectId, onSuccess);
 
-  const handleSubmit = (message: string) => {
-    startNewChat.mutate({ message });
+  const handleSubmit = async (message: string) => {
+    await startNewChat.mutateAsync({ message });
   };
 
   return (

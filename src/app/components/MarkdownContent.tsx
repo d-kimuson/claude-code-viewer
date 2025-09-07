@@ -84,7 +84,10 @@ export const MarkdownContent: FC<MarkdownContentProps> = ({
           },
           p({ children, ...props }) {
             return (
-              <p className="mb-4 leading-7 text-foreground" {...props}>
+              <p
+                className="mb-4 leading-7 text-foreground break-all"
+                {...props}
+              >
                 {children}
               </p>
             );
@@ -117,7 +120,7 @@ export const MarkdownContent: FC<MarkdownContentProps> = ({
             if (isInline) {
               return (
                 <code
-                  className="bg-muted/70 px-2 py-1 rounded-md text-sm font-mono text-foreground border"
+                  className="bg-muted/70 px-2 py-1 rounded-md text-sm font-mono text-foreground border break-all"
                   {...props}
                 >
                   {children}
@@ -175,8 +178,8 @@ export const MarkdownContent: FC<MarkdownContentProps> = ({
           // テーブルの改善
           table({ children, ...props }) {
             return (
-              <div className="overflow-x-auto my-6 rounded-lg border border-border">
-                <table className="min-w-full border-collapse" {...props}>
+              <div className="overflow-x-auto my-6 rounded-lg border border-border max-w-full">
+                <table className="w-full border-collapse" {...props}>
                   {children}
                 </table>
               </div>

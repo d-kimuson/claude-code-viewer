@@ -2,7 +2,8 @@
 
 import { useMutation } from "@tanstack/react-query";
 import {
-  ArrowLeftIcon,
+  ExternalLinkIcon,
+  GitCompareIcon,
   LoaderIcon,
   MenuIcon,
   PauseIcon,
@@ -12,12 +13,15 @@ import Link from "next/link";
 import type { FC } from "react";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useTaskNotifications } from "@/hooks/useTaskNotifications";
+import { Badge } from "../../../../../../components/ui/badge";
 import { honoClient } from "../../../../../../lib/api/client";
 import { useProject } from "../../../hooks/useProject";
 import { firstCommandToTitle } from "../../../services/firstCommandToTitle";
 import { useAliveTask } from "../hooks/useAliveTask";
 import { useSession } from "../hooks/useSession";
 import { ConversationList } from "./conversationList/ConversationList";
+import { DiffModal } from "./diffModal";
 import { ResumeChat } from "./resumeChat/ResumeChat";
 import { SessionSidebar } from "./sessionSidebar/SessionSidebar";
 
@@ -47,9 +51,13 @@ export const SessionPageContent: FC<{
 
   const { isRunningTask, isPausedTask } = useAliveTask(sessionId);
 
+  // Set up task completion notifications
+  useTaskNotifications(isRunningTask);
+
   const [previousConversationLength, setPreviousConversationLength] =
     useState(0);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [isDiffModalOpen, setIsDiffModalOpen] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   // 自動スクロール処理
@@ -70,7 +78,7 @@ export const SessionPageContent: FC<{
   }, [conversations, isRunningTask, isPausedTask, previousConversationLength]);
 
   return (
-    <div className="flex h-screen max-h-screen">
+    <div className="flex h-screen max-h-screen overflow-hidden">
       <SessionSidebar
         currentSessionId={sessionId}
         projectId={projectId}
@@ -78,57 +86,55 @@ export const SessionPageContent: FC<{
         onMobileOpenChange={setIsMobileSidebarOpen}
       />
 
-      <div className="flex-1 flex flex-col min-h-0">
-        <header className="px-2 sm:px-3 py-3 sticky top-0 z-10 bg-background w-full flex-shrink-0">
-          <div className="flex items-center gap-2 mb-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="md:hidden"
-              onClick={() => setIsMobileSidebarOpen(true)}
-            >
-              <MenuIcon className="w-4 h-4" />
-            </Button>
-
-            <Button asChild variant="ghost">
-              <Link
-                href={`/projects/${projectId}`}
-                className="flex items-center gap-2"
+      <div className="flex-1 flex flex-col min-h-0 min-w-0">
+        <header className="px-2 sm:px-3 py-2 sm:py-3 sticky top-0 z-10 bg-background w-full flex-shrink-0 min-w-0">
+          <div className="space-y-2 sm:space-y-3">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="md:hidden flex-shrink-0"
+                onClick={() => setIsMobileSidebarOpen(true)}
               >
-                <ArrowLeftIcon className="w-4 h-4" />
-                <span className="hidden sm:inline">Back to Session List</span>
-                <span className="sm:hidden">Back</span>
-              </Link>
-            </Button>
-          </div>
-
-          <div className="space-y-3">
-            <div className="flex items-center gap-3">
-              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold break-words overflow-ellipsis line-clamp-1 px-2 sm:px-5">
+                <MenuIcon className="w-4 h-4" />
+              </Button>
+              <h1 className="text-lg sm:text-2xl md:text-3xl font-bold break-all overflow-ellipsis line-clamp-1 px-1 sm:px-5 min-w-0">
                 {session.meta.firstCommand !== null
                   ? firstCommandToTitle(session.meta.firstCommand)
                   : sessionId}
               </h1>
             </div>
 
-            <div className="px-2 sm:px-5 space-y-1">
+            <div className="px-1 sm:px-5 flex flex-wrap items-center gap-1 sm:gap-2">
               {project?.project.claudeProjectPath && (
-                <p className="text-sm text-muted-foreground font-mono break-all">
-                  Project:{" "}
-                  {project.project.meta.projectPath ??
-                    project.project.claudeProjectPath}
-                </p>
+                <Link
+                  href={`/projects/${projectId}`}
+                  target="_blank"
+                  className="transition-all duration-200"
+                >
+                  <Badge
+                    variant="secondary"
+                    className="h-6 sm:h-8 text-xs sm:text-sm flex items-center hover:bg-blue-50/60 hover:border-blue-300/60 hover:shadow-sm transition-all duration-200 cursor-pointer"
+                  >
+                    <ExternalLinkIcon className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+                    {project.project.meta.projectPath ??
+                      project.project.claudeProjectPath}
+                  </Badge>
+                </Link>
               )}
-              <p className="text-sm text-muted-foreground font-mono">
-                Session ID: {sessionId}
-              </p>
+              <Badge
+                variant="secondary"
+                className="h-6 sm:h-8 text-xs sm:text-sm flex items-center"
+              >
+                {sessionId}
+              </Badge>
             </div>
 
             {isRunningTask && (
-              <div className="flex items-center gap-2 p-3 bg-primary/10 border border-primary/20 rounded-lg">
-                <LoaderIcon className="w-4 h-4 animate-spin" />
+              <div className="flex items-center gap-1 sm:gap-2 p-1 bg-primary/10 border border-primary/20 rounded-lg mx-1 sm:mx-5">
+                <LoaderIcon className="w-3 h-3 sm:w-4 sm:h-4 animate-spin" />
                 <div className="flex-1">
-                  <p className="text-sm font-medium">
+                  <p className="text-xs sm:text-sm font-medium">
                     Conversation is in progress...
                   </p>
                 </div>
@@ -139,17 +145,17 @@ export const SessionPageContent: FC<{
                     abortTask.mutate(sessionId);
                   }}
                 >
-                  <XIcon className="w-4 h-4" />
-                  Abort
+                  <XIcon className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span className="hidden sm:inline">Abort</span>
                 </Button>
               </div>
             )}
 
             {isPausedTask && (
-              <div className="flex items-center gap-2 p-3 bg-primary/10 border border-primary/20 rounded-lg">
-                <PauseIcon className="w-4 h-4" />
+              <div className="flex items-center gap-1 sm:gap-2 p-1 bg-primary/10 border border-primary/20 rounded-lg mx-1 sm:mx-5">
+                <PauseIcon className="w-3 h-3 sm:w-4 sm:h-4" />
                 <div className="flex-1">
-                  <p className="text-sm font-medium">
+                  <p className="text-xs sm:text-sm font-medium">
                     Conversation is paused...
                   </p>
                 </div>
@@ -160,8 +166,8 @@ export const SessionPageContent: FC<{
                     abortTask.mutate(sessionId);
                   }}
                 >
-                  <XIcon className="w-4 h-4" />
-                  Abort
+                  <XIcon className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span className="hidden sm:inline">Abort</span>
                 </Button>
               </div>
             )}
@@ -170,13 +176,30 @@ export const SessionPageContent: FC<{
 
         <div
           ref={scrollContainerRef}
-          className="flex-1 overflow-y-auto min-h-0"
+          className="flex-1 overflow-y-auto min-h-0 min-w-0"
         >
-          <main className="w-full px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20 pb-20 sm:pb-10 relative z-5">
+          <main className="w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 relative z-5 min-w-0">
             <ConversationList
               conversations={conversations}
               getToolResult={getToolResult}
             />
+
+            {isRunningTask && (
+              <div className="flex justify-start items-center py-8">
+                <div className="flex flex-col items-center gap-4">
+                  <div className="flex items-center gap-2">
+                    <div className="flex gap-1">
+                      <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
+                      <div className="w-2 h-2 bg-primary rounded-full animate-bounce [animation-delay:0.1s]"></div>
+                      <div className="w-2 h-2 bg-primary rounded-full animate-bounce [animation-delay:0.2s]"></div>
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground font-medium">
+                    Claude Code is processing...
+                  </p>
+                </div>
+              </div>
+            )}
 
             <ResumeChat
               projectId={projectId}
@@ -187,6 +210,22 @@ export const SessionPageContent: FC<{
           </main>
         </div>
       </div>
+
+      {/* Fixed Diff Button */}
+      <Button
+        onClick={() => setIsDiffModalOpen(true)}
+        className="fixed bottom-6 right-6 w-14 h-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 z-50"
+        size="lg"
+      >
+        <GitCompareIcon className="w-6 h-6" />
+      </Button>
+
+      {/* Diff Modal */}
+      <DiffModal
+        projectId={projectId}
+        isOpen={isDiffModalOpen}
+        onOpenChange={setIsDiffModalOpen}
+      />
     </div>
   );
 };

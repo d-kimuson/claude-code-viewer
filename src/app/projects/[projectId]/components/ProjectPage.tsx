@@ -45,12 +45,6 @@ export const ProjectPageContent = ({ projectId }: { projectId: string }) => {
     });
   }, [config.hideNoUserMessageSession, config.unifySameTitleSession]);
 
-  const handleConfigChange = () => {
-    void queryClient.invalidateQueries({
-      queryKey: projectQueryConfig(projectId).queryKey,
-    });
-  };
-
   return (
     <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8 max-w-6xl">
       <header className="mb-6 sm:mb-8">
@@ -118,7 +112,7 @@ export const ProjectPageContent = ({ projectId }: { projectId: string }) => {
               </CollapsibleTrigger>
               <CollapsibleContent>
                 <div className="p-4 bg-muted/50 rounded-lg border">
-                  <SettingsControls onConfigChange={handleConfigChange} />
+                  <SettingsControls openingProjectId={projectId} />
                 </div>
               </CollapsibleContent>
             </div>

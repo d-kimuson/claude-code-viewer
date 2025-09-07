@@ -1,14 +1,12 @@
 "use client";
 
 import type { FC } from "react";
+import { NotificationSettings } from "@/components/NotificationSettings";
 import { SettingsControls } from "@/components/SettingsControls";
 
-export const SettingsTab: FC = () => {
-  const handleConfigChange = () => {
-    // 設定変更時の処理が必要な場合は、将来的にここで実装
-    // 現在は、SettingsControlsコンポーネント内で設定の更新とクエリ無効化が完結している
-  };
-
+export const SettingsTab: FC<{
+  openingProjectId: string;
+}> = ({ openingProjectId }) => {
   return (
     <div className="h-full flex flex-col">
       <div className="border-b border-sidebar-border p-4">
@@ -25,7 +23,16 @@ export const SettingsTab: FC = () => {
             Session Display
           </h3>
 
-          <SettingsControls onConfigChange={handleConfigChange} />
+          <SettingsControls openingProjectId={openingProjectId} />
+        </div>
+
+        {/* Notification Settings */}
+        <div className="space-y-4">
+          <h3 className="font-medium text-sm text-sidebar-foreground">
+            Notifications
+          </h3>
+
+          <NotificationSettings />
         </div>
       </div>
     </div>

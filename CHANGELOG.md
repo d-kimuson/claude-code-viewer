@@ -1,5 +1,28 @@
 # Changelog
 
+## 0.3.0
+
+### &nbsp;&nbsp;&nbsp;Features
+
+- Set timeout for new-chat & resume-chat &nbsp;-&nbsp; by **d-kimsuon** [<samp>(d0fda)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/d0fdade)
+- Add @ file completion &nbsp;-&nbsp; by **d-kimsuon** [<samp>(60aaa)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/60aaae7)
+- Inline completion for command and files &nbsp;-&nbsp; by **d-kimsuon** [<samp>(e90dc)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/e90dc00)
+- Fix out of style &nbsp;-&nbsp; by **d-kimsuon** [<samp>(7fafb)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/7fafb18)
+- Add simple git diff preview modal &nbsp;-&nbsp; by **d-kimsuon** [<samp>(c5688)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/c568831)
+- Add comprehensive CI workflow for quality checks &nbsp;-&nbsp; by **d-kimsuon** and **Claude** [<samp>(580e5)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/580e51f)
+- Add notification when task paused &nbsp;-&nbsp; by **d-kimsuon** [<samp>(8b6b0)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/8b6b03b)
+- Add sonner message on task completed &nbsp;-&nbsp; by **d-kimsuon** [<samp>(a3e6f)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/a3e6feb)
+- **diff-view**: Display untacked added file &nbsp;-&nbsp; by **d-kimsuon** [<samp>(e7c3c)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/e7c3c87)
+
+### &nbsp;&nbsp;&nbsp;Bug Fixes
+
+- Bug fix session list doesn't updated after filter config changed &nbsp;-&nbsp; by **d-kimsuon** [<samp>(52a23)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/52a231b)
+- Fix header text content overflow &nbsp;-&nbsp; by **d-kimsuon** [<samp>(a618e)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/a618e24)
+- Bug fix that input message gone out though new chat is not sent yet &nbsp;-&nbsp; by **d-kimsuon** [<samp>(ca316)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/ca31602)
+- Add unsupported container property to schema &nbsp;-&nbsp; by **d-kimsuon** [<samp>(c7a1e)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/c7a1e6d)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.2.4...0.3.0)
+
 ## 0.2.4
 
 ### &nbsp;&nbsp;&nbsp;Features

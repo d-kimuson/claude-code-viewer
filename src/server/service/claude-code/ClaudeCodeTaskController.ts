@@ -1,9 +1,9 @@
-import { execSync } from "node:child_process";
 import { query } from "@anthropic-ai/claude-code";
 import prexit from "prexit";
 import { ulid } from "ulid";
 import { type EventBus, getEventBus } from "../events/EventBus";
 import { createMessageGenerator } from "./createMessageGenerator";
+import { findCommandPath } from "../../../utils/platform";
 import type {
   AliveClaudeCodeTask,
   ClaudeCodeTask,
@@ -17,9 +17,7 @@ export class ClaudeCodeTaskController {
   private eventBus: EventBus;
 
   constructor() {
-    this.pathToClaudeCodeExecutable = execSync("which claude", {})
-      .toString()
-      .trim();
+    this.pathToClaudeCodeExecutable = findCommandPath("claude");
     this.eventBus = getEventBus();
 
     prexit(() => {

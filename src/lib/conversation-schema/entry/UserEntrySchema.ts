@@ -8,4 +8,4 @@ export const UserEntrySchema = BaseEntrySchema.extend({
 
   // required
   message: UserMessageSchema,
-}).strict();
+});

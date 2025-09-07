@@ -9,4 +9,4 @@ export const SystemEntrySchema = BaseEntrySchema.extend({
   content: z.string(),
   toolUseID: z.string(),
   level: z.enum(["info"]),
-}).strict();
+});

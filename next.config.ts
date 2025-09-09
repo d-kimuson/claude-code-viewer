@@ -2,13 +2,11 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: "standalone",
-  experimental: {
-    serverComponentsExternalPackages: [],
-  },
-  // devcontainer対応：HOSTNAME環境変数で0.0.0.0にバインド可能
-  ...(process.env.HOSTNAME && {
-    // @ts-ignore - Next.js 15の型定義に未対応の場合があるため
-    hostname: process.env.HOSTNAME,
+  serverExternalPackages: [],
+  // devcontainer support: allow binding to 0.0.0.0 via HOSTNAME environment variable
+  ...(process.env["HOSTNAME"] && {
+    // @ts-ignore - Next.js 15 type definitions may not support this yet
+    hostname: process.env["HOSTNAME"],
   }),
 };
 

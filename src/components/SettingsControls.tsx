@@ -4,6 +4,13 @@ import { useQueryClient } from "@tanstack/react-query";
 import { type FC, useCallback, useId } from "react";
 import { configQueryConfig, useConfig } from "@/app/hooks/useConfig";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { projectQueryConfig } from "../app/projects/[projectId]/hooks/useProject";
 
 interface SettingsControlsProps {
@@ -53,6 +60,15 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
     await onConfigChanged();
   };
 
+  const handleEnterKeyBehaviorChange = async (value: string) => {
+    const newConfig = {
+      ...config,
+      enterKeyBehavior: value as "shift-enter-send" | "enter-send",
+    };
+    updateConfig(newConfig);
+    await onConfigChanged();
+  };
+
   return (
     <div className={`space-y-4 ${className}`}>
       <div className="flex items-center space-x-2">
@@ -97,6 +113,28 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
           title
         </p>
       )}
+
+      <div className="space-y-2">
+        {showLabels && (
+          <label className="text-sm font-medium leading-none">
+            Enter Key Behavior
+          </label>
+        )}
+        <Select value={config?.enterKeyBehavior || "shift-enter-send"} onValueChange={handleEnterKeyBehaviorChange}>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select enter key behavior" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="shift-enter-send">Shift+Enter to send (default)</SelectItem>
+            <SelectItem value="enter-send">Enter to send</SelectItem>
+          </SelectContent>
+        </Select>
+        {showDescriptions && (
+          <p className="text-xs text-muted-foreground mt-1">
+            Choose how the Enter key behaves in message input
+          </p>
+        )}
+      </div>
     </div>
   );
 };

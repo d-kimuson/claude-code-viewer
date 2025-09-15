@@ -63,7 +63,7 @@ export const ChatInput: FC<ChatInputProps> = ({
     // IMEで変換中の場合は送信しない
     if (e.key === "Enter" && !e.nativeEvent.isComposing) {
       const isEnterSend = config?.enterKeyBehavior === "enter-send";
-      
+
       if (isEnterSend && !e.shiftKey) {
         // Enter: Send mode
         e.preventDefault();

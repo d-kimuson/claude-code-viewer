@@ -27,6 +27,7 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
   className = "",
 }: SettingsControlsProps) => {
   const checkboxId = useId();
+  const enterKeyBehaviorId = useId();
   const { config, updateConfig } = useConfig();
   const queryClient = useQueryClient();
 
@@ -116,16 +117,24 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
 
       <div className="space-y-2">
         {showLabels && (
-          <label className="text-sm font-medium leading-none">
+          <label
+            htmlFor={enterKeyBehaviorId}
+            className="text-sm font-medium leading-none"
+          >
             Enter Key Behavior
           </label>
         )}
-        <Select value={config?.enterKeyBehavior || "shift-enter-send"} onValueChange={handleEnterKeyBehaviorChange}>
-          <SelectTrigger className="w-full">
+        <Select
+          value={config?.enterKeyBehavior || "shift-enter-send"}
+          onValueChange={handleEnterKeyBehaviorChange}
+        >
+          <SelectTrigger id={enterKeyBehaviorId} className="w-full">
             <SelectValue placeholder="Select enter key behavior" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="shift-enter-send">Shift+Enter to send (default)</SelectItem>
+            <SelectItem value="shift-enter-send">
+              Shift+Enter to send (default)
+            </SelectItem>
             <SelectItem value="enter-send">Enter to send</SelectItem>
           </SelectContent>
         </Select>

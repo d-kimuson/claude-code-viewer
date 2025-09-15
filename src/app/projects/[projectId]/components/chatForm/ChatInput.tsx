@@ -2,6 +2,7 @@ import { AlertCircleIcon, LoaderIcon, SendIcon } from "lucide-react";
 import { type FC, useCallback, useId, useRef, useState } from "react";
 import { Button } from "../../../../../components/ui/button";
 import { Textarea } from "../../../../../components/ui/textarea";
+import { useConfig } from "../../../../hooks/useConfig";
 import type { CommandCompletionRef } from "./CommandCompletion";
 import type { FileCompletionRef } from "./FileCompletion";
 import { InlineCompletion } from "./InlineCompletion";
@@ -42,6 +43,7 @@ export const ChatInput: FC<ChatInputProps> = ({
   const commandCompletionRef = useRef<CommandCompletionRef>(null);
   const fileCompletionRef = useRef<FileCompletionRef>(null);
   const helpId = useId();
+  const { config } = useConfig();
 
   const handleSubmit = async () => {
     if (!message.trim()) return;
@@ -58,9 +60,19 @@ export const ChatInput: FC<ChatInputProps> = ({
       return;
     }
 
-    if (e.key === "Enter" && e.shiftKey) {
-      e.preventDefault();
-      handleSubmit();
+    // IMEで変換中の場合は送信しない
+    if (e.key === "Enter" && !e.nativeEvent.isComposing) {
+      const isEnterSend = config?.enterKeyBehavior === "enter-send";
+
+      if (isEnterSend && !e.shiftKey) {
+        // Enter: Send mode
+        e.preventDefault();
+        handleSubmit();
+      } else if (!isEnterSend && e.shiftKey) {
+        // Shift+Enter: Send mode (default)
+        e.preventDefault();
+        handleSubmit();
+      }
     }
   };
 

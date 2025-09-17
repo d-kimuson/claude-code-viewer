@@ -6,7 +6,7 @@ if [ -d "dist/.next" ]; then
   rm -rf dist/.next
 fi
 
-npx next build
+pnpm exec next build
 cp -r public .next/standalone/
 cp -r .next/static .next/standalone/.next/
 

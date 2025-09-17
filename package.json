@@ -23,7 +23,7 @@
   },
   "scripts": {
     "dev": "run-p 'dev:*'",
-    "dev:next": "next dev --turbopack",
+    "dev:next": "PORT=3400 next dev --turbopack",
     "start": "node dist/index.js",
     "build": "./scripts/build.sh",
     "lint": "run-s 'lint:*'",

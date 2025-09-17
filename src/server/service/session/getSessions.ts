@@ -15,24 +15,29 @@ export const getSessions = async (
 ): Promise<{ sessions: Session[] }> => {
   const claudeProjectPath = decodeProjectId(projectId);
 
-  const dirents = await readdir(claudeProjectPath, { withFileTypes: true });
-  const sessions = await Promise.all(
-    dirents
-      .filter((d) => d.isFile() && d.name.endsWith(".jsonl"))
-      .map(async (d): Promise<Session> => {
-        const fullPath = resolve(d.parentPath, d.name);
+  try {
+    const dirents = await readdir(claudeProjectPath, { withFileTypes: true });
+    const sessions = await Promise.all(
+      dirents
+        .filter((d) => d.isFile() && d.name.endsWith(".jsonl"))
+        .map(async (d): Promise<Session> => {
+          const fullPath = resolve(claudeProjectPath, d.name);
 
-        return {
-          id: basename(fullPath, extname(fullPath)),
-          jsonlFilePath: fullPath,
-          meta: await getSessionMeta(fullPath),
-        };
+          return {
+            id: basename(fullPath, extname(fullPath)),
+            jsonlFilePath: fullPath,
+            meta: await getSessionMeta(fullPath),
+          };
+        }),
+    );
+
+    return {
+      sessions: sessions.sort((a, b) => {
+        return getTime(b.meta.lastModifiedAt) - getTime(a.meta.lastModifiedAt);
       }),
-  );
-
-  return {
-    sessions: sessions.sort((a, b) => {
-      return getTime(b.meta.lastModifiedAt) - getTime(a.meta.lastModifiedAt);
-    }),
-  };
+    };
+  } catch (error) {
+    console.warn(`Failed to read sessions for project ${projectId}:`, error);
+    return { sessions: [] };
+  }
 };

@@ -6,9 +6,9 @@ A full-featured web-based Claude Code client that provides complete interactive 
 
 ## Overview
 
-Claude Code Viewer has evolved from a simple conversation viewer into a comprehensive web-based Claude Code client. It provides all essential Claude Code functionality through an intuitive web interface, including creating new sessions, resuming conversations, real-time task management, and live synchronization with your local Claude Code projects.
+Claude Code Viewer is a web-based Claude Code client focused on **lossless session log analysis**. It preserves and effectively organizes all conversation information through strict schema validation and progressive UI disclosure.
 
-The application leverages Server-Sent Events (SSE) for real-time bidirectional communication, automatically syncing with JSONL conversation files in `~/.claude/projects/` and providing instant updates as conversations progress.
+**Core Philosophy**: Zero data loss + Effective organization + Remote-friendly design
 
 ## Features
 
@@ -35,6 +35,13 @@ The application leverages Server-Sent Events (SSE) for real-time bidirectional c
 - **Conversation Display** - Human-readable format with syntax highlighting and tool usage
 - **Command Detection** - Enhanced display of XML-like command structures
 - **Task Controller** - Full lifecycle management of Claude processes
+
+### Built-in Development Tools
+
+- **Git Diff Viewer** - Comprehensive branch comparison with file-by-file diff visualization
+- **Remote Development Ready** - Full web-based access ideal for remote work and server environments
+- **Branch & Commit Browser** - Navigate git history directly within the interface
+- **Untracked File Support** - View diffs for untracked files alongside committed changes
 
 ## Installation & Usage
 
@@ -113,6 +120,23 @@ PORT=8080 npx @kimuson/claude-code-viewer@latest
 ### Data Directory
 
 The application automatically detects the standard Claude Code directory at `~/.claude/projects/`. No additional configuration is required.
+
+## Alternatives & Differentiation
+
+Several excellent Claude Code web clients exist, each with their own strengths:
+
+- https://github.com/sugyan/claude-code-webuisupport
+- https://github.com/wbopan/cui
+- https://github.com/siteboon/claudecodeui
+
+**Claude Code Viewer's Focus**: While these tools excel as general-purpose web clients, Claude Code Viewer specializes as a **session log viewer** with:
+
+- **Zero Information Loss**: Strict Zod schema validation preserves every conversation detail
+- **Progressive Organization**: Expandable elements and sub-session modals manage information density
+- **Built-in Git Diff Viewer**: Comprehensive branch comparison for remote development
+- **Session Flow Analysis**: Complete conversation tracking across multiple sessions
+
+Each tool serves different use cases - choose the one that best fits your workflow and priorities.
 
 ## License
 

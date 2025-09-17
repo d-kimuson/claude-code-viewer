@@ -1,6 +1,6 @@
-import { readdir, access } from "node:fs/promises";
-import { resolve } from "node:path";
 import { constants } from "node:fs";
+import { access, readdir } from "node:fs/promises";
+import { resolve } from "node:path";
 
 import { claudeProjectPath } from "../paths";
 import type { Project } from "../types";
@@ -11,7 +11,7 @@ export const getProjects = async (): Promise<{ projects: Project[] }> => {
   try {
     // Check if the claude projects directory exists
     await access(claudeProjectPath, constants.F_OK);
-  } catch (error) {
+  } catch (_error) {
     // Directory doesn't exist, return empty array
     console.warn(`Claude projects directory not found at ${claudeProjectPath}`);
     return { projects: [] };
@@ -43,7 +43,7 @@ export const getProjects = async (): Promise<{ projects: Project[] }> => {
       }),
     };
   } catch (error) {
-    console.error('Error reading projects:', error);
+    console.error("Error reading projects:", error);
     return { projects: [] };
   }
 };

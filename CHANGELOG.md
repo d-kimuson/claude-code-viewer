@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.3.1
+
+### &nbsp;&nbsp;&nbsp;Features
+
+- Add configurable Enter key behavior for message input &nbsp;-&nbsp; by **nepula_h_okuyama** and **Claude** [<samp>(e37ca)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/e37ca87)
+
+### &nbsp;&nbsp;&nbsp;Bug Fixes
+
+- Resolve lint and formatting errors &nbsp;-&nbsp; by **amay077** and **Claude** [<samp>(730d1)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/730d134)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.3.0...0.3.1)
+
 ## 0.3.0
 
 ### &nbsp;&nbsp;&nbsp;Features

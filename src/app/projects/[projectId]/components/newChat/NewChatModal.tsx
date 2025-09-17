@@ -4,7 +4,6 @@ import { Button } from "../../../../../components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -31,15 +30,12 @@ export const NewChatModal: FC<{
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="w-[95vw] md:w-[80vw]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <MessageSquareIcon className="w-5 h-5" />
             Start New Chat
           </DialogTitle>
-          <DialogDescription>
-            Start a new conversation with Claude Code for this project
-          </DialogDescription>
         </DialogHeader>
         <NewChat projectId={projectId} onSuccess={handleSuccess} />
       </DialogContent>

@@ -12,7 +12,7 @@ export const SummaryConversationContent: FC<PropsWithChildren> = ({
   return (
     <Collapsible>
       <CollapsibleTrigger asChild>
-        <div className="flex items-center justify-between cursor-pointer hover:bg-muted/50 rounded p-2 -mx-2">
+        <div className="flex items-center justify-between cursor-pointer hover:bg-muted/50 rounded p-2 -mx-2 mb-2">
           <h4 className="text-xs font-medium text-muted-foreground">
             Summarized
           </h4>

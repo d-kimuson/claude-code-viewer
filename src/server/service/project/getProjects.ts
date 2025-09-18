@@ -1,8 +1,7 @@
 import { constants } from "node:fs";
 import { access, readdir } from "node:fs/promises";
 import { resolve } from "node:path";
-
-import { claudeProjectPath } from "../paths";
+import { claudeProjectsDirPath } from "../paths";
 import type { Project } from "../types";
 import { getProjectMeta } from "./getProjectMeta";
 import { encodeProjectId } from "./id";
@@ -10,20 +9,24 @@ import { encodeProjectId } from "./id";
 export const getProjects = async (): Promise<{ projects: Project[] }> => {
   try {
     // Check if the claude projects directory exists
-    await access(claudeProjectPath, constants.F_OK);
+    await access(claudeProjectsDirPath, constants.F_OK);
   } catch (_error) {
     // Directory doesn't exist, return empty array
-    console.warn(`Claude projects directory not found at ${claudeProjectPath}`);
+    console.warn(
+      `Claude projects directory not found at ${claudeProjectsDirPath}`,
+    );
     return { projects: [] };
   }
 
   try {
-    const dirents = await readdir(claudeProjectPath, { withFileTypes: true });
+    const dirents = await readdir(claudeProjectsDirPath, {
+      withFileTypes: true,
+    });
     const projects = await Promise.all(
       dirents
         .filter((d) => d.isDirectory())
         .map(async (d) => {
-          const fullPath = resolve(claudeProjectPath, d.name);
+          const fullPath = resolve(claudeProjectsDirPath, d.name);
           const id = encodeProjectId(fullPath);
 
           return {

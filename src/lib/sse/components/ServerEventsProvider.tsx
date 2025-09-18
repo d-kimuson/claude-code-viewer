@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { useAtom } from "jotai";
 import {
   type FC,
@@ -7,6 +8,7 @@ import {
   useRef,
 } from "react";
 import type { SSEEvent } from "../../../types/sse";
+import { projectListQuery } from "../../api/queries";
 import { callSSE } from "../callSSE";
 import {
   type EventListener,
@@ -21,9 +23,18 @@ export const ServerEventsProvider: FC<PropsWithChildren> = ({ children }) => {
     Map<SSEEvent["kind"], Set<(event: SSEEvent) => void>>
   >(new Map());
   const [, setSSEState] = useAtom(sseAtom);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
-    const sse = callSSE();
+    const sse = callSSE({
+      onOpen: async () => {
+        // reconnect 中のイベントは購読できないので
+        // open 時にまとめて invalidate する
+        await queryClient.invalidateQueries({
+          queryKey: projectListQuery.queryKey,
+        });
+      },
+    });
     sseRef.current = sse;
 
     const { removeEventListener } = sse.addEventListener("connect", (event) => {
@@ -39,7 +50,7 @@ export const ServerEventsProvider: FC<PropsWithChildren> = ({ children }) => {
       sse.cleanUp();
       removeEventListener();
     };
-  }, [setSSEState]);
+  }, [setSSEState, queryClient]);
 
   const addEventListener = useCallback(
     <T extends SSEEvent["kind"]>(eventType: T, listener: EventListener<T>) => {

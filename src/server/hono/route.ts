@@ -1,5 +1,4 @@
 import { readdir } from "node:fs/promises";
-import { homedir } from "node:os";
 import { resolve } from "node:path";
 import { zValidator } from "@hono/zod-validator";
 import { setCookie } from "hono/cookie";
@@ -18,6 +17,7 @@ import { getBranches } from "../service/git/getBranches";
 import { getCommits } from "../service/git/getCommits";
 import { getDiff } from "../service/git/getDiff";
 import { getMcpList } from "../service/mcp/getMcpList";
+import { claudeCommandsDirPath } from "../service/paths";
 import { getProject } from "../service/project/getProject";
 import { getProjects } from "../service/project/getProjects";
 import { getSession } from "../service/session/getSession";
@@ -194,7 +194,7 @@ export const routes = (app: HonoAppType) => {
         const { project } = await getProject(projectId);
 
         const [globalCommands, projectCommands] = await Promise.allSettled([
-          readdir(resolve(homedir(), ".claude", "commands"), {
+          readdir(claudeCommandsDirPath, {
             withFileTypes: true,
           }).then((dirents) =>
             dirents

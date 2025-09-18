@@ -25,8 +25,9 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { projectDetailQuery } from "../../../../lib/api/queries";
 import { useConfig } from "../../../hooks/useConfig";
-import { projectQueryConfig, useProject } from "../hooks/useProject";
+import { useProject } from "../hooks/useProject";
 import { firstCommandToTitle } from "../services/firstCommandToTitle";
 import { NewChatModal } from "./newChat/NewChatModal";
 
@@ -41,7 +42,7 @@ export const ProjectPageContent = ({ projectId }: { projectId: string }) => {
   // biome-ignore lint/correctness/useExhaustiveDependencies: invalidate when config changed
   useEffect(() => {
     void queryClient.invalidateQueries({
-      queryKey: projectQueryConfig(projectId).queryKey,
+      queryKey: projectDetailQuery(projectId).queryKey,
     });
   }, [config.hideNoUserMessageSession, config.unifySameTitleSession]);
 

@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { RefreshCwIcon } from "lucide-react";
 import type { FC } from "react";
 import { Button } from "@/components/ui/button";
-import { honoClient } from "@/lib/api/client";
+import { mcpListQuery } from "../../../../../../../lib/api/queries";
 
 export const McpTab: FC = () => {
   const queryClient = useQueryClient();
@@ -14,18 +14,12 @@ export const McpTab: FC = () => {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["mcp", "list"],
-    queryFn: async () => {
-      const response = await honoClient.api.mcp.list.$get();
-      if (!response.ok) {
-        throw new Error("Failed to fetch MCP servers");
-      }
-      return response.json();
-    },
+    queryKey: mcpListQuery.queryKey,
+    queryFn: mcpListQuery.queryFn,
   });
 
   const handleReload = () => {
-    queryClient.invalidateQueries({ queryKey: ["mcp", "list"] });
+    queryClient.invalidateQueries({ queryKey: mcpListQuery.queryKey });
   };
 
   return (

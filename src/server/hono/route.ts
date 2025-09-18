@@ -8,9 +8,11 @@ import { z } from "zod";
 import { configSchema } from "../config/config";
 import { ClaudeCodeTaskController } from "../service/claude-code/ClaudeCodeTaskController";
 import type { SerializableAliveTask } from "../service/claude-code/types";
+import { adaptInternalEventToSSE } from "../service/events/adaptInternalEventToSSE";
 import { getEventBus } from "../service/events/EventBus";
 import { getFileWatcher } from "../service/events/fileWatcher";
-import { sseEventResponse } from "../service/events/sseEventResponse";
+import type { InternalEventDeclaration } from "../service/events/InternalEventDeclaration";
+import { writeTypeSafeSSE } from "../service/events/typeSafeSSE";
 import { getFileCompletion } from "../service/file-completion/getFileCompletion";
 import { getBranches } from "../service/git/getBranches";
 import { getCommits } from "../service/git/getCommits";
@@ -25,6 +27,14 @@ import { configMiddleware } from "./middleware/config.middleware";
 
 export const routes = (app: HonoAppType) => {
   const taskController = new ClaudeCodeTaskController();
+  const fileWatcher = getFileWatcher();
+  const eventBus = getEventBus();
+
+  fileWatcher.startWatching();
+
+  setInterval(() => {
+    eventBus.emit("heartbeat", {});
+  }, 10 * 1000);
 
   return (
     app
@@ -375,108 +385,52 @@ export const routes = (app: HonoAppType) => {
         },
       )
 
-      .get("/events/state_changes", async (c) => {
+      .get("/sse", async (c) => {
         return streamSSE(
           c,
-          async (stream) => {
-            const fileWatcher = getFileWatcher();
-            const eventBus = getEventBus();
+          async (rawStream) => {
+            const stream = writeTypeSafeSSE(rawStream);
 
-            let isConnected = true;
-
-            // ハートビート設定
-            const heartbeat = setInterval(() => {
-              if (isConnected) {
-                eventBus.emit("heartbeat", {
-                  type: "heartbeat",
-                });
-              }
-            }, 30 * 1000);
-
-            // connection handling
-            const abortController = new AbortController();
-            let connectionResolve: ((value: undefined) => void) | undefined;
-            const connectionPromise = new Promise<undefined>((resolve) => {
-              connectionResolve = resolve;
-            });
-
-            const onConnectionClosed = () => {
-              isConnected = false;
-              connectionResolve?.(undefined);
-              abortController.abort();
-              clearInterval(heartbeat);
+            const onSessionListChanged = (
+              event: InternalEventDeclaration["sessionListChanged"],
+            ) => {
+              stream.writeSSE("sessionListChanged", {
+                projectId: event.projectId,
+              });
             };
 
-            // 接続終了時のクリーンアップ
-            stream.onAbort(() => {
-              console.log("SSE connection aborted");
-              onConnectionClosed();
-            });
-
-            // イベントリスナーを登録
-            console.log("Registering SSE event listeners");
-            eventBus.on("connected", async (event) => {
-              if (!isConnected) {
-                return;
-              }
-              await stream.writeSSE(sseEventResponse(event)).catch(() => {
-                onConnectionClosed();
+            const onSessionChanged = (
+              event: InternalEventDeclaration["sessionChanged"],
+            ) => {
+              stream.writeSSE("sessionChanged", {
+                projectId: event.projectId,
+                sessionId: event.sessionId,
               });
-            });
+            };
 
-            eventBus.on("heartbeat", async (event) => {
-              if (!isConnected) {
-                return;
-              }
-              await stream.writeSSE(sseEventResponse(event)).catch(() => {
-                onConnectionClosed();
+            const onTaskChanged = (
+              event: InternalEventDeclaration["taskChanged"],
+            ) => {
+              stream.writeSSE("taskChanged", {
+                aliveTasks: event.aliveTasks,
               });
+            };
+
+            eventBus.on("sessionListChanged", onSessionListChanged);
+            eventBus.on("sessionChanged", onSessionChanged);
+            eventBus.on("taskChanged", onTaskChanged);
+            const { connectionPromise } = adaptInternalEventToSSE(rawStream, {
+              cleanUp: () => {
+                eventBus.off("sessionListChanged", onSessionListChanged);
+                eventBus.off("sessionChanged", onSessionChanged);
+                eventBus.off("taskChanged", onTaskChanged);
+              },
             });
-
-            eventBus.on("project_changed", async (event) => {
-              if (!isConnected) {
-                return;
-              }
-
-              await stream.writeSSE(sseEventResponse(event)).catch(() => {
-                console.warn("Failed to write SSE event");
-                onConnectionClosed();
-              });
-            });
-
-            eventBus.on("session_changed", async (event) => {
-              if (!isConnected) {
-                return;
-              }
-
-              await stream.writeSSE(sseEventResponse(event)).catch(() => {
-                onConnectionClosed();
-              });
-            });
-
-            eventBus.on("task_changed", async (event) => {
-              if (!isConnected) {
-                return;
-              }
-
-              await stream.writeSSE(sseEventResponse(event)).catch(() => {
-                onConnectionClosed();
-              });
-            });
-
-            // 初期接続確認メッセージ
-            eventBus.emit("connected", {
-              type: "connected",
-              message: "SSE connection established",
-            });
-
-            fileWatcher.startWatching();
 
             await connectionPromise;
           },
-          async (err, stream) => {
+          async (err) => {
             console.error("Streaming error:", err);
-            await stream.write("エラーが発生しました。");
           },
         );
       })

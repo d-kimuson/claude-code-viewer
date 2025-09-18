@@ -1,24 +1,18 @@
 import { useQuery } from "@tanstack/react-query";
 import { useAtom } from "jotai";
 import { useMemo } from "react";
-import { honoClient } from "../../../../../../lib/api/client";
+import { aliveTasksQuery } from "../../../../../../lib/api/queries";
 import { aliveTasksAtom } from "../store/aliveTasksAtom";
 
 export const useAliveTask = (sessionId: string) => {
   const [aliveTasks, setAliveTasks] = useAtom(aliveTasksAtom);
 
   useQuery({
-    queryKey: ["aliveTasks"],
+    queryKey: aliveTasksQuery.queryKey,
     queryFn: async () => {
-      const response = await honoClient.api.tasks.alive.$get({});
-
-      if (!response.ok) {
-        throw new Error(response.statusText);
-      }
-
-      const data = await response.json();
-      setAliveTasks(data.aliveTasks);
-      return response.json();
+      const { aliveTasks } = await aliveTasksQuery.queryFn();
+      setAliveTasks(aliveTasks);
+      return aliveTasks;
     },
     refetchOnReconnect: true,
   });

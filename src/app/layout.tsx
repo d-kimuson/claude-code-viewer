@@ -1,13 +1,15 @@
+import { QueryClient } from "@tanstack/react-query";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+
 import { Toaster } from "../components/ui/sonner";
 import { QueryClientProviderWrapper } from "../lib/api/QueryClientProviderWrapper";
+import { SSEProvider } from "../lib/sse/components/SSEProvider";
 import { RootErrorBoundary } from "./components/RootErrorBoundary";
-import { ServerEventsProvider } from "./components/ServerEventsProvider";
 
 import "./globals.css";
-import { QueryClient } from "@tanstack/react-query";
-import { configQueryConfig } from "./hooks/useConfig";
+import { configQuery } from "../lib/api/queries";
+import { SSEEventListeners } from "./components/SSEEventListeners";
 
 export const dynamic = "force-dynamic";
 export const fetchCache = "force-no-store";
@@ -35,7 +37,8 @@ export default async function RootLayout({
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
-    ...configQueryConfig,
+    queryKey: configQuery.queryKey,
+    queryFn: configQuery.queryFn,
   });
 
   return (
@@ -45,7 +48,9 @@ export default async function RootLayout({
       >
         <RootErrorBoundary>
           <QueryClientProviderWrapper>
-            <ServerEventsProvider>{children}</ServerEventsProvider>
+            <SSEProvider>
+              <SSEEventListeners>{children}</SSEEventListeners>
+            </SSEProvider>
           </QueryClientProviderWrapper>
         </RootErrorBoundary>
         <Toaster position="top-right" />

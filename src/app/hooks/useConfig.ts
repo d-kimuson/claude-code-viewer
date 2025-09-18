@@ -5,21 +5,15 @@ import {
 } from "@tanstack/react-query";
 import { useCallback } from "react";
 import { honoClient } from "../../lib/api/client";
+import { configQuery } from "../../lib/api/queries";
 import type { Config } from "../../server/config/config";
-
-export const configQueryConfig = {
-  queryKey: ["config"],
-  queryFn: async () => {
-    const response = await honoClient.api.config.$get();
-    return await response.json();
-  },
-} as const;
 
 export const useConfig = () => {
   const queryClient = useQueryClient();
 
   const { data } = useSuspenseQuery({
-    ...configQueryConfig,
+    queryKey: configQuery.queryKey,
+    queryFn: configQuery.queryFn,
   });
   const updateConfigMutation = useMutation({
     mutationFn: async (config: Config) => {
@@ -30,7 +24,7 @@ export const useConfig = () => {
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: configQueryConfig.queryKey,
+        queryKey: configQuery.queryKey,
       });
     },
   });

@@ -1,8 +1,10 @@
 import { QueryClient } from "@tanstack/react-query";
 import type { Metadata } from "next";
-import { projectQueryConfig } from "../../hooks/useProject";
+import {
+  projectDetailQuery,
+  sessionDetailQuery,
+} from "../../../../../lib/api/queries";
 import { SessionPageContent } from "./components/SessionPageContent";
-import { sessionQueryConfig } from "./hooks/useSessionQuery";
 
 type PageParams = {
   projectId: string;
@@ -19,11 +21,12 @@ export async function generateMetadata({
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
-    ...sessionQueryConfig(projectId, sessionId),
+    ...sessionDetailQuery(projectId, sessionId),
   });
 
   await queryClient.prefetchQuery({
-    ...projectQueryConfig(projectId),
+    queryKey: projectDetailQuery(projectId).queryKey,
+    queryFn: projectDetailQuery(projectId).queryFn,
   });
 
   return {

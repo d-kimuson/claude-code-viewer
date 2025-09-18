@@ -15,7 +15,7 @@ import {
   Collapsible,
   CollapsibleContent,
 } from "../../../../../components/ui/collapsible";
-import { honoClient } from "../../../../../lib/api/client";
+import { claudeCommandsQuery } from "../../../../../lib/api/queries";
 import { cn } from "../../../../../lib/utils";
 
 type CommandCompletionProps = {
@@ -40,18 +40,8 @@ export const CommandCompletion = forwardRef<
 
   // コマンドリストを取得
   const { data: commandData } = useQuery({
-    queryKey: ["claude-commands", projectId],
-    queryFn: async () => {
-      const response = await honoClient.api.projects[":projectId"][
-        "claude-commands"
-      ].$get({
-        param: { projectId },
-      });
-      if (!response.ok) {
-        throw new Error("Failed to fetch commands");
-      }
-      return response.json();
-    },
+    queryKey: claudeCommandsQuery(projectId).queryKey,
+    queryFn: claudeCommandsQuery(projectId).queryFn,
     staleTime: 1000 * 60 * 5, // 5分間キャッシュ
   });
 

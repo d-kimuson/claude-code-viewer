@@ -2,7 +2,7 @@ import { execSync } from "node:child_process";
 import { query } from "@anthropic-ai/claude-code";
 import prexit from "prexit";
 import { ulid } from "ulid";
-import { type EventBus, getEventBus } from "../events/EventBus";
+import { getEventBus, type IEventBus } from "../events/EventBus";
 import { createMessageGenerator } from "./createMessageGenerator";
 import type {
   AliveClaudeCodeTask,
@@ -14,7 +14,7 @@ import type {
 export class ClaudeCodeTaskController {
   private pathToClaudeCodeExecutable: string;
   private tasks: ClaudeCodeTask[] = [];
-  private eventBus: EventBus;
+  private eventBus: IEventBus;
 
   constructor() {
     this.pathToClaudeCodeExecutable = execSync("which claude", {})
@@ -239,9 +239,8 @@ export class ClaudeCodeTaskController {
 
     Object.assign(target, task);
 
-    this.eventBus.emit("task_changed", {
-      type: "task_changed",
-      data: this.aliveTasks,
+    this.eventBus.emit("taskChanged", {
+      aliveTasks: this.aliveTasks,
     });
   }
 }

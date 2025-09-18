@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { honoClient } from "../lib/api/client";
+import { fileCompletionQuery } from "../lib/api/queries";
 
 export type FileCompletionEntry = {
   name: string;
@@ -19,21 +19,8 @@ export const useFileCompletion = (
   enabled = true,
 ) => {
   return useQuery({
-    queryKey: ["file-completion", projectId, basePath],
-    queryFn: async (): Promise<FileCompletionResult> => {
-      const response = await honoClient.api.projects[":projectId"][
-        "file-completion"
-      ].$get({
-        param: { projectId },
-        query: { basePath },
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch file completion");
-      }
-
-      return response.json();
-    },
+    queryKey: fileCompletionQuery(projectId, basePath).queryKey,
+    queryFn: fileCompletionQuery(projectId, basePath).queryFn,
     enabled: enabled && !!projectId,
     staleTime: 1000 * 60 * 5, // 5分間キャッシュ
   });

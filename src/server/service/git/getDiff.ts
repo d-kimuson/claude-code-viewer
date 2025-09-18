@@ -160,8 +160,6 @@ async function getUntrackedFiles(cwd: string): Promise<GitResult<string[]>> {
     cwd,
   );
 
-  console.log("debug statusResult stdout", statusResult);
-
   if (!statusResult.success) {
     return statusResult;
   }
@@ -334,7 +332,6 @@ export const getDiff = async (
     // Include untracked files when comparing to working directory
     if (toRef === undefined) {
       const untrackedResult = await getUntrackedFiles(cwd);
-      console.log("debug untrackedResult", untrackedResult);
       if (untrackedResult.success) {
         for (const untrackedFile of untrackedResult.data) {
           const untrackedDiff = await createUntrackedFileDiff(

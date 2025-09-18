@@ -2,7 +2,7 @@
 
 import { useQueryClient } from "@tanstack/react-query";
 import { type FC, useCallback, useId } from "react";
-import { configQueryConfig, useConfig } from "@/app/hooks/useConfig";
+import { useConfig } from "@/app/hooks/useConfig";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
@@ -11,7 +11,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { projectQueryConfig } from "../app/projects/[projectId]/hooks/useProject";
+import {
+  configQuery,
+  projectDetailQuery,
+  projectListQuery,
+} from "../lib/api/queries";
 
 interface SettingsControlsProps {
   openingProjectId: string;
@@ -33,13 +37,13 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
 
   const onConfigChanged = useCallback(async () => {
     await queryClient.invalidateQueries({
-      queryKey: configQueryConfig.queryKey,
+      queryKey: configQuery.queryKey,
     });
     await queryClient.invalidateQueries({
-      queryKey: ["projects"],
+      queryKey: projectListQuery.queryKey,
     });
     void queryClient.invalidateQueries({
-      queryKey: projectQueryConfig(openingProjectId).queryKey,
+      queryKey: projectDetailQuery(openingProjectId).queryKey,
     });
   }, [queryClient, openingProjectId]);
 

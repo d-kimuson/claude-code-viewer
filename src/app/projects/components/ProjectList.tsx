@@ -14,7 +14,9 @@ import {
 import { useProjects } from "../hooks/useProjects";
 
 export const ProjectList: FC = () => {
-  const { data: projects } = useProjects();
+  const {
+    data: { projects },
+  } = useProjects();
 
   if (projects.length === 0) {
     <Card>

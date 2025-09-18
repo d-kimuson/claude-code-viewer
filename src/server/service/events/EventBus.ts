@@ -1,45 +1,47 @@
-import { EventEmitter } from "node:events";
+import { EventEmitter } from "node:stream";
+import type { InternalEventDeclaration } from "./InternalEventDeclaration";
 
-import type { BaseSSEEvent, SSEEvent } from "./types";
+class EventBus {
+  private emitter: EventEmitter;
 
-export class EventBus {
-  private previousId = 0;
-  private eventEmitter = new EventEmitter();
+  constructor() {
+    this.emitter = new EventEmitter();
+  }
 
-  public emit<
-    T extends SSEEvent["type"],
-    E = SSEEvent extends infer I ? (I extends { type: T } ? I : never) : never,
-  >(type: T, event: Omit<E, "id" | "timestamp">): void {
-    const base: BaseSSEEvent = {
-      id: String(this.previousId++),
-      timestamp: new Date().toISOString(),
-    };
-
-    this.eventEmitter.emit(type, {
-      ...event,
-      ...base,
+  public emit<EventName extends keyof InternalEventDeclaration>(
+    event: EventName,
+    data: InternalEventDeclaration[EventName],
+  ): void {
+    this.emitter.emit(event, {
+      ...data,
     });
   }
 
-  public on(
-    event: SSEEvent["type"],
-    listener: (event: SSEEvent) => void,
+  public on<EventName extends keyof InternalEventDeclaration>(
+    event: EventName,
+    listener: (
+      data: InternalEventDeclaration[EventName],
+    ) => void | Promise<void>,
   ): void {
-    this.eventEmitter.on(event, listener);
+    this.emitter.on(event, listener);
   }
 
-  public off(
-    event: SSEEvent["type"],
-    listener: (event: SSEEvent) => void,
+  public off<EventName extends keyof InternalEventDeclaration>(
+    event: EventName,
+    listener: (
+      data: InternalEventDeclaration[EventName],
+    ) => void | Promise<void>,
   ): void {
-    this.eventEmitter.off(event, listener);
+    this.emitter.off(event, listener);
   }
 }
 
-// Singleton
-let eventBusInstance: EventBus | null = null;
+// singleton
+let eventBus: EventBus | null = null;
 
-export const getEventBus = (): EventBus => {
-  eventBusInstance ??= new EventBus();
-  return eventBusInstance;
+export const getEventBus = () => {
+  eventBus ??= new EventBus();
+  return eventBus;
 };
+
+export type IEventBus = ReturnType<typeof getEventBus>;

@@ -1,7 +1,7 @@
 import { type FSWatcher, watch } from "node:fs";
 import z from "zod";
 import { claudeProjectPath } from "../paths";
-import { type EventBus, getEventBus } from "./EventBus";
+import { getEventBus, type IEventBus } from "./EventBus";
 
 const fileRegExp = /(?<projectId>.*?)\/(?<sessionId>.*?)\.jsonl/;
 const fileRegExpGroupSchema = z.object({
@@ -10,15 +10,19 @@ const fileRegExpGroupSchema = z.object({
 });
 
 export class FileWatcherService {
+  private isWatching = false;
   private watcher: FSWatcher | null = null;
   private projectWatchers: Map<string, FSWatcher> = new Map();
-  private eventBus: EventBus;
+  private eventBus: IEventBus;
 
   constructor() {
     this.eventBus = getEventBus();
   }
 
   public startWatching(): void {
+    if (this.isWatching) return;
+    this.isWatching = true;
+
     try {
       console.log("Starting file watcher on:", claudeProjectPath);
       // メインプロジェクトディレクトリを監視
@@ -36,22 +40,20 @@ export class FileWatcherService {
 
           const { projectId, sessionId } = groups.data;
 
-          this.eventBus.emit("project_changed", {
-            type: "project_changed",
-            data: {
-              fileEventType: eventType,
-              projectId,
-            },
-          });
-
-          this.eventBus.emit("session_changed", {
-            type: "session_changed",
-            data: {
+          if (eventType === "change") {
+            // セッションファイルの中身が変更されている
+            this.eventBus.emit("sessionChanged", {
               projectId,
               sessionId,
-              fileEventType: eventType,
-            },
-          });
+            });
+          } else if (eventType === "rename") {
+            // セッションファイルの追加/削除
+            this.eventBus.emit("sessionListChanged", {
+              projectId,
+            });
+          } else {
+            eventType satisfies never;
+          }
         },
       );
       console.log("File watcher initialization completed");

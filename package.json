@@ -24,7 +24,8 @@
   "scripts": {
     "dev": "run-p 'dev:*'",
     "dev:next": "PORT=3400 next dev --turbopack",
-    "start": "node dist/index.js",
+    "start": "PORT=3300 node dist/index.js",
+    "start:e2e": "PORT=4000 GLOBAL_CLAUDE_DIR=./mock-global-claude-dir node dist/index.js",
     "build": "./scripts/build.sh",
     "lint": "run-s 'lint:*'",
     "lint:biome-format": "biome format .",
@@ -34,7 +35,18 @@
     "fix:biome-lint": "biome check --write --unsafe .",
     "typecheck": "tsc --noEmit",
     "test": "vitest --run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:e2e": "GLOBAL_CLAUDE_DIR=./mock-global-claude-dir playwright test",
+    "test:e2e:ui": "GLOBAL_CLAUDE_DIR=./mock-global-claude-dir playwright test --ui",
+    "test:e2e:headed": "GLOBAL_CLAUDE_DIR=./mock-global-claude-dir playwright test --headed",
+    "test:e2e:update": "GLOBAL_CLAUDE_DIR=./mock-global-claude-dir playwright test --update-snapshots",
+    "screenshots": "GLOBAL_CLAUDE_DIR=./mock-global-claude-dir node e2e/tests/projects-page-new.spec.ts",
+    "screenshots:all": "run-s screenshots:*",
+    "screenshots:projects": "GLOBAL_CLAUDE_DIR=./mock-global-claude-dir node e2e/tests/projects-page-new.spec.ts",
+    "screenshots:project-detail": "GLOBAL_CLAUDE_DIR=./mock-global-claude-dir node e2e/tests/project-detail-new.spec.ts",
+    "screenshots:session-detail": "GLOBAL_CLAUDE_DIR=./mock-global-claude-dir node e2e/tests/session-detail-new.spec.ts",
+    "screenshots:error-states": "GLOBAL_CLAUDE_DIR=./mock-global-claude-dir node e2e/tests/error-states.spec.ts",
+    "screenshots:modals": "GLOBAL_CLAUDE_DIR=./mock-global-claude-dir node e2e/tests/modal-components.spec.ts"
   },
   "dependencies": {
     "@anthropic-ai/claude-code": "^1.0.98",
@@ -56,6 +68,7 @@
     "next": "15.5.2",
     "next-themes": "^0.4.6",
     "parse-git-diff": "^0.0.19",
+    "playwright": "^1.55.0",
     "prexit": "^2.3.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
@@ -70,6 +83,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.2.2",
+    "@playwright/test": "^1.55.0",
     "@tailwindcss/postcss": "^4.1.12",
     "@tsconfig/strictest": "^2.0.5",
     "@types/node": "^24.3.0",

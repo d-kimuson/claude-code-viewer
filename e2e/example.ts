@@ -1,0 +1,22 @@
+import { resolve } from "node:path";
+import { withPlaywright } from "./utils/withPlaywright";
+import { testDevices } from "./testDevices";
+
+for (const { device, name } of testDevices) {
+  await withPlaywright(
+    async ({ context, cleanUp }) => {
+      const page = await context.newPage();
+      await page.goto("http://localhost:4000/projects");
+      await page.screenshot({
+        path: resolve("e2e", "snapshots", "projects", `_${name}.png`),
+        fullPage: true,
+      });
+      await cleanUp();
+    },
+    {
+      contextOptions: {
+        ...device,
+      },
+    },
+  );
+}

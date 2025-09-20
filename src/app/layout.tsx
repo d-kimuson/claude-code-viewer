@@ -1,5 +1,4 @@
 import { QueryClient } from "@tanstack/react-query";
-import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
 import { Toaster } from "../components/ui/sonner";
@@ -24,7 +23,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
+export const metadata = {
   title: "Claude Code Viewer",
   description: "Web Viewer for Claude Code history",
 };
@@ -42,7 +41,7 @@ export default async function RootLayout({
   });
 
   return (
-    <html lang="ja">
+    <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

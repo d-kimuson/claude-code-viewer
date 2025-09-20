@@ -413,6 +413,7 @@ export const routes = (app: HonoAppType) => {
             ) => {
               stream.writeSSE("taskChanged", {
                 aliveTasks: event.aliveTasks,
+                changed: event.changed,
               });
             };
 
@@ -420,6 +421,7 @@ export const routes = (app: HonoAppType) => {
             eventBus.on("sessionChanged", onSessionChanged);
             eventBus.on("taskChanged", onTaskChanged);
             const { connectionPromise } = adaptInternalEventToSSE(rawStream, {
+              timeout: 5 /* min */ * 60 /* sec */ * 1000,
               cleanUp: () => {
                 eventBus.off("sessionListChanged", onSessionListChanged);
                 eventBus.off("sessionChanged", onSessionChanged);

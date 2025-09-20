@@ -18,6 +18,7 @@ export type SSEEventDeclaration = {
 
   taskChanged: {
     aliveTasks: AliveClaudeCodeTask[];
+    changed: AliveClaudeCodeTask;
   };
 };
 

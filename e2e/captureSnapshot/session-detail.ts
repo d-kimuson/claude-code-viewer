@@ -27,7 +27,7 @@ for (const sessionId of sessionIds) {
       await withPlaywright(
         async ({ context, cleanUp }) => {
           const page = await context.newPage();
-          await page.goto(`http://localhost:3400/projects/sample-project/sessions/${sessionId}`);
+          await page.goto(`http://localhost:4000/projects/sample-project/sessions/${sessionId}`);
           await page.waitForLoadState('networkidle');
           
           if (state.action) {

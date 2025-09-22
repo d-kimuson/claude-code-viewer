@@ -16,7 +16,7 @@ for (const state of testStates) {
     await withPlaywright(
       async ({ context, cleanUp }) => {
         const page = await context.newPage();
-        await page.goto("http://localhost:3400/projects");
+        await page.goto("http://localhost:4000/projects");
         await page.waitForLoadState('networkidle');
         
         if (state.action) {

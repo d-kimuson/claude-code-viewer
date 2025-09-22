@@ -6,15 +6,15 @@ import { testDevices } from "../testDevices";
 const errorScenarios = [
   {
     name: "404",
-    url: "http://localhost:3400/non-existent-page"
+    url: "http://localhost:4000/non-existent-page"
   },
   {
     name: "invalid-project",
-    url: "http://localhost:3400/projects/non-existent-project"
+    url: "http://localhost:4000/projects/non-existent-project"
   },
   {
     name: "invalid-session",
-    url: "http://localhost:3400/projects/sample-project/sessions/non-existent-session"
+    url: "http://localhost:4000/projects/sample-project/sessions/non-existent-session"
   }
 ];
 

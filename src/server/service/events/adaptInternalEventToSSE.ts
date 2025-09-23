@@ -30,6 +30,7 @@ export const adaptInternalEventToSSE = (
     abortController.abort();
 
     eventBus.off("heartbeat", heartbeat);
+    eventBus.off("permissionRequested", permissionRequested);
     cleanUp?.();
   };
 
@@ -45,7 +46,16 @@ export const adaptInternalEventToSSE = (
     });
   };
 
+  const permissionRequested = (
+    event: InternalEventDeclaration["permissionRequested"],
+  ) => {
+    stream.writeSSE("permission_requested", {
+      permissionRequest: event.permissionRequest,
+    });
+  };
+
   eventBus.on("heartbeat", heartbeat);
+  eventBus.on("permissionRequested", permissionRequested);
 
   stream.writeSSE("connect", {
     timestamp: new Date().toISOString(),

@@ -2,12 +2,15 @@ import { execSync } from "node:child_process";
 import { query } from "@anthropic-ai/claude-code";
 import prexit from "prexit";
 import { ulid } from "ulid";
+import type { Config } from "../../config/config";
 import { getEventBus, type IEventBus } from "../events/EventBus";
 import { createMessageGenerator } from "./createMessageGenerator";
 import type {
   AliveClaudeCodeTask,
   ClaudeCodeTask,
   PendingClaudeCodeTask,
+  PermissionRequest,
+  PermissionResponse,
   RunningClaudeCodeTask,
 } from "./types";
 
@@ -15,17 +18,139 @@ export class ClaudeCodeTaskController {
   private pathToClaudeCodeExecutable: string;
   private tasks: ClaudeCodeTask[] = [];
   private eventBus: IEventBus;
+  private config: Config;
+  private pendingPermissionRequests: Map<string, PermissionRequest> = new Map();
+  private permissionResponses: Map<string, PermissionResponse> = new Map();
 
-  constructor() {
+  constructor(config: Config) {
     this.pathToClaudeCodeExecutable = execSync("which claude", {})
       .toString()
       .trim();
     this.eventBus = getEventBus();
+    this.config = config;
 
     prexit(() => {
       this.aliveTasks.forEach((task) => {
         task.abortController.abort();
       });
+    });
+  }
+
+  public updateConfig(config: Config) {
+    this.config = config;
+  }
+
+  public respondToPermissionRequest(response: PermissionResponse) {
+    this.permissionResponses.set(response.permissionRequestId, response);
+    this.pendingPermissionRequests.delete(response.permissionRequestId);
+  }
+
+  private createCanUseToolCallback(taskId: string, sessionId?: string) {
+    return async (
+      toolName: string,
+      toolInput: Record<string, unknown>,
+      _options: { signal: AbortSignal },
+    ) => {
+      // If not in default mode, use the configured permission mode behavior
+      if (this.config.permissionMode !== "default") {
+        // Convert Claude Code permission modes to canUseTool behaviors
+        if (
+          this.config.permissionMode === "bypassPermissions" ||
+          this.config.permissionMode === "acceptEdits"
+        ) {
+          return {
+            behavior: "allow" as const,
+            updatedInput: toolInput,
+          };
+        } else {
+          // plan mode should deny actual tool execution
+          return {
+            behavior: "deny" as const,
+            message: "Tool execution is disabled in plan mode",
+          };
+        }
+      }
+
+      // Create permission request
+      const permissionRequest: PermissionRequest = {
+        id: ulid(),
+        taskId,
+        sessionId,
+        toolName,
+        toolInput,
+        timestamp: Date.now(),
+      };
+
+      // Store the request
+      this.pendingPermissionRequests.set(
+        permissionRequest.id,
+        permissionRequest,
+      );
+
+      // Emit event to notify UI
+      this.eventBus.emit("permissionRequested", {
+        permissionRequest,
+      });
+
+      // Wait for user response with timeout
+      const response = await this.waitForPermissionResponse(
+        permissionRequest.id,
+        60000,
+      ); // 60 second timeout
+
+      if (response) {
+        if (response.decision === "allow") {
+          return {
+            behavior: "allow" as const,
+            updatedInput: toolInput,
+          };
+        } else {
+          return {
+            behavior: "deny" as const,
+            message: "Permission denied by user",
+          };
+        }
+      } else {
+        // Timeout - default to deny for security
+        this.pendingPermissionRequests.delete(permissionRequest.id);
+        return {
+          behavior: "deny" as const,
+          message: "Permission request timed out",
+        };
+      }
+    };
+  }
+
+  private async waitForPermissionResponse(
+    permissionRequestId: string,
+    timeoutMs: number,
+  ): Promise<PermissionResponse | null> {
+    return new Promise((resolve) => {
+      const checkResponse = () => {
+        const response = this.permissionResponses.get(permissionRequestId);
+        if (response) {
+          this.permissionResponses.delete(permissionRequestId);
+          resolve(response);
+          return;
+        }
+
+        // Check if request was cancelled/deleted
+        if (!this.pendingPermissionRequests.has(permissionRequestId)) {
+          resolve(null);
+          return;
+        }
+
+        // Continue polling
+        setTimeout(checkResponse, 100);
+      };
+
+      // Set timeout
+      setTimeout(() => {
+        resolve(null);
+      }, timeoutMs);
+
+      // Start polling
+      checkResponse();
     });
   }
 
@@ -114,7 +239,11 @@ export class ClaudeCodeTaskController {
             resume: task.baseSessionId,
             cwd: task.cwd,
             pathToClaudeCodeExecutable: this.pathToClaudeCodeExecutable,
-            permissionMode: "bypassPermissions",
+            permissionMode: this.config.permissionMode,
+            canUseTool: this.createCanUseToolCallback(
+              task.id,
+              task.baseSessionId,
+            ),
             abortController: abortController,
           },
         })) {

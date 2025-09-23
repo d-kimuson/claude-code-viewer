@@ -1,4 +1,7 @@
-import type { AliveClaudeCodeTask } from "../server/service/claude-code/types";
+import type {
+  AliveClaudeCodeTask,
+  PermissionRequest,
+} from "../server/service/claude-code/types";
 
 export type SSEEventDeclaration = {
   // biome-ignore lint/complexity/noBannedTypes: correct type
@@ -18,6 +21,10 @@ export type SSEEventDeclaration = {
 
   taskChanged: {
     aliveTasks: AliveClaudeCodeTask[];
+  };
+
+  permission_requested: {
+    permissionRequest: PermissionRequest;
   };
 };
 

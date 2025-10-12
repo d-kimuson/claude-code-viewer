@@ -99,6 +99,7 @@ export const SessionPageContent: FC<{
                 size="sm"
                 className="md:hidden flex-shrink-0"
                 onClick={() => setIsMobileSidebarOpen(true)}
+                data-testid="mobile-sidebar-toggle-button"
               >
                 <MenuIcon className="w-4 h-4" />
               </Button>
@@ -218,7 +219,7 @@ export const SessionPageContent: FC<{
       {/* Fixed Diff Button */}
       <Button
         onClick={() => setIsDiffModalOpen(true)}
-        className="fixed bottom-6 right-6 w-14 h-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 z-50"
+        className="fixed bottom-15 right-6 w-14 h-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 z-50"
         size="lg"
       >
         <GitCompareIcon className="w-6 h-6" />

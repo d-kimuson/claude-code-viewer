@@ -129,6 +129,7 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
                   ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-sm"
                   : "text-sidebar-foreground/70",
               )}
+              data-testid="sessions-tab-button-mobile"
             >
               <MessageSquareIcon className="w-4 h-4" />
             </button>
@@ -143,6 +144,7 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
                   ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-sm"
                   : "text-sidebar-foreground/70",
               )}
+              data-testid="mcp-tab-button-mobile"
             >
               <PlugIcon className="w-4 h-4" />
             </button>
@@ -157,6 +159,7 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
                   ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-sm"
                   : "text-sidebar-foreground/70",
               )}
+              data-testid="settings-tab-button-mobile"
             >
               <SettingsIcon className="w-4 h-4" />
             </button>

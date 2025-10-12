@@ -13,7 +13,8 @@
       "!.next",
       "!src/lib/$path.ts",
       "!**/*.css",
-      "!dist"
+      "!dist",
+      "!playwright.config.ts"
     ]
   },
   "formatter": {

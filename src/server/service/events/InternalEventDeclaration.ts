@@ -18,6 +18,7 @@ export type InternalEventDeclaration = {
 
   taskChanged: {
     aliveTasks: AliveClaudeCodeTask[];
+    changed: AliveClaudeCodeTask;
   };
 
   permissionRequested: {

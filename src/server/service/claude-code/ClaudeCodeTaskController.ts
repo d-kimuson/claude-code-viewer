@@ -368,8 +368,11 @@ export class ClaudeCodeTaskController {
 
     Object.assign(target, task);
 
-    this.eventBus.emit("taskChanged", {
-      aliveTasks: this.aliveTasks,
-    });
+    if (task.status === "paused" || task.status === "running") {
+      this.eventBus.emit("taskChanged", {
+        aliveTasks: this.aliveTasks,
+        changed: task,
+      });
+    }
   }
 }

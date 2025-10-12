@@ -21,19 +21,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10.8.1
-
-      - name: Setup Node.js 20.12.0
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20.12.0
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+      - name: Setup Node & pnpm
+        uses: ./.github/actions/setup-node
 
       - name: Run linting
         run: pnpm lint
@@ -41,5 +30,42 @@ jobs:
       - name: Run type checking
         run: pnpm typecheck
 
+  e2e:
+    name: E2E Visual Regression Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node & pnpm
+        uses: ./.github/actions/setup-node
+
+      - name: Install Playwright
+        run: |
+          sudo npx playwright install-deps
+          pnpm exec playwright install
+
       - name: Build project
         run: pnpm build
+
+      - name: Capture screenshots
+        timeout-minutes: 3
+        run: pnpm e2e
+        env:
+          MAX_CONCURRENCY: 10
+
+      - name: Commit screenshots
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -x
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add e2e/snapshots
+          git commit -m 'ci(snapshots): update screenshots'
+          git push origin HEAD:refs/heads/${GITHUB_REF_NAME}

@@ -8,6 +8,10 @@
 
 # testing
 /coverage
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
 
 # next.js
 /.next/
@@ -39,3 +43,6 @@ next-env.d.ts
 dist/*
 !dist/index.js
 # dist/standalone/node_modules
+
+# playwright
+.user-data/

@@ -1,13 +1,13 @@
 import { resolve } from "node:path";
-import { withPlaywright } from "../utils/withPlaywright";
 import { testDevices } from "../testDevices";
+import { withPlaywright } from "../utils/withPlaywright";
 
 for (const { device, name } of testDevices) {
   await withPlaywright(
     async ({ context, cleanUp }) => {
       const page = await context.newPage();
       await page.goto("http://localhost:4000/");
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState("networkidle");
       await page.screenshot({
         path: resolve("e2e", "snapshots", "root", `${name}.png`),
         fullPage: true,

@@ -1,6 +1,6 @@
 import { resolve } from "node:path";
-import { withPlaywright } from "./withPlaywright";
 import { testDevices } from "../testDevices";
+import { withPlaywright } from "./withPlaywright";
 
 /**
  * Take screenshots for a given URL across all test devices
@@ -11,7 +11,7 @@ export async function takeScreenshots(
   options?: {
     waitForSelector?: string;
     timeout?: number;
-  }
+  },
 ) {
   const { waitForSelector, timeout = 5000 } = options || {};
 
@@ -19,21 +19,21 @@ export async function takeScreenshots(
     await withPlaywright(
       async ({ context, cleanUp }) => {
         const page = await context.newPage();
-        
+
         try {
           await page.goto(url);
-          
+
           // Wait for the page to load
-          await page.waitForLoadState('networkidle');
-          
+          await page.waitForLoadState("networkidle");
+
           // Wait for specific selector if provided
           if (waitForSelector) {
             await page.waitForSelector(waitForSelector, { timeout });
           }
-          
+
           // Additional wait for content to stabilize
           await page.waitForTimeout(1000);
-          
+
           // Hide dynamic content that might cause flaky screenshots
           await page.addStyleTag({
             content: `
@@ -51,9 +51,9 @@ export async function takeScreenshots(
                 transition-duration: 0s !important;
                 transition-delay: 0s !important;
               }
-            `
+            `,
           });
-          
+
           await page.screenshot({
             path: resolve("e2e", "snapshots", snapshotName, `${name}.png`),
             fullPage: true,
@@ -66,7 +66,7 @@ export async function takeScreenshots(
         contextOptions: {
           ...device,
         },
-      }
+      },
     );
   }
 }
@@ -80,7 +80,7 @@ export async function takeElementScreenshots(
   snapshotName: string,
   options?: {
     timeout?: number;
-  }
+  },
 ) {
   const { timeout = 5000 } = options || {};
 
@@ -88,25 +88,30 @@ export async function takeElementScreenshots(
     await withPlaywright(
       async ({ context, cleanUp }) => {
         const page = await context.newPage();
-        
+
         try {
           await page.goto(url);
-          await page.waitForLoadState('networkidle');
-          
+          await page.waitForLoadState("networkidle");
+
           const element = page.locator(selector);
-          await element.waitFor({ state: 'visible', timeout });
-          
+          await element.waitFor({ state: "visible", timeout });
+
           await page.addStyleTag({
             content: `
               *, *::before, *::after {
                 animation-duration: 0s !important;
                 transition-duration: 0s !important;
               }
-            `
+            `,
           });
-          
+
           await element.screenshot({
-            path: resolve("e2e", "snapshots", snapshotName, `${name}-element.png`),
+            path: resolve(
+              "e2e",
+              "snapshots",
+              snapshotName,
+              `${name}-element.png`,
+            ),
           });
         } finally {
           await cleanUp();
@@ -116,7 +121,7 @@ export async function takeElementScreenshots(
         contextOptions: {
           ...device,
         },
-      }
+      },
     );
   }
 }

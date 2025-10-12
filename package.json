@@ -23,9 +23,8 @@
   },
   "scripts": {
     "dev": "run-p 'dev:*'",
-    "dev:next": "PORT=3400 next dev --turbopack",
-    "start": "PORT=3300 node dist/index.js",
-    "start:e2e": "PORT=4000 GLOBAL_CLAUDE_DIR=./mock-global-claude-dir node dist/index.js",
+    "dev:next": "next dev --turbopack",
+    "start": "node dist/index.js",
     "build": "./scripts/build.sh",
     "lint": "run-s 'lint:*'",
     "lint:biome-format": "biome format .",
@@ -36,17 +35,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest --run",
     "test:watch": "vitest",
-    "test:e2e": "GLOBAL_CLAUDE_DIR=./mock-global-claude-dir playwright test",
-    "test:e2e:ui": "GLOBAL_CLAUDE_DIR=./mock-global-claude-dir playwright test --ui",
-    "test:e2e:headed": "GLOBAL_CLAUDE_DIR=./mock-global-claude-dir playwright test --headed",
-    "test:e2e:update": "GLOBAL_CLAUDE_DIR=./mock-global-claude-dir playwright test --update-snapshots",
-    "screenshots": "GLOBAL_CLAUDE_DIR=./mock-global-claude-dir node e2e/tests/projects-page-new.spec.ts",
-    "screenshots:all": "run-s screenshots:*",
-    "screenshots:projects": "GLOBAL_CLAUDE_DIR=./mock-global-claude-dir node e2e/tests/projects-page-new.spec.ts",
-    "screenshots:project-detail": "GLOBAL_CLAUDE_DIR=./mock-global-claude-dir node e2e/tests/project-detail-new.spec.ts",
-    "screenshots:session-detail": "GLOBAL_CLAUDE_DIR=./mock-global-claude-dir node e2e/tests/session-detail-new.spec.ts",
-    "screenshots:error-states": "GLOBAL_CLAUDE_DIR=./mock-global-claude-dir node e2e/tests/error-states.spec.ts",
-    "screenshots:modals": "GLOBAL_CLAUDE_DIR=./mock-global-claude-dir node e2e/tests/modal-components.spec.ts"
+    "e2e": "./scripts/e2e.sh"
   },
   "dependencies": {
     "@anthropic-ai/claude-code": "^1.0.98",

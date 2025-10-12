@@ -30,11 +30,14 @@ export const routes = (app: HonoAppType) => {
   const fileWatcher = getFileWatcher();
   const eventBus = getEventBus();
 
-  fileWatcher.startWatching();
+  // biome-ignore lint/complexity/useLiteralKeys: env var
+  if (process.env["NEXT_PHASE"] !== "phase-production-build") {
+    fileWatcher.startWatching();
 
-  setInterval(() => {
-    eventBus.emit("heartbeat", {});
-  }, 10 * 1000);
+    setInterval(() => {
+      eventBus.emit("heartbeat", {});
+    }, 10 * 1000);
+  }
 
   return (
     app

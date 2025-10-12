@@ -1,7 +1,8 @@
+import { projectIds } from "../config";
 import { defineCapture } from "../utils/defineCapture";
 
 export const projectDetailCapture = defineCapture({
-  href: "projects/L2hvbWUva2FpdG8vcmVwb3MvY2xhdWRlLWNvZGUtdmlld2VyL2Rpc3Qvc3RhbmRhbG9uZS9tb2NrLWdsb2JhbC1jbGF1ZGUtZGlyL3Byb2plY3RzL3NhbXBsZS1wcm9qZWN0",
+  href: `projects/${projectIds.sampleProject}`,
   cases: [
     {
       name: "filters-expanded",

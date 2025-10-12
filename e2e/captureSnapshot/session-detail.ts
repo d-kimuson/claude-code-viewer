@@ -1,65 +1,91 @@
-import { resolve } from "node:path";
-import { testDevices } from "../testDevices";
-import { withPlaywright } from "../utils/withPlaywright";
+import { defineCapture } from "../utils/defineCapture";
 
-// Multiple session IDs to capture different session detail pages
-const sessionIds = [
-  "1af7fc5e-8455-4414-9ccd-011d40f70b2a",
-  "5c0375b4-57a5-4f26-b12d-d022ee4e51b7",
-  "fe5e1c67-53e7-4862-81ae-d0e013e3270b",
-];
+export const sessionDetailCapture = defineCapture({
+  href: "projects/L2hvbWUva2FpdG8vcmVwb3MvY2xhdWRlLWNvZGUtdmlld2VyL2Rpc3Qvc3RhbmRhbG9uZS9tb2NrLWdsb2JhbC1jbGF1ZGUtZGlyL3Byb2plY3RzL3NhbXBsZS1wcm9qZWN0/sessions/fe5e1c67-53e7-4862-81ae-d0e013e3270b",
+  cases: [
+    {
+      name: "sidebar-closed",
+      setup: async (page) => {
+        const menuButton = page.locator(
+          '[data-testid="mobile-sidebar-toggle-button"]',
+        );
+        if (await menuButton.isVisible()) {
+          await menuButton.click();
+          await page.waitForTimeout(300);
 
-// Test different sidebar states
-const testStates = [
-  { name: "default", action: null },
-  {
-    name: "sidebar-open",
-    action: async (page) => {
-      const menuButton = page.locator(
-        '[data-testid="menu-button"], button:has-text("Menu"), .menu-toggle, .hamburger',
-      );
-      if (await menuButton.isVisible()) {
-        await menuButton.click();
-        await page.waitForTimeout(300);
-      }
-    },
-  },
-];
-
-for (const sessionId of sessionIds) {
-  for (const state of testStates) {
-    for (const { device, name } of testDevices) {
-      await withPlaywright(
-        async ({ context, cleanUp }) => {
-          const page = await context.newPage();
-          await page.goto(
-            `http://localhost:4000/projects/sample-project/sessions/${sessionId}`,
+          const sessionsTabButton = page.locator(
+            '[data-testid="sessions-tab-button-mobile"]',
           );
-          await page.waitForLoadState("networkidle");
-
-          if (state.action) {
-            await state.action(page);
+          if (await sessionsTabButton.isVisible()) {
+            await sessionsTabButton.click();
+            await page.waitForTimeout(300);
           }
+        } else {
+          const sessionsTabButton = page.locator(
+            '[data-testid="sessions-tab-button"]',
+          );
+          if (await sessionsTabButton.isVisible()) {
+            await sessionsTabButton.click();
+            await page.waitForTimeout(300);
+          }
+        }
+      },
+    },
 
-          // Create separate directories for each session
-          await page.screenshot({
-            path: resolve(
-              "e2e",
-              "snapshots",
-              "session-detail",
-              state.name,
-              `${sessionId}_${name}.png`,
-            ),
-            fullPage: true,
-          });
-          await cleanUp();
-        },
-        {
-          contextOptions: {
-            ...device,
-          },
-        },
-      );
-    }
-  }
-}
+    {
+      name: "mcp-servers-tab",
+      setup: async (page) => {
+        const menuButton = page.locator(
+          '[data-testid="mobile-sidebar-toggle-button"]',
+        );
+        if (await menuButton.isVisible()) {
+          await menuButton.click();
+          await page.waitForTimeout(300);
+
+          const mcpTabButton = page.locator(
+            '[data-testid="mcp-tab-button-mobile"]',
+          );
+          if (await mcpTabButton.isVisible()) {
+            await mcpTabButton.click();
+            await page.waitForTimeout(300);
+          }
+        } else {
+          const mcpTabButton = page.locator('[data-testid="mcp-tab-button"]');
+          if (await mcpTabButton.isVisible()) {
+            await mcpTabButton.click();
+            await page.waitForTimeout(300);
+          }
+        }
+      },
+    },
+
+    {
+      name: "settings-tab",
+      setup: async (page) => {
+        const menuButton = page.locator(
+          '[data-testid="mobile-sidebar-toggle-button"]',
+        );
+        if (await menuButton.isVisible()) {
+          await menuButton.click();
+          await page.waitForTimeout(300);
+
+          const settingsTabButton = page.locator(
+            '[data-testid="settings-tab-button-mobile"]',
+          );
+          if (await settingsTabButton.isVisible()) {
+            await settingsTabButton.click();
+            await page.waitForTimeout(300);
+          }
+        } else {
+          const settingsTabButton = page.locator(
+            '[data-testid="settings-tab-button"]',
+          );
+          if (await settingsTabButton.isVisible()) {
+            await settingsTabButton.click();
+            await page.waitForTimeout(300);
+          }
+        }
+      },
+    },
+  ],
+});

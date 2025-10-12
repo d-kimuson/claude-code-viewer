@@ -10,7 +10,7 @@ export const testDevices = [
     device: devices["iPhone 15"],
   },
   {
-    name: "table",
+    name: "tablet",
     device: devices["iPad Pro 11"],
   },
 ];

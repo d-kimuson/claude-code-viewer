@@ -68,7 +68,11 @@ export const ProjectPageContent = ({ projectId }: { projectId: string }) => {
             <NewChatModal
               projectId={projectId}
               trigger={
-                <Button size="lg" className="gap-2 w-full sm:w-auto">
+                <Button
+                  size="lg"
+                  className="gap-2 w-full sm:w-auto"
+                  data-testid="new-chat"
+                >
                   <PlusIcon className="w-4 h-4 sm:w-5 sm:h-5" />
                   <span className="hidden sm:inline">Start New Chat</span>
                   <span className="sm:hidden">New Chat</span>
@@ -96,6 +100,7 @@ export const ProjectPageContent = ({ projectId }: { projectId: string }) => {
                 <Button
                   variant="outline"
                   className="w-full justify-between mb-2 h-auto py-3"
+                  data-testid="expand-filter-settings-button"
                 >
                   <div className="flex items-center gap-2">
                     <SettingsIcon className="w-4 h-4" />

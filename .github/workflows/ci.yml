@@ -41,5 +41,53 @@ jobs:
       - name: Run type checking
         run: pnpm typecheck
 
+      - name: Run tests
+        run: pnpm test
+
+  e2e:
+    name: E2E Visual Regression Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.8.1
+
+      - name: Setup Node.js 20.12.0
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.12.0
+          cache: 'pnpm'
+
+      - name: Setup Git user
+        shell: bash
+        run: |
+          git config --global user.email "xxx@example.com"
+          git config --global user.name "user"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
       - name: Build project
         run: pnpm build
+
+      - name: Capture screenshots
+        run: pnpx tsx ./e2e/captureSnapshot/index.ts
+        env:
+          MAX_CONCURRENCY: 5
+
+      - name: Setup Git user
+        shell: bash
+        run: |
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+
+      - name: Commit screenshots
+        run: |
+          git add e2e/snapshots
+          git diff --staged --exit-code || (git commit -m 'ci(snapshots): update screenshots' && git push)

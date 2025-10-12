@@ -34,27 +34,36 @@ jobs:
     name: E2E Visual Regression Tests
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    if: github.event_name == 'pull_request'
 
     permissions:
+      id-token: write
       contents: write
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
-        
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
       - name: Setup Node & pnpm
         uses: ./.github/actions/setup-node
-
-      - name: Setup Git user
-        shell: bash
-        run: |
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "github-actions[bot]"
 
       - name: Install Playwright
         run: |
           sudo npx playwright install-deps
           pnpm exec playwright install
+
+      - name: Set up Git
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --local user.email "$(git --no-pager log --format=format:'%ae' -n 1)"
+          git config --local user.name "$(git --no-pager log --format=format:'%an' -n 1)"
+          git config --local url."https://oauth2:${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
+
+          git pull --rebase origin ${{ github.head_ref }}
 
       - name: Build project
         run: pnpm build
@@ -63,10 +72,12 @@ jobs:
         timeout-minutes: 3
         run: pnpm e2e
         env:
-          MAX_CONCURRENCY: 5
-          PORT: 4000
+          MAX_CONCURRENCY: 10
 
       - name: Commit screenshots
         run: |
+          set -x
+
           git add e2e/snapshots
-          git diff --staged --exit-code || (git commit -m 'ci(snapshots): update screenshots' && git push)
+          git commit -m 'ci(snapshots): update screenshots'
+          git push origin HEAD:${{ github.head_ref }}

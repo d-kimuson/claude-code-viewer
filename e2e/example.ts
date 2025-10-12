@@ -1,6 +1,6 @@
 import { resolve } from "node:path";
-import { withPlaywright } from "./utils/withPlaywright";
 import { testDevices } from "./testDevices";
+import { withPlaywright } from "./utils/withPlaywright";
 
 for (const { device, name } of testDevices) {
   await withPlaywright(

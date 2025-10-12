@@ -1,0 +1,19 @@
+name: "Setup Node & pnpm"
+description: "Install pnpm and setup Node.js with pnpm cache (fixed versions)"
+runs:
+  using: "composite"
+  steps:
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 10.8.1
+
+    - name: Setup Node.js 20.12.0
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20.12.0
+        cache: pnpm
+
+    - name: Install Dependencies
+      shell: bash
+      run: pnpm install --frozen-lockfile --ignore-scripts

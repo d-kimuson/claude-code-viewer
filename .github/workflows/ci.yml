@@ -21,19 +21,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10.8.1
-
-      - name: Setup Node.js 20.12.0
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20.12.0
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+      - name: Setup Node & pnpm
+        uses: ./.github/actions/setup-node
 
       - name: Run linting
         run: pnpm lint
@@ -46,20 +35,15 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
+    permissions:
+      contents: write
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10.8.1
-
-      - name: Setup Node.js 20.12.0
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20.12.0
-          cache: 'pnpm'
+      - name: Setup Node & pnpm
+        uses: ./.github/actions/setup-node
 
       - name: Setup Git user
         shell: bash
@@ -67,16 +51,20 @@ jobs:
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+      - name: Install Playwright
+        run: |
+          sudo npx playwright install-deps
+          pnpm exec playwright install
 
       - name: Build project
         run: pnpm build
 
       - name: Capture screenshots
-        run: pnpx tsx ./e2e/captureSnapshot/index.ts
+        timeout-minutes: 3
+        run: pnpm e2e
         env:
           MAX_CONCURRENCY: 5
+          PORT: 4000
 
       - name: Commit screenshots
         run: |

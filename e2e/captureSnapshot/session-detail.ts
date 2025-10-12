@@ -1,7 +1,8 @@
+import { projectIds } from "../config";
 import { defineCapture } from "../utils/defineCapture";
 
 export const sessionDetailCapture = defineCapture({
-  href: "projects/L2hvbWUva2FpdG8vcmVwb3MvY2xhdWRlLWNvZGUtdmlld2VyL2Rpc3Qvc3RhbmRhbG9uZS9tb2NrLWdsb2JhbC1jbGF1ZGUtZGlyL3Byb2plY3RzL3NhbXBsZS1wcm9qZWN0/sessions/fe5e1c67-53e7-4862-81ae-d0e013e3270b",
+  href: `projects/${projectIds.sampleProject}/sessions/fe5e1c67-53e7-4862-81ae-d0e013e3270b`,
   cases: [
     {
       name: "sidebar-closed",
@@ -26,33 +27,6 @@ export const sessionDetailCapture = defineCapture({
           );
           if (await sessionsTabButton.isVisible()) {
             await sessionsTabButton.click();
-            await page.waitForTimeout(300);
-          }
-        }
-      },
-    },
-
-    {
-      name: "mcp-servers-tab",
-      setup: async (page) => {
-        const menuButton = page.locator(
-          '[data-testid="mobile-sidebar-toggle-button"]',
-        );
-        if (await menuButton.isVisible()) {
-          await menuButton.click();
-          await page.waitForTimeout(300);
-
-          const mcpTabButton = page.locator(
-            '[data-testid="mcp-tab-button-mobile"]',
-          );
-          if (await mcpTabButton.isVisible()) {
-            await mcpTabButton.click();
-            await page.waitForTimeout(300);
-          }
-        } else {
-          const mcpTabButton = page.locator('[data-testid="mcp-tab-button"]');
-          if (await mcpTabButton.isVisible()) {
-            await mcpTabButton.click();
             await page.waitForTimeout(300);
           }
         }

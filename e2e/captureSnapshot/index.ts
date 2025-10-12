@@ -1,40 +1,26 @@
-import { execSync } from "node:child_process";
-import { dirname, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { homeCapture } from "./home";
+import { errorPagesCapture } from "./error-pages";
+import { projectsCapture } from "./projects";
+import { projectDetailCapture } from "./project-detail";
+import { sessionDetailCapture } from "./session-detail";
+import { TaskExecutor } from "../utils/TaskExecutor";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const executor = new TaskExecutor({
+  maxConcurrency: process.env['MAX_CONCURRENCY'] ? parseInt(process.env['MAX_CONCURRENCY']) : 10,
+});
 
-const scripts = [
-  "home.ts",
-  "projects.ts",
-  "project-detail.ts",
-  "session-detail.ts",
-  "error-pages.ts",
+const tasks = [
+  ...homeCapture.tasks,
+  ...errorPagesCapture.tasks,
+  ...projectsCapture.tasks,
+  ...projectDetailCapture.tasks,
+  ...sessionDetailCapture.tasks,
 ];
 
-async function captureAllSnapshots() {
-  console.log("🚀 Starting screenshot capture for all pages...\n");
+executor.setTasks(tasks);
 
-  for (const script of scripts) {
-    const scriptPath = resolve(__dirname, script);
-    console.log(`📸 Capturing: ${script.replace(".ts", "")}...`);
-
-    try {
-      // Execute each script using tsx
-      execSync(`npx tsx "${scriptPath}"`, {
-        stdio: "inherit",
-        cwd: resolve(__dirname, "..", ".."),
-      });
-      console.log(`✅ Completed: ${script.replace(".ts", "")}\n`);
-    } catch (error) {
-      console.error(
-        `❌ Failed: ${script.replace(".ts", "")} - ${error.message}\n`,
-      );
-    }
-  }
-
-  console.log("🎉 All screenshot captures completed!");
+try {
+  await executor.execute();
+} catch (error) {
+  console.error(error);
 }
-
-captureAllSnapshots().catch(console.error);

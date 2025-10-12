@@ -5,14 +5,14 @@ import { withPlaywright } from "./withPlaywright";
 /**
  * Take screenshots for a given URL across all test devices
  */
-export async function takeScreenshots(
+export const takeScreenshots = async (
   url: string,
   snapshotName: string,
   options?: {
     waitForSelector?: string;
     timeout?: number;
   },
-) {
+) => {
   const { waitForSelector, timeout = 5000 } = options || {};
 
   for (const { device, name } of testDevices) {
@@ -69,19 +69,19 @@ export async function takeScreenshots(
       },
     );
   }
-}
+};
 
 /**
  * Take screenshots of a specific element across all test devices
  */
-export async function takeElementScreenshots(
+export const takeElementScreenshots = async (
   url: string,
   selector: string,
   snapshotName: string,
   options?: {
     timeout?: number;
   },
-) {
+) => {
   const { timeout = 5000 } = options || {};
 
   for (const { device, name } of testDevices) {
@@ -124,4 +124,4 @@ export async function takeElementScreenshots(
       },
     );
   }
-}
+};

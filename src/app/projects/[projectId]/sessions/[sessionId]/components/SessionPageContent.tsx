@@ -99,6 +99,7 @@ export const SessionPageContent: FC<{
                 size="sm"
                 className="md:hidden flex-shrink-0"
                 onClick={() => setIsMobileSidebarOpen(true)}
+                data-testid="mobile-sidebar-toggle-button"
               >
                 <MenuIcon className="w-4 h-4" />
               </Button>

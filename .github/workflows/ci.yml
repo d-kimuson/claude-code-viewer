@@ -45,12 +45,6 @@ jobs:
       - name: Setup Node & pnpm
         uses: ./.github/actions/setup-node
 
-      - name: Setup Git user
-        shell: bash
-        run: |
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "github-actions[bot]"
-
       - name: Install Playwright
         run: |
           sudo npx playwright install-deps
@@ -63,10 +57,15 @@ jobs:
         timeout-minutes: 3
         run: pnpm e2e
         env:
-          MAX_CONCURRENCY: 5
-          PORT: 4000
+          MAX_CONCURRENCY: 10
 
       - name: Commit screenshots
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          set -x
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
           git add e2e/snapshots
-          git diff --staged --exit-code || (git commit -m 'ci(snapshots): update screenshots' && git push)
+          git commit -m 'ci(snapshots): update screenshots'
+          git push origin HEAD:refs/heads/${GITHUB_REF_NAME}

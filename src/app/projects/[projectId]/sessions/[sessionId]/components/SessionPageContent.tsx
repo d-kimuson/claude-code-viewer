@@ -12,7 +12,9 @@ import {
 import Link from "next/link";
 import type { FC } from "react";
 import { useEffect, useRef, useState } from "react";
+import { PermissionDialog } from "@/components/PermissionDialog";
 import { Button } from "@/components/ui/button";
+import { usePermissionRequests } from "@/hooks/usePermissionRequests";
 import { useTaskNotifications } from "@/hooks/useTaskNotifications";
 import { Badge } from "../../../../../../components/ui/badge";
 import { honoClient } from "../../../../../../lib/api/client";
@@ -50,6 +52,8 @@ export const SessionPageContent: FC<{
   });
 
   const { isRunningTask, isPausedTask } = useAliveTask(sessionId);
+  const { currentPermissionRequest, isDialogOpen, onPermissionResponse } =
+    usePermissionRequests();
 
   // Set up task completion notifications
   useTaskNotifications(isRunningTask);
@@ -225,6 +229,13 @@ export const SessionPageContent: FC<{
         projectId={projectId}
         isOpen={isDiffModalOpen}
         onOpenChange={setIsDiffModalOpen}
+      />
+
+      {/* Permission Dialog */}
+      <PermissionDialog
+        permissionRequest={currentPermissionRequest}
+        isOpen={isDialogOpen}
+        onResponse={onPermissionResponse}
       />
     </div>
   );

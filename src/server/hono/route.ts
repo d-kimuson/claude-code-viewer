@@ -5,7 +5,7 @@ import { zValidator } from "@hono/zod-validator";
 import { setCookie } from "hono/cookie";
 import { streamSSE } from "hono/streaming";
 import { z } from "zod";
-import { configSchema } from "../config/config";
+import { type Config, configSchema } from "../config/config";
 import { ClaudeCodeTaskController } from "../service/claude-code/ClaudeCodeTaskController";
 import type { SerializableAliveTask } from "../service/claude-code/types";
 import { adaptInternalEventToSSE } from "../service/events/adaptInternalEventToSSE";
@@ -26,7 +26,16 @@ import type { HonoAppType } from "./app";
 import { configMiddleware } from "./middleware/config.middleware";
 
 export const routes = (app: HonoAppType) => {
-  const taskController = new ClaudeCodeTaskController();
+  let taskController: ClaudeCodeTaskController | null = null;
+  const getTaskController = (config: Config) => {
+    if (!taskController) {
+      taskController = new ClaudeCodeTaskController(config);
+    } else {
+      taskController.updateConfig(config);
+    }
+    return taskController;
+  };
+
   const fileWatcher = getFileWatcher();
   const eventBus = getEventBus();
 
@@ -312,7 +321,9 @@ export const routes = (app: HonoAppType) => {
             return c.json({ error: "Project path not found" }, 400);
           }
 
-          const task = await taskController.startOrContinueTask(
+          const task = await getTaskController(
+            c.get("config"),
+          ).startOrContinueTask(
             {
               projectId,
               cwd: project.meta.projectPath,
@@ -345,7 +356,9 @@ export const routes = (app: HonoAppType) => {
             return c.json({ error: "Project path not found" }, 400);
           }
 
-          const task = await taskController.startOrContinueTask(
+          const task = await getTaskController(
+            c.get("config"),
+          ).startOrContinueTask(
             {
               projectId,
               sessionId,
@@ -364,7 +377,7 @@ export const routes = (app: HonoAppType) => {
 
       .get("/tasks/alive", async (c) => {
         return c.json({
-          aliveTasks: taskController.aliveTasks.map(
+          aliveTasks: getTaskController(c.get("config")).aliveTasks.map(
             (task): SerializableAliveTask => ({
               id: task.id,
               status: task.status,
@@ -380,8 +393,26 @@ export const routes = (app: HonoAppType) => {
         zValidator("json", z.object({ sessionId: z.string() })),
         async (c) => {
           const { sessionId } = c.req.valid("json");
-          taskController.abortTask(sessionId);
+          getTaskController(c.get("config")).abortTask(sessionId);
           return c.json({ message: "Task aborted" });
+        },
+      )
+
+      .post(
+        "/tasks/permission-response",
+        zValidator(
+          "json",
+          z.object({
+            permissionRequestId: z.string(),
+            decision: z.enum(["allow", "deny"]),
+          }),
+        ),
+        async (c) => {
+          const permissionResponse = c.req.valid("json");
+          getTaskController(c.get("config")).respondToPermissionRequest(
+            permissionResponse,
+          );
+          return c.json({ message: "Permission response received" });
         },
       )
 

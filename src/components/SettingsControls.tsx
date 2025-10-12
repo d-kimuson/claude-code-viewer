@@ -32,6 +32,7 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
 }: SettingsControlsProps) => {
   const checkboxId = useId();
   const enterKeyBehaviorId = useId();
+  const permissionModeId = useId();
   const { config, updateConfig } = useConfig();
   const queryClient = useQueryClient();
 
@@ -69,6 +70,19 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
     const newConfig = {
       ...config,
       enterKeyBehavior: value as "shift-enter-send" | "enter-send",
+    };
+    updateConfig(newConfig);
+    await onConfigChanged();
+  };
+
+  const handlePermissionModeChange = async (value: string) => {
+    const newConfig = {
+      ...config,
+      permissionMode: value as
+        | "acceptEdits"
+        | "bypassPermissions"
+        | "default"
+        | "plan",
     };
     updateConfig(newConfig);
     await onConfigChanged();
@@ -145,6 +159,41 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
         {showDescriptions && (
           <p className="text-xs text-muted-foreground mt-1">
             Choose how the Enter key behaves in message input
+          </p>
+        )}
+      </div>
+
+      <div className="space-y-2">
+        {showLabels && (
+          <label
+            htmlFor={permissionModeId}
+            className="text-sm font-medium leading-none"
+          >
+            Permission Mode
+          </label>
+        )}
+        <Select
+          value={config?.permissionMode || "default"}
+          onValueChange={handlePermissionModeChange}
+        >
+          <SelectTrigger id={permissionModeId} className="w-full">
+            <SelectValue placeholder="Select permission mode" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="default">Default (Ask permission)</SelectItem>
+            <SelectItem value="acceptEdits">
+              Accept Edits (Auto-approve file edits)
+            </SelectItem>
+            <SelectItem value="bypassPermissions">
+              Bypass Permissions (No prompts)
+            </SelectItem>
+            <SelectItem value="plan">Plan Mode (Planning only)</SelectItem>
+          </SelectContent>
+        </Select>
+        {showDescriptions && (
+          <p className="text-xs text-muted-foreground mt-1">
+            Control how Claude Code handles permission requests for file
+            operations
           </p>
         )}
       </div>

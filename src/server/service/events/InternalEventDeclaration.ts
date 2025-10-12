@@ -1,4 +1,7 @@
-import type { AliveClaudeCodeTask } from "../claude-code/types";
+import type {
+  AliveClaudeCodeTask,
+  PermissionRequest,
+} from "../claude-code/types";
 
 export type InternalEventDeclaration = {
   // biome-ignore lint/complexity/noBannedTypes: correct type
@@ -15,5 +18,9 @@ export type InternalEventDeclaration = {
 
   taskChanged: {
     aliveTasks: AliveClaudeCodeTask[];
+  };
+
+  permissionRequested: {
+    permissionRequest: PermissionRequest;
   };
 };

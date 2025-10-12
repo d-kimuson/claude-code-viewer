@@ -2,7 +2,7 @@ import { resolve } from "node:path";
 import type { Page } from "playwright";
 import { testDevices } from "../testDevices";
 import { withPlaywright } from "../utils/withPlaywright";
-import { Task } from "./TaskExecutor";
+import type { Task } from "./TaskExecutor";
 
 type CaptureCase = {
   name: string;

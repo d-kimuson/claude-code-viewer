@@ -1,12 +1,16 @@
-import { homeCapture } from "./home";
-import { errorPagesCapture } from "./error-pages";
-import { projectsCapture } from "./projects";
-import { projectDetailCapture } from "./project-detail";
-import { sessionDetailCapture } from "./session-detail";
 import { TaskExecutor } from "../utils/TaskExecutor";
+import { errorPagesCapture } from "./error-pages";
+import { homeCapture } from "./home";
+import { projectDetailCapture } from "./project-detail";
+import { projectsCapture } from "./projects";
+import { sessionDetailCapture } from "./session-detail";
 
 const executor = new TaskExecutor({
-  maxConcurrency: process.env['MAX_CONCURRENCY'] ? parseInt(process.env['MAX_CONCURRENCY']) : 10,
+  // biome-ignore lint/complexity/useLiteralKeys: env var
+  maxConcurrency: process.env["MAX_CONCURRENCY"]
+    ? // biome-ignore lint/complexity/useLiteralKeys: env var
+      parseInt(process.env["MAX_CONCURRENCY"], 10)
+    : 10,
 });
 
 const tasks = [

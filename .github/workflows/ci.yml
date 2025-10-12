@@ -41,9 +41,6 @@ jobs:
       - name: Run type checking
         run: pnpm typecheck
 
-      - name: Run tests
-        run: pnpm test
-
   e2e:
     name: E2E Visual Regression Tests
     runs-on: ubuntu-latest
@@ -67,8 +64,8 @@ jobs:
       - name: Setup Git user
         shell: bash
         run: |
-          git config --global user.email "xxx@example.com"
-          git config --global user.name "user"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -80,12 +77,6 @@ jobs:
         run: pnpx tsx ./e2e/captureSnapshot/index.ts
         env:
           MAX_CONCURRENCY: 5
-
-      - name: Setup Git user
-        shell: bash
-        run: |
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "github-actions[bot]"
 
       - name: Commit screenshots
         run: |

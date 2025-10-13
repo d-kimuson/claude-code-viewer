@@ -21,6 +21,7 @@ export type SSEEventDeclaration = {
 
   taskChanged: {
     aliveTasks: AliveClaudeCodeTask[];
+    changed: AliveClaudeCodeTask;
   };
 
   permission_requested: {

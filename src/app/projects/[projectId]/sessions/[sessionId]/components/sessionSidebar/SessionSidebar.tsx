@@ -103,6 +103,7 @@ export const SessionSidebar: FC<{
                 : "text-sidebar-foreground/70",
             )}
             title="Sessions"
+            data-testid="sessions-tab-button"
           >
             <MessageSquareIcon className="w-4 h-4" />
           </button>
@@ -118,6 +119,7 @@ export const SessionSidebar: FC<{
                 : "text-sidebar-foreground/70",
             )}
             title="MCP Servers"
+            data-testid="mcp-tab-button"
           >
             <PlugIcon className="w-4 h-4" />
           </button>
@@ -133,6 +135,7 @@ export const SessionSidebar: FC<{
                 : "text-sidebar-foreground/70",
             )}
             title="Settings"
+            data-testid="settings-tab-button"
           >
             <SettingsIcon className="w-4 h-4" />
           </button>

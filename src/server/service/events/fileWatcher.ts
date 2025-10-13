@@ -1,6 +1,6 @@
 import { type FSWatcher, watch } from "node:fs";
 import z from "zod";
-import { claudeProjectPath } from "../paths";
+import { claudeProjectsDirPath } from "../paths";
 import { getEventBus, type IEventBus } from "./EventBus";
 
 const fileRegExp = /(?<projectId>.*?)\/(?<sessionId>.*?)\.jsonl/;
@@ -24,10 +24,10 @@ export class FileWatcherService {
     this.isWatching = true;
 
     try {
-      console.log("Starting file watcher on:", claudeProjectPath);
+      console.log("Starting file watcher on:", claudeProjectsDirPath);
       // メインプロジェクトディレクトリを監視
       this.watcher = watch(
-        claudeProjectPath,
+        claudeProjectsDirPath,
         { persistent: false, recursive: true },
         (eventType, filename) => {
           if (!filename) return;

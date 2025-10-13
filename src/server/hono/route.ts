@@ -1,5 +1,4 @@
 import { readdir } from "node:fs/promises";
-import { homedir } from "node:os";
 import { resolve } from "node:path";
 import { zValidator } from "@hono/zod-validator";
 import { setCookie } from "hono/cookie";
@@ -18,6 +17,7 @@ import { getBranches } from "../service/git/getBranches";
 import { getCommits } from "../service/git/getCommits";
 import { getDiff } from "../service/git/getDiff";
 import { getMcpList } from "../service/mcp/getMcpList";
+import { claudeCommandsDirPath } from "../service/paths";
 import { getProject } from "../service/project/getProject";
 import { getProjects } from "../service/project/getProjects";
 import { getSession } from "../service/session/getSession";
@@ -39,11 +39,14 @@ export const routes = (app: HonoAppType) => {
   const fileWatcher = getFileWatcher();
   const eventBus = getEventBus();
 
-  fileWatcher.startWatching();
+  // biome-ignore lint/complexity/useLiteralKeys: env var
+  if (process.env["NEXT_PHASE"] !== "phase-production-build") {
+    fileWatcher.startWatching();
 
-  setInterval(() => {
-    eventBus.emit("heartbeat", {});
-  }, 10 * 1000);
+    setInterval(() => {
+      eventBus.emit("heartbeat", {});
+    }, 10 * 1000);
+  }
 
   return (
     app
@@ -194,7 +197,7 @@ export const routes = (app: HonoAppType) => {
         const { project } = await getProject(projectId);
 
         const [globalCommands, projectCommands] = await Promise.allSettled([
-          readdir(resolve(homedir(), ".claude", "commands"), {
+          readdir(claudeCommandsDirPath, {
             withFileTypes: true,
           }).then((dirents) =>
             dirents
@@ -444,6 +447,7 @@ export const routes = (app: HonoAppType) => {
             ) => {
               stream.writeSSE("taskChanged", {
                 aliveTasks: event.aliveTasks,
+                changed: event.changed,
               });
             };
 
@@ -451,6 +455,7 @@ export const routes = (app: HonoAppType) => {
             eventBus.on("sessionChanged", onSessionChanged);
             eventBus.on("taskChanged", onTaskChanged);
             const { connectionPromise } = adaptInternalEventToSSE(rawStream, {
+              timeout: 5 /* min */ * 60 /* sec */ * 1000,
               cleanUp: () => {
                 eventBus.off("sessionListChanged", onSessionListChanged);
                 eventBus.off("sessionChanged", onSessionChanged);

@@ -1,12 +1,15 @@
 import type { SSEEventMap } from "../../types/sse";
 
-export const callSSE = () => {
+export const callSSE = (options?: { onOpen?: (event: Event) => void }) => {
+  const { onOpen } = options ?? {};
+
   const eventSource = new EventSource(
     new URL("/api/sse", window.location.origin).href,
   );
 
   const handleOnOpen = (event: Event) => {
     console.log("SSE connection opened", event);
+    onOpen?.(event);
   };
 
   eventSource.onopen = handleOnOpen;

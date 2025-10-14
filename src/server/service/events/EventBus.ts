@@ -10,7 +10,7 @@ class EventBus {
 
   public emit<EventName extends keyof InternalEventDeclaration>(
     event: EventName,
-    data: InternalEventDeclaration[EventName],
+    data: InternalEventDeclaration[EventName]
   ): void {
     this.emitter.emit(event, {
       ...data,
@@ -20,8 +20,8 @@ class EventBus {
   public on<EventName extends keyof InternalEventDeclaration>(
     event: EventName,
     listener: (
-      data: InternalEventDeclaration[EventName],
-    ) => void | Promise<void>,
+      data: InternalEventDeclaration[EventName]
+    ) => void | Promise<void>
   ): void {
     this.emitter.on(event, listener);
   }
@@ -29,8 +29,8 @@ class EventBus {
   public off<EventName extends keyof InternalEventDeclaration>(
     event: EventName,
     listener: (
-      data: InternalEventDeclaration[EventName],
-    ) => void | Promise<void>,
+      data: InternalEventDeclaration[EventName]
+    ) => void | Promise<void>
   ): void {
     this.emitter.off(event, listener);
   }

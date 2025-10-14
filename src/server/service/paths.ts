@@ -1,8 +1,8 @@
 import { homedir } from "node:os";
 import { resolve } from "node:path";
+import { env } from "../lib/env";
 
-// biome-ignore lint/complexity/useLiteralKeys: typescript restriction
-const GLOBAL_CLAUDE_DIR = process.env["GLOBAL_CLAUDE_DIR"];
+const GLOBAL_CLAUDE_DIR = env.get("GLOBAL_CLAUDE_DIR");
 
 export const globalClaudeDirectoryPath =
   GLOBAL_CLAUDE_DIR === undefined

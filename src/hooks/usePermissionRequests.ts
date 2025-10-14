@@ -1,11 +1,13 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import { toast } from "sonner";
 import { useServerEventListener } from "@/lib/sse/hook/useServerEventListener";
 import type {
   PermissionRequest,
   PermissionResponse,
 } from "@/types/permissions";
+import { honoClient } from "../lib/api/client";
 
 export const usePermissionRequests = () => {
   const [currentPermissionRequest, setCurrentPermissionRequest] =
@@ -23,12 +25,10 @@ export const usePermissionRequests = () => {
   const handlePermissionResponse = useCallback(
     async (response: PermissionResponse) => {
       try {
-        const apiResponse = await fetch("/api/tasks/permission-response", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(response),
+        const apiResponse = await honoClient.api.tasks[
+          "permission-response"
+        ].$post({
+          json: response,
         });
 
         if (!apiResponse.ok) {
@@ -40,7 +40,7 @@ export const usePermissionRequests = () => {
         setCurrentPermissionRequest(null);
       } catch (error) {
         console.error("Error sending permission response:", error);
-        // TODO: Show error toast to user
+        toast.error("Failed to send permission response");
       }
     },
     [],

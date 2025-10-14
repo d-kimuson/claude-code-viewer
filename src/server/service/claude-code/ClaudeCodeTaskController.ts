@@ -46,7 +46,7 @@ export class ClaudeCodeTaskController {
     return async (
       toolName: string,
       toolInput: Record<string, unknown>,
-      _options: { signal: AbortSignal }
+      _options: { signal: AbortSignal },
     ) => {
       // If not in default mode, use the configured permission mode behavior
       if (this.config.permissionMode !== "default") {
@@ -81,7 +81,7 @@ export class ClaudeCodeTaskController {
       // Store the request
       this.pendingPermissionRequests.set(
         permissionRequest.id,
-        permissionRequest
+        permissionRequest,
       );
 
       // Emit event to notify UI
@@ -92,7 +92,7 @@ export class ClaudeCodeTaskController {
       // Wait for user response with timeout
       const response = await this.waitForPermissionResponse(
         permissionRequest.id,
-        60000
+        60000,
       ); // 60 second timeout
 
       if (response) {
@@ -120,7 +120,7 @@ export class ClaudeCodeTaskController {
 
   private async waitForPermissionResponse(
     permissionRequestId: string,
-    timeoutMs: number
+    timeoutMs: number,
   ): Promise<PermissionResponse | null> {
     return new Promise((resolve) => {
       const checkResponse = () => {
@@ -153,7 +153,7 @@ export class ClaudeCodeTaskController {
 
   public get aliveTasks() {
     return this.tasks.filter(
-      (task) => task.status === "running" || task.status === "paused"
+      (task) => task.status === "running" || task.status === "paused",
     );
   }
 
@@ -163,10 +163,10 @@ export class ClaudeCodeTaskController {
       projectId: string;
       sessionId?: string;
     },
-    message: string
+    message: string,
   ): Promise<AliveClaudeCodeTask> {
     const existingTask = this.aliveTasks.find(
-      (task) => task.sessionId === currentSession.sessionId
+      (task) => task.sessionId === currentSession.sessionId,
     );
 
     if (existingTask) {
@@ -190,7 +190,7 @@ export class ClaudeCodeTaskController {
       projectId: string;
       sessionId?: string;
     },
-    message: string
+    message: string,
   ) {
     const {
       generateMessages,
@@ -221,7 +221,7 @@ export class ClaudeCodeTaskController {
       (resolve, reject) => {
         aliveTaskResolve = resolve;
         aliveTaskReject = reject;
-      }
+      },
     );
 
     let resolved = false;
@@ -240,10 +240,10 @@ export class ClaudeCodeTaskController {
             permissionMode: this.config.permissionMode,
             canUseTool: this.createCanUseToolCallback(
               task.id,
-              task.baseSessionId
+              task.baseSessionId,
             ),
             abortController: abortController,
-          }
+          },
         )) {
           currentTask ??= this.aliveTasks.find((t) => t.id === task.id);
 
@@ -257,13 +257,9 @@ export class ClaudeCodeTaskController {
           // 初回の system message だとまだ history ファイルが作成されていないので
           if (message.type === "user" || message.type === "assistant") {
             // 本来は message.uuid の存在チェックをしたいが、古いバージョンでは存在しないことがある
-            console.log(
-              "[DEBUG startTask] 9. Processing user/assistant message"
-            );
-
             if (!resolved) {
               console.log(
-                "[DEBUG startTask] 10. Resolving task for first time"
+                "[DEBUG startTask] 10. Resolving task for first time",
               );
 
               const runningTask: RunningClaudeCodeTask = {
@@ -283,12 +279,12 @@ export class ClaudeCodeTaskController {
               };
               this.tasks.push(runningTask);
               console.log(
-                "[DEBUG startTask] 11. About to call aliveTaskResolve"
+                "[DEBUG startTask] 11. About to call aliveTaskResolve",
               );
               aliveTaskResolve(runningTask);
               resolved = true;
               console.log(
-                "[DEBUG startTask] 12. aliveTaskResolve called, resolved=true"
+                "[DEBUG startTask] 12. aliveTaskResolve called, resolved=true",
               );
             }
 
@@ -298,13 +294,10 @@ export class ClaudeCodeTaskController {
           await Promise.all(
             task.onMessageHandlers.map(async (onMessageHandler) => {
               await onMessageHandler(message);
-            })
+            }),
           );
 
           if (currentTask !== undefined && message.type === "result") {
-            console.log(
-              "[DEBUG startTask] 15. Result message received, pausing task"
-            );
             this.upsertExistingTask({
               ...currentTask,
               status: "paused",
@@ -318,12 +311,12 @@ export class ClaudeCodeTaskController {
 
         if (updatedTask === undefined) {
           console.log(
-            "[DEBUG startTask] 17. ERROR: Task not found in aliveTasks"
+            "[DEBUG startTask] 17. ERROR: Task not found in aliveTasks",
           );
           const error = new Error(
             `illegal state: task is not running, task: ${JSON.stringify(
-              updatedTask
-            )}`
+              updatedTask,
+            )}`,
           );
           aliveTaskReject(error);
           throw error;
@@ -336,7 +329,7 @@ export class ClaudeCodeTaskController {
       } catch (error) {
         if (!resolved) {
           console.log(
-            "[DEBUG startTask] 20. Rejecting task (not yet resolved)"
+            "[DEBUG startTask] 20. Rejecting task (not yet resolved)",
           );
           aliveTaskReject(error);
           resolved = true;

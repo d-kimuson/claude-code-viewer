@@ -167,7 +167,7 @@ export const routes = (app: HonoAppType) => {
           "query",
           z.object({
             basePath: z.string().optional().default("/"),
-          })
+          }),
         ),
         async (c) => {
           const { projectId } = c.req.param();
@@ -182,14 +182,14 @@ export const routes = (app: HonoAppType) => {
           try {
             const result = await getFileCompletion(
               project.meta.projectPath,
-              basePath
+              basePath,
             );
             return c.json(result);
           } catch (error) {
             console.error("File completion error:", error);
             return c.json({ error: "Failed to get file completion" }, 500);
           }
-        }
+        },
       )
 
       .get("/projects/:projectId/claude-commands", async (c) => {
@@ -202,18 +202,18 @@ export const routes = (app: HonoAppType) => {
           }).then((dirents) =>
             dirents
               .filter((d) => d.isFile() && d.name.endsWith(".md"))
-              .map((d) => d.name.replace(/\.md$/, ""))
+              .map((d) => d.name.replace(/\.md$/, "")),
           ),
           project.meta.projectPath !== null
             ? readdir(
                 resolve(project.meta.projectPath, ".claude", "commands"),
                 {
                   withFileTypes: true,
-                }
+                },
               ).then((dirents) =>
                 dirents
                   .filter((d) => d.isFile() && d.name.endsWith(".md"))
-                  .map((d) => d.name.replace(/\.md$/, ""))
+                  .map((d) => d.name.replace(/\.md$/, "")),
               )
             : [],
         ]);
@@ -274,7 +274,7 @@ export const routes = (app: HonoAppType) => {
           z.object({
             fromRef: z.string().min(1, "fromRef is required"),
             toRef: z.string().min(1, "toRef is required"),
-          })
+          }),
         ),
         async (c) => {
           const { projectId } = c.req.param();
@@ -289,7 +289,7 @@ export const routes = (app: HonoAppType) => {
             const result = await getDiff(
               project.meta.projectPath,
               fromRef,
-              toRef
+              toRef,
             );
             return c.json(result);
           } catch (error) {
@@ -299,7 +299,7 @@ export const routes = (app: HonoAppType) => {
             }
             return c.json({ error: "Failed to get diff" }, 500);
           }
-        }
+        },
       )
 
       .get("/mcp/list", async (c) => {
@@ -313,7 +313,7 @@ export const routes = (app: HonoAppType) => {
           "json",
           z.object({
             message: z.string(),
-          })
+          }),
         ),
         async (c) => {
           const { projectId } = c.req.param();
@@ -325,13 +325,13 @@ export const routes = (app: HonoAppType) => {
           }
 
           const task = await getTaskController(
-            c.get("config")
+            c.get("config"),
           ).startOrContinueTask(
             {
               projectId,
               cwd: project.meta.projectPath,
             },
-            message
+            message,
           );
 
           return c.json({
@@ -339,7 +339,7 @@ export const routes = (app: HonoAppType) => {
             sessionId: task.sessionId,
             userMessageId: task.userMessageId,
           });
-        }
+        },
       )
 
       .post(
@@ -348,7 +348,7 @@ export const routes = (app: HonoAppType) => {
           "json",
           z.object({
             resumeMessage: z.string(),
-          })
+          }),
         ),
         async (c) => {
           const { projectId, sessionId } = c.req.param();
@@ -360,14 +360,14 @@ export const routes = (app: HonoAppType) => {
           }
 
           const task = await getTaskController(
-            c.get("config")
+            c.get("config"),
           ).startOrContinueTask(
             {
               projectId,
               sessionId,
               cwd: project.meta.projectPath,
             },
-            resumeMessage
+            resumeMessage,
           );
 
           return c.json({
@@ -375,7 +375,7 @@ export const routes = (app: HonoAppType) => {
             sessionId: task.sessionId,
             userMessageId: task.userMessageId,
           });
-        }
+        },
       )
 
       .get("/tasks/alive", async (c) => {
@@ -386,7 +386,7 @@ export const routes = (app: HonoAppType) => {
               status: task.status,
               sessionId: task.sessionId,
               userMessageId: task.userMessageId,
-            })
+            }),
           ),
         });
       })
@@ -398,7 +398,7 @@ export const routes = (app: HonoAppType) => {
           const { sessionId } = c.req.valid("json");
           getTaskController(c.get("config")).abortTask(sessionId);
           return c.json({ message: "Task aborted" });
-        }
+        },
       )
 
       .post(
@@ -408,15 +408,15 @@ export const routes = (app: HonoAppType) => {
           z.object({
             permissionRequestId: z.string(),
             decision: z.enum(["allow", "deny"]),
-          })
+          }),
         ),
         async (c) => {
           const permissionResponse = c.req.valid("json");
           getTaskController(c.get("config")).respondToPermissionRequest(
-            permissionResponse
+            permissionResponse,
           );
           return c.json({ message: "Permission response received" });
-        }
+        },
       )
 
       .get("/sse", async (c) => {
@@ -426,7 +426,7 @@ export const routes = (app: HonoAppType) => {
             const stream = writeTypeSafeSSE(rawStream);
 
             const onSessionListChanged = (
-              event: InternalEventDeclaration["sessionListChanged"]
+              event: InternalEventDeclaration["sessionListChanged"],
             ) => {
               stream.writeSSE("sessionListChanged", {
                 projectId: event.projectId,
@@ -434,7 +434,7 @@ export const routes = (app: HonoAppType) => {
             };
 
             const onSessionChanged = (
-              event: InternalEventDeclaration["sessionChanged"]
+              event: InternalEventDeclaration["sessionChanged"],
             ) => {
               stream.writeSSE("sessionChanged", {
                 projectId: event.projectId,
@@ -443,7 +443,7 @@ export const routes = (app: HonoAppType) => {
             };
 
             const onTaskChanged = (
-              event: InternalEventDeclaration["taskChanged"]
+              event: InternalEventDeclaration["taskChanged"],
             ) => {
               stream.writeSSE("taskChanged", {
                 aliveTasks: event.aliveTasks,
@@ -467,7 +467,7 @@ export const routes = (app: HonoAppType) => {
           },
           async (err) => {
             console.error("Streaming error:", err);
-          }
+          },
         );
       })
   );

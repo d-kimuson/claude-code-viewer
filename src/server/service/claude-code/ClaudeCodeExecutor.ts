@@ -19,7 +19,7 @@ export class ClaudeCodeExecutor {
         ? resolve(executablePath)
         : execSync("which claude", {}).toString().trim();
     this.claudeCodeVersion = ClaudeCodeVersion.fromCLIString(
-      execSync(`${this.pathToClaudeCodeExecutable} --version`, {}).toString()
+      execSync(`${this.pathToClaudeCodeExecutable} --version`, {}).toString(),
     );
   }
 
@@ -27,11 +27,11 @@ export class ClaudeCodeExecutor {
     return {
       enableToolApproval:
         this.claudeCodeVersion?.greaterThanOrEqual(
-          new ClaudeCodeVersion({ major: 1, minor: 0, patch: 82 })
+          new ClaudeCodeVersion({ major: 1, minor: 0, patch: 82 }),
         ) ?? false,
       extractUuidFromSDKMessage:
         this.claudeCodeVersion?.greaterThanOrEqual(
-          new ClaudeCodeVersion({ major: 1, minor: 0, patch: 86 })
+          new ClaudeCodeVersion({ major: 1, minor: 0, patch: 86 }),
         ) ?? false,
     };
   }

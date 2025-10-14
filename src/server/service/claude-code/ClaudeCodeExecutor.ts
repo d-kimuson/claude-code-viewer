@@ -23,13 +23,17 @@ export class ClaudeCodeExecutor {
     );
   }
 
-  public get features() {
+  public get version() {
+    return this.claudeCodeVersion?.version;
+  }
+
+  public get availableFeatures() {
     return {
-      enableToolApproval:
+      canUseTool:
         this.claudeCodeVersion?.greaterThanOrEqual(
           new ClaudeCodeVersion({ major: 1, minor: 0, patch: 82 }),
         ) ?? false,
-      extractUuidFromSDKMessage:
+      uuidOnSDKMessage:
         this.claudeCodeVersion?.greaterThanOrEqual(
           new ClaudeCodeVersion({ major: 1, minor: 0, patch: 86 }),
         ) ?? false,
@@ -44,7 +48,7 @@ export class ClaudeCodeExecutor {
       options: {
         pathToClaudeCodeExecutable: this.pathToClaudeCodeExecutable,
         ...baseOptions,
-        ...(this.features.enableToolApproval ? { canUseTool } : {}),
+        ...(this.availableFeatures.canUseTool ? { canUseTool } : {}),
       },
     });
   }

@@ -3,15 +3,15 @@ import { readdir, readFile } from "node:fs/promises";
 import { basename, resolve } from "node:path";
 import { z } from "zod";
 import { FileCacheStorage } from "../../lib/storage/FileCacheStorage";
+import { InMemoryCacheStorage } from "../../lib/storage/InMemoryCacheStorage";
 import { parseJsonl } from "../parseJsonl";
 import type { ProjectMeta } from "../types";
 import { decodeProjectId } from "./id";
-import { InMemoryCacheStorage } from "../../lib/storage/InMemoryCacheStorage";
 
 class ProjectMetaStorage {
   private projectPathCache = FileCacheStorage.load(
     "project-path-cache",
-    z.string().nullable()
+    z.string().nullable(),
   );
   private projectMetaCache = new InMemoryCacheStorage<ProjectMeta>();
 
@@ -31,7 +31,7 @@ class ProjectMetaStorage {
           ({
             fullPath: resolve(claudeProjectPath, d.name),
             stats: statSync(resolve(claudeProjectPath, d.name)),
-          } as const)
+          }) as const,
       )
       .sort((a, b) => {
         return a.stats.mtime.getTime() - b.stats.mtime.getTime();
@@ -70,7 +70,7 @@ class ProjectMetaStorage {
   }
 
   private async extractProjectPathFromJsonl(
-    filePath: string
+    filePath: string,
   ): Promise<string | null> {
     const cached = this.projectPathCache.get(filePath);
     if (cached !== undefined) {

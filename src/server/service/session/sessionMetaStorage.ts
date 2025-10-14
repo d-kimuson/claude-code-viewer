@@ -1,16 +1,15 @@
 import { statSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { FileCacheStorage } from "../../lib/storage/FileCacheStorage";
+import { InMemoryCacheStorage } from "../../lib/storage/InMemoryCacheStorage";
 import {
   type ParsedCommand,
   parseCommandXml,
   parsedCommandSchema,
 } from "../parseCommandXml";
 import { parseJsonl } from "../parseJsonl";
-import { sessionMetaSchema } from "../schema";
 import type { SessionMeta } from "../types";
 import { decodeSessionId } from "./id";
-import { InMemoryCacheStorage } from "../../lib/storage/InMemoryCacheStorage";
 
 const ignoreCommands = [
   "/clear",
@@ -24,13 +23,13 @@ const ignoreCommands = [
 class SessionMetaStorage {
   private firstCommandCache = FileCacheStorage.load(
     "first-command-cache",
-    parsedCommandSchema
+    parsedCommandSchema,
   );
   private sessionMetaCache = new InMemoryCacheStorage<SessionMeta>();
 
   public async getSessionMeta(
     projectId: string,
-    sessionId: string
+    sessionId: string,
   ): Promise<SessionMeta> {
     const cached = this.sessionMetaCache.get(sessionId);
     if (cached !== undefined) {
@@ -60,7 +59,7 @@ class SessionMetaStorage {
 
   private getFirstCommand = (
     jsonlFilePath: string,
-    lines: string[]
+    lines: string[],
   ): ParsedCommand | null => {
     const cached = this.firstCommandCache.get(jsonlFilePath);
     if (cached !== undefined) {
@@ -80,14 +79,14 @@ class SessionMetaStorage {
         conversation === null
           ? null
           : typeof conversation.message.content === "string"
-          ? conversation.message.content
-          : (() => {
-              const firstContent = conversation.message.content.at(0);
-              if (firstContent === undefined) return null;
-              if (typeof firstContent === "string") return firstContent;
-              if (firstContent.type === "text") return firstContent.text;
-              return null;
-            })();
+            ? conversation.message.content
+            : (() => {
+                const firstContent = conversation.message.content.at(0);
+                if (firstContent === undefined) return null;
+                if (typeof firstContent === "string") return firstContent;
+                if (firstContent.type === "text") return firstContent.text;
+                return null;
+              })();
 
       if (firstUserText === null) {
         continue;

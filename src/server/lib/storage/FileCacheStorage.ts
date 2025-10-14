@@ -13,7 +13,7 @@ export class FileCacheStorage<const T> {
 
   public static load<const LoadSchema>(
     key: string,
-    schema: z.ZodType<LoadSchema>
+    schema: z.ZodType<LoadSchema>,
   ) {
     const instance = new FileCacheStorage<LoadSchema>(key);
 

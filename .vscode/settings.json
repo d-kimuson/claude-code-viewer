@@ -7,7 +7,27 @@
   "biome.enabled": true,
   // autofix
   "editor.formatOnSave": false,
-  "[typescript][typescriptreact][javascript][javascriptreact][json][jsonc][json][yaml]": {
+  "[typescript]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[typescriptreact]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[javascript]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[javascriptreact]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[json]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[jsonc]": {
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "biomejs.biome"
   },

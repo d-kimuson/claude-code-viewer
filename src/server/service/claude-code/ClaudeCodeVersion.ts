@@ -43,6 +43,10 @@ export class ClaudeCodeVersion {
     return this.version.patch;
   }
 
+  public toString() {
+    return `${this.major}.${this.minor}.${this.patch}`;
+  }
+
   public equals(other: ClaudeCodeVersion) {
     return (
       this.version.major === other.version.major &&

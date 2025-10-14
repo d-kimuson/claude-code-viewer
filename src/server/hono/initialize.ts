@@ -27,13 +27,13 @@ export const initialize = async (deps: {
 
     console.log("Initializing sessions cache");
     const results = await Promise.all(
-      projects.map((project) => deps.sessionRepository.getSessions(project.id))
+      projects.map((project) => deps.sessionRepository.getSessions(project.id)),
     );
     console.log(
       `${results.reduce(
         (s, { sessions }) => s + sessions.length,
-        0
-      )} sessions cache initialized`
+        0,
+      )} sessions cache initialized`,
     );
   } catch {
     // do nothing

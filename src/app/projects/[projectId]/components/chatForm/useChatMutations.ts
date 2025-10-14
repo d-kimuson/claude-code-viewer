@@ -32,13 +32,7 @@ export const useNewChatMutation = (
     },
     onSuccess: async (response) => {
       onSuccess?.();
-      router.push(
-        `/projects/${projectId}/sessions/${response.sessionId}` +
-          response.userMessageId !==
-          undefined
-          ? `#message-${response.userMessageId}`
-          : "",
-      );
+      router.push(`/projects/${projectId}/sessions/${response.sessionId}`);
     },
   });
 };
@@ -70,9 +64,7 @@ export const useResumeChatMutation = (projectId: string, sessionId: string) => {
     },
     onSuccess: async (response) => {
       if (sessionId !== response.sessionId) {
-        router.push(
-          `/projects/${projectId}/sessions/${response.sessionId}#message-${response.userMessageId}`,
-        );
+        router.push(`/projects/${projectId}/sessions/${response.sessionId}`);
       }
     },
   });

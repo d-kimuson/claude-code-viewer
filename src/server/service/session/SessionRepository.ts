@@ -1,9 +1,11 @@
+import { existsSync } from "node:fs";
 import { readdir, readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { parseJsonl } from "../parseJsonl";
 import { decodeProjectId } from "../project/id";
 import type { Session, SessionDetail } from "../types";
 import { decodeSessionId, encodeSessionId } from "./id";
+import { predictSessionsDatabase } from "./PredictSessionsDatabase";
 import { sessionMetaStorage } from "./sessionMetaStorage";
 
 const getTime = (date: string | null) => {
@@ -19,6 +21,17 @@ export class SessionRepository {
     session: SessionDetail;
   }> {
     const sessionPath = decodeSessionId(projectId, sessionId);
+    if (!existsSync(sessionPath)) {
+      const predictSession =
+        predictSessionsDatabase.getPredictSession(sessionId);
+      if (predictSession) {
+        return {
+          session: predictSession,
+        };
+      }
+
+      throw new Error("Session not found");
+    }
     const content = await readFile(sessionPath, "utf-8");
 
     const conversations = parseJsonl(content);
@@ -53,9 +66,16 @@ export class SessionRepository {
             ),
           })),
       );
+      const sessionMap = new Map<string, Session>(
+        sessions.map((session) => [session.id, session]),
+      );
+
+      const predictSessions = predictSessionsDatabase
+        .getPredictSessions(projectId)
+        .filter((session) => !sessionMap.has(session.id));
 
       return {
-        sessions: sessions.sort((a, b) => {
+        sessions: [...predictSessions, ...sessions].sort((a, b) => {
           return (
             getTime(b.meta.lastModifiedAt) - getTime(a.meta.lastModifiedAt)
           );

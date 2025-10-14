@@ -1,8 +1,6 @@
 export class InMemoryCacheStorage<const T> {
   private storage = new Map<string, T>();
 
-  public constructor() {}
-
   public get(key: string) {
     return this.storage.get(key);
   }

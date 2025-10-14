@@ -337,7 +337,6 @@ export const routes = async (app: HonoAppType) => {
           return c.json({
             taskId: task.id,
             sessionId: task.sessionId,
-            userMessageId: task.userMessageId,
           });
         },
       )
@@ -373,7 +372,6 @@ export const routes = async (app: HonoAppType) => {
           return c.json({
             taskId: task.id,
             sessionId: task.sessionId,
-            userMessageId: task.userMessageId,
           });
         },
       )
@@ -385,7 +383,6 @@ export const routes = async (app: HonoAppType) => {
               id: task.id,
               status: task.status,
               sessionId: task.sessionId,
-              userMessageId: task.userMessageId,
             }),
           ),
         });

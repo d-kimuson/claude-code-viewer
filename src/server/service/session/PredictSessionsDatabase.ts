@@ -7,19 +7,19 @@ import type { Session, SessionDetail } from "../types";
 class PredictSessionsDatabase {
   private storage = new Map<string, SessionDetail>();
 
-  private get allPredictSessions() {
-    return Array.from(this.storage.values());
-  }
-
   public getPredictSessions(projectId: string): Session[] {
-    return this.allPredictSessions.filter(
+    return Array.from(this.storage.values()).filter(
       ({ jsonlFilePath }) =>
         encodeProjectIdFromSessionFilePath(jsonlFilePath) === projectId,
     );
   }
 
-  public getPredictSession(sessionId: string): SessionDetail | null {
-    return this.storage.get(sessionId) ?? null;
+  public getPredictSession(sessionId: string): SessionDetail {
+    const session = this.storage.get(sessionId);
+    if (!session) {
+      throw new Error("Session not found");
+    }
+    return session;
   }
 
   public createPredictSession(session: SessionDetail) {

@@ -1,4 +1,4 @@
-import { existsSync, statSync } from "node:fs";
+import { existsSync } from "node:fs";
 import { readdir, readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { parseJsonl } from "../parseJsonl";
@@ -19,6 +19,15 @@ export class SessionRepository {
     if (!existsSync(sessionPath)) {
       const predictSession =
         predictSessionsDatabase.getPredictSession(sessionId);
+      if (predictSession) {
+        return {
+          session: predictSession,
+        };
+      }
+
+      throw new Error("Session not found");
+    }
+    const content = await readFile(sessionPath, "utf-8");
 
       if (predictSession !== null) {
         return {
@@ -78,6 +87,13 @@ export class SessionRepository {
           (a, b) => b.lastModifiedAt.getTime() - a.lastModifiedAt.getTime(),
         ),
       );
+      const sessionMap = new Map<string, Session>(
+        sessions.map((session) => [session.id, session]),
+      );
+
+      const predictSessions = predictSessionsDatabase
+        .getPredictSessions(projectId)
+        .filter((session) => !sessionMap.has(session.id));
 
       const sessionMap = new Map(
         sessions.map((session) => [session.id, session] as const),
@@ -114,22 +130,11 @@ export class SessionRepository {
         });
 
       return {
-        sessions: [
-          ...predictSessions,
-          ...(await Promise.all(
-            sessions
-              .slice(0, Math.min(maxCount, sessions.length))
-              .map(async (item) => {
-                return {
-                  ...item,
-                  meta: await sessionMetaStorage.getSessionMeta(
-                    projectId,
-                    item.id,
-                  ),
-                };
-              }),
-          )),
-        ],
+        sessions: [...predictSessions, ...sessions].sort((a, b) => {
+          return (
+            getTime(b.meta.lastModifiedAt) - getTime(a.meta.lastModifiedAt)
+          );
+        }),
       };
     } catch (error) {
       console.warn(`Failed to read sessions for project ${projectId}:`, error);

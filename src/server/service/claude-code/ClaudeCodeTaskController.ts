@@ -1,7 +1,8 @@
 import prexit from "prexit";
 import { ulid } from "ulid";
 import type { Config } from "../../config/config";
-import { getEventBus, type IEventBus } from "../events/EventBus";
+import { eventBus } from "../events/EventBus";
+import { predictSessionsDatabase } from "../session/PredictSessionsDatabase";
 import { ClaudeCodeExecutor } from "./ClaudeCodeExecutor";
 import { createMessageGenerator } from "./createMessageGenerator";
 import type {
@@ -169,9 +170,20 @@ export class ClaudeCodeTaskController {
     );
 
     if (existingTask) {
+      console.log(
+        `Alive task for session(id=${currentSession.sessionId}) continued.`,
+      );
       const result = await this.continueTask(existingTask, message);
       return result;
     } else {
+      if (currentSession.sessionId === undefined) {
+        console.log(`New task started.`);
+      } else {
+        console.log(
+          `New task started for existing session(id=${currentSession.sessionId}).`,
+        );
+      }
+
       const result = await this.startTask(currentSession, message);
       return result;
     }
@@ -253,32 +265,37 @@ export class ClaudeCodeTaskController {
             });
           }
 
-          // 初回の system message だとまだ history ファイルが作成されていないので
-          if (message.type === "user" || message.type === "assistant") {
-            // 本来は message.uuid の存在チェックをしたいが、古いバージョンでは存在しないことがある
-            if (!resolved) {
-              const runningTask: RunningClaudeCodeTask = {
-                status: "running",
-                id: task.id,
-                projectId: task.projectId,
-                cwd: task.cwd,
-                generateMessages: task.generateMessages,
-                setNextMessage: task.setNextMessage,
-                resolveFirstMessage: task.resolveFirstMessage,
-                setFirstMessagePromise: task.setFirstMessagePromise,
-                awaitFirstMessage: task.awaitFirstMessage,
-                onMessageHandlers: task.onMessageHandlers,
-                userMessageId: message.uuid,
-                sessionId: message.session_id,
-                abortController: abortController,
-              };
-              this.tasks.push(runningTask);
-              aliveTaskResolve(runningTask);
-              resolved = true;
-            }
-
-            eventBus.emit("sessionListChanged", {
-              projectId: task.projectId,
+          if (
+            message.type === "system" &&
+            message.subtype === "init" &&
+            currentSession.sessionId === undefined
+          ) {
+            // because it takes time for the Claude Code file to be updated, simulate the message
+            predictSessionsDatabase.createPredictSession({
+              id: message.session_id,
+              jsonlFilePath: message.session_id,
+              conversations: [
+                {
+                  type: "user",
+                  message: {
+                    role: "user",
+                    content: userMessage,
+                  },
+                  isSidechain: false,
+                  userType: "external",
+                  cwd: message.cwd,
+                  sessionId: message.session_id,
+                  version: this.claudeCode.version?.toString() ?? "unknown",
+                  uuid: message.uuid,
+                  timestamp: new Date().toISOString(),
+                  parentUuid: null,
+                },
+              ],
+              meta: {
+                firstCommand: null,
+                lastModifiedAt: new Date().toISOString(),
+                messageCount: 0,
+              },
             });
           }
 

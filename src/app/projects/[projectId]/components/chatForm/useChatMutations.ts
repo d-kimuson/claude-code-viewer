@@ -32,7 +32,13 @@ export const useNewChatMutation = (
     },
     onSuccess: async (response) => {
       onSuccess?.();
-      router.push(`/projects/${projectId}/sessions/${response.sessionId}`);
+      router.push(
+        `/projects/${projectId}/sessions/${response.sessionId}` +
+          response.userMessageId !==
+          undefined
+          ? `#message-${response.userMessageId}`
+          : "",
+      );
     },
   });
 };

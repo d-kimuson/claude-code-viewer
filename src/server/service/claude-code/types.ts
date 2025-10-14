@@ -20,18 +20,21 @@ export type PendingClaudeCodeTask = BaseClaudeCodeTask & {
 export type RunningClaudeCodeTask = BaseClaudeCodeTask & {
   status: "running";
   sessionId: string;
+  userMessageId: string | undefined;
   abortController: AbortController;
 };
 
 export type PausedClaudeCodeTask = BaseClaudeCodeTask & {
   status: "paused";
   sessionId: string;
+  userMessageId: string | undefined;
   abortController: AbortController;
 };
 
 type CompletedClaudeCodeTask = BaseClaudeCodeTask & {
   status: "completed";
   sessionId: string;
+  userMessageId: string | undefined;
   abortController: AbortController;
   resolveFirstMessage: () => void;
 };

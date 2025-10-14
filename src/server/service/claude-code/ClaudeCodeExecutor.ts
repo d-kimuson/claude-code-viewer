@@ -23,17 +23,13 @@ export class ClaudeCodeExecutor {
     );
   }
 
-  public get version() {
-    return this.claudeCodeVersion?.version;
-  }
-
-  public get availableFeatures() {
+  public get features() {
     return {
-      canUseTool:
+      enableToolApproval:
         this.claudeCodeVersion?.greaterThanOrEqual(
           new ClaudeCodeVersion({ major: 1, minor: 0, patch: 82 }),
         ) ?? false,
-      uuidOnSDKMessage:
+      extractUuidFromSDKMessage:
         this.claudeCodeVersion?.greaterThanOrEqual(
           new ClaudeCodeVersion({ major: 1, minor: 0, patch: 86 }),
         ) ?? false,
@@ -41,18 +37,14 @@ export class ClaudeCodeExecutor {
   }
 
   public query(prompt: CCQueryPrompt, options: CCQueryOptions) {
-    const { canUseTool, permissionMode, ...baseOptions } = options;
+    const { canUseTool, ...baseOptions } = options;
 
     return query({
       prompt,
       options: {
         pathToClaudeCodeExecutable: this.pathToClaudeCodeExecutable,
         ...baseOptions,
-        ...(this.availableFeatures.canUseTool
-          ? { canUseTool, permissionMode }
-          : {
-              permissionMode: "bypassPermissions",
-            }),
+        ...(this.features.enableToolApproval ? { canUseTool } : {}),
       },
     });
   }

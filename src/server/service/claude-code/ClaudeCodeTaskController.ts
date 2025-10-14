@@ -1,10 +1,7 @@
-import { resolve } from "node:path";
+import prexit from "prexit";
 import { ulid } from "ulid";
 import type { Config } from "../../config/config";
-import { eventBus } from "../events/EventBus";
-import { parseCommandXml } from "../parseCommandXml";
-import { decodeProjectId } from "../project/id";
-import { predictSessionsDatabase } from "../session/PredictSessionsDatabase";
+import { getEventBus, type IEventBus } from "../events/EventBus";
 import { ClaudeCodeExecutor } from "./ClaudeCodeExecutor";
 import { createMessageGenerator } from "./createMessageGenerator";
 import type {
@@ -16,21 +13,23 @@ import type {
   RunningClaudeCodeTask,
 } from "./types";
 
-class ClaudeCodeTaskController {
+export class ClaudeCodeTaskController {
   private claudeCode: ClaudeCodeExecutor;
   private tasks: ClaudeCodeTask[] = [];
   private config: Config;
   private pendingPermissionRequests: Map<string, PermissionRequest> = new Map();
   private permissionResponses: Map<string, PermissionResponse> = new Map();
 
-  constructor() {
+  constructor(config: Config) {
     this.claudeCode = new ClaudeCodeExecutor();
-    this.config = {
-      hideNoUserMessageSession: false,
-      unifySameTitleSession: false,
-      enterKeyBehavior: "shift-enter-send",
-      permissionMode: "default",
-    };
+    this.eventBus = getEventBus();
+    this.config = config;
+
+    prexit(() => {
+      this.aliveTasks.forEach((task) => {
+        task.abortController.abort();
+      });
+    });
   }
 
   public updateConfig(config: Config) {
@@ -170,20 +169,9 @@ class ClaudeCodeTaskController {
     );
 
     if (existingTask) {
-      console.log(
-        `Alive task for session(id=${currentSession.sessionId}) continued.`,
-      );
       const result = await this.continueTask(existingTask, message);
       return result;
     } else {
-      if (currentSession.sessionId === undefined) {
-        console.log(`New task started.`);
-      } else {
-        console.log(
-          `New task started for existing session(id=${currentSession.sessionId}).`,
-        );
-      }
-
       const result = await this.startTask(currentSession, message);
       return result;
     }
@@ -265,41 +253,29 @@ class ClaudeCodeTaskController {
             });
           }
 
-          if (
-            message.type === "system" &&
-            message.subtype === "init" &&
-            currentSession.sessionId === undefined
-          ) {
-            // because it takes time for the Claude Code file to be updated, simulate the message
-            predictSessionsDatabase.createPredictSession({
-              id: message.session_id,
-              jsonlFilePath: resolve(
-                decodeProjectId(currentSession.projectId),
-                `${message.session_id}.jsonl`,
-              ),
-              conversations: [
-                {
-                  type: "user",
-                  message: {
-                    role: "user",
-                    content: userMessage,
-                  },
-                  isSidechain: false,
-                  userType: "external",
-                  cwd: message.cwd,
-                  sessionId: message.session_id,
-                  version: this.claudeCode.version?.toString() ?? "unknown",
-                  uuid: message.uuid,
-                  timestamp: new Date().toISOString(),
-                  parentUuid: null,
-                },
-              ],
-              meta: {
-                firstCommand: parseCommandXml(userMessage),
-                messageCount: 0,
-              },
-              lastModifiedAt: new Date(),
-            });
+          // 初回の system message だとまだ history ファイルが作成されていないので
+          if (message.type === "user" || message.type === "assistant") {
+            // 本来は message.uuid の存在チェックをしたいが、古いバージョンでは存在しないことがある
+            if (!resolved) {
+              const runningTask: RunningClaudeCodeTask = {
+                status: "running",
+                id: task.id,
+                projectId: task.projectId,
+                cwd: task.cwd,
+                generateMessages: task.generateMessages,
+                setNextMessage: task.setNextMessage,
+                resolveFirstMessage: task.resolveFirstMessage,
+                setFirstMessagePromise: task.setFirstMessagePromise,
+                awaitFirstMessage: task.awaitFirstMessage,
+                onMessageHandlers: task.onMessageHandlers,
+                userMessageId: message.uuid,
+                sessionId: message.session_id,
+                abortController: abortController,
+              };
+              this.tasks.push(runningTask);
+              aliveTaskResolve(runningTask);
+              resolved = true;
+            }
 
             eventBus.emit("sessionListChanged", {
               projectId: task.projectId,
@@ -415,12 +391,6 @@ class ClaudeCodeTaskController {
     });
   }
 
-  public abortAllTasks() {
-    for (const task of this.aliveTasks) {
-      task.abortController.abort();
-    }
-  }
-
   private upsertExistingTask(task: ClaudeCodeTask) {
     const target = this.tasks.find((t) => t.id === task.id);
 
@@ -431,10 +401,12 @@ class ClaudeCodeTaskController {
       Object.assign(target, task);
     }
 
-    eventBus.emit("taskChanged", {
-      aliveTasks: this.aliveTasks,
-      changed: task,
-    });
+    if (task.status === "paused" || task.status === "running") {
+      this.eventBus.emit("taskChanged", {
+        aliveTasks: this.aliveTasks,
+        changed: task,
+      });
+    }
   }
 }
 

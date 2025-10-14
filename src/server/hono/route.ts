@@ -4,9 +4,9 @@ import { zValidator } from "@hono/zod-validator";
 import { setCookie } from "hono/cookie";
 import { streamSSE } from "hono/streaming";
 import { z } from "zod";
-import { configSchema } from "../config/config";
+import { type Config, configSchema } from "../config/config";
 import { env } from "../lib/env";
-import { claudeCodeTaskController } from "../service/claude-code/ClaudeCodeTaskController";
+import { ClaudeCodeTaskController } from "../service/claude-code/ClaudeCodeTaskController";
 import type { SerializableAliveTask } from "../service/claude-code/types";
 import { adaptInternalEventToSSE } from "../service/events/adaptInternalEventToSSE";
 import { eventBus } from "../service/events/EventBus";
@@ -28,11 +28,15 @@ export const routes = async (app: HonoAppType) => {
   const sessionRepository = new SessionRepository();
   const projectRepository = new ProjectRepository();
 
+  const fileWatcher = getFileWatcher();
+  const eventBus = getEventBus();
+
   if (env.get("NEXT_PHASE") !== "phase-production-build") {
-    await initialize({
-      sessionRepository,
-      projectRepository,
-    });
+    fileWatcher.startWatching();
+
+    setInterval(() => {
+      eventBus.emit("heartbeat", {});
+    }, 10 * 1000);
   }
 
   return (

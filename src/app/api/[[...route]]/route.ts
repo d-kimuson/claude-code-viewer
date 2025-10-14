@@ -2,7 +2,7 @@ import { handle } from "hono/vercel";
 import { honoApp } from "../../../server/hono/app";
 import { routes } from "../../../server/hono/route";
 
-routes(honoApp);
+await routes(honoApp);
 
 export const GET = handle(honoApp);
 export const POST = handle(honoApp);

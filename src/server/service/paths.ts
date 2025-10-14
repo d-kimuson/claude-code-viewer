@@ -18,3 +18,9 @@ export const claudeCommandsDirPath = resolve(
   globalClaudeDirectoryPath,
   "commands",
 );
+
+export const claudeCodeViewerCacheDirPath = resolve(
+  homedir(),
+  ".claude-code-viewer",
+  "cache",
+);

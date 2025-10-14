@@ -9,8 +9,7 @@ import { env } from "../lib/env";
 import { ClaudeCodeTaskController } from "../service/claude-code/ClaudeCodeTaskController";
 import type { SerializableAliveTask } from "../service/claude-code/types";
 import { adaptInternalEventToSSE } from "../service/events/adaptInternalEventToSSE";
-import { getEventBus } from "../service/events/EventBus";
-import { getFileWatcher } from "../service/events/fileWatcher";
+import { eventBus } from "../service/events/EventBus";
 import type { InternalEventDeclaration } from "../service/events/InternalEventDeclaration";
 import { writeTypeSafeSSE } from "../service/events/typeSafeSSE";
 import { getFileCompletion } from "../service/file-completion/getFileCompletion";
@@ -19,14 +18,13 @@ import { getCommits } from "../service/git/getCommits";
 import { getDiff } from "../service/git/getDiff";
 import { getMcpList } from "../service/mcp/getMcpList";
 import { claudeCommandsDirPath } from "../service/paths";
-import { getProject } from "../service/project/getProject";
-import { getProjects } from "../service/project/getProjects";
-import { getSession } from "../service/session/getSession";
-import { getSessions } from "../service/session/getSessions";
+import { ProjectRepository } from "../service/project/ProjectRepository";
+import { SessionRepository } from "../service/session/SessionRepository";
 import type { HonoAppType } from "./app";
+import { initialize } from "./initialize";
 import { configMiddleware } from "./middleware/config.middleware";
 
-export const routes = (app: HonoAppType) => {
+export const routes = async (app: HonoAppType) => {
   let taskController: ClaudeCodeTaskController | null = null;
   const getTaskController = (config: Config) => {
     if (!taskController) {
@@ -37,15 +35,14 @@ export const routes = (app: HonoAppType) => {
     return taskController;
   };
 
-  const fileWatcher = getFileWatcher();
-  const eventBus = getEventBus();
+  const sessionRepository = new SessionRepository();
+  const projectRepository = new ProjectRepository();
 
   if (env.get("NEXT_PHASE") !== "phase-production-build") {
-    fileWatcher.startWatching();
-
-    setInterval(() => {
-      eventBus.emit("heartbeat", {});
-    }, 10 * 1000);
+    await initialize({
+      sessionRepository,
+      projectRepository,
+    });
   }
 
   return (
@@ -71,7 +68,7 @@ export const routes = (app: HonoAppType) => {
       })
 
       .get("/projects", async (c) => {
-        const { projects } = await getProjects();
+        const { projects } = await projectRepository.getProjects();
         return c.json({ projects });
       })
 
@@ -79,8 +76,8 @@ export const routes = (app: HonoAppType) => {
         const { projectId } = c.req.param();
 
         const [{ project }, { sessions }] = await Promise.all([
-          getProject(projectId),
-          getSessions(projectId).then(({ sessions }) => {
+          projectRepository.getProject(projectId),
+          sessionRepository.getSessions(projectId).then(({ sessions }) => {
             let filteredSessions = sessions;
 
             // Filter sessions based on hideNoUserMessageSession setting
@@ -157,7 +154,10 @@ export const routes = (app: HonoAppType) => {
 
       .get("/projects/:projectId/sessions/:sessionId", async (c) => {
         const { projectId, sessionId } = c.req.param();
-        const { session } = await getSession(projectId, sessionId);
+        const { session } = await sessionRepository.getSession(
+          projectId,
+          sessionId,
+        );
         return c.json({ session });
       })
 
@@ -173,7 +173,7 @@ export const routes = (app: HonoAppType) => {
           const { projectId } = c.req.param();
           const { basePath } = c.req.valid("query");
 
-          const { project } = await getProject(projectId);
+          const { project } = await projectRepository.getProject(projectId);
 
           if (project.meta.projectPath === null) {
             return c.json({ error: "Project path not found" }, 400);
@@ -194,7 +194,7 @@ export const routes = (app: HonoAppType) => {
 
       .get("/projects/:projectId/claude-commands", async (c) => {
         const { projectId } = c.req.param();
-        const { project } = await getProject(projectId);
+        const { project } = await projectRepository.getProject(projectId);
 
         const [globalCommands, projectCommands] = await Promise.allSettled([
           readdir(claudeCommandsDirPath, {
@@ -229,7 +229,7 @@ export const routes = (app: HonoAppType) => {
 
       .get("/projects/:projectId/git/branches", async (c) => {
         const { projectId } = c.req.param();
-        const { project } = await getProject(projectId);
+        const { project } = await projectRepository.getProject(projectId);
 
         if (project.meta.projectPath === null) {
           return c.json({ error: "Project path not found" }, 400);
@@ -249,7 +249,7 @@ export const routes = (app: HonoAppType) => {
 
       .get("/projects/:projectId/git/commits", async (c) => {
         const { projectId } = c.req.param();
-        const { project } = await getProject(projectId);
+        const { project } = await projectRepository.getProject(projectId);
 
         if (project.meta.projectPath === null) {
           return c.json({ error: "Project path not found" }, 400);
@@ -279,7 +279,7 @@ export const routes = (app: HonoAppType) => {
         async (c) => {
           const { projectId } = c.req.param();
           const { fromRef, toRef } = c.req.valid("json");
-          const { project } = await getProject(projectId);
+          const { project } = await projectRepository.getProject(projectId);
 
           if (project.meta.projectPath === null) {
             return c.json({ error: "Project path not found" }, 400);
@@ -318,7 +318,7 @@ export const routes = (app: HonoAppType) => {
         async (c) => {
           const { projectId } = c.req.param();
           const { message } = c.req.valid("json");
-          const { project } = await getProject(projectId);
+          const { project } = await projectRepository.getProject(projectId);
 
           if (project.meta.projectPath === null) {
             return c.json({ error: "Project path not found" }, 400);
@@ -353,7 +353,7 @@ export const routes = (app: HonoAppType) => {
         async (c) => {
           const { projectId, sessionId } = c.req.param();
           const { resumeMessage } = c.req.valid("json");
-          const { project } = await getProject(projectId);
+          const { project } = await projectRepository.getProject(projectId);
 
           if (project.meta.projectPath === null) {
             return c.json({ error: "Project path not found" }, 400);
@@ -473,4 +473,4 @@ export const routes = (app: HonoAppType) => {
   );
 };
 
-export type RouteType = ReturnType<typeof routes>;
+export type RouteType = Awaited<ReturnType<typeof routes>>;

@@ -1,7 +1,7 @@
 import prexit from "prexit";
 import { ulid } from "ulid";
 import type { Config } from "../../config/config";
-import { getEventBus, type IEventBus } from "../events/EventBus";
+import { eventBus } from "../events/EventBus";
 import { ClaudeCodeExecutor } from "./ClaudeCodeExecutor";
 import { createMessageGenerator } from "./createMessageGenerator";
 import type {
@@ -16,14 +16,12 @@ import type {
 export class ClaudeCodeTaskController {
   private claudeCode: ClaudeCodeExecutor;
   private tasks: ClaudeCodeTask[] = [];
-  private eventBus: IEventBus;
   private config: Config;
   private pendingPermissionRequests: Map<string, PermissionRequest> = new Map();
   private permissionResponses: Map<string, PermissionResponse> = new Map();
 
   constructor(config: Config) {
     this.claudeCode = new ClaudeCodeExecutor();
-    this.eventBus = getEventBus();
     this.config = config;
 
     prexit(() => {
@@ -85,7 +83,7 @@ export class ClaudeCodeTaskController {
       );
 
       // Emit event to notify UI
-      this.eventBus.emit("permissionRequested", {
+      eventBus.emit("permissionRequested", {
         permissionRequest,
       });
 
@@ -389,7 +387,7 @@ export class ClaudeCodeTaskController {
     }
 
     if (task.status === "paused" || task.status === "running") {
-      this.eventBus.emit("taskChanged", {
+      eventBus.emit("taskChanged", {
         aliveTasks: this.aliveTasks,
         changed: task,
       });

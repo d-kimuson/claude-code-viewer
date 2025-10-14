@@ -1,5 +1,6 @@
+import type { z } from "zod";
 import type { Conversation } from "../../lib/conversation-schema";
-import type { ParsedCommand } from "./parseCommandXml";
+import type { projectMetaSchema, sessionMetaSchema } from "./schema";
 
 export type Project = {
   id: string;
@@ -7,12 +8,7 @@ export type Project = {
   meta: ProjectMeta;
 };
 
-export type ProjectMeta = {
-  projectName: string | null;
-  projectPath: string | null;
-  lastModifiedAt: Date | null;
-  sessionCount: number;
-};
+export type ProjectMeta = z.infer<typeof projectMetaSchema>;
 
 export type Session = {
   id: string;
@@ -20,11 +16,7 @@ export type Session = {
   meta: SessionMeta;
 };
 
-export type SessionMeta = {
-  messageCount: number;
-  firstCommand: ParsedCommand | null;
-  lastModifiedAt: string | null;
-};
+export type SessionMeta = z.infer<typeof sessionMetaSchema>;
 
 export type ErrorJsonl = {
   type: "x-error";

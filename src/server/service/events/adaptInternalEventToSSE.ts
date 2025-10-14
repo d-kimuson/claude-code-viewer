@@ -1,5 +1,5 @@
 import type { SSEStreamingApi } from "hono/streaming";
-import { getEventBus } from "./EventBus";
+import { eventBus } from "./EventBus";
 import type { InternalEventDeclaration } from "./InternalEventDeclaration";
 import { writeTypeSafeSSE } from "./typeSafeSSE";
 
@@ -13,8 +13,6 @@ export const adaptInternalEventToSSE = (
   const { timeout = 60 * 1000, cleanUp } = options ?? {};
 
   console.log("SSE connection started");
-
-  const eventBus = getEventBus();
 
   const stream = writeTypeSafeSSE(rawStream);
 

@@ -36,12 +36,4 @@ class EventBus {
   }
 }
 
-// singleton
-let eventBus: EventBus | null = null;
-
-export const getEventBus = () => {
-  eventBus ??= new EventBus();
-  return eventBus;
-};
-
-export type IEventBus = ReturnType<typeof getEventBus>;
+export const eventBus = new EventBus();

@@ -7,21 +7,24 @@ const matchSchema = z.object({
   content: z.string(),
 });
 
-export type ParsedCommand =
-  | {
-      kind: "command";
-      commandName: string;
-      commandArgs?: string;
-      commandMessage?: string;
-    }
-  | {
-      kind: "local-command";
-      stdout: string;
-    }
-  | {
-      kind: "text";
-      content: string;
-    };
+export const parsedCommandSchema = z.union([
+  z.object({
+    kind: z.literal("command"),
+    commandName: z.string(),
+    commandArgs: z.string().optional(),
+    commandMessage: z.string().optional(),
+  }),
+  z.object({
+    kind: z.literal("local-command"),
+    stdout: z.string(),
+  }),
+  z.object({
+    kind: z.literal("text"),
+    content: z.string(),
+  }),
+]);
+
+export type ParsedCommand = z.infer<typeof parsedCommandSchema>;
 
 export const parseCommandXml = (content: string): ParsedCommand => {
   const matches = Array.from(content.matchAll(regExp))

@@ -1,7 +1,7 @@
 import { type FSWatcher, watch } from "node:fs";
 import z from "zod";
 import { claudeProjectsDirPath } from "../paths";
-import { getEventBus, type IEventBus } from "./EventBus";
+import { eventBus } from "./EventBus";
 
 const fileRegExp = /(?<projectId>.*?)\/(?<sessionId>.*?)\.jsonl/;
 const fileRegExpGroupSchema = z.object({
@@ -13,11 +13,6 @@ export class FileWatcherService {
   private isWatching = false;
   private watcher: FSWatcher | null = null;
   private projectWatchers: Map<string, FSWatcher> = new Map();
-  private eventBus: IEventBus;
-
-  constructor() {
-    this.eventBus = getEventBus();
-  }
 
   public startWatching(): void {
     if (this.isWatching) return;
@@ -42,13 +37,13 @@ export class FileWatcherService {
 
           if (eventType === "change") {
             // セッションファイルの中身が変更されている
-            this.eventBus.emit("sessionChanged", {
+            eventBus.emit("sessionChanged", {
               projectId,
               sessionId,
             });
           } else if (eventType === "rename") {
             // セッションファイルの追加/削除
-            this.eventBus.emit("sessionListChanged", {
+            eventBus.emit("sessionListChanged", {
               projectId,
             });
           } else {
@@ -75,13 +70,4 @@ export class FileWatcherService {
   }
 }
 
-// シングルトンインスタンス
-let watcherInstance: FileWatcherService | null = null;
-
-export const getFileWatcher = (): FileWatcherService => {
-  if (!watcherInstance) {
-    console.log("Creating new FileWatcher instance");
-    watcherInstance = new FileWatcherService();
-  }
-  return watcherInstance;
-};
+export const fileWatcher = new FileWatcherService();

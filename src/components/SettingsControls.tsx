@@ -37,13 +37,13 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
   const queryClient = useQueryClient();
 
   const onConfigChanged = useCallback(async () => {
-    await queryClient.invalidateQueries({
+    await queryClient.refetchQueries({
       queryKey: configQuery.queryKey,
     });
-    await queryClient.invalidateQueries({
+    await queryClient.refetchQueries({
       queryKey: projectListQuery.queryKey,
     });
-    void queryClient.invalidateQueries({
+    void queryClient.refetchQueries({
       queryKey: projectDetailQuery(openingProjectId).queryKey,
     });
   }, [queryClient, openingProjectId]);

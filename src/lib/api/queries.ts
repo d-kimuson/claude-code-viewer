@@ -18,9 +18,7 @@ export const projectListQuery = {
 
 export const projectDetailQuery = (projectId: string, cursor?: string) =>
   ({
-    queryKey: cursor
-      ? ["projects", projectId, cursor]
-      : ["projects", projectId],
+    queryKey: ["projects", projectId],
     queryFn: async () => {
       const response = await honoClient.api.projects[":projectId"].$get({
         param: { projectId },

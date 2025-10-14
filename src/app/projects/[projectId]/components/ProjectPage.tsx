@@ -47,7 +47,7 @@ export const ProjectPageContent = ({ projectId }: { projectId: string }) => {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: invalidate when config changed
   useEffect(() => {
-    void queryClient.invalidateQueries({
+    void queryClient.refetchQueries({
       queryKey: ["projects", projectId],
     });
   }, [config.hideNoUserMessageSession, config.unifySameTitleSession]);

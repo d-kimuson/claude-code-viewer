@@ -35,7 +35,9 @@ export const SessionPageContent: FC<{
     projectId,
     sessionId,
   );
-  const { data: project } = useProject(projectId);
+  const { data: projectData } = useProject(projectId);
+  // biome-ignore lint/style/noNonNullAssertion: useSuspenseInfiniteQuery guarantees at least one page
+  const project = projectData.pages[0]!.project;
 
   const abortTask = useMutation({
     mutationFn: async (sessionId: string) => {
@@ -111,7 +113,7 @@ export const SessionPageContent: FC<{
             </div>
 
             <div className="px-1 sm:px-5 flex flex-wrap items-center gap-1 sm:gap-2">
-              {project?.project.claudeProjectPath && (
+              {project?.claudeProjectPath && (
                 <Link
                   href={`/projects/${projectId}`}
                   target="_blank"
@@ -122,8 +124,7 @@ export const SessionPageContent: FC<{
                     className="h-6 sm:h-8 text-xs sm:text-sm flex items-center hover:bg-blue-50/60 hover:border-blue-300/60 hover:shadow-sm transition-all duration-200 cursor-pointer"
                   >
                     <ExternalLinkIcon className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                    {project.project.meta.projectPath ??
-                      project.project.claudeProjectPath}
+                    {project.meta.projectPath ?? project.claudeProjectPath}
                   </Badge>
                 </Link>
               )}

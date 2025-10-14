@@ -14,12 +14,8 @@ class PredictSessionsDatabase {
     );
   }
 
-  public getPredictSession(sessionId: string): SessionDetail {
-    const session = this.storage.get(sessionId);
-    if (!session) {
-      throw new Error("Session not found");
-    }
-    return session;
+  public getPredictSession(sessionId: string): SessionDetail | null {
+    return this.storage.get(sessionId) ?? null;
   }
 
   public createPredictSession(session: SessionDetail) {

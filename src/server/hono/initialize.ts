@@ -1,5 +1,8 @@
+import prexit from "prexit";
+import { claudeCodeTaskController } from "../service/claude-code/ClaudeCodeTaskController";
 import { eventBus } from "../service/events/EventBus";
 import { fileWatcher } from "../service/events/fileWatcher";
+import type { InternalEventDeclaration } from "../service/events/InternalEventDeclaration";
 import type { ProjectRepository } from "../service/project/ProjectRepository";
 import { projectMetaStorage } from "../service/project/projectMetaStorage";
 import type { SessionRepository } from "../service/session/SessionRepository";
@@ -11,14 +14,18 @@ export const initialize = async (deps: {
 }): Promise<void> => {
   fileWatcher.startWatching();
 
-  setInterval(() => {
+  const intervalId = setInterval(() => {
     eventBus.emit("heartbeat", {});
   }, 10 * 1000);
 
-  eventBus.on("sessionChanged", (event) => {
+  const onSessionChanged = (
+    event: InternalEventDeclaration["sessionChanged"],
+  ) => {
     projectMetaStorage.invalidateProject(event.projectId);
     sessionMetaStorage.invalidateSession(event.projectId, event.sessionId);
-  });
+  };
+
+  eventBus.on("sessionChanged", onSessionChanged);
 
   try {
     console.log("Initializing projects cache");
@@ -38,4 +45,11 @@ export const initialize = async (deps: {
   } catch {
     // do nothing
   }
+
+  prexit(() => {
+    clearInterval(intervalId);
+    eventBus.off("sessionChanged", onSessionChanged);
+    fileWatcher.stop();
+    claudeCodeTaskController.abortAllTasks();
+  });
 };

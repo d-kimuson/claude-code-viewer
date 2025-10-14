@@ -41,14 +41,18 @@ export class ClaudeCodeExecutor {
   }
 
   public query(prompt: CCQueryPrompt, options: CCQueryOptions) {
-    const { canUseTool, ...baseOptions } = options;
+    const { canUseTool, permissionMode, ...baseOptions } = options;
 
     return query({
       prompt,
       options: {
         pathToClaudeCodeExecutable: this.pathToClaudeCodeExecutable,
         ...baseOptions,
-        ...(this.availableFeatures.canUseTool ? { canUseTool } : {}),
+        ...(this.availableFeatures.canUseTool
+          ? { canUseTool, permissionMode }
+          : {
+              permissionMode: "bypassPermissions",
+            }),
       },
     });
   }

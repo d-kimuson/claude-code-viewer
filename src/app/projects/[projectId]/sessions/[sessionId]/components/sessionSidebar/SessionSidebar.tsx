@@ -30,8 +30,12 @@ export const SessionSidebar: FC<{
 }) => {
   const router = useRouter();
   const {
-    data: { sessions },
+    data: projectData,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
   } = useProject(projectId);
+  const sessions = projectData.pages.flatMap((page) => page.sessions);
   const [activeTab, setActiveTab] = useState<"sessions" | "mcp" | "settings">(
     "sessions",
   );
@@ -53,9 +57,15 @@ export const SessionSidebar: FC<{
       case "sessions":
         return (
           <SessionsTab
-            sessions={sessions}
+            sessions={sessions.map((session) => ({
+              ...session,
+              lastModifiedAt: new Date(session.lastModifiedAt),
+            }))}
             currentSessionId={currentSessionId}
             projectId={projectId}
+            hasNextPage={hasNextPage}
+            isFetchingNextPage={isFetchingNextPage}
+            onLoadMore={() => fetchNextPage()}
           />
         );
       case "mcp":

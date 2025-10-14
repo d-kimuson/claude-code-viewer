@@ -37,8 +37,6 @@ class ProjectMetaStorage {
         return a.stats.mtime.getTime() - b.stats.mtime.getTime();
       });
 
-    const lastModifiedUnixTime = files.at(-1)?.stats.mtime.getTime();
-
     let projectPath: string | null = null;
 
     for (const file of files) {
@@ -54,9 +52,6 @@ class ProjectMetaStorage {
     const projectMeta: ProjectMeta = {
       projectName: projectPath ? basename(projectPath) : null,
       projectPath,
-      lastModifiedAt: lastModifiedUnixTime
-        ? new Date(lastModifiedUnixTime).toISOString()
-        : null,
       sessionCount: files.length,
     };
 

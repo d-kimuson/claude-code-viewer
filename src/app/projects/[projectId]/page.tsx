@@ -15,9 +15,12 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
   const queryClient = new QueryClient();
 
-  await queryClient.prefetchQuery({
-    queryKey: projectDetailQuery(projectId).queryKey,
-    queryFn: projectDetailQuery(projectId).queryFn,
+  await queryClient.prefetchInfiniteQuery({
+    queryKey: ["projects", projectId],
+    queryFn: async ({ pageParam }) => {
+      return await projectDetailQuery(projectId, pageParam).queryFn();
+    },
+    initialPageParam: undefined as string | undefined,
   });
 
   return (

@@ -1,4 +1,3 @@
-import prexit from "prexit";
 import { ulid } from "ulid";
 import type { Config } from "../../config/config";
 import { eventBus } from "../events/EventBus";
@@ -14,22 +13,21 @@ import type {
   RunningClaudeCodeTask,
 } from "./types";
 
-export class ClaudeCodeTaskController {
+class ClaudeCodeTaskController {
   private claudeCode: ClaudeCodeExecutor;
   private tasks: ClaudeCodeTask[] = [];
   private config: Config;
   private pendingPermissionRequests: Map<string, PermissionRequest> = new Map();
   private permissionResponses: Map<string, PermissionResponse> = new Map();
 
-  constructor(config: Config) {
+  constructor() {
     this.claudeCode = new ClaudeCodeExecutor();
-    this.config = config;
-
-    prexit(() => {
-      this.aliveTasks.forEach((task) => {
-        task.abortController.abort();
-      });
-    });
+    this.config = {
+      hideNoUserMessageSession: false,
+      unifySameTitleSession: false,
+      enterKeyBehavior: "shift-enter-send",
+      permissionMode: "default",
+    };
   }
 
   public updateConfig(config: Config) {
@@ -292,9 +290,9 @@ export class ClaudeCodeTaskController {
               ],
               meta: {
                 firstCommand: null,
-                lastModifiedAt: new Date().toISOString(),
                 messageCount: 0,
               },
+              lastModifiedAt: new Date(),
             });
           }
 
@@ -407,6 +405,12 @@ export class ClaudeCodeTaskController {
     });
   }
 
+  public abortAllTasks() {
+    for (const task of this.aliveTasks) {
+      task.abortController.abort();
+    }
+  }
+
   private upsertExistingTask(task: ClaudeCodeTask) {
     const target = this.tasks.find((t) => t.id === task.id);
 
@@ -425,3 +429,5 @@ export class ClaudeCodeTaskController {
     }
   }
 }
+
+export const claudeCodeTaskController = new ClaudeCodeTaskController();

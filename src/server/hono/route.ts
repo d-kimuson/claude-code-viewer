@@ -4,9 +4,9 @@ import { zValidator } from "@hono/zod-validator";
 import { setCookie } from "hono/cookie";
 import { streamSSE } from "hono/streaming";
 import { z } from "zod";
-import { type Config, configSchema } from "../config/config";
+import { configSchema } from "../config/config";
 import { env } from "../lib/env";
-import { ClaudeCodeTaskController } from "../service/claude-code/ClaudeCodeTaskController";
+import { claudeCodeTaskController } from "../service/claude-code/ClaudeCodeTaskController";
 import type { SerializableAliveTask } from "../service/claude-code/types";
 import { adaptInternalEventToSSE } from "../service/events/adaptInternalEventToSSE";
 import { eventBus } from "../service/events/EventBus";
@@ -25,16 +25,6 @@ import { initialize } from "./initialize";
 import { configMiddleware } from "./middleware/config.middleware";
 
 export const routes = async (app: HonoAppType) => {
-  let taskController: ClaudeCodeTaskController | null = null;
-  const getTaskController = (config: Config) => {
-    if (!taskController) {
-      taskController = new ClaudeCodeTaskController(config);
-    } else {
-      taskController.updateConfig(config);
-    }
-    return taskController;
-  };
-
   const sessionRepository = new SessionRepository();
   const projectRepository = new ProjectRepository();
 
@@ -49,6 +39,10 @@ export const routes = async (app: HonoAppType) => {
     app
       // middleware
       .use(configMiddleware)
+      .use(async (c, next) => {
+        claudeCodeTaskController.updateConfig(c.get("config"));
+        await next();
+      })
 
       // routes
       .get("/config", async (c) => {
@@ -72,85 +66,93 @@ export const routes = async (app: HonoAppType) => {
         return c.json({ projects });
       })
 
-      .get("/projects/:projectId", async (c) => {
-        const { projectId } = c.req.param();
+      .get(
+        "/projects/:projectId",
+        zValidator("query", z.object({ cursor: z.string().optional() })),
+        async (c) => {
+          const { projectId } = c.req.param();
+          const { cursor } = c.req.valid("query");
 
-        const [{ project }, { sessions }] = await Promise.all([
-          projectRepository.getProject(projectId),
-          sessionRepository.getSessions(projectId).then(({ sessions }) => {
-            let filteredSessions = sessions;
+          const [{ project }, { sessions, nextCursor }] = await Promise.all([
+            projectRepository.getProject(projectId),
+            sessionRepository
+              .getSessions(projectId, { cursor })
+              .then(({ sessions }) => {
+                let filteredSessions = sessions;
 
-            // Filter sessions based on hideNoUserMessageSession setting
-            if (c.get("config").hideNoUserMessageSession) {
-              filteredSessions = filteredSessions.filter((session) => {
-                return session.meta.firstCommand !== null;
-              });
-            }
+                // Filter sessions based on hideNoUserMessageSession setting
+                if (c.get("config").hideNoUserMessageSession) {
+                  filteredSessions = filteredSessions.filter((session) => {
+                    return session.meta.firstCommand !== null;
+                  });
+                }
 
-            // Unify sessions with same title if unifySameTitleSession is enabled
-            if (c.get("config").unifySameTitleSession) {
-              const sessionMap = new Map<
-                string,
-                (typeof filteredSessions)[0]
-              >();
+                // Unify sessions with same title if unifySameTitleSession is enabled
+                if (c.get("config").unifySameTitleSession) {
+                  const sessionMap = new Map<
+                    string,
+                    (typeof filteredSessions)[0]
+                  >();
 
-              for (const session of filteredSessions) {
-                // Generate title for comparison
-                const title =
-                  session.meta.firstCommand !== null
-                    ? (() => {
-                        const cmd = session.meta.firstCommand;
-                        switch (cmd.kind) {
-                          case "command":
-                            return cmd.commandArgs === undefined
-                              ? cmd.commandName
-                              : `${cmd.commandName} ${cmd.commandArgs}`;
-                          case "local-command":
-                            return cmd.stdout;
-                          case "text":
-                            return cmd.content;
-                          default:
-                            return session.id;
+                  for (const session of filteredSessions) {
+                    // Generate title for comparison
+                    const title =
+                      session.meta.firstCommand !== null
+                        ? (() => {
+                            const cmd = session.meta.firstCommand;
+                            switch (cmd.kind) {
+                              case "command":
+                                return cmd.commandArgs === undefined
+                                  ? cmd.commandName
+                                  : `${cmd.commandName} ${cmd.commandArgs}`;
+                              case "local-command":
+                                return cmd.stdout;
+                              case "text":
+                                return cmd.content;
+                              default:
+                                return session.id;
+                            }
+                          })()
+                        : session.id;
+
+                    const existingSession = sessionMap.get(title);
+                    if (existingSession) {
+                      // Keep the session with the latest modification date
+                      if (
+                        session.lastModifiedAt &&
+                        existingSession.lastModifiedAt
+                      ) {
+                        if (
+                          session.lastModifiedAt >
+                          existingSession.lastModifiedAt
+                        ) {
+                          sessionMap.set(title, session);
                         }
-                      })()
-                    : session.id;
-
-                const existingSession = sessionMap.get(title);
-                if (existingSession) {
-                  // Keep the session with the latest modification date
-                  if (
-                    session.meta.lastModifiedAt &&
-                    existingSession.meta.lastModifiedAt
-                  ) {
-                    if (
-                      new Date(session.meta.lastModifiedAt) >
-                      new Date(existingSession.meta.lastModifiedAt)
-                    ) {
+                      } else if (
+                        session.lastModifiedAt &&
+                        !existingSession.lastModifiedAt
+                      ) {
+                        sessionMap.set(title, session);
+                      }
+                      // If no modification dates, keep the existing one
+                    } else {
                       sessionMap.set(title, session);
                     }
-                  } else if (
-                    session.meta.lastModifiedAt &&
-                    !existingSession.meta.lastModifiedAt
-                  ) {
-                    sessionMap.set(title, session);
                   }
-                  // If no modification dates, keep the existing one
-                } else {
-                  sessionMap.set(title, session);
+
+                  filteredSessions = Array.from(sessionMap.values());
                 }
-              }
 
-              filteredSessions = Array.from(sessionMap.values());
-            }
+                return {
+                  sessions: filteredSessions,
+                  nextCursor: sessions.at(-1)?.id,
+                };
+              }),
+          ] as const);
 
-            return {
-              sessions: filteredSessions,
-            };
-          }),
-        ] as const);
-
-        return c.json({ project, sessions });
-      })
+          return c.json({ project, sessions, nextCursor });
+        },
+      )
 
       .get("/projects/:projectId/sessions/:sessionId", async (c) => {
         const { projectId, sessionId } = c.req.param();
@@ -324,9 +326,7 @@ export const routes = async (app: HonoAppType) => {
             return c.json({ error: "Project path not found" }, 400);
           }
 
-          const task = await getTaskController(
-            c.get("config"),
-          ).startOrContinueTask(
+          const task = await claudeCodeTaskController.startOrContinueTask(
             {
               projectId,
               cwd: project.meta.projectPath,
@@ -358,9 +358,7 @@ export const routes = async (app: HonoAppType) => {
             return c.json({ error: "Project path not found" }, 400);
           }
 
-          const task = await getTaskController(
-            c.get("config"),
-          ).startOrContinueTask(
+          const task = await claudeCodeTaskController.startOrContinueTask(
             {
               projectId,
               sessionId,
@@ -378,7 +376,7 @@ export const routes = async (app: HonoAppType) => {
 
       .get("/tasks/alive", async (c) => {
         return c.json({
-          aliveTasks: getTaskController(c.get("config")).aliveTasks.map(
+          aliveTasks: claudeCodeTaskController.aliveTasks.map(
             (task): SerializableAliveTask => ({
               id: task.id,
               status: task.status,
@@ -393,7 +391,7 @@ export const routes = async (app: HonoAppType) => {
         zValidator("json", z.object({ sessionId: z.string() })),
         async (c) => {
           const { sessionId } = c.req.valid("json");
-          getTaskController(c.get("config")).abortTask(sessionId);
+          claudeCodeTaskController.abortTask(sessionId);
           return c.json({ message: "Task aborted" });
         },
       )
@@ -409,7 +407,7 @@ export const routes = async (app: HonoAppType) => {
         ),
         async (c) => {
           const permissionResponse = c.req.valid("json");
-          getTaskController(c.get("config")).respondToPermissionRequest(
+          claudeCodeTaskController.respondToPermissionRequest(
             permissionResponse,
           );
           return c.json({ message: "Permission response received" });

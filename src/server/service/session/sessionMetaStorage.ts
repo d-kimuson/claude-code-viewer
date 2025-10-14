@@ -1,4 +1,3 @@
-import { statSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { FileCacheStorage } from "../../lib/storage/FileCacheStorage";
 import { InMemoryCacheStorage } from "../../lib/storage/InMemoryCacheStorage";
@@ -38,18 +37,12 @@ class SessionMetaStorage {
 
     const sessionPath = decodeSessionId(projectId, sessionId);
 
-    const stats = statSync(sessionPath);
-    const lastModifiedUnixTime = stats.mtime.getTime();
-
     const content = await readFile(sessionPath, "utf-8");
     const lines = content.split("\n");
 
     const sessionMeta: SessionMeta = {
       messageCount: lines.length,
       firstCommand: this.getFirstCommand(sessionPath, lines),
-      lastModifiedAt: lastModifiedUnixTime
-        ? new Date(lastModifiedUnixTime).toISOString()
-        : null,
     };
 
     this.sessionMetaCache.save(sessionId, sessionMeta);

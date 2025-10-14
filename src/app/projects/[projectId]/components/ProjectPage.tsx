@@ -25,24 +25,30 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { projectDetailQuery } from "../../../../lib/api/queries";
 import { useConfig } from "../../../hooks/useConfig";
 import { useProject } from "../hooks/useProject";
 import { firstCommandToTitle } from "../services/firstCommandToTitle";
 import { NewChatModal } from "./newChat/NewChatModal";
 
 export const ProjectPageContent = ({ projectId }: { projectId: string }) => {
-  const {
-    data: { project, sessions },
-  } = useProject(projectId);
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useProject(projectId);
   const { config } = useConfig();
   const queryClient = useQueryClient();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
+  // Flatten all pages to get project and sessions
+  const project = data.pages.at(0)?.project;
+  const sessions = data.pages.flatMap((page) => page.sessions);
+
+  if (!project) {
+    throw new Error("Unreachable: Project must be defined.");
+  }
+
   // biome-ignore lint/correctness/useExhaustiveDependencies: invalidate when config changed
   useEffect(() => {
     void queryClient.invalidateQueries({
-      queryKey: projectDetailQuery(projectId).queryKey,
+      queryKey: ["projects", projectId],
     });
   }, [config.hideNoUserMessageSession, config.unifySameTitleSession]);
 
@@ -170,10 +176,8 @@ export const ProjectPageContent = ({ projectId }: { projectId: string }) => {
                     </p>
                     <p className="text-sm text-muted-foreground">
                       Last modified:{" "}
-                      {session.meta.lastModifiedAt
-                        ? new Date(
-                            session.meta.lastModifiedAt,
-                          ).toLocaleDateString()
+                      {session.lastModifiedAt
+                        ? new Date(session.lastModifiedAt).toLocaleDateString()
                         : ""}
                     </p>
                     <p className="text-xs text-muted-foreground font-mono">
@@ -193,6 +197,21 @@ export const ProjectPageContent = ({ projectId }: { projectId: string }) => {
                   </CardContent>
                 </Card>
               ))}
+            </div>
+          )}
+
+          {/* Load More Button */}
+          {sessions.length > 0 && hasNextPage && (
+            <div className="mt-6 flex justify-center">
+              <Button
+                onClick={() => fetchNextPage()}
+                disabled={isFetchingNextPage}
+                variant="outline"
+                size="lg"
+                className="min-w-[200px]"
+              >
+                {isFetchingNextPage ? "Loading..." : "Load More"}
+              </Button>
             </div>
           )}
         </section>

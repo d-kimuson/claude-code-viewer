@@ -16,7 +16,17 @@ export const SessionsTab: FC<{
   sessions: Session[];
   currentSessionId: string;
   projectId: string;
-}> = ({ sessions, currentSessionId, projectId }) => {
+  hasNextPage?: boolean;
+  isFetchingNextPage?: boolean;
+  onLoadMore?: () => void;
+}> = ({
+  sessions,
+  currentSessionId,
+  projectId,
+  hasNextPage,
+  isFetchingNextPage,
+  onLoadMore,
+}) => {
   const aliveTasks = useAtomValue(aliveTasksAtom);
 
   // Sort sessions: Running > Paused > Others, then by lastModifiedAt (newest first)
@@ -43,12 +53,8 @@ export const SessionsTab: FC<{
     }
 
     // Then sort by lastModifiedAt (newest first)
-    const aTime = a.meta.lastModifiedAt
-      ? new Date(a.meta.lastModifiedAt).getTime()
-      : 0;
-    const bTime = b.meta.lastModifiedAt
-      ? new Date(b.meta.lastModifiedAt).getTime()
-      : 0;
+    const aTime = a.lastModifiedAt ? a.lastModifiedAt.getTime() : 0;
+    const bTime = b.lastModifiedAt ? b.lastModifiedAt.getTime() : 0;
     return bTime - aTime;
   });
 
@@ -121,9 +127,9 @@ export const SessionsTab: FC<{
                     <MessageSquareIcon className="w-3 h-3" />
                     <span>{session.meta.messageCount}</span>
                   </div>
-                  {session.meta.lastModifiedAt && (
+                  {session.lastModifiedAt && (
                     <span className="text-xs text-sidebar-foreground/60">
-                      {new Date(session.meta.lastModifiedAt).toLocaleDateString(
+                      {new Date(session.lastModifiedAt).toLocaleDateString(
                         "en-US",
                         {
                           month: "short",
@@ -137,6 +143,21 @@ export const SessionsTab: FC<{
             </Link>
           );
         })}
+
+        {/* Load More Button */}
+        {hasNextPage && onLoadMore && (
+          <div className="p-2">
+            <Button
+              onClick={onLoadMore}
+              disabled={isFetchingNextPage}
+              variant="outline"
+              size="sm"
+              className="w-full"
+            >
+              {isFetchingNextPage ? "Loading..." : "Load More"}
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

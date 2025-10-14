@@ -1,4 +1,4 @@
-import { existsSync } from "node:fs";
+import { existsSync, statSync } from "node:fs";
 import { access, constants, readdir } from "node:fs/promises";
 import { resolve } from "node:path";
 import { claudeProjectsDirPath } from "../paths";
@@ -19,6 +19,7 @@ export class ProjectRepository {
       project: {
         id: projectId,
         claudeProjectPath: fullPath,
+        lastModifiedAt: statSync(fullPath).mtime,
         meta,
       },
     };
@@ -50,6 +51,7 @@ export class ProjectRepository {
             return {
               id,
               claudeProjectPath: fullPath,
+              lastModifiedAt: statSync(fullPath).mtime,
               meta: await projectMetaStorage.getProjectMeta(id),
             };
           }),
@@ -58,12 +60,8 @@ export class ProjectRepository {
       return {
         projects: projects.sort((a, b) => {
           return (
-            (b.meta.lastModifiedAt
-              ? new Date(b.meta.lastModifiedAt).getTime()
-              : 0) -
-            (a.meta.lastModifiedAt
-              ? new Date(a.meta.lastModifiedAt).getTime()
-              : 0)
+            (b.lastModifiedAt ? b.lastModifiedAt.getTime() : 0) -
+            (a.lastModifiedAt ? a.lastModifiedAt.getTime() : 0)
           );
         }),
       };

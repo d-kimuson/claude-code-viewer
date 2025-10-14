@@ -24,8 +24,12 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
   onClose,
 }) => {
   const {
-    data: { sessions },
+    data: projectData,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
   } = useProject(projectId);
+  const sessions = projectData.pages.flatMap((page) => page.sessions);
   const [activeTab, setActiveTab] = useState<"sessions" | "mcp" | "settings">(
     "sessions",
   );
@@ -71,9 +75,15 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
       case "sessions":
         return (
           <SessionsTab
-            sessions={sessions}
+            sessions={sessions.map((session) => ({
+              ...session,
+              lastModifiedAt: new Date(session.lastModifiedAt),
+            }))}
             currentSessionId={currentSessionId}
             projectId={projectId}
+            hasNextPage={hasNextPage}
+            isFetchingNextPage={isFetchingNextPage}
+            onLoadMore={() => fetchNextPage()}
           />
         );
       case "mcp":

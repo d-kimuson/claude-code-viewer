@@ -5,6 +5,7 @@ import type { projectMetaSchema, sessionMetaSchema } from "./schema";
 export type Project = {
   id: string;
   claudeProjectPath: string;
+  lastModifiedAt: Date;
   meta: ProjectMeta;
 };
 
@@ -13,6 +14,7 @@ export type ProjectMeta = z.infer<typeof projectMetaSchema>;
 export type Session = {
   id: string;
   jsonlFilePath: string;
+  lastModifiedAt: Date;
   meta: SessionMeta;
 };
 

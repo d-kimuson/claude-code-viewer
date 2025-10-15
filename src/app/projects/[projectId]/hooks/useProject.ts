@@ -3,9 +3,10 @@ import { projectDetailQuery } from "../../../../lib/api/queries";
 
 export const useProject = (projectId: string) => {
   return useSuspenseInfiniteQuery({
-    queryKey: ["projects", projectId],
+    queryKey: projectDetailQuery(projectId).queryKey,
     queryFn: async ({ pageParam }) => {
-      return await projectDetailQuery(projectId, pageParam).queryFn();
+      const result = await projectDetailQuery(projectId, pageParam).queryFn();
+      return result;
     },
     initialPageParam: undefined as string | undefined,
     getNextPageParam: (lastPage) => lastPage.nextCursor,

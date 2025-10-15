@@ -7,8 +7,12 @@ import type { Session, SessionDetail } from "../types";
 class PredictSessionsDatabase {
   private storage = new Map<string, SessionDetail>();
 
+  private get allPredictSessions() {
+    return Array.from(this.storage.values());
+  }
+
   public getPredictSessions(projectId: string): Session[] {
-    return Array.from(this.storage.values()).filter(
+    return this.allPredictSessions.filter(
       ({ jsonlFilePath }) =>
         encodeProjectIdFromSessionFilePath(jsonlFilePath) === projectId,
     );

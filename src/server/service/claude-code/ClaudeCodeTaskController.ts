@@ -1,6 +1,9 @@
+import { resolve } from "node:path";
 import { ulid } from "ulid";
 import type { Config } from "../../config/config";
 import { eventBus } from "../events/EventBus";
+import { parseCommandXml } from "../parseCommandXml";
+import { decodeProjectId } from "../project/id";
 import { predictSessionsDatabase } from "../session/PredictSessionsDatabase";
 import { ClaudeCodeExecutor } from "./ClaudeCodeExecutor";
 import { createMessageGenerator } from "./createMessageGenerator";
@@ -270,7 +273,10 @@ class ClaudeCodeTaskController {
             // because it takes time for the Claude Code file to be updated, simulate the message
             predictSessionsDatabase.createPredictSession({
               id: message.session_id,
-              jsonlFilePath: message.session_id,
+              jsonlFilePath: resolve(
+                decodeProjectId(currentSession.projectId),
+                `${message.session_id}.jsonl`,
+              ),
               conversations: [
                 {
                   type: "user",
@@ -289,10 +295,14 @@ class ClaudeCodeTaskController {
                 },
               ],
               meta: {
-                firstCommand: null,
+                firstCommand: parseCommandXml(userMessage),
                 messageCount: 0,
               },
               lastModifiedAt: new Date(),
+            });
+
+            eventBus.emit("sessionListChanged", {
+              projectId: task.projectId,
             });
           }
 
@@ -421,12 +431,10 @@ class ClaudeCodeTaskController {
       Object.assign(target, task);
     }
 
-    if (task.status === "paused" || task.status === "running") {
-      eventBus.emit("taskChanged", {
-        aliveTasks: this.aliveTasks,
-        changed: task,
-      });
-    }
+    eventBus.emit("taskChanged", {
+      aliveTasks: this.aliveTasks,
+      changed: task,
+    });
   }
 }
 

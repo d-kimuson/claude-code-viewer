@@ -1,5 +1,6 @@
 import type {
   AliveClaudeCodeTask,
+  ClaudeCodeTask,
   PermissionRequest,
 } from "../claude-code/types";
 
@@ -18,7 +19,7 @@ export type InternalEventDeclaration = {
 
   taskChanged: {
     aliveTasks: AliveClaudeCodeTask[];
-    changed: AliveClaudeCodeTask;
+    changed: ClaudeCodeTask;
   };
 
   permissionRequested: {

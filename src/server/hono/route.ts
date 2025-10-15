@@ -442,8 +442,19 @@ export const routes = async (app: HonoAppType) => {
             ) => {
               stream.writeSSE("taskChanged", {
                 aliveTasks: event.aliveTasks,
-                changed: event.changed,
+                changed: {
+                  status: event.changed.status,
+                  sessionId: event.changed.sessionId,
+                  projectId: event.changed.projectId,
+                },
               });
+
+              if (event.changed.sessionId !== undefined) {
+                stream.writeSSE("sessionChanged", {
+                  projectId: event.changed.projectId,
+                  sessionId: event.changed.sessionId,
+                });
+              }
             };
 
             eventBus.on("sessionListChanged", onSessionListChanged);

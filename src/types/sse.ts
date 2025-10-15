@@ -1,5 +1,6 @@
 import type {
   AliveClaudeCodeTask,
+  ClaudeCodeTask,
   PermissionRequest,
 } from "../server/service/claude-code/types";
 
@@ -21,7 +22,7 @@ export type SSEEventDeclaration = {
 
   taskChanged: {
     aliveTasks: AliveClaudeCodeTask[];
-    changed: AliveClaudeCodeTask;
+    changed: Pick<ClaudeCodeTask, "status" | "sessionId" | "projectId">;
   };
 
   permission_requested: {

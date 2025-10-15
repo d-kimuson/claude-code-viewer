@@ -19,7 +19,8 @@ export class SessionRepository {
     if (!existsSync(sessionPath)) {
       const predictSession =
         predictSessionsDatabase.getPredictSession(sessionId);
-      if (predictSession) {
+
+      if (predictSession !== null) {
         return {
           session: predictSession,
         };

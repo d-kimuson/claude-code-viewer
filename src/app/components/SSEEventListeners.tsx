@@ -25,13 +25,8 @@ export const SSEEventListeners: FC<PropsWithChildren> = ({ children }) => {
     });
   });
 
-  useServerEventListener("taskChanged", async ({ aliveTasks, changed }) => {
+  useServerEventListener("taskChanged", async ({ aliveTasks }) => {
     setAliveTasks(aliveTasks);
-
-    await queryClient.invalidateQueries({
-      queryKey: sessionDetailQuery(changed.projectId, changed.sessionId)
-        .queryKey,
-    });
   });
 
   return <>{children}</>;

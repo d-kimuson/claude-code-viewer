@@ -2,27 +2,21 @@ import type { FC } from "react";
 import { useConfig } from "../../../../../../hooks/useConfig";
 import {
   ChatInput,
-  useResumeChatMutation,
+  useCreateSessionProcessMutation,
 } from "../../../../components/chatForm";
 
 export const ResumeChat: FC<{
   projectId: string;
   sessionId: string;
-  isPausedTask: boolean;
-  isRunningTask: boolean;
-}> = ({ projectId, sessionId, isPausedTask, isRunningTask }) => {
-  const resumeChat = useResumeChatMutation(projectId, sessionId);
+}> = ({ projectId, sessionId }) => {
+  const createSessionProcess = useCreateSessionProcessMutation(projectId);
   const { config } = useConfig();
 
   const handleSubmit = async (message: string) => {
-    await resumeChat.mutateAsync({ message });
-  };
-
-  const getButtonText = () => {
-    if (isPausedTask || isRunningTask) {
-      return "Send";
-    }
-    return "Resume";
+    await createSessionProcess.mutateAsync({
+      message,
+      baseSessionId: sessionId,
+    });
   };
 
   const getPlaceholder = () => {
@@ -38,10 +32,10 @@ export const ResumeChat: FC<{
       <ChatInput
         projectId={projectId}
         onSubmit={handleSubmit}
-        isPending={resumeChat.isPending}
-        error={resumeChat.error}
+        isPending={createSessionProcess.isPending}
+        error={createSessionProcess.error}
         placeholder={getPlaceholder()}
-        buttonText={getButtonText()}
+        buttonText={"Resume"}
         minHeight="min-h-[100px]"
         containerClassName="space-y-2"
         buttonSize="default"

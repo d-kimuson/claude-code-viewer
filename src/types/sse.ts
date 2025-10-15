@@ -1,8 +1,5 @@
-import type {
-  AliveClaudeCodeTask,
-  ClaudeCodeTask,
-  PermissionRequest,
-} from "../server/service/claude-code/types";
+import type { PermissionRequest } from "./permissions";
+import type { PublicSessionProcess } from "./session-process";
 
 export type SSEEventDeclaration = {
   // biome-ignore lint/complexity/noBannedTypes: correct type
@@ -20,9 +17,8 @@ export type SSEEventDeclaration = {
     sessionId: string;
   };
 
-  taskChanged: {
-    aliveTasks: AliveClaudeCodeTask[];
-    changed: Pick<ClaudeCodeTask, "status" | "sessionId" | "projectId">;
+  sessionProcessChanged: {
+    processes: PublicSessionProcess[];
   };
 
   permission_requested: {

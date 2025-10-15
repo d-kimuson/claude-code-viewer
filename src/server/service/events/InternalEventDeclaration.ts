@@ -1,8 +1,6 @@
-import type {
-  AliveClaudeCodeTask,
-  ClaudeCodeTask,
-  PermissionRequest,
-} from "../claude-code/types";
+import type { PermissionRequest } from "../../../types/permissions";
+import type { PublicSessionProcess } from "../../../types/session-process";
+import type * as CCSessionProcess from "../claude-code/models/CCSessionProcess";
 
 export type InternalEventDeclaration = {
   // biome-ignore lint/complexity/noBannedTypes: correct type
@@ -17,9 +15,9 @@ export type InternalEventDeclaration = {
     sessionId: string;
   };
 
-  taskChanged: {
-    aliveTasks: AliveClaudeCodeTask[];
-    changed: ClaudeCodeTask;
+  sessionProcessChanged: {
+    processes: PublicSessionProcess[];
+    changed: CCSessionProcess.CCSessionProcessState;
   };
 
   permissionRequested: {

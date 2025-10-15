@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 import type { Session } from "../../../../../../../server/service/types";
 import { NewChatModal } from "../../../../components/newChat/NewChatModal";
 import { firstCommandToTitle } from "../../../../services/firstCommandToTitle";
-import { aliveTasksAtom } from "../../store/aliveTasksAtom";
+import { sessionProcessesAtom } from "../../store/sessionProcessesAtom";
 
 export const SessionsTab: FC<{
   sessions: Session[];
@@ -27,18 +27,22 @@ export const SessionsTab: FC<{
   isFetchingNextPage,
   onLoadMore,
 }) => {
-  const aliveTasks = useAtomValue(aliveTasksAtom);
+  const sessionProcesses = useAtomValue(sessionProcessesAtom);
 
   // Sort sessions: Running > Paused > Others, then by lastModifiedAt (newest first)
   const sortedSessions = [...sessions].sort((a, b) => {
-    const aTask = aliveTasks.find((task) => task.sessionId === a.id);
-    const bTask = aliveTasks.find((task) => task.sessionId === b.id);
+    const aProcess = sessionProcesses.find(
+      (process) => process.sessionId === a.id,
+    );
+    const bProcess = sessionProcesses.find(
+      (process) => process.sessionId === b.id,
+    );
 
-    const aStatus = aTask?.status;
-    const bStatus = bTask?.status;
+    const aStatus = aProcess?.status;
+    const bStatus = bProcess?.status;
 
     // Define priority: running = 0, paused = 1, others = 2
-    const getPriority = (status: string | undefined) => {
+    const getPriority = (status: "paused" | "running" | undefined) => {
       if (status === "running") return 0;
       if (status === "paused") return 1;
       return 2;
@@ -86,11 +90,11 @@ export const SessionsTab: FC<{
               ? firstCommandToTitle(session.meta.firstCommand)
               : session.id;
 
-          const aliveTask = aliveTasks.find(
+          const sessionProcess = sessionProcesses.find(
             (task) => task.sessionId === session.id,
           );
-          const isRunning = aliveTask?.status === "running";
-          const isPaused = aliveTask?.status === "paused";
+          const isRunning = sessionProcess?.status === "running";
+          const isPaused = sessionProcess?.status === "paused";
 
           return (
             <Link

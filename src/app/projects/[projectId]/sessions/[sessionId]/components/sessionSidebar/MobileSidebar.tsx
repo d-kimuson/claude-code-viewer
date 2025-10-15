@@ -87,7 +87,7 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
           />
         );
       case "mcp":
-        return <McpTab />;
+        return <McpTab projectId={projectId} />;
       case "settings":
         return <SettingsTab openingProjectId={projectId} />;
       default:

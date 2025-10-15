@@ -2,20 +2,24 @@ import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { honoClient } from "../../../../../lib/api/client";
 
-export const useNewChatMutation = (
+export const useCreateSessionProcessMutation = (
   projectId: string,
   onSuccess?: () => void,
 ) => {
   const router = useRouter();
 
   return useMutation({
-    mutationFn: async (options: { message: string }) => {
-      const response = await honoClient.api.projects[":projectId"][
-        "new-session"
-      ].$post(
+    mutationFn: async (options: {
+      message: string;
+      baseSessionId?: string;
+    }) => {
+      const response = await honoClient.api.cc["session-processes"].$post(
         {
-          param: { projectId },
-          json: { message: options.message },
+          json: {
+            projectId,
+            baseSessionId: options.baseSessionId,
+            message: options.message,
+          },
         },
         {
           init: {
@@ -32,22 +36,32 @@ export const useNewChatMutation = (
     },
     onSuccess: async (response) => {
       onSuccess?.();
-      router.push(`/projects/${projectId}/sessions/${response.sessionId}`);
+      router.push(
+        `/projects/${projectId}/sessions/${response.sessionProcess.sessionId}`,
+      );
     },
   });
 };
 
-export const useResumeChatMutation = (projectId: string, sessionId: string) => {
-  const router = useRouter();
-
+export const useContinueSessionProcessMutation = (
+  projectId: string,
+  baseSessionId: string,
+) => {
   return useMutation({
-    mutationFn: async (options: { message: string }) => {
-      const response = await honoClient.api.projects[":projectId"].sessions[
-        ":sessionId"
-      ].resume.$post(
+    mutationFn: async (options: {
+      message: string;
+      sessionProcessId: string;
+    }) => {
+      const response = await honoClient.api.cc["session-processes"][
+        ":sessionProcessId"
+      ].continue.$post(
         {
-          param: { projectId, sessionId },
-          json: { resumeMessage: options.message },
+          param: { sessionProcessId: options.sessionProcessId },
+          json: {
+            projectId: projectId,
+            baseSessionId: baseSessionId,
+            continueMessage: options.message,
+          },
         },
         {
           init: {
@@ -61,11 +75,6 @@ export const useResumeChatMutation = (projectId: string, sessionId: string) => {
       }
 
       return response.json();
-    },
-    onSuccess: async (response) => {
-      if (sessionId !== response.sessionId) {
-        router.push(`/projects/${projectId}/sessions/${response.sessionId}`);
-      }
     },
   });
 };

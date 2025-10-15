@@ -1,15 +1,19 @@
 import { execSync } from "node:child_process";
+import { decodeProjectId } from "../project/id";
 
 export interface McpServer {
   name: string;
   command: string;
 }
 
-export const getMcpList = async (): Promise<{ servers: McpServer[] }> => {
+export const getMcpList = async (
+  projectId: string,
+): Promise<{ servers: McpServer[] }> => {
   try {
     const output = execSync("claude mcp list", {
       encoding: "utf8",
       timeout: 10000,
+      cwd: decodeProjectId(projectId),
     });
 
     const servers: McpServer[] = [];

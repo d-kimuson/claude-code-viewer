@@ -74,10 +74,10 @@ export const claudeCommandsQuery = (projectId: string) =>
     },
   }) as const;
 
-export const aliveTasksQuery = {
-  queryKey: ["aliveTasks"],
+export const sessionProcessesQuery = {
+  queryKey: ["sessionProcesses"],
   queryFn: async () => {
-    const response = await honoClient.api.tasks.alive.$get({});
+    const response = await honoClient.api.cc["session-processes"].$get({});
 
     if (!response.ok) {
       throw new Error(`Failed to fetch alive tasks: ${response.statusText}`);
@@ -123,18 +123,23 @@ export const gitCommitsQuery = (projectId: string) =>
     },
   }) as const;
 
-export const mcpListQuery = {
-  queryKey: ["mcp", "list"],
-  queryFn: async () => {
-    const response = await honoClient.api.mcp.list.$get();
+export const mcpListQuery = (projectId: string) =>
+  ({
+    queryKey: ["mcp", "list", projectId],
+    queryFn: async () => {
+      const response = await honoClient.api.projects[
+        ":projectId"
+      ].mcp.list.$get({
+        param: { projectId },
+      });
 
-    if (!response.ok) {
-      throw new Error(`Failed to fetch MCP list: ${response.statusText}`);
-    }
+      if (!response.ok) {
+        throw new Error(`Failed to fetch MCP list: ${response.statusText}`);
+      }
 
-    return await response.json();
-  },
-} as const;
+      return await response.json();
+    },
+  }) as const;
 
 export const fileCompletionQuery = (projectId: string, basePath: string) =>
   ({
@@ -151,7 +156,7 @@ export const fileCompletionQuery = (projectId: string, basePath: string) =>
         throw new Error("Failed to fetch file completion");
       }
 
-      return response.json();
+      return await response.json();
     },
   }) as const;
 

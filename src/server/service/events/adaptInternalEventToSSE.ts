@@ -1,7 +1,4 @@
 import type { SSEStreamingApi } from "hono/streaming";
-import { eventBus } from "./EventBus";
-import type { InternalEventDeclaration } from "./InternalEventDeclaration";
-import { writeTypeSafeSSE } from "./typeSafeSSE";
 
 export const adaptInternalEventToSSE = (
   rawStream: SSEStreamingApi,
@@ -12,10 +9,6 @@ export const adaptInternalEventToSSE = (
 ) => {
   const { timeout = 60 * 1000, cleanUp } = options ?? {};
 
-  console.log("SSE connection started");
-
-  const stream = writeTypeSafeSSE(rawStream);
-
   const abortController = new AbortController();
   let connectionResolve: (() => void) | undefined;
   const connectionPromise = new Promise<void>((resolve) => {
@@ -23,40 +16,13 @@ export const adaptInternalEventToSSE = (
   });
 
   const closeConnection = () => {
-    console.log("SSE connection closed");
     connectionResolve?.();
     abortController.abort();
-
-    eventBus.off("heartbeat", heartbeat);
-    eventBus.off("permissionRequested", permissionRequested);
     cleanUp?.();
   };
 
   rawStream.onAbort(() => {
-    console.log("SSE connection aborted");
     closeConnection();
-  });
-
-  // Event Listeners
-  const heartbeat = (event: InternalEventDeclaration["heartbeat"]) => {
-    stream.writeSSE("heartbeat", {
-      ...event,
-    });
-  };
-
-  const permissionRequested = (
-    event: InternalEventDeclaration["permissionRequested"],
-  ) => {
-    stream.writeSSE("permission_requested", {
-      permissionRequest: event.permissionRequest,
-    });
-  };
-
-  eventBus.on("heartbeat", heartbeat);
-  eventBus.on("permissionRequested", permissionRequested);
-
-  stream.writeSSE("connect", {
-    timestamp: new Date().toISOString(),
   });
 
   setTimeout(() => {

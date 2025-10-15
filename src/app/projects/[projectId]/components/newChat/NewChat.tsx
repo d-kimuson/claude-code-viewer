@@ -1,16 +1,19 @@
 import type { FC } from "react";
 import { useConfig } from "../../../../hooks/useConfig";
-import { ChatInput, useNewChatMutation } from "../chatForm";
+import { ChatInput, useCreateSessionProcessMutation } from "../chatForm";
 
 export const NewChat: FC<{
   projectId: string;
   onSuccess?: () => void;
 }> = ({ projectId, onSuccess }) => {
-  const startNewChat = useNewChatMutation(projectId, onSuccess);
+  const createSessionProcess = useCreateSessionProcessMutation(
+    projectId,
+    onSuccess,
+  );
   const { config } = useConfig();
 
   const handleSubmit = async (message: string) => {
-    await startNewChat.mutateAsync({ message });
+    await createSessionProcess.mutateAsync({ message });
   };
 
   const getPlaceholder = () => {
@@ -25,8 +28,8 @@ export const NewChat: FC<{
     <ChatInput
       projectId={projectId}
       onSubmit={handleSubmit}
-      isPending={startNewChat.isPending}
-      error={startNewChat.error}
+      isPending={createSessionProcess.isPending}
+      error={createSessionProcess.error}
       placeholder={getPlaceholder()}
       buttonText="Start Chat"
       minHeight="min-h-[200px]"

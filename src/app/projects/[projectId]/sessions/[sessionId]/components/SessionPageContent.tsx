@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import type { FC } from "react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { PermissionDialog } from "@/components/PermissionDialog";
 import { Button } from "@/components/ui/button";
 import { usePermissionRequests } from "@/hooks/usePermissionRequests";
@@ -20,10 +20,11 @@ import { Badge } from "../../../../../../components/ui/badge";
 import { honoClient } from "../../../../../../lib/api/client";
 import { useProject } from "../../../hooks/useProject";
 import { firstCommandToTitle } from "../../../services/firstCommandToTitle";
-import { useAliveTask } from "../hooks/useAliveTask";
 import { useSession } from "../hooks/useSession";
+import { useSessionProcess } from "../hooks/useSessionProcess";
 import { ConversationList } from "./conversationList/ConversationList";
 import { DiffModal } from "./diffModal";
+import { ContinueChat } from "./resumeChat/ContinueChat";
 import { ResumeChat } from "./resumeChat/ResumeChat";
 import { SessionSidebar } from "./sessionSidebar/SessionSidebar";
 
@@ -40,9 +41,12 @@ export const SessionPageContent: FC<{
   const project = projectData.pages[0]!.project;
 
   const abortTask = useMutation({
-    mutationFn: async (sessionId: string) => {
-      const response = await honoClient.api.tasks.abort.$post({
-        json: { sessionId },
+    mutationFn: async (sessionProcessId: string) => {
+      const response = await honoClient.api.cc["session-processes"][
+        ":sessionProcessId"
+      ].abort.$post({
+        param: { sessionProcessId },
+        json: { projectId },
       });
 
       if (!response.ok) {
@@ -52,13 +56,18 @@ export const SessionPageContent: FC<{
       return response.json();
     },
   });
+  const sessionProcess = useSessionProcess();
 
-  const { isRunningTask, isPausedTask } = useAliveTask(sessionId);
   const { currentPermissionRequest, isDialogOpen, onPermissionResponse } =
     usePermissionRequests();
 
+  const relatedSessionProcess = useMemo(
+    () => sessionProcess.getSessionProcess(sessionId),
+    [sessionProcess, sessionId],
+  );
+
   // Set up task completion notifications
-  useTaskNotifications(isRunningTask);
+  useTaskNotifications(relatedSessionProcess?.status === "running");
 
   const [previousConversationLength, setPreviousConversationLength] =
     useState(0);
@@ -69,7 +78,7 @@ export const SessionPageContent: FC<{
   // 自動スクロール処理
   useEffect(() => {
     if (
-      (isRunningTask || isPausedTask) &&
+      relatedSessionProcess?.status === "running" &&
       conversations.length !== previousConversationLength
     ) {
       setPreviousConversationLength(conversations.length);
@@ -81,7 +90,11 @@ export const SessionPageContent: FC<{
         });
       }
     }
-  }, [conversations, isRunningTask, isPausedTask, previousConversationLength]);
+  }, [
+    conversations,
+    relatedSessionProcess?.status,
+    previousConversationLength,
+  ]);
 
   return (
     <div className="flex h-screen max-h-screen overflow-hidden">
@@ -136,7 +149,7 @@ export const SessionPageContent: FC<{
               </Badge>
             </div>
 
-            {isRunningTask && (
+            {relatedSessionProcess?.status === "running" && (
               <div className="flex items-center gap-1 sm:gap-2 p-1 bg-primary/10 border border-primary/20 rounded-lg mx-1 sm:mx-5">
                 <LoaderIcon className="w-3 h-3 sm:w-4 sm:h-4 animate-spin" />
                 <div className="flex-1">
@@ -148,7 +161,7 @@ export const SessionPageContent: FC<{
                   variant="ghost"
                   size="sm"
                   onClick={() => {
-                    abortTask.mutate(sessionId);
+                    abortTask.mutate(relatedSessionProcess.id);
                   }}
                 >
                   <XIcon className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -157,7 +170,7 @@ export const SessionPageContent: FC<{
               </div>
             )}
 
-            {isPausedTask && (
+            {relatedSessionProcess?.status === "paused" && (
               <div className="flex items-center gap-1 sm:gap-2 p-1 bg-primary/10 border border-primary/20 rounded-lg mx-1 sm:mx-5">
                 <PauseIcon className="w-3 h-3 sm:w-4 sm:h-4" />
                 <div className="flex-1">
@@ -169,7 +182,7 @@ export const SessionPageContent: FC<{
                   variant="ghost"
                   size="sm"
                   onClick={() => {
-                    abortTask.mutate(sessionId);
+                    abortTask.mutate(relatedSessionProcess.id);
                   }}
                 >
                   <XIcon className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -190,7 +203,7 @@ export const SessionPageContent: FC<{
               getToolResult={getToolResult}
             />
 
-            {isRunningTask && (
+            {relatedSessionProcess?.status === "running" && (
               <div className="flex justify-start items-center py-8">
                 <div className="flex flex-col items-center gap-4">
                   <div className="flex items-center gap-2">
@@ -207,12 +220,15 @@ export const SessionPageContent: FC<{
               </div>
             )}
 
-            <ResumeChat
-              projectId={projectId}
-              sessionId={sessionId}
-              isPausedTask={isPausedTask}
-              isRunningTask={isRunningTask}
-            />
+            {relatedSessionProcess !== undefined ? (
+              <ContinueChat
+                projectId={projectId}
+                sessionId={sessionId}
+                sessionProcessId={relatedSessionProcess.id}
+              />
+            ) : (
+              <ResumeChat projectId={projectId} sessionId={sessionId} />
+            )}
           </main>
         </div>
       </div>

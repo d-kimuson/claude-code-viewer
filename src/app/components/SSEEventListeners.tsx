@@ -5,11 +5,11 @@ import { useSetAtom } from "jotai";
 import type { FC, PropsWithChildren } from "react";
 import { projectDetailQuery, sessionDetailQuery } from "../../lib/api/queries";
 import { useServerEventListener } from "../../lib/sse/hook/useServerEventListener";
-import { aliveTasksAtom } from "../projects/[projectId]/sessions/[sessionId]/store/aliveTasksAtom";
+import { sessionProcessesAtom } from "../projects/[projectId]/sessions/[sessionId]/store/sessionProcessesAtom";
 
 export const SSEEventListeners: FC<PropsWithChildren> = ({ children }) => {
   const queryClient = useQueryClient();
-  const setAliveTasks = useSetAtom(aliveTasksAtom);
+  const setSessionProcesses = useSetAtom(sessionProcessesAtom);
 
   useServerEventListener("sessionListChanged", async (event) => {
     // invalidate session list
@@ -25,8 +25,8 @@ export const SSEEventListeners: FC<PropsWithChildren> = ({ children }) => {
     });
   });
 
-  useServerEventListener("taskChanged", async ({ aliveTasks }) => {
-    setAliveTasks(aliveTasks);
+  useServerEventListener("sessionProcessChanged", async ({ processes }) => {
+    setSessionProcesses(processes);
   });
 
   return <>{children}</>;

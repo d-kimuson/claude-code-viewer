@@ -1,4 +1,8 @@
-import type { SDKMessage, SDKUserMessage } from "@anthropic-ai/claude-code";
+import type {
+  SDKMessage,
+  SDKSystemMessage,
+  SDKUserMessage,
+} from "@anthropic-ai/claude-code";
 
 export type OnMessage = (message: SDKMessage) => void | Promise<void>;
 
@@ -28,17 +32,21 @@ const createPromise = <T>() => {
   } as const;
 };
 
+export type InitMessageContext = {
+  initMessage: SDKSystemMessage;
+};
+
 export const createMessageGenerator = (
   firstMessage: string,
 ): {
   generateMessages: MessageGenerator;
   setNextMessage: (message: string) => void;
-  setFirstMessagePromise: () => void;
-  resolveFirstMessage: () => void;
-  awaitFirstMessage: () => Promise<void>;
+  setInitMessagePromise: () => void;
+  resolveInitMessage: (context: InitMessageContext) => void;
+  awaitInitMessage: (ctx: InitMessageContext) => Promise<void>;
 } => {
   let sendMessagePromise = createPromise<string>();
-  let receivedFirstMessagePromise = createPromise<undefined>();
+  let receivedInitMessagePromise = createPromise<InitMessageContext>();
 
   const createMessage = (message: string): SDKUserMessage => {
     return {
@@ -65,23 +73,23 @@ export const createMessageGenerator = (
     sendMessagePromise.resolve(message);
   };
 
-  const setFirstMessagePromise = () => {
-    receivedFirstMessagePromise = createPromise<undefined>();
+  const setInitMessagePromise = () => {
+    receivedInitMessagePromise = createPromise<InitMessageContext>();
   };
 
-  const resolveFirstMessage = () => {
-    receivedFirstMessagePromise.resolve(undefined);
+  const resolveInitMessage = (context: InitMessageContext) => {
+    receivedInitMessagePromise.resolve(context);
   };
 
-  const awaitFirstMessage = async () => {
-    await receivedFirstMessagePromise.promise;
+  const awaitInitMessage = async () => {
+    await receivedInitMessagePromise.promise;
   };
 
   return {
     generateMessages,
     setNextMessage,
-    setFirstMessagePromise,
-    resolveFirstMessage,
-    awaitFirstMessage,
+    setInitMessagePromise,
+    resolveInitMessage,
+    awaitInitMessage,
   };
 };

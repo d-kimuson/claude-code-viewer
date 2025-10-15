@@ -3,9 +3,13 @@ import { useSessionQuery } from "./useSessionQuery";
 
 export const useSession = (projectId: string, sessionId: string) => {
   const query = useSessionQuery(projectId, sessionId);
+  const session = query.data?.session;
+  if (session === undefined || session === null) {
+    throw new Error("Session not found");
+  }
 
   const toolResultMap = useMemo(() => {
-    const entries = query.data.session.conversations.flatMap((conversation) => {
+    const entries = session.conversations.flatMap((conversation) => {
       if (conversation.type !== "user") {
         return [];
       }
@@ -28,7 +32,7 @@ export const useSession = (projectId: string, sessionId: string) => {
     });
 
     return new Map(entries);
-  }, [query.data.session.conversations]);
+  }, [session.conversations]);
 
   const getToolResult = useCallback(
     (toolUseId: string) => {
@@ -38,8 +42,8 @@ export const useSession = (projectId: string, sessionId: string) => {
   );
 
   return {
-    session: query.data.session,
-    conversations: query.data.session.conversations,
+    session,
+    conversations: session.conversations,
     getToolResult,
   };
 };

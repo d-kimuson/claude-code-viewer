@@ -1,73 +1,109 @@
-import { existsSync, statSync } from "node:fs";
-import { access, constants, readdir } from "node:fs/promises";
 import { resolve } from "node:path";
+import { FileSystem } from "@effect/platform";
+import { Context, Effect, Layer, Option } from "effect";
 import { claudeProjectsDirPath } from "../paths";
 import type { Project } from "../types";
 import { decodeProjectId, encodeProjectId } from "./id";
-import { projectMetaStorage } from "./projectMetaStorage";
+import { ProjectMetaService } from "./ProjectMetaService";
 
-export class ProjectRepository {
-  public async getProject(projectId: string): Promise<{ project: Project }> {
+const getProject = (projectId: string) =>
+  Effect.gen(function* () {
+    const fs = yield* FileSystem.FileSystem;
+    const projectMetaService = yield* ProjectMetaService;
+
     const fullPath = decodeProjectId(projectId);
-    if (!existsSync(fullPath)) {
-      throw new Error("Project not found");
+
+    // Check if project directory exists
+    const exists = yield* fs.exists(fullPath);
+    if (!exists) {
+      return yield* Effect.fail(new Error("Project not found"));
     }
 
-    const meta = await projectMetaStorage.getProjectMeta(projectId);
+    // Get file stats
+    const stat = yield* fs.stat(fullPath);
+
+    // Get project metadata
+    const meta = yield* projectMetaService.getProjectMeta(projectId);
 
     return {
       project: {
         id: projectId,
         claudeProjectPath: fullPath,
-        lastModifiedAt: statSync(fullPath).mtime,
+        lastModifiedAt: Option.getOrElse(stat.mtime, () => new Date()),
         meta,
       },
     };
-  }
+  });
 
-  public async getProjects(): Promise<{ projects: Project[] }> {
-    try {
-      // Check if the claude projects directory exists
-      await access(claudeProjectsDirPath, constants.F_OK);
-    } catch (_error) {
-      // Directory doesn't exist, return empty array
+const getProjects = () =>
+  Effect.gen(function* () {
+    const fs = yield* FileSystem.FileSystem;
+    const projectMetaService = yield* ProjectMetaService;
+
+    // Check if the claude projects directory exists
+    const dirExists = yield* fs.exists(claudeProjectsDirPath);
+    if (!dirExists) {
       console.warn(
         `Claude projects directory not found at ${claudeProjectsDirPath}`,
       );
       return { projects: [] };
     }
 
-    try {
-      const dirents = await readdir(claudeProjectsDirPath, {
-        withFileTypes: true,
-      });
-      const projects = await Promise.all(
-        dirents
-          .filter((d) => d.isDirectory())
-          .map(async (d) => {
-            const fullPath = resolve(claudeProjectsDirPath, d.name);
-            const id = encodeProjectId(fullPath);
+    // Read directory entries
+    const entries = yield* fs.readDirectory(claudeProjectsDirPath);
 
-            return {
-              id,
-              claudeProjectPath: fullPath,
-              lastModifiedAt: statSync(fullPath).mtime,
-              meta: await projectMetaStorage.getProjectMeta(id),
-            };
-          }),
+    // Filter directories and map to Project objects
+    const projectEffects = entries.map((entry) =>
+      Effect.gen(function* () {
+        const fullPath = resolve(claudeProjectsDirPath, entry);
+
+        // Check if it's a directory
+        const stat = yield* Effect.tryPromise(() =>
+          fs.stat(fullPath).pipe(Effect.runPromise),
+        ).pipe(Effect.catchAll(() => Effect.succeed(null)));
+
+        if (!stat || stat.type !== "Directory") {
+          return null;
+        }
+
+        const id = encodeProjectId(fullPath);
+        const meta = yield* projectMetaService.getProjectMeta(id);
+
+        return {
+          id,
+          claudeProjectPath: fullPath,
+          lastModifiedAt: Option.getOrElse(stat.mtime, () => new Date()),
+          meta,
+        } satisfies Project;
+      }),
+    );
+
+    // Execute all effects in parallel and filter out nulls
+    const projectsWithNulls = yield* Effect.all(projectEffects, {
+      concurrency: "unbounded",
+    });
+    const projects = projectsWithNulls.filter((p): p is Project => p !== null);
+
+    // Sort by last modified date (newest first)
+    const sortedProjects = projects.sort((a, b) => {
+      return (
+        (b.lastModifiedAt ? b.lastModifiedAt.getTime() : 0) -
+        (a.lastModifiedAt ? a.lastModifiedAt.getTime() : 0)
       );
+    });
 
-      return {
-        projects: projects.sort((a, b) => {
-          return (
-            (b.lastModifiedAt ? b.lastModifiedAt.getTime() : 0) -
-            (a.lastModifiedAt ? a.lastModifiedAt.getTime() : 0)
-          );
-        }),
-      };
-    } catch (error) {
-      console.error("Error reading projects:", error);
-      return { projects: [] };
-    }
+    return { projects: sortedProjects };
+  });
+
+export class ProjectRepository extends Context.Tag("ProjectRepository")<
+  ProjectRepository,
+  {
+    readonly getProject: typeof getProject;
+    readonly getProjects: typeof getProjects;
   }
+>() {
+  static Live = Layer.succeed(this, {
+    getProject,
+    getProjects,
+  });
 }

@@ -13,6 +13,7 @@ export const envSchema = z.object({
     .optional()
     .default("3000")
     .transform((val) => parseInt(val, 10)),
+  PATH: z.string().optional(),
 });
 
 export type EnvSchema = z.infer<typeof envSchema>;

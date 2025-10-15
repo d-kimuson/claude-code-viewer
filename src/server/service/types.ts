@@ -23,6 +23,7 @@ export type SessionMeta = z.infer<typeof sessionMetaSchema>;
 export type ErrorJsonl = {
   type: "x-error";
   line: string;
+  lineNumber: number;
 };
 
 export type SessionDetail = Session & {

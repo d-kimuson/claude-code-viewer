@@ -7,13 +7,13 @@ export const parseJsonl = (content: string) => {
     .split("\n")
     .filter((line) => line.trim() !== "");
 
-  return lines.map((line) => {
+  return lines.map((line, index) => {
     const parsed = ConversationSchema.safeParse(JSON.parse(line));
     if (!parsed.success) {
-      console.warn("Failed to parse jsonl, skipping", parsed.error);
       const errorData: ErrorJsonl = {
         type: "x-error",
         line,
+        lineNumber: index + 1,
       };
       return errorData;
     }

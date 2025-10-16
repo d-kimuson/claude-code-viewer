@@ -24,9 +24,9 @@ import { getMcpList } from "../service/mcp/getMcpList";
 import { claudeCommandsDirPath } from "../service/paths";
 import type { ProjectMetaService } from "../service/project/ProjectMetaService";
 import { ProjectRepository } from "../service/project/ProjectRepository";
-import type { VirtualConversationDatabase } from "../service/session/PredictSessionsDatabase";
 import type { SessionMetaService } from "../service/session/SessionMetaService";
 import { SessionRepository } from "../service/session/SessionRepository";
+import type { VirtualConversationDatabase } from "../service/session/VirtualConversationDatabase";
 import type { HonoAppType } from "./app";
 import { InitializeService } from "./initialize";
 import { configMiddleware } from "./middleware/config.middleware";
@@ -183,6 +183,24 @@ export const routes = (app: HonoAppType) =>
             return c.json(result);
           },
         )
+
+        .get("/projects/:projectId/latest-session", async (c) => {
+          const { projectId } = c.req.param();
+
+          const program = Effect.gen(function* () {
+            const { sessions } = yield* sessionRepository.getSessions(
+              projectId,
+              { maxCount: 1 },
+            );
+
+            return {
+              latestSession: sessions[0] ?? null,
+            };
+          });
+
+          const result = await Runtime.runPromise(runtime)(program);
+          return c.json(result);
+        })
 
         .get("/projects/:projectId/sessions/:sessionId", async (c) => {
           const { projectId, sessionId } = c.req.param();

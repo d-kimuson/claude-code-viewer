@@ -12,14 +12,12 @@ export const SSEEventListeners: FC<PropsWithChildren> = ({ children }) => {
   const setSessionProcesses = useSetAtom(sessionProcessesAtom);
 
   useServerEventListener("sessionListChanged", async (event) => {
-    // invalidate session list
     await queryClient.invalidateQueries({
       queryKey: projectDetailQuery(event.projectId).queryKey,
     });
   });
 
   useServerEventListener("sessionChanged", async (event) => {
-    // invalidate session detail
     await queryClient.invalidateQueries({
       queryKey: sessionDetailQuery(event.projectId, event.sessionId).queryKey,
     });

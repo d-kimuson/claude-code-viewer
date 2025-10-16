@@ -17,9 +17,12 @@ export const NewChat: FC<{
   };
 
   const getPlaceholder = () => {
-    const isEnterSend = config?.enterKeyBehavior === "enter-send";
-    if (isEnterSend) {
+    const behavior = config?.enterKeyBehavior;
+    if (behavior === "enter-send") {
       return "Type your message here... (Start with / for commands, @ for files, Enter to send)";
+    }
+    if (behavior === "command-enter-send") {
+      return "Type your message here... (Start with / for commands, @ for files, Command+Enter to send)";
     }
     return "Type your message here... (Start with / for commands, @ for files, Shift+Enter to send)";
   };
@@ -33,7 +36,7 @@ export const NewChat: FC<{
       placeholder={getPlaceholder()}
       buttonText="Start Chat"
       minHeight="min-h-[200px]"
-      containerClassName="space-y-4"
+      containerClassName="p-6"
     />
   );
 };

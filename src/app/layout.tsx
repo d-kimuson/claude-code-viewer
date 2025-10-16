@@ -1,5 +1,6 @@
 import { QueryClient } from "@tanstack/react-query";
 import { Geist, Geist_Mono } from "next/font/google";
+import { ThemeProvider } from "next-themes";
 
 import { Toaster } from "../components/ui/sonner";
 import { QueryClientProviderWrapper } from "../lib/api/QueryClientProviderWrapper";
@@ -47,24 +48,26 @@ export default async function RootLayout({
     .then((response) => response.json());
 
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <RootErrorBoundary>
-          <QueryClientProviderWrapper>
-            <SSEProvider>
-              <SSEEventListeners>
-                <SyncSessionProcess
-                  initProcesses={initSessionProcesses.processes}
-                >
-                  {children}
-                </SyncSessionProcess>
-              </SSEEventListeners>
-            </SSEProvider>
-          </QueryClientProviderWrapper>
-        </RootErrorBoundary>
-        <Toaster position="top-right" />
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <RootErrorBoundary>
+            <QueryClientProviderWrapper>
+              <SSEProvider>
+                <SSEEventListeners>
+                  <SyncSessionProcess
+                    initProcesses={initSessionProcesses.processes}
+                  >
+                    {children}
+                  </SyncSessionProcess>
+                </SSEEventListeners>
+              </SSEProvider>
+            </QueryClientProviderWrapper>
+          </RootErrorBoundary>
+          <Toaster position="top-right" />
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -1,4 +1,9 @@
-import { AlertCircleIcon, LoaderIcon, SendIcon } from "lucide-react";
+import {
+  AlertCircleIcon,
+  LoaderIcon,
+  SendIcon,
+  SparklesIcon,
+} from "lucide-react";
 import { type FC, useCallback, useId, useRef, useState } from "react";
 import { Button } from "../../../../../components/ui/button";
 import { Textarea } from "../../../../../components/ui/textarea";
@@ -62,14 +67,26 @@ export const ChatInput: FC<ChatInputProps> = ({
 
     // IMEで変換中の場合は送信しない
     if (e.key === "Enter" && !e.nativeEvent.isComposing) {
-      const isEnterSend = config?.enterKeyBehavior === "enter-send";
+      const enterKeyBehavior = config?.enterKeyBehavior;
 
-      if (isEnterSend && !e.shiftKey) {
+      if (enterKeyBehavior === "enter-send" && !e.shiftKey && !e.metaKey) {
         // Enter: Send mode
         e.preventDefault();
         handleSubmit();
-      } else if (!isEnterSend && e.shiftKey) {
+      } else if (
+        enterKeyBehavior === "shift-enter-send" &&
+        e.shiftKey &&
+        !e.metaKey
+      ) {
         // Shift+Enter: Send mode (default)
+        e.preventDefault();
+        handleSubmit();
+      } else if (
+        enterKeyBehavior === "command-enter-send" &&
+        e.metaKey &&
+        !e.shiftKey
+      ) {
+        // Command+Enter: Send mode (Mac)
         e.preventDefault();
         handleSubmit();
       }
@@ -148,78 +165,98 @@ export const ChatInput: FC<ChatInputProps> = ({
   return (
     <div className={containerClassName}>
       {error && (
-        <div className="flex items-center gap-2 p-3 text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-md mb-4">
-          <AlertCircleIcon className="w-4 h-4" />
-          <span>Failed to send message. Please try again.</span>
+        <div className="flex items-center gap-2.5 px-4 py-3 text-sm text-red-600 dark:text-red-400 bg-gradient-to-r from-red-50 to-red-100/50 dark:from-red-950/30 dark:to-red-900/20 border border-red-200/50 dark:border-red-800/50 rounded-xl mb-4 animate-in fade-in slide-in-from-top-2 duration-300 shadow-sm">
+          <AlertCircleIcon className="w-4 h-4 shrink-0 mt-0.5" />
+          <span className="font-medium">
+            Failed to send message. Please try again.
+          </span>
         </div>
       )}
 
-      <div className="space-y-3">
-        <div className="relative" ref={containerRef}>
-          <Textarea
-            ref={textareaRef}
-            value={message}
-            onChange={(e) => {
-              if (
-                e.target.value.endsWith("@") ||
-                e.target.value.endsWith("/")
-              ) {
-                const position = getCursorPosition();
-                if (position) {
-                  setCursorPosition(position);
+      <div className="relative group">
+        <div
+          className="absolute -inset-0.5 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+          aria-hidden="true"
+        />
+
+        <div className="relative bg-background border border-border/40 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
+          <div className="relative" ref={containerRef}>
+            <Textarea
+              ref={textareaRef}
+              value={message}
+              onChange={(e) => {
+                if (
+                  e.target.value.endsWith("@") ||
+                  e.target.value.endsWith("/")
+                ) {
+                  const position = getCursorPosition();
+                  if (position) {
+                    setCursorPosition(position);
+                  }
                 }
-              }
 
-              setMessage(e.target.value);
-            }}
-            onKeyDown={handleKeyDown}
-            placeholder={placeholder}
-            className={`${minHeight} resize-none`}
-            disabled={isPending || disabled}
-            maxLength={4000}
-            aria-label="Message input with completion support"
-            aria-describedby={helpId}
-            aria-expanded={message.startsWith("/") || message.includes("@")}
-            aria-haspopup="listbox"
-            role="combobox"
-            aria-autocomplete="list"
-          />
-          <InlineCompletion
-            projectId={projectId}
-            message={message}
-            commandCompletionRef={commandCompletionRef}
-            fileCompletionRef={fileCompletionRef}
-            handleCommandSelect={handleCommandSelect}
-            handleFileSelect={handleFileSelect}
-            cursorPosition={cursorPosition}
-          />
+                setMessage(e.target.value);
+              }}
+              onKeyDown={handleKeyDown}
+              placeholder={placeholder}
+              className={`${minHeight} resize-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent px-5 py-4 text-base transition-all duration-200 placeholder:text-muted-foreground/60`}
+              disabled={isPending || disabled}
+              maxLength={4000}
+              aria-label="Message input with completion support"
+              aria-describedby={helpId}
+              aria-expanded={message.startsWith("/") || message.includes("@")}
+              aria-haspopup="listbox"
+              role="combobox"
+              aria-autocomplete="list"
+            />
+          </div>
+
+          <div className="flex items-center justify-between gap-3 px-5 py-3 bg-muted/30 border-t border-border/40">
+            <div className="flex items-center gap-2">
+              <span
+                className="text-xs font-medium text-muted-foreground/80"
+                id={helpId}
+              >
+                {message.length}
+                <span className="text-muted-foreground/50">/4000</span>
+              </span>
+              {(message.startsWith("/") || message.includes("@")) && (
+                <span className="text-xs text-blue-600 dark:text-blue-400 font-medium flex items-center gap-1">
+                  <SparklesIcon className="w-3 h-3" />
+                  Autocomplete active
+                </span>
+              )}
+            </div>
+
+            <Button
+              onClick={handleSubmit}
+              disabled={!message.trim() || isPending || disabled}
+              size={buttonSize}
+              className="gap-2 transition-all duration-200 hover:shadow-md hover:scale-105 active:scale-95 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 disabled:from-muted disabled:to-muted"
+            >
+              {isPending ? (
+                <>
+                  <LoaderIcon className="w-4 h-4 animate-spin" />
+                  <span>Processing...</span>
+                </>
+              ) : (
+                <>
+                  <SendIcon className="w-4 h-4" />
+                  {buttonText}
+                </>
+              )}
+            </Button>
+          </div>
         </div>
-
-        <div className="flex items-center justify-between">
-          <span className="text-xs text-muted-foreground" id={helpId}>
-            {message.length}/4000 characters " • Use arrow keys to navigate
-            completions"
-          </span>
-
-          <Button
-            onClick={handleSubmit}
-            disabled={!message.trim() || isPending || disabled}
-            size={buttonSize}
-            className="gap-2"
-          >
-            {isPending ? (
-              <>
-                <LoaderIcon className="w-4 h-4 animate-spin" />
-                Sending... This may take a while.
-              </>
-            ) : (
-              <>
-                <SendIcon className="w-4 h-4" />
-                {buttonText}
-              </>
-            )}
-          </Button>
-        </div>
+        <InlineCompletion
+          projectId={projectId}
+          message={message}
+          commandCompletionRef={commandCompletionRef}
+          fileCompletionRef={fileCompletionRef}
+          handleCommandSelect={handleCommandSelect}
+          handleFileSelect={handleFileSelect}
+          cursorPosition={cursorPosition}
+        />
       </div>
     </div>
   );

@@ -33,6 +33,26 @@ export const projectDetailQuery = (projectId: string, cursor?: string) =>
     },
   }) as const;
 
+export const latestSessionQuery = (projectId: string) =>
+  ({
+    queryKey: ["projects", projectId, "latest-session"],
+    queryFn: async () => {
+      const response = await honoClient.api.projects[":projectId"][
+        "latest-session"
+      ].$get({
+        param: { projectId },
+      });
+
+      if (!response.ok) {
+        throw new Error(
+          `Failed to fetch latest session: ${response.statusText}`,
+        );
+      }
+
+      return response.json();
+    },
+  }) as const;
+
 export const sessionDetailQuery = (projectId: string, sessionId: string) =>
   ({
     queryKey: ["projects", projectId, "sessions", sessionId],

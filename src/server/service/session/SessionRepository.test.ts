@@ -5,9 +5,9 @@ import type { Conversation } from "../../../lib/conversation-schema";
 import { PersistentService } from "../../lib/storage/FileCacheStorage/PersistantService";
 import { decodeProjectId } from "../project/id";
 import type { ErrorJsonl, SessionDetail, SessionMeta } from "../types";
-import { VirtualConversationDatabase } from "./PredictSessionsDatabase";
 import { SessionMetaService } from "./SessionMetaService";
 import { SessionRepository } from "./SessionRepository";
+import { VirtualConversationDatabase } from "./VirtualConversationDatabase";
 
 /**
  * Helper function to create a FileSystem mock layer

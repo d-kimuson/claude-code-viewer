@@ -1,14 +1,13 @@
 import { resolve } from "node:path";
 import { FileSystem } from "@effect/platform";
 import { Context, Effect, Layer, Option } from "effect";
-import { uniqBy } from "es-toolkit";
 import { parseCommandXml } from "../parseCommandXml";
 import { parseJsonl } from "../parseJsonl";
 import { decodeProjectId } from "../project/id";
 import type { Session, SessionDetail } from "../types";
 import { decodeSessionId, encodeSessionId } from "./id";
-import { VirtualConversationDatabase } from "./PredictSessionsDatabase";
 import { SessionMetaService } from "./SessionMetaService";
+import { VirtualConversationDatabase } from "./VirtualConversationDatabase";
 
 const getSession = (projectId: string, sessionId: string) =>
   Effect.gen(function* () {
@@ -75,25 +74,7 @@ const getSession = (projectId: string, sessionId: string) =>
             id: sessionId,
             jsonlFilePath: sessionPath,
             meta,
-            conversations: isBroken
-              ? conversations
-              : uniqBy(mergedConversations, (item) => {
-                  switch (item.type) {
-                    case "system":
-                      return `${item.type}-${item.uuid}`;
-                    case "assistant":
-                      return `${item.type}-${item.message.id}`;
-                    case "user":
-                      return `${item.type}-${item.message.content}`;
-                    case "summary":
-                      return `${item.type}-${item.leafUuid}`;
-                    case "x-error":
-                      return `${item.type}-${item.lineNumber}-${item.line}`;
-                    default:
-                      item satisfies never;
-                      throw new Error(`Unknown conversation type: ${item}`);
-                  }
-                }),
+            conversations: isBroken ? conversations : mergedConversations,
             lastModifiedAt: Option.getOrElse(stat.mtime, () => new Date()),
           };
 

@@ -20,26 +20,32 @@ export const ResumeChat: FC<{
   };
 
   const getPlaceholder = () => {
-    const isEnterSend = config?.enterKeyBehavior === "enter-send";
-    if (isEnterSend) {
-      return "Type your message... (Start with / for commands, Enter to send)";
+    const behavior = config?.enterKeyBehavior;
+    if (behavior === "enter-send") {
+      return "Type your message... (Start with / for commands, @ for files, Enter to send)";
     }
-    return "Type your message... (Start with / for commands, Shift+Enter to send)";
+    if (behavior === "command-enter-send") {
+      return "Type your message... (Start with / for commands, @ for files, Command+Enter to send)";
+    }
+    return "Type your message... (Start with / for commands, @ for files, Shift+Enter to send)";
   };
 
   return (
-    <div className="border-t border-border/50 bg-muted/20 p-4 mt-6">
-      <ChatInput
-        projectId={projectId}
-        onSubmit={handleSubmit}
-        isPending={createSessionProcess.isPending}
-        error={createSessionProcess.error}
-        placeholder={getPlaceholder()}
-        buttonText={"Resume"}
-        minHeight="min-h-[100px]"
-        containerClassName="space-y-2"
-        buttonSize="default"
-      />
+    <div className="relative mt-8 mb-6">
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-border to-transparent h-px top-0" />
+      <div className="pt-8">
+        <ChatInput
+          projectId={projectId}
+          onSubmit={handleSubmit}
+          isPending={createSessionProcess.isPending}
+          error={createSessionProcess.error}
+          placeholder={getPlaceholder()}
+          buttonText={"Resume"}
+          minHeight="min-h-[120px]"
+          containerClassName=""
+          buttonSize="default"
+        />
+      </div>
     </div>
   );
 };

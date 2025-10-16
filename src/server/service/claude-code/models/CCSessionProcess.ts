@@ -39,6 +39,14 @@ export type CCSessionProcessInitializedState = CCSessionProcessStateBase & {
   initContext: InitMessageContext;
 };
 
+export type CCSessionProcessFileCreatedState = CCSessionProcessStateBase & {
+  type: "file_created" /* ファイルが作成された状態 */;
+  sessionId: string;
+  currentTask: CCTask.RunningClaudeCodeTaskState;
+  rawUserMessage: string;
+  initContext: InitMessageContext;
+};
+
 export type CCSessionProcessPausedState = CCSessionProcessStateBase & {
   type: "paused" /* タスクが完了し、次のタスクを受け付け可能 */;
   sessionId: string;
@@ -51,6 +59,7 @@ export type CCSessionProcessCompletedState = CCSessionProcessStateBase & {
 
 export type CCSessionProcessStatePublic =
   | CCSessionProcessInitializedState
+  | CCSessionProcessFileCreatedState
   | CCSessionProcessPausedState;
 
 export type CCSessionProcessState =
@@ -62,7 +71,11 @@ export type CCSessionProcessState =
 export const isPublic = (
   process: CCSessionProcessState,
 ): process is CCSessionProcessStatePublic => {
-  return process.type === "initialized" || process.type === "paused";
+  return (
+    process.type === "initialized" ||
+    process.type === "file_created" ||
+    process.type === "paused"
+  );
 };
 
 export const getAliveTasks = (

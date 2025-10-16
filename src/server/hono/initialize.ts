@@ -4,9 +4,9 @@ import { FileWatcherService } from "../service/events/fileWatcher";
 import type { InternalEventDeclaration } from "../service/events/InternalEventDeclaration";
 import { ProjectMetaService } from "../service/project/ProjectMetaService";
 import { ProjectRepository } from "../service/project/ProjectRepository";
-import { VirtualConversationDatabase } from "../service/session/PredictSessionsDatabase";
 import { SessionMetaService } from "../service/session/SessionMetaService";
 import { SessionRepository } from "../service/session/SessionRepository";
+import { VirtualConversationDatabase } from "../service/session/VirtualConversationDatabase";
 
 interface InitializeServiceInterface {
   readonly startInitialization: () => Effect.Effect<void>;

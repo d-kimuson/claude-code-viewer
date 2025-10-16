@@ -1,14 +1,15 @@
 "use client";
 
 import { MessageSquareIcon, PlugIcon, SettingsIcon, XIcon } from "lucide-react";
-import { type FC, useEffect, useState } from "react";
+import { type FC, Suspense, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { NotificationSettings } from "@/components/NotificationSettings";
+import { SettingsControls } from "@/components/SettingsControls";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useProject } from "../../../../hooks/useProject";
 import { McpTab } from "./McpTab";
 import { SessionsTab } from "./SessionsTab";
-import { SettingsTab } from "./SettingsTab";
 
 interface MobileSidebarProps {
   currentSessionId: string;
@@ -89,7 +90,35 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
       case "mcp":
         return <McpTab projectId={projectId} />;
       case "settings":
-        return <SettingsTab openingProjectId={projectId} />;
+        return (
+          <div className="h-full flex flex-col">
+            <Suspense
+              fallback={
+                <div className="flex-1 flex items-center justify-center p-4">
+                  <div className="text-sm text-sidebar-foreground/70">
+                    Loading settings...
+                  </div>
+                </div>
+              }
+            >
+              <div className="flex-1 overflow-y-auto p-4 space-y-6">
+                <div className="space-y-4">
+                  <h3 className="font-medium text-sm text-sidebar-foreground">
+                    Session Display
+                  </h3>
+                  <SettingsControls openingProjectId={projectId} />
+                </div>
+
+                <div className="space-y-4">
+                  <h3 className="font-medium text-sm text-sidebar-foreground">
+                    Notifications
+                  </h3>
+                  <NotificationSettings />
+                </div>
+              </div>
+            </Suspense>
+          </div>
+        );
       default:
         return null;
     }

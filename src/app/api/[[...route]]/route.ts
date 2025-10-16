@@ -11,9 +11,9 @@ import { EventBus } from "../../../server/service/events/EventBus";
 import { FileWatcherService } from "../../../server/service/events/fileWatcher";
 import { ProjectMetaService } from "../../../server/service/project/ProjectMetaService";
 import { ProjectRepository } from "../../../server/service/project/ProjectRepository";
-import { VirtualConversationDatabase } from "../../../server/service/session/PredictSessionsDatabase";
 import { SessionMetaService } from "../../../server/service/session/SessionMetaService";
 import { SessionRepository } from "../../../server/service/session/SessionRepository";
+import { VirtualConversationDatabase } from "../../../server/service/session/VirtualConversationDatabase";
 
 const program = routes(honoApp);
 

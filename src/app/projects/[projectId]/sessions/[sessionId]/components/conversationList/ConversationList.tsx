@@ -143,7 +143,7 @@ export const ConversationList: FC<ConversationListProps> = ({
               conversation.type === "summary"
                 ? "justify-start"
                 : "justify-end"
-            }`}
+            } animate-in fade-in slide-in-from-bottom-2 duration-300`}
             key={getConversationKey(conversation)}
           >
             <div className="w-full max-w-3xl lg:max-w-4xl sm:w-[90%] md:w-[85%]">

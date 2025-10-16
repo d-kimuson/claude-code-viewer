@@ -1,7 +1,7 @@
 import { Effect } from "effect";
 import type { Conversation } from "../../../lib/conversation-schema";
 import type { ErrorJsonl } from "../types";
-import { VirtualConversationDatabase } from "./PredictSessionsDatabase";
+import { VirtualConversationDatabase } from "./VirtualConversationDatabase";
 
 describe("VirtualConversationDatabase", () => {
   describe("getProjectVirtualConversations", () => {

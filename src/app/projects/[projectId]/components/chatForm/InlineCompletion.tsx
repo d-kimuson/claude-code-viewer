@@ -15,13 +15,21 @@ interface PositionStyle {
 const calculateOptimalPosition = (
   relativeCursorPosition: { top: number; left: number },
   absoluteCursorPosition: { top: number; left: number },
+  itemCount: number,
 ): PositionStyle => {
   const viewportHeight =
     typeof window !== "undefined" ? window.innerHeight : 800;
   const viewportCenter = viewportHeight / 2;
 
-  // Estimated completion height (we'll measure actual height later if needed)
-  const estimatedCompletionHeight = 200;
+  // Calculate dynamic height based on item count
+  // Header: ~48px, Each item: 36px (h-9), Padding: 12px
+  const headerHeight = 48;
+  const itemHeight = 36;
+  const padding = 12;
+  const maxItems = 5;
+  const visibleItems = Math.min(itemCount, maxItems);
+  const estimatedCompletionHeight =
+    headerHeight + itemHeight * visibleItems + padding;
 
   // Determine preferred placement based on viewport position
   const isInUpperHalf = absoluteCursorPosition.top < viewportCenter;
@@ -33,22 +41,22 @@ const calculateOptimalPosition = (
   let placement: "above" | "below";
   let top: number;
 
-  if (isInUpperHalf && spaceBelow >= estimatedCompletionHeight) {
+  if (isInUpperHalf && spaceBelow >= estimatedCompletionHeight + 20) {
     // Cursor in upper half and enough space below - place below
     placement = "below";
-    top = relativeCursorPosition.top + 16;
-  } else if (!isInUpperHalf && spaceAbove >= estimatedCompletionHeight) {
+    top = relativeCursorPosition.top + 24;
+  } else if (!isInUpperHalf && spaceAbove >= estimatedCompletionHeight + 20) {
     // Cursor in lower half and enough space above - place above
     placement = "above";
-    top = relativeCursorPosition.top - estimatedCompletionHeight - 8;
+    top = relativeCursorPosition.top - estimatedCompletionHeight - 16;
   } else {
     // Use whichever side has more space
     if (spaceBelow > spaceAbove) {
       placement = "below";
-      top = relativeCursorPosition.top + 16;
+      top = relativeCursorPosition.top + 24;
     } else {
       placement = "above";
-      top = relativeCursorPosition.top - estimatedCompletionHeight - 8;
+      top = relativeCursorPosition.top - estimatedCompletionHeight - 16;
     }
   }
 
@@ -93,6 +101,7 @@ export const InlineCompletion: FC<{
     return calculateOptimalPosition(
       cursorPosition.relative,
       cursorPosition.absolute,
+      5,
     );
   }, [cursorPosition]);
 

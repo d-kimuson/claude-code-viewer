@@ -2,14 +2,12 @@
 
 import { useMutation } from "@tanstack/react-query";
 import {
-  ExternalLinkIcon,
   GitCompareIcon,
   LoaderIcon,
   MenuIcon,
   PauseIcon,
   XIcon,
 } from "lucide-react";
-import Link from "next/link";
 import type { FC } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { PermissionDialog } from "@/components/PermissionDialog";
@@ -97,7 +95,7 @@ export const SessionPageContent: FC<{
   ]);
 
   return (
-    <div className="flex h-screen max-h-screen overflow-hidden">
+    <>
       <SessionSidebar
         currentSessionId={sessionId}
         projectId={projectId}
@@ -127,19 +125,12 @@ export const SessionPageContent: FC<{
 
             <div className="px-1 sm:px-5 flex flex-wrap items-center gap-1 sm:gap-2">
               {project?.claudeProjectPath && (
-                <Link
-                  href={`/projects/${projectId}`}
-                  target="_blank"
-                  className="transition-all duration-200"
+                <Badge
+                  variant="secondary"
+                  className="h-6 sm:h-8 text-xs sm:text-sm flex items-center"
                 >
-                  <Badge
-                    variant="secondary"
-                    className="h-6 sm:h-8 text-xs sm:text-sm flex items-center hover:bg-blue-50/60 hover:border-blue-300/60 hover:shadow-sm transition-all duration-200 cursor-pointer"
-                  >
-                    <ExternalLinkIcon className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                    {project.meta.projectPath ?? project.claudeProjectPath}
-                  </Badge>
-                </Link>
+                  {project.meta.projectPath ?? project.claudeProjectPath}
+                </Badge>
               )}
               <Badge
                 variant="secondary"
@@ -150,12 +141,18 @@ export const SessionPageContent: FC<{
             </div>
 
             {relatedSessionProcess?.status === "running" && (
-              <div className="flex items-center gap-1 sm:gap-2 p-1 bg-primary/10 border border-primary/20 rounded-lg mx-1 sm:mx-5">
-                <LoaderIcon className="w-3 h-3 sm:w-4 sm:h-4 animate-spin" />
+              <div className="flex items-center gap-1 sm:gap-2 p-1 bg-primary/10 border border-primary/20 rounded-lg mx-1 sm:mx-5 animate-in fade-in slide-in-from-top-2 duration-300">
+                <LoaderIcon className="w-3 h-3 sm:w-4 sm:h-4 animate-spin text-primary" />
                 <div className="flex-1">
                   <p className="text-xs sm:text-sm font-medium">
                     Conversation is in progress...
                   </p>
+                  <div className="w-full bg-primary/10 rounded-full h-1 mt-1 overflow-hidden">
+                    <div
+                      className="h-full bg-primary rounded-full animate-pulse"
+                      style={{ width: "70%" }}
+                    />
+                  </div>
                 </div>
                 <Button
                   variant="ghost"
@@ -163,18 +160,23 @@ export const SessionPageContent: FC<{
                   onClick={() => {
                     abortTask.mutate(relatedSessionProcess.id);
                   }}
+                  disabled={abortTask.isPending}
                 >
-                  <XIcon className="w-3 h-3 sm:w-4 sm:h-4" />
+                  {abortTask.isPending ? (
+                    <LoaderIcon className="w-3 h-3 sm:w-4 sm:h-4 animate-spin" />
+                  ) : (
+                    <XIcon className="w-3 h-3 sm:w-4 sm:h-4" />
+                  )}
                   <span className="hidden sm:inline">Abort</span>
                 </Button>
               </div>
             )}
 
             {relatedSessionProcess?.status === "paused" && (
-              <div className="flex items-center gap-1 sm:gap-2 p-1 bg-primary/10 border border-primary/20 rounded-lg mx-1 sm:mx-5">
-                <PauseIcon className="w-3 h-3 sm:w-4 sm:h-4" />
+              <div className="flex items-center gap-1 sm:gap-2 p-1 bg-orange-50/80 dark:bg-orange-950/50 border border-orange-300/50 dark:border-orange-800/50 rounded-lg mx-1 sm:mx-5 animate-in fade-in slide-in-from-top-2 duration-300">
+                <PauseIcon className="w-3 h-3 sm:w-4 sm:h-4 text-orange-600 dark:text-orange-400 animate-pulse" />
                 <div className="flex-1">
-                  <p className="text-xs sm:text-sm font-medium">
+                  <p className="text-xs sm:text-sm font-medium text-orange-900 dark:text-orange-200">
                     Conversation is paused...
                   </p>
                 </div>
@@ -184,8 +186,14 @@ export const SessionPageContent: FC<{
                   onClick={() => {
                     abortTask.mutate(relatedSessionProcess.id);
                   }}
+                  disabled={abortTask.isPending}
+                  className="hover:bg-orange-100 dark:hover:bg-orange-900/50 text-orange-900 dark:text-orange-200"
                 >
-                  <XIcon className="w-3 h-3 sm:w-4 sm:h-4" />
+                  {abortTask.isPending ? (
+                    <LoaderIcon className="w-3 h-3 sm:w-4 sm:h-4 animate-spin" />
+                  ) : (
+                    <XIcon className="w-3 h-3 sm:w-4 sm:h-4" />
+                  )}
                   <span className="hidden sm:inline">Abort</span>
                 </Button>
               </div>
@@ -204,16 +212,13 @@ export const SessionPageContent: FC<{
             />
 
             {relatedSessionProcess?.status === "running" && (
-              <div className="flex justify-start items-center py-8">
+              <div className="flex justify-start items-center py-8 animate-in fade-in duration-500">
                 <div className="flex flex-col items-center gap-4">
-                  <div className="flex items-center gap-2">
-                    <div className="flex gap-1">
-                      <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
-                      <div className="w-2 h-2 bg-primary rounded-full animate-bounce [animation-delay:0.1s]"></div>
-                      <div className="w-2 h-2 bg-primary rounded-full animate-bounce [animation-delay:0.2s]"></div>
-                    </div>
+                  <div className="relative">
+                    <LoaderIcon className="w-8 h-8 animate-spin text-primary" />
+                    <div className="absolute inset-0 rounded-full bg-primary/20 animate-ping" />
                   </div>
-                  <p className="text-sm text-muted-foreground font-medium">
+                  <p className="text-sm text-muted-foreground font-medium animate-pulse">
                     Claude Code is processing...
                   </p>
                 </div>
@@ -255,6 +260,6 @@ export const SessionPageContent: FC<{
         isOpen={isDialogOpen}
         onResponse={onPermissionResponse}
       />
-    </div>
+    </>
   );
 };

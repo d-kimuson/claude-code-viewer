@@ -189,6 +189,7 @@ const LayerImpl = Effect.gen(function* () {
       const targetProcess = processes.find(
         (p) => p.def.sessionProcessId === sessionProcessId,
       );
+      const currentStatus = targetProcess?.type;
 
       const updatedProcesses = processes.map((p) =>
         p.def.sessionProcessId === sessionProcessId ? nextState : p,
@@ -196,7 +197,7 @@ const LayerImpl = Effect.gen(function* () {
 
       yield* Ref.set(processesRef, updatedProcesses);
 
-      if (targetProcess?.type !== nextState.type) {
+      if (currentStatus !== nextState.type) {
         yield* eventBus.emit("sessionProcessChanged", {
           processes: updatedProcesses
             .filter(CCSessionProcess.isPublic)
@@ -331,6 +332,40 @@ const LayerImpl = Effect.gen(function* () {
     });
   };
 
+  const toFileCreatedState = (options: { sessionProcessId: string }) => {
+    const { sessionProcessId } = options;
+
+    return Effect.gen(function* () {
+      const currentProcess = yield* getSessionProcess(sessionProcessId);
+
+      if (currentProcess.type !== "initialized") {
+        return yield* Effect.fail(
+          new IllegalStateChangeError({
+            from: currentProcess.type,
+            to: "file_created",
+          }),
+        );
+      }
+
+      const newProcess = yield* dangerouslyChangeProcessState({
+        sessionProcessId,
+        nextState: {
+          type: "file_created",
+          def: currentProcess.def,
+          tasks: currentProcess.tasks,
+          currentTask: currentProcess.currentTask,
+          sessionId: currentProcess.sessionId,
+          rawUserMessage: currentProcess.rawUserMessage,
+          initContext: currentProcess.initContext,
+        },
+      });
+
+      return {
+        sessionProcess: newProcess,
+      };
+    });
+  };
+
   const toPausedState = (options: {
     sessionProcessId: string;
     resultMessage: SDKResultMessage;
@@ -339,7 +374,7 @@ const LayerImpl = Effect.gen(function* () {
 
     return Effect.gen(function* () {
       const currentProcess = yield* getSessionProcess(sessionProcessId);
-      if (currentProcess.type !== "initialized") {
+      if (currentProcess.type !== "file_created") {
         return yield* Effect.fail(
           new IllegalStateChangeError({
             from: currentProcess.type,
@@ -387,7 +422,8 @@ const LayerImpl = Effect.gen(function* () {
 
       const currentTask =
         currentProcess.type === "not_initialized" ||
-        currentProcess.type === "initialized"
+        currentProcess.type === "initialized" ||
+        currentProcess.type === "file_created"
           ? currentProcess.currentTask
           : undefined;
 
@@ -442,6 +478,7 @@ const LayerImpl = Effect.gen(function* () {
     continueSessionProcess,
     toNotInitializedState,
     toInitializedState,
+    toFileCreatedState,
     toPausedState,
     toCompletedState,
     dangerouslyChangeProcessState,

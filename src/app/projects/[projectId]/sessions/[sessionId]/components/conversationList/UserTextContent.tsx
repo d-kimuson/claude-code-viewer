@@ -88,7 +88,7 @@ export const UserTextContent: FC<{ text: string; id?: string }> = ({
 
   return (
     <MarkdownContent
-      className="w-full px-3 py-3 mb-5 border border-border rounded-lg bg-slate-50"
+      className="w-full px-3 py-3 mb-5 border border-border rounded-lg bg-slate-50 dark:bg-slate-900/50"
       content={parsed.content}
     />
   );

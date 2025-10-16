@@ -4,7 +4,7 @@ export const configSchema = z.object({
   hideNoUserMessageSession: z.boolean().optional().default(true),
   unifySameTitleSession: z.boolean().optional().default(true),
   enterKeyBehavior: z
-    .enum(["shift-enter-send", "enter-send"])
+    .enum(["shift-enter-send", "enter-send", "command-enter-send"])
     .optional()
     .default("shift-enter-send"),
   permissionMode: z

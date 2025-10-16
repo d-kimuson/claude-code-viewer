@@ -7,9 +7,9 @@ import { controllablePromise } from "../../../lib/controllablePromise";
 import type { Config } from "../../config/config";
 import type { InferEffect } from "../../lib/effect/types";
 import { EventBus } from "../events/EventBus";
-import { VirtualConversationDatabase } from "../session/PredictSessionsDatabase";
 import type { SessionMetaService } from "../session/SessionMetaService";
 import { SessionRepository } from "../session/SessionRepository";
+import { VirtualConversationDatabase } from "../session/VirtualConversationDatabase";
 import * as ClaudeCode from "./ClaudeCode";
 import { ClaudeCodePermissionService } from "./ClaudeCodePermissionService";
 import { ClaudeCodeSessionProcessService } from "./ClaudeCodeSessionProcessService";
@@ -209,8 +209,21 @@ const LayerImpl = Effect.gen(function* () {
           }
 
           if (
-            message.type === "result" &&
+            message.type === "assistant" &&
             processState.type === "initialized"
+          ) {
+            yield* sessionProcessService.toFileCreatedState({
+              sessionProcessId: processState.def.sessionProcessId,
+            });
+
+            yield* virtualConversationDatabase.deleteVirtualConversations(
+              message.session_id,
+            );
+          }
+
+          if (
+            message.type === "result" &&
+            processState.type === "file_created"
           ) {
             yield* sessionProcessService.toPausedState({
               sessionProcessId: processState.def.sessionProcessId,

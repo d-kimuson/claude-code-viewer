@@ -28,6 +28,9 @@ export class FileWatcherService extends Context.Tag("FileWatcherService")<
       const projectWatchersRef = yield* Ref.make<Map<string, FSWatcher>>(
         new Map(),
       );
+      const debounceTimersRef = yield* Ref.make<
+        Map<string, ReturnType<typeof setTimeout>>
+      >(new Map());
 
       const startWatching = (): Effect.Effect<void> =>
         Effect.gen(function* () {
@@ -52,17 +55,42 @@ export class FileWatcherService extends Context.Tag("FileWatcherService")<
                   if (!groups.success) return;
 
                   const { projectId, sessionId } = groups.data;
+                  const debounceKey = `${projectId}/${sessionId}`;
 
-                  Effect.runFork(
-                    eventBus.emit("sessionChanged", {
-                      projectId,
-                      sessionId,
-                    }),
-                  );
+                  Effect.runPromise(
+                    Effect.gen(function* () {
+                      const timers = yield* Ref.get(debounceTimersRef);
+                      const existingTimer = timers.get(debounceKey);
+                      if (existingTimer) {
+                        clearTimeout(existingTimer);
+                      }
 
-                  Effect.runFork(
-                    eventBus.emit("sessionListChanged", {
-                      projectId,
+                      const newTimer = setTimeout(() => {
+                        Effect.runFork(
+                          eventBus.emit("sessionChanged", {
+                            projectId,
+                            sessionId,
+                          }),
+                        );
+
+                        Effect.runFork(
+                          eventBus.emit("sessionListChanged", {
+                            projectId,
+                          }),
+                        );
+
+                        Effect.runPromise(
+                          Effect.gen(function* () {
+                            const currentTimers =
+                              yield* Ref.get(debounceTimersRef);
+                            currentTimers.delete(debounceKey);
+                            yield* Ref.set(debounceTimersRef, currentTimers);
+                          }),
+                        );
+                      }, 300);
+
+                      timers.set(debounceKey, newTimer);
+                      yield* Ref.set(debounceTimersRef, timers);
                     }),
                   );
                 },
@@ -85,6 +113,12 @@ export class FileWatcherService extends Context.Tag("FileWatcherService")<
 
       const stop = (): Effect.Effect<void> =>
         Effect.gen(function* () {
+          const timers = yield* Ref.get(debounceTimersRef);
+          for (const [, timer] of timers) {
+            clearTimeout(timer);
+          }
+          yield* Ref.set(debounceTimersRef, new Map());
+
           const watcher = yield* Ref.get(watcherRef);
           if (watcher) {
             yield* Effect.sync(() => watcher.close());

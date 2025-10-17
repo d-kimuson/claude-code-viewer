@@ -199,7 +199,7 @@ export const ChatInput: FC<ChatInputProps> = ({
               }}
               onKeyDown={handleKeyDown}
               placeholder={placeholder}
-              className={`${minHeight} resize-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent px-5 py-4 text-base transition-all duration-200 placeholder:text-muted-foreground/60`}
+              className={`${minHeight} resize-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent px-5 py-4 text-lg transition-all duration-200 placeholder:text-muted-foreground/60`}
               disabled={isPending || disabled}
               maxLength={4000}
               aria-label="Message input with completion support"

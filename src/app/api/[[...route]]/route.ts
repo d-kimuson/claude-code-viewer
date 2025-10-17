@@ -13,6 +13,7 @@ import { EventBus } from "../../../server/core/events/services/EventBus";
 import { FileWatcherService } from "../../../server/core/events/services/fileWatcher";
 import { FileSystemController } from "../../../server/core/file-system/presentation/FileSystemController";
 import { GitController } from "../../../server/core/git/presentation/GitController";
+import { GitService } from "../../../server/core/git/services/GitService";
 import { HonoConfigService } from "../../../server/core/hono/services/HonoConfigService";
 import { ProjectRepository } from "../../../server/core/project/infrastructure/ProjectRepository";
 import { ProjectController } from "../../../server/core/project/presentation/ProjectController";
@@ -32,6 +33,11 @@ const storageLayer = Layer.mergeAll(
   ProjectMetaService.Live,
   SessionMetaService.Live,
   VirtualConversationDatabase.Live,
+);
+
+const repositoryLayer = Layer.mergeAll(
+  ProjectRepository.Live,
+  SessionRepository.Live,
 );
 
 await Effect.runPromise(
@@ -56,6 +62,7 @@ await Effect.runPromise(
     Effect.provide(ClaudeCodePermissionService.Live),
     Effect.provide(ClaudeCodeSessionProcessService.Live),
     Effect.provide(ClaudeCodeService.Live),
+    Effect.provide(GitService.Live),
 
     // Shared Services
     Effect.provide(FileWatcherService.Live),
@@ -65,8 +72,7 @@ await Effect.runPromise(
     /** Infrastructure */
 
     // Repository
-    Effect.provide(ProjectRepository.Live),
-    Effect.provide(SessionRepository.Live),
+    Effect.provide(repositoryLayer),
 
     // StorageService
     Effect.provide(storageLayer),

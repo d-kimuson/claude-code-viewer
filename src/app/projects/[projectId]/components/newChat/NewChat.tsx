@@ -37,6 +37,7 @@ export const NewChat: FC<{
       buttonText="Start Chat"
       minHeight="min-h-[200px]"
       containerClassName="p-6"
+      buttonSize="lg"
     />
   );
 };

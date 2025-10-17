@@ -43,7 +43,7 @@ export const ResumeChat: FC<{
           buttonText={"Resume"}
           minHeight="min-h-[120px]"
           containerClassName=""
-          buttonSize="default"
+          buttonSize="lg"
         />
       </div>
     </div>

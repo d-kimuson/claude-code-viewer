@@ -44,7 +44,7 @@ export const ContinueChat: FC<{
           buttonText={"Send"}
           minHeight="min-h-[120px]"
           containerClassName=""
-          buttonSize="default"
+          buttonSize="lg"
         />
       </div>
     </div>

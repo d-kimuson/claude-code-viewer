@@ -1,6 +1,6 @@
 import z from "zod";
 
-export const configSchema = z.object({
+export const userConfigSchema = z.object({
   hideNoUserMessageSession: z.boolean().optional().default(true),
   unifySameTitleSession: z.boolean().optional().default(true),
   enterKeyBehavior: z
@@ -13,4 +13,4 @@ export const configSchema = z.object({
     .default("default"),
 });
 
-export type Config = z.infer<typeof configSchema>;
+export type UserConfig = z.infer<typeof userConfigSchema>;

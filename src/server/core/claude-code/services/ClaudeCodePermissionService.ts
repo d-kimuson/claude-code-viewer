@@ -5,7 +5,7 @@ import type {
   PermissionRequest,
   PermissionResponse,
 } from "../../../../types/permissions";
-import type { Config } from "../../../lib/config/config";
+import type { UserConfig } from "../../../lib/config/config";
 import type { InferEffect } from "../../../lib/effect/types";
 import { EventBus } from "../../events/services/EventBus";
 import * as ClaudeCode from "../models/ClaudeCode";
@@ -51,10 +51,10 @@ const LayerImpl = Effect.gen(function* () {
 
   const createCanUseToolRelatedOptions = (options: {
     taskId: string;
-    config: Config;
+    userConfig: UserConfig;
     sessionId?: string;
   }) => {
-    const { taskId, config, sessionId } = options;
+    const { taskId, userConfig, sessionId } = options;
 
     return Effect.gen(function* () {
       const claudeCodeConfig = yield* ClaudeCode.Config;
@@ -69,11 +69,11 @@ const LayerImpl = Effect.gen(function* () {
       }
 
       const canUseTool: CanUseTool = async (toolName, toolInput, _options) => {
-        if (config.permissionMode !== "default") {
+        if (userConfig.permissionMode !== "default") {
           // Convert Claude Code permission modes to canUseTool behaviors
           if (
-            config.permissionMode === "bypassPermissions" ||
-            config.permissionMode === "acceptEdits"
+            userConfig.permissionMode === "bypassPermissions" ||
+            userConfig.permissionMode === "acceptEdits"
           ) {
             return {
               behavior: "allow" as const,
@@ -123,7 +123,7 @@ const LayerImpl = Effect.gen(function* () {
 
       return {
         canUseTool,
-        permissionMode: config.permissionMode,
+        permissionMode: userConfig.permissionMode,
       } as const;
     });
   };

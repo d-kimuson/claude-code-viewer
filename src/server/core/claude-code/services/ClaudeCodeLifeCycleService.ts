@@ -4,9 +4,10 @@ import type { CommandExecutor } from "@effect/platform/CommandExecutor";
 import { Context, Effect, Layer, Runtime } from "effect";
 import { ulid } from "ulid";
 import { controllablePromise } from "../../../../lib/controllablePromise";
-import type { Config } from "../../../lib/config/config";
+import type { UserConfig } from "../../../lib/config/config";
 import type { InferEffect } from "../../../lib/effect/types";
 import { EventBus } from "../../events/services/EventBus";
+import type { EnvService } from "../../platform/services/EnvService";
 import { SessionRepository } from "../../session/infrastructure/SessionRepository";
 import { VirtualConversationDatabase } from "../../session/infrastructure/VirtualConversationDatabase";
 import type { SessionMetaService } from "../../session/services/SessionMetaService";
@@ -36,6 +37,7 @@ const LayerImpl = Effect.gen(function* () {
     | VirtualConversationDatabase
     | SessionMetaService
     | ClaudeCodePermissionService
+    | EnvService
   >();
 
   const continueTask = (options: {
@@ -78,7 +80,7 @@ const LayerImpl = Effect.gen(function* () {
   };
 
   const startTask = (options: {
-    config: Config;
+    userConfig: UserConfig;
     baseSession: {
       cwd: string;
       projectId: string;
@@ -86,7 +88,7 @@ const LayerImpl = Effect.gen(function* () {
     };
     message: string;
   }) => {
-    const { baseSession, message, config } = options;
+    const { baseSession, message, userConfig } = options;
 
     return Effect.gen(function* () {
       const {
@@ -258,7 +260,7 @@ const LayerImpl = Effect.gen(function* () {
             const permissionOptions =
               yield* permissionService.createCanUseToolRelatedOptions({
                 taskId: task.def.taskId,
-                config,
+                userConfig,
                 sessionId: task.def.baseSessionId,
               });
 

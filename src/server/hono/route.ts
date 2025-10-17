@@ -13,14 +13,14 @@ import { TypeSafeSSE } from "../core/events/functions/typeSafeSSE";
 import { SSEController } from "../core/events/presentation/SSEController";
 import { FileSystemController } from "../core/file-system/presentation/FileSystemController";
 import { GitController } from "../core/git/presentation/GitController";
-import { HonoConfigService } from "../core/hono/services/HonoConfigService";
+import { EnvService } from "../core/platform/services/EnvService";
+import { UserConfigService } from "../core/platform/services/UserConfigService";
 import { ProjectController } from "../core/project/presentation/ProjectController";
 import type { VirtualConversationDatabase } from "../core/session/infrastructure/VirtualConversationDatabase";
 import { SessionController } from "../core/session/presentation/SessionController";
 import type { SessionMetaService } from "../core/session/services/SessionMetaService";
-import { configSchema } from "../lib/config/config";
+import { userConfigSchema } from "../lib/config/config";
 import { effectToResponse } from "../lib/effect/toEffectResponse";
-import { env } from "../lib/env";
 import type { HonoAppType } from "./app";
 import { InitializeService } from "./initialize";
 import { configMiddleware } from "./middleware/config.middleware";
@@ -40,11 +40,13 @@ export const routes = (app: HonoAppType) =>
     const claudeCodeController = yield* ClaudeCodeController;
 
     // services
-    const honoConfigService = yield* HonoConfigService;
+    const envService = yield* EnvService;
+    const userConfigService = yield* UserConfigService;
     const claudeCodeLifeCycleService = yield* ClaudeCodeLifeCycleService;
     const initializeService = yield* InitializeService;
 
     const runtime = yield* Effect.runtime<
+      | EnvService
       | SessionMetaService
       | VirtualConversationDatabase
       | FileSystem.FileSystem
@@ -52,7 +54,7 @@ export const routes = (app: HonoAppType) =>
       | CommandExecutor.CommandExecutor
     >();
 
-    if (env.get("NEXT_PHASE") !== "phase-production-build") {
+    if ((yield* envService.getEnv("NEXT_PHASE")) !== "phase-production-build") {
       yield* initializeService.startInitialization();
 
       prexit(async () => {
@@ -66,8 +68,8 @@ export const routes = (app: HonoAppType) =>
         .use(configMiddleware)
         .use(async (c, next) => {
           await Effect.runPromise(
-            honoConfigService.setConfig({
-              ...c.get("config"),
+            userConfigService.setUserConfig({
+              ...c.get("userConfig"),
             }),
           );
 
@@ -77,11 +79,11 @@ export const routes = (app: HonoAppType) =>
         // routes
         .get("/config", async (c) => {
           return c.json({
-            config: c.get("config"),
+            config: c.get("userConfig"),
           });
         })
 
-        .put("/config", zValidator("json", configSchema), async (c) => {
+        .put("/config", zValidator("json", userConfigSchema), async (c) => {
           const { ...config } = c.req.valid("json");
 
           setCookie(c, "ccv-config", JSON.stringify(config));

@@ -1,10 +1,13 @@
 import { Path } from "@effect/platform";
 import { Effect } from "effect";
-import { claudeProjectsDirPath } from "../../../lib/config/paths";
 
-export const computeClaudeProjectFilePath = (projectPath: string) =>
+export const computeClaudeProjectFilePath = (options: {
+  projectPath: string;
+  claudeProjectsDirPath: string;
+}) =>
   Effect.gen(function* () {
     const path = yield* Path.Path;
+    const { projectPath, claudeProjectsDirPath } = options;
 
     return path.join(
       claudeProjectsDirPath,

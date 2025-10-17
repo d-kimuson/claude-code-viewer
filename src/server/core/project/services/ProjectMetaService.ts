@@ -1,6 +1,7 @@
 import { FileSystem, Path } from "@effect/platform";
 import { Context, Effect, Layer, Option, Ref } from "effect";
 import { z } from "zod";
+import type { InferEffect } from "../../../lib/effect/types";
 import {
   FileCacheStorage,
   makeFileCacheStorageLayer,
@@ -12,142 +13,132 @@ import { decodeProjectId } from "../functions/id";
 
 const ProjectPathSchema = z.string().nullable();
 
-export class ProjectMetaService extends Context.Tag("ProjectMetaService")<
-  ProjectMetaService,
-  {
-    readonly getProjectMeta: (
-      projectId: string,
-    ) => Effect.Effect<ProjectMeta, Error>;
-    readonly invalidateProject: (projectId: string) => Effect.Effect<void>;
-  }
->() {
-  static Live = Layer.effect(
-    this,
+const LayerImpl = Effect.gen(function* () {
+  const fs = yield* FileSystem.FileSystem;
+  const path = yield* Path.Path;
+  const projectPathCache = yield* FileCacheStorage<string | null>();
+  const projectMetaCacheRef = yield* Ref.make(new Map<string, ProjectMeta>());
+
+  const extractProjectPathFromJsonl = (
+    filePath: string,
+  ): Effect.Effect<string | null, Error> =>
     Effect.gen(function* () {
-      const fs = yield* FileSystem.FileSystem;
-      const path = yield* Path.Path;
-      const projectPathCache = yield* FileCacheStorage<string | null>();
-      const projectMetaCacheRef = yield* Ref.make(
-        new Map<string, ProjectMeta>(),
+      const cached = yield* projectPathCache.get(filePath);
+      if (cached !== undefined) {
+        return cached;
+      }
+
+      const content = yield* fs.readFileString(filePath);
+      const lines = content.split("\n");
+
+      let cwd: string | null = null;
+
+      for (const line of lines) {
+        const conversation = parseJsonl(line).at(0);
+
+        if (
+          conversation === undefined ||
+          conversation.type === "summary" ||
+          conversation.type === "x-error"
+        ) {
+          continue;
+        }
+
+        cwd = conversation.cwd;
+        break;
+      }
+
+      if (cwd !== null) {
+        yield* projectPathCache.set(filePath, cwd);
+      }
+
+      return cwd;
+    });
+
+  const getProjectMeta = (
+    projectId: string,
+  ): Effect.Effect<ProjectMeta, Error> =>
+    Effect.gen(function* () {
+      const metaCache = yield* Ref.get(projectMetaCacheRef);
+      const cached = metaCache.get(projectId);
+      if (cached !== undefined) {
+        return cached;
+      }
+
+      const claudeProjectPath = decodeProjectId(projectId);
+
+      const dirents = yield* fs.readDirectory(claudeProjectPath);
+      const fileEntries = yield* Effect.all(
+        dirents
+          .filter((name) => name.endsWith(".jsonl"))
+          .map((name) =>
+            Effect.gen(function* () {
+              const fullPath = path.resolve(claudeProjectPath, name);
+              const stat = yield* fs.stat(fullPath);
+              const mtime = Option.getOrElse(stat.mtime, () => new Date(0));
+              return {
+                fullPath,
+                mtime,
+              } as const;
+            }),
+          ),
+        { concurrency: "unbounded" },
       );
 
-      const extractProjectPathFromJsonl = (
-        filePath: string,
-      ): Effect.Effect<string | null, Error> =>
-        Effect.gen(function* () {
-          const cached = yield* projectPathCache.get(filePath);
-          if (cached !== undefined) {
-            return cached;
-          }
+      const files = fileEntries.sort((a, b) => {
+        return a.mtime.getTime() - b.mtime.getTime();
+      });
 
-          const content = yield* fs.readFileString(filePath);
-          const lines = content.split("\n");
+      let projectPath: string | null = null;
 
-          let cwd: string | null = null;
+      for (const file of files) {
+        projectPath = yield* extractProjectPathFromJsonl(file.fullPath);
 
-          for (const line of lines) {
-            const conversation = parseJsonl(line).at(0);
+        if (projectPath === null) {
+          continue;
+        }
 
-            if (
-              conversation === undefined ||
-              conversation.type === "summary" ||
-              conversation.type === "x-error"
-            ) {
-              continue;
-            }
+        break;
+      }
 
-            cwd = conversation.cwd;
-            break;
-          }
-
-          if (cwd !== null) {
-            yield* projectPathCache.set(filePath, cwd);
-          }
-
-          return cwd;
-        });
-
-      const getProjectMeta = (
-        projectId: string,
-      ): Effect.Effect<ProjectMeta, Error> =>
-        Effect.gen(function* () {
-          const metaCache = yield* Ref.get(projectMetaCacheRef);
-          const cached = metaCache.get(projectId);
-          if (cached !== undefined) {
-            return cached;
-          }
-
-          const claudeProjectPath = decodeProjectId(projectId);
-
-          const dirents = yield* fs.readDirectory(claudeProjectPath);
-          const fileEntries = yield* Effect.all(
-            dirents
-              .filter((name) => name.endsWith(".jsonl"))
-              .map((name) =>
-                Effect.gen(function* () {
-                  const fullPath = path.resolve(claudeProjectPath, name);
-                  const stat = yield* fs.stat(fullPath);
-                  const mtime = Option.getOrElse(stat.mtime, () => new Date(0));
-                  return {
-                    fullPath,
-                    mtime,
-                  } as const;
-                }),
-              ),
-            { concurrency: "unbounded" },
-          );
-
-          const files = fileEntries.sort((a, b) => {
-            return a.mtime.getTime() - b.mtime.getTime();
-          });
-
-          let projectPath: string | null = null;
-
-          for (const file of files) {
-            projectPath = yield* extractProjectPathFromJsonl(file.fullPath);
-
-            if (projectPath === null) {
-              continue;
-            }
-
-            break;
-          }
-
-          const projectMeta: ProjectMeta = {
-            projectName: projectPath ? path.basename(projectPath) : null,
-            projectPath,
-            sessionCount: files.length,
-          };
-
-          yield* Ref.update(projectMetaCacheRef, (cache) => {
-            cache.set(projectId, projectMeta);
-            return cache;
-          });
-
-          return projectMeta;
-        });
-
-      const invalidateProject = (projectId: string): Effect.Effect<void> =>
-        Effect.gen(function* () {
-          yield* Ref.update(projectMetaCacheRef, (cache) => {
-            cache.delete(projectId);
-            return cache;
-          });
-        });
-
-      return {
-        getProjectMeta,
-        invalidateProject,
+      const projectMeta: ProjectMeta = {
+        projectName: projectPath ? path.basename(projectPath) : null,
+        projectPath,
+        sessionCount: files.length,
       };
-    }),
-  ).pipe(
+
+      yield* Ref.update(projectMetaCacheRef, (cache) => {
+        cache.set(projectId, projectMeta);
+        return cache;
+      });
+
+      return projectMeta;
+    });
+
+  const invalidateProject = (projectId: string): Effect.Effect<void> =>
+    Effect.gen(function* () {
+      yield* Ref.update(projectMetaCacheRef, (cache) => {
+        cache.delete(projectId);
+        return cache;
+      });
+    });
+
+  return {
+    getProjectMeta,
+    invalidateProject,
+  };
+});
+
+export type IProjectMetaService = InferEffect<typeof LayerImpl>;
+
+export class ProjectMetaService extends Context.Tag("ProjectMetaService")<
+  ProjectMetaService,
+  IProjectMetaService
+>() {
+  static Live = Layer.effect(this, LayerImpl).pipe(
     Layer.provide(
       makeFileCacheStorageLayer("project-path-cache", ProjectPathSchema),
     ),
     Layer.provide(PersistentService.Live),
   );
 }
-
-export type IProjectMetaService = Context.Tag.Service<
-  typeof ProjectMetaService
->;

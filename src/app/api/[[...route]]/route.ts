@@ -1,5 +1,5 @@
 import { NodeContext } from "@effect/platform-node";
-import { Effect, Layer } from "effect";
+import { Effect } from "effect";
 import { handle } from "hono/vercel";
 import { ClaudeCodeController } from "../../../server/core/claude-code/presentation/ClaudeCodeController";
 import { ClaudeCodePermissionController } from "../../../server/core/claude-code/presentation/ClaudeCodePermissionController";
@@ -14,7 +14,9 @@ import { FileWatcherService } from "../../../server/core/events/services/fileWat
 import { FileSystemController } from "../../../server/core/file-system/presentation/FileSystemController";
 import { GitController } from "../../../server/core/git/presentation/GitController";
 import { GitService } from "../../../server/core/git/services/GitService";
-import { HonoConfigService } from "../../../server/core/hono/services/HonoConfigService";
+import { ApplicationContext } from "../../../server/core/platform/services/ApplicationContext";
+import { EnvService } from "../../../server/core/platform/services/EnvService";
+import { UserConfigService } from "../../../server/core/platform/services/UserConfigService";
 import { ProjectRepository } from "../../../server/core/project/infrastructure/ProjectRepository";
 import { ProjectController } from "../../../server/core/project/presentation/ProjectController";
 import { ProjectMetaService } from "../../../server/core/project/services/ProjectMetaService";
@@ -28,58 +30,49 @@ import { routes } from "../../../server/hono/route";
 
 const program = routes(honoApp);
 
-/** Max count of pipe is 20, so merge some layers here */
-const storageLayer = Layer.mergeAll(
-  ProjectMetaService.Live,
-  SessionMetaService.Live,
-  VirtualConversationDatabase.Live,
-);
-
-const repositoryLayer = Layer.mergeAll(
-  ProjectRepository.Live,
-  SessionRepository.Live,
-);
-
 await Effect.runPromise(
-  program.pipe(
+  program
     // 依存の浅い順にコンテナに pipe する必要がある
-
-    /** Presentation */
-    Effect.provide(ProjectController.Live),
-    Effect.provide(SessionController.Live),
-    Effect.provide(GitController.Live),
-    Effect.provide(ClaudeCodeController.Live),
-    Effect.provide(ClaudeCodeSessionProcessController.Live),
-    Effect.provide(ClaudeCodePermissionController.Live),
-    Effect.provide(FileSystemController.Live),
-    Effect.provide(SSEController.Live),
-
-    /** Application */
-    Effect.provide(InitializeService.Live),
-
-    /** Domain */
-    Effect.provide(ClaudeCodeLifeCycleService.Live),
-    Effect.provide(ClaudeCodePermissionService.Live),
-    Effect.provide(ClaudeCodeSessionProcessService.Live),
-    Effect.provide(ClaudeCodeService.Live),
-    Effect.provide(GitService.Live),
-
-    // Shared Services
-    Effect.provide(FileWatcherService.Live),
-    Effect.provide(EventBus.Live),
-    Effect.provide(HonoConfigService.Live),
-
-    /** Infrastructure */
-
-    // Repository
-    Effect.provide(repositoryLayer),
-
-    // StorageService
-    Effect.provide(storageLayer),
-
-    /** Platform */
-    Effect.provide(NodeContext.layer),
-  ),
+    .pipe(
+      /** Presentation */
+      Effect.provide(ProjectController.Live),
+      Effect.provide(SessionController.Live),
+      Effect.provide(GitController.Live),
+      Effect.provide(ClaudeCodeController.Live),
+      Effect.provide(ClaudeCodeSessionProcessController.Live),
+      Effect.provide(ClaudeCodePermissionController.Live),
+      Effect.provide(FileSystemController.Live),
+      Effect.provide(SSEController.Live),
+    )
+    .pipe(
+      /** Application */
+      Effect.provide(InitializeService.Live),
+      Effect.provide(FileWatcherService.Live),
+    )
+    .pipe(
+      /** Domain */
+      Effect.provide(ClaudeCodeLifeCycleService.Live),
+      Effect.provide(ClaudeCodePermissionService.Live),
+      Effect.provide(ClaudeCodeSessionProcessService.Live),
+      Effect.provide(ClaudeCodeService.Live),
+      Effect.provide(GitService.Live),
+    )
+    .pipe(
+      /** Infrastructure */
+      Effect.provide(ProjectRepository.Live),
+      Effect.provide(SessionRepository.Live),
+      Effect.provide(ProjectMetaService.Live),
+      Effect.provide(SessionMetaService.Live),
+      Effect.provide(VirtualConversationDatabase.Live),
+    )
+    .pipe(
+      /** Platform */
+      Effect.provide(ApplicationContext.Live),
+      Effect.provide(UserConfigService.Live),
+      Effect.provide(EventBus.Live),
+      Effect.provide(EnvService.Live),
+      Effect.provide(NodeContext.layer),
+    ),
 );
 
 export const GET = handle(honoApp);

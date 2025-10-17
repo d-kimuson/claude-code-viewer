@@ -2,7 +2,7 @@ import { type FSWatcher, watch } from "node:fs";
 import { Path } from "@effect/platform";
 import { Context, Effect, Layer, Ref } from "effect";
 import z from "zod";
-import { claudeProjectsDirPath } from "../../../lib/config/paths";
+import { ApplicationContext } from "../../platform/services/ApplicationContext";
 import { encodeProjectIdFromSessionFilePath } from "../../project/functions/id";
 import { EventBus } from "./EventBus";
 
@@ -26,6 +26,8 @@ export class FileWatcherService extends Context.Tag("FileWatcherService")<
     Effect.gen(function* () {
       const path = yield* Path.Path;
       const eventBus = yield* EventBus;
+      const context = yield* ApplicationContext;
+
       const isWatchingRef = yield* Ref.make(false);
       const watcherRef = yield* Ref.make<FSWatcher | null>(null);
       const projectWatchersRef = yield* Ref.make<Map<string, FSWatcher>>(
@@ -44,10 +46,13 @@ export class FileWatcherService extends Context.Tag("FileWatcherService")<
 
           yield* Effect.tryPromise({
             try: async () => {
-              console.log("Starting file watcher on:", claudeProjectsDirPath);
+              console.log(
+                "Starting file watcher on:",
+                context.claudeCodePaths.claudeProjectsDirPath,
+              );
 
               const watcher = watch(
-                claudeProjectsDirPath,
+                context.claudeCodePaths.claudeProjectsDirPath,
                 { persistent: false, recursive: true },
                 (_eventType, filename) => {
                   if (!filename) return;
@@ -61,7 +66,10 @@ export class FileWatcherService extends Context.Tag("FileWatcherService")<
                   const { sessionId } = groups.data;
 
                   // フルパスを構築してエンコードされた projectId を取得
-                  const fullPath = path.join(claudeProjectsDirPath, filename);
+                  const fullPath = path.join(
+                    context.claudeCodePaths.claudeProjectsDirPath,
+                    filename,
+                  );
                   const encodedProjectId =
                     encodeProjectIdFromSessionFilePath(fullPath);
                   const debounceKey = `${encodedProjectId}/${sessionId}`;

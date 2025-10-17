@@ -1,7 +1,7 @@
 import { query as originalQuery } from "@anthropic-ai/claude-code";
 import { Command, Path } from "@effect/platform";
 import { Effect } from "effect";
-import { env } from "../../../lib/env";
+import { EnvService } from "../../platform/services/EnvService";
 import * as ClaudeCodeVersion from "./ClaudeCodeVersion";
 
 type CCQuery = typeof originalQuery;
@@ -10,8 +10,9 @@ type CCQueryOptions = NonNullable<Parameters<CCQuery>[0]["options"]>;
 
 export const Config = Effect.gen(function* () {
   const path = yield* Path.Path;
+  const envService = yield* EnvService;
 
-  const specifiedExecutablePath = env.get(
+  const specifiedExecutablePath = yield* envService.getEnv(
     "CLAUDE_CODE_VIEWER_CC_EXECUTABLE_PATH",
   );
 
@@ -21,7 +22,7 @@ export const Config = Effect.gen(function* () {
       : (yield* Command.string(
           Command.make("which", "claude").pipe(
             Command.env({
-              PATH: env.get("PATH"),
+              PATH: yield* envService.getEnv("PATH"),
             }),
             Command.runInShell(true),
           ),

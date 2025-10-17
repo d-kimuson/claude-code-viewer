@@ -1,7 +1,7 @@
 import { Command, FileSystem, Path } from "@effect/platform";
 import { Context, Data, Effect, Either, Layer } from "effect";
 import type { InferEffect } from "../../../lib/effect/types";
-import { env } from "../../../lib/env";
+import { EnvService } from "../../platform/services/EnvService";
 import { parseGitBranchesOutput } from "../functions/parseGitBranchesOutput";
 import { parseGitCommitsOutput } from "../functions/parseGitCommitsOutput";
 
@@ -21,6 +21,7 @@ class DetachedHeadError extends Data.TaggedError("DetachedHeadError")<{
 const LayerImpl = Effect.gen(function* () {
   const fs = yield* FileSystem.FileSystem;
   const path = yield* Path.Path;
+  const envService = yield* EnvService;
 
   const execGitCommand = (args: string[], cwd: string) =>
     Effect.gen(function* () {
@@ -41,7 +42,7 @@ const LayerImpl = Effect.gen(function* () {
       const command = Command.string(
         Command.make("cd", absoluteCwd, "&&", "git", ...args).pipe(
           Command.env({
-            PATH: env.get("PATH"),
+            PATH: yield* envService.getEnv("PATH"),
           }),
           Command.runInShell(true),
         ),

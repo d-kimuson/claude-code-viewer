@@ -2,14 +2,14 @@ import { Context, Effect, Layer } from "effect";
 import type { PublicSessionProcess } from "../../../../types/session-process";
 import type { ControllerResponse } from "../../../lib/effect/toEffectResponse";
 import type { InferEffect } from "../../../lib/effect/types";
-import { HonoConfigService } from "../../hono/services/HonoConfigService";
+import { UserConfigService } from "../../platform/services/UserConfigService";
 import { ProjectRepository } from "../../project/infrastructure/ProjectRepository";
 import { ClaudeCodeLifeCycleService } from "../services/ClaudeCodeLifeCycleService";
 
 const LayerImpl = Effect.gen(function* () {
   const projectRepository = yield* ProjectRepository;
   const claudeCodeLifeCycleService = yield* ClaudeCodeLifeCycleService;
-  const honoConfigService = yield* HonoConfigService;
+  const userConfigService = yield* UserConfigService;
 
   const getSessionProcesses = () =>
     Effect.gen(function* () {
@@ -40,7 +40,7 @@ const LayerImpl = Effect.gen(function* () {
       const { projectId, message, baseSessionId } = options;
 
       const { project } = yield* projectRepository.getProject(projectId);
-      const config = yield* honoConfigService.getConfig();
+      const userConfig = yield* userConfigService.getUserConfig();
 
       if (project.meta.projectPath === null) {
         return {
@@ -55,7 +55,7 @@ const LayerImpl = Effect.gen(function* () {
           projectId,
           sessionId: baseSessionId,
         },
-        config: config,
+        userConfig,
         message,
       });
 

@@ -1,7 +1,7 @@
 import { FileSystem, Path } from "@effect/platform";
 import { Context, Effect, Layer, Option } from "effect";
-import { claudeProjectsDirPath } from "../../../lib/config/paths";
 import type { InferEffect } from "../../../lib/effect/types";
+import { ApplicationContext } from "../../platform/services/ApplicationContext";
 import type { Project } from "../../types";
 import { decodeProjectId, encodeProjectId } from "../functions/id";
 import { ProjectMetaService } from "../services/ProjectMetaService";
@@ -10,6 +10,7 @@ const LayerImpl = Effect.gen(function* () {
   const fs = yield* FileSystem.FileSystem;
   const path = yield* Path.Path;
   const projectMetaService = yield* ProjectMetaService;
+  const context = yield* ApplicationContext;
 
   const getProject = (projectId: string) =>
     Effect.gen(function* () {
@@ -40,21 +41,28 @@ const LayerImpl = Effect.gen(function* () {
   const getProjects = () =>
     Effect.gen(function* () {
       // Check if the claude projects directory exists
-      const dirExists = yield* fs.exists(claudeProjectsDirPath);
+      const dirExists = yield* fs.exists(
+        context.claudeCodePaths.claudeProjectsDirPath,
+      );
       if (!dirExists) {
         console.warn(
-          `Claude projects directory not found at ${claudeProjectsDirPath}`,
+          `Claude projects directory not found at ${context.claudeCodePaths.claudeProjectsDirPath}`,
         );
         return { projects: [] };
       }
 
       // Read directory entries
-      const entries = yield* fs.readDirectory(claudeProjectsDirPath);
+      const entries = yield* fs.readDirectory(
+        context.claudeCodePaths.claudeProjectsDirPath,
+      );
 
       // Filter directories and map to Project objects
       const projectEffects = entries.map((entry) =>
         Effect.gen(function* () {
-          const fullPath = path.resolve(claudeProjectsDirPath, entry);
+          const fullPath = path.resolve(
+            context.claudeCodePaths.claudeProjectsDirPath,
+            entry,
+          );
 
           // Check if it's a directory
           const stat = yield* Effect.tryPromise(() =>

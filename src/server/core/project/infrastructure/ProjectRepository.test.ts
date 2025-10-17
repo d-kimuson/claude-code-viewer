@@ -2,6 +2,8 @@ import { FileSystem, Path } from "@effect/platform";
 import { SystemError } from "@effect/platform/Error";
 import { Effect, Layer, Option } from "effect";
 import { PersistentService } from "../../../lib/storage/FileCacheStorage/PersistentService";
+import { ApplicationContext } from "../../platform/services/ApplicationContext";
+import { EnvService } from "../../platform/services/EnvService";
 import type { ProjectMeta } from "../../types";
 import { ProjectMetaService } from "../services/ProjectMetaService";
 import { ProjectRepository } from "./ProjectRepository";
@@ -96,6 +98,8 @@ describe("ProjectRepository", () => {
       const result = await Effect.runPromise(
         program.pipe(
           Effect.provide(ProjectRepository.Live),
+          Effect.provide(ApplicationContext.Live),
+          Effect.provide(EnvService.Live),
           Effect.provide(ProjectMetaServiceMock),
           Effect.provide(FileSystemMock),
           Effect.provide(PathMock),
@@ -138,6 +142,8 @@ describe("ProjectRepository", () => {
         Effect.runPromise(
           program.pipe(
             Effect.provide(ProjectRepository.Live),
+            Effect.provide(ApplicationContext.Live),
+            Effect.provide(EnvService.Live),
             Effect.provide(ProjectMetaServiceMock),
             Effect.provide(FileSystemMock),
             Effect.provide(PathMock),
@@ -173,6 +179,8 @@ describe("ProjectRepository", () => {
       const result = await Effect.runPromise(
         program.pipe(
           Effect.provide(ProjectRepository.Live),
+          Effect.provide(ApplicationContext.Live),
+          Effect.provide(EnvService.Live),
           Effect.provide(ProjectMetaServiceMock),
           Effect.provide(FileSystemMock),
           Effect.provide(PathMock),
@@ -221,6 +229,8 @@ describe("ProjectRepository", () => {
       const result = await Effect.runPromise(
         program.pipe(
           Effect.provide(ProjectRepository.Live),
+          Effect.provide(ApplicationContext.Live),
+          Effect.provide(EnvService.Live),
           Effect.provide(ProjectMetaService.Live),
           Effect.provide(FileSystemMock),
           Effect.provide(PathMock),
@@ -264,6 +274,8 @@ describe("ProjectRepository", () => {
       const result = await Effect.runPromise(
         program.pipe(
           Effect.provide(ProjectRepository.Live),
+          Effect.provide(ApplicationContext.Live),
+          Effect.provide(EnvService.Live),
           Effect.provide(ProjectMetaService.Live),
           Effect.provide(FileSystemMock),
           Effect.provide(PathMock),
@@ -313,6 +325,8 @@ describe("ProjectRepository", () => {
       const result = await Effect.runPromise(
         program.pipe(
           Effect.provide(ProjectRepository.Live),
+          Effect.provide(ApplicationContext.Live),
+          Effect.provide(EnvService.Live),
           Effect.provide(ProjectMetaService.Live),
           Effect.provide(FileSystemMock),
           Effect.provide(PathMock),

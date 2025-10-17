@@ -3,7 +3,8 @@ import type { ControllerResponse } from "../../../lib/effect/toEffectResponse";
 import type { InferEffect } from "../../../lib/effect/types";
 import { computeClaudeProjectFilePath } from "../../claude-code/functions/computeClaudeProjectFilePath";
 import { ClaudeCodeLifeCycleService } from "../../claude-code/services/ClaudeCodeLifeCycleService";
-import { HonoConfigService } from "../../hono/services/HonoConfigService";
+import { ApplicationContext } from "../../platform/services/ApplicationContext";
+import { UserConfigService } from "../../platform/services/UserConfigService";
 import { SessionRepository } from "../../session/infrastructure/SessionRepository";
 import { encodeProjectId } from "../functions/id";
 import { ProjectRepository } from "../infrastructure/ProjectRepository";
@@ -11,8 +12,9 @@ import { ProjectRepository } from "../infrastructure/ProjectRepository";
 const LayerImpl = Effect.gen(function* () {
   const projectRepository = yield* ProjectRepository;
   const claudeCodeLifeCycleService = yield* ClaudeCodeLifeCycleService;
-  const honoConfigService = yield* HonoConfigService;
+  const userConfigService = yield* UserConfigService;
   const sessionRepository = yield* SessionRepository;
+  const context = yield* ApplicationContext;
 
   const getProjects = () =>
     Effect.gen(function* () {
@@ -27,7 +29,7 @@ const LayerImpl = Effect.gen(function* () {
     Effect.gen(function* () {
       const { projectId, cursor } = options;
 
-      const config = yield* honoConfigService.getConfig();
+      const userConfig = yield* userConfigService.getUserConfig();
 
       const { project } = yield* projectRepository.getProject(projectId);
       const { sessions } = yield* sessionRepository.getSessions(projectId, {
@@ -37,14 +39,14 @@ const LayerImpl = Effect.gen(function* () {
       let filteredSessions = sessions;
 
       // Filter sessions based on hideNoUserMessageSession setting
-      if (config.hideNoUserMessageSession) {
+      if (userConfig.hideNoUserMessageSession) {
         filteredSessions = filteredSessions.filter((session) => {
           return session.meta.firstCommand !== null;
         });
       }
 
       // Unify sessions with same title if unifySameTitleSession is enabled
-      if (config.unifySameTitleSession) {
+      if (userConfig.unifySameTitleSession) {
         const sessionMap = new Map<string, (typeof filteredSessions)[0]>();
 
         for (const session of filteredSessions) {
@@ -122,10 +124,12 @@ const LayerImpl = Effect.gen(function* () {
 
       // No project validation needed - startTask will create a new project
       // if it doesn't exist when running /init command
-      const claudeProjectFilePath =
-        yield* computeClaudeProjectFilePath(projectPath);
+      const claudeProjectFilePath = yield* computeClaudeProjectFilePath({
+        projectPath,
+        claudeProjectsDirPath: context.claudeCodePaths.claudeProjectsDirPath,
+      });
       const projectId = encodeProjectId(claudeProjectFilePath);
-      const config = yield* honoConfigService.getConfig();
+      const userConfig = yield* userConfigService.getUserConfig();
 
       const result = yield* claudeCodeLifeCycleService.startTask({
         baseSession: {
@@ -133,7 +137,7 @@ const LayerImpl = Effect.gen(function* () {
           projectId,
           sessionId: undefined,
         },
-        config: config,
+        userConfig,
         message: "/init",
       });
 

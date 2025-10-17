@@ -1,14 +1,15 @@
 import { FileSystem, Path } from "@effect/platform";
 import { Context, Effect, Layer } from "effect";
-import { claudeCommandsDirPath } from "../../../lib/config/paths";
 import type { ControllerResponse } from "../../../lib/effect/toEffectResponse";
 import type { InferEffect } from "../../../lib/effect/types";
+import { ApplicationContext } from "../../platform/services/ApplicationContext";
 import { ProjectRepository } from "../../project/infrastructure/ProjectRepository";
 import { ClaudeCodeService } from "../services/ClaudeCodeService";
 
 const LayerImpl = Effect.gen(function* () {
   const projectRepository = yield* ProjectRepository;
   const claudeCodeService = yield* ClaudeCodeService;
+  const context = yield* ApplicationContext;
   const fs = yield* FileSystem.FileSystem;
   const path = yield* Path.Path;
 
@@ -19,7 +20,7 @@ const LayerImpl = Effect.gen(function* () {
       const { project } = yield* projectRepository.getProject(projectId);
 
       const globalCommands: string[] = yield* fs
-        .readDirectory(claudeCommandsDirPath)
+        .readDirectory(context.claudeCodePaths.claudeCommandsDirPath)
         .pipe(
           Effect.map((items) =>
             items

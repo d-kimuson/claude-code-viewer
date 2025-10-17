@@ -1,9 +1,9 @@
 import { Hono } from "hono";
-import type { Config } from "../lib/config/config";
+import type { UserConfig } from "../lib/config/config";
 
 export type HonoContext = {
   Variables: {
-    config: Config;
+    userConfig: UserConfig;
   };
 };
 

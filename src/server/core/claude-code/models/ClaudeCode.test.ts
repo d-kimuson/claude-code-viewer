@@ -1,6 +1,7 @@
 import { CommandExecutor, Path } from "@effect/platform";
 import { NodeContext } from "@effect/platform-node";
 import { Effect, Layer } from "effect";
+import { EnvService } from "../../platform/services/EnvService";
 import * as ClaudeCode from "./ClaudeCode";
 
 describe("ClaudeCode.Config", () => {
@@ -19,6 +20,7 @@ describe("ClaudeCode.Config", () => {
 
       const config = await Effect.runPromise(
         ClaudeCode.Config.pipe(
+          Effect.provide(EnvService.Live),
           Effect.provide(Path.layer),
           Effect.provide(CommandExecutorTest),
         ),

@@ -1,3 +1,4 @@
+import { Path } from "@effect/platform";
 import { Effect } from "effect";
 import { describe, expect, it } from "vitest";
 import type { InternalEventDeclaration } from "../types/InternalEventDeclaration";
@@ -21,6 +22,7 @@ describe("FileWatcherService", () => {
         program.pipe(
           Effect.provide(FileWatcherService.Live),
           Effect.provide(EventBus.Live),
+          Effect.provide(Path.layer),
         ),
       );
 
@@ -44,6 +46,7 @@ describe("FileWatcherService", () => {
         program.pipe(
           Effect.provide(FileWatcherService.Live),
           Effect.provide(EventBus.Live),
+          Effect.provide(Path.layer),
         ),
       );
 
@@ -67,6 +70,7 @@ describe("FileWatcherService", () => {
         program.pipe(
           Effect.provide(FileWatcherService.Live),
           Effect.provide(EventBus.Live),
+          Effect.provide(Path.layer),
         ),
       );
 
@@ -96,6 +100,7 @@ describe("FileWatcherService", () => {
         program.pipe(
           Effect.provide(FileWatcherService.Live),
           Effect.provide(EventBus.Live),
+          Effect.provide(Path.layer),
         ),
       );
 
@@ -142,6 +147,7 @@ describe("FileWatcherService", () => {
         program.pipe(
           Effect.provide(FileWatcherService.Live),
           Effect.provide(EventBus.Live),
+          Effect.provide(Path.layer),
         ),
       );
 
@@ -167,6 +173,7 @@ describe("FileWatcherService", () => {
         program.pipe(
           Effect.provide(FileWatcherService.Live),
           Effect.provide(EventBus.Live),
+          Effect.provide(Path.layer),
         ),
       );
 

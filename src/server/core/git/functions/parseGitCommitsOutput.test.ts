@@ -1,6 +1,5 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import { parseGitCommitsOutput } from "./parseGitCommitsOutput";
-import * as utils from "./utils";
 
 describe("getCommits", () => {
   describe("正常系", () => {
@@ -8,11 +7,6 @@ describe("getCommits", () => {
       const mockOutput = `abc123|feat: add new feature|John Doe|2024-01-15 10:30:00 +0900
 def456|fix: bug fix|Jane Smith|2024-01-14 09:20:00 +0900
 ghi789|chore: update deps|Bob Johnson|2024-01-13 08:10:00 +0900`;
-
-      vi.mocked(utils.executeGitCommand).mockResolvedValue({
-        success: true,
-        data: mockOutput,
-      });
 
       const result = parseGitCommitsOutput(mockOutput);
 
@@ -42,12 +36,6 @@ ghi789|chore: update deps|Bob Johnson|2024-01-13 08:10:00 +0900`;
 
     it("空の結果を返す（コミットがない場合）", async () => {
       const mockOutput = "";
-
-      vi.mocked(utils.executeGitCommand).mockResolvedValue({
-        success: true,
-        data: mockOutput,
-      });
-
       const result = parseGitCommitsOutput(mockOutput);
 
       expect(result.success).toBe(true);
@@ -62,11 +50,6 @@ invalid line without enough pipes
 def456|fix: bug fix|Jane Smith|2024-01-14 09:20:00 +0900
 ||missing data|
 ghi789|chore: update deps|Bob Johnson|2024-01-13 08:10:00 +0900`;
-
-      vi.mocked(utils.executeGitCommand).mockResolvedValue({
-        success: true,
-        data: mockOutput,
-      });
 
       const result = parseGitCommitsOutput(mockOutput);
 
@@ -85,11 +68,6 @@ ghi789|chore: update deps|Bob Johnson|2024-01-13 08:10:00 +0900`;
       const mockOutput = `abc123|feat: add "quotes" & <special> chars|Author Name|2024-01-15 10:30:00 +0900
 def456|fix: 日本語メッセージ|日本語 著者|2024-01-14 09:20:00 +0900`;
 
-      vi.mocked(utils.executeGitCommand).mockResolvedValue({
-        success: true,
-        data: mockOutput,
-      });
-
       const result = parseGitCommitsOutput(mockOutput);
 
       expect(result.success).toBe(true);
@@ -106,11 +84,6 @@ def456|fix: 日本語メッセージ|日本語 著者|2024-01-14 09:20:00 +0900`
     it("空白を含むパスでも正常に動作する", async () => {
       const mockOutput = `abc123|feat: test|Author|2024-01-15 10:30:00 +0900`;
 
-      vi.mocked(utils.executeGitCommand).mockResolvedValue({
-        success: true,
-        data: mockOutput,
-      });
-
       const result = parseGitCommitsOutput(mockOutput);
 
       expect(result.success).toBe(true);
@@ -125,11 +98,6 @@ def456|fix: 日本語メッセージ|日本語 著者|2024-01-14 09:20:00 +0900`
   
 def456|fix: bug|Author|2024-01-14 09:20:00 +0900
   `;
-
-      vi.mocked(utils.executeGitCommand).mockResolvedValue({
-        success: true,
-        data: mockOutput,
-      });
 
       const result = parseGitCommitsOutput(mockOutput);
 

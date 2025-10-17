@@ -1,3 +1,4 @@
+import { Path } from "@effect/platform";
 import { Effect, Layer, Ref } from "effect";
 import { describe, expect, it, vi } from "vitest";
 import { EventBus } from "../core/events/services/EventBus";
@@ -100,6 +101,7 @@ describe("InitializeService", () => {
       createMockProjectMetaService(),
       createMockSessionMetaService(),
       VirtualConversationDatabase.Live,
+      Path.layer,
     );
 
     // Provide dependencies to InitializeService.Live and expose all services
@@ -158,7 +160,7 @@ describe("InitializeService", () => {
       );
 
       const result = await Effect.runPromise(
-        program.pipe(Effect.provide(testLayer)),
+        program.pipe(Effect.provide(testLayer), Effect.provide(Path.layer)),
       );
 
       expect(result).toBeUndefined();
@@ -178,7 +180,7 @@ describe("InitializeService", () => {
       const testLayer = createTestLayer();
 
       const result = await Effect.runPromise(
-        program.pipe(Effect.provide(testLayer)),
+        program.pipe(Effect.provide(testLayer), Effect.provide(Path.layer)),
       );
 
       expect(result).toBe("file watcher started");
@@ -217,7 +219,7 @@ describe("InitializeService", () => {
       const testLayer = createTestLayer();
 
       const result = await Effect.runPromise(
-        program.pipe(Effect.provide(testLayer)),
+        program.pipe(Effect.provide(testLayer), Effect.provide(Path.layer)),
       );
 
       expect(result).toHaveLength(1);
@@ -251,7 +253,7 @@ describe("InitializeService", () => {
       const testLayer = createTestLayer();
 
       const result = await Effect.runPromise(
-        program.pipe(Effect.provide(testLayer)),
+        program.pipe(Effect.provide(testLayer), Effect.provide(Path.layer)),
       );
 
       // heartbeat is emitted immediately once first, then every 10 seconds
@@ -314,7 +316,9 @@ describe("InitializeService", () => {
         mockSessionRepositoryLayer,
       );
 
-      await Effect.runPromise(program.pipe(Effect.provide(testLayer)));
+      await Effect.runPromise(
+        program.pipe(Effect.provide(testLayer), Effect.provide(Path.layer)),
+      );
 
       expect(getProjectsCalled).toHaveBeenCalledTimes(1);
       expect(getSessionsCalled).toHaveBeenCalledTimes(1);
@@ -336,7 +340,9 @@ describe("InitializeService", () => {
 
       // Completes without throwing error
       await expect(
-        Effect.runPromise(program.pipe(Effect.provide(testLayer))),
+        Effect.runPromise(
+          program.pipe(Effect.provide(testLayer), Effect.provide(Path.layer)),
+        ),
       ).resolves.toBeUndefined();
     });
   });
@@ -353,7 +359,7 @@ describe("InitializeService", () => {
       const testLayer = createTestLayer();
 
       const result = await Effect.runPromise(
-        program.pipe(Effect.provide(testLayer)),
+        program.pipe(Effect.provide(testLayer), Effect.provide(Path.layer)),
       );
 
       expect(result).toBe("cleaned up");

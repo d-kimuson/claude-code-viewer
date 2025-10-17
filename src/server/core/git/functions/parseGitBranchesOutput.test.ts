@@ -1,6 +1,5 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import { parseGitBranchesOutput } from "./parseGitBranchesOutput";
-import * as utils from "./utils";
 
 describe("getBranches", () => {
   describe("正常系", () => {
@@ -74,11 +73,6 @@ describe("getBranches", () => {
     it("空の結果を返す（ブランチがない場合）", async () => {
       const mockOutput = "";
 
-      vi.mocked(utils.executeGitCommand).mockResolvedValue({
-        success: true,
-        data: mockOutput,
-      });
-
       const result = parseGitBranchesOutput(mockOutput);
 
       expect(result.success).toBe(true);
@@ -91,11 +85,6 @@ describe("getBranches", () => {
       const mockOutput = `* main     abc1234 [origin/main] Latest commit
 invalid line
   feature  def5678 Feature commit`;
-
-      vi.mocked(utils.executeGitCommand).mockResolvedValue({
-        success: true,
-        data: mockOutput,
-      });
 
       const result = parseGitBranchesOutput(mockOutput);
 

@@ -1,7 +1,7 @@
 import type { FileSystem } from "@effect/platform";
 import { Context, Effect, Layer, Ref, Runtime } from "effect";
 import type { z } from "zod";
-import { PersistentService } from "./PersistantService";
+import { PersistentService } from "./PersistentService";
 
 export interface FileCacheStorageService<T> {
   readonly get: (key: string) => Effect.Effect<T | undefined>;

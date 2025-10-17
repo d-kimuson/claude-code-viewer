@@ -7,7 +7,7 @@ import type { FC } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import type { Session } from "../../../../../../../server/service/types";
+import type { Session } from "../../../../../../../server/core/types";
 import { NewChatModal } from "../../../../components/newChat/NewChatModal";
 import { firstCommandToTitle } from "../../../../services/firstCommandToTitle";
 import { sessionProcessesAtom } from "../../store/sessionProcessesAtom";

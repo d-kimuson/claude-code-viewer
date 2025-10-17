@@ -1,5 +1,5 @@
-import type { DirectoryListingResult } from "../../server/service/directory-browser/getDirectoryListing";
-import type { FileCompletionResult } from "../../server/service/file-completion/getFileCompletion";
+import type { DirectoryListingResult } from "../../server/core/directory-browser/functions/getDirectoryListing";
+import type { FileCompletionResult } from "../../server/core/file-completion/functions/getFileCompletion";
 import { honoClient } from "./client";
 
 export const projectListQuery = {

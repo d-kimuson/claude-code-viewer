@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/collapsible";
 import type { Conversation } from "@/lib/conversation-schema";
 import type { ToolResultContent } from "@/lib/conversation-schema/content/ToolResultContentSchema";
-import type { ErrorJsonl } from "../../../../../../../server/service/types";
+import type { ErrorJsonl } from "../../../../../../../server/core/types";
 import { useSidechain } from "../../hooks/useSidechain";
 import { ConversationItem } from "./ConversationItem";
 

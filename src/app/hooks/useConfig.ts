@@ -6,7 +6,7 @@ import {
 import { useCallback } from "react";
 import { honoClient } from "../../lib/api/client";
 import { configQuery } from "../../lib/api/queries";
-import type { Config } from "../../server/config/config";
+import type { Config } from "../../server/lib/config/config";
 
 export const useConfig = () => {
   const queryClient = useQueryClient();

@@ -1,4 +1,4 @@
-import type { ParsedCommand } from "../../../../server/service/parseCommandXml";
+import type { ParsedCommand } from "../../../../server/core/claude-code/functions/parseCommandXml";
 
 export const firstCommandToTitle = (firstCommand: ParsedCommand) => {
   switch (firstCommand.kind) {

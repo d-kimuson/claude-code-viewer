@@ -2,7 +2,7 @@ import { FileSystem } from "@effect/platform";
 import { Effect, Layer, Ref } from "effect";
 import { z } from "zod";
 import { FileCacheStorage, makeFileCacheStorageLayer } from "./index";
-import { PersistentService } from "./PersistantService";
+import { PersistentService } from "./PersistentService";
 
 // Schema for testing
 const UserSchema = z.object({

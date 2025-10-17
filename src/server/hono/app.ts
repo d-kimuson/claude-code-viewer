@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import type { Config } from "../config/config";
+import type { Config } from "../lib/config/config";
 
 export type HonoContext = {
   Variables: {

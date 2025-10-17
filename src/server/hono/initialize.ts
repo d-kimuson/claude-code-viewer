@@ -1,12 +1,12 @@
 import { Context, Effect, Layer, Ref, Schedule } from "effect";
-import { EventBus } from "../service/events/EventBus";
-import { FileWatcherService } from "../service/events/fileWatcher";
-import type { InternalEventDeclaration } from "../service/events/InternalEventDeclaration";
-import { ProjectMetaService } from "../service/project/ProjectMetaService";
-import { ProjectRepository } from "../service/project/ProjectRepository";
-import { SessionMetaService } from "../service/session/SessionMetaService";
-import { SessionRepository } from "../service/session/SessionRepository";
-import { VirtualConversationDatabase } from "../service/session/VirtualConversationDatabase";
+import { EventBus } from "../core/events/services/EventBus";
+import { FileWatcherService } from "../core/events/services/fileWatcher";
+import type { InternalEventDeclaration } from "../core/events/types/InternalEventDeclaration";
+import { ProjectRepository } from "../core/project/infrastructure/ProjectRepository";
+import { ProjectMetaService } from "../core/project/services/ProjectMetaService";
+import { SessionRepository } from "../core/session/infrastructure/SessionRepository";
+import { VirtualConversationDatabase } from "../core/session/infrastructure/VirtualConversationDatabase";
+import { SessionMetaService } from "../core/session/services/SessionMetaService";
 
 interface InitializeServiceInterface {
   readonly startInitialization: () => Effect.Effect<void>;

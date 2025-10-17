@@ -1,6 +1,6 @@
 import { homedir } from "node:os";
 import { resolve } from "node:path";
-import { encodeProjectId } from "../src/server/service/project/id";
+import { encodeProjectId } from "../src/server/core/project/functions/id";
 
 // biome-ignore lint/complexity/useLiteralKeys: env var
 export const globalClaudeDirectoryPath = process.env["GLOBAL_CLAUDE_DIR"]

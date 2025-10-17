@@ -1,19 +1,19 @@
 import { NodeContext } from "@effect/platform-node";
 import { Effect } from "effect";
 import { handle } from "hono/vercel";
+import { ClaudeCodeLifeCycleService } from "../../../server/core/claude-code/services/ClaudeCodeLifeCycleService";
+import { ClaudeCodePermissionService } from "../../../server/core/claude-code/services/ClaudeCodePermissionService";
+import { ClaudeCodeSessionProcessService } from "../../../server/core/claude-code/services/ClaudeCodeSessionProcessService";
+import { EventBus } from "../../../server/core/events/services/EventBus";
+import { FileWatcherService } from "../../../server/core/events/services/fileWatcher";
+import { ProjectRepository } from "../../../server/core/project/infrastructure/ProjectRepository";
+import { ProjectMetaService } from "../../../server/core/project/services/ProjectMetaService";
+import { SessionRepository } from "../../../server/core/session/infrastructure/SessionRepository";
+import { VirtualConversationDatabase } from "../../../server/core/session/infrastructure/VirtualConversationDatabase";
+import { SessionMetaService } from "../../../server/core/session/services/SessionMetaService";
 import { honoApp } from "../../../server/hono/app";
 import { InitializeService } from "../../../server/hono/initialize";
 import { routes } from "../../../server/hono/route";
-import { ClaudeCodeLifeCycleService } from "../../../server/service/claude-code/ClaudeCodeLifeCycleService";
-import { ClaudeCodePermissionService } from "../../../server/service/claude-code/ClaudeCodePermissionService";
-import { ClaudeCodeSessionProcessService } from "../../../server/service/claude-code/ClaudeCodeSessionProcessService";
-import { EventBus } from "../../../server/service/events/EventBus";
-import { FileWatcherService } from "../../../server/service/events/fileWatcher";
-import { ProjectMetaService } from "../../../server/service/project/ProjectMetaService";
-import { ProjectRepository } from "../../../server/service/project/ProjectRepository";
-import { SessionMetaService } from "../../../server/service/session/SessionMetaService";
-import { SessionRepository } from "../../../server/service/session/SessionRepository";
-import { VirtualConversationDatabase } from "../../../server/service/session/VirtualConversationDatabase";
 
 const program = routes(honoApp);
 

@@ -1,6 +1,6 @@
 import { getCookie, setCookie } from "hono/cookie";
 import { createMiddleware } from "hono/factory";
-import { configSchema } from "../../config/config";
+import { configSchema } from "../../lib/config/config";
 import type { HonoContext } from "../app";
 
 export const configMiddleware = createMiddleware<HonoContext>(

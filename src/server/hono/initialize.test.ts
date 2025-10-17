@@ -38,7 +38,7 @@ describe("InitializeService", () => {
       lastModifiedAt: Date;
       meta: {
         messageCount: number;
-        firstCommand: {
+        firstUserMessage: {
           kind: "command";
           commandName: string;
           commandArgs?: string;
@@ -72,7 +72,7 @@ describe("InitializeService", () => {
       getSessionMeta: () =>
         Effect.succeed({
           messageCount: 0,
-          firstCommand: null,
+          firstUserMessage: null,
         }),
       invalidateSession: () => Effect.void,
     });
@@ -134,7 +134,7 @@ describe("InitializeService", () => {
           lastModifiedAt: new Date(),
           meta: {
             messageCount: 5,
-            firstCommand: {
+            firstUserMessage: {
               kind: "command",
               commandName: "test",
             },
@@ -146,7 +146,7 @@ describe("InitializeService", () => {
           lastModifiedAt: new Date(),
           meta: {
             messageCount: 3,
-            firstCommand: null,
+            firstUserMessage: null,
           },
         },
       ]);
@@ -318,7 +318,7 @@ describe("InitializeService", () => {
             lastModifiedAt: new Date(),
             meta: {
               messageCount: 5,
-              firstCommand: {
+              firstUserMessage: {
                 kind: "command",
                 commandName: "test",
               },

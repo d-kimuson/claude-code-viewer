@@ -41,7 +41,7 @@ const LayerImpl = Effect.gen(function* () {
       // Filter sessions based on hideNoUserMessageSession setting
       if (userConfig.hideNoUserMessageSession) {
         filteredSessions = filteredSessions.filter((session) => {
-          return session.meta.firstCommand !== null;
+          return session.meta.firstUserMessage !== null;
         });
       }
 
@@ -52,9 +52,9 @@ const LayerImpl = Effect.gen(function* () {
         for (const session of filteredSessions) {
           // Generate title for comparison
           const title =
-            session.meta.firstCommand !== null
+            session.meta.firstUserMessage !== null
               ? (() => {
-                  const cmd = session.meta.firstCommand;
+                  const cmd = session.meta.firstUserMessage;
                   switch (cmd.kind) {
                     case "command":
                       return cmd.commandArgs === undefined

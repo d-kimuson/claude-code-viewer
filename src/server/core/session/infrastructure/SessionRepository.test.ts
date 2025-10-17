@@ -116,7 +116,7 @@ describe("SessionRepository", () => {
       const mockDate = new Date("2024-01-01T00:00:00.000Z");
       const mockMeta: SessionMeta = {
         messageCount: 3,
-        firstCommand: null,
+        firstUserMessage: null,
       };
 
       const mockContent = `{"type":"user","message":{"role":"user","content":"Hello"}}\n{"type":"assistant","message":{"role":"assistant","content":"Hi"}}\n{"type":"user","message":{"role":"user","content":"Test"}}`;
@@ -198,7 +198,7 @@ describe("SessionRepository", () => {
       const PersistentServiceMock = makePersistentServiceMock();
       const SessionMetaServiceMock = makeSessionMetaServiceMock({
         messageCount: 0,
-        firstCommand: null,
+        firstUserMessage: null,
       });
       const PredictSessionsDatabaseMock = Layer.succeed(
         VirtualConversationDatabase,
@@ -254,7 +254,7 @@ describe("SessionRepository", () => {
       const PersistentServiceMock = makePersistentServiceMock();
       const SessionMetaServiceMock = makeSessionMetaServiceMock({
         messageCount: 0,
-        firstCommand: null,
+        firstUserMessage: null,
       });
       const PredictSessionsDatabaseMock = makePredictSessionsDatabaseMock(
         new Map(),
@@ -291,7 +291,7 @@ describe("SessionRepository", () => {
       const PersistentServiceMock = makePersistentServiceMock();
       const SessionMetaServiceMock = makeSessionMetaServiceMock({
         messageCount: 0,
-        firstCommand: null,
+        firstUserMessage: null,
       });
       const PredictSessionsDatabaseMock = makePredictSessionsDatabaseMock(
         new Map(),
@@ -326,7 +326,7 @@ describe("SessionRepository", () => {
 
       const mockMeta: SessionMeta = {
         messageCount: 1,
-        firstCommand: null,
+        firstUserMessage: null,
       };
 
       const FileSystemMock = makeFileSystemMock({
@@ -381,7 +381,7 @@ describe("SessionRepository", () => {
 
       const mockMeta: SessionMeta = {
         messageCount: 1,
-        firstCommand: null,
+        firstUserMessage: null,
       };
 
       const FileSystemMock = makeFileSystemMock({
@@ -430,7 +430,7 @@ describe("SessionRepository", () => {
 
       const mockMeta: SessionMeta = {
         messageCount: 1,
-        firstCommand: null,
+        firstUserMessage: null,
       };
 
       const FileSystemMock = makeFileSystemMock({
@@ -495,7 +495,7 @@ describe("SessionRepository", () => {
       const PersistentServiceMock = makePersistentServiceMock();
       const SessionMetaServiceMock = makeSessionMetaServiceMock({
         messageCount: 0,
-        firstCommand: null,
+        firstUserMessage: null,
       });
       const PredictSessionsDatabaseMock = makePredictSessionsDatabaseMock(
         new Map(),
@@ -528,7 +528,7 @@ describe("SessionRepository", () => {
 
       const mockMeta: SessionMeta = {
         messageCount: 1,
-        firstCommand: null,
+        firstUserMessage: null,
       };
 
       const mockConversations: (Conversation | ErrorJsonl)[] = [

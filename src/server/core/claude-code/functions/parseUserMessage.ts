@@ -7,7 +7,7 @@ const matchSchema = z.object({
   content: z.string(),
 });
 
-export const parsedCommandSchema = z.union([
+export const parsedUserMessageSchema = z.union([
   z.object({
     kind: z.literal("command"),
     commandName: z.string(),
@@ -24,9 +24,9 @@ export const parsedCommandSchema = z.union([
   }),
 ]);
 
-export type ParsedCommand = z.infer<typeof parsedCommandSchema>;
+export type ParsedUserMessage = z.infer<typeof parsedUserMessageSchema>;
 
-export const parseCommandXml = (content: string): ParsedCommand => {
+export const parseUserMessage = (content: string): ParsedUserMessage => {
   const matches = Array.from(content.matchAll(regExp))
     .map((match) => matchSchema.safeParse(match.groups))
     .filter((result) => result.success)

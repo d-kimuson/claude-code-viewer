@@ -1,8 +1,8 @@
 import { FileSystem, Path } from "@effect/platform";
 import { Context, Effect, Layer, Option } from "effect";
 import type { InferEffect } from "../../../lib/effect/types";
-import { parseCommandXml } from "../../claude-code/functions/parseCommandXml";
 import { parseJsonl } from "../../claude-code/functions/parseJsonl";
+import { parseUserMessage } from "../../claude-code/functions/parseUserMessage";
 import { decodeProjectId } from "../../project/functions/id";
 import type { Session, SessionDetail } from "../../types";
 import { decodeSessionId, encodeSessionId } from "../functions/id";
@@ -101,7 +101,7 @@ const LayerImpl = Effect.gen(function* () {
               jsonlFilePath: `${decodeProjectId(projectId)}/${sessionId}.jsonl`,
               meta: {
                 messageCount: 0,
-                firstCommand: null,
+                firstUserMessage: null,
               },
               conversations: virtualConversation.conversations,
               lastModifiedAt:
@@ -261,8 +261,8 @@ const LayerImpl = Effect.gen(function* () {
               last !== undefined ? new Date(last.timestamp) : new Date(),
             meta: {
               messageCount: conversations.length,
-              firstCommand: firstUserText
-                ? parseCommandXml(firstUserText)
+              firstUserMessage: firstUserText
+                ? parseUserMessage(firstUserText)
                 : null,
             },
           };

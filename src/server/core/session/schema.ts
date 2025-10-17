@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { parsedCommandSchema } from "../claude-code/functions/parseCommandXml";
+import { parsedUserMessageSchema } from "../claude-code/functions/parseUserMessage";
 
 export const sessionMetaSchema = z.object({
   messageCount: z.number(),
-  firstCommand: parsedCommandSchema.nullable(),
+  firstUserMessage: parsedUserMessageSchema.nullable(),
 });

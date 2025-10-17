@@ -1,7 +1,7 @@
 import { ConversationSchema } from "../../../../lib/conversation-schema";
-import type { ErrorJsonl } from "../../types";
+import type { ErrorJsonl, ExtendedConversation } from "../../types";
 
-export const parseJsonl = (content: string) => {
+export const parseJsonl = (content: string): ExtendedConversation[] => {
   const lines = content
     .trim()
     .split("\n")

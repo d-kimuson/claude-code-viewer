@@ -17,7 +17,7 @@ import { useTaskNotifications } from "@/hooks/useTaskNotifications";
 import { Badge } from "../../../../../../components/ui/badge";
 import { honoClient } from "../../../../../../lib/api/client";
 import { useProject } from "../../../hooks/useProject";
-import { firstCommandToTitle } from "../../../services/firstCommandToTitle";
+import { firstUserMessageToTitle } from "../../../services/firstCommandToTitle";
 import { useSession } from "../hooks/useSession";
 import { useSessionProcess } from "../hooks/useSessionProcess";
 import { ConversationList } from "./conversationList/ConversationList";
@@ -117,8 +117,8 @@ export const SessionPageContent: FC<{
                 <MenuIcon className="w-4 h-4" />
               </Button>
               <h1 className="text-lg sm:text-2xl md:text-3xl font-bold break-all overflow-ellipsis line-clamp-1 px-1 sm:px-5 min-w-0">
-                {session.meta.firstCommand !== null
-                  ? firstCommandToTitle(session.meta.firstCommand)
+                {session.meta.firstUserMessage !== null
+                  ? firstUserMessageToTitle(session.meta.firstUserMessage)
                   : sessionId}
               </h1>
             </div>

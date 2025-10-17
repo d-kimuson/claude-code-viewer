@@ -27,6 +27,8 @@ export type ErrorJsonl = {
   lineNumber: number;
 };
 
+export type ExtendedConversation = Conversation | ErrorJsonl;
+
 export type SessionDetail = Session & {
-  conversations: (Conversation | ErrorJsonl)[];
+  conversations: ExtendedConversation[];
 };

@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { Session } from "../../../../../../../server/core/types";
 import { NewChatModal } from "../../../../components/newChat/NewChatModal";
-import { firstCommandToTitle } from "../../../../services/firstCommandToTitle";
+import { firstUserMessageToTitle } from "../../../../services/firstCommandToTitle";
 import { sessionProcessesAtom } from "../../store/sessionProcessesAtom";
 
 export const SessionsTab: FC<{
@@ -86,8 +86,8 @@ export const SessionsTab: FC<{
         {sortedSessions.map((session) => {
           const isActive = session.id === currentSessionId;
           const title =
-            session.meta.firstCommand !== null
-              ? firstCommandToTitle(session.meta.firstCommand)
+            session.meta.firstUserMessage !== null
+              ? firstUserMessageToTitle(session.meta.firstUserMessage)
               : session.id;
 
           const sessionProcess = sessionProcesses.find(

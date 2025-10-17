@@ -66,7 +66,7 @@ describe("SessionMetaService", () => {
       );
 
       expect(result.messageCount).toBe(1);
-      expect(result.firstCommand).toEqual({
+      expect(result.firstUserMessage).toEqual({
         kind: "text",
         content: "test message",
       });
@@ -153,7 +153,7 @@ describe("SessionMetaService", () => {
         ),
       );
 
-      expect(result.firstCommand).toEqual({
+      expect(result.firstUserMessage).toEqual({
         kind: "command",
         commandName: "/test",
       });
@@ -192,7 +192,7 @@ describe("SessionMetaService", () => {
         ),
       );
 
-      expect(result.firstCommand).toEqual({
+      expect(result.firstUserMessage).toEqual({
         kind: "text",
         content: "actual message",
       });

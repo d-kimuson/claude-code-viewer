@@ -3,14 +3,14 @@ import type { FC } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { parseCommandXml } from "../../../../../../../server/core/claude-code/functions/parseCommandXml";
+import { parseUserMessage } from "../../../../../../../server/core/claude-code/functions/parseUserMessage";
 import { MarkdownContent } from "../../../../../../components/MarkdownContent";
 
 export const UserTextContent: FC<{ text: string; id?: string }> = ({
   text,
   id,
 }) => {
-  const parsed = parseCommandXml(text);
+  const parsed = parseUserMessage(text);
 
   if (parsed.kind === "command") {
     return (

@@ -48,7 +48,7 @@ export const getMcpListOutput = (projectCwd: string) =>
         claudeCodeExecutablePath,
         "mcp",
         "list",
-      ),
+      ).pipe(Command.runInShell(true)),
     );
     return output;
   });

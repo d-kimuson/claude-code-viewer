@@ -1,64 +1,67 @@
-import { resolve } from "node:path";
-import { FileSystem } from "@effect/platform";
+import { FileSystem, Path } from "@effect/platform";
 import { Context, Effect, Layer } from "effect";
 import { z } from "zod";
 import { claudeCodeViewerCacheDirPath } from "../../config/paths";
+import type { InferEffect } from "../../effect/types";
 
 const saveSchema = z.array(z.tuple([z.string(), z.unknown()]));
 
-const getCacheFilePath = (key: string) =>
-  resolve(claudeCodeViewerCacheDirPath, `${key}.json`);
+const LayerImpl = Effect.gen(function* () {
+  const path = yield* Path.Path;
 
-const load = (key: string) => {
-  const cacheFilePath = getCacheFilePath(key);
+  const getCacheFilePath = (key: string) =>
+    path.resolve(claudeCodeViewerCacheDirPath, `${key}.json`);
 
-  return Effect.gen(function* () {
-    const fs = yield* FileSystem.FileSystem;
+  const load = (key: string) => {
+    const cacheFilePath = getCacheFilePath(key);
 
-    if (!(yield* fs.exists(claudeCodeViewerCacheDirPath))) {
-      yield* fs.makeDirectory(claudeCodeViewerCacheDirPath, {
-        recursive: true,
-      });
-    }
+    return Effect.gen(function* () {
+      const fs = yield* FileSystem.FileSystem;
 
-    if (!(yield* fs.exists(cacheFilePath))) {
-      yield* fs.writeFileString(cacheFilePath, "[]");
-    } else {
-      const content = yield* fs.readFileString(cacheFilePath);
-      const parsed = saveSchema.safeParse(JSON.parse(content));
+      if (!(yield* fs.exists(claudeCodeViewerCacheDirPath))) {
+        yield* fs.makeDirectory(claudeCodeViewerCacheDirPath, {
+          recursive: true,
+        });
+      }
 
-      if (!parsed.success) {
+      if (!(yield* fs.exists(cacheFilePath))) {
         yield* fs.writeFileString(cacheFilePath, "[]");
       } else {
-        parsed.data;
-        return parsed.data;
+        const content = yield* fs.readFileString(cacheFilePath);
+        const parsed = saveSchema.safeParse(JSON.parse(content));
+
+        if (!parsed.success) {
+          yield* fs.writeFileString(cacheFilePath, "[]");
+        } else {
+          parsed.data;
+          return parsed.data;
+        }
       }
-    }
 
-    return [];
-  });
-};
+      return [];
+    });
+  };
 
-const save = (key: string, entries: readonly [string, unknown][]) => {
-  const cacheFilePath = getCacheFilePath(key);
+  const save = (key: string, entries: readonly [string, unknown][]) => {
+    const cacheFilePath = getCacheFilePath(key);
 
-  return Effect.gen(function* () {
-    const fs = yield* FileSystem.FileSystem;
-    yield* fs.writeFileString(cacheFilePath, JSON.stringify(entries));
-  });
-};
+    return Effect.gen(function* () {
+      const fs = yield* FileSystem.FileSystem;
+      yield* fs.writeFileString(cacheFilePath, JSON.stringify(entries));
+    });
+  };
+
+  return {
+    load,
+    save,
+  };
+});
+
+export type IPersistentService = InferEffect<typeof LayerImpl>;
 
 export class PersistentService extends Context.Tag("PersistentService")<
   PersistentService,
-  {
-    readonly load: typeof load;
-    readonly save: typeof save;
-  }
+  IPersistentService
 >() {
-  static Live = Layer.succeed(this, {
-    load,
-    save,
-  });
+  static Live = Layer.effect(this, LayerImpl);
 }
-
-export type IPersistentService = Context.Tag.Service<PersistentService>;

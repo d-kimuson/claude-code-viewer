@@ -131,9 +131,11 @@ export const routes = (app: HonoAppType) =>
           async (c) => {
             const response = await effectToResponse(
               c,
-              projectController.createProject({
-                ...c.req.valid("json"),
-              }),
+              projectController
+                .createProject({
+                  ...c.req.valid("json"),
+                })
+                .pipe(Effect.provide(runtime)),
             );
             return response;
           },

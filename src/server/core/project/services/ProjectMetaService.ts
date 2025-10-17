@@ -1,4 +1,3 @@
-import { basename } from "node:path";
 import { FileSystem, Path } from "@effect/platform";
 import { Context, Effect, Layer, Option, Ref } from "effect";
 import { z } from "zod";
@@ -115,7 +114,7 @@ export class ProjectMetaService extends Context.Tag("ProjectMetaService")<
           }
 
           const projectMeta: ProjectMeta = {
-            projectName: projectPath ? basename(projectPath) : null,
+            projectName: projectPath ? path.basename(projectPath) : null,
             projectPath,
             sessionCount: files.length,
           };

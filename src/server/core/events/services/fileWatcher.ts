@@ -1,5 +1,5 @@
 import { type FSWatcher, watch } from "node:fs";
-import { join } from "node:path";
+import { Path } from "@effect/platform";
 import { Context, Effect, Layer, Ref } from "effect";
 import z from "zod";
 import { claudeProjectsDirPath } from "../../../lib/config/paths";
@@ -24,6 +24,7 @@ export class FileWatcherService extends Context.Tag("FileWatcherService")<
   static Live = Layer.effect(
     this,
     Effect.gen(function* () {
+      const path = yield* Path.Path;
       const eventBus = yield* EventBus;
       const isWatchingRef = yield* Ref.make(false);
       const watcherRef = yield* Ref.make<FSWatcher | null>(null);
@@ -44,6 +45,7 @@ export class FileWatcherService extends Context.Tag("FileWatcherService")<
           yield* Effect.tryPromise({
             try: async () => {
               console.log("Starting file watcher on:", claudeProjectsDirPath);
+
               const watcher = watch(
                 claudeProjectsDirPath,
                 { persistent: false, recursive: true },
@@ -59,7 +61,7 @@ export class FileWatcherService extends Context.Tag("FileWatcherService")<
                   const { sessionId } = groups.data;
 
                   // フルパスを構築してエンコードされた projectId を取得
-                  const fullPath = join(claudeProjectsDirPath, filename);
+                  const fullPath = path.join(claudeProjectsDirPath, filename);
                   const encodedProjectId =
                     encodeProjectIdFromSessionFilePath(fullPath);
                   const debounceKey = `${encodedProjectId}/${sessionId}`;

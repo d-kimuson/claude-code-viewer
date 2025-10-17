@@ -122,7 +122,8 @@ const LayerImpl = Effect.gen(function* () {
 
       // No project validation needed - startTask will create a new project
       // if it doesn't exist when running /init command
-      const claudeProjectFilePath = computeClaudeProjectFilePath(projectPath);
+      const claudeProjectFilePath =
+        yield* computeClaudeProjectFilePath(projectPath);
       const projectId = encodeProjectId(claudeProjectFilePath);
       const config = yield* honoConfigService.getConfig();
 

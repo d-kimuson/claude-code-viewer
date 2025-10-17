@@ -1,10 +1,10 @@
+import { FileSystem, Path } from "@effect/platform";
 import { Context, Effect, Layer } from "effect";
 import { claudeCommandsDirPath } from "../../../lib/config/paths";
 import type { ControllerResponse } from "../../../lib/effect/toEffectResponse";
 import type { InferEffect } from "../../../lib/effect/types";
 import { ProjectRepository } from "../../project/infrastructure/ProjectRepository";
 import { ClaudeCodeService } from "../services/ClaudeCodeService";
-import { FileSystem, Path } from "@effect/platform";
 
 const LayerImpl = Effect.gen(function* () {
   const projectRepository = yield* ProjectRepository;

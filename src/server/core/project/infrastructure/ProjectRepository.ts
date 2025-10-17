@@ -1,5 +1,4 @@
-import { resolve } from "node:path";
-import { FileSystem } from "@effect/platform";
+import { FileSystem, Path } from "@effect/platform";
 import { Context, Effect, Layer, Option } from "effect";
 import { claudeProjectsDirPath } from "../../../lib/config/paths";
 import type { InferEffect } from "../../../lib/effect/types";
@@ -9,6 +8,7 @@ import { ProjectMetaService } from "../services/ProjectMetaService";
 
 const LayerImpl = Effect.gen(function* () {
   const fs = yield* FileSystem.FileSystem;
+  const path = yield* Path.Path;
   const projectMetaService = yield* ProjectMetaService;
 
   const getProject = (projectId: string) =>
@@ -54,7 +54,7 @@ const LayerImpl = Effect.gen(function* () {
       // Filter directories and map to Project objects
       const projectEffects = entries.map((entry) =>
         Effect.gen(function* () {
-          const fullPath = resolve(claudeProjectsDirPath, entry);
+          const fullPath = path.resolve(claudeProjectsDirPath, entry);
 
           // Check if it's a directory
           const stat = yield* Effect.tryPromise(() =>

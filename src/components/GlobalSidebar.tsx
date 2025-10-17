@@ -3,6 +3,12 @@
 import type { LucideIcon } from "lucide-react";
 import { SettingsIcon } from "lucide-react";
 import { type FC, type ReactNode, Suspense, useState } from "react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { NotificationSettings } from "./NotificationSettings";
 import { SettingsControls } from "./SettingsControls";
@@ -19,6 +25,7 @@ interface GlobalSidebarProps {
   className?: string;
   additionalTabs?: SidebarTab[];
   defaultActiveTab?: string;
+  headerButton?: ReactNode;
 }
 
 export const GlobalSidebar: FC<GlobalSidebarProps> = ({
@@ -26,11 +33,12 @@ export const GlobalSidebar: FC<GlobalSidebarProps> = ({
   className,
   additionalTabs = [],
   defaultActiveTab,
+  headerButton,
 }) => {
   const settingsTab: SidebarTab = {
     id: "settings",
     icon: SettingsIcon,
-    title: "Settings",
+    title: "表示と通知の設定",
     content: (
       <div className="h-full flex flex-col">
         <div className="border-b border-sidebar-border p-4">
@@ -96,29 +104,39 @@ export const GlobalSidebar: FC<GlobalSidebarProps> = ({
     >
       {/* Vertical Icon Menu - Always Visible */}
       <div className="w-12 flex flex-col border-r border-sidebar-border bg-sidebar/50">
-        <div className="flex flex-col p-2 space-y-1">
-          {allTabs.map((tab) => {
-            const Icon = tab.icon;
-            return (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => handleTabClick(tab.id)}
-                className={cn(
-                  "w-8 h-8 flex items-center justify-center rounded-md transition-colors",
-                  "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-                  activeTab === tab.id && isExpanded
-                    ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-sm"
-                    : "text-sidebar-foreground/70",
-                )}
-                title={tab.title}
-                data-testid={`${tab.id}-tab-button`}
-              >
-                <Icon className="w-4 h-4" />
-              </button>
-            );
-          })}
-        </div>
+        <TooltipProvider>
+          {headerButton && (
+            <div className="border-b border-sidebar-border">{headerButton}</div>
+          )}
+          <div className="flex flex-col p-2 space-y-1">
+            {allTabs.map((tab) => {
+              const Icon = tab.icon;
+              return (
+                <Tooltip key={tab.id}>
+                  <TooltipTrigger asChild>
+                    <button
+                      type="button"
+                      onClick={() => handleTabClick(tab.id)}
+                      className={cn(
+                        "w-8 h-8 flex items-center justify-center rounded-md transition-colors",
+                        "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                        activeTab === tab.id && isExpanded
+                          ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-sm"
+                          : "text-sidebar-foreground/70",
+                      )}
+                      data-testid={`${tab.id}-tab-button`}
+                    >
+                      <Icon className="w-4 h-4" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right">
+                    <p>{tab.title}</p>
+                  </TooltipContent>
+                </Tooltip>
+              );
+            })}
+          </div>
+        </TooltipProvider>
       </div>
 
       {/* Content Area - Only shown when expanded */}

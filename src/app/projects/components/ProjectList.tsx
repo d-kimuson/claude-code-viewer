@@ -59,7 +59,7 @@ export const ProjectList: FC = () => {
           </CardContent>
           <CardContent className="pt-0">
             <Button asChild className="w-full">
-              <Link href={`/projects/${encodeURIComponent(project.id)}/latest`}>
+              <Link href={`/projects/${project.id}/latest`}>
                 View Conversations
               </Link>
             </Button>

@@ -1,3 +1,4 @@
+import type { DirectoryListingResult } from "../../server/service/directory-browser/getDirectoryListing";
 import type { FileCompletionResult } from "../../server/service/file-completion/getFileCompletion";
 import { honoClient } from "./client";
 
@@ -15,6 +16,22 @@ export const projectListQuery = {
     return await response.json();
   },
 } as const;
+
+export const directoryListingQuery = (currentPath?: string) =>
+  ({
+    queryKey: ["directory-listing", currentPath],
+    queryFn: async (): Promise<DirectoryListingResult> => {
+      const response = await honoClient.api["directory-browser"].$get({
+        query: currentPath ? { currentPath } : {},
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch directory listing");
+      }
+
+      return await response.json();
+    },
+  }) as const;
 
 export const projectDetailQuery = (projectId: string, cursor?: string) =>
   ({
@@ -70,7 +87,7 @@ export const sessionDetailQuery = (projectId: string, sessionId: string) =>
         throw new Error(`Failed to fetch session: ${response.statusText}`);
       }
 
-      return response.json();
+      return await response.json();
     },
   }) as const;
 

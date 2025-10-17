@@ -21,7 +21,5 @@ export default async function LatestSessionPage({
     redirect(`/projects`);
   }
 
-  redirect(
-    `/projects/${encodeURIComponent(projectId)}/sessions/${encodeURIComponent(latestSession.id)}`,
-  );
+  redirect(`/projects/${projectId}/sessions/${latestSession.id}`);
 }

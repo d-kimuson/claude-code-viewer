@@ -1,4 +1,7 @@
-import type { SDKResultMessage, SDKSystemMessage } from "@anthropic-ai/claude-code";
+import type {
+  SDKResultMessage,
+  SDKSystemMessage,
+} from "@anthropic-ai/claude-code";
 import { Effect, Layer } from "effect";
 import { describe, expect, it } from "vitest";
 import { EventBus } from "../events/EventBus";
@@ -38,7 +41,6 @@ const createMockContinueTaskDef = (
   baseSessionId,
 });
 
-
 // Helper function to create mock init context
 const createMockInitContext = (sessionId: string): InitMessageContext => ({
   initMessage: {
@@ -48,11 +50,12 @@ const createMockInitContext = (sessionId: string): InitMessageContext => ({
 });
 
 // Helper function to create mock result message
-const createMockResultMessage = (sessionId: string): SDKResultMessage => ({
-  type: "result",
-  session_id: sessionId,
-  result: {},
-} as SDKResultMessage);
+const createMockResultMessage = (sessionId: string): SDKResultMessage =>
+  ({
+    type: "result",
+    session_id: sessionId,
+    result: {},
+  }) as SDKResultMessage;
 
 // Mock EventBus for testing
 const MockEventBus = Layer.succeed(EventBus, {
@@ -581,7 +584,9 @@ describe("ClaudeCodeSessionProcessService", () => {
         program.pipe(Effect.provide(TestLayer)),
       );
 
-      const completedTask = process.tasks.find((t) => t.def.taskId === "task-1");
+      const completedTask = process.tasks.find(
+        (t) => t.def.taskId === "task-1",
+      );
       expect(completedTask?.status).toBe("completed");
       if (completedTask?.status === "completed") {
         expect(completedTask.sessionId).toBe("session-1");
@@ -758,9 +763,7 @@ describe("ClaudeCodeSessionProcessService", () => {
       const program = Effect.gen(function* () {
         const service = yield* ClaudeCodeSessionProcessService;
 
-        const result = yield* Effect.flip(
-          service.getTask("non-existent-task"),
-        );
+        const result = yield* Effect.flip(service.getTask("non-existent-task"));
 
         return result;
       });
@@ -857,7 +860,11 @@ describe("ClaudeCodeSessionProcessService", () => {
         });
 
         // Continue with second task
-        const taskDef2 = createMockContinueTaskDef("task-2", "session-1", "session-1");
+        const taskDef2 = createMockContinueTaskDef(
+          "task-2",
+          "session-1",
+          "session-1",
+        );
 
         const continueResult = yield* service.continueSessionProcess({
           sessionProcessId: "process-1",

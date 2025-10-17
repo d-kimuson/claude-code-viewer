@@ -22,7 +22,6 @@ describe("getCommits", () => {
 def456|fix: bug fix|Jane Smith|2024-01-14 09:20:00 +0900
 ghi789|chore: update deps|Bob Johnson|2024-01-13 08:10:00 +0900`;
 
-
       vi.mocked(utils.executeGitCommand).mockResolvedValue({
         success: true,
         data: mockOutput,
@@ -70,7 +69,6 @@ ghi789|chore: update deps|Bob Johnson|2024-01-13 08:10:00 +0900`;
       const mockCwd = "/test/repo";
       const mockOutput = "";
 
-
       vi.mocked(utils.executeGitCommand).mockResolvedValue({
         success: true,
         data: mockOutput,
@@ -91,7 +89,6 @@ invalid line without enough pipes
 def456|fix: bug fix|Jane Smith|2024-01-14 09:20:00 +0900
 ||missing data|
 ghi789|chore: update deps|Bob Johnson|2024-01-13 08:10:00 +0900`;
-
 
       vi.mocked(utils.executeGitCommand).mockResolvedValue({
         success: true,
@@ -156,7 +153,6 @@ ghi789|chore: update deps|Bob Johnson|2024-01-13 08:10:00 +0900`;
     it("Gitコマンドが失敗した場合", async () => {
       const mockCwd = "/test/repo";
 
-
       vi.mocked(utils.executeGitCommand).mockResolvedValue({
         success: false,
         error: {
@@ -206,7 +202,6 @@ def456|fix: 日本語メッセージ|日本語 著者|2024-01-14 09:20:00 +0900`
       const mockCwd = "/test/my repo with spaces";
       const mockOutput = `abc123|feat: test|Author|2024-01-15 10:30:00 +0900`;
 
-
       vi.mocked(utils.executeGitCommand).mockResolvedValue({
         success: true,
         data: mockOutput,
@@ -232,7 +227,6 @@ def456|fix: 日本語メッセージ|日本語 著者|2024-01-14 09:20:00 +0900`
   
 def456|fix: bug|Author|2024-01-14 09:20:00 +0900
   `;
-
 
       vi.mocked(utils.executeGitCommand).mockResolvedValue({
         success: true,

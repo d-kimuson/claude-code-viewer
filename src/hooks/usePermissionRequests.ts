@@ -15,7 +15,7 @@ export const usePermissionRequests = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   // Listen for permission requests from the server
-  useServerEventListener("permission_requested", (data) => {
+  useServerEventListener("permissionRequested", (data) => {
     if (data.permissionRequest) {
       setCurrentPermissionRequest(data.permissionRequest);
       setIsDialogOpen(true);

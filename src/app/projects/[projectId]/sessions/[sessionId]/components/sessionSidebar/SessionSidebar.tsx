@@ -1,9 +1,16 @@
 "use client";
 
-import { MessageSquareIcon, PlugIcon } from "lucide-react";
+import { ArrowLeftIcon, MessageSquareIcon, PlugIcon } from "lucide-react";
+import Link from "next/link";
 import { type FC, useMemo } from "react";
 import type { SidebarTab } from "@/components/GlobalSidebar";
 import { GlobalSidebar } from "@/components/GlobalSidebar";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { useProject } from "../../../../hooks/useProject";
 import { McpTab } from "./McpTab";
@@ -36,7 +43,7 @@ export const SessionSidebar: FC<{
       {
         id: "sessions",
         icon: MessageSquareIcon,
-        title: "Sessions",
+        title: "セッション一覧を表示",
         content: (
           <SessionsTab
             sessions={sessions.map((session) => ({
@@ -54,7 +61,7 @@ export const SessionSidebar: FC<{
       {
         id: "mcp",
         icon: PlugIcon,
-        title: "MCP Servers",
+        title: "MCPサーバー設定を表示",
         content: <McpTab projectId={projectId} />,
       },
     ],
@@ -76,6 +83,23 @@ export const SessionSidebar: FC<{
           projectId={projectId}
           additionalTabs={additionalTabs}
           defaultActiveTab="sessions"
+          headerButton={
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Link
+                    href="/projects"
+                    className="w-12 h-12 flex items-center justify-center hover:bg-sidebar-accent transition-colors"
+                  >
+                    <ArrowLeftIcon className="w-4 h-4 text-sidebar-foreground/70" />
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent side="right">
+                  <p>プロジェクト一覧に戻る</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          }
         />
       </div>
 

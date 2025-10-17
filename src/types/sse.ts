@@ -21,7 +21,7 @@ export type SSEEventDeclaration = {
     processes: PublicSessionProcess[];
   };
 
-  permission_requested: {
+  permissionRequested: {
     permissionRequest: PermissionRequest;
   };
 };

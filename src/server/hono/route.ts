@@ -1,4 +1,5 @@
 import { readdir } from "node:fs/promises";
+import { homedir } from "node:os";
 import { resolve } from "node:path";
 import type { CommandExecutor, FileSystem, Path } from "@effect/platform";
 import { zValidator } from "@hono/zod-validator";
@@ -12,6 +13,8 @@ import { configSchema } from "../config/config";
 import { env } from "../lib/env";
 import { ClaudeCodeLifeCycleService } from "../service/claude-code/ClaudeCodeLifeCycleService";
 import { ClaudeCodePermissionService } from "../service/claude-code/ClaudeCodePermissionService";
+import { computeClaudeProjectFilePath } from "../service/claude-code/computeClaudeProjectFilePath";
+import { getDirectoryListing } from "../service/directory-browser/getDirectoryListing";
 import { adaptInternalEventToSSE } from "../service/events/adaptInternalEventToSSE";
 import { EventBus } from "../service/events/EventBus";
 import type { InternalEventDeclaration } from "../service/events/InternalEventDeclaration";
@@ -22,6 +25,7 @@ import { getCommits } from "../service/git/getCommits";
 import { getDiff } from "../service/git/getDiff";
 import { getMcpList } from "../service/mcp/getMcpList";
 import { claudeCommandsDirPath } from "../service/paths";
+import { encodeProjectId } from "../service/project/id";
 import type { ProjectMetaService } from "../service/project/ProjectMetaService";
 import { ProjectRepository } from "../service/project/ProjectRepository";
 import type { SessionMetaService } from "../service/session/SessionMetaService";
@@ -91,6 +95,87 @@ export const routes = (app: HonoAppType) =>
 
           return c.json({ projects });
         })
+
+        .post(
+          "/projects",
+          zValidator(
+            "json",
+            z.object({
+              projectPath: z.string().min(1, "Project path is required"),
+            }),
+          ),
+          async (c) => {
+            const { projectPath } = c.req.valid("json");
+
+            // No project validation needed - startTask will create a new project
+            // if it doesn't exist when running /init command
+            const claudeProjectFilePath =
+              computeClaudeProjectFilePath(projectPath);
+            const projectId = encodeProjectId(claudeProjectFilePath);
+
+            const program = Effect.gen(function* () {
+              const result = yield* claudeCodeLifeCycleService.startTask({
+                baseSession: {
+                  cwd: projectPath,
+                  projectId,
+                  sessionId: undefined,
+                },
+                config: c.get("config"),
+                message: "/init",
+              });
+
+              return {
+                result,
+                status: 200 as const,
+              };
+            });
+
+            const result = await Runtime.runPromise(runtime)(program);
+
+            if (result.status === 200) {
+              const { sessionId } =
+                await result.result.awaitSessionFileCreated();
+
+              return c.json({
+                projectId: result.result.sessionProcess.def.projectId,
+                sessionId,
+              });
+            }
+
+            return c.json({ error: "Failed to create project" }, 500);
+          },
+        )
+
+        .get(
+          "/directory-browser",
+          zValidator(
+            "query",
+            z.object({
+              currentPath: z.string().optional(),
+            }),
+          ),
+          async (c) => {
+            const { currentPath } = c.req.valid("query");
+            const rootPath = "/";
+            const defaultPath = homedir();
+
+            try {
+              const targetPath = currentPath || defaultPath;
+              const relativePath = targetPath.startsWith(rootPath)
+                ? targetPath.slice(rootPath.length)
+                : targetPath;
+
+              const result = await getDirectoryListing(rootPath, relativePath);
+              return c.json(result);
+            } catch (error) {
+              console.error("Directory listing error:", error);
+              if (error instanceof Error) {
+                return c.json({ error: error.message }, 400);
+              }
+              return c.json({ error: "Failed to list directory" }, 500);
+            }
+          },
+        )
 
         .get(
           "/projects/:projectId",
@@ -172,10 +257,11 @@ export const routes = (app: HonoAppType) =>
                 filteredSessions = Array.from(sessionMap.values());
               }
 
+              const hasMore = sessions.length >= 20;
               return {
                 project,
                 sessions: filteredSessions,
-                nextCursor: sessions.at(-1)?.id,
+                nextCursor: hasMore ? sessions.at(-1)?.id : undefined,
               };
             });
 
@@ -498,11 +584,14 @@ export const routes = (app: HonoAppType) =>
             const result = await Runtime.runPromise(runtime)(program);
 
             if (result.status === 200) {
+              const { sessionId } =
+                await result.result.awaitSessionInitialized();
+
               return c.json({
                 sessionProcess: {
                   id: result.result.sessionProcess.def.sessionProcessId,
                   projectId: result.result.sessionProcess.def.projectId,
-                  sessionId: await result.result.awaitSessionInitialized(),
+                  sessionId,
                 },
               });
             }
@@ -648,6 +737,16 @@ export const routes = (app: HonoAppType) =>
                   );
                 };
 
+                const onPermissionRequested = (
+                  event: InternalEventDeclaration["permissionRequested"],
+                ) => {
+                  Effect.runFork(
+                    typeSafeSSE.writeSSE("permissionRequested", {
+                      permissionRequest: event.permissionRequest,
+                    }),
+                  );
+                };
+
                 yield* eventBus.on("sessionListChanged", onSessionListChanged);
                 yield* eventBus.on("sessionChanged", onSessionChanged);
                 yield* eventBus.on(
@@ -655,6 +754,10 @@ export const routes = (app: HonoAppType) =>
                   onSessionProcessChanged,
                 );
                 yield* eventBus.on("heartbeat", onHeartbeat);
+                yield* eventBus.on(
+                  "permissionRequested",
+                  onPermissionRequested,
+                );
 
                 const { connectionPromise } = adaptInternalEventToSSE(
                   rawStream,
@@ -676,6 +779,10 @@ export const routes = (app: HonoAppType) =>
                             onSessionProcessChanged,
                           );
                           yield* eventBus.off("heartbeat", onHeartbeat);
+                          yield* eventBus.off(
+                            "permissionRequested",
+                            onPermissionRequested,
+                          );
                         }),
                       );
                     },

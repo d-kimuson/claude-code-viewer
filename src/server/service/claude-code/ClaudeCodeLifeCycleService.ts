@@ -118,7 +118,12 @@ const LayerImpl = Effect.gen(function* () {
                 },
         });
 
-      const sessionInitializedPromise = controllablePromise<string>();
+      const sessionInitializedPromise = controllablePromise<{
+        sessionId: string;
+      }>();
+      const sessionFileCreatedPromise = controllablePromise<{
+        sessionId: string;
+      }>();
 
       setMessageGeneratorHooks({
         onNewUserMessageResolved: async (message) => {
@@ -194,7 +199,9 @@ const LayerImpl = Effect.gen(function* () {
               // do nothing
             }
 
-            sessionInitializedPromise.resolve(message.session_id);
+            sessionInitializedPromise.resolve({
+              sessionId: message.session_id,
+            });
 
             yield* eventBusService.emit("sessionListChanged", {
               projectId: processState.def.projectId,
@@ -214,6 +221,10 @@ const LayerImpl = Effect.gen(function* () {
           ) {
             yield* sessionProcessService.toFileCreatedState({
               sessionProcessId: processState.def.sessionProcessId,
+            });
+
+            sessionFileCreatedPromise.resolve({
+              sessionId: message.session_id,
             });
 
             yield* virtualConversationDatabase.deleteVirtualConversations(
@@ -329,6 +340,8 @@ const LayerImpl = Effect.gen(function* () {
         daemonPromise,
         awaitSessionInitialized: async () =>
           await sessionInitializedPromise.promise,
+        awaitSessionFileCreated: async () =>
+          await sessionFileCreatedPromise.promise,
       };
     });
   };

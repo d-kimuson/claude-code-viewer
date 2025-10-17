@@ -3,6 +3,7 @@
 import { HistoryIcon } from "lucide-react";
 import { Suspense } from "react";
 import { GlobalSidebar } from "@/components/GlobalSidebar";
+import { CreateProjectDialog } from "./components/CreateProjectDialog";
 import { ProjectList } from "./components/ProjectList";
 
 export const dynamic = "force-dynamic";
@@ -27,7 +28,10 @@ export default function ProjectsPage() {
 
           <main>
             <section>
-              <h2 className="text-xl font-semibold mb-4">Your Projects</h2>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-semibold">Your Projects</h2>
+                <CreateProjectDialog />
+              </div>
               <Suspense
                 fallback={
                   <div className="flex items-center justify-center py-12">

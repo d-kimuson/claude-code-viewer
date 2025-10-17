@@ -1,7 +1,9 @@
 import { type FSWatcher, watch } from "node:fs";
+import { join } from "node:path";
 import { Context, Effect, Layer, Ref } from "effect";
 import z from "zod";
 import { claudeProjectsDirPath } from "../paths";
+import { encodeProjectIdFromSessionFilePath } from "../project/id";
 import { EventBus } from "./EventBus";
 
 const fileRegExp = /(?<projectId>.*?)\/(?<sessionId>.*?)\.jsonl/;
@@ -54,8 +56,13 @@ export class FileWatcherService extends Context.Tag("FileWatcherService")<
 
                   if (!groups.success) return;
 
-                  const { projectId, sessionId } = groups.data;
-                  const debounceKey = `${projectId}/${sessionId}`;
+                  const { sessionId } = groups.data;
+
+                  // フルパスを構築してエンコードされた projectId を取得
+                  const fullPath = join(claudeProjectsDirPath, filename);
+                  const encodedProjectId =
+                    encodeProjectIdFromSessionFilePath(fullPath);
+                  const debounceKey = `${encodedProjectId}/${sessionId}`;
 
                   Effect.runPromise(
                     Effect.gen(function* () {
@@ -68,14 +75,14 @@ export class FileWatcherService extends Context.Tag("FileWatcherService")<
                       const newTimer = setTimeout(() => {
                         Effect.runFork(
                           eventBus.emit("sessionChanged", {
-                            projectId,
+                            projectId: encodedProjectId,
                             sessionId,
                           }),
                         );
 
                         Effect.runFork(
                           eventBus.emit("sessionListChanged", {
-                            projectId,
+                            projectId: encodedProjectId,
                           }),
                         );
 

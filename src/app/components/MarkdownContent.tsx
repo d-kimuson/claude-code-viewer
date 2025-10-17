@@ -175,6 +175,8 @@ export const MarkdownContent: FC<MarkdownContentProps> = ({
             return (
               <a
                 href={href}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-primary hover:text-primary/80 underline underline-offset-4 decoration-primary/30 hover:decoration-primary/60 transition-colors"
                 {...props}
               >

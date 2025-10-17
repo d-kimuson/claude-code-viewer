@@ -1,5 +1,5 @@
-import type { DirectoryListingResult } from "../../server/core/directory-browser/functions/getDirectoryListing";
-import type { FileCompletionResult } from "../../server/core/file-completion/functions/getFileCompletion";
+import type { DirectoryListingResult } from "../../server/core/file-system/functions/getDirectoryListing";
+import type { FileCompletionResult } from "../../server/core/file-system/functions/getFileCompletion";
 import { honoClient } from "./client";
 
 export const projectListQuery = {
@@ -21,7 +21,7 @@ export const directoryListingQuery = (currentPath?: string) =>
   ({
     queryKey: ["directory-listing", currentPath],
     queryFn: async (): Promise<DirectoryListingResult> => {
-      const response = await honoClient.api["directory-browser"].$get({
+      const response = await honoClient.api.fs["directory-browser"].$get({
         query: currentPath ? { currentPath } : {},
       });
 
@@ -182,11 +182,8 @@ export const fileCompletionQuery = (projectId: string, basePath: string) =>
   ({
     queryKey: ["file-completion", projectId, basePath],
     queryFn: async (): Promise<FileCompletionResult> => {
-      const response = await honoClient.api.projects[":projectId"][
-        "file-completion"
-      ].$get({
-        param: { projectId },
-        query: { basePath },
+      const response = await honoClient.api.fs["file-completion"].$get({
+        query: { basePath, projectId },
       });
 
       if (!response.ok) {

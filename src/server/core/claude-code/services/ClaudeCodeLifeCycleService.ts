@@ -342,6 +342,10 @@ const LayerImpl = Effect.gen(function* () {
           await sessionInitializedPromise.promise,
         awaitSessionFileCreated: async () =>
           await sessionFileCreatedPromise.promise,
+        yieldSessionInitialized: () =>
+          Effect.promise(() => sessionInitializedPromise.promise),
+        yieldSessionFileCreated: () =>
+          Effect.promise(() => sessionFileCreatedPromise.promise),
       };
     });
   };

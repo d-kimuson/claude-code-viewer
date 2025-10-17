@@ -37,6 +37,22 @@ export const Config = Effect.gen(function* () {
   };
 });
 
+export const getMcpListOutput = (projectCwd: string) =>
+  Effect.gen(function* () {
+    const { claudeCodeExecutablePath } = yield* Config;
+    const output = yield* Command.string(
+      Command.make(
+        "cd",
+        projectCwd,
+        "&&",
+        claudeCodeExecutablePath,
+        "mcp",
+        "list",
+      ),
+    );
+    return output;
+  });
+
 export const getAvailableFeatures = (
   claudeCodeVersion: ClaudeCodeVersion.ClaudeCodeVersion | null,
 ) => ({

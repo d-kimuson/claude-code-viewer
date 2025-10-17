@@ -1,7 +1,6 @@
 import { TaskExecutor } from "../utils/TaskExecutor";
 import { errorPagesCapture } from "./error-pages";
 import { homeCapture } from "./home";
-import { projectDetailCapture } from "./project-detail";
 import { projectsCapture } from "./projects";
 import { sessionDetailCapture } from "./session-detail";
 
@@ -17,7 +16,6 @@ const tasks = [
   ...homeCapture.tasks,
   ...errorPagesCapture.tasks,
   ...projectsCapture.tasks,
-  ...projectDetailCapture.tasks,
   ...sessionDetailCapture.tasks,
 ];
 

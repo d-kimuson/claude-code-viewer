@@ -7,28 +7,42 @@ import type { FC } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import type { Session } from "../../../../../../../server/service/types";
+import type { Session } from "../../../../../../../server/core/types";
 import { NewChatModal } from "../../../../components/newChat/NewChatModal";
-import { firstCommandToTitle } from "../../../../services/firstCommandToTitle";
-import { aliveTasksAtom } from "../../store/aliveTasksAtom";
+import { firstUserMessageToTitle } from "../../../../services/firstCommandToTitle";
+import { sessionProcessesAtom } from "../../store/sessionProcessesAtom";
 
 export const SessionsTab: FC<{
   sessions: Session[];
   currentSessionId: string;
   projectId: string;
-}> = ({ sessions, currentSessionId, projectId }) => {
-  const aliveTasks = useAtomValue(aliveTasksAtom);
+  hasNextPage?: boolean;
+  isFetchingNextPage?: boolean;
+  onLoadMore?: () => void;
+}> = ({
+  sessions,
+  currentSessionId,
+  projectId,
+  hasNextPage,
+  isFetchingNextPage,
+  onLoadMore,
+}) => {
+  const sessionProcesses = useAtomValue(sessionProcessesAtom);
 
   // Sort sessions: Running > Paused > Others, then by lastModifiedAt (newest first)
   const sortedSessions = [...sessions].sort((a, b) => {
-    const aTask = aliveTasks.find((task) => task.sessionId === a.id);
-    const bTask = aliveTasks.find((task) => task.sessionId === b.id);
+    const aProcess = sessionProcesses.find(
+      (process) => process.sessionId === a.id,
+    );
+    const bProcess = sessionProcesses.find(
+      (process) => process.sessionId === b.id,
+    );
 
-    const aStatus = aTask?.status;
-    const bStatus = bTask?.status;
+    const aStatus = aProcess?.status;
+    const bStatus = bProcess?.status;
 
     // Define priority: running = 0, paused = 1, others = 2
-    const getPriority = (status: string | undefined) => {
+    const getPriority = (status: "paused" | "running" | undefined) => {
       if (status === "running") return 0;
       if (status === "paused") return 1;
       return 2;
@@ -43,12 +57,8 @@ export const SessionsTab: FC<{
     }
 
     // Then sort by lastModifiedAt (newest first)
-    const aTime = a.meta.lastModifiedAt
-      ? new Date(a.meta.lastModifiedAt).getTime()
-      : 0;
-    const bTime = b.meta.lastModifiedAt
-      ? new Date(b.meta.lastModifiedAt).getTime()
-      : 0;
+    const aTime = a.lastModifiedAt ? a.lastModifiedAt.getTime() : 0;
+    const bTime = b.lastModifiedAt ? b.lastModifiedAt.getTime() : 0;
     return bTime - aTime;
   });
 
@@ -76,26 +86,24 @@ export const SessionsTab: FC<{
         {sortedSessions.map((session) => {
           const isActive = session.id === currentSessionId;
           const title =
-            session.meta.firstCommand !== null
-              ? firstCommandToTitle(session.meta.firstCommand)
+            session.meta.firstUserMessage !== null
+              ? firstUserMessageToTitle(session.meta.firstUserMessage)
               : session.id;
 
-          const aliveTask = aliveTasks.find(
+          const sessionProcess = sessionProcesses.find(
             (task) => task.sessionId === session.id,
           );
-          const isRunning = aliveTask?.status === "running";
-          const isPaused = aliveTask?.status === "paused";
+          const isRunning = sessionProcess?.status === "running";
+          const isPaused = sessionProcess?.status === "paused";
 
           return (
             <Link
               key={session.id}
-              href={`/projects/${projectId}/sessions/${encodeURIComponent(
-                session.id,
-              )}`}
+              href={`/projects/${projectId}/sessions/${session.id}`}
               className={cn(
-                "block rounded-lg p-2.5 transition-all duration-200 hover:bg-blue-50/60 hover:border-blue-300/60 hover:shadow-sm border border-sidebar-border/40 bg-sidebar/30",
+                "block rounded-lg p-2.5 transition-all duration-200 hover:bg-blue-50/60 dark:hover:bg-blue-950/40 hover:border-blue-300/60 dark:hover:border-blue-700/60 hover:shadow-sm border border-sidebar-border/40 bg-sidebar/30",
                 isActive &&
-                  "bg-blue-100 border-blue-400 shadow-md ring-1 ring-blue-200/50 hover:bg-blue-100 hover:border-blue-400",
+                  "bg-blue-100 dark:bg-blue-900/50 border-blue-400 dark:border-blue-600 shadow-md ring-1 ring-blue-200/50 dark:ring-blue-700/50 hover:bg-blue-100 dark:hover:bg-blue-900/50 hover:border-blue-400 dark:hover:border-blue-600",
               )}
             >
               <div className="space-y-1.5">
@@ -121,9 +129,9 @@ export const SessionsTab: FC<{
                     <MessageSquareIcon className="w-3 h-3" />
                     <span>{session.meta.messageCount}</span>
                   </div>
-                  {session.meta.lastModifiedAt && (
+                  {session.lastModifiedAt && (
                     <span className="text-xs text-sidebar-foreground/60">
-                      {new Date(session.meta.lastModifiedAt).toLocaleDateString(
+                      {new Date(session.lastModifiedAt).toLocaleDateString(
                         "en-US",
                         {
                           month: "short",
@@ -137,6 +145,21 @@ export const SessionsTab: FC<{
             </Link>
           );
         })}
+
+        {/* Load More Button */}
+        {hasNextPage && onLoadMore && (
+          <div className="p-2">
+            <Button
+              onClick={onLoadMore}
+              disabled={isFetchingNextPage}
+              variant="outline"
+              size="sm"
+              className="w-full"
+            >
+              {isFetchingNextPage ? "Loading..." : "Load More"}
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,10 +1,4 @@
-import {
-  dehydrate,
-  HydrationBoundary,
-  QueryClient,
-} from "@tanstack/react-query";
-import { projectDetailQuery } from "../../../lib/api/queries";
-import { ProjectPageContent } from "./components/ProjectPage";
+import { redirect } from "next/navigation";
 
 interface ProjectPageProps {
   params: Promise<{ projectId: string }>;
@@ -12,17 +6,5 @@ interface ProjectPageProps {
 
 export default async function ProjectPage({ params }: ProjectPageProps) {
   const { projectId } = await params;
-
-  const queryClient = new QueryClient();
-
-  await queryClient.prefetchQuery({
-    queryKey: projectDetailQuery(projectId).queryKey,
-    queryFn: projectDetailQuery(projectId).queryFn,
-  });
-
-  return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <ProjectPageContent projectId={projectId} />
-    </HydrationBoundary>
-  );
+  redirect(`/projects/${projectId}/latest`);
 }

@@ -23,7 +23,6 @@ export const makeQueryClient = () =>
     defaultOptions: {
       queries: {
         refetchOnWindowFocus: true,
-        refetchInterval: 1000 * 60 * 5,
         retry: false,
       },
     },

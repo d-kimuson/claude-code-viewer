@@ -3,14 +3,14 @@ import type { FC } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { parseCommandXml } from "../../../../../../../server/service/parseCommandXml";
+import { parseUserMessage } from "../../../../../../../server/core/claude-code/functions/parseUserMessage";
 import { MarkdownContent } from "../../../../../../components/MarkdownContent";
 
 export const UserTextContent: FC<{ text: string; id?: string }> = ({
   text,
   id,
 }) => {
-  const parsed = parseCommandXml(text);
+  const parsed = parseUserMessage(text);
 
   if (parsed.kind === "command") {
     return (
@@ -88,7 +88,7 @@ export const UserTextContent: FC<{ text: string; id?: string }> = ({
 
   return (
     <MarkdownContent
-      className="w-full px-3 py-3 mb-5 border border-border rounded-lg bg-slate-50"
+      className="w-full px-3 py-3 mb-5 border border-border rounded-lg bg-slate-50 dark:bg-slate-900/50"
       content={parsed.content}
     />
   );

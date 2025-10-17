@@ -1,4 +1,5 @@
-import type { FileCompletionResult } from "../../server/service/file-completion/getFileCompletion";
+import type { DirectoryListingResult } from "../../server/core/file-system/functions/getDirectoryListing";
+import type { FileCompletionResult } from "../../server/core/file-system/functions/getFileCompletion";
 import { honoClient } from "./client";
 
 export const projectListQuery = {
@@ -16,12 +17,29 @@ export const projectListQuery = {
   },
 } as const;
 
-export const projectDetailQuery = (projectId: string) =>
+export const directoryListingQuery = (currentPath?: string) =>
+  ({
+    queryKey: ["directory-listing", currentPath],
+    queryFn: async (): Promise<DirectoryListingResult> => {
+      const response = await honoClient.api.fs["directory-browser"].$get({
+        query: currentPath ? { currentPath } : {},
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch directory listing");
+      }
+
+      return await response.json();
+    },
+  }) as const;
+
+export const projectDetailQuery = (projectId: string, cursor?: string) =>
   ({
     queryKey: ["projects", projectId],
     queryFn: async () => {
       const response = await honoClient.api.projects[":projectId"].$get({
         param: { projectId },
+        query: { cursor },
       });
 
       if (!response.ok) {
@@ -29,6 +47,26 @@ export const projectDetailQuery = (projectId: string) =>
       }
 
       return await response.json();
+    },
+  }) as const;
+
+export const latestSessionQuery = (projectId: string) =>
+  ({
+    queryKey: ["projects", projectId, "latest-session"],
+    queryFn: async () => {
+      const response = await honoClient.api.projects[":projectId"][
+        "latest-session"
+      ].$get({
+        param: { projectId },
+      });
+
+      if (!response.ok) {
+        throw new Error(
+          `Failed to fetch latest session: ${response.statusText}`,
+        );
+      }
+
+      return response.json();
     },
   }) as const;
 
@@ -49,7 +87,7 @@ export const sessionDetailQuery = (projectId: string, sessionId: string) =>
         throw new Error(`Failed to fetch session: ${response.statusText}`);
       }
 
-      return response.json();
+      return await response.json();
     },
   }) as const;
 
@@ -73,10 +111,10 @@ export const claudeCommandsQuery = (projectId: string) =>
     },
   }) as const;
 
-export const aliveTasksQuery = {
-  queryKey: ["aliveTasks"],
+export const sessionProcessesQuery = {
+  queryKey: ["sessionProcesses"],
   queryFn: async () => {
-    const response = await honoClient.api.tasks.alive.$get({});
+    const response = await honoClient.api.cc["session-processes"].$get({});
 
     if (!response.ok) {
       throw new Error(`Failed to fetch alive tasks: ${response.statusText}`);
@@ -122,35 +160,37 @@ export const gitCommitsQuery = (projectId: string) =>
     },
   }) as const;
 
-export const mcpListQuery = {
-  queryKey: ["mcp", "list"],
-  queryFn: async () => {
-    const response = await honoClient.api.mcp.list.$get();
+export const mcpListQuery = (projectId: string) =>
+  ({
+    queryKey: ["mcp", "list", projectId],
+    queryFn: async () => {
+      const response = await honoClient.api.projects[
+        ":projectId"
+      ].mcp.list.$get({
+        param: { projectId },
+      });
 
-    if (!response.ok) {
-      throw new Error(`Failed to fetch MCP list: ${response.statusText}`);
-    }
+      if (!response.ok) {
+        throw new Error(`Failed to fetch MCP list: ${response.statusText}`);
+      }
 
-    return await response.json();
-  },
-} as const;
+      return await response.json();
+    },
+  }) as const;
 
 export const fileCompletionQuery = (projectId: string, basePath: string) =>
   ({
     queryKey: ["file-completion", projectId, basePath],
     queryFn: async (): Promise<FileCompletionResult> => {
-      const response = await honoClient.api.projects[":projectId"][
-        "file-completion"
-      ].$get({
-        param: { projectId },
-        query: { basePath },
+      const response = await honoClient.api.fs["file-completion"].$get({
+        query: { basePath, projectId },
       });
 
       if (!response.ok) {
         throw new Error("Failed to fetch file completion");
       }
 
-      return response.json();
+      return await response.json();
     },
   }) as const;
 

@@ -6,7 +6,7 @@ import type { FC } from "react";
 import { Button } from "@/components/ui/button";
 import { mcpListQuery } from "../../../../../../../lib/api/queries";
 
-export const McpTab: FC = () => {
+export const McpTab: FC<{ projectId: string }> = ({ projectId }) => {
   const queryClient = useQueryClient();
 
   const {
@@ -14,12 +14,14 @@ export const McpTab: FC = () => {
     isLoading,
     error,
   } = useQuery({
-    queryKey: mcpListQuery.queryKey,
-    queryFn: mcpListQuery.queryFn,
+    queryKey: mcpListQuery(projectId).queryKey,
+    queryFn: mcpListQuery(projectId).queryFn,
   });
 
   const handleReload = () => {
-    queryClient.invalidateQueries({ queryKey: mcpListQuery.queryKey });
+    queryClient.invalidateQueries({
+      queryKey: mcpListQuery(projectId).queryKey,
+    });
   };
 
   return (

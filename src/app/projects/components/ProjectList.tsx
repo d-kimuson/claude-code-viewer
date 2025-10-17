@@ -49,8 +49,8 @@ export const ProjectList: FC = () => {
           <CardContent className="space-y-2">
             <p className="text-sm text-muted-foreground">
               Last modified:{" "}
-              {project.meta.lastModifiedAt
-                ? new Date(project.meta.lastModifiedAt).toLocaleDateString()
+              {project.lastModifiedAt
+                ? new Date(project.lastModifiedAt).toLocaleDateString()
                 : ""}
             </p>
             <p className="text-xs text-muted-foreground">
@@ -59,8 +59,8 @@ export const ProjectList: FC = () => {
           </CardContent>
           <CardContent className="pt-0">
             <Button asChild className="w-full">
-              <Link href={`/projects/${encodeURIComponent(project.id)}`}>
-                View Sessions
+              <Link href={`/projects/${project.id}/latest`}>
+                View Conversations
               </Link>
             </Button>
           </CardContent>

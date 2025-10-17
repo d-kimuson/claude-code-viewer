@@ -259,63 +259,67 @@ export const FileCompletion = forwardRef<
         <CollapsibleContent>
           <div
             ref={listRef}
-            className="absolute z-50 w-full mt-1 bg-popover border border-border rounded-md shadow-lg max-h-48 overflow-y-auto"
+            className="absolute z-50 w-full bg-popover border border-border rounded-lg shadow-xl overflow-hidden"
+            style={{ height: "15rem" }}
             role="listbox"
             aria-label="Available files and directories"
           >
-            {filteredEntries.length > 0 && (
-              <div className="p-1">
-                <div
-                  className="px-2 py-1.5 text-xs font-medium text-muted-foreground border-b border-border mb-1 flex items-center gap-2"
-                  role="presentation"
-                >
-                  <FileIcon className="w-3 h-3" />
-                  Files & Directories ({filteredEntries.length})
-                  {basePath !== "/" && (
-                    <span className="text-xs font-mono text-muted-foreground/70">
-                      in {basePath}
-                    </span>
-                  )}
-                </div>
-                {filteredEntries.map((entry, index) => (
-                  <Button
-                    key={entry.path}
-                    variant="ghost"
-                    size="sm"
-                    className={cn(
-                      "w-full justify-start text-left font-mono text-sm h-8 px-2 min-w-0",
-                      index === selectedIndex &&
-                        "bg-accent text-accent-foreground",
-                    )}
-                    onClick={() =>
-                      handleEntrySelect(entry, entry.type === "file")
-                    }
-                    onMouseEnter={() => setSelectedIndex(index)}
-                    role="option"
-                    aria-selected={index === selectedIndex}
-                    aria-label={`${entry.type}: ${entry.name}`}
-                    title={entry.path}
+            <div className="h-full overflow-y-auto">
+              {filteredEntries.length > 0 && (
+                <div className="p-1.5">
+                  <div
+                    className="px-3 py-2 text-xs font-semibold text-muted-foreground/80 border-b border-border/50 mb-1 flex items-center gap-2"
+                    role="presentation"
                   >
-                    {entry.type === "directory" ? (
-                      <FolderIcon className="w-3 h-3 mr-2 text-blue-500 flex-shrink-0" />
-                    ) : (
-                      <FileIcon className="w-3 h-3 mr-2 text-gray-500 flex-shrink-0" />
-                    )}
-                    <span className="font-medium truncate min-w-0">
-                      {entry.name}
-                    </span>
-                    {entry.type === "directory" && (
-                      <span className="text-muted-foreground ml-1 flex-shrink-0">
-                        /
+                    <FileIcon className="w-3.5 h-3.5" />
+                    Files & Directories ({filteredEntries.length})
+                    {basePath !== "/" && (
+                      <span className="text-xs font-mono text-muted-foreground/70">
+                        in {basePath}
                       </span>
                     )}
-                    {index === selectedIndex && (
-                      <CheckIcon className="w-3 h-3 ml-auto text-primary flex-shrink-0" />
-                    )}
-                  </Button>
-                ))}
-              </div>
-            )}
+                  </div>
+                  {filteredEntries.map((entry, index) => (
+                    <Button
+                      key={entry.path}
+                      variant="ghost"
+                      size="sm"
+                      className={cn(
+                        "w-full justify-start text-left font-mono text-sm h-9 px-3 min-w-0 transition-colors duration-150",
+                        index === selectedIndex
+                          ? "bg-gradient-to-r from-blue-500/10 to-purple-500/10 text-foreground border border-blue-500/20"
+                          : "hover:bg-accent/50",
+                      )}
+                      onClick={() =>
+                        handleEntrySelect(entry, entry.type === "file")
+                      }
+                      onMouseEnter={() => setSelectedIndex(index)}
+                      role="option"
+                      aria-selected={index === selectedIndex}
+                      aria-label={`${entry.type}: ${entry.name}`}
+                      title={entry.path}
+                    >
+                      {entry.type === "directory" ? (
+                        <FolderIcon className="w-3.5 h-3.5 mr-2 text-blue-500 dark:text-blue-400 flex-shrink-0" />
+                      ) : (
+                        <FileIcon className="w-3.5 h-3.5 mr-2 text-gray-500 dark:text-gray-400 flex-shrink-0" />
+                      )}
+                      <span className="font-medium truncate min-w-0">
+                        {entry.name}
+                      </span>
+                      {entry.type === "directory" && (
+                        <span className="text-muted-foreground ml-1 flex-shrink-0">
+                          /
+                        </span>
+                      )}
+                      {index === selectedIndex && (
+                        <CheckIcon className="w-3.5 h-3.5 ml-auto text-blue-600 dark:text-blue-400 flex-shrink-0" />
+                      )}
+                    </Button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </CollapsibleContent>
       </Collapsible>

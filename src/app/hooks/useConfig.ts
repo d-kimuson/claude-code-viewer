@@ -6,7 +6,7 @@ import {
 import { useCallback } from "react";
 import { honoClient } from "../../lib/api/client";
 import { configQuery } from "../../lib/api/queries";
-import type { Config } from "../../server/config/config";
+import type { UserConfig } from "../../server/lib/config/config";
 
 export const useConfig = () => {
   const queryClient = useQueryClient();
@@ -16,7 +16,7 @@ export const useConfig = () => {
     queryFn: configQuery.queryFn,
   });
   const updateConfigMutation = useMutation({
-    mutationFn: async (config: Config) => {
+    mutationFn: async (config: UserConfig) => {
       const response = await honoClient.api.config.$put({
         json: config,
       });
@@ -32,7 +32,7 @@ export const useConfig = () => {
   return {
     config: data?.config,
     updateConfig: useCallback(
-      (config: Config) => {
+      (config: UserConfig) => {
         updateConfigMutation.mutate(config);
       },
       [updateConfigMutation],

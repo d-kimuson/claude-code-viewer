@@ -1,0 +1,3 @@
+afterEach(() => {
+  vi.clearAllMocks();
+});

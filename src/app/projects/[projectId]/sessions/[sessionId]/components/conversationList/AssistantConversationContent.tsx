@@ -1,8 +1,14 @@
+"use client";
+
 import { ChevronDown, Lightbulb, Settings } from "lucide-react";
 import Image from "next/image";
+import { useTheme } from "next-themes";
 import type { FC } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
+import {
+  oneDark,
+  oneLight,
+} from "react-syntax-highlighter/dist/esm/styles/prism";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -24,6 +30,8 @@ export const AssistantConversationContent: FC<{
   content: AssistantMessageContent;
   getToolResult: (toolUseId: string) => ToolResultContent | undefined;
 }> = ({ content, getToolResult }) => {
+  const { resolvedTheme } = useTheme();
+  const syntaxTheme = resolvedTheme === "dark" ? oneDark : oneLight;
   if (content.type === "text") {
     return (
       <div className="w-full mx-1 sm:mx-2 my-4 sm:my-6">
@@ -34,14 +42,16 @@ export const AssistantConversationContent: FC<{
 
   if (content.type === "thinking") {
     return (
-      <Card className="bg-muted/50 border-dashed gap-2 py-3 mb-2">
+      <Card className="bg-muted/50 border-dashed gap-2 py-3 mb-2 hover:shadow-sm transition-all duration-200">
         <Collapsible>
           <CollapsibleTrigger asChild>
-            <CardHeader className="cursor-pointer hover:bg-muted/80 rounded-t-lg transition-colors py-0 px-4">
+            <CardHeader className="cursor-pointer hover:bg-muted/80 rounded-t-lg transition-all duration-200 py-0 px-4 group">
               <div className="flex items-center gap-2">
-                <Lightbulb className="h-4 w-4 text-muted-foreground" />
-                <CardTitle className="text-sm font-medium">Thinking</CardTitle>
-                <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
+                <Lightbulb className="h-4 w-4 text-muted-foreground group-hover:text-yellow-600 transition-colors" />
+                <CardTitle className="text-sm font-medium group-hover:text-foreground transition-colors">
+                  Thinking
+                </CardTitle>
+                <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180" />
               </div>
             </CardHeader>
           </CollapsibleTrigger>
@@ -80,16 +90,16 @@ export const AssistantConversationContent: FC<{
         <CardContent className="space-y-2 py-0 px-4">
           <Collapsible>
             <CollapsibleTrigger asChild>
-              <div className="flex items-center justify-between cursor-pointer hover:bg-muted/50 rounded p-2 -mx-2">
-                <h4 className="text-xs font-medium text-muted-foreground">
+              <div className="flex items-center justify-between cursor-pointer hover:bg-muted/50 rounded p-2 -mx-2 transition-all duration-200 group">
+                <h4 className="text-xs font-medium text-muted-foreground group-hover:text-foreground">
                   Input Parameters
                 </h4>
-                <ChevronDown className="h-3 w-3 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
+                <ChevronDown className="h-3 w-3 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180" />
               </div>
             </CollapsibleTrigger>
             <CollapsibleContent>
               <SyntaxHighlighter
-                style={oneLight}
+                style={syntaxTheme}
                 language="json"
                 PreTag="div"
                 className="text-xs"
@@ -101,11 +111,11 @@ export const AssistantConversationContent: FC<{
           {toolResult && (
             <Collapsible>
               <CollapsibleTrigger asChild>
-                <div className="flex items-center justify-between cursor-pointer hover:bg-muted/50 rounded p-2 -mx-2">
-                  <h4 className="text-xs font-medium text-muted-foreground">
+                <div className="flex items-center justify-between cursor-pointer hover:bg-muted/50 rounded p-2 -mx-2 transition-all duration-200 group">
+                  <h4 className="text-xs font-medium text-muted-foreground group-hover:text-foreground">
                     Tool Result
                   </h4>
-                  <ChevronDown className="h-3 w-3 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
+                  <ChevronDown className="h-3 w-3 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180" />
                 </div>
               </CollapsibleTrigger>
               <CollapsibleContent>

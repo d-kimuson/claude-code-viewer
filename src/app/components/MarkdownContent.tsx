@@ -1,9 +1,13 @@
 "use client";
 
+import { useTheme } from "next-themes";
 import type { FC } from "react";
 import Markdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import {
+  oneDark,
+  oneLight,
+} from "react-syntax-highlighter/dist/esm/styles/prism";
 import remarkGfm from "remark-gfm";
 
 interface MarkdownContentProps {
@@ -15,6 +19,9 @@ export const MarkdownContent: FC<MarkdownContentProps> = ({
   content,
   className = "",
 }) => {
+  const { resolvedTheme } = useTheme();
+  const syntaxTheme = resolvedTheme === "dark" ? oneDark : oneLight;
+
   return (
     <div
       className={`prose prose-neutral dark:prose-invert max-w-none ${className}`}
@@ -136,7 +143,7 @@ export const MarkdownContent: FC<MarkdownContentProps> = ({
                   </span>
                 </div>
                 <SyntaxHighlighter
-                  style={oneDark}
+                  style={syntaxTheme}
                   language={match[1]}
                   PreTag="div"
                   className="!mt-0 !rounded-t-none !rounded-b-lg !border-t-0 !border !border-border"
@@ -168,6 +175,8 @@ export const MarkdownContent: FC<MarkdownContentProps> = ({
             return (
               <a
                 href={href}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-primary hover:text-primary/80 underline underline-offset-4 decoration-primary/30 hover:decoration-primary/60 transition-colors"
                 {...props}
               >

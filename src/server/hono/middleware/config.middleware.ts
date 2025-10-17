@@ -1,6 +1,6 @@
 import { getCookie, setCookie } from "hono/cookie";
 import { createMiddleware } from "hono/factory";
-import { configSchema } from "../../config/config";
+import { userConfigSchema } from "../../lib/config/config";
 import type { HonoContext } from "../app";
 
 export const configMiddleware = createMiddleware<HonoContext>(
@@ -8,9 +8,9 @@ export const configMiddleware = createMiddleware<HonoContext>(
     const cookie = getCookie(c, "ccv-config");
     const parsed = (() => {
       try {
-        return configSchema.parse(JSON.parse(cookie ?? "{}"));
+        return userConfigSchema.parse(JSON.parse(cookie ?? "{}"));
       } catch {
-        return configSchema.parse({});
+        return userConfigSchema.parse({});
       }
     })();
 
@@ -25,7 +25,7 @@ export const configMiddleware = createMiddleware<HonoContext>(
       );
     }
 
-    c.set("config", parsed);
+    c.set("userConfig", parsed);
 
     await next();
   },

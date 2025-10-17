@@ -1,6 +1,6 @@
-import type { ParsedCommand } from "../../../../server/service/parseCommandXml";
+import type { ParsedUserMessage } from "../../../../server/core/claude-code/functions/parseUserMessage";
 
-export const firstCommandToTitle = (firstCommand: ParsedCommand) => {
+export const firstUserMessageToTitle = (firstCommand: ParsedUserMessage) => {
   switch (firstCommand.kind) {
     case "command":
       if (firstCommand.commandArgs === undefined) {

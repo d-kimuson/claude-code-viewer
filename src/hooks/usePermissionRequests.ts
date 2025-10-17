@@ -15,7 +15,7 @@ export const usePermissionRequests = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   // Listen for permission requests from the server
-  useServerEventListener("permission_requested", (data) => {
+  useServerEventListener("permissionRequested", (data) => {
     if (data.permissionRequest) {
       setCurrentPermissionRequest(data.permissionRequest);
       setIsDialogOpen(true);
@@ -25,7 +25,7 @@ export const usePermissionRequests = () => {
   const handlePermissionResponse = useCallback(
     async (response: PermissionResponse) => {
       try {
-        const apiResponse = await honoClient.api.tasks[
+        const apiResponse = await honoClient.api.cc[
           "permission-response"
         ].$post({
           json: response,

@@ -9,3 +9,5 @@ export const UserEntrySchema = BaseEntrySchema.extend({
   // required
   message: UserMessageSchema,
 });
+
+export type UserEntry = z.infer<typeof UserEntrySchema>;

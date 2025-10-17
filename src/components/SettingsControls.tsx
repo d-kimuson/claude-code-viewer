@@ -1,6 +1,7 @@
 "use client";
 
 import { useQueryClient } from "@tanstack/react-query";
+import { useTheme } from "next-themes";
 import { type FC, useCallback, useId } from "react";
 import { useConfig } from "@/app/hooks/useConfig";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -33,17 +34,19 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
   const checkboxId = useId();
   const enterKeyBehaviorId = useId();
   const permissionModeId = useId();
+  const themeId = useId();
   const { config, updateConfig } = useConfig();
   const queryClient = useQueryClient();
+  const { theme, setTheme } = useTheme();
 
   const onConfigChanged = useCallback(async () => {
-    await queryClient.invalidateQueries({
+    await queryClient.refetchQueries({
       queryKey: configQuery.queryKey,
     });
-    await queryClient.invalidateQueries({
+    await queryClient.refetchQueries({
       queryKey: projectListQuery.queryKey,
     });
-    void queryClient.invalidateQueries({
+    void queryClient.refetchQueries({
       queryKey: projectDetailQuery(openingProjectId).queryKey,
     });
   }, [queryClient, openingProjectId]);
@@ -69,7 +72,10 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
   const handleEnterKeyBehaviorChange = async (value: string) => {
     const newConfig = {
       ...config,
-      enterKeyBehavior: value as "shift-enter-send" | "enter-send",
+      enterKeyBehavior: value as
+        | "shift-enter-send"
+        | "enter-send"
+        | "command-enter-send",
     };
     updateConfig(newConfig);
     await onConfigChanged();
@@ -154,6 +160,9 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
               Shift+Enter to send (default)
             </SelectItem>
             <SelectItem value="enter-send">Enter to send</SelectItem>
+            <SelectItem value="command-enter-send">
+              Command+Enter to send
+            </SelectItem>
           </SelectContent>
         </Select>
         {showDescriptions && (
@@ -194,6 +203,29 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
           <p className="text-xs text-muted-foreground mt-1">
             Control how Claude Code handles permission requests for file
             operations
+          </p>
+        )}
+      </div>
+
+      <div className="space-y-2">
+        {showLabels && (
+          <label htmlFor={themeId} className="text-sm font-medium leading-none">
+            Theme
+          </label>
+        )}
+        <Select value={theme || "system"} onValueChange={setTheme}>
+          <SelectTrigger id={themeId} className="w-full">
+            <SelectValue placeholder="Select theme" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="light">Light</SelectItem>
+            <SelectItem value="dark">Dark</SelectItem>
+            <SelectItem value="system">System</SelectItem>
+          </SelectContent>
+        </Select>
+        {showDescriptions && (
+          <p className="text-xs text-muted-foreground mt-1">
+            Choose your preferred color theme
           </p>
         )}
       </div>

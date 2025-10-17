@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/collapsible";
 import type { Conversation } from "@/lib/conversation-schema";
 import type { ToolResultContent } from "@/lib/conversation-schema/content/ToolResultContentSchema";
-import type { ErrorJsonl } from "../../../../../../../server/service/types";
+import type { ErrorJsonl } from "../../../../../../../server/core/types";
 import { useSidechain } from "../../hooks/useSidechain";
 import { ConversationItem } from "./ConversationItem";
 
@@ -143,7 +143,7 @@ export const ConversationList: FC<ConversationListProps> = ({
               conversation.type === "summary"
                 ? "justify-start"
                 : "justify-end"
-            }`}
+            } animate-in fade-in slide-in-from-bottom-2 duration-300`}
             key={getConversationKey(conversation)}
           >
             <div className="w-full max-w-3xl lg:max-w-4xl sm:w-[90%] md:w-[85%]">

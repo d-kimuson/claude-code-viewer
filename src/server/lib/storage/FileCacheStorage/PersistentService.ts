@@ -28,13 +28,20 @@ const LayerImpl = Effect.gen(function* () {
         yield* fs.writeFileString(cacheFilePath, "[]");
       } else {
         const content = yield* fs.readFileString(cacheFilePath);
-        const parsed = saveSchema.safeParse(JSON.parse(content));
+        const parsed = (() => {
+          try {
+            return saveSchema.parse(JSON.parse(content));
+          } catch (error) {
+            console.error(`Cache file parse error: ${error}`);
+            return undefined;
+          }
+        })();
 
-        if (!parsed.success) {
+        if (parsed === undefined || parsed.length === 0) {
+          console.error(`Cache file removed: ${cacheFilePath}`);
           yield* fs.writeFileString(cacheFilePath, "[]");
         } else {
-          parsed.data;
-          return parsed.data;
+          return parsed;
         }
       }
 

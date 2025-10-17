@@ -33,7 +33,7 @@ export class SessionMetaService extends Context.Tag("SessionMetaService")<
     this,
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
-      const firstCommandCache =
+      const firstUserMessageCache =
         yield* FileCacheStorage<ParsedUserMessage | null>();
       const sessionMetaCacheRef = yield* Ref.make(
         new Map<string, SessionMeta>(),
@@ -44,7 +44,7 @@ export class SessionMetaService extends Context.Tag("SessionMetaService")<
         lines: string[],
       ): Effect.Effect<ParsedUserMessage | null, Error> =>
         Effect.gen(function* () {
-          const cached = yield* firstCommandCache.get(jsonlFilePath);
+          const cached = yield* firstUserMessageCache.get(jsonlFilePath);
           if (cached !== undefined) {
             return cached;
           }
@@ -70,7 +70,7 @@ export class SessionMetaService extends Context.Tag("SessionMetaService")<
           }
 
           if (firstUserMessage !== null) {
-            yield* firstCommandCache.set(jsonlFilePath, firstUserMessage);
+            yield* firstUserMessageCache.set(jsonlFilePath, firstUserMessage);
           }
 
           return firstUserMessage;

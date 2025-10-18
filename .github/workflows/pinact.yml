@@ -1,0 +1,21 @@
+name: Run Pinact
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  pinact:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5.0.0
+        with:
+          persist-credentials: false
+
+      - name: Pin actions
+        uses: suzuki-shunsuke/pinact-action@d735505f3decf76fca3fdbb4c952e5b3eba0ffdd # v0.1.2
+        with:
+          app_id: ${{secrets.APP_ID}}
+          app_private_key: ${{secrets.APP_PRIVATE_KEY}}

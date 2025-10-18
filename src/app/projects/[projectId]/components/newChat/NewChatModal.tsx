@@ -1,6 +1,5 @@
-import { MessageSquareIcon, PlusIcon } from "lucide-react";
+import { MessageSquareIcon } from "lucide-react";
 import { type FC, type ReactNode, useState } from "react";
-import { Button } from "../../../../../components/ui/button";
 import {
   Dialog,
   DialogContent,

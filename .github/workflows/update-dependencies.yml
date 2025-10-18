@@ -1,0 +1,55 @@
+name: Update Dependencies
+
+on:
+  schedule:
+    # 毎月1日の0時（UTC）に実行
+    - cron: '0 0 1 * *'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  update:
+    name: Update Dependencies
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node & pnpm
+        uses: ./.github/actions/setup-node
+
+      - name: Update pnpm version
+        run: pnpm dlx corepack use pnpm@latest
+
+      - name: Update dependencies
+        run: pnpm up --latest --no-frozen-lockfile
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: 'chore(deps): update all dependencies'
+          title: 'chore(deps): update all dependencies'
+          body: |
+            ## Automated Dependency Update
+
+            This PR updates all dependencies to their latest versions.
+
+            ### Changes
+            - Updated all dependencies to the latest versions
+
+            ### Checklist
+            - [ ] Verify CI passes
+            - [ ] Test the changes
+
+            ---
+            *This PR was automatically generated*
+          branch: chore/update-dependencies
+          delete-branch: true
+          labels: |
+            dependencies
+            automated

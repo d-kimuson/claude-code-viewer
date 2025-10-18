@@ -67,6 +67,7 @@ export const SidechainConversationModal: FC<
           variant="outline"
           size="sm"
           className="w-full mb-3 items-center justify-start"
+          data-testid="sidechain-task-button"
         >
           <div className="flex items-center gap-2 overflow-hidden">
             <Eye className="h-4 w-4 flex-shrink-0" />
@@ -76,7 +77,10 @@ export const SidechainConversationModal: FC<
           </div>
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-[95vw] md:w-[90vw] max-h-[80vh] overflow-hidden flex flex-col px-2 md:px-8">
+      <DialogContent
+        className="w-[95vw] md:w-[90vw] max-h-[80vh] overflow-hidden flex flex-col px-2 md:px-8"
+        data-testid="sidechain-task-modal"
+      >
         <DialogHeader>
           <DialogTitle>
             {title.length > 100 ? `${title.slice(0, 100)}...` : title}

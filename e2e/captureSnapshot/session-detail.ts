@@ -86,5 +86,22 @@ export const sessionDetailCapture = defineCapture({
         }
       },
     },
+
+    {
+      name: "sidechain-task-modal",
+      setup: async (page) => {
+        const sidechainTaskButton = page
+          .locator('[data-testid="sidechain-task-button"]')
+          .first();
+        if (await sidechainTaskButton.isVisible()) {
+          await sidechainTaskButton.click();
+          await page.waitForTimeout(1000);
+
+          // モーダルが開いたことを確認
+          const modal = page.locator('[data-testid="sidechain-task-modal"]');
+          await modal.waitFor({ state: "visible", timeout: 3000 });
+        }
+      },
+    },
   ],
 });

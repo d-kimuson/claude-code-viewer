@@ -1,47 +1,41 @@
 # Claude Code Viewer
 
-A full-featured web-based Claude Code client that provides complete interactive functionality for managing Claude Code projects. Start new conversations, resume existing sessions, monitor running tasks in real-time, and browse your conversation history - all through a modern web interface.
+[![License](https://img.shields.io/github/license/d-kimuson/claude-code-viewer)](https://github.com/d-kimuson/claude-code-viewer/blob/main/LICENSE)
+[![CI](https://github.com/d-kimuson/claude-code-viewer/actions/workflows/ci.yml/badge.svg)](https://github.com/d-kimuson/claude-code-viewer/actions/workflows/ci.yml)
+[![GitHub Release](https://img.shields.io/github/v/release/d-kimuson/claude-code-viewer)](https://github.com/d-kimuson/claude-code-viewer/releases)
+
+A full-featured web-based Claude Code client that provides complete interactive functionality for managing Claude Code projects. Start new conversations, resume existing sessions, monitor running tasks in real-time, and browse your conversation history—all through a modern web interface.
 
 ![demo](./docs/assets/claude-code-viewer-demo-min.gif)
 
-## Overview
+## Introduction
 
-Claude Code Viewer is a web-based Claude Code client focused on **lossless session log analysis**. It preserves and effectively organizes all conversation information through strict schema validation and progressive UI disclosure.
+Claude Code Viewer is a web-based Claude Code client focused on **comprehensive session log analysis**. It preserves and organizes all conversation data through strict schema validation and a progressive disclosure UI that reveals details on demand.
 
 **Core Philosophy**: Zero data loss + Effective organization + Remote-friendly design
 
 ## Features
 
-### Interactive Claude Code Client
+| Feature | Description |
+| --- | --- |
+| View Chat Logs | View Claude Code session logs in real-time through the web UI. Supports historical logs as it uses standard Claude Code logs (~/.claude/projects/...) as the data source |
+| Start Conversations | Start Claude Code sessions directly from Claude Code Viewer. Enjoy core functionality like file/command completion, pause/resume, and tool approval through a superior web experience |
+| Resume Sessions | Resume conversations directly from existing session logs |
+| Continue Sessions | Claude Code Viewer provides advanced session process control. Sessions started through Claude Code Viewer remain alive (unless aborted), allowing you to continue conversations without resuming (no session-id reassignment) |
+| Create Projects | Create new projects from Claude Code Viewer. Select a directory through the web UI to execute the `/init` command and begin project setup |
+| Review Changes | Built-in Git Diff Viewer lets you review all changes directly within Claude Code Viewer |
 
-- **New Chat Creation** - Start new Claude sessions directly from the web interface
-- **Session Resumption** - Continue paused Claude conversations with full context
-- **Real-time Task Management** - Monitor, control, and abort running Claude tasks
-- **Command Autocompletion** - Smart completion for both global and project-specific Claude commands
-- **Live Status Indicators** - Visual feedback for running, paused, and completed tasks
+## Screenshots
 
-### Real-time Synchronization
+| Feature | Capture |
+| --- | --- |
+| BasicChat (Desktop) | ![](./e2e/snapshots/projects/L2hvbWUvcnVubmVyL3dvcmsvY2xhdWRlLWNvZGUtdmlld2VyL2NsYXVkZS1jb2RlLXZpZXdlci9tb2NrLWdsb2JhbC1jbGF1ZGUtZGlyL3Byb2plY3RzL3NhbXBsZS1wcm9qZWN0/sessions/fe5e1c67-53e7-4862-81ae-d0e013e3270b/desktop-dark.png) |
+| BasicChat (Mobile) | ![](./e2e/snapshots/projects/L2hvbWUvcnVubmVyL3dvcmsvY2xhdWRlLWNvZGUtdmlld2VyL2NsYXVkZS1jb2RlLXZpZXdlci9tb2NrLWdsb2JhbC1jbGF1ZGUtZGlyL3Byb2plY3RzL3NhbXBsZS1wcm9qZWN0/sessions/fe5e1c67-53e7-4862-81ae-d0e013e3270b/mobile-dark.png) |
+| CommandCompletion | ![](./docs/assets/command_completion.png) |
+| FileCompletion | ![](./docs/assets/file_completion.png) |
+| Diff Viewer | ![](./docs/assets/git_diff.png) |
 
-- **Server-Sent Events (SSE)** - Instant bidirectional communication and updates
-- **File System Monitoring** - Automatic detection of conversation file changes
-- **Live Task Updates** - Real-time progress tracking for active Claude sessions
-- **Auto-refresh UI** - Instant updates when conversations are modified externally
-
-### Advanced Conversation Management
-
-- **Project Browser** - View all Claude Code projects with metadata and session counts
-- **Smart Session Filtering** - Hide empty sessions, unify duplicates, filter by status
-- **Multi-tab Interface** - Sessions, Tasks, and Settings in an organized sidebar
-- **Conversation Display** - Human-readable format with syntax highlighting and tool usage
-- **Command Detection** - Enhanced display of XML-like command structures
-- **Task Controller** - Full lifecycle management of Claude processes
-
-### Built-in Development Tools
-
-- **Git Diff Viewer** - Comprehensive branch comparison with file-by-file diff visualization
-- **Remote Development Ready** - Full web-based access ideal for remote work and server environments
-- **Branch & Commit Browser** - Navigate git history directly within the interface
-- **Untracked File Support** - View diffs for untracked files alongside committed changes
+Note: Additional UI screenshots are available in [/e2e/snapshots/](./e2e/snapshots/)
 
 ## Installation & Usage
 
@@ -60,66 +54,54 @@ npm install -g @kimuson/claude-code-viewer
 claude-code-viewer
 ```
 
-The application uses pnpm as the package manager (v10.8.1) and is published as version 0.1.0.
-
-The server will start on port 3400 (or the specified PORT). Open `http://localhost:3400` in your browser.
-
-### Alternative Installation
-
-Clone and run locally:
-
-```bash
-git clone https://github.com/d-kimuson/claude-code-viewer.git
-cd claude-code-viewer
-pnpm i
-pnpm build
-pnpm start
-```
+The server will start on port 3400 (or your specified PORT). Open `http://localhost:3400` in your browser to access the interface.
 
 ## Data Source
 
-The application reads Claude Code conversation files from:
+The application reads Claude Code conversation logs from:
 
 - **Location**: `~/.claude/projects/<project>/<session-id>.jsonl`
 - **Format**: JSONL files containing conversation entries
 - **Auto-detection**: Automatically discovers new projects and sessions
 
-## Usage Guide
+## Requirements
 
-### 1. Project List
+### System Requirements
 
-- Browse all Claude Code projects
-- View project metadata (name, path, session count, last modified)
-- Click any project to view its sessions
+- **Node.js**: Version 20.12.0 or later
+- **Operating Systems**: macOS and Linux (Windows is not supported)
 
-### 2. Session Browser  
+### Claude Code Compatibility
 
-- View all conversation sessions within a project
-- Filter to hide empty sessions
-- Sessions show message counts and timestamps
-- Click to view detailed conversation
+- **Minimum Version**: Claude Code v1.0.50 or later
+- **Tool Approval Feature**: Requires Claude Code v1.0.82 or later
 
-### 3. Conversation Viewer
-
-- Full conversation history with proper formatting
-- Syntax highlighting for code blocks
-- Tool usage and results clearly displayed
-- Navigation sidebar for jumping between sessions
-- Support for different message types (user, assistant, system, tools)
+**Note on Version Support**: Recent versions of Claude Code have adopted more aggressive summarization behavior. To accommodate users who prefer to pin to specific versions, Claude Code Viewer maintains compatibility with Claude Code v1.0.50 and later for the foreseeable future.
 
 ## Configuration
 
-### Port Configuration
+### Environment Variables
 
-Set a custom port using the `PORT` environment variable:
+Claude Code Viewer reads several reserved environment variables. All values are optional and only need to be set if you want to override the defaults.
 
-```bash
-PORT=8080 npx @kimuson/claude-code-viewer@latest
-```
+| Key | Description |
+| --- | --- |
+| CLAUDE_CODE_VIEWER_CC_EXECUTABLE_PATH | Path to Claude Code installation |
+| PORT | Port number for Claude Code Viewer to run on |
 
-### Data Directory
+### User Settings
 
-The application automatically detects the standard Claude Code directory at `~/.claude/projects/`. No additional configuration is required.
+Settings can be configured from the sidebar in Claude Code Viewer.
+
+| Setting | Default | Description |
+| --- | --- | --- |
+| Hide sessions without user messages | true | Claude Code creates logs for operations like `/compact` that aren't tied to actual tasks, which can create noise. When enabled, sessions without user messages are hidden. |
+| Unify sessions with same title | true | When resuming, Claude Code creates a new session with regenerated conversation logs. When enabled, only the latest session with the same title is displayed. |
+| Enter Key Behavior | Shift+Enter | Specifies which key combination sends messages. Options include Enter, Shift+Enter, and Command+Enter. |
+| Permission Mode | Ask permission | Controls the approval logic when Claude Code requests tool invocations. By default, users approve requests through the UI. This feature requires Claude Code v1.0.82 or later; earlier versions automatically approve regardless of this setting. |
+| Theme | System | Toggles between Dark Mode and Light Mode. Default follows system settings. |
+| Notifications | None | Enables sound notifications when running session processes complete. |
+
 
 ## Alternatives & Differentiation
 
@@ -129,14 +111,23 @@ Several excellent Claude Code web clients exist, each with their own strengths:
 - https://github.com/wbopan/cui
 - https://github.com/siteboon/claudecodeui
 
-**Claude Code Viewer's Focus**: While these tools excel as general-purpose web clients, Claude Code Viewer specializes as a **session log viewer** with:
+**What Makes Claude Code Viewer Different**: While these tools excel as general-purpose web clients, Claude Code Viewer is specifically designed as a **session log viewer** with:
 
-- **Zero Information Loss**: Strict Zod schema validation preserves every conversation detail
-- **Progressive Organization**: Expandable elements and sub-session modals manage information density
-- **Built-in Git Diff Viewer**: Comprehensive branch comparison for remote development
+- **Zero Information Loss**: Strict Zod schema validation ensures every conversation detail is preserved
+- **Progressive Disclosure**: Expandable elements and sub-session modals help manage information density
+- **Built-in Git Diff Viewer**: Comprehensive branch comparison support for remote development workflows
 - **Session Flow Analysis**: Complete conversation tracking across multiple sessions
 
-Each tool serves different use cases - choose the one that best fits your workflow and priorities.
+Each tool serves different use cases—choose the one that best fits your workflow and priorities.
+
+## Remote Development
+
+Claude Code Viewer is designed with remote hosting in mind. To support remote development workflows, it includes:
+
+- **Mobile-Optimized UI**: Responsive interface that works seamlessly on mobile devices
+- **Built-in Git Viewer**: Review changes without needing local Git tools
+
+The application features a separated client-server architecture that enables remote hosting. However, **authentication and authorization features are not included** (and are not on the roadmap). If you plan to host Claude Code Viewer remotely, carefully evaluate your security requirements and implement appropriate access controls at the infrastructure level.
 
 ## License
 

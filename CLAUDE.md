@@ -1,130 +1,147 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+## Critical Rules (Read First)
+
+**NEVER**:
+- Use `as` type casting (explain the problem to the user instead)
+- Use raw `fetch` or bypass TanStack Query for API calls
+- Run `pnpm dev` or `pnpm start` (dev servers)
+- Use `node:fs`, `node:path`, etc. directly (use Effect-TS equivalents)
+
+**ALWAYS**:
+- Use Effect-TS for all backend side effects
+- Use Hono RPC + TanStack Query for all API calls
+- Follow TDD: write tests first, then implement
+- Run `pnpm typecheck` and `pnpm fix` before committing
 
 ## Project Overview
 
-This is a web-based viewer for Claude Code conversation history files. The application provides a UI to browse and view JSONL conversation files from Claude Code projects stored in `~/.claude/projects/`.
+Claude Code Viewer reads Claude Code session logs directly from JSONL files (`~/.claude/projects/`) with zero data loss. It's a web-based client built as a CLI tool serving a Next.js application.
 
-## Development Commands
+**Core Architecture**:
+- Frontend: Next.js 15 + React 19 + TanStack Query
+- Backend: Hono + Effect-TS (all business logic)
+- Data: Direct JSONL reads with strict Zod validation
+- Real-time: Server-Sent Events (SSE) for live updates
 
-**Start development server:**
+## Development Workflow
+
+### Quality Checks
+
 ```bash
-pnpm dev
-```
-This runs Next.js on port 3400 with Turbopack for fast development.
+# Type checking (mandatory before commits)
+pnpm typecheck
 
-**Build and type checking:**
-```bash
-pnpm build      # Next.js standalone build + asset copying
-pnpm typecheck  # TypeScript compilation check
-```
-
-**Linting and formatting (Biome):**
-```bash
-pnpm lint       # Run format and lint checks in sequence (biome format + biome check)
-pnpm fix        # Auto-fix format and lint issues with unsafe fixes
+# Auto-fix linting and formatting (Biome)
+pnpm fix
 ```
 
-**Testing (Vitest):**
+After `pnpm fix`, manually address any remaining issues.
+
+### Testing
+
 ```bash
-pnpm test       # Run all tests once
-pnpm test:watch # Run tests in watch mode
+# Run unit tests
+pnpm test
 ```
 
-## Architecture Overview
+**TDD Workflow**: Write tests → Run tests → Implement → Verify → Quality checks
 
-### Technology Stack
-- **Frontend**: Next.js 15.5.2 with React 19.1.1, TypeScript (strict mode via @tsconfig/strictest)
-- **Backend**: Hono.js 4.9.5 API routes (served via Next.js API routes with Zod validation)
-- **Styling**: Tailwind CSS 4.1.12 with shadcn/ui components (Radix UI primitives)
-- **Data fetching**: TanStack Query 5.85.5 with Suspense integration
-- **State management**: Jotai 2.13.1 atoms for client-side filtering
-- **Validation**: Zod 4.1.5 schemas with modular conversation parsing
-- **Code formatting**: Biome 2.2.2 (replaces ESLint + Prettier completely)
-- **Testing**: Vitest 3.2.4 with global test setup
-- **Package manager**: pnpm 10.8.1
+## Key Directory Patterns
 
-### Key Architecture Patterns
+- `src/app/api/[[...route]]/` - Hono API entry point (all routes defined here)
+- `src/server/core/` - Effect-TS business logic (domain modules: session, project, git, etc.)
+- `src/lib/conversation-schema/` - Zod schemas for JSONL validation
+- `src/testing/layers/` - Reusable Effect test layers (`testPlatformLayer` is the foundation)
 
-**Monorepo Structure**: Single Next.js app with integrated backend API
+## Coding Standards
 
-**API Layer**: Hono.js app mounted at `/api` with type-safe routes:
-- `/api/projects` - List all Claude projects
-- `/api/projects/:projectId` - Get project details and sessions
-- `/api/projects/:projectId/sessions/:sessionId` - Get session conversations
-- `/api/events/state_changes` - Server-Sent Events for real-time file monitoring
+### Backend: Effect-TS
 
-**Data Flow**:
-1. Backend reads JSONL files from `~/.claude/projects/`
-2. Parses and validates conversation entries with Zod schemas
-3. Frontend fetches via type-safe API client with TanStack Query
-4. Real-time updates via Server-Sent Events for file system changes
+**Prioritize Pure Functions**:
+- Extract logic into pure, testable functions whenever possible
+- Pure functions are easier to test, reason about, and maintain
+- Only use Effect-TS when side effects or state management is required
 
-**Type Safety**: 
-- Zod schemas for conversation data validation (`src/lib/conversation-schema/`)
-- Type-safe API client with Hono and Zod validation
-- Strict TypeScript configuration extending `@tsconfig/strictest`
+**Use Effect-TS for Side Effects and State**:
+- Mandatory for I/O operations, async code, and stateful logic
+- Avoid class-based implementations or mutable variables for state
+- Use Effect-TS's functional patterns for state management
+- Reference: https://effect.website/llms.txt
 
-### File Structure Patterns
+**Testing with Layers**:
+```typescript
+import { expect, test } from "vitest"
+import { Effect } from "effect"
+import { testPlatformLayer } from "@/testing/layers"
+import { yourEffect } from "./your-module"
 
-**Conversation Schema** (`src/lib/conversation-schema/`):
-- Modular Zod schemas for different conversation entry types
-- Union types for flexible conversation parsing
-- Separate schemas for content types, tools, and message formats
+test("example", async () => {
+  const result = await Effect.runPromise(
+    yourEffect.pipe(Effect.provide(testPlatformLayer))
+  )
+  expect(result).toBe(expectedValue)
+})
+```
 
-**Server Services** (`src/server/service/`):
-- Project operations: `getProjects`, `getProject`, `getProjectMeta`
-- Session operations: `getSessions`, `getSession`, `getSessionMeta` 
-- Parsing utilities: `parseJsonl`, `parseCommandXml`
-- File monitoring: `FileWatcherService` for real-time updates
+**Avoid Node.js Built-ins**:
+- Use `FileSystem.FileSystem` instead of `node:fs`
+- Use `Path.Path` instead of `node:path`
+- Use `Command.string` instead of `child_process`
 
-**Frontend Structure**:
-- Page components in app router structure
-- Reusable UI components in `src/components/ui/`
-- Custom hooks for data fetching (`useProject`, `useConversations`)
-- Conversation display components in nested folders
+This enables dependency injection and proper testing.
 
-### Data Sources
+**Type Safety - NO `as` Casting**:
+- `as` casting is **strictly prohibited**
+- If types seem unsolvable without `as`, explain the problem to the user and ask for guidance
+- Valid alternatives: type guards, assertion functions, Zod schema validation
 
-The application reads Claude Code history from:
-- **Primary location**: `~/.claude/projects/` (defined in `src/server/service/paths.ts`)
-- **File format**: JSONL files containing conversation entries
-- **Structure**: Project folders containing session JSONL files
-- **Real-time monitoring**: Watches for file changes and updates UI automatically
+### Frontend: API Access
 
-### Key Components
+**Hono RPC + TanStack Query Only**:
+```typescript
+import { api } from "@/lib/api"
+import { useQuery } from "@tanstack/react-query"
 
-**Conversation Parsing**: 
-- JSONL parser validates each line against conversation schema
-- Handles different entry types: User, Assistant, Summary, System
-- Supports various content types: Text, Tool Use, Tool Result, Thinking
+const { data } = useQuery({
+  queryKey: ["example"],
+  queryFn: () => api.endpoint.$get().then(res => res.json())
+})
+```
 
-**Command Detection**:
-- Parses XML-like command structures in conversation content
-- Extracts command names and arguments for better display
-- Handles different command formats (slash commands, local commands)
+Raw `fetch` and direct requests are prohibited.
 
-### Key Features
+### Tech Standards
 
-**Real-time Updates**:
-- FileWatcherService singleton monitors `~/.claude/projects/` using Node.js `fs.watch()`
-- Server-Sent Events via Hono's `streamSSE()` for live UI updates  
-- Event types: `connected`, `project_changed`, `session_changed`, `heartbeat`
-- Automatic TanStack Query cache invalidation when conversation files are modified
-- Heartbeat mechanism (30s intervals) for connection health monitoring
-- Proper cleanup and abort handling on client disconnection
+- **Linter/Formatter**: Biome (not ESLint/Prettier)
+- **Type Config**: `@tsconfig/strictest`
+- **Path Alias**: `@/*` maps to `./src/*`
 
-**CLI Installation**:
-- Can be installed via `PORT=3400 npx @kimuson/claude-code-viewer@latest`
-- Published as `@kimuson/claude-code-viewer` (v0.1.0) on npm
-- Standalone Next.js build with embedded dependencies
-- Binary entry point at `dist/index.js`
+## Architecture Details
 
-### Development Notes
+### SSE (Server-Sent Events)
 
-- Biome handles both linting and formatting (no ESLint/Prettier)
-- Vitest for testing with global test setup
-- TanStack Query for server state management with error boundaries
-- Jotai atoms for client-side state (filtering, UI state)
-- React 19 with Suspense boundaries for progressive loading
+**When to Use SSE**:
+- Delivering session log updates to frontend
+- Notifying clients of background process state changes
+- **Never** for request-response patterns (use Hono RPC instead)
+
+**Implementation**:
+- Server: `/api/sse` endpoint with type-safe events (`TypeSafeSSE`)
+- Client: `useServerEventListener` hook for subscriptions
+
+### Data Layer
+
+- **Single Source of Truth**: `~/.claude/projects/*.jsonl`
+- **Cache**: `~/.claude-code-viewer/` (invalidated via SSE when source changes)
+- **Validation**: Strict Zod schemas ensure every field is captured
+
+### Session Process Management
+
+Claude Code processes remain alive in the background (unless aborted), allowing session continuation without changing session-id.
+
+## Development Tips
+
+1. **Session Logs**: Examine `~/.claude/projects/` JSONL files to understand data structures
+2. **Mock Data**: `mock-global-claude-dir/` contains E2E test mocks (useful reference for schema examples)
+3. **Effect-TS Help**: https://effect.website/llms.txt

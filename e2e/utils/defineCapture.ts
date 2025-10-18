@@ -20,8 +20,11 @@ export const defineCapture = (options: {
     .map((path) => path.trim())
     .filter((path) => path !== "");
 
+  const colorSchemes = ["light", "dark"] as const;
+
   const captureWithCase = async (
     device: (typeof testDevices)[number],
+    colorScheme: (typeof colorSchemes)[number],
     testCase?: CaptureCase,
   ) => {
     await withPlaywright(
@@ -45,9 +48,14 @@ export const defineCapture = (options: {
                 "snapshots",
                 ...paths,
                 testCase.name,
-                `${device.name}.png`,
+                `${device.name}-${colorScheme}.png`,
               )
-            : resolve("e2e", "snapshots", ...paths, `${device.name}.png`);
+            : resolve(
+                "e2e",
+                "snapshots",
+                ...paths,
+                `${device.name}-${colorScheme}.png`,
+              );
 
           await page.screenshot({
             path: picturePath,
@@ -63,22 +71,23 @@ export const defineCapture = (options: {
         contextOptions: {
           ...device.device,
           baseURL: "http://localhost:4000",
+          colorScheme,
         },
       },
     );
   };
 
   const tasks = testDevices.flatMap((device): Task[] => {
-    return [
+    return colorSchemes.flatMap((colorScheme): Task[] => [
       {
-        key: `${device.name}-default`,
-        execute: () => captureWithCase(device),
+        key: `${device.name}-${colorScheme}-default`,
+        execute: () => captureWithCase(device, colorScheme),
       },
       ...cases.map((testCase) => ({
-        key: `${device.name}-${testCase.name}`,
-        execute: () => captureWithCase(device, testCase),
+        key: `${device.name}-${colorScheme}-${testCase.name}`,
+        execute: () => captureWithCase(device, colorScheme, testCase),
       })),
-    ];
+    ]);
   });
 
   return {

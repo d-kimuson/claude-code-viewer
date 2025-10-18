@@ -98,6 +98,7 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
             hasNextPage={hasNextPage}
             isFetchingNextPage={isFetchingNextPage}
             onLoadMore={() => fetchNextPage()}
+            isMobile={true}
           />
         );
       case "mcp":

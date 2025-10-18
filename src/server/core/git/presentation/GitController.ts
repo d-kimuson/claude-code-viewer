@@ -1,4 +1,4 @@
-import { Context, Effect, Layer } from "effect";
+import { Context, Effect, Either, Layer } from "effect";
 import type { ControllerResponse } from "../../../lib/effect/toEffectResponse";
 import type { InferEffect } from "../../../lib/effect/types";
 import { ProjectRepository } from "../../project/infrastructure/ProjectRepository";
@@ -23,9 +23,19 @@ const LayerImpl = Effect.gen(function* () {
       }
 
       const projectPath = project.meta.projectPath;
-      const branches = yield* gitService.getBranches(projectPath);
+      const branches = yield* Effect.either(
+        gitService.getBranches(projectPath),
+      );
+
+      if (Either.isLeft(branches)) {
+        return {
+          response: [],
+          status: 200,
+        } as const satisfies ControllerResponse;
+      }
+
       return {
-        response: branches,
+        response: branches.right,
         status: 200,
       } as const satisfies ControllerResponse;
     });
@@ -45,9 +55,17 @@ const LayerImpl = Effect.gen(function* () {
 
       const projectPath = project.meta.projectPath;
 
-      const commits = yield* gitService.getCommits(projectPath);
+      const commits = yield* Effect.either(gitService.getCommits(projectPath));
+
+      if (Either.isLeft(commits)) {
+        return {
+          response: [],
+          status: 200,
+        } as const satisfies ControllerResponse;
+      }
+
       return {
-        response: commits,
+        response: commits.right,
         status: 200,
       } as const satisfies ControllerResponse;
     });

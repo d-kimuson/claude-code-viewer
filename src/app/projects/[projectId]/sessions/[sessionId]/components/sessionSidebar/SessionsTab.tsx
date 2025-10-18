@@ -19,6 +19,7 @@ export const SessionsTab: FC<{
   hasNextPage?: boolean;
   isFetchingNextPage?: boolean;
   onLoadMore?: () => void;
+  isMobile?: boolean;
 }> = ({
   sessions,
   currentSessionId,
@@ -26,6 +27,7 @@ export const SessionsTab: FC<{
   hasNextPage,
   isFetchingNextPage,
   onLoadMore,
+  isMobile = false,
 }) => {
   const sessionProcesses = useAtomValue(sessionProcessesAtom);
 
@@ -70,7 +72,16 @@ export const SessionsTab: FC<{
           <NewChatModal
             projectId={projectId}
             trigger={
-              <Button size="sm" variant="outline" className="gap-1.5">
+              <Button
+                size="sm"
+                variant="outline"
+                className="gap-1.5"
+                data-testid={
+                  isMobile === true
+                    ? "start-new-chat-button-mobile"
+                    : "start-new-chat-button"
+                }
+              >
                 <PlusIcon className="w-3.5 h-3.5" />
                 New
               </Button>

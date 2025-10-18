@@ -9,7 +9,7 @@ const LayerImpl = Effect.gen(function* () {
   const envService = yield* EnvService;
 
   const globalClaudeDirectoryPath = yield* envService
-    .getEnv("CLAUDE_CODE_VIEWER_CC_EXECUTABLE_PATH")
+    .getEnv("GLOBAL_CLAUDE_DIR")
     .pipe(
       Effect.map((envVar) =>
         envVar === undefined

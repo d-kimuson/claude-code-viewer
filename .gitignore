@@ -49,3 +49,6 @@ dist/*
 
 # claude code
 .claude/settings.local.json
+
+# speckit
+specs

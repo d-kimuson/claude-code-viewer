@@ -4,12 +4,7 @@ import { FileText, GitBranch, Loader2, RefreshCcwIcon } from "lucide-react";
 import type { FC } from "react";
 import { useCallback, useEffect, useId, useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import {
   Select,
   SelectContent,
@@ -31,7 +26,7 @@ const DiffSummaryComponent: FC<DiffSummaryProps> = ({ summary, className }) => {
   return (
     <div
       className={cn(
-        "bg-gray-50 dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700",
+        "bg-gray-50 dark:bg-gray-800 rounded-lg p-2 border border-gray-200 dark:border-gray-700",
         className,
       )}
     >
@@ -90,7 +85,7 @@ const RefSelector: FC<RefSelectorProps> = ({
   };
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-1">
       <label
         htmlFor={id}
         className="text-sm font-medium text-gray-700 dark:text-gray-300"
@@ -198,12 +193,8 @@ export const DiffModal: FC<DiffModalProps> = ({
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-7xl w-[95vw] h-[90vh] overflow-hidden flex flex-col px-2 md:px-8">
-        <DialogHeader>
-          <DialogTitle>Preview Changes</DialogTitle>
-        </DialogHeader>
-
-        <div className="flex flex-col sm:flex-row gap-3 sm:items-end">
-          <div className="flex flex-col sm:flex-row gap-3 flex-1">
+        <div className="flex flex-col sm:flex-row gap-2 sm:items-end">
+          <div className="flex flex-col sm:flex-row gap-2 flex-1">
             <RefSelector
               label="Compare from"
               value={compareFrom}
@@ -247,7 +238,7 @@ export const DiffModal: FC<DiffModalProps> = ({
         )}
 
         {diffData?.success && (
-          <>
+          <div className="flex-1 overflow-auto">
             <DiffSummaryComponent
               summary={{
                 filesChanged: diffData.data.files.length,
@@ -265,9 +256,10 @@ export const DiffModal: FC<DiffModalProps> = ({
                   linesDeleted: diff.file.deletions,
                 })),
               }}
+              className="mb-3"
             />
 
-            <div className="flex-1 overflow-auto space-y-6">
+            <div className="space-y-3">
               {diffData.data.diffs.map((diff) => (
                 <DiffViewer
                   key={diff.file.filePath}
@@ -285,7 +277,7 @@ export const DiffModal: FC<DiffModalProps> = ({
                 />
               ))}
             </div>
-          </>
+          </div>
         )}
 
         {isDiffLoading && (

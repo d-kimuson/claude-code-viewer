@@ -3,7 +3,7 @@ import { defineConfig } from "vitest/config";
 const config = defineConfig({
   test: {
     globals: true,
-    setupFiles: ["src/test-setups/vitest.setup.ts"],
+    setupFiles: ["src/testing/setup/vitest.setup.ts"],
     env: {
       ENVIRONMENT: "local",
     },

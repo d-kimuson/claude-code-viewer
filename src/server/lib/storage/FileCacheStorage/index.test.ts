@@ -1,8 +1,8 @@
-import { FileSystem } from "@effect/platform";
 import { Effect, Layer, Ref } from "effect";
 import { z } from "zod";
+import { testFileSystemLayer } from "../../../../testing/layers/testFileSystemLayer";
+import { testPersistentServiceLayer } from "../../../../testing/layers/testPersistentServiceLayer";
 import { FileCacheStorage, makeFileCacheStorageLayer } from "./index";
-import { PersistentService } from "./PersistentService";
 
 // Schema for testing
 const UserSchema = z.object({
@@ -13,17 +13,9 @@ const UserSchema = z.object({
 
 type User = z.infer<typeof UserSchema>;
 
-const FileSystemMock = FileSystem.layerNoop({});
-
 describe("FileCacheStorage", () => {
   describe("basic operations", () => {
     it("can save and retrieve data with set and get", async () => {
-      // PersistentService mock (empty data)
-      const PersistentServiceMock = Layer.succeed(PersistentService, {
-        load: () => Effect.succeed([]),
-        save: () => Effect.void,
-      });
-
       const program = Effect.gen(function* () {
         const cache = yield* FileCacheStorage<User>();
 
@@ -43,8 +35,8 @@ describe("FileCacheStorage", () => {
         program.pipe(
           Effect.provide(
             makeFileCacheStorageLayer("test-users", UserSchema).pipe(
-              Layer.provide(PersistentServiceMock),
-              Layer.provide(FileSystemMock),
+              Layer.provide(testPersistentServiceLayer()),
+              Layer.provide(testFileSystemLayer()),
             ),
           ),
         ),
@@ -58,11 +50,6 @@ describe("FileCacheStorage", () => {
     });
 
     it("returns undefined when retrieving non-existent key", async () => {
-      const PersistentServiceMock = Layer.succeed(PersistentService, {
-        load: () => Effect.succeed([]),
-        save: () => Effect.void,
-      });
-
       const program = Effect.gen(function* () {
         const cache = yield* FileCacheStorage<User>();
         return yield* cache.get("non-existent");
@@ -72,8 +59,8 @@ describe("FileCacheStorage", () => {
         program.pipe(
           Effect.provide(
             makeFileCacheStorageLayer("test-users", UserSchema).pipe(
-              Layer.provide(PersistentServiceMock),
-              Layer.provide(FileSystemMock),
+              Layer.provide(testPersistentServiceLayer()),
+              Layer.provide(testFileSystemLayer()),
             ),
           ),
         ),
@@ -83,11 +70,6 @@ describe("FileCacheStorage", () => {
     });
 
     it("can delete data with invalidate", async () => {
-      const PersistentServiceMock = Layer.succeed(PersistentService, {
-        load: () => Effect.succeed([]),
-        save: () => Effect.void,
-      });
-
       const program = Effect.gen(function* () {
         const cache = yield* FileCacheStorage<User>();
 
@@ -109,8 +91,8 @@ describe("FileCacheStorage", () => {
         program.pipe(
           Effect.provide(
             makeFileCacheStorageLayer("test-users", UserSchema).pipe(
-              Layer.provide(PersistentServiceMock),
-              Layer.provide(FileSystemMock),
+              Layer.provide(testPersistentServiceLayer()),
+              Layer.provide(testFileSystemLayer()),
             ),
           ),
         ),
@@ -120,11 +102,6 @@ describe("FileCacheStorage", () => {
     });
 
     it("getAll ですべてのデータを取得できる", async () => {
-      const PersistentServiceMock = Layer.succeed(PersistentService, {
-        load: () => Effect.succeed([]),
-        save: () => Effect.void,
-      });
-
       const program = Effect.gen(function* () {
         const cache = yield* FileCacheStorage<User>();
 
@@ -148,8 +125,8 @@ describe("FileCacheStorage", () => {
         program.pipe(
           Effect.provide(
             makeFileCacheStorageLayer("test-users", UserSchema).pipe(
-              Layer.provide(PersistentServiceMock),
-              Layer.provide(FileSystemMock),
+              Layer.provide(testPersistentServiceLayer()),
+              Layer.provide(testFileSystemLayer()),
             ),
           ),
         ),
@@ -172,29 +149,6 @@ describe("FileCacheStorage", () => {
   describe("永続化データの読み込み", () => {
     it("初期化時に永続化データを読み込む", async () => {
       // 永続化データを返すモック
-      const PersistentServiceMock = Layer.succeed(PersistentService, {
-        load: () =>
-          Effect.succeed([
-            [
-              "user-1",
-              {
-                id: "user-1",
-                name: "Alice",
-                email: "alice@example.com",
-              },
-            ],
-            [
-              "user-2",
-              {
-                id: "user-2",
-                name: "Bob",
-                email: "bob@example.com",
-              },
-            ],
-          ] as const),
-        save: () => Effect.void,
-      });
-
       const program = Effect.gen(function* () {
         const cache = yield* FileCacheStorage<User>();
         return yield* cache.getAll();
@@ -204,8 +158,29 @@ describe("FileCacheStorage", () => {
         program.pipe(
           Effect.provide(
             makeFileCacheStorageLayer("test-users", UserSchema).pipe(
-              Layer.provide(PersistentServiceMock),
-              Layer.provide(FileSystemMock),
+              Layer.provide(
+                testPersistentServiceLayer({
+                  savedEntries: [
+                    [
+                      "user-1",
+                      {
+                        id: "user-1",
+                        name: "Alice",
+                        email: "alice@example.com",
+                      },
+                    ],
+                    [
+                      "user-2",
+                      {
+                        id: "user-2",
+                        name: "Bob",
+                        email: "bob@example.com",
+                      },
+                    ],
+                  ],
+                }),
+              ),
+              Layer.provide(testFileSystemLayer()),
             ),
           ),
         ),
@@ -217,38 +192,6 @@ describe("FileCacheStorage", () => {
     });
 
     it("スキーマバリデーションに失敗したデータは無視される", async () => {
-      // 不正なデータを含む永続化データ
-      const PersistentServiceMock = Layer.succeed(PersistentService, {
-        load: () =>
-          Effect.succeed([
-            [
-              "user-1",
-              {
-                id: "user-1",
-                name: "Alice",
-                email: "alice@example.com",
-              },
-            ],
-            [
-              "user-invalid",
-              {
-                id: "invalid",
-                name: "Invalid",
-                // email が無い（バリデーションエラー）
-              },
-            ],
-            [
-              "user-2",
-              {
-                id: "user-2",
-                name: "Bob",
-                email: "invalid-email", // 不正なメールアドレス
-              },
-            ],
-          ] as const),
-        save: () => Effect.void,
-      });
-
       const program = Effect.gen(function* () {
         const cache = yield* FileCacheStorage<User>();
         return yield* cache.getAll();
@@ -258,8 +201,38 @@ describe("FileCacheStorage", () => {
         program.pipe(
           Effect.provide(
             makeFileCacheStorageLayer("test-users", UserSchema).pipe(
-              Layer.provide(PersistentServiceMock),
-              Layer.provide(FileSystemMock),
+              Layer.provide(
+                testPersistentServiceLayer({
+                  savedEntries: [
+                    [
+                      "user-1",
+                      {
+                        id: "user-1",
+                        name: "Alice",
+                        email: "alice@example.com",
+                      },
+                    ],
+                    [
+                      "user-invalid",
+                      {
+                        id: "invalid",
+                        name: "Invalid",
+                        // email が無い（バリデーションエラー）
+                      },
+                    ],
+                    [
+                      "user-2",
+                      {
+                        id: "user-2",
+                        name: "Bob",
+                        email: "invalid-email", // 不正なメールアドレス
+                      },
+                    ],
+                  ],
+                }),
+              ),
+
+              Layer.provide(testFileSystemLayer()),
             ),
           ),
         ),
@@ -276,14 +249,6 @@ describe("FileCacheStorage", () => {
   describe("永続化への同期", () => {
     it("set でデータを保存すると save が呼ばれる", async () => {
       const saveCallsRef = await Effect.runPromise(Ref.make<number>(0));
-
-      const PersistentServiceMock = Layer.succeed(PersistentService, {
-        load: () => Effect.succeed([]),
-        save: () =>
-          Effect.gen(function* () {
-            yield* Ref.update(saveCallsRef, (n) => n + 1);
-          }),
-      });
 
       const program = Effect.gen(function* () {
         const cache = yield* FileCacheStorage<User>();
@@ -302,8 +267,15 @@ describe("FileCacheStorage", () => {
         program.pipe(
           Effect.provide(
             makeFileCacheStorageLayer("test-users", UserSchema).pipe(
-              Layer.provide(PersistentServiceMock),
-              Layer.provide(FileSystemMock),
+              Layer.provide(
+                testPersistentServiceLayer({
+                  save: () =>
+                    Effect.gen(function* () {
+                      yield* Ref.update(saveCallsRef, (n) => n + 1);
+                    }),
+                }),
+              ),
+              Layer.provide(testFileSystemLayer()),
             ),
           ),
         ),
@@ -315,24 +287,6 @@ describe("FileCacheStorage", () => {
 
     it("同じ値を set しても save は呼ばれない（差分検出）", async () => {
       const saveCallsRef = await Effect.runPromise(Ref.make<number>(0));
-
-      const PersistentServiceMock = Layer.succeed(PersistentService, {
-        load: () =>
-          Effect.succeed([
-            [
-              "user-1",
-              {
-                id: "user-1",
-                name: "Alice",
-                email: "alice@example.com",
-              },
-            ],
-          ] as const),
-        save: () =>
-          Effect.gen(function* () {
-            yield* Ref.update(saveCallsRef, (n) => n + 1);
-          }),
-      });
 
       const program = Effect.gen(function* () {
         const cache = yield* FileCacheStorage<User>();
@@ -352,8 +306,25 @@ describe("FileCacheStorage", () => {
         program.pipe(
           Effect.provide(
             makeFileCacheStorageLayer("test-users", UserSchema).pipe(
-              Layer.provide(PersistentServiceMock),
-              Layer.provide(FileSystemMock),
+              Layer.provide(
+                testPersistentServiceLayer({
+                  savedEntries: [
+                    [
+                      "user-1",
+                      {
+                        id: "user-1",
+                        name: "Alice",
+                        email: "alice@example.com",
+                      },
+                    ],
+                  ],
+                  save: () =>
+                    Effect.gen(function* () {
+                      yield* Ref.update(saveCallsRef, (n) => n + 1);
+                    }),
+                }),
+              ),
+              Layer.provide(testFileSystemLayer()),
             ),
           ),
         ),
@@ -366,24 +337,6 @@ describe("FileCacheStorage", () => {
 
     it("invalidate でデータを削除すると save が呼ばれる", async () => {
       const saveCallsRef = await Effect.runPromise(Ref.make<number>(0));
-
-      const PersistentServiceMock = Layer.succeed(PersistentService, {
-        load: () =>
-          Effect.succeed([
-            [
-              "user-1",
-              {
-                id: "user-1",
-                name: "Alice",
-                email: "alice@example.com",
-              },
-            ],
-          ] as const),
-        save: () =>
-          Effect.gen(function* () {
-            yield* Ref.update(saveCallsRef, (n) => n + 1);
-          }),
-      });
 
       const program = Effect.gen(function* () {
         const cache = yield* FileCacheStorage<User>();
@@ -398,8 +351,25 @@ describe("FileCacheStorage", () => {
         program.pipe(
           Effect.provide(
             makeFileCacheStorageLayer("test-users", UserSchema).pipe(
-              Layer.provide(PersistentServiceMock),
-              Layer.provide(FileSystemMock),
+              Layer.provide(
+                testPersistentServiceLayer({
+                  savedEntries: [
+                    [
+                      "user-1",
+                      {
+                        id: "user-1",
+                        name: "Alice",
+                        email: "alice@example.com",
+                      },
+                    ],
+                  ],
+                  save: () =>
+                    Effect.gen(function* () {
+                      yield* Ref.update(saveCallsRef, (n) => n + 1);
+                    }),
+                }),
+              ),
+              Layer.provide(testFileSystemLayer()),
             ),
           ),
         ),
@@ -411,14 +381,6 @@ describe("FileCacheStorage", () => {
 
     it("存在しないキーを invalidate しても save は呼ばれない", async () => {
       const saveCallsRef = await Effect.runPromise(Ref.make<number>(0));
-
-      const PersistentServiceMock = Layer.succeed(PersistentService, {
-        load: () => Effect.succeed([]),
-        save: () =>
-          Effect.gen(function* () {
-            yield* Ref.update(saveCallsRef, (n) => n + 1);
-          }),
-      });
 
       const program = Effect.gen(function* () {
         const cache = yield* FileCacheStorage<User>();
@@ -434,8 +396,15 @@ describe("FileCacheStorage", () => {
         program.pipe(
           Effect.provide(
             makeFileCacheStorageLayer("test-users", UserSchema).pipe(
-              Layer.provide(PersistentServiceMock),
-              Layer.provide(FileSystemMock),
+              Layer.provide(
+                testPersistentServiceLayer({
+                  save: () =>
+                    Effect.gen(function* () {
+                      yield* Ref.update(saveCallsRef, (n) => n + 1);
+                    }),
+                }),
+              ),
+              Layer.provide(testFileSystemLayer()),
             ),
           ),
         ),
@@ -449,21 +418,6 @@ describe("FileCacheStorage", () => {
 
   describe("複雑なシナリオ", () => {
     it("複数の操作を順次実行できる", async () => {
-      const PersistentServiceMock = Layer.succeed(PersistentService, {
-        load: () =>
-          Effect.succeed([
-            [
-              "user-1",
-              {
-                id: "user-1",
-                name: "Alice",
-                email: "alice@example.com",
-              },
-            ],
-          ] as const),
-        save: () => Effect.void,
-      });
-
       const program = Effect.gen(function* () {
         const cache = yield* FileCacheStorage<User>();
 
@@ -505,8 +459,21 @@ describe("FileCacheStorage", () => {
         program.pipe(
           Effect.provide(
             makeFileCacheStorageLayer("test-users", UserSchema).pipe(
-              Layer.provide(PersistentServiceMock),
-              Layer.provide(FileSystemMock),
+              Layer.provide(
+                testPersistentServiceLayer({
+                  savedEntries: [
+                    [
+                      "user-1",
+                      {
+                        id: "user-1",
+                        name: "Alice",
+                        email: "alice@example.com",
+                      },
+                    ],
+                  ],
+                }),
+              ),
+              Layer.provide(testFileSystemLayer()),
             ),
           ),
         ),

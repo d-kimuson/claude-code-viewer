@@ -1,59 +1,28 @@
-import { FileSystem, Path } from "@effect/platform";
 import { SystemError } from "@effect/platform/Error";
 import { Effect, Layer, Option } from "effect";
 import type { Conversation } from "../../../../lib/conversation-schema";
-import { PersistentService } from "../../../lib/storage/FileCacheStorage/PersistentService";
+import {
+  createFileInfo,
+  testFileSystemLayer,
+} from "../../../../testing/layers/testFileSystemLayer";
+import { testPlatformLayer } from "../../../../testing/layers/testPlatformLayer";
 import { decodeProjectId } from "../../project/functions/id";
 import type { ErrorJsonl, SessionDetail, SessionMeta } from "../../types";
 import { SessionRepository } from "../infrastructure/SessionRepository";
 import { VirtualConversationDatabase } from "../infrastructure/VirtualConversationDatabase";
 import { SessionMetaService } from "../services/SessionMetaService";
 
-/**
- * Helper function to create a FileSystem mock layer
- */
-const makeFileSystemMock = (
-  overrides: Partial<FileSystem.FileSystem>,
-): Layer.Layer<FileSystem.FileSystem> => {
-  return FileSystem.layerNoop(overrides);
-};
-
-/**
- * Helper function to create a Path mock layer
- */
-const makePathMock = (): Layer.Layer<Path.Path> => {
-  return Path.layer;
-};
-
-/**
- * Helper function to create a PersistentService mock layer
- */
-const makePersistentServiceMock = (): Layer.Layer<PersistentService> => {
-  return Layer.succeed(PersistentService, {
-    load: () => Effect.succeed([]),
-    save: () => Effect.void,
-  });
-};
-
-/**
- * Helper function to create a SessionMetaService mock layer
- */
-const makeSessionMetaServiceMock = (
-  meta: SessionMeta,
-): Layer.Layer<SessionMetaService> => {
-  return Layer.succeed(SessionMetaService, {
+const testSessionMetaServiceLayer = (meta: SessionMeta) => {
+  return Layer.mock(SessionMetaService, {
     getSessionMeta: () => Effect.succeed(meta),
     invalidateSession: () => Effect.void,
   });
 };
 
-/**
- * Helper function to create a PredictSessionsDatabase mock layer
- */
-const makePredictSessionsDatabaseMock = (
+const testPredictSessionsDatabaseLayer = (
   sessions: Map<string, SessionDetail>,
-): Layer.Layer<VirtualConversationDatabase> => {
-  return Layer.succeed(VirtualConversationDatabase, {
+) => {
+  return Layer.mock(VirtualConversationDatabase, {
     getProjectVirtualConversations: (projectId: string) =>
       Effect.succeed(
         Array.from(sessions.values())
@@ -79,33 +48,8 @@ const makePredictSessionsDatabaseMock = (
           : null,
       );
     },
-    createVirtualConversation: () => Effect.void,
-    deleteVirtualConversations: () => Effect.void,
   });
 };
-
-/**
- * Helper function to create a File.Info mock
- */
-const makeFileInfoMock = (
-  type: "File" | "Directory",
-  mtime: Date,
-): FileSystem.File.Info => ({
-  type,
-  mtime: Option.some(mtime),
-  atime: Option.none(),
-  birthtime: Option.none(),
-  dev: 0,
-  ino: Option.none(),
-  mode: 0o755,
-  nlink: Option.none(),
-  uid: Option.none(),
-  gid: Option.none(),
-  rdev: Option.none(),
-  size: FileSystem.Size(0n),
-  blksize: Option.none(),
-  blocks: Option.none(),
-});
 
 describe("SessionRepository", () => {
   describe("getSession", () => {
@@ -121,26 +65,8 @@ describe("SessionRepository", () => {
 
       const mockContent = `{"type":"user","message":{"role":"user","content":"Hello"}}\n{"type":"assistant","message":{"role":"assistant","content":"Hi"}}\n{"type":"user","message":{"role":"user","content":"Test"}}`;
 
-      const FileSystemMock = makeFileSystemMock({
-        exists: (path: string) => Effect.succeed(path === sessionPath),
-        readFileString: (path: string) =>
-          path === sessionPath
-            ? Effect.succeed(mockContent)
-            : Effect.fail(
-                new SystemError({
-                  method: "readFileString",
-                  reason: "NotFound",
-                  module: "FileSystem",
-                  cause: undefined,
-                }),
-              ),
-        stat: () => Effect.succeed(makeFileInfoMock("File", mockDate)),
-      });
-
-      const PathMock = makePathMock();
-      const PersistentServiceMock = makePersistentServiceMock();
-      const SessionMetaServiceMock = makeSessionMetaServiceMock(mockMeta);
-      const PredictSessionsDatabaseMock = makePredictSessionsDatabaseMock(
+      const SessionMetaServiceMock = testSessionMetaServiceLayer(mockMeta);
+      const PredictSessionsDatabaseMock = testPredictSessionsDatabaseLayer(
         new Map(),
       );
 
@@ -154,9 +80,30 @@ describe("SessionRepository", () => {
           Effect.provide(SessionRepository.Live),
           Effect.provide(SessionMetaServiceMock),
           Effect.provide(PredictSessionsDatabaseMock),
-          Effect.provide(FileSystemMock),
-          Effect.provide(PathMock),
-          Effect.provide(PersistentServiceMock),
+          Effect.provide(
+            testFileSystemLayer({
+              exists: (path: string) => Effect.succeed(path === sessionPath),
+              readFileString: (path: string) =>
+                path === sessionPath
+                  ? Effect.succeed(mockContent)
+                  : Effect.fail(
+                      new SystemError({
+                        method: "readFileString",
+                        reason: "NotFound",
+                        module: "FileSystem",
+                        cause: undefined,
+                      }),
+                    ),
+              stat: () =>
+                Effect.succeed(
+                  createFileInfo({
+                    type: "File",
+                    mtime: Option.some(mockDate),
+                  }),
+                ),
+            }),
+          ),
+          Effect.provide(testPlatformLayer()),
         ),
       );
 
@@ -190,13 +137,11 @@ describe("SessionRepository", () => {
         },
       ];
 
-      const FileSystemMock = makeFileSystemMock({
+      const FileSystemMock = testFileSystemLayer({
         exists: () => Effect.succeed(false),
       });
 
-      const PathMock = makePathMock();
-      const PersistentServiceMock = makePersistentServiceMock();
-      const SessionMetaServiceMock = makeSessionMetaServiceMock({
+      const SessionMetaServiceMock = testSessionMetaServiceLayer({
         messageCount: 0,
         firstUserMessage: null,
       });
@@ -230,8 +175,7 @@ describe("SessionRepository", () => {
           Effect.provide(SessionMetaServiceMock),
           Effect.provide(PredictSessionsDatabaseMock),
           Effect.provide(FileSystemMock),
-          Effect.provide(PathMock),
-          Effect.provide(PersistentServiceMock),
+          Effect.provide(testPlatformLayer()),
         ),
       );
 
@@ -246,17 +190,15 @@ describe("SessionRepository", () => {
       const projectId = Buffer.from("/test/project").toString("base64url");
       const sessionId = "nonexistent-session";
 
-      const FileSystemMock = makeFileSystemMock({
+      const FileSystemMock = testFileSystemLayer({
         exists: () => Effect.succeed(false),
       });
 
-      const PathMock = makePathMock();
-      const PersistentServiceMock = makePersistentServiceMock();
-      const SessionMetaServiceMock = makeSessionMetaServiceMock({
+      const SessionMetaServiceMock = testSessionMetaServiceLayer({
         messageCount: 0,
         firstUserMessage: null,
       });
-      const PredictSessionsDatabaseMock = makePredictSessionsDatabaseMock(
+      const PredictSessionsDatabaseMock = testPredictSessionsDatabaseLayer(
         new Map(),
       );
 
@@ -271,8 +213,7 @@ describe("SessionRepository", () => {
           Effect.provide(SessionMetaServiceMock),
           Effect.provide(PredictSessionsDatabaseMock),
           Effect.provide(FileSystemMock),
-          Effect.provide(PathMock),
-          Effect.provide(PersistentServiceMock),
+          Effect.provide(testPlatformLayer()),
         ),
       );
 
@@ -283,17 +224,15 @@ describe("SessionRepository", () => {
       const projectId = Buffer.from("/test/project").toString("base64url");
       const sessionId = "resume-session-id";
 
-      const FileSystemMock = makeFileSystemMock({
+      const FileSystemMock = testFileSystemLayer({
         exists: () => Effect.succeed(false),
       });
 
-      const PathMock = makePathMock();
-      const PersistentServiceMock = makePersistentServiceMock();
-      const SessionMetaServiceMock = makeSessionMetaServiceMock({
+      const SessionMetaServiceMock = testSessionMetaServiceLayer({
         messageCount: 0,
         firstUserMessage: null,
       });
-      const PredictSessionsDatabaseMock = makePredictSessionsDatabaseMock(
+      const PredictSessionsDatabaseMock = testPredictSessionsDatabaseLayer(
         new Map(),
       );
 
@@ -308,8 +247,7 @@ describe("SessionRepository", () => {
           Effect.provide(SessionMetaServiceMock),
           Effect.provide(PredictSessionsDatabaseMock),
           Effect.provide(FileSystemMock),
-          Effect.provide(PathMock),
-          Effect.provide(PersistentServiceMock),
+          Effect.provide(testPlatformLayer()),
         ),
       );
 
@@ -329,7 +267,7 @@ describe("SessionRepository", () => {
         firstUserMessage: null,
       };
 
-      const FileSystemMock = makeFileSystemMock({
+      const FileSystemMock = testFileSystemLayer({
         exists: (path: string) => Effect.succeed(path === projectPath),
         readDirectory: (path: string) =>
           path === projectPath
@@ -337,19 +275,23 @@ describe("SessionRepository", () => {
             : Effect.succeed([]),
         stat: (path: string) => {
           if (path.includes("session1.jsonl")) {
-            return Effect.succeed(makeFileInfoMock("File", date2));
+            return Effect.succeed(
+              createFileInfo({ type: "File", mtime: Option.some(date2) }),
+            );
           }
           if (path.includes("session2.jsonl")) {
-            return Effect.succeed(makeFileInfoMock("File", date1));
+            return Effect.succeed(
+              createFileInfo({ type: "File", mtime: Option.some(date1) }),
+            );
           }
-          return Effect.succeed(makeFileInfoMock("File", new Date()));
+          return Effect.succeed(
+            createFileInfo({ type: "File", mtime: Option.some(new Date()) }),
+          );
         },
       });
 
-      const PathMock = makePathMock();
-      const PersistentServiceMock = makePersistentServiceMock();
-      const SessionMetaServiceMock = makeSessionMetaServiceMock(mockMeta);
-      const PredictSessionsDatabaseMock = makePredictSessionsDatabaseMock(
+      const SessionMetaServiceMock = testSessionMetaServiceLayer(mockMeta);
+      const PredictSessionsDatabaseMock = testPredictSessionsDatabaseLayer(
         new Map(),
       );
 
@@ -364,8 +306,7 @@ describe("SessionRepository", () => {
           Effect.provide(SessionMetaServiceMock),
           Effect.provide(PredictSessionsDatabaseMock),
           Effect.provide(FileSystemMock),
-          Effect.provide(PathMock),
-          Effect.provide(PersistentServiceMock),
+          Effect.provide(testPlatformLayer()),
         ),
       );
 
@@ -384,7 +325,7 @@ describe("SessionRepository", () => {
         firstUserMessage: null,
       };
 
-      const FileSystemMock = makeFileSystemMock({
+      const FileSystemMock = testFileSystemLayer({
         exists: (path: string) => Effect.succeed(path === projectPath),
         readDirectory: (path: string) =>
           path === projectPath
@@ -394,13 +335,12 @@ describe("SessionRepository", () => {
                 "session3.jsonl",
               ])
             : Effect.succeed([]),
-        stat: () => Effect.succeed(makeFileInfoMock("File", mockDate)),
+        stat: () =>
+          Effect.succeed(createFileInfo({ mtime: Option.some(mockDate) })),
       });
 
-      const PathMock = makePathMock();
-      const PersistentServiceMock = makePersistentServiceMock();
-      const SessionMetaServiceMock = makeSessionMetaServiceMock(mockMeta);
-      const PredictSessionsDatabaseMock = makePredictSessionsDatabaseMock(
+      const SessionMetaServiceMock = testSessionMetaServiceLayer(mockMeta);
+      const PredictSessionsDatabaseMock = testPredictSessionsDatabaseLayer(
         new Map(),
       );
 
@@ -415,8 +355,7 @@ describe("SessionRepository", () => {
           Effect.provide(SessionMetaServiceMock),
           Effect.provide(PredictSessionsDatabaseMock),
           Effect.provide(FileSystemMock),
-          Effect.provide(PathMock),
-          Effect.provide(PersistentServiceMock),
+          Effect.provide(testPlatformLayer()),
         ),
       );
 
@@ -433,7 +372,7 @@ describe("SessionRepository", () => {
         firstUserMessage: null,
       };
 
-      const FileSystemMock = makeFileSystemMock({
+      const FileSystemMock = testFileSystemLayer({
         exists: (path: string) => Effect.succeed(path === projectPath),
         readDirectory: (path: string) =>
           path === projectPath
@@ -443,13 +382,12 @@ describe("SessionRepository", () => {
                 "session3.jsonl",
               ])
             : Effect.succeed([]),
-        stat: () => Effect.succeed(makeFileInfoMock("File", mockDate)),
+        stat: () =>
+          Effect.succeed(createFileInfo({ mtime: Option.some(mockDate) })),
       });
 
-      const PathMock = makePathMock();
-      const PersistentServiceMock = makePersistentServiceMock();
-      const SessionMetaServiceMock = makeSessionMetaServiceMock(mockMeta);
-      const PredictSessionsDatabaseMock = makePredictSessionsDatabaseMock(
+      const SessionMetaServiceMock = testSessionMetaServiceLayer(mockMeta);
+      const PredictSessionsDatabaseMock = testPredictSessionsDatabaseLayer(
         new Map(),
       );
 
@@ -466,8 +404,7 @@ describe("SessionRepository", () => {
           Effect.provide(SessionMetaServiceMock),
           Effect.provide(PredictSessionsDatabaseMock),
           Effect.provide(FileSystemMock),
-          Effect.provide(PathMock),
-          Effect.provide(PersistentServiceMock),
+          Effect.provide(testPlatformLayer()),
         ),
       );
 
@@ -478,7 +415,7 @@ describe("SessionRepository", () => {
     it("returns empty array when project does not exist", async () => {
       const projectId = Buffer.from("/nonexistent").toString("base64url");
 
-      const FileSystemMock = makeFileSystemMock({
+      const FileSystemMock = testFileSystemLayer({
         exists: () => Effect.succeed(false),
         readDirectory: () =>
           Effect.fail(
@@ -491,13 +428,11 @@ describe("SessionRepository", () => {
           ),
       });
 
-      const PathMock = makePathMock();
-      const PersistentServiceMock = makePersistentServiceMock();
-      const SessionMetaServiceMock = makeSessionMetaServiceMock({
+      const SessionMetaServiceMock = testSessionMetaServiceLayer({
         messageCount: 0,
         firstUserMessage: null,
       });
-      const PredictSessionsDatabaseMock = makePredictSessionsDatabaseMock(
+      const PredictSessionsDatabaseMock = testPredictSessionsDatabaseLayer(
         new Map(),
       );
 
@@ -512,8 +447,7 @@ describe("SessionRepository", () => {
           Effect.provide(SessionMetaServiceMock),
           Effect.provide(PredictSessionsDatabaseMock),
           Effect.provide(FileSystemMock),
-          Effect.provide(PathMock),
-          Effect.provide(PersistentServiceMock),
+          Effect.provide(testPlatformLayer()),
         ),
       );
 
@@ -546,18 +480,17 @@ describe("SessionRepository", () => {
         },
       ];
 
-      const FileSystemMock = makeFileSystemMock({
+      const FileSystemMock = testFileSystemLayer({
         exists: (path: string) => Effect.succeed(path === projectPath),
         readDirectory: (path: string) =>
           path === projectPath
             ? Effect.succeed(["session1.jsonl"])
             : Effect.succeed([]),
-        stat: () => Effect.succeed(makeFileInfoMock("File", mockDate)),
+        stat: () =>
+          Effect.succeed(createFileInfo({ mtime: Option.some(mockDate) })),
       });
 
-      const PathMock = makePathMock();
-      const PersistentServiceMock = makePersistentServiceMock();
-      const SessionMetaServiceMock = makeSessionMetaServiceMock(mockMeta);
+      const SessionMetaServiceMock = testSessionMetaServiceLayer(mockMeta);
       const PredictSessionsDatabaseMock = Layer.succeed(
         VirtualConversationDatabase,
         {
@@ -590,8 +523,7 @@ describe("SessionRepository", () => {
           Effect.provide(SessionMetaServiceMock),
           Effect.provide(PredictSessionsDatabaseMock),
           Effect.provide(FileSystemMock),
-          Effect.provide(PathMock),
-          Effect.provide(PersistentServiceMock),
+          Effect.provide(testPlatformLayer()),
         ),
       );
 

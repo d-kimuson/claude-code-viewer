@@ -9,14 +9,10 @@ import { ClaudeCodePermissionService } from "../../../server/core/claude-code/se
 import { ClaudeCodeService } from "../../../server/core/claude-code/services/ClaudeCodeService";
 import { ClaudeCodeSessionProcessService } from "../../../server/core/claude-code/services/ClaudeCodeSessionProcessService";
 import { SSEController } from "../../../server/core/events/presentation/SSEController";
-import { EventBus } from "../../../server/core/events/services/EventBus";
 import { FileWatcherService } from "../../../server/core/events/services/fileWatcher";
 import { FileSystemController } from "../../../server/core/file-system/presentation/FileSystemController";
 import { GitController } from "../../../server/core/git/presentation/GitController";
 import { GitService } from "../../../server/core/git/services/GitService";
-import { ApplicationContext } from "../../../server/core/platform/services/ApplicationContext";
-import { EnvService } from "../../../server/core/platform/services/EnvService";
-import { UserConfigService } from "../../../server/core/platform/services/UserConfigService";
 import { ProjectRepository } from "../../../server/core/project/infrastructure/ProjectRepository";
 import { ProjectController } from "../../../server/core/project/presentation/ProjectController";
 import { ProjectMetaService } from "../../../server/core/project/services/ProjectMetaService";
@@ -27,6 +23,7 @@ import { SessionMetaService } from "../../../server/core/session/services/Sessio
 import { honoApp } from "../../../server/hono/app";
 import { InitializeService } from "../../../server/hono/initialize";
 import { routes } from "../../../server/hono/route";
+import { platformLayer } from "../../../server/lib/effect/layers";
 
 const program = routes(honoApp);
 
@@ -67,10 +64,7 @@ await Effect.runPromise(
     )
     .pipe(
       /** Platform */
-      Effect.provide(ApplicationContext.Live),
-      Effect.provide(UserConfigService.Live),
-      Effect.provide(EventBus.Live),
-      Effect.provide(EnvService.Live),
+      Effect.provide(platformLayer),
       Effect.provide(NodeContext.layer),
     ),
 );

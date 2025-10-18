@@ -2,10 +2,9 @@ import type {
   SDKResultMessage,
   SDKSystemMessage,
 } from "@anthropic-ai/claude-code";
-import { Effect, Layer } from "effect";
+import { Effect } from "effect";
 import { describe, expect, it } from "vitest";
-import { EventBus } from "../../events/services/EventBus";
-import type { InternalEventDeclaration } from "../../events/types/InternalEventDeclaration";
+import { testPlatformLayer } from "../../../../testing/layers/testPlatformLayer";
 import type * as CCSessionProcess from "../models/CCSessionProcess";
 import type * as CCTask from "../models/ClaudeCodeTask";
 import type { InitMessageContext } from "../types";
@@ -57,27 +56,6 @@ const createMockResultMessage = (sessionId: string): SDKResultMessage =>
     result: {},
   }) as SDKResultMessage;
 
-// Mock EventBus for testing
-const MockEventBus = Layer.succeed(EventBus, {
-  emit: <K extends keyof InternalEventDeclaration>(
-    _eventName: K,
-    _event: InternalEventDeclaration[K],
-  ) => Effect.void,
-  on: <K extends keyof InternalEventDeclaration>(
-    _eventName: K,
-    _listener: (event: InternalEventDeclaration[K]) => void,
-  ) => Effect.void,
-  off: <K extends keyof InternalEventDeclaration>(
-    _eventName: K,
-    _listener: (event: InternalEventDeclaration[K]) => void,
-  ) => Effect.void,
-});
-
-const TestLayer = Layer.provide(
-  ClaudeCodeSessionProcessService.Live,
-  MockEventBus,
-);
-
 describe("ClaudeCodeSessionProcessService", () => {
   describe("startSessionProcess", () => {
     it("can start new session process", async () => {
@@ -96,7 +74,10 @@ describe("ClaudeCodeSessionProcessService", () => {
       });
 
       const result = await Effect.runPromise(
-        program.pipe(Effect.provide(TestLayer)),
+        program.pipe(
+          Effect.provide(ClaudeCodeSessionProcessService.Live),
+          Effect.provide(testPlatformLayer()),
+        ),
       );
 
       expect(result.sessionProcess.type).toBe("pending");
@@ -121,7 +102,10 @@ describe("ClaudeCodeSessionProcessService", () => {
       });
 
       const { result, taskDef } = await Effect.runPromise(
-        program.pipe(Effect.provide(TestLayer)),
+        program.pipe(
+          Effect.provide(ClaudeCodeSessionProcessService.Live),
+          Effect.provide(testPlatformLayer()),
+        ),
       );
 
       expect(result.sessionProcess.tasks).toHaveLength(1);
@@ -149,7 +133,10 @@ describe("ClaudeCodeSessionProcessService", () => {
       });
 
       const process = await Effect.runPromise(
-        program.pipe(Effect.provide(TestLayer)),
+        program.pipe(
+          Effect.provide(ClaudeCodeSessionProcessService.Live),
+          Effect.provide(testPlatformLayer()),
+        ),
       );
 
       expect(process.def.sessionProcessId).toBe("process-1");
@@ -168,7 +155,10 @@ describe("ClaudeCodeSessionProcessService", () => {
       });
 
       const error = await Effect.runPromise(
-        program.pipe(Effect.provide(TestLayer)),
+        program.pipe(
+          Effect.provide(ClaudeCodeSessionProcessService.Live),
+          Effect.provide(testPlatformLayer()),
+        ),
       );
 
       expect(error).toMatchObject({
@@ -189,7 +179,10 @@ describe("ClaudeCodeSessionProcessService", () => {
       });
 
       const processes = await Effect.runPromise(
-        program.pipe(Effect.provide(TestLayer)),
+        program.pipe(
+          Effect.provide(ClaudeCodeSessionProcessService.Live),
+          Effect.provide(testPlatformLayer()),
+        ),
       );
 
       expect(processes).toHaveLength(0);
@@ -220,7 +213,10 @@ describe("ClaudeCodeSessionProcessService", () => {
       });
 
       const processes = await Effect.runPromise(
-        program.pipe(Effect.provide(TestLayer)),
+        program.pipe(
+          Effect.provide(ClaudeCodeSessionProcessService.Live),
+          Effect.provide(testPlatformLayer()),
+        ),
       );
 
       expect(processes).toHaveLength(2);
@@ -279,7 +275,10 @@ describe("ClaudeCodeSessionProcessService", () => {
       });
 
       const result = await Effect.runPromise(
-        program.pipe(Effect.provide(TestLayer)),
+        program.pipe(
+          Effect.provide(ClaudeCodeSessionProcessService.Live),
+          Effect.provide(testPlatformLayer()),
+        ),
       );
 
       expect(result.sessionProcess.type).toBe("pending");
@@ -316,7 +315,10 @@ describe("ClaudeCodeSessionProcessService", () => {
       });
 
       const error = await Effect.runPromise(
-        program.pipe(Effect.provide(TestLayer)),
+        program.pipe(
+          Effect.provide(ClaudeCodeSessionProcessService.Live),
+          Effect.provide(testPlatformLayer()),
+        ),
       );
 
       expect(error).toMatchObject({
@@ -346,7 +348,10 @@ describe("ClaudeCodeSessionProcessService", () => {
       });
 
       const error = await Effect.runPromise(
-        program.pipe(Effect.provide(TestLayer)),
+        program.pipe(
+          Effect.provide(ClaudeCodeSessionProcessService.Live),
+          Effect.provide(testPlatformLayer()),
+        ),
       );
 
       expect(error).toMatchObject({
@@ -378,7 +383,10 @@ describe("ClaudeCodeSessionProcessService", () => {
       });
 
       const result = await Effect.runPromise(
-        program.pipe(Effect.provide(TestLayer)),
+        program.pipe(
+          Effect.provide(ClaudeCodeSessionProcessService.Live),
+          Effect.provide(testPlatformLayer()),
+        ),
       );
 
       expect(result.sessionProcess.type).toBe("not_initialized");
@@ -415,7 +423,10 @@ describe("ClaudeCodeSessionProcessService", () => {
       });
 
       const error = await Effect.runPromise(
-        program.pipe(Effect.provide(TestLayer)),
+        program.pipe(
+          Effect.provide(ClaudeCodeSessionProcessService.Live),
+          Effect.provide(testPlatformLayer()),
+        ),
       );
 
       expect(error).toMatchObject({
@@ -455,7 +466,10 @@ describe("ClaudeCodeSessionProcessService", () => {
       });
 
       const result = await Effect.runPromise(
-        program.pipe(Effect.provide(TestLayer)),
+        program.pipe(
+          Effect.provide(ClaudeCodeSessionProcessService.Live),
+          Effect.provide(testPlatformLayer()),
+        ),
       );
 
       expect(result.sessionProcess.type).toBe("initialized");
@@ -488,7 +502,10 @@ describe("ClaudeCodeSessionProcessService", () => {
       });
 
       const error = await Effect.runPromise(
-        program.pipe(Effect.provide(TestLayer)),
+        program.pipe(
+          Effect.provide(ClaudeCodeSessionProcessService.Live),
+          Effect.provide(testPlatformLayer()),
+        ),
       );
 
       expect(error).toMatchObject({
@@ -537,7 +554,10 @@ describe("ClaudeCodeSessionProcessService", () => {
       });
 
       const result = await Effect.runPromise(
-        program.pipe(Effect.provide(TestLayer)),
+        program.pipe(
+          Effect.provide(ClaudeCodeSessionProcessService.Live),
+          Effect.provide(testPlatformLayer()),
+        ),
       );
 
       expect(result.sessionProcess.type).toBe("paused");
@@ -581,7 +601,10 @@ describe("ClaudeCodeSessionProcessService", () => {
       });
 
       const process = await Effect.runPromise(
-        program.pipe(Effect.provide(TestLayer)),
+        program.pipe(
+          Effect.provide(ClaudeCodeSessionProcessService.Live),
+          Effect.provide(testPlatformLayer()),
+        ),
       );
 
       const completedTask = process.tasks.find(
@@ -616,7 +639,10 @@ describe("ClaudeCodeSessionProcessService", () => {
       });
 
       const error = await Effect.runPromise(
-        program.pipe(Effect.provide(TestLayer)),
+        program.pipe(
+          Effect.provide(ClaudeCodeSessionProcessService.Live),
+          Effect.provide(testPlatformLayer()),
+        ),
       );
 
       expect(error).toMatchObject({
@@ -653,7 +679,10 @@ describe("ClaudeCodeSessionProcessService", () => {
       });
 
       const result = await Effect.runPromise(
-        program.pipe(Effect.provide(TestLayer)),
+        program.pipe(
+          Effect.provide(ClaudeCodeSessionProcessService.Live),
+          Effect.provide(testPlatformLayer()),
+        ),
       );
 
       expect(result.sessionProcess.type).toBe("completed");
@@ -689,7 +718,10 @@ describe("ClaudeCodeSessionProcessService", () => {
       });
 
       const result = await Effect.runPromise(
-        program.pipe(Effect.provide(TestLayer)),
+        program.pipe(
+          Effect.provide(ClaudeCodeSessionProcessService.Live),
+          Effect.provide(testPlatformLayer()),
+        ),
       );
 
       expect(result.task?.status).toBe("completed");
@@ -723,7 +755,10 @@ describe("ClaudeCodeSessionProcessService", () => {
       });
 
       const result = await Effect.runPromise(
-        program.pipe(Effect.provide(TestLayer)),
+        program.pipe(
+          Effect.provide(ClaudeCodeSessionProcessService.Live),
+          Effect.provide(testPlatformLayer()),
+        ),
       );
 
       expect(result.task?.status).toBe("failed");
@@ -752,7 +787,10 @@ describe("ClaudeCodeSessionProcessService", () => {
       });
 
       const result = await Effect.runPromise(
-        program.pipe(Effect.provide(TestLayer)),
+        program.pipe(
+          Effect.provide(ClaudeCodeSessionProcessService.Live),
+          Effect.provide(testPlatformLayer()),
+        ),
       );
 
       expect(result.task.def.taskId).toBe("task-1");
@@ -769,7 +807,10 @@ describe("ClaudeCodeSessionProcessService", () => {
       });
 
       const error = await Effect.runPromise(
-        program.pipe(Effect.provide(TestLayer)),
+        program.pipe(
+          Effect.provide(ClaudeCodeSessionProcessService.Live),
+          Effect.provide(testPlatformLayer()),
+        ),
       );
 
       expect(error).toMatchObject({
@@ -820,7 +861,10 @@ describe("ClaudeCodeSessionProcessService", () => {
       });
 
       const result = await Effect.runPromise(
-        program.pipe(Effect.provide(TestLayer)),
+        program.pipe(
+          Effect.provide(ClaudeCodeSessionProcessService.Live),
+          Effect.provide(testPlatformLayer()),
+        ),
       );
 
       expect(result.sessionProcess.type).toBe("paused");
@@ -895,7 +939,10 @@ describe("ClaudeCodeSessionProcessService", () => {
       });
 
       const result = await Effect.runPromise(
-        program.pipe(Effect.provide(TestLayer)),
+        program.pipe(
+          Effect.provide(ClaudeCodeSessionProcessService.Live),
+          Effect.provide(testPlatformLayer()),
+        ),
       );
 
       expect(result.sessionProcess.type).toBe("paused");

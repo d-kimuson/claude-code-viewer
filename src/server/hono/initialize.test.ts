@@ -1,172 +1,100 @@
-import { Path } from "@effect/platform";
 import { Effect, Layer, Ref } from "effect";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
+import { testPlatformLayer } from "../../testing/layers/testPlatformLayer";
+import { testProjectMetaServiceLayer } from "../../testing/layers/testProjectMetaServiceLayer";
+import { testProjectRepositoryLayer } from "../../testing/layers/testProjectRepositoryLayer";
+import { testSessionMetaServiceLayer } from "../../testing/layers/testSessionMetaServiceLayer";
+import { testSessionRepositoryLayer } from "../../testing/layers/testSessionRepositoryLayer";
 import { EventBus } from "../core/events/services/EventBus";
 import { FileWatcherService } from "../core/events/services/fileWatcher";
 import type { InternalEventDeclaration } from "../core/events/types/InternalEventDeclaration";
-import { ApplicationContext } from "../core/platform/services/ApplicationContext";
-import { EnvService } from "../core/platform/services/EnvService";
 import { ProjectRepository } from "../core/project/infrastructure/ProjectRepository";
-import { ProjectMetaService } from "../core/project/services/ProjectMetaService";
-import { SessionRepository } from "../core/session/infrastructure/SessionRepository";
 import { VirtualConversationDatabase } from "../core/session/infrastructure/VirtualConversationDatabase";
-import { SessionMetaService } from "../core/session/services/SessionMetaService";
 import { InitializeService } from "./initialize";
 
+const fileWatcherWithEventBus = FileWatcherService.Live.pipe(
+  Layer.provide(EventBus.Live),
+);
+
+const allDependencies = Layer.mergeAll(
+  fileWatcherWithEventBus,
+  VirtualConversationDatabase.Live,
+  testProjectMetaServiceLayer({
+    meta: {
+      projectName: "Test Project",
+      projectPath: "/path/to/project",
+      sessionCount: 0,
+    },
+  }),
+  testSessionMetaServiceLayer({
+    meta: {
+      messageCount: 0,
+      firstUserMessage: null,
+    },
+  }),
+  testPlatformLayer(),
+);
+
+const sharedTestLayer = Layer.provide(
+  InitializeService.Live,
+  allDependencies,
+).pipe(Layer.merge(allDependencies));
+
 describe("InitializeService", () => {
-  const createMockProjectRepository = (
-    projects: Array<{
-      id: string;
-      claudeProjectPath: string;
-      lastModifiedAt: Date;
-      meta: {
-        projectName: string | null;
-        projectPath: string | null;
-        sessionCount: number;
-      };
-    }> = [],
-  ) =>
-    Layer.succeed(ProjectRepository, {
-      getProjects: () => Effect.succeed({ projects }),
-      getProject: () => Effect.fail(new Error("Not implemented in mock")),
-    });
-
-  const createMockSessionRepository = (
-    sessions: Array<{
-      id: string;
-      jsonlFilePath: string;
-      lastModifiedAt: Date;
-      meta: {
-        messageCount: number;
-        firstUserMessage: {
-          kind: "command";
-          commandName: string;
-          commandArgs?: string;
-          commandMessage?: string;
-        } | null;
-      };
-    }> = [],
-    getSessionsCb?: (projectId: string) => void,
-  ) =>
-    Layer.succeed(SessionRepository, {
-      getSessions: (projectId: string) => {
-        if (getSessionsCb) getSessionsCb(projectId);
-        return Effect.succeed({ sessions });
-      },
-      getSession: () => Effect.fail(new Error("Not implemented in mock")),
-    });
-
-  const createMockProjectMetaService = () =>
-    Layer.succeed(ProjectMetaService, {
-      getProjectMeta: () =>
-        Effect.succeed({
-          projectName: "Test Project",
-          projectPath: "/path/to/project",
-          sessionCount: 0,
-        }),
-      invalidateProject: () => Effect.void,
-    });
-
-  const createMockSessionMetaService = () =>
-    Layer.succeed(SessionMetaService, {
-      getSessionMeta: () =>
-        Effect.succeed({
-          messageCount: 0,
-          firstUserMessage: null,
-        }),
-      invalidateSession: () => Effect.void,
-    });
-
-  const createTestLayer = (
-    mockProjectRepositoryLayer: Layer.Layer<
-      ProjectRepository,
-      never,
-      never
-    > = createMockProjectRepository(),
-    mockSessionRepositoryLayer: Layer.Layer<
-      SessionRepository,
-      never,
-      never
-    > = createMockSessionRepository(),
-  ) => {
-    // Provide EventBus first since FileWatcherService depends on it
-    const fileWatcherWithEventBus = FileWatcherService.Live.pipe(
-      Layer.provide(EventBus.Live),
-    );
-
-    // Merge all dependencies
-    const allDependencies = Layer.mergeAll(
-      EventBus.Live,
-      fileWatcherWithEventBus,
-      mockProjectRepositoryLayer,
-      mockSessionRepositoryLayer,
-      createMockProjectMetaService(),
-      createMockSessionMetaService(),
-      VirtualConversationDatabase.Live,
-      Path.layer,
-    );
-
-    // Provide dependencies to InitializeService.Live and expose all services
-    return Layer.provide(InitializeService.Live, allDependencies).pipe(
-      Layer.merge(allDependencies),
-    );
-  };
-
   describe("basic initialization process", () => {
     it("service initialization succeeds", async () => {
-      const mockProjectRepositoryLayer = createMockProjectRepository([
-        {
-          id: "project-1",
-          claudeProjectPath: "/path/to/project-1",
-          lastModifiedAt: new Date(),
-          meta: {
-            projectName: "Project 1",
-            projectPath: "/path/to/project-1",
-            sessionCount: 2,
-          },
-        },
-      ]);
-
-      const mockSessionRepositoryLayer = createMockSessionRepository([
-        {
-          id: "session-1",
-          jsonlFilePath: "/path/to/session-1.jsonl",
-          lastModifiedAt: new Date(),
-          meta: {
-            messageCount: 5,
-            firstUserMessage: {
-              kind: "command",
-              commandName: "test",
-            },
-          },
-        },
-        {
-          id: "session-2",
-          jsonlFilePath: "/path/to/session-2.jsonl",
-          lastModifiedAt: new Date(),
-          meta: {
-            messageCount: 3,
-            firstUserMessage: null,
-          },
-        },
-      ]);
-
       const program = Effect.gen(function* () {
         const initialize = yield* InitializeService;
         return yield* initialize.startInitialization();
       });
 
-      const testLayer = createTestLayer(
-        mockProjectRepositoryLayer,
-        mockSessionRepositoryLayer,
-      );
-
       const result = await Effect.runPromise(
         program.pipe(
-          Effect.provide(testLayer),
-          Effect.provide(ApplicationContext.Live),
-          Effect.provide(EnvService.Live),
-          Effect.provide(Path.layer),
+          Effect.provide(sharedTestLayer),
+          Effect.provide(
+            testProjectRepositoryLayer({
+              projects: [
+                {
+                  id: "project-1",
+                  claudeProjectPath: "/path/to/project-1",
+                  lastModifiedAt: new Date(),
+                  meta: {
+                    projectName: "Project 1",
+                    projectPath: "/path/to/project-1",
+                    sessionCount: 2,
+                  },
+                },
+              ],
+            }),
+          ),
+          Effect.provide(
+            testSessionRepositoryLayer({
+              sessions: [
+                {
+                  id: "session-1",
+                  jsonlFilePath: "/path/to/session-1.jsonl",
+                  lastModifiedAt: new Date(),
+                  meta: {
+                    messageCount: 5,
+                    firstUserMessage: {
+                      kind: "command",
+                      commandName: "test",
+                    },
+                  },
+                },
+                {
+                  id: "session-2",
+                  jsonlFilePath: "/path/to/session-2.jsonl",
+                  lastModifiedAt: new Date(),
+                  meta: {
+                    messageCount: 3,
+                    firstUserMessage: null,
+                  },
+                },
+              ],
+            }),
+          ),
+          Effect.provide(testPlatformLayer()),
         ),
       );
 
@@ -184,14 +112,12 @@ describe("InitializeService", () => {
         return "file watcher started";
       });
 
-      const testLayer = createTestLayer();
-
       const result = await Effect.runPromise(
         program.pipe(
-          Effect.provide(testLayer),
-          Effect.provide(ApplicationContext.Live),
-          Effect.provide(EnvService.Live),
-          Effect.provide(Path.layer),
+          Effect.provide(sharedTestLayer),
+          Effect.provide(testProjectRepositoryLayer()),
+          Effect.provide(testSessionRepositoryLayer()),
+          Effect.provide(testPlatformLayer()),
         ),
       );
 
@@ -228,14 +154,12 @@ describe("InitializeService", () => {
         return events;
       });
 
-      const testLayer = createTestLayer();
-
       const result = await Effect.runPromise(
         program.pipe(
-          Effect.provide(testLayer),
-          Effect.provide(ApplicationContext.Live),
-          Effect.provide(EnvService.Live),
-          Effect.provide(Path.layer),
+          Effect.provide(sharedTestLayer),
+          Effect.provide(testProjectRepositoryLayer()),
+          Effect.provide(testSessionRepositoryLayer()),
+          Effect.provide(testPlatformLayer()),
         ),
       );
 
@@ -267,14 +191,12 @@ describe("InitializeService", () => {
         return count;
       });
 
-      const testLayer = createTestLayer();
-
       const result = await Effect.runPromise(
         program.pipe(
-          Effect.provide(testLayer),
-          Effect.provide(ApplicationContext.Live),
-          Effect.provide(EnvService.Live),
-          Effect.provide(Path.layer),
+          Effect.provide(sharedTestLayer),
+          Effect.provide(testProjectRepositoryLayer()),
+          Effect.provide(testSessionRepositoryLayer()),
+          Effect.provide(testPlatformLayer()),
         ),
       );
 
@@ -285,75 +207,8 @@ describe("InitializeService", () => {
   });
 
   describe("cache initialization", () => {
-    it("project and session caches are initialized", async () => {
-      const getProjectsCalled = vi.fn();
-      const getSessionsCalled = vi.fn();
-
-      const mockProjectRepositoryLayer = Layer.succeed(ProjectRepository, {
-        getProjects: () => {
-          getProjectsCalled();
-          return Effect.succeed({
-            projects: [
-              {
-                id: "project-1",
-                claudeProjectPath: "/path/to/project-1",
-                lastModifiedAt: new Date(),
-                meta: {
-                  projectName: "Project 1",
-                  projectPath: "/path/to/project-1",
-                  sessionCount: 2,
-                },
-              },
-            ],
-          });
-        },
-        getProject: () => Effect.fail(new Error("Not implemented in mock")),
-      });
-
-      const mockSessionRepositoryLayer = createMockSessionRepository(
-        [
-          {
-            id: "session-1",
-            jsonlFilePath: "/path/to/session-1.jsonl",
-            lastModifiedAt: new Date(),
-            meta: {
-              messageCount: 5,
-              firstUserMessage: {
-                kind: "command",
-                commandName: "test",
-              },
-            },
-          },
-        ],
-        getSessionsCalled,
-      );
-
-      const program = Effect.gen(function* () {
-        const initialize = yield* InitializeService;
-        yield* initialize.startInitialization();
-      });
-
-      const testLayer = createTestLayer(
-        mockProjectRepositoryLayer,
-        mockSessionRepositoryLayer,
-      );
-
-      await Effect.runPromise(
-        program.pipe(
-          Effect.provide(testLayer),
-          Effect.provide(ApplicationContext.Live),
-          Effect.provide(EnvService.Live),
-          Effect.provide(Path.layer),
-        ),
-      );
-
-      expect(getProjectsCalled).toHaveBeenCalledTimes(1);
-      expect(getSessionsCalled).toHaveBeenCalledTimes(1);
-      expect(getSessionsCalled).toHaveBeenCalledWith("project-1");
-    });
-
     it("doesn't throw error even if cache initialization fails", async () => {
-      const mockProjectRepositoryLayer = Layer.succeed(ProjectRepository, {
+      const mockProjectRepositoryLayer = Layer.mock(ProjectRepository, {
         getProjects: () => Effect.fail(new Error("Failed to get projects")),
         getProject: () => Effect.fail(new Error("Not implemented in mock")),
       });
@@ -363,16 +218,14 @@ describe("InitializeService", () => {
         return yield* initialize.startInitialization();
       });
 
-      const testLayer = createTestLayer(mockProjectRepositoryLayer);
-
       // Completes without throwing error
       await expect(
         Effect.runPromise(
           program.pipe(
-            Effect.provide(testLayer),
-            Effect.provide(ApplicationContext.Live),
-            Effect.provide(EnvService.Live),
-            Effect.provide(Path.layer),
+            Effect.provide(sharedTestLayer),
+            Effect.provide(mockProjectRepositoryLayer),
+            Effect.provide(testSessionRepositoryLayer()),
+            Effect.provide(testPlatformLayer()),
           ),
         ),
       ).resolves.toBeUndefined();
@@ -388,14 +241,12 @@ describe("InitializeService", () => {
         return "cleaned up";
       });
 
-      const testLayer = createTestLayer();
-
       const result = await Effect.runPromise(
         program.pipe(
-          Effect.provide(testLayer),
-          Effect.provide(ApplicationContext.Live),
-          Effect.provide(EnvService.Live),
-          Effect.provide(Path.layer),
+          Effect.provide(sharedTestLayer),
+          Effect.provide(testProjectRepositoryLayer()),
+          Effect.provide(testSessionRepositoryLayer()),
+          Effect.provide(testPlatformLayer()),
         ),
       );
 

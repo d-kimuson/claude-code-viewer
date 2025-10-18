@@ -29,7 +29,9 @@ const LayerImpl = Effect.gen(function* () {
 
       if (Either.isLeft(branches)) {
         return {
-          response: [],
+          response: {
+            success: false,
+          },
           status: 200,
         } as const satisfies ControllerResponse;
       }
@@ -59,7 +61,9 @@ const LayerImpl = Effect.gen(function* () {
 
       if (Either.isLeft(commits)) {
         return {
-          response: [],
+          response: {
+            success: false,
+          },
           status: 200,
         } as const satisfies ControllerResponse;
       }

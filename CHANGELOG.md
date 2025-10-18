@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.4.0-beta.1
+
+### &nbsp;&nbsp;&nbsp;Features
+
+- Add tool approval mechanism and permission mode support &nbsp;-&nbsp; by **dobachi** [<samp>(b7e99)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/b7e9947)
+- Add dark mode support &nbsp;-&nbsp; by **d-kimsuon**
+- Improve performance with pagination and caching for large workspaces &nbsp;-&nbsp; by **d-kimsuon** [<samp>(c7d89)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/c7d89d4) [<samp>(d322d)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/d322db5)
+
+### &nbsp;&nbsp;&nbsp;Bug Fixes
+
+- Fix compatibility issues with Claude Code version 1.0.81 and below &nbsp;-&nbsp; by **d-kimsuon** [<samp>(b483e)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/b483e7e) [<samp>(a88ad)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/a88ad89) [<samp>(8d592)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/8d592ce)
+- Handle missing Claude projects directory and Node.js compatibility issues &nbsp;-&nbsp; by **kouyaman345** [<samp>(42d02)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/42d028b)
+
+### &nbsp;&nbsp;&nbsp;Performance
+
+- Improve session synchronization speed for sessions started from Claude Code &nbsp;-&nbsp; by **d-kimsuon** [<samp>(eb5a8)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/eb5a8dd)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.3.1...0.4.0-beta.1)
+
 ## 0.3.1
 
 ### &nbsp;&nbsp;&nbsp;Features

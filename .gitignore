@@ -46,3 +46,6 @@ dist/*
 
 # playwright
 .user-data/
+
+# claude code
+.claude/settings.local.json

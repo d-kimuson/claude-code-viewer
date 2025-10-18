@@ -21,7 +21,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5.0.0
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           fetch-depth: 0
           persist-credentials: false
@@ -35,14 +35,10 @@ jobs:
           pnpm exec playwright install
 
       - name: Set up Git
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git config --local user.email "$(git --no-pager log --format=format:'%ae' -n 1)"
-          git config --local user.name "$(git --no-pager log --format=format:'%an' -n 1)"
-          git config --local url."https://oauth2:${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
-
-          git pull --rebase origin ${{ github.head_ref }}
+        uses: ./.github/actions/setup-git
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          origin: ${{ github.head_ref }}
 
       - name: Build project
         run: pnpm build

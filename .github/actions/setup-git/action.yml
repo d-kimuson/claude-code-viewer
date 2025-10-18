@@ -1,0 +1,23 @@
+name: "Setup Git"
+description: "Setup git config for commit and push on actions"
+
+inputs:
+  github_token:
+    description: "The GitHub token to use"
+    required: true
+  origin:
+    description: "The origin to use"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Git
+      env:
+        GITHUB_TOKEN: ${{ inputs.github_token }}
+      shell: bash
+      run: |
+        git config --local user.email "$(git --no-pager log --format=format:'%ae' -n 1)"
+        git config --local user.name "$(git --no-pager log --format=format:'%an' -n 1)"
+        git config --local url."https://oauth2:${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
+        git pull --rebase origin ${{ inputs.origin }}

@@ -49,7 +49,11 @@ jobs:
 
       - name: Capture screenshots
         timeout-minutes: 3
-        run: pnpm e2e
+        run: |
+          if [ -d "e2e/snapshots" ]; then
+            rm -rf e2e/snapshots
+          fi
+          pnpm e2e
         env:
           MAX_CONCURRENCY: 10
 

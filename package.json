@@ -35,7 +35,9 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest --run",
     "test:watch": "vitest",
-    "e2e": "./scripts/e2e.sh"
+    "e2e": "./scripts/e2e/exec_e2e.sh",
+    "e2e:start-server": "./scripts/e2e/start_server.sh",
+    "e2e:capture-snapshots": "./scripts/e2e/capture_snapshots.sh"
   },
   "dependencies": {
     "@anthropic-ai/claude-code": "^1.0.98",

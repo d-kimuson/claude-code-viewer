@@ -12,14 +12,14 @@ export const sessionDetailCapture = defineCapture({
         );
         if (await menuButton.isVisible()) {
           await menuButton.click();
-          await page.waitForTimeout(300);
+          await page.waitForTimeout(1000);
 
           const sessionsTabButton = page.locator(
             '[data-testid="sessions-tab-button-mobile"]',
           );
           if (await sessionsTabButton.isVisible()) {
             await sessionsTabButton.click();
-            await page.waitForTimeout(300);
+            await page.waitForTimeout(1000);
           }
         } else {
           const sessionsTabButton = page.locator(
@@ -27,7 +27,7 @@ export const sessionDetailCapture = defineCapture({
           );
           if (await sessionsTabButton.isVisible()) {
             await sessionsTabButton.click();
-            await page.waitForTimeout(300);
+            await page.waitForTimeout(1000);
           }
         }
       },
@@ -41,14 +41,14 @@ export const sessionDetailCapture = defineCapture({
         );
         if (await menuButton.isVisible()) {
           await menuButton.click();
-          await page.waitForTimeout(300);
+          await page.waitForTimeout(1000);
 
           const settingsTabButton = page.locator(
             '[data-testid="settings-tab-button-mobile"]',
           );
           if (await settingsTabButton.isVisible()) {
             await settingsTabButton.click();
-            await page.waitForTimeout(300);
+            await page.waitForTimeout(1000);
           }
         } else {
           const settingsTabButton = page.locator(
@@ -56,8 +56,33 @@ export const sessionDetailCapture = defineCapture({
           );
           if (await settingsTabButton.isVisible()) {
             await settingsTabButton.click();
-            await page.waitForTimeout(300);
+            await page.waitForTimeout(1000);
           }
+        }
+      },
+    },
+
+    {
+      name: "start-new-chat",
+      setup: async (page) => {
+        const menuButton = page.locator(
+          '[data-testid="mobile-sidebar-toggle-button"]',
+        );
+        if (await menuButton.isVisible()) {
+          await menuButton.click();
+          await page.waitForTimeout(1000);
+
+          const startNewChatButton = page.locator(
+            '[data-testid="start-new-chat-button-mobile"]',
+          );
+          await startNewChatButton.click();
+          await page.waitForTimeout(1000);
+        } else {
+          const startNewChatButton = page.locator(
+            '[data-testid="start-new-chat-button"]',
+          );
+          await startNewChatButton.click();
+          await page.waitForTimeout(1000);
         }
       },
     },

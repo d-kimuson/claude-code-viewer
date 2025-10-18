@@ -1,5 +1,3 @@
-import { existsSync } from "node:fs";
-import path from "node:path";
 import {
   type Browser,
   type BrowserContext,
@@ -9,8 +7,6 @@ import {
   type LaunchOptions,
 } from "playwright";
 import prexit from "prexit";
-
-const STORAGE_PATH = path.join(process.cwd(), ".user-data", "session.json");
 
 type PlaywrightContext = {
   context: BrowserContext;
@@ -35,7 +31,6 @@ const useBrowser = (options: BrowserOptions) => {
       ...launchOptions,
     });
     context ??= await browser.newContext({
-      storageState: existsSync(STORAGE_PATH) ? STORAGE_PATH : undefined,
       ...contextOptions,
     });
 
@@ -63,9 +58,6 @@ export const withPlaywright = async <T>(
   })();
   let isClosed = false;
   const cleanUp = async () => {
-    await context.storageState({
-      path: STORAGE_PATH,
-    });
     await Promise.all(context.pages().map((page) => page.close()));
     await context.close();
     await browser.close();

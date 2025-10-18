@@ -52,12 +52,12 @@ export const CreateProjectDialog: FC = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>
+        <Button data-testid="new-project-button">
           <Plus className="w-4 h-4 mr-2" />
           New Project
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-w-2xl" data-testid="new-project-modal">
         <DialogHeader>
           <DialogTitle>Create New Project</DialogTitle>
           <DialogDescription>

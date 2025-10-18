@@ -2,12 +2,6 @@
 
 set -euo pipefail
 
-export PORT=4000
-export GLOBAL_CLAUDE_DIR=$(git rev-parse --show-toplevel)/mock-global-claude-dir
-
-echo "Check directory structure in $GLOBAL_CLAUDE_DIR:"
-ls -l $GLOBAL_CLAUDE_DIR
-
 kill_process_group() {
   local pid=$1
   local sig=${2:-TERM}
@@ -30,10 +24,10 @@ cleanup() {
 
 trap cleanup EXIT INT TERM
 
-pnpm start & SERVER_PID=$!
+./scripts/e2e/start_server.sh & SERVER_PID=$!
 echo "Server started. pid=$SERVER_PID"
 
 sleep 5 # 即時起動するが、一応少し待っておく
 
-pnpx tsx ./e2e/captureSnapshot/index.ts
+./scripts/e2e/capture_snapshots.sh
 echo "Completed capturing screenshots. Killing server..."

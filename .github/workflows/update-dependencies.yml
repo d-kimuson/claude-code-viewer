@@ -18,7 +18,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5.0.0
 
       - name: Setup Node & pnpm
         uses: ./.github/actions/setup-node
@@ -30,7 +30,7 @@ jobs:
         run: pnpm up --latest --no-frozen-lockfile
 
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v7.0.0
         with:
           commit-message: 'chore(deps): update all dependencies'
           title: 'chore(deps): update all dependencies'

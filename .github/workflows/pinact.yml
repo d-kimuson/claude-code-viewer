@@ -3,6 +3,9 @@ name: Run Pinact
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+    paths:
+      - '.github/workflows/**'
+      - '.github/actions/**'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

@@ -130,6 +130,7 @@ export const ConversationList: FC<ConversationListProps> = ({
     isRootSidechain,
     getSidechainConversations,
     getSidechainConversationByPrompt,
+    existsRelatedTaskCall,
   } = useSidechain(validConversations);
 
   return (
@@ -152,6 +153,7 @@ export const ConversationList: FC<ConversationListProps> = ({
             isRootSidechain={isRootSidechain}
             getSidechainConversations={getSidechainConversations}
             getSidechainConversationByPrompt={getSidechainConversationByPrompt}
+            existsRelatedTaskCall={existsRelatedTaskCall}
           />
         );
 

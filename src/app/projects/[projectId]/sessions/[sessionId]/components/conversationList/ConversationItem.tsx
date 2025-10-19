@@ -20,12 +20,14 @@ export const ConversationItem: FC<{
     prompt: string,
   ) => SidechainConversation | undefined;
   getSidechainConversations: (rootUuid: string) => SidechainConversation[];
+  existsRelatedTaskCall: (prompt: string) => boolean;
 }> = ({
   conversation,
   getToolResult,
   isRootSidechain,
   getSidechainConversationByPrompt,
   getSidechainConversations,
+  existsRelatedTaskCall,
 }) => {
   if (conversation.type === "summary") {
     return (
@@ -53,6 +55,16 @@ export const ConversationItem: FC<{
   if (conversation.isSidechain) {
     // Root 以外はモーダルで中身を表示するのでここでは描画しない
     if (!isRootSidechain(conversation)) {
+      return null;
+    }
+
+    if (conversation.type !== "user") {
+      return null;
+    }
+
+    const prompt = conversation.message.content;
+
+    if (typeof prompt === "string" && existsRelatedTaskCall(prompt) === true) {
       return null;
     }
 

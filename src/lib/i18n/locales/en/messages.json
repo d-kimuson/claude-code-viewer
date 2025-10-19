@@ -23,6 +23,17 @@
     "origin": [["src/components/SettingsControls.tsx", 306]],
     "translation": "Select theme"
   },
+  "Reload MCP servers": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/McpTab.tsx",
+        42
+      ]
+    ],
+    "translation": "Reload MCP servers"
+  },
   "Type your message... (Start with / for commands, @ for files, Enter to send)": {
     "placeholders": {},
     "comments": [],
@@ -68,17 +79,6 @@
     ],
     "translation": "Type your message... (Start with / for commands, @ for files, Shift+Enter to send)"
   },
-  "Reload MCP servers": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/McpTab.tsx",
-        42
-      ]
-    ],
-    "translation": "Reload MCP servers"
-  },
   "Close sidebar": {
     "placeholders": {},
     "comments": [],
@@ -113,6 +113,28 @@
       ["src/app/projects/[projectId]/components/newChat/NewChat.tsx", 33]
     ],
     "translation": "Type your message here... (Start with / for commands, @ for files, Shift+Enter to send)"
+  },
+  "Available files and directories": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/FileCompletion.tsx",
+        267
+      ]
+    ],
+    "translation": "Available files and directories"
+  },
+  "Available commands": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/CommandCompletion.tsx",
+        193
+      ]
+    ],
+    "translation": "Available commands"
   },
   "Uncommitted changes": {
     "placeholders": {},
@@ -191,28 +213,6 @@
     ],
     "translation": "Compare to"
   },
-  "Available commands": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/app/projects/[projectId]/components/chatForm/CommandCompletion.tsx",
-        193
-      ]
-    ],
-    "translation": "Available commands"
-  },
-  "Available files and directories": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/app/projects/[projectId]/components/chatForm/FileCompletion.tsx",
-        267
-      ]
-    ],
-    "translation": "Available files and directories"
-  },
   "Message input with completion support": {
     "placeholders": {},
     "comments": [],
@@ -220,6 +220,20 @@
       ["src/app/projects/[projectId]/components/chatForm/ChatInput.tsx", 210]
     ],
     "translation": "Message input with completion support"
+  },
+  "assistant.tool.message_count": {
+    "message": "{count} messages",
+    "placeholders": {
+      "count": ["messageCount"]
+    },
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationModal/SidechainConversationModal.tsx",
+        105
+      ]
+    ],
+    "translation": "{count} messages"
   },
   "session.conversation.abort": {
     "message": "Abort",
@@ -717,7 +731,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        152
+        198
       ]
     ],
     "translation": "Input Parameters"
@@ -1274,6 +1288,13 @@
     "origin": [["src/components/SettingsControls.tsx", 316]],
     "translation": "System"
   },
+  "settings.section.system_info": {
+    "message": "System Information",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/GlobalSidebar.tsx", 102]],
+    "translation": "System Information"
+  },
   "system_info.title": {
     "message": "System Information",
     "placeholders": {},
@@ -1281,12 +1302,17 @@
     "origin": [["src/components/SystemInfoCard.tsx", 109]],
     "translation": "System Information"
   },
-  "settings.section.system_info": {
-    "message": "System Information",
+  "assistant.tool.task_id": {
+    "message": "Task ID",
     "placeholders": {},
     "comments": [],
-    "origin": [["src/components/GlobalSidebar.tsx", 102]],
-    "translation": "System Information"
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationModal/SidechainConversationModal.tsx",
+        98
+      ]
+    ],
+    "translation": "Task ID"
   },
   "notification.test": {
     "message": "Test",
@@ -1316,7 +1342,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        70
+        89
       ]
     ],
     "translation": "Thinking"
@@ -1333,6 +1359,18 @@
     ],
     "translation": "This conversation entry failed to parse correctly. This might indicate a format change or parsing issue."
   },
+  "assistant.tool.tool_id": {
+    "translation": "Tool ID",
+    "message": "Tool ID",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
+        190
+      ]
+    ]
+  },
   "assistant.tool.result": {
     "message": "Tool Result",
     "placeholders": {},
@@ -1340,22 +1378,10 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        176
+        215
       ]
     ],
     "translation": "Tool Result"
-  },
-  "assistant.tool_use": {
-    "message": "Tool Use",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        134
-      ]
-    ],
-    "translation": "Tool Use"
   },
   "system_info.feature.can_use_tool.title": {
     "message": "Tool Use Permission Control",
@@ -1454,6 +1480,30 @@
     "comments": [],
     "origin": [["src/app/projects/components/ProjectList.tsx", 78]],
     "translation": "View Conversations"
+  },
+  "assistant.tool.view_task": {
+    "message": "View Task",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationModal/SidechainConversationModal.tsx",
+        68
+      ]
+    ],
+    "translation": "View Task"
+  },
+  "assistant.tool.view_task_details": {
+    "message": "View Task",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
+        145
+      ]
+    ],
+    "translation": "View Task"
   },
   "project.error.description": {
     "message": "We encountered an error while loading this project",

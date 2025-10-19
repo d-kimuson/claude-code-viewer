@@ -23,6 +23,17 @@
     "origin": [["src/components/SettingsControls.tsx", 306]],
     "translation": "テーマを選択"
   },
+  "Reload MCP servers": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/McpTab.tsx",
+        42
+      ]
+    ],
+    "translation": "MCPサーバーを再読み込み"
+  },
   "Type your message... (Start with / for commands, @ for files, Enter to send)": {
     "placeholders": {},
     "comments": [],
@@ -68,17 +79,6 @@
     ],
     "translation": "メッセージを入力... （/でコマンド、@でファイル、Shift+Enterで送信）"
   },
-  "Reload MCP servers": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/McpTab.tsx",
-        42
-      ]
-    ],
-    "translation": "MCPサーバーを再読み込み"
-  },
   "Close sidebar": {
     "placeholders": {},
     "comments": [],
@@ -113,6 +113,28 @@
       ["src/app/projects/[projectId]/components/newChat/NewChat.tsx", 33]
     ],
     "translation": "ここにメッセージを入力... （/でコマンド、@でファイル、Shift+Enterで送信）"
+  },
+  "Available files and directories": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/FileCompletion.tsx",
+        267
+      ]
+    ],
+    "translation": "利用可能なファイルとディレクトリ"
+  },
+  "Available commands": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/CommandCompletion.tsx",
+        193
+      ]
+    ],
+    "translation": "利用可能なコマンド"
   },
   "Uncommitted changes": {
     "placeholders": {},
@@ -191,28 +213,6 @@
     ],
     "translation": "比較先"
   },
-  "Available commands": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/app/projects/[projectId]/components/chatForm/CommandCompletion.tsx",
-        193
-      ]
-    ],
-    "translation": "利用可能なコマンド"
-  },
-  "Available files and directories": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/app/projects/[projectId]/components/chatForm/FileCompletion.tsx",
-        267
-      ]
-    ],
-    "translation": "利用可能なファイルとディレクトリ"
-  },
   "Message input with completion support": {
     "placeholders": {},
     "comments": [],
@@ -220,6 +220,20 @@
       ["src/app/projects/[projectId]/components/chatForm/ChatInput.tsx", 210]
     ],
     "translation": "補完機能付きメッセージ入力"
+  },
+  "assistant.tool.message_count": {
+    "message": "{count} messages",
+    "placeholders": {
+      "count": ["messageCount"]
+    },
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationModal/SidechainConversationModal.tsx",
+        105
+      ]
+    ],
+    "translation": "{count}件のメッセージ"
   },
   "session.conversation.abort": {
     "message": "Abort",
@@ -717,7 +731,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        152
+        198
       ]
     ],
     "translation": "入力パラメータ"
@@ -1274,6 +1288,13 @@
     "origin": [["src/components/SettingsControls.tsx", 316]],
     "translation": "システム"
   },
+  "settings.section.system_info": {
+    "message": "System Information",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/GlobalSidebar.tsx", 102]],
+    "translation": "システム情報"
+  },
   "system_info.title": {
     "message": "System Information",
     "placeholders": {},
@@ -1281,12 +1302,17 @@
     "origin": [["src/components/SystemInfoCard.tsx", 109]],
     "translation": "システム情報"
   },
-  "settings.section.system_info": {
-    "message": "System Information",
+  "assistant.tool.task_id": {
+    "message": "Task ID",
     "placeholders": {},
     "comments": [],
-    "origin": [["src/components/GlobalSidebar.tsx", 102]],
-    "translation": "システム情報"
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationModal/SidechainConversationModal.tsx",
+        98
+      ]
+    ],
+    "translation": "タスクID"
   },
   "notification.test": {
     "message": "Test",
@@ -1316,7 +1342,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        70
+        89
       ]
     ],
     "translation": "思考中"
@@ -1333,6 +1359,18 @@
     ],
     "translation": "この会話エントリの解析に失敗しました。フォーマットの変更または解析の問題が考えられます。"
   },
+  "assistant.tool.tool_id": {
+    "translation": "ツールID",
+    "message": "Tool ID",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
+        190
+      ]
+    ]
+  },
   "assistant.tool.result": {
     "message": "Tool Result",
     "placeholders": {},
@@ -1340,22 +1378,10 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        176
+        215
       ]
     ],
     "translation": "ツール実行結果"
-  },
-  "assistant.tool_use": {
-    "message": "Tool Use",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        134
-      ]
-    ],
-    "translation": "ツール使用"
   },
   "system_info.feature.can_use_tool.title": {
     "message": "Tool Use Permission Control",
@@ -1454,6 +1480,30 @@
     "comments": [],
     "origin": [["src/app/projects/components/ProjectList.tsx", 78]],
     "translation": "会話を表示"
+  },
+  "assistant.tool.view_task": {
+    "message": "View Task",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationModal/SidechainConversationModal.tsx",
+        68
+      ]
+    ],
+    "translation": "タスクを表示"
+  },
+  "assistant.tool.view_task_details": {
+    "message": "View Task",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
+        145
+      ]
+    ],
+    "translation": "タスクを確認"
   },
   "project.error.description": {
     "message": "We encountered an error while loading this project",

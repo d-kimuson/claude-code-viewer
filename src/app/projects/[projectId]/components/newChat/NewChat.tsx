@@ -44,7 +44,7 @@ export const NewChat: FC<{
       placeholder={getPlaceholder()}
       buttonText={<Trans id="chat.button.start" message="Start Chat" />}
       minHeight="min-h-[200px]"
-      containerClassName="p-6"
+      containerClassName="px-0 py-6"
       buttonSize="lg"
     />
   );

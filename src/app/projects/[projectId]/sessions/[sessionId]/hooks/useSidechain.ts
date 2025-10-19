@@ -3,11 +3,15 @@ import type {
   Conversation,
   SidechainConversation,
 } from "@/lib/conversation-schema";
+import { taskToolInputSchema } from "../components/conversationList/AssistantConversationContent";
 
 export const useSidechain = (conversations: Conversation[]) => {
-  const sidechainConversations = conversations.filter(
-    (conv) => conv.type !== "summary" && conv.type !== "file-history-snapshot",
-  );
+  const sidechainConversations = conversations
+    .filter(
+      (conv) =>
+        conv.type !== "summary" && conv.type !== "file-history-snapshot",
+    )
+    .filter((conv) => conv.isSidechain === true);
 
   const conversationMap = useMemo(() => {
     return new Map<string, SidechainConversation>(
@@ -28,6 +32,30 @@ export const useSidechain = (conversations: Conversation[]) => {
     );
   }, [sidechainConversations]);
 
+  const taskToolCallPromptSet = useMemo(() => {
+    return new Set<string>(
+      conversations
+        .filter((conv) => conv.type === "assistant")
+        .flatMap((conv) => [
+          ...conv.message.content.filter(
+            (content) => content.type === "tool_use",
+          ),
+        ])
+        .flatMap((content) => {
+          if (content.name !== "Task") {
+            return [];
+          }
+
+          const input = taskToolInputSchema.safeParse(content.input);
+          if (input.success === false) {
+            return [];
+          }
+
+          return [input.data.prompt];
+        }),
+    );
+  }, [conversations]);
+
   const getRootConversationRecursive = useCallback(
     (conversation: SidechainConversation): SidechainConversation => {
       if (conversation.parentUuid === null) {
@@ -45,13 +73,9 @@ export const useSidechain = (conversations: Conversation[]) => {
   );
 
   const sidechainConversationGroups = useMemo(() => {
-    const filtered = sidechainConversations.filter(
-      (conv) => conv.isSidechain === true,
-    );
-
     const groups = new Map<string, SidechainConversation[]>();
 
-    for (const conv of filtered) {
+    for (const conv of sidechainConversations) {
       const rootConversation = getRootConversationRecursive(conv);
 
       if (groups.has(rootConversation.uuid)) {
@@ -92,9 +116,14 @@ export const useSidechain = (conversations: Conversation[]) => {
     [conversationPromptMap],
   );
 
+  const existsRelatedTaskCall = (prompt: string) => {
+    return taskToolCallPromptSet.has(prompt);
+  };
+
   return {
     isRootSidechain,
     getSidechainConversations,
     getSidechainConversationByPrompt,
+    existsRelatedTaskCall,
   };
 };

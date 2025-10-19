@@ -1,6 +1,13 @@
 "use client";
 
-import { FileText, GitBranch, Loader2, RefreshCcwIcon } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronUp,
+  FileText,
+  GitBranch,
+  Loader2,
+  RefreshCcwIcon,
+} from "lucide-react";
 import type { FC } from "react";
 import { useCallback, useEffect, useId, useState } from "react";
 import { toast } from "sonner";
@@ -144,6 +151,9 @@ export const DiffModal: FC<DiffModalProps> = ({
 
   // Commit message state
   const [commitMessage, setCommitMessage] = useState("");
+
+  // Commit section collapse state (default: collapsed)
+  const [isCommitSectionExpanded, setIsCommitSectionExpanded] = useState(false);
 
   // API hooks
   const { data: branchesData, isLoading: isLoadingBranches } =
@@ -435,133 +445,158 @@ export const DiffModal: FC<DiffModalProps> = ({
 
             {/* Commit UI Section */}
             {compareTo === "working" && (
-              <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 mb-4 space-y-3 border border-gray-200 dark:border-gray-700">
-                {/* File selection controls */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={handleSelectAll}
-                      disabled={commitMutation.isPending}
-                    >
-                      Select All
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={handleDeselectAll}
-                      disabled={commitMutation.isPending}
-                    >
-                      Deselect All
-                    </Button>
-                    <span className="text-sm text-gray-600 dark:text-gray-400">
-                      {selectedCount} / {diffData.data.files.length} files
-                      selected
-                    </span>
-                  </div>
-                </div>
+              <div className="bg-gray-50 dark:bg-gray-900 rounded-lg mb-4 border border-gray-200 dark:border-gray-700">
+                {/* Section header with toggle */}
+                <button
+                  type="button"
+                  onClick={() =>
+                    setIsCommitSectionExpanded(!isCommitSectionExpanded)
+                  }
+                  className="w-full flex items-center justify-between p-2 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors rounded-t-lg"
+                >
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Commit Changes
+                  </span>
+                  {isCommitSectionExpanded ? (
+                    <ChevronUp className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+                  ) : (
+                    <ChevronDown className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+                  )}
+                </button>
 
-                {/* File list with checkboxes */}
-                <div className="space-y-2 max-h-40 overflow-y-auto border border-gray-200 dark:border-gray-700 rounded p-2">
-                  {diffData.data.files.map((file) => (
-                    <div
-                      key={file.filePath}
-                      className="flex items-center gap-2"
-                    >
-                      <Checkbox
-                        id={`file-${file.filePath}`}
-                        checked={selectedFiles.get(file.filePath) ?? false}
-                        onCheckedChange={() => handleToggleFile(file.filePath)}
-                        disabled={commitMutation.isPending}
-                      />
-                      <label
-                        htmlFor={`file-${file.filePath}`}
-                        className="text-sm font-mono cursor-pointer flex-1"
-                      >
-                        {file.filePath}
-                      </label>
+                {/* Collapsible content */}
+                {isCommitSectionExpanded && (
+                  <div className="p-4 pt-0 space-y-3">
+                    {/* File selection controls */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={handleSelectAll}
+                          disabled={commitMutation.isPending}
+                        >
+                          Select All
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={handleDeselectAll}
+                          disabled={commitMutation.isPending}
+                        >
+                          Deselect All
+                        </Button>
+                        <span className="text-sm text-gray-600 dark:text-gray-400">
+                          {selectedCount} / {diffData.data.files.length} files
+                          selected
+                        </span>
+                      </div>
                     </div>
-                  ))}
-                </div>
 
-                {/* Commit message input */}
-                <div className="space-y-2">
-                  <label
-                    htmlFor={commitMessageId}
-                    className="text-sm font-medium text-gray-700 dark:text-gray-300"
-                  >
-                    Commit message
-                  </label>
-                  <Textarea
-                    id={commitMessageId}
-                    placeholder="Enter commit message..."
-                    value={commitMessage}
-                    onChange={(e) => setCommitMessage(e.target.value)}
-                    disabled={commitMutation.isPending}
-                    className="resize-none"
-                    rows={3}
-                  />
-                </div>
+                    {/* File list with checkboxes */}
+                    <div className="space-y-2 max-h-40 overflow-y-auto border border-gray-200 dark:border-gray-700 rounded p-2">
+                      {diffData.data.files.map((file) => (
+                        <div
+                          key={file.filePath}
+                          className="flex items-center gap-2"
+                        >
+                          <Checkbox
+                            id={`file-${file.filePath}`}
+                            checked={selectedFiles.get(file.filePath) ?? false}
+                            onCheckedChange={() =>
+                              handleToggleFile(file.filePath)
+                            }
+                            disabled={commitMutation.isPending}
+                          />
+                          <label
+                            htmlFor={`file-${file.filePath}`}
+                            className="text-sm font-mono cursor-pointer flex-1"
+                          >
+                            {file.filePath}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
 
-                {/* Action buttons */}
-                <div className="flex items-center gap-2 flex-wrap">
-                  <Button
-                    onClick={handleCommit}
-                    disabled={isCommitDisabled}
-                    className="w-full sm:w-auto"
-                  >
-                    {commitMutation.isPending ? (
-                      <>
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        Committing...
-                      </>
-                    ) : (
-                      "Commit"
-                    )}
-                  </Button>
-                  <Button
-                    onClick={handlePush}
-                    disabled={pushMutation.isPending}
-                    variant="outline"
-                    className="w-full sm:w-auto"
-                  >
-                    {pushMutation.isPending ? (
-                      <>
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        Pushing...
-                      </>
-                    ) : (
-                      "Push"
-                    )}
-                  </Button>
-                  <Button
-                    onClick={handleCommitAndPush}
-                    disabled={
-                      isCommitDisabled || commitAndPushMutation.isPending
-                    }
-                    variant="secondary"
-                    className="w-full sm:w-auto"
-                  >
-                    {commitAndPushMutation.isPending ? (
-                      <>
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        Committing & Pushing...
-                      </>
-                    ) : (
-                      "Commit & Push"
-                    )}
-                  </Button>
-                  {isCommitDisabled &&
-                    !commitMutation.isPending &&
-                    !commitAndPushMutation.isPending && (
-                      <span className="text-xs text-gray-500 dark:text-gray-400">
-                        {selectedCount === 0
-                          ? "Select at least one file"
-                          : "Enter a commit message"}
-                      </span>
-                    )}
-                </div>
+                    {/* Commit message input */}
+                    <div className="space-y-2">
+                      <label
+                        htmlFor={commitMessageId}
+                        className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                      >
+                        Commit message
+                      </label>
+                      <Textarea
+                        id={commitMessageId}
+                        placeholder="Enter commit message..."
+                        value={commitMessage}
+                        onChange={(e) => setCommitMessage(e.target.value)}
+                        disabled={commitMutation.isPending}
+                        className="resize-none"
+                        rows={3}
+                      />
+                    </div>
+
+                    {/* Action buttons */}
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <Button
+                        onClick={handleCommit}
+                        disabled={isCommitDisabled}
+                        className="w-full sm:w-auto"
+                      >
+                        {commitMutation.isPending ? (
+                          <>
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                            Committing...
+                          </>
+                        ) : (
+                          "Commit"
+                        )}
+                      </Button>
+                      <Button
+                        onClick={handlePush}
+                        disabled={pushMutation.isPending}
+                        variant="outline"
+                        className="w-full sm:w-auto"
+                      >
+                        {pushMutation.isPending ? (
+                          <>
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                            Pushing...
+                          </>
+                        ) : (
+                          "Push"
+                        )}
+                      </Button>
+                      <Button
+                        onClick={handleCommitAndPush}
+                        disabled={
+                          isCommitDisabled || commitAndPushMutation.isPending
+                        }
+                        variant="secondary"
+                        className="w-full sm:w-auto"
+                      >
+                        {commitAndPushMutation.isPending ? (
+                          <>
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                            Committing & Pushing...
+                          </>
+                        ) : (
+                          "Commit & Push"
+                        )}
+                      </Button>
+                      {isCommitDisabled &&
+                        !commitMutation.isPending &&
+                        !commitAndPushMutation.isPending && (
+                          <span className="text-xs text-gray-500 dark:text-gray-400">
+                            {selectedCount === 0
+                              ? "Select at least one file"
+                              : "Enter a commit message"}
+                          </span>
+                        )}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { Trans } from "@lingui/react";
-import { ChevronDown, Lightbulb, Settings } from "lucide-react";
+import { ChevronDown, Lightbulb, Wrench } from "lucide-react";
 import Image from "next/image";
 import { useTheme } from "next-themes";
 import type { FC } from "react";
@@ -10,6 +10,7 @@ import {
   oneDark,
   oneLight,
 } from "react-syntax-highlighter/dist/esm/styles/prism";
+import z from "zod";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -25,12 +26,28 @@ import {
 } from "@/components/ui/collapsible";
 import type { ToolResultContent } from "@/lib/conversation-schema/content/ToolResultContentSchema";
 import type { AssistantMessageContent } from "@/lib/conversation-schema/message/AssistantMessageSchema";
+import { Button } from "../../../../../../../components/ui/button";
+import type { SidechainConversation } from "../../../../../../../lib/conversation-schema";
 import { MarkdownContent } from "../../../../../../components/MarkdownContent";
+import { SidechainConversationModal } from "../conversationModal/SidechainConversationModal";
+
+const taskToolInputSchema = z.object({
+  prompt: z.string(),
+});
 
 export const AssistantConversationContent: FC<{
   content: AssistantMessageContent;
   getToolResult: (toolUseId: string) => ToolResultContent | undefined;
-}> = ({ content, getToolResult }) => {
+  getSidechainConversationByPrompt: (
+    prompt: string,
+  ) => SidechainConversation | undefined;
+  getSidechainConversations: (rootUuid: string) => SidechainConversation[];
+}> = ({
+  content,
+  getToolResult,
+  getSidechainConversationByPrompt,
+  getSidechainConversations,
+}) => {
   const { resolvedTheme } = useTheme();
   const syntaxTheme = resolvedTheme === "dark" ? oneDark : oneLight;
   if (content.type === "text") {
@@ -71,11 +88,48 @@ export const AssistantConversationContent: FC<{
   if (content.type === "tool_use") {
     const toolResult = getToolResult(content.id);
 
+    const taskModal = (() => {
+      const taskInput =
+        content.name === "Task"
+          ? taskToolInputSchema.safeParse(content.input)
+          : undefined;
+
+      if (taskInput === undefined || taskInput.success === false) {
+        return undefined;
+      }
+
+      const conversation = getSidechainConversationByPrompt(
+        taskInput.data.prompt,
+      );
+
+      if (conversation === undefined) {
+        return undefined;
+      }
+
+      return (
+        <SidechainConversationModal
+          conversation={conversation}
+          sidechainConversations={getSidechainConversations(
+            conversation.uuid,
+          ).map((original) => ({
+            ...original,
+            isSidechain: false,
+          }))}
+          getToolResult={getToolResult}
+          trigger={
+            <Button variant="outline" size="sm">
+              View Log
+            </Button>
+          }
+        />
+      );
+    })();
+
     return (
       <Card className="border-blue-200 bg-blue-50/50 dark:border-blue-800 dark:bg-blue-950/20 gap-2 py-3 mb-2">
         <CardHeader className="py-0 px-4">
           <div className="flex items-center gap-2">
-            <Settings className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+            <Wrench className="h-4 w-4 text-blue-600 dark:text-blue-400" />
             <CardTitle className="text-sm font-medium">
               <Trans id="assistant.tool_use" message="Tool Use" />
             </CardTitle>
@@ -159,6 +213,7 @@ export const AssistantConversationContent: FC<{
               </CollapsibleContent>
             </Collapsible>
           )}
+          {taskModal}
         </CardContent>
       </Card>
     );

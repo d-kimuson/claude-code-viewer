@@ -16,11 +16,13 @@ import type {
   SidechainConversation,
 } from "@/lib/conversation-schema";
 import type { ToolResultContent } from "@/lib/conversation-schema/content/ToolResultContentSchema";
+import { extractFirstUserText } from "../../../../../../../server/core/session/functions/extractFirstUserText";
 import { ConversationList } from "../conversationList/ConversationList";
 
 type SidechainConversationModalProps = {
   conversation: SidechainConversation;
   sidechainConversations: Conversation[];
+  trigger?: React.ReactNode;
   getToolResult: (toolUseId: string) => ToolResultContent | undefined;
 };
 
@@ -38,29 +40,12 @@ const sidechainTitle = (conversations: Conversation[]): string => {
     return defaultTitle;
   }
 
-  if (firstConversation.type !== "user") {
-    return defaultTitle;
-  }
-
-  const textContent =
-    typeof firstConversation.message.content === "string"
-      ? firstConversation.message.content
-      : (() => {
-          const firstContent = firstConversation.message.content.at(0);
-          if (firstContent === undefined) return null;
-
-          if (typeof firstContent === "string") return firstContent;
-          if (firstContent.type === "text") return firstContent.text;
-
-          return null;
-        })();
-
-  return textContent ?? defaultTitle;
+  return extractFirstUserText(firstConversation) ?? defaultTitle;
 };
 
 export const SidechainConversationModal: FC<
   SidechainConversationModalProps
-> = ({ conversation, sidechainConversations, getToolResult }) => {
+> = ({ conversation, sidechainConversations, trigger, getToolResult }) => {
   const title = sidechainTitle(sidechainConversations);
 
   const rootUuid = conversation.uuid;
@@ -68,19 +53,21 @@ export const SidechainConversationModal: FC<
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button
-          variant="outline"
-          size="sm"
-          className="w-full mb-3 items-center justify-start"
-          data-testid="sidechain-task-button"
-        >
-          <div className="flex items-center gap-2 overflow-hidden">
-            <Eye className="h-4 w-4 flex-shrink-0" />
-            <span className="overflow-hidden text-ellipsis">
-              View Task: {title}
-            </span>
-          </div>
-        </Button>
+        {trigger ?? (
+          <Button
+            variant="outline"
+            size="sm"
+            className="w-full mb-3 items-center justify-start"
+            data-testid="sidechain-task-button"
+          >
+            <div className="flex items-center gap-2 overflow-hidden">
+              <Eye className="h-4 w-4 flex-shrink-0" />
+              <span className="overflow-hidden text-ellipsis">
+                View Task: {title}
+              </span>
+            </div>
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent
         className="w-[95vw] md:w-[90vw] max-h-[80vh] overflow-hidden flex flex-col px-2 md:px-8"

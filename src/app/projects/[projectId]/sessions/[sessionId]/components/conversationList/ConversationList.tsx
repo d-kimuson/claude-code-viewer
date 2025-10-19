@@ -126,8 +126,11 @@ export const ConversationList: FC<ConversationListProps> = ({
       conversations.filter((conversation) => conversation.type !== "x-error"),
     [conversations],
   );
-  const { isRootSidechain, getSidechainConversations } =
-    useSidechain(validConversations);
+  const {
+    isRootSidechain,
+    getSidechainConversations,
+    getSidechainConversationByPrompt,
+  } = useSidechain(validConversations);
 
   return (
     <ul>
@@ -148,6 +151,7 @@ export const ConversationList: FC<ConversationListProps> = ({
             getToolResult={getToolResult}
             isRootSidechain={isRootSidechain}
             getSidechainConversations={getSidechainConversations}
+            getSidechainConversationByPrompt={getSidechainConversationByPrompt}
           />
         );
 

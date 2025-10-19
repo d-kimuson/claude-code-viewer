@@ -23,28 +23,6 @@
     "origin": [["src/components/SettingsControls.tsx", 306]],
     "translation": "Select theme"
   },
-  "Reload MCP servers": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/McpTab.tsx",
-        42
-      ]
-    ],
-    "translation": "Reload MCP servers"
-  },
-  "Close sidebar": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        173
-      ]
-    ],
-    "translation": "Close sidebar"
-  },
   "Type your message... (Start with / for commands, @ for files, Enter to send)": {
     "placeholders": {},
     "comments": [],
@@ -90,6 +68,28 @@
     ],
     "translation": "Type your message... (Start with / for commands, @ for files, Shift+Enter to send)"
   },
+  "Reload MCP servers": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/McpTab.tsx",
+        42
+      ]
+    ],
+    "translation": "Reload MCP servers"
+  },
+  "Close sidebar": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
+        173
+      ]
+    ],
+    "translation": "Close sidebar"
+  },
   "Type your message here... (Start with / for commands, @ for files, Enter to send)": {
     "placeholders": {},
     "comments": [],
@@ -113,36 +113,6 @@
       ["src/app/projects/[projectId]/components/newChat/NewChat.tsx", 33]
     ],
     "translation": "Type your message here... (Start with / for commands, @ for files, Shift+Enter to send)"
-  },
-  "Available commands": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/app/projects/[projectId]/components/chatForm/CommandCompletion.tsx",
-        193
-      ]
-    ],
-    "translation": "Available commands"
-  },
-  "Message input with completion support": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      ["src/app/projects/[projectId]/components/chatForm/ChatInput.tsx", 210]
-    ],
-    "translation": "Message input with completion support"
-  },
-  "Available files and directories": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/app/projects/[projectId]/components/chatForm/FileCompletion.tsx",
-        267
-      ]
-    ],
-    "translation": "Available files and directories"
   },
   "Uncommitted changes": {
     "placeholders": {},
@@ -221,6 +191,36 @@
     ],
     "translation": "Compare to"
   },
+  "Available commands": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/CommandCompletion.tsx",
+        193
+      ]
+    ],
+    "translation": "Available commands"
+  },
+  "Available files and directories": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/FileCompletion.tsx",
+        267
+      ]
+    ],
+    "translation": "Available files and directories"
+  },
+  "Message input with completion support": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      ["src/app/projects/[projectId]/components/chatForm/ChatInput.tsx", 210]
+    ],
+    "translation": "Message input with completion support"
+  },
   "session.conversation.abort": {
     "message": "Abort",
     "placeholders": {},
@@ -244,6 +244,13 @@
     "origin": [["src/components/SettingsControls.tsx", 234]],
     "translation": "Accept Edits (Auto-approve file edits)"
   },
+  "system_info.feature.uuid_on_sdk_message.description": {
+    "message": "Adds unique identifiers to SDK messages for better tracking (v1.0.86+)",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SystemInfoCard.tsx", 56]],
+    "translation": "Adds unique identifiers to SDK messages for better tracking (v1.0.86+)"
+  },
   "chat.autocomplete.active": {
     "message": "Autocomplete active",
     "placeholders": {},
@@ -252,6 +259,13 @@
       ["src/app/projects/[projectId]/components/chatForm/ChatInput.tsx", 231]
     ],
     "translation": "Autocomplete active"
+  },
+  "system_info.available_features": {
+    "message": "Available Features",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SystemInfoCard.tsx", 175]],
+    "translation": "Available Features"
   },
   "sidebar.back.to.projects": {
     "message": "Back to projects",
@@ -273,7 +287,7 @@
     "message": "Back to Projects",
     "placeholders": {},
     "comments": [],
-    "origin": [["src/app/projects/[projectId]/not-found.tsx", 42]],
+    "origin": [["src/app/projects/[projectId]/not-found.tsx", 45]],
     "translation": "Back to Projects"
   },
   "project.error.back_to_projects": {
@@ -339,6 +353,20 @@
     "origin": [["src/components/SettingsControls.tsx", 290]],
     "translation": "Choose your preferred language"
   },
+  "system_info.feature.agent_sdk.title": {
+    "message": "Claude Agent SDK",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SystemInfoCard.tsx", 65]],
+    "translation": "Claude Agent SDK"
+  },
+  "system_info.claude_code": {
+    "message": "Claude Code",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SystemInfoCard.tsx", 141]],
+    "translation": "Claude Code"
+  },
   "session.processing": {
     "message": "Claude Code is processing...",
     "placeholders": {},
@@ -350,6 +378,13 @@
       ]
     ],
     "translation": "Claude Code is processing..."
+  },
+  "system_info.viewer_version": {
+    "message": "Claude Code Viewer",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SystemInfoCard.tsx", 123]],
+    "translation": "Claude Code Viewer"
   },
   "settings.input.enter_key_behavior.command_enter": {
     "message": "Command+Enter to send",
@@ -519,8 +554,15 @@
     "message": "Display and behavior preferences",
     "placeholders": {},
     "comments": [],
-    "origin": [["src/components/GlobalSidebar.tsx", 55]],
+    "origin": [["src/components/GlobalSidebar.tsx", 56]],
     "translation": "Display and behavior preferences"
+  },
+  "system_info.feature.can_use_tool.description": {
+    "message": "Dynamically control tool usage permissions and request user approval before tool execution (v1.0.82+)",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SystemInfoCard.tsx", 41]],
+    "translation": "Dynamically control tool usage permissions and request user approval before tool execution (v1.0.82+)"
   },
   "settings.locale.en": {
     "message": "English",
@@ -581,6 +623,13 @@
     "origin": [["src/app/projects/[projectId]/error.tsx", 58]],
     "translation": "Error ID:"
   },
+  "system_info.executable_path": {
+    "message": "Executable",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SystemInfoCard.tsx", 146]],
+    "translation": "Executable"
+  },
   "mcp.error.load_failed": {
     "message": "Failed to load MCP servers: {error}",
     "placeholders": {
@@ -610,6 +659,13 @@
       ["src/app/projects/[projectId]/components/chatForm/ChatInput.tsx", 173]
     ],
     "translation": "Failed to send message. Please try again."
+  },
+  "system_info.feature.unknown.description": {
+    "message": "Feature information not available",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SystemInfoCard.tsx", 81]],
+    "translation": "Feature information not available"
   },
   "diff.files": {
     "message": "files",
@@ -661,7 +717,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        98
+        152
       ]
     ],
     "translation": "Input Parameters"
@@ -727,9 +783,16 @@
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
         115
       ],
-      ["src/components/GlobalSidebar.tsx", 66]
+      ["src/components/GlobalSidebar.tsx", 67]
     ],
     "translation": "Loading settings..."
+  },
+  "system_info.loading": {
+    "message": "Loading system information...",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/GlobalSidebar.tsx", 109]],
+    "translation": "Loading system information..."
   },
   "directory_picker.loading": {
     "message": "Loading...",
@@ -781,6 +844,13 @@
       ]
     ],
     "translation": "Media type not supported for display"
+  },
+  "system_info.feature.uuid_on_sdk_message.title": {
+    "message": "Message UUID Support",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SystemInfoCard.tsx", 50]],
+    "translation": "Message UUID Support"
   },
   "project_list.messages": {
     "message": "Messages:",
@@ -852,7 +922,7 @@
     "message": "Notifications",
     "placeholders": {},
     "comments": [],
-    "origin": [["src/components/GlobalSidebar.tsx", 84]],
+    "origin": [["src/components/GlobalSidebar.tsx", 85]],
     "translation": "Notifications"
   },
   "settings.notifications": {
@@ -927,7 +997,7 @@
     "message": "Project Not Found",
     "placeholders": {},
     "comments": [],
-    "origin": [["src/app/projects/[projectId]/not-found.tsx", 23]],
+    "origin": [["src/app/projects/[projectId]/not-found.tsx", 26]],
     "translation": "Project Not Found"
   },
   "diff.push": {
@@ -1094,7 +1164,7 @@
     "message": "Session Display",
     "placeholders": {},
     "comments": [],
-    "origin": [["src/components/GlobalSidebar.tsx", 74]],
+    "origin": [["src/components/GlobalSidebar.tsx", 75]],
     "translation": "Session Display"
   },
   "settings.session.display": {
@@ -1125,7 +1195,7 @@
     "message": "Settings",
     "placeholders": {},
     "comments": [],
-    "origin": [["src/components/GlobalSidebar.tsx", 52]],
+    "origin": [["src/components/GlobalSidebar.tsx", 53]],
     "translation": "Settings"
   },
   "settings.tab.title": {
@@ -1137,7 +1207,7 @@
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
         278
       ],
-      ["src/components/GlobalSidebar.tsx", 43]
+      ["src/components/GlobalSidebar.tsx", 44]
     ],
     "translation": "Settings for display and notifications"
   },
@@ -1204,6 +1274,20 @@
     "origin": [["src/components/SettingsControls.tsx", 316]],
     "translation": "System"
   },
+  "system_info.title": {
+    "message": "System Information",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SystemInfoCard.tsx", 109]],
+    "translation": "System Information"
+  },
+  "settings.section.system_info": {
+    "message": "System Information",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/GlobalSidebar.tsx", 102]],
+    "translation": "System Information"
+  },
   "notification.test": {
     "message": "Test",
     "placeholders": {},
@@ -1215,7 +1299,7 @@
     "message": "The project you are looking for does not exist or has been removed",
     "placeholders": {},
     "comments": [],
-    "origin": [["src/app/projects/[projectId]/not-found.tsx", 29]],
+    "origin": [["src/app/projects/[projectId]/not-found.tsx", 32]],
     "translation": "The project you are looking for does not exist or has been removed"
   },
   "settings.theme": {
@@ -1232,7 +1316,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        53
+        70
       ]
     ],
     "translation": "Thinking"
@@ -1256,7 +1340,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        122
+        176
       ]
     ],
     "translation": "Tool Result"
@@ -1268,10 +1352,17 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        80
+        134
       ]
     ],
     "translation": "Tool Use"
+  },
+  "system_info.feature.can_use_tool.title": {
+    "message": "Tool Use Permission Control",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SystemInfoCard.tsx", 35]],
+    "translation": "Tool Use Permission Control"
   },
   "sessions.total": {
     "message": "total",
@@ -1299,6 +1390,16 @@
     "origin": [["src/components/SettingsControls.tsx", 144]],
     "translation": "Unify sessions with same title"
   },
+  "system_info.unknown": {
+    "message": "Unknown",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      ["src/components/SystemInfoCard.tsx", 151],
+      ["src/components/SystemInfoCard.tsx", 163]
+    ],
+    "translation": "Unknown"
+  },
   "user.content.unsupported_media": {
     "message": "Unsupported Media",
     "placeholders": {},
@@ -1322,6 +1423,30 @@
       ]
     ],
     "translation": "User uploaded image content"
+  },
+  "system_info.feature.agent_sdk.description": {
+    "message": "Uses Claude Agent SDK instead of Claude Code SDK (v1.0.125+)",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SystemInfoCard.tsx", 71]],
+    "translation": "Uses Claude Agent SDK instead of Claude Code SDK (v1.0.125+)"
+  },
+  "system_info.version_label": {
+    "message": "Version",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      ["src/components/SystemInfoCard.tsx", 130],
+      ["src/components/SystemInfoCard.tsx", 159]
+    ],
+    "translation": "Version"
+  },
+  "system_info.description": {
+    "message": "Version and feature information",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SystemInfoCard.tsx", 112]],
+    "translation": "Version and feature information"
   },
   "project_list.view_conversations": {
     "message": "View Conversations",

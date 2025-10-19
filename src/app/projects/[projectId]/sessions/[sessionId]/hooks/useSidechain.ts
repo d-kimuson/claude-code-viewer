@@ -15,6 +15,19 @@ export const useSidechain = (conversations: Conversation[]) => {
     );
   }, [sidechainConversations]);
 
+  const conversationPromptMap = useMemo(() => {
+    return new Map<string, SidechainConversation>(
+      sidechainConversations
+        .filter((conv) => conv.type === "user")
+        .filter(
+          (conv) =>
+            conv.parentUuid === null &&
+            typeof conv.message.content === "string",
+        )
+        .map((conv) => [conv.message.content as string, conv] as const),
+    );
+  }, [sidechainConversations]);
+
   const getRootConversationRecursive = useCallback(
     (conversation: SidechainConversation): SidechainConversation => {
       if (conversation.parentUuid === null) {
@@ -72,8 +85,16 @@ export const useSidechain = (conversations: Conversation[]) => {
     [sidechainConversationGroups],
   );
 
+  const getSidechainConversationByPrompt = useCallback(
+    (prompt: string) => {
+      return conversationPromptMap.get(prompt);
+    },
+    [conversationPromptMap],
+  );
+
   return {
     isRootSidechain,
     getSidechainConversations,
+    getSidechainConversationByPrompt,
   };
 };

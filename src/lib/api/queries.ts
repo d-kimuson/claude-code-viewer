@@ -206,3 +206,46 @@ export const configQuery = {
     return await response.json();
   },
 } as const;
+
+export const systemVersionQuery = {
+  queryKey: ["version"],
+  queryFn: async () => {
+    const response = await honoClient.api.version.$get();
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch system version: ${response.statusText}`);
+    }
+
+    return await response.json();
+  },
+} as const;
+
+export const claudeCodeMetaQuery = {
+  queryKey: ["cc", "meta"],
+  queryFn: async () => {
+    const response = await honoClient.api.cc.meta.$get();
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch system features: ${response.statusText}`,
+      );
+    }
+
+    return await response.json();
+  },
+} as const;
+
+export const claudeCodeFeaturesQuery = {
+  queryKey: ["cc", "features"],
+  queryFn: async () => {
+    const response = await honoClient.api.cc.features.$get();
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch claude code features: ${response.statusText}`,
+      );
+    }
+
+    return await response.json();
+  },
+} as const;

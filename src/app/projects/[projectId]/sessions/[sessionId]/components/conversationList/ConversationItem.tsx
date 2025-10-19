@@ -1,5 +1,8 @@
 import type { FC } from "react";
-import type { Conversation } from "@/lib/conversation-schema";
+import type {
+  Conversation,
+  SidechainConversation,
+} from "@/lib/conversation-schema";
 import type { ToolResultContent } from "@/lib/conversation-schema/content/ToolResultContentSchema";
 import { SidechainConversationModal } from "../conversationModal/SidechainConversationModal";
 import { AssistantConversationContent } from "./AssistantConversationContent";
@@ -13,11 +16,15 @@ export const ConversationItem: FC<{
   conversation: Conversation;
   getToolResult: (toolUseId: string) => ToolResultContent | undefined;
   isRootSidechain: (conversation: Conversation) => boolean;
-  getSidechainConversations: (rootUuid: string) => Conversation[];
+  getSidechainConversationByPrompt: (
+    prompt: string,
+  ) => SidechainConversation | undefined;
+  getSidechainConversations: (rootUuid: string) => SidechainConversation[];
 }> = ({
   conversation,
   getToolResult,
   isRootSidechain,
+  getSidechainConversationByPrompt,
   getSidechainConversations,
 }) => {
   if (conversation.type === "summary") {
@@ -54,13 +61,10 @@ export const ConversationItem: FC<{
         conversation={conversation}
         sidechainConversations={getSidechainConversations(
           conversation.uuid,
-        ).map((original) => {
-          if (original.type === "summary") return original;
-          return {
-            ...original,
-            isSidechain: false,
-          };
-        })}
+        ).map((original) => ({
+          ...original,
+          isSidechain: false,
+        }))}
         getToolResult={getToolResult}
       />
     );
@@ -99,6 +103,10 @@ export const ConversationItem: FC<{
             <AssistantConversationContent
               content={content}
               getToolResult={getToolResult}
+              getSidechainConversationByPrompt={
+                getSidechainConversationByPrompt
+              }
+              getSidechainConversations={getSidechainConversations}
             />
           </li>
         ))}

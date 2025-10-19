@@ -4,6 +4,7 @@ import type { ControllerResponse } from "../../../lib/effect/toEffectResponse";
 import type { InferEffect } from "../../../lib/effect/types";
 import { ApplicationContext } from "../../platform/services/ApplicationContext";
 import { ProjectRepository } from "../../project/infrastructure/ProjectRepository";
+import * as ClaudeCodeVersion from "../models/ClaudeCodeVersion";
 import { ClaudeCodeService } from "../services/ClaudeCodeService";
 
 const LayerImpl = Effect.gen(function* () {
@@ -80,9 +81,43 @@ const LayerImpl = Effect.gen(function* () {
       } as const satisfies ControllerResponse;
     });
 
+  const getClaudeCodeMeta = () =>
+    Effect.gen(function* () {
+      const config = yield* claudeCodeService.getClaudeCodeMeta();
+      return {
+        response: {
+          executablePath: config.claudeCodeExecutablePath,
+          version: config.claudeCodeVersion
+            ? ClaudeCodeVersion.versionText(config.claudeCodeVersion)
+            : null,
+        },
+        status: 200,
+      } as const satisfies ControllerResponse;
+    });
+
+  const getAvailableFeatures = () =>
+    Effect.gen(function* () {
+      const features = yield* claudeCodeService.getAvailableFeatures();
+      const featuresList = Object.entries(features).flatMap(([key, value]) => {
+        return [
+          {
+            name: key as keyof typeof features,
+            enabled: value,
+          },
+        ];
+      });
+
+      return {
+        response: { features: featuresList },
+        status: 200,
+      } as const satisfies ControllerResponse;
+    });
+
   return {
     getClaudeCommands,
     getMcpListRoute,
+    getClaudeCodeMeta,
+    getAvailableFeatures,
   };
 });
 

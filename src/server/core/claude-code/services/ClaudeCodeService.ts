@@ -13,6 +13,21 @@ class ProjectPathNotFoundError extends Data.TaggedError(
 const LayerImpl = Effect.gen(function* () {
   const projectRepository = yield* ProjectRepository;
 
+  const getClaudeCodeMeta = () =>
+    Effect.gen(function* () {
+      const config = yield* ClaudeCode.Config;
+      return config;
+    });
+
+  const getAvailableFeatures = () =>
+    Effect.gen(function* () {
+      const config = yield* ClaudeCode.Config;
+      const features = ClaudeCode.getAvailableFeatures(
+        config.claudeCodeVersion,
+      );
+      return features;
+    });
+
   const getMcpList = (projectId: string) =>
     Effect.gen(function* () {
       const { project } = yield* projectRepository.getProject(projectId);
@@ -27,7 +42,9 @@ const LayerImpl = Effect.gen(function* () {
     });
 
   return {
+    getClaudeCodeMeta,
     getMcpList,
+    getAvailableFeatures,
   };
 });
 

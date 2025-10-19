@@ -2,7 +2,7 @@
 
 import { Trans } from "@lingui/react";
 import type { LucideIcon } from "lucide-react";
-import { SettingsIcon } from "lucide-react";
+import { InfoIcon, SettingsIcon } from "lucide-react";
 import { type FC, type ReactNode, Suspense, useState } from "react";
 import {
   Tooltip,
@@ -13,6 +13,7 @@ import {
 import { cn } from "@/lib/utils";
 import { NotificationSettings } from "./NotificationSettings";
 import { SettingsControls } from "./SettingsControls";
+import { SystemInfoCard } from "./SystemInfoCard";
 
 export interface SidebarTab {
   id: string;
@@ -94,7 +95,31 @@ export const GlobalSidebar: FC<GlobalSidebarProps> = ({
     ),
   };
 
-  const allTabs = [...additionalTabs, settingsTab];
+  const systemInfoTab: SidebarTab = {
+    id: "system-info",
+    icon: InfoIcon,
+    title: (
+      <Trans id="settings.section.system_info" message="System Information" />
+    ),
+    content: (
+      <Suspense
+        fallback={
+          <div className="h-full flex items-center justify-center p-4">
+            <div className="text-sm text-sidebar-foreground/70">
+              <Trans
+                id="system_info.loading"
+                message="Loading system information..."
+              />
+            </div>
+          </div>
+        }
+      >
+        <SystemInfoCard />
+      </Suspense>
+    ),
+  };
+
+  const allTabs = [...additionalTabs, settingsTab, systemInfoTab];
   const [activeTab, setActiveTab] = useState<string>(
     defaultActiveTab ?? allTabs[allTabs.length - 1]?.id ?? "settings",
   );

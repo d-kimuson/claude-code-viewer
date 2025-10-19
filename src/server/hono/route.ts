@@ -5,6 +5,7 @@ import { setCookie } from "hono/cookie";
 import { streamSSE } from "hono/streaming";
 import prexit from "prexit";
 import { z } from "zod";
+import packageJson from "../../../package.json" with { type: "json" };
 import { ClaudeCodeController } from "../core/claude-code/presentation/ClaudeCodeController";
 import { ClaudeCodePermissionController } from "../core/claude-code/presentation/ClaudeCodePermissionController";
 import { ClaudeCodeSessionProcessController } from "../core/claude-code/presentation/ClaudeCodeSessionProcessController";
@@ -91,6 +92,12 @@ export const routes = (app: HonoAppType) =>
 
           return c.json({
             config,
+          });
+        })
+
+        .get("/version", async (c) => {
+          return c.json({
+            version: packageJson.version,
           });
         })
 
@@ -293,6 +300,26 @@ export const routes = (app: HonoAppType) =>
               .getMcpListRoute({
                 ...c.req.param(),
               })
+              .pipe(Effect.provide(runtime)),
+          );
+          return response;
+        })
+
+        .get("/cc/meta", async (c) => {
+          const response = await effectToResponse(
+            c,
+            claudeCodeController
+              .getClaudeCodeMeta()
+              .pipe(Effect.provide(runtime)),
+          );
+          return response;
+        })
+
+        .get("/cc/features", async (c) => {
+          const response = await effectToResponse(
+            c,
+            claudeCodeController
+              .getAvailableFeatures()
               .pipe(Effect.provide(runtime)),
           );
           return response;

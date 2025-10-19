@@ -24,6 +24,9 @@ Claude Code Viewer is a web-based Claude Code client focused on **comprehensive 
 | Continue Sessions | Claude Code Viewer provides advanced session process control. Sessions started through Claude Code Viewer remain alive (unless aborted), allowing you to continue conversations without resuming (no session-id reassignment) |
 | Create Projects | Create new projects from Claude Code Viewer. Select a directory through the web UI to execute the `/init` command and begin project setup |
 | Review Changes | Built-in Git Diff Viewer lets you review all changes directly within Claude Code Viewer |
+| Commit Changes | Execute Git commits directly from the web interface within the Git Diff Viewer |
+| System Information | Monitor Claude Code and Claude Code Viewer versions, feature compatibility, and system status |
+| Multi-language Support | Full internationalization support with English and Japanese language options |
 
 ## Screenshots
 
@@ -100,7 +103,8 @@ Settings can be configured from the sidebar in Claude Code Viewer.
 | Enter Key Behavior | Shift+Enter | Specifies which key combination sends messages. Options include Enter, Shift+Enter, and Command+Enter. |
 | Permission Mode | Ask permission | Controls the approval logic when Claude Code requests tool invocations. By default, users approve requests through the UI. This feature requires Claude Code v1.0.82 or later; earlier versions automatically approve regardless of this setting. |
 | Theme | System | Toggles between Dark Mode and Light Mode. Default follows system settings. |
-| Notifications | None | Enables sound notifications when running session processes complete. |
+| Notifications | None | Enables sound notifications when running session processes complete. Choose from multiple notification sounds with test playback functionality. |
+| Language | System | Interface language selection. Supports English and Japanese with automatic system detection. |
 
 
 ## Alternatives & Differentiation
@@ -115,8 +119,10 @@ Several excellent Claude Code web clients exist, each with their own strengths:
 
 - **Zero Information Loss**: Strict Zod schema validation ensures every conversation detail is preserved
 - **Progressive Disclosure**: Expandable elements and sub-session modals help manage information density
-- **Built-in Git Diff Viewer**: Comprehensive branch comparison support for remote development workflows
+- **Built-in Git Operations**: Comprehensive diff viewer with direct commit functionality for remote development workflows
 - **Session Flow Analysis**: Complete conversation tracking across multiple sessions
+- **System Monitoring**: Real-time version and feature compatibility monitoring
+- **International Accessibility**: Multi-language support for global development teams
 
 Each tool serves different use cases—choose the one that best fits your workflow and priorities.
 
@@ -124,8 +130,10 @@ Each tool serves different use cases—choose the one that best fits your workfl
 
 Claude Code Viewer is designed with remote hosting in mind. To support remote development workflows, it includes:
 
-- **Mobile-Optimized UI**: Responsive interface that works seamlessly on mobile devices
-- **Built-in Git Viewer**: Review changes without needing local Git tools
+- **Mobile-Optimized UI**: Responsive interface with dedicated mobile sidebar and touch-optimized controls
+- **Built-in Git Operations**: Review and commit changes directly from the web interface
+- **Real-time Notifications**: Audio notifications for task completion to maintain workflow awareness
+- **System Monitoring**: Monitor Claude Code compatibility and feature availability across environments
 
 The application features a separated client-server architecture that enables remote hosting. However, **authentication and authorization features are not included** (and are not on the roadmap). If you plan to host Claude Code Viewer remotely, carefully evaluate your security requirements and implement appropriate access controls at the infrastructure level.
 

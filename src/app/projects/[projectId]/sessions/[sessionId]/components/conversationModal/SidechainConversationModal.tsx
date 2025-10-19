@@ -11,12 +11,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import type { Conversation } from "@/lib/conversation-schema";
+import type {
+  Conversation,
+  SidechainConversation,
+} from "@/lib/conversation-schema";
 import type { ToolResultContent } from "@/lib/conversation-schema/content/ToolResultContentSchema";
 import { ConversationList } from "../conversationList/ConversationList";
 
 type SidechainConversationModalProps = {
-  conversation: Conversation;
+  conversation: SidechainConversation;
   sidechainConversations: Conversation[];
   getToolResult: (toolUseId: string) => ToolResultContent | undefined;
 };
@@ -25,7 +28,10 @@ const sidechainTitle = (conversations: Conversation[]): string => {
   const firstConversation = conversations.at(0);
 
   const defaultTitle = `${conversations.length} conversations (${
-    firstConversation?.type !== "summary" ? firstConversation?.uuid : ""
+    firstConversation?.type !== "summary" &&
+    firstConversation?.type !== "file-history-snapshot"
+      ? firstConversation?.uuid
+      : ""
   })`;
 
   if (!firstConversation) {
@@ -57,8 +63,7 @@ export const SidechainConversationModal: FC<
 > = ({ conversation, sidechainConversations, getToolResult }) => {
   const title = sidechainTitle(sidechainConversations);
 
-  const rootUuid =
-    conversation.type !== "summary" ? conversation.uuid : conversation.leafUuid;
+  const rootUuid = conversation.uuid;
 
   return (
     <Dialog>

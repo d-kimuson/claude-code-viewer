@@ -31,6 +31,11 @@ const getConversationKey = (conversation: Conversation) => {
     return `summary_${conversation.leafUuid}`;
   }
 
+  if (conversation.type === "file-history-snapshot") {
+    return `file-history-snapshot_${conversation.messageId}`;
+  }
+
+  conversation satisfies never;
   throw new Error(`Unknown conversation type: ${conversation}`);
 };
 
@@ -132,7 +137,9 @@ export const ConversationList: FC<ConversationListProps> = ({
         );
 
         const isSidechain =
-          conversation.type !== "summary" && conversation.isSidechain;
+          conversation.type !== "summary" &&
+          conversation.type !== "file-history-snapshot" &&
+          conversation.isSidechain;
 
         return [
           <li

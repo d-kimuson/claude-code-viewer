@@ -10,3 +10,5 @@ export const SystemEntrySchema = BaseEntrySchema.extend({
   toolUseID: z.string(),
   level: z.enum(["info"]),
 });
+
+export type SystemEntry = z.infer<typeof SystemEntrySchema>;

@@ -13,3 +13,5 @@ export const AssistantEntrySchema = BaseEntrySchema.extend({
   requestId: z.string().optional(),
   isApiErrorMessage: z.boolean().optional(),
 });
+
+export type AssistantEntry = z.infer<typeof AssistantEntrySchema>;

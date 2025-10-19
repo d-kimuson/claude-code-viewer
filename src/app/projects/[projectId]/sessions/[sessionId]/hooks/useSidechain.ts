@@ -1,21 +1,22 @@
 import { useCallback, useMemo } from "react";
-import type { Conversation } from "@/lib/conversation-schema";
+import type {
+  Conversation,
+  SidechainConversation,
+} from "@/lib/conversation-schema";
 
 export const useSidechain = (conversations: Conversation[]) => {
+  const sidechainConversations = conversations.filter(
+    (conv) => conv.type !== "summary" && conv.type !== "file-history-snapshot",
+  );
+
   const conversationMap = useMemo(() => {
-    return new Map<string, Conversation>(
-      conversations
-        .filter((conv) => conv.type !== "summary")
-        .map((conv) => [conv.uuid, conv] as const),
+    return new Map<string, SidechainConversation>(
+      sidechainConversations.map((conv) => [conv.uuid, conv] as const),
     );
-  }, [conversations]);
+  }, [sidechainConversations]);
 
   const getRootConversationRecursive = useCallback(
-    (conversation: Conversation): Conversation => {
-      if (conversation.type === "summary") {
-        return conversation;
-      }
-
+    (conversation: SidechainConversation): SidechainConversation => {
       if (conversation.parentUuid === null) {
         return conversation;
       }
@@ -31,19 +32,14 @@ export const useSidechain = (conversations: Conversation[]) => {
   );
 
   const sidechainConversationGroups = useMemo(() => {
-    const filtered = conversations
-      .filter((conv) => conv.type !== "summary")
-      .filter((conv) => conv.isSidechain === true);
+    const filtered = sidechainConversations.filter(
+      (conv) => conv.isSidechain === true,
+    );
 
-    const groups = new Map<string, Conversation[]>();
+    const groups = new Map<string, SidechainConversation[]>();
 
     for (const conv of filtered) {
       const rootConversation = getRootConversationRecursive(conv);
-
-      if (rootConversation.type === "summary") {
-        // たぶんない
-        continue;
-      }
 
       if (groups.has(rootConversation.uuid)) {
         groups.get(rootConversation.uuid)?.push(conv);
@@ -53,11 +49,14 @@ export const useSidechain = (conversations: Conversation[]) => {
     }
 
     return groups;
-  }, [conversations, getRootConversationRecursive]);
+  }, [sidechainConversations, getRootConversationRecursive]);
 
   const isRootSidechain = useCallback(
     (conversation: Conversation) => {
-      if (conversation.type === "summary") {
+      if (
+        conversation.type === "summary" ||
+        conversation.type === "file-history-snapshot"
+      ) {
         return false;
       }
 

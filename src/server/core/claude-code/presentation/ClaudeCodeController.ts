@@ -64,7 +64,7 @@ const LayerImpl = Effect.gen(function* () {
         response: {
           globalCommands: globalCommands,
           projectCommands: projectCommands,
-          defaultCommands: ["init", "compact"],
+          defaultCommands: ["init", "compact", "security-review", "review"],
         },
         status: 200,
       } as const satisfies ControllerResponse;

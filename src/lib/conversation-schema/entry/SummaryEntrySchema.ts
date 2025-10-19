@@ -5,3 +5,5 @@ export const SummaryEntrySchema = z.object({
   summary: z.string(),
   leafUuid: z.string().uuid(),
 });
+
+export type SummaryEntry = z.infer<typeof SummaryEntrySchema>;

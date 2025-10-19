@@ -3,6 +3,7 @@
 import { Trans, useLingui } from "@lingui/react";
 import {
   ArrowLeftIcon,
+  InfoIcon,
   MessageSquareIcon,
   PlugIcon,
   SettingsIcon,
@@ -13,6 +14,7 @@ import { type FC, Suspense, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { NotificationSettings } from "@/components/NotificationSettings";
 import { SettingsControls } from "@/components/SettingsControls";
+import { SystemInfoCard } from "@/components/SystemInfoCard";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -46,9 +48,9 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
     isFetchingNextPage,
   } = useProject(projectId);
   const sessions = projectData.pages.flatMap((page) => page.sessions);
-  const [activeTab, setActiveTab] = useState<"sessions" | "mcp" | "settings">(
-    "sessions",
-  );
+  const [activeTab, setActiveTab] = useState<
+    "sessions" | "mcp" | "settings" | "system-info"
+  >("sessions");
   const [mounted, setMounted] = useState(false);
 
   // Handle portal mounting
@@ -76,7 +78,9 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
     };
   }, [isOpen, onClose]);
 
-  const handleTabClick = (tab: "sessions" | "mcp" | "settings") => {
+  const handleTabClick = (
+    tab: "sessions" | "mcp" | "settings" | "system-info",
+  ) => {
     setActiveTab(tab);
   };
 
@@ -144,6 +148,8 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
             </Suspense>
           </div>
         );
+      case "system-info":
+        return <SystemInfoCard />;
       default:
         return null;
     }
@@ -278,6 +284,31 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
                   <Trans
                     id="settings.tab.title"
                     message="Settings for display and notifications"
+                  />
+                </TooltipContent>
+              </Tooltip>
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    type="button"
+                    onClick={() => handleTabClick("system-info")}
+                    className={cn(
+                      "w-8 h-8 flex items-center justify-center rounded-md transition-colors",
+                      "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                      activeTab === "system-info"
+                        ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-sm"
+                        : "text-sidebar-foreground/70",
+                    )}
+                    data-testid="system-info-tab-button-mobile"
+                  >
+                    <InfoIcon className="w-4 h-4" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="right">
+                  <Trans
+                    id="system.info.tab.title"
+                    message="Show system information"
                   />
                 </TooltipContent>
               </Tooltip>

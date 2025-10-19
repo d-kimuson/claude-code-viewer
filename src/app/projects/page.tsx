@@ -14,7 +14,7 @@ export default async function ProjectsPage() {
 
   return (
     <div className="flex h-screen max-h-screen overflow-hidden">
-      <GlobalSidebar className="hidden md:flex" />
+      <GlobalSidebar />
       <div className="flex-1 overflow-auto">
         <div className="container mx-auto px-4 py-8">
           <header className="mb-8">

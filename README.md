@@ -44,7 +44,7 @@ Note: Additional UI screenshots are available in [/e2e/snapshots/](./e2e/snapsho
 Run directly from npm without installation:
 
 ```bash
-PORT=3400 npx claude-code-viewer@latest
+PORT=3400 npx @kimuson/claude-code-viewer@latest
 ```
 
 Alternatively, install globally:

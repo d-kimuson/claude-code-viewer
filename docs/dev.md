@@ -49,7 +49,7 @@ Claude Code Viewer provides advanced control over Claude Code session processes:
 
 ### Requirements
 
-- **Node.js**: Version 20.12.0 or later (see [.node-version](../.node-version))
+- **Node.js**: Version 20.19.0 or later (see [.node-version](../.node-version))
 - **Package Manager**: pnpm 10.8.1 or later
 
 ### Initial Setup

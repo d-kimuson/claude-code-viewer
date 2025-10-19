@@ -363,6 +363,8 @@ const LayerImpl = Effect.gen(function* () {
       const currentProcess =
         yield* sessionProcessService.getSessionProcess(sessionProcessId);
 
+      currentProcess.def.abortController.abort();
+
       yield* sessionProcessService.toCompletedState({
         sessionProcessId: currentProcess.def.sessionProcessId,
         error: new Error("Task aborted"),

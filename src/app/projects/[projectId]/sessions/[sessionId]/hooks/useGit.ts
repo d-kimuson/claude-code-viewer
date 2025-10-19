@@ -47,3 +47,72 @@ export const useGitDiff = () => {
     },
   });
 };
+
+export const useCommitFiles = (projectId: string) => {
+  return useMutation({
+    mutationFn: async ({
+      files,
+      message,
+    }: {
+      files: string[];
+      message: string;
+    }) => {
+      const response = await honoClient.api.projects[
+        ":projectId"
+      ].git.commit.$post({
+        param: { projectId },
+        json: { projectId, files, message },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to commit files: ${response.statusText}`);
+      }
+
+      return response.json();
+    },
+  });
+};
+
+export const usePushCommits = (projectId: string) => {
+  return useMutation({
+    mutationFn: async () => {
+      const response = await honoClient.api.projects[
+        ":projectId"
+      ].git.push.$post({
+        param: { projectId },
+        json: { projectId },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to push commits: ${response.statusText}`);
+      }
+
+      return response.json();
+    },
+  });
+};
+
+export const useCommitAndPush = (projectId: string) => {
+  return useMutation({
+    mutationFn: async ({
+      files,
+      message,
+    }: {
+      files: string[];
+      message: string;
+    }) => {
+      const response = await honoClient.api.projects[":projectId"].git[
+        "commit-and-push"
+      ].$post({
+        param: { projectId },
+        json: { projectId, files, message },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to commit and push: ${response.statusText}`);
+      }
+
+      return response.json();
+    },
+  });
+};

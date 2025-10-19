@@ -27,7 +27,7 @@ const DiffHunkComponent: FC<DiffHunkProps> = ({ hunk }) => {
           {hunk.lines.map((line, index) => (
             <div
               key={`old-${line.oldLineNumber}-${index}`}
-              className="px-2 py-1 text-sm text-gray-400 dark:text-gray-600 font-mono text-right h-[28px]"
+              className="px-1 py-0.5 text-xs text-gray-400 dark:text-gray-600 font-mono text-right leading-tight"
             >
               {line.type !== "added" &&
               line.type !== "hunk" &&
@@ -42,7 +42,7 @@ const DiffHunkComponent: FC<DiffHunkProps> = ({ hunk }) => {
           {hunk.lines.map((line, index) => (
             <div
               key={`new-${line.newLineNumber}-${index}`}
-              className="px-2 py-1 text-sm text-gray-400 dark:text-gray-600 font-mono text-right h-[28px]"
+              className="px-1 py-0.5 text-xs text-gray-400 dark:text-gray-600 font-mono text-right leading-tight"
             >
               {line.type !== "deleted" &&
               line.type !== "hunk" &&
@@ -70,8 +70,8 @@ const DiffHunkComponent: FC<DiffHunkProps> = ({ hunk }) => {
                 line.type === "unchanged",
             })}
           >
-            <div className="flex-1 px-2 py-1">
-              <span className="font-mono text-sm whitespace-pre block">
+            <div className="flex-1 px-2 py-0.5">
+              <span className="font-mono text-xs whitespace-pre block leading-tight">
                 <span
                   className={cn({
                     "text-green-600 dark:text-green-400": line.type === "added",
@@ -121,13 +121,6 @@ const FileHeader: FC<FileHeaderProps> = ({
     return <span className="text-gray-600 dark:text-gray-400">M</span>;
   };
 
-  const getFileStatusText = () => {
-    if (fileDiff.isNew) return "added";
-    if (fileDiff.isDeleted) return "deleted";
-    if (fileDiff.isRenamed) return `renamed from ${fileDiff.oldFilename ?? ""}`;
-    return "modified";
-  };
-
   const handleCopyFilename = async (e: React.MouseEvent) => {
     e.stopPropagation();
     try {
@@ -142,52 +135,40 @@ const FileHeader: FC<FileHeaderProps> = ({
   return (
     <Button
       onClick={onToggleCollapse}
-      className="w-full bg-gray-50 dark:bg-gray-800 px-4 py-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors min-h-[4rem]"
+      className="w-full bg-gray-50 dark:bg-gray-800 px-3 py-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors sticky top-0 z-20"
     >
-      <div className="w-full space-y-1">
-        {/* Row 1: icon, status, and stats */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            {isCollapsed ? (
-              <ChevronRightIcon className="w-4 h-4 text-gray-500" />
-            ) : (
-              <ChevronDownIcon className="w-4 h-4 text-gray-500" />
-            )}
-            <div className="w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-xs font-mono">
-              {getFileStatusIcon()}
-            </div>
-            <span className="text-xs text-gray-500 dark:text-gray-400">
-              {getFileStatusText()}
+      <div className="w-full flex items-center gap-2">
+        {isCollapsed ? (
+          <ChevronRightIcon className="w-4 h-4 text-gray-500 flex-shrink-0" />
+        ) : (
+          <ChevronDownIcon className="w-4 h-4 text-gray-500 flex-shrink-0" />
+        )}
+        <div className="w-5 h-5 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-xs font-mono flex-shrink-0">
+          {getFileStatusIcon()}
+        </div>
+        <span className="font-mono text-xs font-medium text-black dark:text-white text-left truncate flex-1 min-w-0">
+          {fileDiff.filename}
+        </span>
+        <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400 flex-shrink-0">
+          {fileDiff.linesAdded > 0 && (
+            <span className="text-green-600 dark:text-green-400">
+              +{fileDiff.linesAdded}
             </span>
-          </div>
-          <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
-            {fileDiff.linesAdded > 0 && (
-              <span className="text-green-600 dark:text-green-400">
-                +{fileDiff.linesAdded}
-              </span>
-            )}
-            {fileDiff.linesDeleted > 0 && (
-              <span className="text-red-600 dark:text-red-400">
-                -{fileDiff.linesDeleted}
-              </span>
-            )}
-          </div>
+          )}
+          {fileDiff.linesDeleted > 0 && (
+            <span className="text-red-600 dark:text-red-400">
+              -{fileDiff.linesDeleted}
+            </span>
+          )}
         </div>
-
-        {/* Row 2: filename with copy button */}
-        <div className="w-full flex items-center gap-2">
-          <span className="font-mono text-sm font-medium text-black dark:text-white text-left truncate flex-1 min-w-0">
-            {fileDiff.filename}
-          </span>
-          <Button
-            onClick={handleCopyFilename}
-            variant="ghost"
-            size="sm"
-            className="flex-shrink-0 p-1 h-6 w-6 hover:bg-gray-200 dark:hover:bg-gray-600"
-          >
-            <CopyIcon className="w-3 h-3 text-gray-500 dark:text-gray-400" />
-          </Button>
-        </div>
+        <Button
+          onClick={handleCopyFilename}
+          variant="ghost"
+          size="sm"
+          className="flex-shrink-0 p-1 h-5 w-5 hover:bg-gray-200 dark:hover:bg-gray-600"
+        >
+          <CopyIcon className="w-3 h-3 text-gray-500 dark:text-gray-400" />
+        </Button>
       </div>
       {fileDiff.isBinary && (
         <div className="mt-2 text-xs text-gray-500 dark:text-gray-400 text-left">

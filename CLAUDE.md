@@ -2,6 +2,11 @@
 
 ## Critical Rules (Read First)
 
+**Communication**:
+- Always communicate with users in Japanese (日本語)
+- Code, comments, and commit messages should be in English
+- This document is in English for context efficiency
+
 **NEVER**:
 - Use `as` type casting (explain the problem to the user instead)
 - Use raw `fetch` or bypass TanStack Query for API calls

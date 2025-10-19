@@ -13,6 +13,7 @@ import { TypeSafeSSE } from "../core/events/functions/typeSafeSSE";
 import { SSEController } from "../core/events/presentation/SSEController";
 import { FileSystemController } from "../core/file-system/presentation/FileSystemController";
 import { GitController } from "../core/git/presentation/GitController";
+import { CommitRequestSchema, PushRequestSchema } from "../core/git/schema";
 import { EnvService } from "../core/platform/services/EnvService";
 import { UserConfigService } from "../core/platform/services/UserConfigService";
 import { ProjectController } from "../core/project/presentation/ProjectController";
@@ -211,6 +212,57 @@ export const routes = (app: HonoAppType) =>
               c,
               gitController
                 .getGitDiff({
+                  ...c.req.param(),
+                  ...c.req.valid("json"),
+                })
+                .pipe(Effect.provide(runtime)),
+            );
+            return response;
+          },
+        )
+
+        .post(
+          "/projects/:projectId/git/commit",
+          zValidator("json", CommitRequestSchema),
+          async (c) => {
+            const response = await effectToResponse(
+              c,
+              gitController
+                .commitFiles({
+                  ...c.req.param(),
+                  ...c.req.valid("json"),
+                })
+                .pipe(Effect.provide(runtime)),
+            );
+            return response;
+          },
+        )
+
+        .post(
+          "/projects/:projectId/git/push",
+          zValidator("json", PushRequestSchema),
+          async (c) => {
+            const response = await effectToResponse(
+              c,
+              gitController
+                .pushCommits({
+                  ...c.req.param(),
+                  ...c.req.valid("json"),
+                })
+                .pipe(Effect.provide(runtime)),
+            );
+            return response;
+          },
+        )
+
+        .post(
+          "/projects/:projectId/git/commit-and-push",
+          zValidator("json", CommitRequestSchema),
+          async (c) => {
+            const response = await effectToResponse(
+              c,
+              gitController
+                .commitAndPush({
                   ...c.req.param(),
                   ...c.req.valid("json"),
                 })

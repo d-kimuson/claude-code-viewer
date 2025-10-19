@@ -1,3 +1,4 @@
+import { Trans } from "@lingui/react";
 import { FolderSearch, Home } from "lucide-react";
 import Link from "next/link";
 
@@ -9,8 +10,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { initializeI18n } from "../../../lib/i18n/initializeI18n";
 
-export default function ProjectNotFoundPage() {
+export default async function ProjectNotFoundPage() {
+  await initializeI18n();
+
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
       <Card className="w-full max-w-2xl">
@@ -18,10 +22,17 @@ export default function ProjectNotFoundPage() {
           <div className="flex items-center gap-3">
             <FolderSearch className="size-6 text-muted-foreground" />
             <div>
-              <CardTitle>Project Not Found</CardTitle>
+              <CardTitle>
+                <Trans
+                  id="project.not_found.title"
+                  message="Project Not Found"
+                />
+              </CardTitle>
               <CardDescription>
-                The project you are looking for does not exist or has been
-                removed
+                <Trans
+                  id="project.not_found.description"
+                  message="The project you are looking for does not exist or has been removed"
+                />
               </CardDescription>
             </div>
           </div>
@@ -31,7 +42,10 @@ export default function ProjectNotFoundPage() {
             <Button asChild variant="default">
               <Link href="/projects">
                 <Home />
-                Back to Projects
+                <Trans
+                  id="project.not_found.back_to_projects"
+                  message="Back to Projects"
+                />
               </Link>
             </Button>
           </div>

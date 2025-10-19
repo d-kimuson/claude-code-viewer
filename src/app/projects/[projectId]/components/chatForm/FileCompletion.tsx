@@ -1,3 +1,4 @@
+import { useLingui } from "@lingui/react";
 import { CheckIcon, FileIcon, FolderIcon } from "lucide-react";
 import type React from "react";
 import {
@@ -63,6 +64,7 @@ export const FileCompletion = forwardRef<
   FileCompletionRef,
   FileCompletionProps
 >(({ projectId, inputValue, onFileSelect, className }, ref) => {
+  const { i18n } = useLingui();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -262,7 +264,7 @@ export const FileCompletion = forwardRef<
             className="absolute z-50 w-full bg-popover border border-border rounded-lg shadow-xl overflow-hidden"
             style={{ height: "15rem" }}
             role="listbox"
-            aria-label="Available files and directories"
+            aria-label={i18n._("Available files and directories")}
           >
             <div className="h-full overflow-y-auto">
               {filteredEntries.length > 0 && (

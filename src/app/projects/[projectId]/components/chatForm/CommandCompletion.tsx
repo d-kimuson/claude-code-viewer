@@ -1,3 +1,4 @@
+import { useLingui } from "@lingui/react";
 import { useQuery } from "@tanstack/react-query";
 import { CheckIcon, TerminalIcon } from "lucide-react";
 import type React from "react";
@@ -33,6 +34,7 @@ export const CommandCompletion = forwardRef<
   CommandCompletionRef,
   CommandCompletionProps
 >(({ projectId, inputValue, onCommandSelect, className }, ref) => {
+  const { i18n } = useLingui();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -188,7 +190,7 @@ export const CommandCompletion = forwardRef<
             className="absolute z-50 w-full bg-popover border border-border rounded-lg shadow-xl overflow-hidden"
             style={{ height: "15rem" }}
             role="listbox"
-            aria-label="Available commands"
+            aria-label={i18n._("Available commands")}
           >
             <div className="h-full overflow-y-auto">
               {filteredCommands.length > 0 && (

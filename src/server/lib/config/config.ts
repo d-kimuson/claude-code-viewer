@@ -1,4 +1,5 @@
 import z from "zod";
+import { localeSchema } from "../../../lib/i18n/schema";
 
 export const userConfigSchema = z.object({
   hideNoUserMessageSession: z.boolean().optional().default(true),
@@ -11,6 +12,7 @@ export const userConfigSchema = z.object({
     .enum(["acceptEdits", "bypassPermissions", "default", "plan"])
     .optional()
     .default("default"),
+  locale: localeSchema.optional().default("en"),
 });
 
 export type UserConfig = z.infer<typeof userConfigSchema>;

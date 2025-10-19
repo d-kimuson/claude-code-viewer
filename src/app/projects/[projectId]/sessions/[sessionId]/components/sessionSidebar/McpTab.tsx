@@ -1,5 +1,6 @@
 "use client";
 
+import { Trans, useLingui } from "@lingui/react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { RefreshCwIcon } from "lucide-react";
 import type { FC } from "react";
@@ -8,6 +9,7 @@ import { mcpListQuery } from "../../../../../../../lib/api/queries";
 
 export const McpTab: FC<{ projectId: string }> = ({ projectId }) => {
   const queryClient = useQueryClient();
+  const { i18n } = useLingui();
 
   const {
     data: mcpData,
@@ -29,7 +31,7 @@ export const McpTab: FC<{ projectId: string }> = ({ projectId }) => {
       <div className="p-3 border-b border-sidebar-border">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-semibold text-sidebar-foreground">
-            MCP Servers
+            <Trans id="mcp.title" message="MCP Servers" />
           </h2>
           <Button
             onClick={handleReload}
@@ -37,7 +39,7 @@ export const McpTab: FC<{ projectId: string }> = ({ projectId }) => {
             size="sm"
             className="h-7 w-7 p-0"
             disabled={isLoading}
-            title="Reload MCP servers"
+            title={i18n._("Reload MCP servers")}
           >
             <RefreshCwIcon
               className={`w-3 h-3 ${isLoading ? "animate-spin" : ""}`}
@@ -49,19 +51,25 @@ export const McpTab: FC<{ projectId: string }> = ({ projectId }) => {
       <div className="flex-1 overflow-auto p-3">
         {isLoading && (
           <div className="flex items-center justify-center h-32">
-            <div className="text-sm text-muted-foreground">Loading...</div>
+            <div className="text-sm text-muted-foreground">
+              <Trans id="common.loading" message="Loading..." />
+            </div>
           </div>
         )}
 
         {error && (
           <div className="text-sm text-red-500">
-            Failed to load MCP servers: {(error as Error).message}
+            <Trans
+              id="mcp.error.load_failed"
+              message="Failed to load MCP servers: {error}"
+              values={{ error: (error as Error).message }}
+            />
           </div>
         )}
 
         {mcpData && mcpData.servers.length === 0 && (
           <div className="text-sm text-muted-foreground text-center py-8">
-            No MCP servers found
+            <Trans id="mcp.no.servers" message="No MCP servers found" />
           </div>
         )}
 

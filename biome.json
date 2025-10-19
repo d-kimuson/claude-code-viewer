@@ -28,6 +28,9 @@
       "recommended": true,
       "style": {
         "noProcessEnv": "error"
+      },
+      "correctness": {
+        "useUniqueElementIds": "off"
       }
     }
   },

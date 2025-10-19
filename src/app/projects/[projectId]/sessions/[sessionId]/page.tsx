@@ -4,6 +4,7 @@ import {
   projectDetailQuery,
   sessionDetailQuery,
 } from "../../../../../lib/api/queries";
+import { initializeI18n } from "../../../../../lib/i18n/initializeI18n";
 import { SessionPageContent } from "./components/SessionPageContent";
 
 type PageParams = {
@@ -41,6 +42,7 @@ interface SessionPageProps {
 
 export default async function SessionPage({ params }: SessionPageProps) {
   const { projectId, sessionId } = await params;
+  await initializeI18n();
 
   return <SessionPageContent projectId={projectId} sessionId={sessionId} />;
 }

@@ -1,15 +1,17 @@
-"use client";
-
+import { Trans } from "@lingui/react";
 import { HistoryIcon } from "lucide-react";
 import { Suspense } from "react";
 import { GlobalSidebar } from "@/components/GlobalSidebar";
+import { initializeI18n } from "../../lib/i18n/initializeI18n";
 import { CreateProjectDialog } from "./components/CreateProjectDialog";
 import { ProjectList } from "./components/ProjectList";
 
 export const dynamic = "force-dynamic";
 export const fetchCache = "force-no-store";
 
-export default function ProjectsPage() {
+export default async function ProjectsPage() {
+  await initializeI18n();
+
   return (
     <div className="flex h-screen max-h-screen overflow-hidden">
       <GlobalSidebar className="hidden md:flex" />
@@ -21,22 +23,29 @@ export default function ProjectsPage() {
               Claude Code Viewer
             </h1>
             <p className="text-muted-foreground">
-              Browse your Claude Code conversation history and project
-              interactions
+              <Trans
+                id="projects.page.description"
+                message="Browse your Claude Code conversation history and project interactions"
+              />
             </p>
           </header>
 
           <main>
             <section>
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold">Your Projects</h2>
+                <h2 className="text-xl font-semibold">
+                  <Trans id="projects.page.title" message="Your Projects" />
+                </h2>
                 <CreateProjectDialog />
               </div>
               <Suspense
                 fallback={
                   <div className="flex items-center justify-center py-12">
                     <div className="text-muted-foreground">
-                      Loading projects...
+                      <Trans
+                        id="projects.page.loading"
+                        message="Loading projects..."
+                      />
                     </div>
                   </div>
                 }

@@ -2,6 +2,8 @@
  * Audio notification utilities for task completion alerts
  */
 
+import { Trans } from "@lingui/react";
+import type { ReactNode } from "react";
 import type { NotificationSoundType } from "./atoms/notifications";
 
 /**
@@ -94,13 +96,15 @@ export function playNotificationSound(soundType: NotificationSoundType) {
 /**
  * Get display name for sound types
  */
-export function getSoundDisplayName(soundType: NotificationSoundType): string {
-  const displayNames: Record<NotificationSoundType, string> = {
-    none: "なし",
-    beep: "ビープ",
-    chime: "チャイム",
-    ping: "ピン",
-    pop: "ポップ",
+export function getSoundDisplayName(
+  soundType: NotificationSoundType,
+): ReactNode {
+  const displayNames: Record<NotificationSoundType, ReactNode> = {
+    none: <Trans id="notification.none" message="None" />,
+    beep: <Trans id="notification.beep" message="Beep" />,
+    chime: <Trans id="notification.chime" message="Chime" />,
+    ping: <Trans id="notification.ping" message="Ping" />,
+    pop: <Trans id="notification.pop" message="Pop" />,
   };
 
   return displayNames[soundType];

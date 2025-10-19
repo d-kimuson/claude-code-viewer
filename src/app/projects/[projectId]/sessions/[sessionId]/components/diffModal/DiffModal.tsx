@@ -1,5 +1,6 @@
 "use client";
 
+import { Trans, useLingui } from "@lingui/react";
 import {
   ChevronDown,
   ChevronUp,
@@ -52,9 +53,12 @@ const DiffSummaryComponent: FC<DiffSummaryProps> = ({ summary, className }) => {
           <FileText className="h-4 w-4 text-gray-600 dark:text-gray-400" />
           <span className="font-medium">
             <span className="hidden sm:inline">
-              {summary.filesChanged} files changed
+              {summary.filesChanged}{" "}
+              <Trans id="diff.files.changed" message="files changed" />
             </span>
-            <span className="sm:hidden">{summary.filesChanged} files</span>
+            <span className="sm:hidden">
+              {summary.filesChanged} <Trans id="diff.files" message="files" />
+            </span>
           </span>
         </div>
         <div className="flex items-center gap-3">
@@ -111,7 +115,7 @@ const RefSelector: FC<RefSelectorProps> = ({
       </label>
       <Select value={value} onValueChange={onValueChange}>
         <SelectTrigger className="w-full sm:w-80">
-          <SelectValue placeholder={`Select ${label.toLowerCase()}`} />
+          <SelectValue />
         </SelectTrigger>
         <SelectContent id={id}>
           {refs.map((ref) => (
@@ -140,6 +144,7 @@ export const DiffModal: FC<DiffModalProps> = ({
   defaultCompareFrom = "HEAD",
   defaultCompareTo = "working",
 }) => {
+  const { i18n } = useLingui();
   const commitMessageId = useId();
   const [compareFrom, setCompareFrom] = useState(defaultCompareFrom);
   const [compareTo, setCompareTo] = useState(defaultCompareTo);
@@ -177,7 +182,7 @@ export const DiffModal: FC<DiffModalProps> = ({
           {
             name: "working" as const,
             type: "working" as const,
-            displayName: "Uncommitted changes",
+            displayName: i18n._("Uncommitted changes"),
           },
           {
             name: "HEAD" as const,
@@ -295,7 +300,7 @@ export const DiffModal: FC<DiffModalProps> = ({
       }
     } catch (_error) {
       console.error("[DiffModal.handleCommit] Error:", _error);
-      toast.error("Failed to commit");
+      toast.error(i18n._("Failed to commit"));
     }
   };
 
@@ -313,7 +318,7 @@ export const DiffModal: FC<DiffModalProps> = ({
       }
     } catch (_error) {
       console.error("[DiffModal.handlePush] Error:", _error);
-      toast.error("Failed to push");
+      toast.error(i18n._("Failed to push"));
     }
   };
 
@@ -348,7 +353,7 @@ export const DiffModal: FC<DiffModalProps> = ({
           `Committed (${result.commitSha?.slice(0, 7)}), but push failed: ${result.error}`,
           {
             action: {
-              label: "Retry Push",
+              label: i18n._("Retry Push"),
               onClick: handlePush,
             },
           },
@@ -361,7 +366,7 @@ export const DiffModal: FC<DiffModalProps> = ({
       }
     } catch (_error) {
       console.error("[DiffModal.handleCommitAndPush] Error:", _error);
-      toast.error("Failed to commit and push");
+      toast.error(i18n._("Failed to commit and push"));
     }
   };
 
@@ -380,13 +385,13 @@ export const DiffModal: FC<DiffModalProps> = ({
         <div className="flex flex-col sm:flex-row gap-2 sm:items-end">
           <div className="flex flex-col sm:flex-row gap-2 flex-1">
             <RefSelector
-              label="Compare from"
+              label={i18n._("Compare from")}
               value={compareFrom}
               onValueChange={setCompareFrom}
               refs={gitRefs.filter((ref) => ref.name !== "working")}
             />
             <RefSelector
-              label="Compare to"
+              label={i18n._("Compare to")}
               value={compareTo}
               onValueChange={setCompareTo}
               refs={gitRefs}
@@ -405,7 +410,7 @@ export const DiffModal: FC<DiffModalProps> = ({
             {isDiffLoading ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Loading...
+                <Trans id="common.loading" message="Loading..." />
               </>
             ) : (
               <RefreshCcwIcon className="w-4 h-4" />
@@ -455,7 +460,7 @@ export const DiffModal: FC<DiffModalProps> = ({
                   className="w-full flex items-center justify-between p-2 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors rounded-t-lg"
                 >
                   <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Commit Changes
+                    <Trans id="diff.commit.changes" message="Commit Changes" />
                   </span>
                   {isCommitSectionExpanded ? (
                     <ChevronUp className="h-4 w-4 text-gray-600 dark:text-gray-400" />
@@ -476,7 +481,7 @@ export const DiffModal: FC<DiffModalProps> = ({
                           onClick={handleSelectAll}
                           disabled={commitMutation.isPending}
                         >
-                          Select All
+                          <Trans id="diff.select.all" message="Select All" />
                         </Button>
                         <Button
                           size="sm"
@@ -484,7 +489,10 @@ export const DiffModal: FC<DiffModalProps> = ({
                           onClick={handleDeselectAll}
                           disabled={commitMutation.isPending}
                         >
-                          Deselect All
+                          <Trans
+                            id="diff.deselect.all"
+                            message="Deselect All"
+                          />
                         </Button>
                         <span className="text-sm text-gray-600 dark:text-gray-400">
                           {selectedCount} / {diffData.data.files.length} files
@@ -524,7 +532,10 @@ export const DiffModal: FC<DiffModalProps> = ({
                         htmlFor={commitMessageId}
                         className="text-sm font-medium text-gray-700 dark:text-gray-300"
                       >
-                        Commit message
+                        <Trans
+                          id="diff.commit.message"
+                          message="Commit message"
+                        />
                       </label>
                       <Textarea
                         id={commitMessageId}
@@ -547,10 +558,13 @@ export const DiffModal: FC<DiffModalProps> = ({
                         {commitMutation.isPending ? (
                           <>
                             <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                            Committing...
+                            <Trans
+                              id="diff.committing"
+                              message="Committing..."
+                            />
                           </>
                         ) : (
-                          "Commit"
+                          <Trans id="diff.commit" message="Commit" />
                         )}
                       </Button>
                       <Button
@@ -562,10 +576,10 @@ export const DiffModal: FC<DiffModalProps> = ({
                         {pushMutation.isPending ? (
                           <>
                             <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                            Pushing...
+                            <Trans id="diff.pushing" message="Pushing..." />
                           </>
                         ) : (
-                          "Push"
+                          <Trans id="diff.push" message="Push" />
                         )}
                       </Button>
                       <Button
@@ -579,19 +593,33 @@ export const DiffModal: FC<DiffModalProps> = ({
                         {commitAndPushMutation.isPending ? (
                           <>
                             <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                            Committing & Pushing...
+                            <Trans
+                              id="diff.committing.pushing"
+                              message="Committing & Pushing..."
+                            />
                           </>
                         ) : (
-                          "Commit & Push"
+                          <Trans
+                            id="diff.commit.push"
+                            message="Commit & Push"
+                          />
                         )}
                       </Button>
                       {isCommitDisabled &&
                         !commitMutation.isPending &&
                         !commitAndPushMutation.isPending && (
                           <span className="text-xs text-gray-500 dark:text-gray-400">
-                            {selectedCount === 0
-                              ? "Select at least one file"
-                              : "Enter a commit message"}
+                            {selectedCount === 0 ? (
+                              <Trans
+                                id="diff.select.file"
+                                message="Select at least one file"
+                              />
+                            ) : (
+                              <Trans
+                                id="diff.enter.message"
+                                message="Enter a commit message"
+                              />
+                            )}
                           </span>
                         )}
                     </div>
@@ -626,7 +654,7 @@ export const DiffModal: FC<DiffModalProps> = ({
             <div className="text-center space-y-2">
               <Loader2 className="w-8 h-8 animate-spin mx-auto" />
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                Loading diff...
+                <Trans id="diff.loading" message="Loading diff..." />
               </p>
             </div>
           </div>

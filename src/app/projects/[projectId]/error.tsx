@@ -1,5 +1,6 @@
 "use client";
 
+import { Trans } from "@lingui/react";
 import { AlertCircle, ArrowLeft, RefreshCw } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -29,9 +30,17 @@ export default function ProjectErrorPage({
           <div className="flex items-center gap-3">
             <AlertCircle className="size-6 text-destructive" />
             <div>
-              <CardTitle>Failed to load project</CardTitle>
+              <CardTitle>
+                <Trans
+                  id="project.error.title"
+                  message="Failed to load project"
+                />
+              </CardTitle>
               <CardDescription>
-                We encountered an error while loading this project
+                <Trans
+                  id="project.error.description"
+                  message="We encountered an error while loading this project"
+                />
               </CardDescription>
             </div>
           </div>
@@ -39,12 +48,15 @@ export default function ProjectErrorPage({
         <CardContent className="space-y-4">
           <Alert variant="destructive">
             <AlertCircle />
-            <AlertTitle>Error Details</AlertTitle>
+            <AlertTitle>
+              <Trans id="project.error.details_title" message="Error Details" />
+            </AlertTitle>
             <AlertDescription>
               <code className="text-xs">{error.message}</code>
               {error.digest && (
                 <div className="mt-2 text-xs text-muted-foreground">
-                  Error ID: {error.digest}
+                  <Trans id="project.error.error_id" message="Error ID:" />{" "}
+                  {error.digest}
                 </div>
               )}
             </AlertDescription>
@@ -53,11 +65,14 @@ export default function ProjectErrorPage({
           <div className="flex gap-2">
             <Button onClick={reset} variant="default">
               <RefreshCw />
-              Try Again
+              <Trans id="project.error.try_again" message="Try Again" />
             </Button>
             <Button onClick={() => router.push("/projects")} variant="outline">
               <ArrowLeft />
-              Back to Projects
+              <Trans
+                id="project.error.back_to_projects"
+                message="Back to Projects"
+              />
             </Button>
           </div>
         </CardContent>

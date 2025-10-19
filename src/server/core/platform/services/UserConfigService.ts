@@ -8,6 +8,7 @@ const LayerImpl = Effect.gen(function* () {
     unifySameTitleSession: true,
     enterKeyBehavior: "shift-enter-send",
     permissionMode: "default",
+    locale: "ja",
   });
 
   const setUserConfig = (newConfig: UserConfig) =>

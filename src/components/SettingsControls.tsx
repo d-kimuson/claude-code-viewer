@@ -1,8 +1,9 @@
 "use client";
 
+import { Trans, useLingui } from "@lingui/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useTheme } from "next-themes";
-import { type FC, useCallback, useId } from "react";
+import { type FC, useId } from "react";
 import { useConfig } from "@/app/hooks/useConfig";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -12,11 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  configQuery,
-  projectDetailQuery,
-  projectListQuery,
-} from "../lib/api/queries";
+import { projectDetailQuery, projectListQuery } from "../lib/api/queries";
 
 interface SettingsControlsProps {
   openingProjectId: string;
@@ -34,30 +31,25 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
   const checkboxId = useId();
   const enterKeyBehaviorId = useId();
   const permissionModeId = useId();
+  const localeId = useId();
   const themeId = useId();
   const { config, updateConfig } = useConfig();
   const queryClient = useQueryClient();
   const { theme, setTheme } = useTheme();
-
-  const onConfigChanged = useCallback(async () => {
-    await queryClient.refetchQueries({
-      queryKey: configQuery.queryKey,
-    });
-    await queryClient.refetchQueries({
-      queryKey: projectListQuery.queryKey,
-    });
-    void queryClient.refetchQueries({
-      queryKey: projectDetailQuery(openingProjectId).queryKey,
-    });
-  }, [queryClient, openingProjectId]);
+  const { i18n } = useLingui();
 
   const handleHideNoUserMessageChange = async () => {
     const newConfig = {
       ...config,
       hideNoUserMessageSession: !config?.hideNoUserMessageSession,
     };
-    updateConfig(newConfig);
-    await onConfigChanged();
+    updateConfig(newConfig, {
+      onSuccess: async () => {
+        await queryClient.refetchQueries({
+          queryKey: projectListQuery.queryKey,
+        });
+      },
+    });
   };
 
   const handleUnifySameTitleChange = async () => {
@@ -65,8 +57,13 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
       ...config,
       unifySameTitleSession: !config?.unifySameTitleSession,
     };
-    updateConfig(newConfig);
-    await onConfigChanged();
+    updateConfig(newConfig, {
+      onSuccess: async () => {
+        await queryClient.refetchQueries({
+          queryKey: projectDetailQuery(openingProjectId).queryKey,
+        });
+      },
+    });
   };
 
   const handleEnterKeyBehaviorChange = async (value: string) => {
@@ -78,7 +75,6 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
         | "command-enter-send",
     };
     updateConfig(newConfig);
-    await onConfigChanged();
   };
 
   const handlePermissionModeChange = async (value: string) => {
@@ -91,7 +87,18 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
         | "plan",
     };
     updateConfig(newConfig);
-    await onConfigChanged();
+  };
+
+  const handleLocaleChange = async (value: string) => {
+    const newConfig = {
+      ...config,
+      locale: value as "ja" | "en",
+    };
+    updateConfig(newConfig, {
+      onSuccess: async () => {
+        window.location.reload();
+      },
+    });
   };
 
   return (
@@ -107,13 +114,19 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
             htmlFor={checkboxId}
             className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
           >
-            Hide sessions without user messages
+            <Trans
+              id="settings.session.hide_no_user_message"
+              message="Hide sessions without user messages"
+            />
           </label>
         )}
       </div>
       {showDescriptions && (
         <p className="text-xs text-muted-foreground mt-1 ml-6">
-          Only show sessions that contain user commands or messages
+          <Trans
+            id="settings.session.hide_no_user_message.description"
+            message="Only show sessions that contain user commands or messages"
+          />
         </p>
       )}
 
@@ -128,14 +141,19 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
             htmlFor={`${checkboxId}-unify`}
             className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
           >
-            Unify sessions with same title
+            <Trans
+              id="settings.session.unify_same_title"
+              message="Unify sessions with same title"
+            />
           </label>
         )}
       </div>
       {showDescriptions && (
         <p className="text-xs text-muted-foreground mt-1 ml-6">
-          Show only the latest session when multiple sessions have the same
-          title
+          <Trans
+            id="settings.session.unify_same_title.description"
+            message="Show only the latest session when multiple sessions have the same title"
+          />
         </p>
       )}
 
@@ -145,7 +163,10 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
             htmlFor={enterKeyBehaviorId}
             className="text-sm font-medium leading-none"
           >
-            Enter Key Behavior
+            <Trans
+              id="settings.input.enter_key_behavior"
+              message="Enter Key Behavior"
+            />
           </label>
         )}
         <Select
@@ -153,21 +174,35 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
           onValueChange={handleEnterKeyBehaviorChange}
         >
           <SelectTrigger id={enterKeyBehaviorId} className="w-full">
-            <SelectValue placeholder="Select enter key behavior" />
+            <SelectValue placeholder={i18n._("Select enter key behavior")} />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="shift-enter-send">
-              Shift+Enter to send (default)
+              <Trans
+                id="settings.input.enter_key_behavior.shift_enter"
+                message="Shift+Enter to send (default)"
+              />
             </SelectItem>
-            <SelectItem value="enter-send">Enter to send</SelectItem>
+            <SelectItem value="enter-send">
+              <Trans
+                id="settings.input.enter_key_behavior.enter"
+                message="Enter to send"
+              />
+            </SelectItem>
             <SelectItem value="command-enter-send">
-              Command+Enter to send
+              <Trans
+                id="settings.input.enter_key_behavior.command_enter"
+                message="Command+Enter to send"
+              />
             </SelectItem>
           </SelectContent>
         </Select>
         {showDescriptions && (
           <p className="text-xs text-muted-foreground mt-1">
-            Choose how the Enter key behaves in message input
+            <Trans
+              id="settings.input.enter_key_behavior.description"
+              message="Choose how the Enter key behaves in message input"
+            />
           </p>
         )}
       </div>
@@ -178,7 +213,7 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
             htmlFor={permissionModeId}
             className="text-sm font-medium leading-none"
           >
-            Permission Mode
+            <Trans id="settings.permission.mode" message="Permission Mode" />
           </label>
         )}
         <Select
@@ -186,23 +221,76 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
           onValueChange={handlePermissionModeChange}
         >
           <SelectTrigger id={permissionModeId} className="w-full">
-            <SelectValue placeholder="Select permission mode" />
+            <SelectValue placeholder={i18n._("Select permission mode")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="default">Default (Ask permission)</SelectItem>
+            <SelectItem value="default">
+              <Trans
+                id="settings.permission.mode.default"
+                message="Default (Ask permission)"
+              />
+            </SelectItem>
             <SelectItem value="acceptEdits">
-              Accept Edits (Auto-approve file edits)
+              <Trans
+                id="settings.permission.mode.accept_edits"
+                message="Accept Edits (Auto-approve file edits)"
+              />
             </SelectItem>
             <SelectItem value="bypassPermissions">
-              Bypass Permissions (No prompts)
+              <Trans
+                id="settings.permission.mode.bypass_permissions"
+                message="Bypass Permissions (No prompts)"
+              />
             </SelectItem>
-            <SelectItem value="plan">Plan Mode (Planning only)</SelectItem>
+            <SelectItem value="plan">
+              <Trans
+                id="settings.permission.mode.plan"
+                message="Plan Mode (Planning only)"
+              />
+            </SelectItem>
           </SelectContent>
         </Select>
         {showDescriptions && (
           <p className="text-xs text-muted-foreground mt-1">
-            Control how Claude Code handles permission requests for file
-            operations
+            <Trans
+              id="settings.permission.mode.description"
+              message="Control how Claude Code handles permission requests for file operations"
+            />
+          </p>
+        )}
+      </div>
+
+      <div className="space-y-2">
+        {showLabels && (
+          <label
+            htmlFor={localeId}
+            className="text-sm font-medium leading-none"
+          >
+            <Trans id="settings.locale" message="Language" />
+          </label>
+        )}
+        <Select
+          value={config?.locale || "ja"}
+          onValueChange={handleLocaleChange}
+        >
+          <SelectTrigger id={localeId} className="w-full">
+            <SelectValue placeholder={i18n._("Select language")} />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="ja">
+              <Trans id="settings.locale.ja" message="日本語" />
+            </SelectItem>
+            <SelectItem value="en">
+              <Trans id="settings.locale.en" message="English" />
+            </SelectItem>
+          </SelectContent>
+        </Select>
+        {showDescriptions && (
+          <p className="text-xs text-muted-foreground mt-1">
+            <Trans
+              id="settings.locale.description"
+              message="Choose your preferred language"
+            />
           </p>
         )}
       </div>
@@ -210,22 +298,31 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
       <div className="space-y-2">
         {showLabels && (
           <label htmlFor={themeId} className="text-sm font-medium leading-none">
-            Theme
+            <Trans id="settings.theme" message="Theme" />
           </label>
         )}
         <Select value={theme || "system"} onValueChange={setTheme}>
           <SelectTrigger id={themeId} className="w-full">
-            <SelectValue placeholder="Select theme" />
+            <SelectValue placeholder={i18n._("Select theme")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="light">Light</SelectItem>
-            <SelectItem value="dark">Dark</SelectItem>
-            <SelectItem value="system">System</SelectItem>
+            <SelectItem value="light">
+              <Trans id="settings.theme.light" message="Light" />
+            </SelectItem>
+            <SelectItem value="dark">
+              <Trans id="settings.theme.dark" message="Dark" />
+            </SelectItem>
+            <SelectItem value="system">
+              <Trans id="settings.theme.system" message="System" />
+            </SelectItem>
           </SelectContent>
         </Select>
         {showDescriptions && (
           <p className="text-xs text-muted-foreground mt-1">
-            Choose your preferred color theme
+            <Trans
+              id="settings.theme.description"
+              message="Choose your preferred color theme"
+            />
           </p>
         )}
       </div>

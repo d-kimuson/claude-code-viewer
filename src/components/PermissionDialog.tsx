@@ -20,6 +20,8 @@ import type {
   PermissionRequest,
   PermissionResponse,
 } from "@/types/permissions";
+import { useConfig } from "../app/hooks/useConfig";
+import { formatLocaleDate } from "../lib/date/formatLocaleDate";
 
 interface PermissionDialogProps {
   permissionRequest: PermissionRequest | null;
@@ -34,6 +36,7 @@ export const PermissionDialog = ({
 }: PermissionDialogProps) => {
   const [isResponding, setIsResponding] = useState(false);
   const [isParametersExpanded, setIsParametersExpanded] = useState(false);
+  const { config } = useConfig();
 
   if (!permissionRequest) return null;
 
@@ -124,7 +127,10 @@ export const PermissionDialog = ({
                 </Badge>
               </div>
               <span className="text-xs text-muted-foreground">
-                {new Date(permissionRequest.timestamp).toLocaleTimeString()}
+                {formatLocaleDate(permissionRequest.timestamp, {
+                  locale: config.locale,
+                  target: "time",
+                })}
               </span>
             </div>
           </div>

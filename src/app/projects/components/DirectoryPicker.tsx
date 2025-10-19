@@ -1,5 +1,6 @@
 "use client";
 
+import { Trans } from "@lingui/react";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronRight, Folder } from "lucide-react";
 import { type FC, useState } from "react";
@@ -34,16 +35,17 @@ export const DirectoryPicker: FC<DirectoryPickerProps> = ({ onPathChange }) => {
     <div className="border rounded-md">
       <div className="p-3 border-b bg-muted/50 flex items-center justify-between">
         <p className="text-sm font-medium">
-          Current: <span className="font-mono">{data?.currentPath || "~"}</span>
+          <Trans id="directory_picker.current" message="Current:" />{" "}
+          <span className="font-mono">{data?.currentPath || "~"}</span>
         </p>
         <Button size="sm" onClick={handleSelect}>
-          Select This Directory
+          <Trans id="directory_picker.select" message="Select This Directory" />
         </Button>
       </div>
       <div className="max-h-96 overflow-auto">
         {isLoading ? (
           <div className="p-8 text-center text-sm text-muted-foreground">
-            Loading...
+            <Trans id="directory_picker.loading" message="Loading..." />
           </div>
         ) : data?.entries && data.entries.length > 0 ? (
           <div className="divide-y">
@@ -67,7 +69,10 @@ export const DirectoryPicker: FC<DirectoryPickerProps> = ({ onPathChange }) => {
           </div>
         ) : (
           <div className="p-8 text-center text-sm text-muted-foreground">
-            No directories found
+            <Trans
+              id="directory_picker.no_directories"
+              message="No directories found"
+            />
           </div>
         )}
       </div>

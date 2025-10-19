@@ -3,15 +3,17 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 
 import { Toaster } from "../components/ui/sonner";
-import { QueryClientProviderWrapper } from "../lib/api/QueryClientProviderWrapper";
-import { SSEProvider } from "../lib/sse/components/SSEProvider";
-import { RootErrorBoundary } from "./components/RootErrorBoundary";
-
-import "./globals.css";
 import { honoClient } from "../lib/api/client";
+import { QueryClientProviderWrapper } from "../lib/api/QueryClientProviderWrapper";
 import { configQuery } from "../lib/api/queries";
+import { LinguiServerProvider } from "../lib/i18n/LinguiServerProvider";
+import { SSEProvider } from "../lib/sse/components/SSEProvider";
+import { getUserConfigOnServerComponent } from "../server/lib/config/getUserConfigOnServerComponent";
+import { RootErrorBoundary } from "./components/RootErrorBoundary";
 import { SSEEventListeners } from "./components/SSEEventListeners";
 import { SyncSessionProcess } from "./components/SyncSessionProcess";
+
+import "./globals.css";
 
 export const dynamic = "force-dynamic";
 export const fetchCache = "force-no-store";
@@ -36,6 +38,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const userConfig = await getUserConfigOnServerComponent();
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
@@ -48,26 +51,28 @@ export default async function RootLayout({
     .then((response) => response.json());
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={userConfig.locale} suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <RootErrorBoundary>
-            <QueryClientProviderWrapper>
-              <SSEProvider>
-                <SSEEventListeners>
-                  <SyncSessionProcess
-                    initProcesses={initSessionProcesses.processes}
-                  >
-                    {children}
-                  </SyncSessionProcess>
-                </SSEEventListeners>
-              </SSEProvider>
-            </QueryClientProviderWrapper>
-          </RootErrorBoundary>
-          <Toaster position="top-right" />
-        </ThemeProvider>
+        <LinguiServerProvider locale={userConfig.locale}>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <RootErrorBoundary>
+              <QueryClientProviderWrapper>
+                <SSEProvider>
+                  <SSEEventListeners>
+                    <SyncSessionProcess
+                      initProcesses={initSessionProcesses.processes}
+                    >
+                      {children}
+                    </SyncSessionProcess>
+                  </SSEEventListeners>
+                </SSEProvider>
+              </QueryClientProviderWrapper>
+            </RootErrorBoundary>
+            <Toaster position="top-right" />
+          </ThemeProvider>
+        </LinguiServerProvider>
       </body>
     </html>
   );

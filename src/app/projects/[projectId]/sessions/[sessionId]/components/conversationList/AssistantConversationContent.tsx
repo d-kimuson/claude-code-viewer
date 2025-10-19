@@ -1,5 +1,6 @@
 "use client";
 
+import { Trans } from "@lingui/react";
 import { ChevronDown, Lightbulb, Settings } from "lucide-react";
 import Image from "next/image";
 import { useTheme } from "next-themes";
@@ -49,7 +50,7 @@ export const AssistantConversationContent: FC<{
               <div className="flex items-center gap-2">
                 <Lightbulb className="h-4 w-4 text-muted-foreground group-hover:text-yellow-600 transition-colors" />
                 <CardTitle className="text-sm font-medium group-hover:text-foreground transition-colors">
-                  Thinking
+                  <Trans id="assistant.thinking" message="Thinking" />
                 </CardTitle>
                 <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180" />
               </div>
@@ -75,7 +76,9 @@ export const AssistantConversationContent: FC<{
         <CardHeader className="py-0 px-4">
           <div className="flex items-center gap-2">
             <Settings className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-            <CardTitle className="text-sm font-medium">Tool Use</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              <Trans id="assistant.tool_use" message="Tool Use" />
+            </CardTitle>
             <Badge
               variant="outline"
               className="border-blue-300 text-blue-700 dark:border-blue-700 dark:text-blue-300"
@@ -92,7 +95,10 @@ export const AssistantConversationContent: FC<{
             <CollapsibleTrigger asChild>
               <div className="flex items-center justify-between cursor-pointer hover:bg-muted/50 rounded p-2 -mx-2 transition-all duration-200 group">
                 <h4 className="text-xs font-medium text-muted-foreground group-hover:text-foreground">
-                  Input Parameters
+                  <Trans
+                    id="assistant.tool.input_parameters"
+                    message="Input Parameters"
+                  />
                 </h4>
                 <ChevronDown className="h-3 w-3 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180" />
               </div>
@@ -113,7 +119,7 @@ export const AssistantConversationContent: FC<{
               <CollapsibleTrigger asChild>
                 <div className="flex items-center justify-between cursor-pointer hover:bg-muted/50 rounded p-2 -mx-2 transition-all duration-200 group">
                   <h4 className="text-xs font-medium text-muted-foreground group-hover:text-foreground">
-                    Tool Result
+                    <Trans id="assistant.tool.result" message="Tool Result" />
                   </h4>
                   <ChevronDown className="h-3 w-3 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180" />
                 </div>

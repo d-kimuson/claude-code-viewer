@@ -58,7 +58,7 @@ export default function SessionErrorPage({
               Try Again
             </Button>
             <Button
-              onClick={() => router.push(`/projects/${projectId}`)}
+              onClick={() => router.push(`/projects/${projectId}/latest`)}
               variant="outline"
             >
               <ArrowLeft />

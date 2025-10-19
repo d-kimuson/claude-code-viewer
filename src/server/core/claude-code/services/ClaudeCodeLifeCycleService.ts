@@ -293,6 +293,14 @@ const LayerImpl = Effect.gen(function* () {
                 }),
               );
 
+              if (sessionInitializedPromise.status === "pending") {
+                sessionInitializedPromise.reject(error);
+              }
+
+              if (sessionFileCreatedPromise.status === "pending") {
+                sessionFileCreatedPromise.reject(error);
+              }
+
               return "continue" as const;
             });
 
@@ -302,6 +310,14 @@ const LayerImpl = Effect.gen(function* () {
             }
           }
         } catch (error) {
+          if (sessionInitializedPromise.status === "pending") {
+            sessionInitializedPromise.reject(error);
+          }
+
+          if (sessionFileCreatedPromise.status === "pending") {
+            sessionFileCreatedPromise.reject(error);
+          }
+
           await Effect.runPromise(
             sessionProcessService.changeTaskState({
               sessionProcessId: sessionProcess.def.sessionProcessId,
@@ -319,6 +335,12 @@ const LayerImpl = Effect.gen(function* () {
       const daemonPromise = handleSessionProcessDaemon()
         .catch((error) => {
           console.error("Error occur in task daemon process", error);
+          if (sessionInitializedPromise.status === "pending") {
+            sessionInitializedPromise.reject(error);
+          }
+          if (sessionFileCreatedPromise.status === "pending") {
+            sessionFileCreatedPromise.reject(error);
+          }
           throw error;
         })
         .finally(() => {

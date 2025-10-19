@@ -14,7 +14,8 @@
       "!src/lib/$path.ts",
       "!**/*.css",
       "!dist",
-      "!playwright.config.ts"
+      "!playwright.config.ts",
+      "!src/lib/i18n/locales/*/messages.ts"
     ]
   },
   "formatter": {

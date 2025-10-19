@@ -1,5 +1,6 @@
 "use client";
 
+import { Trans } from "@lingui/react";
 import { useMutation } from "@tanstack/react-query";
 import {
   GitCompareIcon,
@@ -145,7 +146,10 @@ export const SessionPageContent: FC<{
                 <LoaderIcon className="w-3 h-3 sm:w-4 sm:h-4 animate-spin text-primary" />
                 <div className="flex-1">
                   <p className="text-xs sm:text-sm font-medium">
-                    Conversation is in progress...
+                    <Trans
+                      id="session.conversation.in.progress"
+                      message="Conversation is in progress..."
+                    />
                   </p>
                   <div className="w-full bg-primary/10 rounded-full h-1 mt-1 overflow-hidden">
                     <div
@@ -167,7 +171,9 @@ export const SessionPageContent: FC<{
                   ) : (
                     <XIcon className="w-3 h-3 sm:w-4 sm:h-4" />
                   )}
-                  <span className="hidden sm:inline">Abort</span>
+                  <span className="hidden sm:inline">
+                    <Trans id="session.conversation.abort" message="Abort" />
+                  </span>
                 </Button>
               </div>
             )}
@@ -177,7 +183,10 @@ export const SessionPageContent: FC<{
                 <PauseIcon className="w-3 h-3 sm:w-4 sm:h-4 text-orange-600 dark:text-orange-400 animate-pulse" />
                 <div className="flex-1">
                   <p className="text-xs sm:text-sm font-medium text-orange-900 dark:text-orange-200">
-                    Conversation is paused...
+                    <Trans
+                      id="session.conversation.paused"
+                      message="Conversation is paused..."
+                    />
                   </p>
                 </div>
                 <Button
@@ -194,7 +203,9 @@ export const SessionPageContent: FC<{
                   ) : (
                     <XIcon className="w-3 h-3 sm:w-4 sm:h-4" />
                   )}
-                  <span className="hidden sm:inline">Abort</span>
+                  <span className="hidden sm:inline">
+                    <Trans id="session.conversation.abort" message="Abort" />
+                  </span>
                 </Button>
               </div>
             )}
@@ -220,7 +231,10 @@ export const SessionPageContent: FC<{
                     <div className="absolute inset-0 rounded-full bg-primary/20 animate-ping" />
                   </div>
                   <p className="text-sm text-muted-foreground font-medium animate-pulse">
-                    Claude Code is processing...
+                    <Trans
+                      id="session.processing"
+                      message="Claude Code is processing..."
+                    />
                   </p>
                 </div>
               </div>

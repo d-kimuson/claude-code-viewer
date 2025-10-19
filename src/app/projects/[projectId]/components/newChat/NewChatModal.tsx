@@ -1,3 +1,4 @@
+import { Trans } from "@lingui/react";
 import { MessageSquareIcon } from "lucide-react";
 import { type FC, type ReactNode, useState } from "react";
 import {
@@ -29,7 +30,7 @@ export const NewChatModal: FC<{
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <MessageSquareIcon className="w-5 h-5" />
-            Start New Chat
+            <Trans id="chat.modal.title" message="Start New Chat" />
           </DialogTitle>
         </DialogHeader>
         <NewChat projectId={projectId} onSuccess={handleSuccess} />

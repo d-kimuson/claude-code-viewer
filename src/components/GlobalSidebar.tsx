@@ -1,5 +1,6 @@
 "use client";
 
+import { Trans } from "@lingui/react";
 import type { LucideIcon } from "lucide-react";
 import { SettingsIcon } from "lucide-react";
 import { type FC, type ReactNode, Suspense, useState } from "react";
@@ -16,7 +17,7 @@ import { SettingsControls } from "./SettingsControls";
 export interface SidebarTab {
   id: string;
   icon: LucideIcon;
-  title: string;
+  title: ReactNode;
   content: ReactNode;
 }
 
@@ -38,13 +39,23 @@ export const GlobalSidebar: FC<GlobalSidebarProps> = ({
   const settingsTab: SidebarTab = {
     id: "settings",
     icon: SettingsIcon,
-    title: "表示と通知の設定",
+    title: (
+      <Trans
+        id="settings.tab.title"
+        message="Settings for display and notifications"
+      />
+    ),
     content: (
       <div className="h-full flex flex-col">
         <div className="border-b border-sidebar-border p-4">
-          <h2 className="font-semibold text-lg">Settings</h2>
+          <h2 className="font-semibold text-lg">
+            <Trans id="settings.title" message="Settings" />
+          </h2>
           <p className="text-xs text-sidebar-foreground/70">
-            Display and behavior preferences
+            <Trans
+              id="settings.description"
+              message="Display and behavior preferences"
+            />
           </p>
         </div>
 
@@ -52,7 +63,7 @@ export const GlobalSidebar: FC<GlobalSidebarProps> = ({
           fallback={
             <div className="flex-1 flex items-center justify-center p-4">
               <div className="text-sm text-sidebar-foreground/70">
-                Loading settings...
+                <Trans id="settings.loading" message="Loading settings..." />
               </div>
             </div>
           }
@@ -60,14 +71,20 @@ export const GlobalSidebar: FC<GlobalSidebarProps> = ({
           <div className="flex-1 overflow-y-auto p-4 space-y-6">
             <div className="space-y-4">
               <h3 className="font-medium text-sm text-sidebar-foreground">
-                Session Display
+                <Trans
+                  id="settings.section.session_display"
+                  message="Session Display"
+                />
               </h3>
               <SettingsControls openingProjectId={projectId ?? ""} />
             </div>
 
             <div className="space-y-4">
               <h3 className="font-medium text-sm text-sidebar-foreground">
-                Notifications
+                <Trans
+                  id="settings.section.notifications"
+                  message="Notifications"
+                />
               </h3>
               <NotificationSettings />
             </div>

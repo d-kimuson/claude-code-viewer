@@ -1,5 +1,6 @@
 "use client";
 
+import { Trans } from "@lingui/react";
 import { useAtomValue } from "jotai";
 import { MessageSquareIcon, PlusIcon } from "lucide-react";
 import Link from "next/link";
@@ -7,7 +8,9 @@ import type { FC } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { formatLocaleDate } from "../../../../../../../lib/date/formatLocaleDate";
 import type { Session } from "../../../../../../../server/core/types";
+import { useConfig } from "../../../../../../hooks/useConfig";
 import { NewChatModal } from "../../../../components/newChat/NewChatModal";
 import { firstUserMessageToTitle } from "../../../../services/firstCommandToTitle";
 import { sessionProcessesAtom } from "../../store/sessionProcessesAtom";
@@ -30,6 +33,7 @@ export const SessionsTab: FC<{
   isMobile = false,
 }) => {
   const sessionProcesses = useAtomValue(sessionProcessesAtom);
+  const { config } = useConfig();
 
   // Sort sessions: Running > Paused > Others, then by lastModifiedAt (newest first)
   const sortedSessions = [...sessions].sort((a, b) => {
@@ -68,7 +72,9 @@ export const SessionsTab: FC<{
     <div className="h-full flex flex-col">
       <div className="border-b border-sidebar-border p-4">
         <div className="flex items-center justify-between mb-2">
-          <h2 className="font-semibold text-lg">Sessions</h2>
+          <h2 className="font-semibold text-lg">
+            <Trans id="sessions.title" message="Sessions" />
+          </h2>
           <NewChatModal
             projectId={projectId}
             trigger={
@@ -83,13 +89,13 @@ export const SessionsTab: FC<{
                 }
               >
                 <PlusIcon className="w-3.5 h-3.5" />
-                New
+                <Trans id="sessions.new" message="New" />
               </Button>
             }
           />
         </div>
         <p className="text-xs text-sidebar-foreground/70">
-          {sessions.length} total
+          {sessions.length} <Trans id="sessions.total" message="total" />
         </p>
       </div>
 
@@ -131,7 +137,11 @@ export const SessionsTab: FC<{
                         isPaused && "bg-yellow-500 text-white",
                       )}
                     >
-                      {isRunning ? "Running" : "Paused"}
+                      {isRunning ? (
+                        <Trans id="session.status.running" message="Running" />
+                      ) : (
+                        <Trans id="session.status.paused" message="Paused" />
+                      )}
                     </Badge>
                   )}
                 </div>
@@ -142,13 +152,10 @@ export const SessionsTab: FC<{
                   </div>
                   {session.lastModifiedAt && (
                     <span className="text-xs text-sidebar-foreground/60">
-                      {new Date(session.lastModifiedAt).toLocaleDateString(
-                        "en-US",
-                        {
-                          month: "short",
-                          day: "numeric",
-                        },
-                      )}
+                      {formatLocaleDate(session.lastModifiedAt, {
+                        locale: config.locale,
+                        target: "time",
+                      })}
                     </span>
                   )}
                 </div>
@@ -167,7 +174,11 @@ export const SessionsTab: FC<{
               size="sm"
               className="w-full"
             >
-              {isFetchingNextPage ? "Loading..." : "Load More"}
+              {isFetchingNextPage ? (
+                <Trans id="common.loading" message="Loading..." />
+              ) : (
+                <Trans id="sessions.load.more" message="Load More" />
+              )}
             </Button>
           </div>
         )}

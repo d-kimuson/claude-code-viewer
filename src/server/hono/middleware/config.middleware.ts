@@ -1,18 +1,13 @@
 import { getCookie, setCookie } from "hono/cookie";
 import { createMiddleware } from "hono/factory";
-import { userConfigSchema } from "../../lib/config/config";
+import type { UserConfig } from "../../lib/config/config";
+import { parseUserConfig } from "../../lib/config/parseUserConfig";
 import type { HonoContext } from "../app";
 
 export const configMiddleware = createMiddleware<HonoContext>(
   async (c, next) => {
     const cookie = getCookie(c, "ccv-config");
-    const parsed = (() => {
-      try {
-        return userConfigSchema.parse(JSON.parse(cookie ?? "{}"));
-      } catch {
-        return userConfigSchema.parse({});
-      }
-    })();
+    const parsed = parseUserConfig(cookie);
 
     if (cookie === undefined) {
       setCookie(
@@ -21,7 +16,10 @@ export const configMiddleware = createMiddleware<HonoContext>(
         JSON.stringify({
           hideNoUserMessageSession: true,
           unifySameTitleSession: true,
-        }),
+          enterKeyBehavior: "shift-enter-send",
+          permissionMode: "default",
+          locale: "ja",
+        } satisfies UserConfig),
       );
     }
 

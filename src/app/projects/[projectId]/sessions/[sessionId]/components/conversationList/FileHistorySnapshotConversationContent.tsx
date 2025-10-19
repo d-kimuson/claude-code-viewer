@@ -6,6 +6,8 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import type { FileHistorySnapshotEntry } from "@/lib/conversation-schema/entry/FileHIstorySnapshotEntrySchema";
+import { formatLocaleDate } from "../../../../../../../lib/date/formatLocaleDate";
+import { useConfig } from "../../../../../../hooks/useConfig";
 
 export const FileHistorySnapshotConversationContent: FC<{
   conversation: FileHistorySnapshotEntry;
@@ -13,6 +15,7 @@ export const FileHistorySnapshotConversationContent: FC<{
   const fileCount = Object.keys(
     conversation.snapshot.trackedFileBackups,
   ).length;
+  const { config } = useConfig();
 
   return (
     <Collapsible>
@@ -30,7 +33,9 @@ export const FileHistorySnapshotConversationContent: FC<{
             <div className="text-xs">
               <span className="text-muted-foreground">Timestamp: </span>
               <span>
-                {new Date(conversation.snapshot.timestamp).toLocaleString()}
+                {formatLocaleDate(conversation.snapshot.timestamp, {
+                  locale: config.locale,
+                })}
               </span>
             </div>
             <div className="text-xs">

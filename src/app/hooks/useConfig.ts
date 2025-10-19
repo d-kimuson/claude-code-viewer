@@ -22,20 +22,28 @@ export const useConfig = () => {
       });
       return await response.json();
     },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: configQuery.queryKey,
-      });
-    },
   });
 
   return {
     config: data?.config,
     updateConfig: useCallback(
-      (config: UserConfig) => {
-        updateConfigMutation.mutate(config);
+      (
+        config: UserConfig,
+        callbacks?: {
+          onSuccess: () => void | Promise<void>;
+        },
+      ) => {
+        updateConfigMutation.mutate(config, {
+          onSuccess: async () => {
+            await queryClient.invalidateQueries({
+              queryKey: configQuery.queryKey,
+            });
+
+            await callbacks?.onSuccess?.();
+          },
+        });
       },
-      [updateConfigMutation],
+      [updateConfigMutation, queryClient],
     ),
   } as const;
 };

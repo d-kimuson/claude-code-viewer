@@ -1,5 +1,6 @@
 "use client";
 
+import { Trans, useLingui } from "@lingui/react";
 import {
   ArrowLeftIcon,
   MessageSquareIcon,
@@ -37,6 +38,7 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
   isOpen,
   onClose,
 }) => {
+  const { i18n } = useLingui();
   const {
     data: projectData,
     fetchNextPage,
@@ -110,7 +112,10 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
               fallback={
                 <div className="flex-1 flex items-center justify-center p-4">
                   <div className="text-sm text-sidebar-foreground/70">
-                    Loading settings...
+                    <Trans
+                      id="settings.loading"
+                      message="Loading settings..."
+                    />
                   </div>
                 </div>
               }
@@ -118,14 +123,20 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
               <div className="flex-1 overflow-y-auto p-4 space-y-6">
                 <div className="space-y-4">
                   <h3 className="font-medium text-sm text-sidebar-foreground">
-                    Session Display
+                    <Trans
+                      id="settings.session.display"
+                      message="Session Display"
+                    />
                   </h3>
                   <SettingsControls openingProjectId={projectId} />
                 </div>
 
                 <div className="space-y-4">
                   <h3 className="font-medium text-sm text-sidebar-foreground">
-                    Notifications
+                    <Trans
+                      id="settings.notifications"
+                      message="Notifications"
+                    />
                   </h3>
                   <NotificationSettings />
                 </div>
@@ -159,7 +170,7 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
             onClose();
           }
         }}
-        aria-label="Close sidebar"
+        aria-label={i18n._("Close sidebar")}
       />
 
       {/* Sidebar */}
@@ -182,7 +193,12 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
                 </Link>
               </TooltipTrigger>
               <TooltipContent side="right">
-                <p>プロジェクト一覧に戻る</p>
+                <p>
+                  <Trans
+                    id="sidebar.back.to.projects"
+                    message="Back to projects"
+                  />
+                </p>
               </TooltipContent>
             </Tooltip>
 
@@ -205,7 +221,12 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
                   </button>
                 </TooltipTrigger>
                 <TooltipContent side="right">
-                  <p>セッション一覧を表示</p>
+                  <p>
+                    <Trans
+                      id="sidebar.show.session.list"
+                      message="Show session list"
+                    />
+                  </p>
                 </TooltipContent>
               </Tooltip>
 
@@ -227,7 +248,12 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
                   </button>
                 </TooltipTrigger>
                 <TooltipContent side="right">
-                  <p>MCPサーバー設定を表示</p>
+                  <p>
+                    <Trans
+                      id="sidebar.show.mcp.settings"
+                      message="Show MCP server settings"
+                    />
+                  </p>
                 </TooltipContent>
               </Tooltip>
 
@@ -249,7 +275,10 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
                   </button>
                 </TooltipTrigger>
                 <TooltipContent side="right">
-                  <p>表示と通知の設定</p>
+                  <Trans
+                    id="settings.tab.title"
+                    message="Settings for display and notifications"
+                  />
                 </TooltipContent>
               </Tooltip>
             </div>

@@ -1,3 +1,4 @@
+import { Trans, useLingui } from "@lingui/react";
 import {
   AlertCircleIcon,
   LoaderIcon,
@@ -18,7 +19,7 @@ export interface ChatInputProps {
   isPending: boolean;
   error?: Error | null;
   placeholder: string;
-  buttonText: string;
+  buttonText: React.ReactNode;
   minHeight?: string;
   containerClassName?: string;
   disabled?: boolean;
@@ -37,6 +38,7 @@ export const ChatInput: FC<ChatInputProps> = ({
   disabled = false,
   buttonSize = "lg",
 }) => {
+  const { i18n } = useLingui();
   const [message, setMessage] = useState("");
   const [cursorPosition, setCursorPosition] = useState<{
     relative: { top: number; left: number };
@@ -168,7 +170,10 @@ export const ChatInput: FC<ChatInputProps> = ({
         <div className="flex items-center gap-2.5 px-4 py-3 text-sm text-red-600 dark:text-red-400 bg-gradient-to-r from-red-50 to-red-100/50 dark:from-red-950/30 dark:to-red-900/20 border border-red-200/50 dark:border-red-800/50 rounded-xl mb-4 animate-in fade-in slide-in-from-top-2 duration-300 shadow-sm">
           <AlertCircleIcon className="w-4 h-4 shrink-0 mt-0.5" />
           <span className="font-medium">
-            Failed to send message. Please try again.
+            <Trans
+              id="chat.error.send_failed"
+              message="Failed to send message. Please try again."
+            />
           </span>
         </div>
       )}
@@ -202,7 +207,7 @@ export const ChatInput: FC<ChatInputProps> = ({
               className={`${minHeight} resize-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent px-5 py-4 text-lg transition-all duration-200 placeholder:text-muted-foreground/60`}
               disabled={isPending || disabled}
               maxLength={4000}
-              aria-label="Message input with completion support"
+              aria-label={i18n._("Message input with completion support")}
               aria-describedby={helpId}
               aria-expanded={message.startsWith("/") || message.includes("@")}
               aria-haspopup="listbox"
@@ -223,7 +228,10 @@ export const ChatInput: FC<ChatInputProps> = ({
               {(message.startsWith("/") || message.includes("@")) && (
                 <span className="text-xs text-blue-600 dark:text-blue-400 font-medium flex items-center gap-1">
                   <SparklesIcon className="w-3 h-3" />
-                  Autocomplete active
+                  <Trans
+                    id="chat.autocomplete.active"
+                    message="Autocomplete active"
+                  />
                 </span>
               )}
             </div>
@@ -237,7 +245,12 @@ export const ChatInput: FC<ChatInputProps> = ({
               {isPending ? (
                 <>
                   <LoaderIcon className="w-4 h-4 animate-spin" />
-                  <span>Processing...</span>
+                  <span>
+                    <Trans
+                      id="chat.status.processing"
+                      message="Processing..."
+                    />
+                  </span>
                 </>
               ) : (
                 <>

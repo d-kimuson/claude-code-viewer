@@ -10,6 +10,7 @@ if [ -d "dist/standalone" ]; then
   rm -rf dist/standalone
 fi
 
+pnpm lingui:compile
 pnpm exec next build
 cp -r public .next/standalone/
 cp -r .next/static .next/standalone/.next/

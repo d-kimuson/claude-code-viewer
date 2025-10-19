@@ -1,0 +1,1354 @@
+{
+  "Select enter key behavior": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SettingsControls.tsx", 177]],
+    "translation": "Enterキーの動作を選択"
+  },
+  "Select permission mode": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SettingsControls.tsx", 224]],
+    "translation": "権限モードを選択"
+  },
+  "Select language": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SettingsControls.tsx", 277]],
+    "translation": "言語を選択"
+  },
+  "Select theme": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SettingsControls.tsx", 306]],
+    "translation": "テーマを選択"
+  },
+  "Reload MCP servers": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/McpTab.tsx",
+        42
+      ]
+    ],
+    "translation": "MCPサーバーを再読み込み"
+  },
+  "Close sidebar": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
+        173
+      ]
+    ],
+    "translation": "サイドバーを閉じる"
+  },
+  "Type your message... (Start with / for commands, @ for files, Enter to send)": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ContinueChat.tsx",
+        28
+      ],
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ResumeChat.tsx",
+        27
+      ]
+    ],
+    "translation": "メッセージを入力... （/でコマンド、@でファイル、Enterで送信）"
+  },
+  "Type your message... (Start with / for commands, @ for files, Command+Enter to send)": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ContinueChat.tsx",
+        33
+      ],
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ResumeChat.tsx",
+        32
+      ]
+    ],
+    "translation": "メッセージを入力... （/でコマンド、@でファイル、Command+Enterで送信）"
+  },
+  "Type your message... (Start with / for commands, @ for files, Shift+Enter to send)": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ContinueChat.tsx",
+        37
+      ],
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ResumeChat.tsx",
+        36
+      ]
+    ],
+    "translation": "メッセージを入力... （/でコマンド、@でファイル、Shift+Enterで送信）"
+  },
+  "Type your message here... (Start with / for commands, @ for files, Enter to send)": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      ["src/app/projects/[projectId]/components/newChat/NewChat.tsx", 24]
+    ],
+    "translation": "ここにメッセージを入力... （/でコマンド、@でファイル、Enterで送信）"
+  },
+  "Type your message here... (Start with / for commands, @ for files, Command+Enter to send)": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      ["src/app/projects/[projectId]/components/newChat/NewChat.tsx", 29]
+    ],
+    "translation": "ここにメッセージを入力... （/でコマンド、@でファイル、Command+Enterで送信）"
+  },
+  "Type your message here... (Start with / for commands, @ for files, Shift+Enter to send)": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      ["src/app/projects/[projectId]/components/newChat/NewChat.tsx", 33]
+    ],
+    "translation": "ここにメッセージを入力... （/でコマンド、@でファイル、Shift+Enterで送信）"
+  },
+  "Available commands": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/CommandCompletion.tsx",
+        193
+      ]
+    ],
+    "translation": "利用可能なコマンド"
+  },
+  "Message input with completion support": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      ["src/app/projects/[projectId]/components/chatForm/ChatInput.tsx", 210]
+    ],
+    "translation": "補完機能付きメッセージ入力"
+  },
+  "Available files and directories": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/FileCompletion.tsx",
+        267
+      ]
+    ],
+    "translation": "利用可能なファイルとディレクトリ"
+  },
+  "Uncommitted changes": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
+        185
+      ]
+    ],
+    "translation": "未コミットの変更"
+  },
+  "Failed to commit": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
+        303
+      ]
+    ],
+    "translation": "コミットに失敗しました"
+  },
+  "Failed to push": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
+        321
+      ]
+    ],
+    "translation": "プッシュに失敗しました"
+  },
+  "Retry Push": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
+        356
+      ]
+    ],
+    "translation": "プッシュを再試行"
+  },
+  "Failed to commit and push": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
+        369
+      ]
+    ],
+    "translation": "コミットとプッシュに失敗しました"
+  },
+  "Compare from": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
+        388
+      ]
+    ],
+    "translation": "比較元"
+  },
+  "Compare to": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
+        394
+      ]
+    ],
+    "translation": "比較先"
+  },
+  "session.conversation.abort": {
+    "message": "Abort",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageContent.tsx",
+        175
+      ],
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageContent.tsx",
+        207
+      ]
+    ],
+    "translation": "中止"
+  },
+  "settings.permission.mode.accept_edits": {
+    "message": "Accept Edits (Auto-approve file edits)",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SettingsControls.tsx", 234]],
+    "translation": "編集を承認（ファイル編集を自動承認）"
+  },
+  "chat.autocomplete.active": {
+    "message": "Autocomplete active",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      ["src/app/projects/[projectId]/components/chatForm/ChatInput.tsx", 231]
+    ],
+    "translation": "オートコンプリート有効"
+  },
+  "sidebar.back.to.projects": {
+    "message": "Back to projects",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
+        197
+      ],
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
+        100
+      ]
+    ],
+    "translation": "プロジェクト一覧に戻る"
+  },
+  "project.not_found.back_to_projects": {
+    "message": "Back to Projects",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/app/projects/[projectId]/not-found.tsx", 42]],
+    "translation": "プロジェクト一覧に戻る"
+  },
+  "project.error.back_to_projects": {
+    "message": "Back to Projects",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/app/projects/[projectId]/error.tsx", 72]],
+    "translation": "プロジェクト一覧に戻る"
+  },
+  "notification.beep": {
+    "message": "Beep",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/lib/notifications.tsx", 104]],
+    "translation": "ビープ音"
+  },
+  "projects.page.description": {
+    "message": "Browse your Claude Code conversation history and project interactions",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/app/projects/page.tsx", 26]],
+    "translation": "Claude Codeの会話履歴とプロジェクトの操作を閲覧"
+  },
+  "settings.permission.mode.bypass_permissions": {
+    "message": "Bypass Permissions (No prompts)",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SettingsControls.tsx", 240]],
+    "translation": "権限をバイパス（プロンプトなし）"
+  },
+  "common.action.cancel": {
+    "message": "Cancel",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/app/projects/components/CreateProjectDialog.tsx", 97]],
+    "translation": "キャンセル"
+  },
+  "notification.chime": {
+    "message": "Chime",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/lib/notifications.tsx", 105]],
+    "translation": "チャイム"
+  },
+  "settings.input.enter_key_behavior.description": {
+    "message": "Choose how the Enter key behaves in message input",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SettingsControls.tsx", 202]],
+    "translation": "メッセージ入力でのEnterキーの動作を選択"
+  },
+  "settings.theme.description": {
+    "message": "Choose your preferred color theme",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SettingsControls.tsx", 322]],
+    "translation": "お好みのカラーテーマを選択"
+  },
+  "settings.locale.description": {
+    "message": "Choose your preferred language",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SettingsControls.tsx", 290]],
+    "translation": "お好みの言語を選択"
+  },
+  "session.processing": {
+    "message": "Claude Code is processing...",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageContent.tsx",
+        234
+      ]
+    ],
+    "translation": "Claude Codeが処理中..."
+  },
+  "settings.input.enter_key_behavior.command_enter": {
+    "message": "Command+Enter to send",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SettingsControls.tsx", 193]],
+    "translation": "Command+Enterで送信"
+  },
+  "diff.commit": {
+    "message": "Commit",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
+        567
+      ]
+    ],
+    "translation": "コミット"
+  },
+  "diff.commit.push": {
+    "message": "Commit & Push",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
+        602
+      ]
+    ],
+    "translation": "コミット＆プッシュ"
+  },
+  "diff.commit.changes": {
+    "message": "Commit Changes",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
+        463
+      ]
+    ],
+    "translation": "変更をコミット"
+  },
+  "diff.commit.message": {
+    "message": "Commit message",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
+        535
+      ]
+    ],
+    "translation": "コミットメッセージ"
+  },
+  "diff.committing.pushing": {
+    "message": "Committing & Pushing...",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
+        596
+      ]
+    ],
+    "translation": "コミット＆プッシュ中..."
+  },
+  "diff.committing": {
+    "message": "Committing...",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
+        561
+      ]
+    ],
+    "translation": "コミット中..."
+  },
+  "settings.permission.mode.description": {
+    "message": "Control how Claude Code handles permission requests for file operations",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SettingsControls.tsx", 255]],
+    "translation": "ファイル操作の権限リクエストの処理方法を制御"
+  },
+  "session.conversation.in.progress": {
+    "message": "Conversation is in progress...",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageContent.tsx",
+        149
+      ]
+    ],
+    "translation": "会話を進行中..."
+  },
+  "session.conversation.paused": {
+    "message": "Conversation is paused...",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageContent.tsx",
+        186
+      ]
+    ],
+    "translation": "会話を一時停止中..."
+  },
+  "project.create.title": {
+    "message": "Create New Project",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/app/projects/components/CreateProjectDialog.tsx", 64]],
+    "translation": "新規プロジェクトを作成"
+  },
+  "project.create.action.create": {
+    "message": "Create Project",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/app/projects/components/CreateProjectDialog.tsx", 112]],
+    "translation": "プロジェクトを作成"
+  },
+  "project.create.action.creating": {
+    "message": "Creating...",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/app/projects/components/CreateProjectDialog.tsx", 106]],
+    "translation": "作成中..."
+  },
+  "directory_picker.current": {
+    "message": "Current:",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/app/projects/components/DirectoryPicker.tsx", 38]],
+    "translation": "現在："
+  },
+  "settings.theme.dark": {
+    "message": "Dark",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SettingsControls.tsx", 313]],
+    "translation": "ダーク"
+  },
+  "settings.permission.mode.default": {
+    "message": "Default (Ask permission)",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SettingsControls.tsx", 228]],
+    "translation": "デフォルト（権限を確認）"
+  },
+  "diff.deselect.all": {
+    "message": "Deselect All",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
+        492
+      ]
+    ],
+    "translation": "すべて選択解除"
+  },
+  "settings.description": {
+    "message": "Display and behavior preferences",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/GlobalSidebar.tsx", 55]],
+    "translation": "表示と動作の設定"
+  },
+  "settings.locale.en": {
+    "message": "English",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SettingsControls.tsx", 284]],
+    "translation": "English"
+  },
+  "diff.enter.message": {
+    "message": "Enter a commit message",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
+        618
+      ]
+    ],
+    "translation": "コミットメッセージを入力"
+  },
+  "settings.input.enter_key_behavior": {
+    "message": "Enter Key Behavior",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SettingsControls.tsx", 166]],
+    "translation": "Enterキーの動作"
+  },
+  "settings.input.enter_key_behavior.enter": {
+    "message": "Enter to send",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SettingsControls.tsx", 187]],
+    "translation": "Enterで送信"
+  },
+  "common.error": {
+    "message": "Error",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/UserConversationContent.tsx",
+        83
+      ]
+    ],
+    "translation": "エラー"
+  },
+  "project.error.details_title": {
+    "message": "Error Details",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/app/projects/[projectId]/error.tsx", 52]],
+    "translation": "エラー詳細"
+  },
+  "project.error.error_id": {
+    "message": "Error ID:",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/app/projects/[projectId]/error.tsx", 58]],
+    "translation": "エラーID："
+  },
+  "mcp.error.load_failed": {
+    "message": "Failed to load MCP servers: {error}",
+    "placeholders": {
+      "error": ["(error as Error).message"]
+    },
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/McpTab.tsx",
+        62
+      ]
+    ],
+    "translation": "MCPサーバーの読み込みに失敗しました: {error}"
+  },
+  "project.error.title": {
+    "message": "Failed to load project",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/app/projects/[projectId]/error.tsx", 34]],
+    "translation": "プロジェクトの読み込みに失敗しました"
+  },
+  "chat.error.send_failed": {
+    "message": "Failed to send message. Please try again.",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      ["src/app/projects/[projectId]/components/chatForm/ChatInput.tsx", 173]
+    ],
+    "translation": "メッセージの送信に失敗しました。もう一度お試しください。"
+  },
+  "diff.files": {
+    "message": "files",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
+        60
+      ]
+    ],
+    "translation": "ファイル"
+  },
+  "diff.files.changed": {
+    "message": "files changed",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
+        57
+      ]
+    ],
+    "translation": "ファイルが変更されました"
+  },
+  "settings.session.hide_no_user_message": {
+    "message": "Hide sessions without user messages",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SettingsControls.tsx", 117]],
+    "translation": "ユーザーメッセージのないセッションを非表示"
+  },
+  "user.content.image": {
+    "message": "Image",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/UserConversationContent.tsx",
+        39
+      ]
+    ],
+    "translation": "画像"
+  },
+  "assistant.tool.input_parameters": {
+    "message": "Input Parameters",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
+        98
+      ]
+    ],
+    "translation": "入力パラメータ"
+  },
+  "settings.locale": {
+    "message": "Language",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SettingsControls.tsx", 269]],
+    "translation": "言語"
+  },
+  "project_list.last_modified": {
+    "message": "Last modified:",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/app/projects/components/ProjectList.tsx", 62]],
+    "translation": "最終更新："
+  },
+  "settings.theme.light": {
+    "message": "Light",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SettingsControls.tsx", 310]],
+    "translation": "ライト"
+  },
+  "sessions.load.more": {
+    "message": "Load More",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
+        180
+      ]
+    ],
+    "translation": "さらに読み込む"
+  },
+  "diff.loading": {
+    "message": "Loading diff...",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
+        657
+      ]
+    ],
+    "translation": "差分を読み込み中..."
+  },
+  "projects.page.loading": {
+    "message": "Loading projects...",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/app/projects/page.tsx", 45]],
+    "translation": "プロジェクトを読み込み中..."
+  },
+  "settings.loading": {
+    "message": "Loading settings...",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
+        115
+      ],
+      ["src/components/GlobalSidebar.tsx", 66]
+    ],
+    "translation": "設定を読み込み中..."
+  },
+  "directory_picker.loading": {
+    "message": "Loading...",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/app/projects/components/DirectoryPicker.tsx", 48]],
+    "translation": "読み込み中..."
+  },
+  "common.loading": {
+    "message": "Loading...",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
+        413
+      ],
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/McpTab.tsx",
+        55
+      ],
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
+        178
+      ]
+    ],
+    "translation": "読み込み中..."
+  },
+  "mcp.title": {
+    "message": "MCP Servers",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/McpTab.tsx",
+        34
+      ]
+    ],
+    "translation": "MCPサーバー"
+  },
+  "user.content.unsupported_media.description": {
+    "message": "Media type not supported for display",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/UserConversationContent.tsx",
+        87
+      ]
+    ],
+    "translation": "表示がサポートされていないメディア形式です"
+  },
+  "project_list.messages": {
+    "message": "Messages:",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/app/projects/components/ProjectList.tsx", 71]],
+    "translation": "メッセージ："
+  },
+  "sessions.new": {
+    "message": "New",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
+        92
+      ]
+    ],
+    "translation": "新規"
+  },
+  "project.new": {
+    "message": "New Project",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/app/projects/components/CreateProjectDialog.tsx", 58]],
+    "translation": "新規プロジェクト"
+  },
+  "project_list.no_projects.description": {
+    "message": "No Claude Code projects found in your ~/.claude/projects directory. Start a conversation with Claude Code to create your first project.",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/app/projects/components/ProjectList.tsx", 36]],
+    "translation": "~/.claude/projectsディレクトリにClaude Codeプロジェクトが見つかりません。Claude Codeとの会話を開始して、最初のプロジェクトを作成してください。"
+  },
+  "directory_picker.no_directories": {
+    "message": "No directories found",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/app/projects/components/DirectoryPicker.tsx", 72]],
+    "translation": "ディレクトリが見つかりません"
+  },
+  "mcp.no.servers": {
+    "message": "No MCP servers found",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/McpTab.tsx",
+        72
+      ]
+    ],
+    "translation": "MCPサーバーが見つかりません"
+  },
+  "project_list.no_projects.title": {
+    "message": "No projects found",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/app/projects/components/ProjectList.tsx", 30]],
+    "translation": "プロジェクトが見つかりません"
+  },
+  "notification.none": {
+    "message": "None",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/lib/notifications.tsx", 103]],
+    "translation": "なし"
+  },
+  "settings.section.notifications": {
+    "message": "Notifications",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/GlobalSidebar.tsx", 84]],
+    "translation": "通知"
+  },
+  "settings.notifications": {
+    "message": "Notifications",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
+        136
+      ]
+    ],
+    "translation": "通知"
+  },
+  "settings.session.hide_no_user_message.description": {
+    "message": "Only show sessions that contain user commands or messages",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SettingsControls.tsx", 126]],
+    "translation": "ユーザーコマンドまたはメッセージを含むセッションのみを表示"
+  },
+  "session.status.paused": {
+    "message": "Paused",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
+        143
+      ]
+    ],
+    "translation": "一時停止"
+  },
+  "settings.permission.mode": {
+    "message": "Permission Mode",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SettingsControls.tsx", 216]],
+    "translation": "権限モード"
+  },
+  "notification.ping": {
+    "message": "Ping",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/lib/notifications.tsx", 106]],
+    "translation": "ピン"
+  },
+  "settings.permission.mode.plan": {
+    "message": "Plan Mode (Planning only)",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SettingsControls.tsx", 246]],
+    "translation": "プランモード（計画のみ）"
+  },
+  "notification.pop": {
+    "message": "Pop",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/lib/notifications.tsx", 107]],
+    "translation": "ポップ"
+  },
+  "chat.status.processing": {
+    "message": "Processing...",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      ["src/app/projects/[projectId]/components/chatForm/ChatInput.tsx", 249]
+    ],
+    "translation": "処理中..."
+  },
+  "project.not_found.title": {
+    "message": "Project Not Found",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/app/projects/[projectId]/not-found.tsx", 23]],
+    "translation": "プロジェクトが見つかりません"
+  },
+  "diff.push": {
+    "message": "Push",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
+        582
+      ]
+    ],
+    "translation": "プッシュ"
+  },
+  "diff.pushing": {
+    "message": "Pushing...",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
+        579
+      ]
+    ],
+    "translation": "プッシュ中..."
+  },
+  "conversation.error.raw_content": {
+    "message": "Raw Content:",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
+        97
+      ]
+    ],
+    "translation": "生データ："
+  },
+  "conversation.error.report_issue": {
+    "message": "Report this issue",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
+        87
+      ]
+    ],
+    "translation": "この問題を報告"
+  },
+  "chat.resume": {
+    "message": "Resume",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ResumeChat.tsx",
+        41
+      ]
+    ],
+    "translation": "再開"
+  },
+  "session.status.running": {
+    "message": "Running",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
+        141
+      ]
+    ],
+    "translation": "実行中"
+  },
+  "conversation.error.schema": {
+    "message": "Schema Error",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
+        53
+      ]
+    ],
+    "translation": "スキーマエラー"
+  },
+  "conversation.error.schema_validation": {
+    "message": "Schema Validation Error",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
+        71
+      ]
+    ],
+    "translation": "スキーマ検証エラー"
+  },
+  "project.create.description": {
+    "message": "Select a directory to initialize as a Claude Code project. This will run <0>/init</0> in the selected directory.",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/app/projects/components/CreateProjectDialog.tsx", 67]],
+    "translation": "Claude Codeプロジェクトとして初期化するディレクトリを選択してください。選択したディレクトリで<0>/init</0>が実行されます。"
+  },
+  "notification.description": {
+    "message": "Select a sound to play when a task completes",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/NotificationSettings.tsx", 99]],
+    "translation": "Claude Code のタスクが完了した時に再生する音を選択してください"
+  },
+  "diff.select.all": {
+    "message": "Select All",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
+        484
+      ]
+    ],
+    "translation": "すべて選択"
+  },
+  "diff.select.file": {
+    "message": "Select at least one file",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
+        613
+      ]
+    ],
+    "translation": "少なくとも1つのファイルを選択してください"
+  },
+  "directory_picker.select": {
+    "message": "Select This Directory",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/app/projects/components/DirectoryPicker.tsx", 42]],
+    "translation": "このディレクトリを選択"
+  },
+  "project.create.selected_directory": {
+    "message": "Selected directory:",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/app/projects/components/CreateProjectDialog.tsx", 84]],
+    "translation": "選択したディレクトリ："
+  },
+  "chat.send": {
+    "message": "Send",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ContinueChat.tsx",
+        42
+      ]
+    ],
+    "translation": "送信"
+  },
+  "settings.section.session_display": {
+    "message": "Session Display",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/GlobalSidebar.tsx", 74]],
+    "translation": "セッション表示"
+  },
+  "settings.session.display": {
+    "message": "Session Display",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
+        126
+      ]
+    ],
+    "translation": "セッション表示"
+  },
+  "sessions.title": {
+    "message": "Sessions",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
+        76
+      ]
+    ],
+    "translation": "セッション"
+  },
+  "settings.title": {
+    "message": "Settings",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/GlobalSidebar.tsx", 52]],
+    "translation": "設定"
+  },
+  "settings.tab.title": {
+    "message": "Settings for display and notifications",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
+        278
+      ],
+      ["src/components/GlobalSidebar.tsx", 43]
+    ],
+    "translation": "表示と通知の設定"
+  },
+  "settings.input.enter_key_behavior.shift_enter": {
+    "message": "Shift+Enter to send (default)",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SettingsControls.tsx", 181]],
+    "translation": "Shift+Enterで送信（デフォルト）"
+  },
+  "sidebar.show.mcp.settings": {
+    "message": "Show MCP server settings",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
+        252
+      ]
+    ],
+    "translation": "MCPサーバー設定を表示"
+  },
+  "settings.session.unify_same_title.description": {
+    "message": "Show only the latest session when multiple sessions have the same title",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SettingsControls.tsx", 153]],
+    "translation": "同じタイトルの複数のセッションがある場合、最新のセッションのみを表示"
+  },
+  "sidebar.show.session.list": {
+    "message": "Show session list",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
+        225
+      ]
+    ],
+    "translation": "セッション一覧を表示"
+  },
+  "chat.button.start": {
+    "message": "Start Chat",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      ["src/app/projects/[projectId]/components/newChat/NewChat.tsx", 45]
+    ],
+    "translation": "チャット開始"
+  },
+  "chat.modal.title": {
+    "message": "Start New Chat",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      ["src/app/projects/[projectId]/components/newChat/NewChatModal.tsx", 33]
+    ],
+    "translation": "新しいチャットを開始"
+  },
+  "settings.theme.system": {
+    "message": "System",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SettingsControls.tsx", 316]],
+    "translation": "システム"
+  },
+  "notification.test": {
+    "message": "Test",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/NotificationSettings.tsx", 92]],
+    "translation": "テスト"
+  },
+  "project.not_found.description": {
+    "message": "The project you are looking for does not exist or has been removed",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/app/projects/[projectId]/not-found.tsx", 29]],
+    "translation": "お探しのプロジェクトは存在しないか、削除されています"
+  },
+  "settings.theme": {
+    "message": "Theme",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SettingsControls.tsx", 301]],
+    "translation": "テーマ"
+  },
+  "assistant.thinking": {
+    "message": "Thinking",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
+        53
+      ]
+    ],
+    "translation": "思考中"
+  },
+  "conversation.error.schema_validation.description": {
+    "message": "This conversation entry failed to parse correctly. This might indicate a format change or parsing issue.",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
+        77
+      ]
+    ],
+    "translation": "この会話エントリの解析に失敗しました。フォーマットの変更または解析の問題が考えられます。"
+  },
+  "assistant.tool.result": {
+    "message": "Tool Result",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
+        122
+      ]
+    ],
+    "translation": "ツール実行結果"
+  },
+  "assistant.tool_use": {
+    "message": "Tool Use",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
+        80
+      ]
+    ],
+    "translation": "ツール使用"
+  },
+  "sessions.total": {
+    "message": "total",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
+        98
+      ]
+    ],
+    "translation": "合計"
+  },
+  "project.error.try_again": {
+    "message": "Try Again",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/app/projects/[projectId]/error.tsx", 68]],
+    "translation": "再試行"
+  },
+  "settings.session.unify_same_title": {
+    "message": "Unify sessions with same title",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SettingsControls.tsx", 144]],
+    "translation": "同じタイトルのセッションを統合"
+  },
+  "user.content.unsupported_media": {
+    "message": "Unsupported Media",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/UserConversationContent.tsx",
+        77
+      ]
+    ],
+    "translation": "サポートされていないメディア"
+  },
+  "user.content.image.description": {
+    "message": "User uploaded image content",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/UserConversationContent.tsx",
+        49
+      ]
+    ],
+    "translation": "ユーザーがアップロードした画像コンテンツ"
+  },
+  "project_list.view_conversations": {
+    "message": "View Conversations",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/app/projects/components/ProjectList.tsx", 78]],
+    "translation": "会話を表示"
+  },
+  "project.error.description": {
+    "message": "We encountered an error while loading this project",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/app/projects/[projectId]/error.tsx", 40]],
+    "translation": "このプロジェクトの読み込み中にエラーが発生しました"
+  },
+  "projects.page.title": {
+    "message": "Your Projects",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/app/projects/page.tsx", 37]],
+    "translation": "プロジェクト"
+  },
+  "settings.locale.ja": {
+    "message": "日本語",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SettingsControls.tsx", 281]],
+    "translation": "日本語"
+  }
+}

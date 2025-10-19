@@ -1,3 +1,4 @@
+import { Trans } from "@lingui/react";
 import { AlertCircle, Image as ImageIcon } from "lucide-react";
 import Image from "next/image";
 import type { FC } from "react";
@@ -34,7 +35,9 @@ export const UserConversationContent: FC<{
           <CardHeader>
             <div className="flex items-center gap-2">
               <ImageIcon className="h-4 w-4 text-purple-600 dark:text-purple-400" />
-              <CardTitle className="text-sm font-medium">Image</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                <Trans id="user.content.image" message="Image" />
+              </CardTitle>
               <Badge
                 variant="outline"
                 className="border-purple-300 text-purple-700 dark:border-purple-700 dark:text-purple-300"
@@ -43,7 +46,10 @@ export const UserConversationContent: FC<{
               </Badge>
             </div>
             <CardDescription className="text-xs">
-              User uploaded image content
+              <Trans
+                id="user.content.image.description"
+                message="User uploaded image content"
+              />
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -68,12 +74,20 @@ export const UserConversationContent: FC<{
           <div className="flex items-center gap-2">
             <AlertCircle className="h-4 w-4 text-red-600 dark:text-red-400" />
             <CardTitle className="text-sm font-medium">
-              Unsupported Media
+              <Trans
+                id="user.content.unsupported_media"
+                message="Unsupported Media"
+              />
             </CardTitle>
-            <Badge variant="destructive">Error</Badge>
+            <Badge variant="destructive">
+              <Trans id="common.error" message="Error" />
+            </Badge>
           </div>
           <CardDescription className="text-xs">
-            Media type not supported for display
+            <Trans
+              id="user.content.unsupported_media.description"
+              message="Media type not supported for display"
+            />
           </CardDescription>
         </CardHeader>
       </Card>

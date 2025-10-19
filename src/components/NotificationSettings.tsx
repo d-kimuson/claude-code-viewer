@@ -1,5 +1,6 @@
 "use client";
 
+import { Trans } from "@lingui/react";
 import { useAtom } from "jotai";
 import { type FC, useCallback, useId } from "react";
 import { Button } from "@/components/ui/button";
@@ -88,14 +89,17 @@ export const NotificationSettings: FC<NotificationSettingsProps> = ({
               onClick={handleTestSound}
               className="px-3"
             >
-              テスト
+              <Trans id="notification.test" message="Test" />
             </Button>
           )}
         </div>
 
         {showDescriptions && (
           <p className="text-xs text-muted-foreground">
-            Claude Code のタスクが完了した時に再生する音を選択してください
+            <Trans
+              id="notification.description"
+              message="Select a sound to play when a task completes"
+            />
           </p>
         )}
       </div>

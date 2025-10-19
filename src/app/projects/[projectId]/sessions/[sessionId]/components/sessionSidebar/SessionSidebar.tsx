@@ -1,5 +1,6 @@
 "use client";
 
+import { Trans } from "@lingui/react";
 import { ArrowLeftIcon, MessageSquareIcon, PlugIcon } from "lucide-react";
 import Link from "next/link";
 import { type FC, useMemo } from "react";
@@ -43,7 +44,7 @@ export const SessionSidebar: FC<{
       {
         id: "sessions",
         icon: MessageSquareIcon,
-        title: "セッション一覧を表示",
+        title: "Show session list",
         content: (
           <SessionsTab
             sessions={sessions.map((session) => ({
@@ -61,7 +62,7 @@ export const SessionSidebar: FC<{
       {
         id: "mcp",
         icon: PlugIcon,
-        title: "MCPサーバー設定を表示",
+        title: "Show MCP server settings",
         content: <McpTab projectId={projectId} />,
       },
     ],
@@ -95,7 +96,12 @@ export const SessionSidebar: FC<{
                   </Link>
                 </TooltipTrigger>
                 <TooltipContent side="right">
-                  <p>プロジェクト一覧に戻る</p>
+                  <p>
+                    <Trans
+                      id="sidebar.back.to.projects"
+                      message="Back to projects"
+                    />
+                  </p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>

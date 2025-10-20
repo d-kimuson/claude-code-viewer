@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.4.0-beta.2
+
+### &nbsp;&nbsp;&nbsp;Features
+
+- Introduce speckit commands for feature specification and implementation &nbsp;-&nbsp; by **d-kimsuon** [<samp>(6f7ef)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/6f7ef2a)
+- Commit on web diff panel &nbsp;-&nbsp; by **d-kimsuon** [<samp>(017d3)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/017d374)
+- Add support for file history snapshots in conversation components &nbsp;-&nbsp; by **d-kimsuon** [<samp>(9144f)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/9144f26)
+- Enhance commit section in DiffModal with collapsible UI &nbsp;-&nbsp; by **d-kimsuon** [<samp>(170c6)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/170c6ec)
+- Add i18n support, avaiable languages are 'en' and 'ja' &nbsp;-&nbsp; by **d-kimsuon** [<samp>(4a435)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/4a4354f)
+- Integrate @anthropic-ai/claude-agent-sdk for latest version &nbsp;-&nbsp; by **d-kimsuon** [<samp>(81a5d)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/81a5d31)
+- System information view &nbsp;-&nbsp; by **d-kimsuon** [<samp>(0047b)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/0047b6b)
+- Enhance conversation components with task handling and UI improvements &nbsp;-&nbsp; by **d-kimsuon** [<samp>(93dc6)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/93dc63a)
+- Enhance MobileSidebar with system information tab &nbsp;-&nbsp; by **d-kimsuon** [<samp>(a92f0)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/a92f094)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.4.0-beta.1...0.4.0-beta.2)
+
 ## 0.4.0-beta.1
 
 ### &nbsp;&nbsp;&nbsp;Features

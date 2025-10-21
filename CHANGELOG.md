@@ -1,5 +1,29 @@
 # Changelog
 
+## 0.4.0
+
+### &nbsp;&nbsp;&nbsp;Features
+
+- Tool execution approval: Claude's tool calls can now be reviewed and approved before execution with permission mode support &nbsp;-&nbsp; by **dobachi** [<samp>(b7e99)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/b7e9947)
+- Dark mode: UI now supports dark mode for better viewing experience in low-light environments &nbsp;-&nbsp; by **d-kimsuon**
+- Large workspace performance: Significantly improved performance for large workspaces with pagination and caching &nbsp;-&nbsp; by **d-kimsuon** [<samp>(c7d89)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/c7d89d4) [<samp>(d322d)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/d322db5)
+- Web-based git commit: Changes can now be committed directly from the diff panel in the web interface &nbsp;-&nbsp; by **d-kimsuon** [<samp>(017d3)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/017d374)
+- Latest conversation schema: Support for Claude Code's new conversation schema &nbsp;-&nbsp; by **d-kimsuon** [<samp>(9144f)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/9144f26)
+- Internationalization: UI is now available in English and Japanese &nbsp;-&nbsp; by **d-kimsuon** [<samp>(4a435)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/4a4354f)
+- System information: View system and environment details in a dedicated tab &nbsp;-&nbsp; by **d-kimsuon** [<samp>(0047b)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/0047b6b)
+- Bundled Claude Code: No need to install Claude Code separately - bundled version is automatically used when not found &nbsp;-&nbsp; by **d-kimsuon** [<samp>(6c4d3)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/6c4d301)
+
+### &nbsp;&nbsp;&nbsp;Bug Fixes
+
+- Compatibility: Fixed issues preventing use with Claude Code version 1.0.81 and earlier &nbsp;-&nbsp; by **d-kimsuon** [<samp>(b483e)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/b483e7e) [<samp>(a88ad)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/a88ad89) [<samp>(8d592)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/8d592ce)
+- Robustness: Improved handling of missing Claude projects directory and Node.js version compatibility &nbsp;-&nbsp; by **kouyaman345** [<samp>(42d02)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/42d028b)
+
+### &nbsp;&nbsp;&nbsp;Performance
+
+- Session synchronization: Sessions started from Claude Code now sync much faster &nbsp;-&nbsp; by **d-kimsuon** [<samp>(eb5a8)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/eb5a8dd)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.3.1...0.4.0)
+
 ## 0.4.0-beta.2
 
 ### &nbsp;&nbsp;&nbsp;Features

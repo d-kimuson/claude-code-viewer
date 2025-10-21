@@ -1,4 +1,7 @@
-import type { SDKMessage, SDKUserMessage } from "@anthropic-ai/claude-code";
+import type {
+  SDKMessage,
+  SDKUserMessage,
+} from "@anthropic-ai/claude-agent-sdk";
 import { controllablePromise } from "../../../../lib/controllablePromise";
 
 export type OnMessage = (message: SDKMessage) => void | Promise<void>;

@@ -71,7 +71,7 @@ The application reads Claude Code conversation logs from:
 
 ### System Requirements
 
-- **Node.js**: Version 20.18.1 or later
+- **Node.js**: Version 20.19.0 or later
 - **Operating Systems**: macOS and Linux (Windows is not supported)
 
 ### Claude Code Compatibility
@@ -89,7 +89,7 @@ Claude Code Viewer reads several reserved environment variables. All values are 
 
 | Key | Description |
 | --- | --- |
-| CLAUDE_CODE_VIEWER_CC_EXECUTABLE_PATH | Path to Claude Code installation |
+| CLAUDE_CODE_VIEWER_CC_EXECUTABLE_PATH | Path to Claude Code installation. If not set, uses system PATH installation, or falls back to bundled version from dependencies |
 | PORT | Port number for Claude Code Viewer to run on |
 
 ### User Settings

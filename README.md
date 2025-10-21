@@ -109,7 +109,24 @@ Settings can be configured from the sidebar in Claude Code Viewer.
 
 ## Alternatives & Differentiation
 
-Several excellent Claude Code web clients exist, each with their own strengths:
+### Official Solution: Claude Code on the Web
+
+Anthropic provides [Claude Code on the Web](https://docs.claude.com/en/docs/claude-code/claude-code-on-the-web), which runs Claude Code sessions in Anthropic's cloud VMs. Each session clones your repository and executes predefined setup commands (e.g., `pnpm install`).
+
+**When to use Claude Code on the Web**:
+- Quick testing without local setup or self-hosting infrastructure
+- Casual development from mobile devices or public computers
+- Simple repository structures with single CLAUDE.md at the root
+
+**When to use Claude Code Viewer**:
+- Working with pre-configured local environments (databases, services, large dependencies)
+- Monorepo projects with multiple CLAUDE.md files in different directories
+- Development requiring significant computational resources or long-running processes
+- Preference for self-hosted infrastructure with full control over the development environment
+
+### Community Web Clients
+
+Several excellent community-built web clients exist:
 
 - https://github.com/sugyan/claude-code-webuisupport
 - https://github.com/wbopan/cui

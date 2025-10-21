@@ -89,7 +89,7 @@ Claude Code Viewer reads several reserved environment variables. All values are 
 
 | Key | Description |
 | --- | --- |
-| CLAUDE_CODE_VIEWER_CC_EXECUTABLE_PATH | Path to Claude Code installation |
+| CLAUDE_CODE_VIEWER_CC_EXECUTABLE_PATH | Path to Claude Code installation. If not set, uses system PATH installation, or falls back to bundled version from dependencies |
 | PORT | Port number for Claude Code Viewer to run on |
 
 ### User Settings

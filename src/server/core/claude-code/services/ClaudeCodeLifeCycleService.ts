@@ -1,4 +1,7 @@
-import type { SDKMessage, SDKUserMessage } from "@anthropic-ai/claude-code";
+import type {
+  SDKMessage,
+  SDKUserMessage,
+} from "@anthropic-ai/claude-agent-sdk";
 import type { FileSystem, Path } from "@effect/platform";
 import type { CommandExecutor } from "@effect/platform/CommandExecutor";
 import { Context, Effect, Layer, Runtime } from "effect";

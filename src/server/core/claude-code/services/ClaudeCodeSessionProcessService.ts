@@ -1,4 +1,4 @@
-import type { SDKResultMessage } from "@anthropic-ai/claude-code";
+import type { SDKResultMessage } from "@anthropic-ai/claude-agent-sdk";
 import { Context, Data, Effect, Layer, Ref } from "effect";
 import type { InferEffect } from "../../../lib/effect/types";
 import { EventBus } from "../../events/services/EventBus";

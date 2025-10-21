@@ -1,4 +1,4 @@
-import type { CanUseTool } from "@anthropic-ai/claude-code";
+import type { CanUseTool } from "@anthropic-ai/claude-agent-sdk";
 import { Context, Effect, Layer, Ref } from "effect";
 import { ulid } from "ulid";
 import type {

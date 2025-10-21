@@ -71,7 +71,7 @@ The application reads Claude Code conversation logs from:
 
 ### System Requirements
 
-- **Node.js**: Version 20.18.1 or later
+- **Node.js**: Version 20.19.0 or later
 - **Operating Systems**: macOS and Linux (Windows is not supported)
 
 ### Claude Code Compatibility

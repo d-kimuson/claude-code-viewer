@@ -92,9 +92,6 @@ importers:
       parse-git-diff:
         specifier: ^0.0.19
         version: 0.0.19
-      playwright:
-        specifier: ^1.56.1
-        version: 1.56.1
       prexit:
         specifier: ^2.3.0
         version: 2.3.0
@@ -165,6 +162,9 @@ importers:
       npm-run-all2:
         specifier: ^8.0.4
         version: 8.0.4
+      playwright:
+        specifier: ^1.56.1
+        version: 1.56.1
       release-it:
         specifier: ^19.0.5
         version: 19.0.5(@types/node@24.8.1)
@@ -4070,7 +4070,7 @@ packages:
 
   undici@7.16.0:
     resolution: {integrity: sha512-QEg3HPMll0o3t2ourKwOeUAZ159Kn9mx5pnzHRQO8+Wixmh88YdZRiIwat0iNzNNXn0yoEtXJqFpyW7eM8BV7g==}
-    engines: {node: '>=20.18.1'}
+    engines: {node: '>=20.19.0'}
 
   unicorn-magic@0.3.0:
     resolution: {integrity: sha512-+QBBXBCvifc56fsbuxZQ6Sic3wqqc3WWaqxs58gvJrcOuN83HGTCwz3oS5phzU9LthRNE9VrJCFCLUgHeeFnfA==}

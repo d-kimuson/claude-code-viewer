@@ -120,9 +120,7 @@ const LayerImpl = Effect.gen(function* () {
         );
       }
 
-      console.log("[GitService.stageFiles] Staging files:", files, "in", cwd);
       const result = yield* execGitCommand(["add", ...files], cwd);
-      console.log("[GitService.stageFiles] Stage result:", result);
       return result;
     });
 

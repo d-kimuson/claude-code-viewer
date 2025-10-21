@@ -223,7 +223,6 @@ export const DiffModal: FC<DiffModalProps> = ({
       const initialSelection = new Map(
         diffData.data.files.map((file) => [file.filePath, true]),
       );
-      console.log("[DiffModal] Initializing file selection:", initialSelection);
       setSelectedFiles(initialSelection);
     }
   }, [diffData]);

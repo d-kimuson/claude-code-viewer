@@ -125,12 +125,6 @@ const LayerImpl = Effect.gen(function* () {
     Effect.gen(function* () {
       const { projectId, files, message } = options;
 
-      console.log("[GitController.commitFiles] Request:", {
-        projectId,
-        files,
-        message,
-      });
-
       const { project } = yield* projectRepository.getProject(projectId);
       if (project.meta.projectPath === null) {
         console.log("[GitController.commitFiles] Project path is null");

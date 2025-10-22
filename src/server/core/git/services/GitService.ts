@@ -33,11 +33,7 @@ const LayerImpl = Effect.gen(function* () {
         );
       }
 
-      if (!(yield* fs.exists(path.resolve(absoluteCwd, ".git")))) {
-        return yield* Effect.fail(
-          new NotARepositoryError({ cwd: absoluteCwd }),
-        );
-      }
+      // Git will search parent directories for .git, so we don't need to check explicitly
 
       const command = Command.make("git", ...args).pipe(
         Command.workingDirectory(absoluteCwd),

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.1
+
+### &nbsp;&nbsp;&nbsp;Bug Fixes
+
+- Git Diff View works in subdirectories &nbsp;-&nbsp; by **d-kimsuon** and **Claude** [<samp>(7ac09)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/7ac09bb)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.4.0...0.4.1)
+
 ## 0.4.0
 
 ### &nbsp;&nbsp;&nbsp;Features

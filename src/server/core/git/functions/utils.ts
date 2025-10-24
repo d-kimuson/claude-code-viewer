@@ -15,7 +15,7 @@ export async function executeGitCommand(
   cwd: string,
 ): Promise<GitResult<string>> {
   try {
-    // Check if the directory exists and contains a git repository
+    // Check if the directory exists
     if (!existsSync(cwd)) {
       return {
         success: false,
@@ -27,16 +27,7 @@ export async function executeGitCommand(
       };
     }
 
-    if (!existsSync(resolve(cwd, ".git"))) {
-      return {
-        success: false,
-        error: {
-          code: "NOT_A_REPOSITORY",
-          message: `Not a git repository: ${cwd}`,
-          command: `git ${args.join(" ")}`,
-        },
-      };
-    }
+    // Git will search parent directories for .git, so we don't need to check explicitly
 
     const { stdout } = await execFileAsync("git", args, {
       cwd,

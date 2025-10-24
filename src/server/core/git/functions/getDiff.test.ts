@@ -367,6 +367,44 @@ index abc123..abc123 100644`;
   });
 
   describe("エッジケース", () => {
+    it("サブディレクトリから実行しても動作する", async () => {
+      const mockCwd = "/test/repo/subdirectory";
+      const fromRef = "base:main";
+      const toRef = "compare:feature";
+
+      const mockNumstatOutput = `3\t1\tsrc/file.ts`;
+      const mockDiffOutput = `diff --git a/src/file.ts b/src/file.ts
+index abc123..def456 100644
+--- a/src/file.ts
++++ b/src/file.ts
+@@ -1,2 +1,3 @@
+ content`;
+
+      vi.mocked(utils.executeGitCommand)
+        .mockResolvedValueOnce({
+          success: true,
+          data: mockNumstatOutput,
+        })
+        .mockResolvedValueOnce({
+          success: true,
+          data: mockDiffOutput,
+        });
+
+      const result = await getDiff(mockCwd, fromRef, toRef);
+
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data.files).toHaveLength(1);
+        expect(result.data.files[0]?.filePath).toBe("src/file.ts");
+      }
+
+      // Verify that git commands are executed in the subdirectory
+      expect(utils.executeGitCommand).toHaveBeenCalledWith(
+        ["diff", "--numstat", "main", "feature"],
+        mockCwd,
+      );
+    });
+
     it("特殊文字を含むファイル名を処理できる", async () => {
       const mockCwd = "/test/repo";
       const fromRef = "base:main";

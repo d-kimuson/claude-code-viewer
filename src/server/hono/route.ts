@@ -18,6 +18,7 @@ import { CommitRequestSchema, PushRequestSchema } from "../core/git/schema";
 import { EnvService } from "../core/platform/services/EnvService";
 import { UserConfigService } from "../core/platform/services/UserConfigService";
 import { ProjectController } from "../core/project/presentation/ProjectController";
+import { SchedulerController } from "../core/scheduler/presentation/SchedulerController";
 import type { VirtualConversationDatabase } from "../core/session/infrastructure/VirtualConversationDatabase";
 import { SessionController } from "../core/session/presentation/SessionController";
 import type { SessionMetaService } from "../core/session/services/SessionMetaService";
@@ -40,6 +41,7 @@ export const routes = (app: HonoAppType) =>
     const sseController = yield* SSEController;
     const fileSystemController = yield* FileSystemController;
     const claudeCodeController = yield* ClaudeCodeController;
+    const schedulerController = yield* SchedulerController;
 
     // services
     const envService = yield* EnvService;
@@ -439,6 +441,12 @@ export const routes = (app: HonoAppType) =>
             },
           );
         })
+
+        /**
+         * SchedulerController Routes
+         */
+
+        .route("/scheduler", schedulerController.app)
 
         /**
          * FileSystemController Routes

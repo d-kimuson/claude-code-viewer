@@ -11,11 +11,11 @@
       "**",
       "!**/*.generated.*",
       "!.next",
-      "!src/lib/$path.ts",
       "!**/*.css",
       "!dist",
       "!playwright.config.ts",
-      "!src/lib/i18n/locales/*/messages.ts"
+      "!packages/frontend/src/lib/$path.ts",
+      "!packages/frontend/src/lib/i18n/locales/*/messages.ts"
     ]
   },
   "formatter": {

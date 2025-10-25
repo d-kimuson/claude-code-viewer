@@ -1,0 +1,10 @@
+{
+  "extends": [
+    "@tsconfig/node20/tsconfig.json",
+    "./node_modules/@claude-code-viewer/tsconfig/configs/base.json"
+  ],
+  "compilerOptions": {
+    "types": ["node", "vitest/globals"]
+  },
+  "include": ["src"]
+}

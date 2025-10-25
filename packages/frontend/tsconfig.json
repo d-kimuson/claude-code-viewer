@@ -1,0 +1,33 @@
+{
+  "extends": "./node_modules/@claude-code-viewer/tsconfig/configs/base.json",
+  "compilerOptions": {
+    // transpile target
+    "target": "ES2020",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "noEmit": true,
+    // module
+    "isolatedModules": true,
+    // build optimization
+    "incremental": true,
+    // plugins
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    // paths alias
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    // typecheck
+    "types": ["vitest/globals"]
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "next-env.d.ts",
+    "./.next/types/**/*.ts"
+  ],
+  "exclude": ["node_modules"]
+}

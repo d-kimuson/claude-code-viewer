@@ -1,0 +1,11 @@
+{
+  "name": "@claude-code-viewer/shared",
+  "type": "module",
+  "exports": {
+    "./*": "./src/*.ts"
+  },
+  "scripts": {},
+  "dependencies": {
+    "zod": "catalog:"
+  }
+}

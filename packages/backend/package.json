@@ -1,0 +1,37 @@
+{
+  "name": "@claude-code-viewer/backend",
+  "type": "module",
+  "exports": {
+    "./types": "./src/types.ts"
+  },
+  "scripts": {
+    "dev": "tsx watch src/main.ts",
+    "start": "tsx src/main.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@anthropic-ai/claude-agent-sdk": "catalog:",
+    "@anthropic-ai/claude-code": "catalog:",
+    "@claude-code-viewer/shared": "workspace:*",
+    "@effect/platform": "catalog:",
+    "@effect/platform-node": "catalog:",
+    "@hono/node-server": "catalog:",
+    "@hono/zod-validator": "catalog:",
+    "date-fns": "catalog:",
+    "effect": "catalog:",
+    "es-toolkit": "catalog:",
+    "hono": "catalog:",
+    "parse-git-diff": "catalog:",
+    "prexit": "catalog:",
+    "ulid": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@claude-code-viewer/tsconfig": "workspace:*",
+    "@tsconfig/node20": "catalog:",
+    "@types/node": "catalog:",
+    "tsx": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

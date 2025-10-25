@@ -1,0 +1,10 @@
+{
+  "name": "@claude-code-viewer/tsconfig",
+  "type": "module",
+  "exports": {
+    "./configs/*": "./configs/*.json"
+  },
+  "dependencies": {
+    "@tsconfig/strictest": "catalog:"
+  }
+}

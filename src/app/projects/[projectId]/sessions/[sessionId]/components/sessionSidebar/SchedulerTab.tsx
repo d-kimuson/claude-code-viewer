@@ -140,15 +140,11 @@ export const SchedulerTab: FC<{ projectId: string; sessionId: string }> = ({
     if (job.schedule.type === "cron") {
       return `Cron: ${job.schedule.expression}`;
     }
-    const hours = Math.floor(job.schedule.delayMs / 3600000);
-    const minutes = Math.floor((job.schedule.delayMs % 3600000) / 60000);
-    const timeStr =
-      hours > 0
-        ? `${hours}h ${minutes}m`
-        : minutes > 0
-          ? `${minutes}m`
-          : `${job.schedule.delayMs}ms`;
-    return `${job.schedule.oneTime ? "Once" : "Recurring"}: ${timeStr}`;
+    if (job.schedule.type === "reserved") {
+      const date = new Date(job.schedule.reservedExecutionTime);
+      return `Reserved: ${date.toLocaleString()}`;
+    }
+    return "Unknown schedule type";
   };
 
   const formatLastRun = (lastRunAt: string | null) => {

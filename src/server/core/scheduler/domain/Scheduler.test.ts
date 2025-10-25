@@ -1,5 +1,5 @@
-import { mkdir, rm, unlink } from "node:fs/promises";
-import { homedir, tmpdir } from "node:os";
+import { mkdir, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { NodeContext, NodeFileSystem, NodePath } from "@effect/platform-node";
 import { Effect, Layer } from "effect";
@@ -9,6 +9,7 @@ import { ClaudeCodeSessionProcessService } from "../../claude-code/services/Clau
 import { EnvService } from "../../platform/services/EnvService";
 import { UserConfigService } from "../../platform/services/UserConfigService";
 import { ProjectRepository } from "../../project/infrastructure/ProjectRepository";
+import { SchedulerConfigBaseDir } from "../config";
 import type { NewSchedulerJob } from "../schema";
 import { SchedulerService } from "./Scheduler";
 
@@ -66,37 +67,42 @@ describe("SchedulerService", () => {
     getEnv: () => Effect.succeed(undefined),
   } as never);
 
-  const baseLayers = Layer.mergeAll(
-    NodeFileSystem.layer,
-    NodePath.layer,
-    NodeContext.layer,
-    mockSessionProcessService,
-    mockLifeCycleService,
-    mockProjectRepository,
-    mockUserConfigService,
-    mockEnvService,
-  );
-
-  const testLayer = Layer.mergeAll(SchedulerService.Live, baseLayers).pipe(
-    Layer.provide(baseLayers),
-  );
+  let testConfigBaseDir: Layer.Layer<SchedulerConfigBaseDir>;
+  let testLayer: Layer.Layer<
+    | import("@effect/platform").FileSystem.FileSystem
+    | import("@effect/platform").Path.Path
+    | import("@effect/platform-node").NodeContext.NodeContext
+    | ClaudeCodeSessionProcessService
+    | ClaudeCodeLifeCycleService
+    | ProjectRepository
+    | UserConfigService
+    | EnvService
+    | SchedulerConfigBaseDir
+    | SchedulerService
+  >;
 
   beforeEach(async () => {
     testDir = join(tmpdir(), `scheduler-test-${Date.now()}`);
     await mkdir(testDir, { recursive: true });
 
-    // Clean up existing config file
-    const configPath = join(
-      homedir(),
-      ".claude-code-viewer",
-      "scheduler",
-      "config.json",
+    // Use test directory as base for config files
+    testConfigBaseDir = Layer.succeed(SchedulerConfigBaseDir, testDir);
+
+    const baseLayers = Layer.mergeAll(
+      NodeFileSystem.layer,
+      NodePath.layer,
+      NodeContext.layer,
+      mockSessionProcessService,
+      mockLifeCycleService,
+      mockProjectRepository,
+      mockUserConfigService,
+      mockEnvService,
+      testConfigBaseDir,
     );
-    try {
-      await unlink(configPath);
-    } catch {
-      // Ignore if file doesn't exist
-    }
+
+    testLayer = Layer.mergeAll(SchedulerService.Live, baseLayers).pipe(
+      Layer.provideMerge(baseLayers),
+    );
   });
 
   afterEach(async () => {
@@ -106,14 +112,17 @@ describe("SchedulerService", () => {
   test("addJob creates a new job with generated id", async () => {
     const newJob: NewSchedulerJob = {
       name: "Test Job",
-      schedule: { type: "cron", expression: "0 0 * * *" },
+      schedule: {
+        type: "cron",
+        expression: "0 0 * * *",
+        concurrencyPolicy: "skip",
+      },
       message: {
         content: "test message",
         projectId: "project-1",
         baseSessionId: null,
       },
       enabled: false,
-      concurrencyPolicy: "skip",
     };
 
     const result = await Effect.runPromise(
@@ -134,14 +143,17 @@ describe("SchedulerService", () => {
   test("getJobs returns all jobs", async () => {
     const newJob: NewSchedulerJob = {
       name: "Test Job",
-      schedule: { type: "cron", expression: "0 0 * * *" },
+      schedule: {
+        type: "cron",
+        expression: "0 0 * * *",
+        concurrencyPolicy: "skip",
+      },
       message: {
         content: "test message",
         projectId: "project-1",
         baseSessionId: null,
       },
       enabled: false,
-      concurrencyPolicy: "skip",
     };
 
     const result = await Effect.runPromise(
@@ -159,14 +171,17 @@ describe("SchedulerService", () => {
   test("updateJob modifies an existing job", async () => {
     const newJob: NewSchedulerJob = {
       name: "Test Job",
-      schedule: { type: "cron", expression: "0 0 * * *" },
+      schedule: {
+        type: "cron",
+        expression: "0 0 * * *",
+        concurrencyPolicy: "skip",
+      },
       message: {
         content: "test message",
         projectId: "project-1",
         baseSessionId: null,
       },
       enabled: false,
-      concurrencyPolicy: "skip",
     };
 
     const result = await Effect.runPromise(
@@ -186,14 +201,17 @@ describe("SchedulerService", () => {
   test("deleteJob removes a job", async () => {
     const newJob: NewSchedulerJob = {
       name: "Test Job",
-      schedule: { type: "cron", expression: "0 0 * * *" },
+      schedule: {
+        type: "cron",
+        expression: "0 0 * * *",
+        concurrencyPolicy: "skip",
+      },
       message: {
         content: "test message",
         projectId: "project-1",
         baseSessionId: null,
       },
       enabled: false,
-      concurrencyPolicy: "skip",
     };
 
     const result = await Effect.runPromise(

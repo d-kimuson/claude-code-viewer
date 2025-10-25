@@ -1,20 +1,23 @@
 import { z } from "zod";
 
+// Concurrency policy (for cron jobs only)
+export const concurrencyPolicySchema = z.enum(["skip", "run"]);
+
 // Schedule type discriminated union
 export const cronScheduleSchema = z.object({
   type: z.literal("cron"),
   expression: z.string(),
+  concurrencyPolicy: concurrencyPolicySchema,
 });
 
-export const fixedScheduleSchema = z.object({
-  type: z.literal("fixed"),
-  delayMs: z.number().int().positive(),
-  oneTime: z.boolean(),
+export const reservedScheduleSchema = z.object({
+  type: z.literal("reserved"),
+  reservedExecutionTime: z.iso.datetime(),
 });
 
 export const scheduleSchema = z.discriminatedUnion("type", [
   cronScheduleSchema,
-  fixedScheduleSchema,
+  reservedScheduleSchema,
 ]);
 
 // Message configuration
@@ -27,9 +30,6 @@ export const messageConfigSchema = z.object({
 // Job status
 export const jobStatusSchema = z.enum(["success", "failed"]);
 
-// Concurrency policy
-export const concurrencyPolicySchema = z.enum(["skip", "run"]);
-
 // Scheduler job
 export const schedulerJobSchema = z.object({
   id: z.string(),
@@ -37,7 +37,6 @@ export const schedulerJobSchema = z.object({
   schedule: scheduleSchema,
   message: messageConfigSchema,
   enabled: z.boolean(),
-  concurrencyPolicy: concurrencyPolicySchema,
   createdAt: z.string().datetime(),
   lastRunAt: z.string().datetime().nullable(),
   lastRunStatus: jobStatusSchema.nullable(),
@@ -50,7 +49,7 @@ export const schedulerConfigSchema = z.object({
 
 // Type exports
 export type CronSchedule = z.infer<typeof cronScheduleSchema>;
-export type FixedSchedule = z.infer<typeof fixedScheduleSchema>;
+export type ReservedSchedule = z.infer<typeof reservedScheduleSchema>;
 export type Schedule = z.infer<typeof scheduleSchema>;
 export type MessageConfig = z.infer<typeof messageConfigSchema>;
 export type JobStatus = z.infer<typeof jobStatusSchema>;
@@ -68,7 +67,6 @@ export const newSchedulerJobSchema = schedulerJobSchema
   })
   .extend({
     enabled: z.boolean().default(true),
-    concurrencyPolicy: concurrencyPolicySchema.default("skip"),
   });
 
 export type NewSchedulerJob = z.infer<typeof newSchedulerJobSchema>;
@@ -79,7 +77,6 @@ export const updateSchedulerJobSchema = schedulerJobSchema.partial().pick({
   schedule: true,
   message: true,
   enabled: true,
-  concurrencyPolicy: true,
 });
 
 export type UpdateSchedulerJob = z.infer<typeof updateSchedulerJobSchema>;

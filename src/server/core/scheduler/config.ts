@@ -1,6 +1,6 @@
 import { homedir } from "node:os";
 import { FileSystem, Path } from "@effect/platform";
-import { Data, Effect } from "effect";
+import { Context, Data, Effect, Layer } from "effect";
 import { type SchedulerConfig, schedulerConfigSchema } from "./schema";
 
 class ConfigFileNotFoundError extends Data.TaggedError(
@@ -15,11 +15,18 @@ class ConfigParseError extends Data.TaggedError("ConfigParseError")<{
 }> {}
 
 const CONFIG_DIR = "scheduler";
-const CONFIG_FILE = "config.json";
+const CONFIG_FILE = "schedules.json";
+
+// Service to provide base directory (for testing)
+export class SchedulerConfigBaseDir extends Context.Tag(
+  "SchedulerConfigBaseDir",
+)<SchedulerConfigBaseDir, string>() {
+  static Live = Layer.succeed(this, `${homedir()}/.claude-code-viewer`);
+}
 
 export const getConfigPath = Effect.gen(function* () {
   const path = yield* Path.Path;
-  const baseDir = path.resolve(homedir(), ".claude-code-viewer");
+  const baseDir = yield* SchedulerConfigBaseDir;
   return path.join(baseDir, CONFIG_DIR, CONFIG_FILE);
 });
 

@@ -20,23 +20,15 @@ export const executeJob = (job: SchedulerJob) =>
       );
     }
 
-    if (message.baseSessionId === null) {
-      yield* lifeCycleService.startTask({
-        baseSession: {
-          cwd: project.meta.projectPath,
-          projectId: message.projectId,
-          sessionId: undefined,
-        },
-        userConfig,
-        message: message.content,
-      });
-    } else {
-      yield* lifeCycleService.continueTask({
-        sessionProcessId: message.baseSessionId,
-        message: message.content,
-        baseSessionId: message.baseSessionId,
-      });
-    }
+    yield* lifeCycleService.startTask({
+      baseSession: {
+        cwd: project.meta.projectPath,
+        projectId: message.projectId,
+        sessionId: message.baseSessionId ?? undefined,
+      },
+      userConfig,
+      message: message.content,
+    });
   });
 
 export const shouldExecuteJob = (job: SchedulerJob, now: Date): boolean => {
@@ -48,26 +40,28 @@ export const shouldExecuteJob = (job: SchedulerJob, now: Date): boolean => {
     return true;
   }
 
-  if (job.schedule.type === "fixed" && job.schedule.oneTime) {
+  if (job.schedule.type === "reserved") {
+    // Reserved jobs are one-time, skip if already executed
     if (job.lastRunStatus !== null) {
       return false;
     }
 
-    const createdAt = new Date(job.createdAt);
-    const scheduledTime = new Date(createdAt.getTime() + job.schedule.delayMs);
+    const scheduledTime = new Date(job.schedule.reservedExecutionTime);
     return now >= scheduledTime;
   }
 
   return true;
 };
 
-export const calculateFixedDelay = (job: SchedulerJob, now: Date): number => {
-  if (job.schedule.type !== "fixed") {
-    throw new Error("Job schedule type must be fixed");
+export const calculateReservedDelay = (
+  job: SchedulerJob,
+  now: Date,
+): number => {
+  if (job.schedule.type !== "reserved") {
+    throw new Error("Job schedule type must be reserved");
   }
 
-  const createdAt = new Date(job.createdAt);
-  const scheduledTime = new Date(createdAt.getTime() + job.schedule.delayMs);
+  const scheduledTime = new Date(job.schedule.reservedExecutionTime);
   const delay = scheduledTime.getTime() - now.getTime();
 
   return Math.max(0, delay);

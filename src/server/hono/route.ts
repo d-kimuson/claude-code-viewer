@@ -19,7 +19,12 @@ import { EnvService } from "../core/platform/services/EnvService";
 import { UserConfigService } from "../core/platform/services/UserConfigService";
 import type { ProjectRepository } from "../core/project/infrastructure/ProjectRepository";
 import { ProjectController } from "../core/project/presentation/ProjectController";
+import type { SchedulerConfigBaseDir } from "../core/scheduler/config";
 import { SchedulerController } from "../core/scheduler/presentation/SchedulerController";
+import {
+  newSchedulerJobSchema,
+  updateSchedulerJobSchema,
+} from "../core/scheduler/schema";
 import type { VirtualConversationDatabase } from "../core/session/infrastructure/VirtualConversationDatabase";
 import { SessionController } from "../core/session/presentation/SessionController";
 import type { SessionMetaService } from "../core/session/services/SessionMetaService";
@@ -60,6 +65,7 @@ export const routes = (app: HonoAppType) =>
       | UserConfigService
       | ClaudeCodeLifeCycleService
       | ProjectRepository
+      | SchedulerConfigBaseDir
     >();
 
     if ((yield* envService.getEnv("NEXT_PHASE")) !== "phase-production-build") {
@@ -460,30 +466,7 @@ export const routes = (app: HonoAppType) =>
 
         .post(
           "/scheduler/jobs",
-          zValidator(
-            "json",
-            z.object({
-              name: z.string(),
-              schedule: z.discriminatedUnion("type", [
-                z.object({
-                  type: z.literal("cron"),
-                  expression: z.string(),
-                }),
-                z.object({
-                  type: z.literal("fixed"),
-                  delayMs: z.number().int().positive(),
-                  oneTime: z.boolean(),
-                }),
-              ]),
-              message: z.object({
-                content: z.string(),
-                projectId: z.string(),
-                baseSessionId: z.string().nullable(),
-              }),
-              enabled: z.boolean().default(true),
-              concurrencyPolicy: z.enum(["skip", "run"]).default("skip"),
-            }),
-          ),
+          zValidator("json", newSchedulerJobSchema),
           async (c) => {
             const response = await effectToResponse(
               c,
@@ -499,34 +482,7 @@ export const routes = (app: HonoAppType) =>
 
         .patch(
           "/scheduler/jobs/:id",
-          zValidator(
-            "json",
-            z.object({
-              name: z.string().optional(),
-              schedule: z
-                .discriminatedUnion("type", [
-                  z.object({
-                    type: z.literal("cron"),
-                    expression: z.string(),
-                  }),
-                  z.object({
-                    type: z.literal("fixed"),
-                    delayMs: z.number().int().positive(),
-                    oneTime: z.boolean(),
-                  }),
-                ])
-                .optional(),
-              message: z
-                .object({
-                  content: z.string(),
-                  projectId: z.string(),
-                  baseSessionId: z.string().nullable(),
-                })
-                .optional(),
-              enabled: z.boolean().optional(),
-              concurrencyPolicy: z.enum(["skip", "run"]).optional(),
-            }),
-          ),
+          zValidator("json", updateSchedulerJobSchema),
           async (c) => {
             const response = await effectToResponse(
               c,

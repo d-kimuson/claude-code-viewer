@@ -1,7 +1,7 @@
 "use client";
 
 import { Trans, useLingui } from "@lingui/react";
-import { type FC, useCallback, useEffect, useState } from "react";
+import { type FC, useEffect, useState } from "react";
 import { InlineCompletion } from "@/app/projects/[projectId]/components/chatForm/InlineCompletion";
 import { useMessageCompletion } from "@/app/projects/[projectId]/components/chatForm/useMessageCompletion";
 import { Button } from "@/components/ui/button";
@@ -40,8 +40,6 @@ export interface SchedulerJobDialogProps {
   isSubmitting?: boolean;
 }
 
-type DelayUnit = "minutes" | "hours" | "days";
-
 export const SchedulerJobDialog: FC<SchedulerJobDialogProps> = ({
   open,
   onOpenChange,
@@ -53,10 +51,13 @@ export const SchedulerJobDialog: FC<SchedulerJobDialogProps> = ({
   const { _, i18n } = useLingui();
 
   const [name, setName] = useState("");
-  const [scheduleType, setScheduleType] = useState<"cron" | "fixed">("cron");
+  const [scheduleType, setScheduleType] = useState<"cron" | "reserved">("cron");
   const [cronExpression, setCronExpression] = useState("0 9 * * *");
-  const [delayValue, setDelayValue] = useState(60); // 60 minutes default
-  const [delayUnit, setDelayUnit] = useState<DelayUnit>("minutes");
+  const [reservedDateTime, setReservedDateTime] = useState(() => {
+    const now = new Date();
+    now.setHours(now.getHours() + 1);
+    return now.toISOString().slice(0, 16);
+  });
   const [messageContent, setMessageContent] = useState("");
   const [enabled, setEnabled] = useState(true);
   const [concurrencyPolicy, setConcurrencyPolicy] = useState<"skip" | "run">(
@@ -66,36 +67,6 @@ export const SchedulerJobDialog: FC<SchedulerJobDialogProps> = ({
   // Message completion hook
   const completion = useMessageCompletion();
 
-  // Convert delay value and unit to milliseconds
-  const delayToMs = useCallback((value: number, unit: DelayUnit): number => {
-    switch (unit) {
-      case "minutes":
-        return value * 60 * 1000;
-      case "hours":
-        return value * 60 * 60 * 1000;
-      case "days":
-        return value * 24 * 60 * 60 * 1000;
-    }
-  }, []);
-
-  // Convert milliseconds to delay value and unit
-  const msToDelay = useCallback(
-    (ms: number): { value: number; unit: DelayUnit } => {
-      const minutes = ms / (60 * 1000);
-      const hours = ms / (60 * 60 * 1000);
-      const days = ms / (24 * 60 * 60 * 1000);
-
-      if (days >= 1 && days === Math.floor(days)) {
-        return { value: days, unit: "days" };
-      }
-      if (hours >= 1 && hours === Math.floor(hours)) {
-        return { value: hours, unit: "hours" };
-      }
-      return { value: minutes, unit: "minutes" };
-    },
-    [],
-  );
-
   // Initialize form with job data when editing
   useEffect(() => {
     if (job) {
@@ -103,42 +74,82 @@ export const SchedulerJobDialog: FC<SchedulerJobDialogProps> = ({
       setScheduleType(job.schedule.type);
       if (job.schedule.type === "cron") {
         setCronExpression(job.schedule.expression);
-      } else {
-        const { value, unit } = msToDelay(job.schedule.delayMs);
-        setDelayValue(value);
-        setDelayUnit(unit);
+        setConcurrencyPolicy(job.schedule.concurrencyPolicy);
+      } else if (job.schedule.type === "reserved") {
+        // Convert UTC time to local time for display
+        const date = new Date(job.schedule.reservedExecutionTime);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        const hours = String(date.getHours()).padStart(2, "0");
+        const minutes = String(date.getMinutes()).padStart(2, "0");
+        setReservedDateTime(`${year}-${month}-${day}T${hours}:${minutes}`);
       }
       setMessageContent(job.message.content);
       setEnabled(job.enabled);
-      setConcurrencyPolicy(job.concurrencyPolicy);
     } else {
       // Reset form for new job
       setName("");
       setScheduleType("cron");
       setCronExpression("0 9 * * *");
-      setDelayValue(60);
-      setDelayUnit("minutes");
+      const now = new Date();
+      now.setHours(now.getHours() + 1);
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, "0");
+      const day = String(now.getDate()).padStart(2, "0");
+      const hours = String(now.getHours()).padStart(2, "0");
+      const minutes = String(now.getMinutes()).padStart(2, "0");
+      setReservedDateTime(`${year}-${month}-${day}T${hours}:${minutes}`);
       setMessageContent("");
       setEnabled(true);
       setConcurrencyPolicy("skip");
     }
-  }, [job, msToDelay]);
+  }, [job]);
 
   const handleSubmit = () => {
-    const delayMs = delayToMs(delayValue, delayUnit);
     const newJob: NewSchedulerJob = {
       name,
       schedule:
         scheduleType === "cron"
-          ? { type: "cron", expression: cronExpression }
-          : { type: "fixed", delayMs, oneTime: true },
+          ? {
+              type: "cron",
+              expression: cronExpression,
+              concurrencyPolicy,
+            }
+          : {
+              type: "reserved",
+              // datetime-local returns "YYYY-MM-DDTHH:mm" in local time
+              // We need to treat this as local time and convert to UTC
+              reservedExecutionTime: (() => {
+                // datetime-local format: "YYYY-MM-DDTHH:mm"
+                // Parse as local time and convert to ISO string (UTC)
+                const match = reservedDateTime.match(
+                  /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/,
+                );
+                if (!match) {
+                  throw new Error("Invalid datetime format");
+                }
+                const year = Number(match[1]);
+                const month = Number(match[2]);
+                const day = Number(match[3]);
+                const hours = Number(match[4]);
+                const minutes = Number(match[5]);
+                const localDate = new Date(
+                  year,
+                  month - 1,
+                  day,
+                  hours,
+                  minutes,
+                );
+                return localDate.toISOString();
+              })(),
+            },
       message: {
         content: messageContent,
         projectId,
         baseSessionId: null,
       },
       enabled,
-      concurrencyPolicy,
     };
 
     onSubmit(newJob);
@@ -220,7 +231,7 @@ export const SchedulerJobDialog: FC<SchedulerJobDialogProps> = ({
             </Label>
             <Select
               value={scheduleType}
-              onValueChange={(value: "cron" | "fixed") =>
+              onValueChange={(value: "cron" | "reserved") =>
                 setScheduleType(value)
               }
               disabled={isSubmitting}
@@ -235,10 +246,10 @@ export const SchedulerJobDialog: FC<SchedulerJobDialogProps> = ({
                     message="定期実行 (Cron)"
                   />
                 </SelectItem>
-                <SelectItem value="fixed">
+                <SelectItem value="reserved">
                   <Trans
-                    id="scheduler.form.schedule_type.fixed"
-                    message="遅延実行"
+                    id="scheduler.form.schedule_type.reserved"
+                    message="予約実行"
                   />
                 </SelectItem>
               </SelectContent>
@@ -253,52 +264,23 @@ export const SchedulerJobDialog: FC<SchedulerJobDialogProps> = ({
             />
           ) : (
             <div className="space-y-2">
-              <Label>
-                <Trans id="scheduler.form.delay" message="遅延時間" />
-              </Label>
-              <div className="flex gap-2">
-                <Input
-                  type="number"
-                  min="1"
-                  value={delayValue}
-                  onChange={(e) =>
-                    setDelayValue(Number.parseInt(e.target.value, 10))
-                  }
-                  disabled={isSubmitting}
-                  className="flex-1"
-                  placeholder="60"
+              <Label htmlFor="reserved-datetime">
+                <Trans
+                  id="scheduler.form.reserved_time"
+                  message="実行予定日時"
                 />
-                <Select
-                  value={delayUnit}
-                  onValueChange={(value: DelayUnit) => setDelayUnit(value)}
-                  disabled={isSubmitting}
-                >
-                  <SelectTrigger className="w-[140px]">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="minutes">
-                      <Trans
-                        id="scheduler.form.delay_unit.minutes"
-                        message="分"
-                      />
-                    </SelectItem>
-                    <SelectItem value="hours">
-                      <Trans
-                        id="scheduler.form.delay_unit.hours"
-                        message="時間"
-                      />
-                    </SelectItem>
-                    <SelectItem value="days">
-                      <Trans id="scheduler.form.delay_unit.days" message="日" />
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              </Label>
+              <Input
+                id="reserved-datetime"
+                type="datetime-local"
+                value={reservedDateTime}
+                onChange={(e) => setReservedDateTime(e.target.value)}
+                disabled={isSubmitting}
+              />
               <p className="text-xs text-muted-foreground">
                 <Trans
-                  id="scheduler.form.delay.hint"
-                  message="指定した遅延時間後に一度だけ実行されます"
+                  id="scheduler.form.reserved_time.hint"
+                  message="指定した日時に一度だけ実行されます。実行後は自動的に削除されます"
                 />
               </p>
             </div>
@@ -358,40 +340,42 @@ export const SchedulerJobDialog: FC<SchedulerJobDialogProps> = ({
             </p>
           </div>
 
-          {/* Concurrency Policy */}
-          <div className="space-y-2">
-            <Label>
-              <Trans
-                id="scheduler.form.concurrency_policy"
-                message="同時実行ポリシー"
-              />
-            </Label>
-            <Select
-              value={concurrencyPolicy}
-              onValueChange={(value: "skip" | "run") =>
-                setConcurrencyPolicy(value)
-              }
-              disabled={isSubmitting}
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="skip">
-                  <Trans
-                    id="scheduler.form.concurrency_policy.skip"
-                    message="実行中の場合はスキップ"
-                  />
-                </SelectItem>
-                <SelectItem value="run">
-                  <Trans
-                    id="scheduler.form.concurrency_policy.run"
-                    message="実行中でも実行する"
-                  />
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          {/* Concurrency Policy (only for cron schedules) */}
+          {scheduleType === "cron" && (
+            <div className="space-y-2">
+              <Label>
+                <Trans
+                  id="scheduler.form.concurrency_policy"
+                  message="同時実行ポリシー"
+                />
+              </Label>
+              <Select
+                value={concurrencyPolicy}
+                onValueChange={(value: "skip" | "run") =>
+                  setConcurrencyPolicy(value)
+                }
+                disabled={isSubmitting}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="skip">
+                    <Trans
+                      id="scheduler.form.concurrency_policy.skip"
+                      message="実行中の場合はスキップ"
+                    />
+                  </SelectItem>
+                  <SelectItem value="run">
+                    <Trans
+                      id="scheduler.form.concurrency_policy.run"
+                      message="実行中でも実行する"
+                    />
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          )}
         </div>
 
         <DialogFooter>

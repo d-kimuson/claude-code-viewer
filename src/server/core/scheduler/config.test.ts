@@ -9,17 +9,29 @@ import {
   getConfigPath,
   initializeConfig,
   readConfig,
+  SchedulerConfigBaseDir,
   writeConfig,
 } from "./config";
 import type { SchedulerConfig } from "./schema";
 
 describe("scheduler config", () => {
   let testDir: string;
-  const testLayer = Layer.mergeAll(NodeFileSystem.layer, NodePath.layer);
+  let testLayer: Layer.Layer<
+    FileSystem.FileSystem | Path.Path | SchedulerConfigBaseDir
+  >;
 
   beforeEach(async () => {
     testDir = join(tmpdir(), `scheduler-test-${Date.now()}`);
     await mkdir(testDir, { recursive: true });
+
+    // Use test directory as base for config files
+    const testConfigBaseDir = Layer.succeed(SchedulerConfigBaseDir, testDir);
+
+    testLayer = Layer.mergeAll(
+      NodeFileSystem.layer,
+      NodePath.layer,
+      testConfigBaseDir,
+    );
   });
 
   afterEach(async () => {
@@ -31,7 +43,8 @@ describe("scheduler config", () => {
       getConfigPath.pipe(Effect.provide(testLayer)),
     );
 
-    expect(result).toContain(".claude-code-viewer/scheduler/config.json");
+    expect(result).toContain("/scheduler/schedules.json");
+    expect(result).toContain(testDir);
   });
 
   test("writeConfig and readConfig work correctly", async () => {
@@ -43,6 +56,7 @@ describe("scheduler config", () => {
           schedule: {
             type: "cron",
             expression: "0 0 * * *",
+            concurrencyPolicy: "skip",
           },
           message: {
             content: "test message",
@@ -50,7 +64,6 @@ describe("scheduler config", () => {
             baseSessionId: null,
           },
           enabled: true,
-          concurrencyPolicy: "skip",
           createdAt: "2025-10-25T00:00:00Z",
           lastRunAt: null,
           lastRunStatus: null,

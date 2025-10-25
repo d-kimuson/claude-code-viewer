@@ -1,7 +1,12 @@
 "use client";
 
 import { Trans } from "@lingui/react";
-import { ArrowLeftIcon, MessageSquareIcon, PlugIcon } from "lucide-react";
+import {
+  ArrowLeftIcon,
+  CalendarClockIcon,
+  MessageSquareIcon,
+  PlugIcon,
+} from "lucide-react";
 import Link from "next/link";
 import { type FC, useMemo } from "react";
 import type { SidebarTab } from "@/components/GlobalSidebar";
@@ -16,6 +21,7 @@ import { cn } from "@/lib/utils";
 import { useProject } from "../../../../hooks/useProject";
 import { McpTab } from "./McpTab";
 import { MobileSidebar } from "./MobileSidebar";
+import { SchedulerTab } from "./SchedulerTab";
 import { SessionsTab } from "./SessionsTab";
 
 export const SessionSidebar: FC<{
@@ -64,6 +70,14 @@ export const SessionSidebar: FC<{
         icon: PlugIcon,
         title: "Show MCP server settings",
         content: <McpTab projectId={projectId} />,
+      },
+      {
+        id: "scheduler",
+        icon: CalendarClockIcon,
+        title: "Show scheduler jobs",
+        content: (
+          <SchedulerTab projectId={projectId} sessionId={currentSessionId} />
+        ),
       },
     ],
     [

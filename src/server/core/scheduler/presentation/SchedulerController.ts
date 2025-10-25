@@ -1,99 +1,84 @@
-import type { FileSystem, Path } from "@effect/platform";
-import type { CommandExecutor } from "@effect/platform/CommandExecutor";
-import { Context, Effect, Layer, Runtime } from "effect";
-import { Hono, type Context as HonoContext } from "hono";
+import { Context, Effect, Layer } from "effect";
+import type { ControllerResponse } from "../../../lib/effect/toEffectResponse";
 import type { InferEffect } from "../../../lib/effect/types";
-import type { ClaudeCodeLifeCycleService } from "../../claude-code/services/ClaudeCodeLifeCycleService";
-import type { EnvService } from "../../platform/services/EnvService";
-import type { UserConfigService } from "../../platform/services/UserConfigService";
-import type { ProjectRepository } from "../../project/infrastructure/ProjectRepository";
 import { SchedulerService } from "../domain/Scheduler";
-import { newSchedulerJobSchema, updateSchedulerJobSchema } from "../schema";
+import type { NewSchedulerJob, UpdateSchedulerJob } from "../schema";
 
 const LayerImpl = Effect.gen(function* () {
   const schedulerService = yield* SchedulerService;
 
-  const runtime = yield* Effect.runtime<
-    | FileSystem.FileSystem
-    | Path.Path
-    | CommandExecutor
-    | EnvService
-    | ProjectRepository
-    | UserConfigService
-    | ClaudeCodeLifeCycleService
-  >();
+  const getJobs = () =>
+    Effect.gen(function* () {
+      const jobs = yield* schedulerService.getJobs();
+      return {
+        response: jobs,
+        status: 200,
+      } as const satisfies ControllerResponse;
+    });
 
-  const app = new Hono()
-    .get("/jobs", async (c: HonoContext) => {
-      const result = await Runtime.runPromise(runtime)(
-        schedulerService.getJobs(),
-      );
-      return c.json(result);
-    })
-    .post("/jobs", async (c: HonoContext) => {
-      const body = await c.req.json();
-      const parsed = newSchedulerJobSchema.safeParse(body);
+  const addJob = (options: { job: NewSchedulerJob }) =>
+    Effect.gen(function* () {
+      const { job } = options;
+      const result = yield* schedulerService.addJob(job);
+      return {
+        response: result,
+        status: 201,
+      } as const satisfies ControllerResponse;
+    });
 
-      if (!parsed.success) {
-        return c.json(
-          { error: "Invalid request body", details: parsed.error },
-          400,
-        );
-      }
-
-      const result = await Runtime.runPromise(runtime)(
-        schedulerService.addJob(parsed.data),
-      );
-      return c.json(result, 201);
-    })
-    .patch("/jobs/:id", async (c: HonoContext) => {
-      const id = c.req.param("id");
-      const body = await c.req.json();
-      const parsed = updateSchedulerJobSchema.safeParse(body);
-
-      if (!parsed.success) {
-        return c.json(
-          { error: "Invalid request body", details: parsed.error },
-          400,
-        );
-      }
-
-      const result = await Runtime.runPromise(runtime)(
-        schedulerService
-          .updateJob(id, parsed.data)
-          .pipe(
-            Effect.catchTag("SchedulerJobNotFoundError", () =>
-              Effect.succeed(null),
-            ),
+  const updateJob = (options: { id: string; job: UpdateSchedulerJob }) =>
+    Effect.gen(function* () {
+      const { id, job } = options;
+      const result = yield* schedulerService
+        .updateJob(id, job)
+        .pipe(
+          Effect.catchTag("SchedulerJobNotFoundError", () =>
+            Effect.succeed(null),
           ),
-      );
+        );
 
       if (result === null) {
-        return c.json({ error: "Job not found" }, 404);
+        return {
+          response: { error: "Job not found" },
+          status: 404,
+        } as const satisfies ControllerResponse;
       }
 
-      return c.json(result);
-    })
-    .delete("/jobs/:id", async (c: HonoContext) => {
-      const id = c.req.param("id");
+      return {
+        response: result,
+        status: 200,
+      } as const satisfies ControllerResponse;
+    });
 
-      const result = await Runtime.runPromise(runtime)(
-        schedulerService.deleteJob(id).pipe(
-          Effect.catchTag("SchedulerJobNotFoundError", () =>
-            Effect.succeed(false),
-          ),
-          Effect.map(() => true),
+  const deleteJob = (options: { id: string }) =>
+    Effect.gen(function* () {
+      const { id } = options;
+      const result = yield* schedulerService.deleteJob(id).pipe(
+        Effect.catchTag("SchedulerJobNotFoundError", () =>
+          Effect.succeed(false),
         ),
+        Effect.map(() => true),
       );
 
       if (!result) {
-        return c.json({ error: "Job not found" }, 404);
+        return {
+          response: { error: "Job not found" },
+          status: 404,
+        } as const satisfies ControllerResponse;
       }
 
-      return c.json({ success: true }, 200);
+      return {
+        response: { success: true },
+        status: 200,
+      } as const satisfies ControllerResponse;
     });
 
-  return { app };
+  return {
+    getJobs,
+    addJob,
+    updateJob,
+    deleteJob,
+  };
 });
 
 export type ISchedulerController = InferEffect<typeof LayerImpl>;

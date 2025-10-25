@@ -18,7 +18,7 @@ import type {
   SchedulerJob,
   UpdateSchedulerJob,
 } from "../schema";
-import { calculateFixedDelay, executeJob, shouldExecuteJob } from "./Job";
+import { calculateFixedDelay, executeJob } from "./Job";
 
 class SchedulerJobNotFoundError extends Data.TaggedError(
   "SchedulerJobNotFoundError",
@@ -55,18 +55,28 @@ const LayerImpl = Effect.gen(function* () {
           );
         }
 
-        const schedule = Schedule.cron(cronResult.right);
+        const cronSchedule = Schedule.cron(cronResult.right);
 
-        const fiber = yield* Effect.repeat(
-          runJobWithConcurrencyControl(job),
-          schedule,
-        ).pipe(Effect.forkDaemon);
+        // Wait for the next cron time before starting the repeat loop
+        // This prevents immediate execution on job creation/update
+        const fiber = yield* Effect.gen(function* () {
+          // Get the next scheduled time
+          const nextTime = Cron.next(cronResult.right, new Date());
+          const nextDelay = Math.max(0, nextTime.getTime() - Date.now());
+
+          // Wait until the next scheduled time
+          yield* Effect.sleep(Duration.millis(nextDelay));
+
+          // Then repeat on the cron schedule
+          yield* Effect.repeat(runJobWithConcurrencyControl(job), cronSchedule);
+        }).pipe(Effect.forkDaemon);
 
         yield* Ref.update(fibersRef, (fibers) =>
           new Map(fibers).set(job.id, fiber),
         );
       } else if (job.schedule.type === "fixed") {
-        if (!shouldExecuteJob(job, now)) {
+        // For oneTime jobs, skip scheduling if already executed
+        if (job.schedule.oneTime && job.lastRunStatus !== null) {
           return;
         }
 

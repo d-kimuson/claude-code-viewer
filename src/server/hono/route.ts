@@ -17,6 +17,7 @@ import { GitController } from "../core/git/presentation/GitController";
 import { CommitRequestSchema, PushRequestSchema } from "../core/git/schema";
 import { EnvService } from "../core/platform/services/EnvService";
 import { UserConfigService } from "../core/platform/services/UserConfigService";
+import type { ProjectRepository } from "../core/project/infrastructure/ProjectRepository";
 import { ProjectController } from "../core/project/presentation/ProjectController";
 import { SchedulerController } from "../core/scheduler/presentation/SchedulerController";
 import type { VirtualConversationDatabase } from "../core/session/infrastructure/VirtualConversationDatabase";
@@ -56,6 +57,9 @@ export const routes = (app: HonoAppType) =>
       | FileSystem.FileSystem
       | Path.Path
       | CommandExecutor.CommandExecutor
+      | UserConfigService
+      | ClaudeCodeLifeCycleService
+      | ProjectRepository
     >();
 
     if ((yield* envService.getEnv("NEXT_PHASE")) !== "phase-production-build") {
@@ -446,7 +450,108 @@ export const routes = (app: HonoAppType) =>
          * SchedulerController Routes
          */
 
-        .route("/scheduler", schedulerController.app)
+        .get("/scheduler/jobs", async (c) => {
+          const response = await effectToResponse(
+            c,
+            schedulerController.getJobs().pipe(Effect.provide(runtime)),
+          );
+          return response;
+        })
+
+        .post(
+          "/scheduler/jobs",
+          zValidator(
+            "json",
+            z.object({
+              name: z.string(),
+              schedule: z.discriminatedUnion("type", [
+                z.object({
+                  type: z.literal("cron"),
+                  expression: z.string(),
+                }),
+                z.object({
+                  type: z.literal("fixed"),
+                  delayMs: z.number().int().positive(),
+                  oneTime: z.boolean(),
+                }),
+              ]),
+              message: z.object({
+                content: z.string(),
+                projectId: z.string(),
+                baseSessionId: z.string().nullable(),
+              }),
+              enabled: z.boolean().default(true),
+              concurrencyPolicy: z.enum(["skip", "run"]).default("skip"),
+            }),
+          ),
+          async (c) => {
+            const response = await effectToResponse(
+              c,
+              schedulerController
+                .addJob({
+                  job: c.req.valid("json"),
+                })
+                .pipe(Effect.provide(runtime)),
+            );
+            return response;
+          },
+        )
+
+        .patch(
+          "/scheduler/jobs/:id",
+          zValidator(
+            "json",
+            z.object({
+              name: z.string().optional(),
+              schedule: z
+                .discriminatedUnion("type", [
+                  z.object({
+                    type: z.literal("cron"),
+                    expression: z.string(),
+                  }),
+                  z.object({
+                    type: z.literal("fixed"),
+                    delayMs: z.number().int().positive(),
+                    oneTime: z.boolean(),
+                  }),
+                ])
+                .optional(),
+              message: z
+                .object({
+                  content: z.string(),
+                  projectId: z.string(),
+                  baseSessionId: z.string().nullable(),
+                })
+                .optional(),
+              enabled: z.boolean().optional(),
+              concurrencyPolicy: z.enum(["skip", "run"]).optional(),
+            }),
+          ),
+          async (c) => {
+            const response = await effectToResponse(
+              c,
+              schedulerController
+                .updateJob({
+                  id: c.req.param("id"),
+                  job: c.req.valid("json"),
+                })
+                .pipe(Effect.provide(runtime)),
+            );
+            return response;
+          },
+        )
+
+        .delete("/scheduler/jobs/:id", async (c) => {
+          const response = await effectToResponse(
+            c,
+            schedulerController
+              .deleteJob({
+                id: c.req.param("id"),
+              })
+              .pipe(Effect.provide(runtime)),
+          );
+          return response;
+        })
 
         /**
          * FileSystemController Routes

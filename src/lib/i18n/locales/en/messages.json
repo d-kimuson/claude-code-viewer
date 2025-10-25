@@ -23,16 +23,16 @@
     "origin": [["src/components/SettingsControls.tsx", 306]],
     "translation": "Select theme"
   },
-  "Reload MCP servers": {
+  "Close sidebar": {
     "placeholders": {},
     "comments": [],
     "origin": [
       [
-        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/McpTab.tsx",
-        42
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
+        179
       ]
     ],
-    "translation": "Reload MCP servers"
+    "translation": "Close sidebar"
   },
   "Type your message... (Start with / for commands, @ for files, Enter to send)": {
     "placeholders": {},
@@ -79,16 +79,16 @@
     ],
     "translation": "Type your message... (Start with / for commands, @ for files, Shift+Enter to send)"
   },
-  "Close sidebar": {
+  "Reload MCP servers": {
     "placeholders": {},
     "comments": [],
     "origin": [
       [
-        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        173
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/McpTab.tsx",
+        42
       ]
     ],
-    "translation": "Close sidebar"
+    "translation": "Reload MCP servers"
   },
   "Type your message here... (Start with / for commands, @ for files, Enter to send)": {
     "placeholders": {},
@@ -136,6 +136,14 @@
     ],
     "translation": "Available commands"
   },
+  "Message input with completion support": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      ["src/app/projects/[projectId]/components/chatForm/ChatInput.tsx", 210]
+    ],
+    "translation": "Message input with completion support"
+  },
   "Uncommitted changes": {
     "placeholders": {},
     "comments": [],
@@ -153,7 +161,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
-        303
+        302
       ]
     ],
     "translation": "Failed to commit"
@@ -164,7 +172,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
-        321
+        320
       ]
     ],
     "translation": "Failed to push"
@@ -175,7 +183,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
-        356
+        355
       ]
     ],
     "translation": "Retry Push"
@@ -186,7 +194,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
-        369
+        368
       ]
     ],
     "translation": "Failed to commit and push"
@@ -197,7 +205,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
-        388
+        387
       ]
     ],
     "translation": "Compare from"
@@ -208,18 +216,10 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
-        394
+        393
       ]
     ],
     "translation": "Compare to"
-  },
-  "Message input with completion support": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      ["src/app/projects/[projectId]/components/chatForm/ChatInput.tsx", 210]
-    ],
-    "translation": "Message input with completion support"
   },
   "assistant.tool.message_count": {
     "message": "{count} messages",
@@ -288,7 +288,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        197
+        203
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
@@ -414,7 +414,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
-        567
+        566
       ]
     ],
     "translation": "Commit"
@@ -426,7 +426,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
-        602
+        601
       ]
     ],
     "translation": "Commit & Push"
@@ -438,7 +438,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
-        463
+        462
       ]
     ],
     "translation": "Commit Changes"
@@ -450,7 +450,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
-        535
+        534
       ]
     ],
     "translation": "Commit message"
@@ -462,7 +462,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
-        596
+        595
       ]
     ],
     "translation": "Committing & Pushing..."
@@ -474,7 +474,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
-        561
+        560
       ]
     ],
     "translation": "Committing..."
@@ -531,6 +531,13 @@
     "origin": [["src/app/projects/components/CreateProjectDialog.tsx", 106]],
     "translation": "Creating..."
   },
+  "cron_builder.cron_expression": {
+    "translation": "Cron Expression",
+    "message": "Cron Expression",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/scheduler/CronExpressionBuilder.tsx", 281]]
+  },
   "directory_picker.current": {
     "message": "Current:",
     "placeholders": {},
@@ -538,12 +545,33 @@
     "origin": [["src/app/projects/components/DirectoryPicker.tsx", 38]],
     "translation": "Current:"
   },
+  "cron_builder.custom": {
+    "translation": "Custom",
+    "message": "Custom",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/scheduler/CronExpressionBuilder.tsx", 192]]
+  },
+  "cron_builder.daily": {
+    "translation": "Daily",
+    "message": "Daily",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/scheduler/CronExpressionBuilder.tsx", 186]]
+  },
   "settings.theme.dark": {
     "message": "Dark",
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/SettingsControls.tsx", 313]],
     "translation": "Dark"
+  },
+  "cron_builder.day_of_week": {
+    "translation": "Day of Week",
+    "message": "Day of Week",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/scheduler/CronExpressionBuilder.tsx", 231]]
   },
   "settings.permission.mode.default": {
     "message": "Default (Ask permission)",
@@ -559,7 +587,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
-        492
+        491
       ]
     ],
     "translation": "Deselect All"
@@ -592,7 +620,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
-        618
+        617
       ]
     ],
     "translation": "Enter a commit message"
@@ -643,6 +671,13 @@
     "comments": [],
     "origin": [["src/components/SystemInfoCard.tsx", 146]],
     "translation": "Executable"
+  },
+  "cron_builder.expression": {
+    "translation": "Expression",
+    "message": "Expression",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/scheduler/CronExpressionBuilder.tsx", 303]]
   },
   "mcp.error.load_failed": {
     "message": "Failed to load MCP servers: {error}",
@@ -705,12 +740,36 @@
     ],
     "translation": "files changed"
   },
+  "cron_builder.friday": {
+    "translation": "Friday",
+    "message": "Friday",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/scheduler/CronExpressionBuilder.tsx", 36]]
+  },
   "settings.session.hide_no_user_message": {
     "message": "Hide sessions without user messages",
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/SettingsControls.tsx", 117]],
     "translation": "Hide sessions without user messages"
+  },
+  "cron_builder.hour": {
+    "translation": "Hour (0-23)",
+    "message": "Hour (0-23)",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      ["src/components/scheduler/CronExpressionBuilder.tsx", 202],
+      ["src/components/scheduler/CronExpressionBuilder.tsx", 252]
+    ]
+  },
+  "cron_builder.hourly": {
+    "translation": "Hourly",
+    "message": "Hourly",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/scheduler/CronExpressionBuilder.tsx", 183]]
   },
   "user.content.image": {
     "message": "Image",
@@ -731,7 +790,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        198
+        170
       ]
     ],
     "translation": "Input Parameters"
@@ -776,7 +835,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
-        657
+        656
       ]
     ],
     "translation": "Loading diff..."
@@ -795,7 +854,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        115
+        119
       ],
       ["src/components/GlobalSidebar.tsx", 67]
     ],
@@ -822,7 +881,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
-        413
+        412
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/McpTab.tsx",
@@ -872,6 +931,23 @@
     "comments": [],
     "origin": [["src/app/projects/components/ProjectList.tsx", 71]],
     "translation": "Messages:"
+  },
+  "cron_builder.minute": {
+    "translation": "Minute (0-59)",
+    "message": "Minute (0-59)",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      ["src/components/scheduler/CronExpressionBuilder.tsx", 214],
+      ["src/components/scheduler/CronExpressionBuilder.tsx", 264]
+    ]
+  },
+  "cron_builder.monday": {
+    "translation": "Monday",
+    "message": "Monday",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/scheduler/CronExpressionBuilder.tsx", 32]]
   },
   "sessions.new": {
     "message": "New",
@@ -946,7 +1022,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        136
+        140
       ]
     ],
     "translation": "Notifications"
@@ -998,6 +1074,13 @@
     "origin": [["src/lib/notifications.tsx", 107]],
     "translation": "Pop"
   },
+  "cron_builder.preview": {
+    "translation": "Preview",
+    "message": "Preview",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/scheduler/CronExpressionBuilder.tsx", 293]]
+  },
   "chat.status.processing": {
     "message": "Processing...",
     "placeholders": {},
@@ -1021,7 +1104,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
-        582
+        581
       ]
     ],
     "translation": "Push"
@@ -1033,7 +1116,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
-        579
+        578
       ]
     ],
     "translation": "Pushing..."
@@ -1086,6 +1169,20 @@
     ],
     "translation": "Running"
   },
+  "cron_builder.saturday": {
+    "translation": "Saturday",
+    "message": "Saturday",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/scheduler/CronExpressionBuilder.tsx", 37]]
+  },
+  "cron_builder.schedule_type": {
+    "translation": "Schedule Type",
+    "message": "Schedule Type",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/scheduler/CronExpressionBuilder.tsx", 175]]
+  },
   "conversation.error.schema": {
     "message": "Schema Error",
     "placeholders": {},
@@ -1131,7 +1228,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
-        484
+        483
       ]
     ],
     "translation": "Select All"
@@ -1143,7 +1240,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
-        613
+        612
       ]
     ],
     "translation": "Select at least one file"
@@ -1188,7 +1285,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        126
+        130
       ]
     ],
     "translation": "Session Display"
@@ -1219,7 +1316,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        278
+        284
       ],
       ["src/components/GlobalSidebar.tsx", 44]
     ],
@@ -1239,7 +1336,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        252
+        258
       ]
     ],
     "translation": "Show MCP server settings"
@@ -1258,10 +1355,22 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        225
+        231
       ]
     ],
     "translation": "Show session list"
+  },
+  "system.info.tab.title": {
+    "message": "Show system information",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
+        309
+      ]
+    ],
+    "translation": "Show system information"
   },
   "chat.button.start": {
     "message": "Start Chat",
@@ -1280,6 +1389,13 @@
       ["src/app/projects/[projectId]/components/newChat/NewChatModal.tsx", 33]
     ],
     "translation": "Start New Chat"
+  },
+  "cron_builder.sunday": {
+    "translation": "Sunday",
+    "message": "Sunday",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/scheduler/CronExpressionBuilder.tsx", 31]]
   },
   "settings.theme.system": {
     "message": "System",
@@ -1342,7 +1458,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        89
+        64
       ]
     ],
     "translation": "Thinking"
@@ -1359,17 +1475,24 @@
     ],
     "translation": "This conversation entry failed to parse correctly. This might indicate a format change or parsing issue."
   },
+  "cron_builder.thursday": {
+    "translation": "Thursday",
+    "message": "Thursday",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/scheduler/CronExpressionBuilder.tsx", 35]]
+  },
   "assistant.tool.tool_id": {
-    "translation": "Tool ID",
     "message": "Tool ID",
     "placeholders": {},
     "comments": [],
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        190
+        162
       ]
-    ]
+    ],
+    "translation": "Tool ID"
   },
   "assistant.tool.result": {
     "message": "Tool Result",
@@ -1378,7 +1501,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        215
+        187
       ]
     ],
     "translation": "Tool Result"
@@ -1408,6 +1531,13 @@
     "comments": [],
     "origin": [["src/app/projects/[projectId]/error.tsx", 68]],
     "translation": "Try Again"
+  },
+  "cron_builder.tuesday": {
+    "translation": "Tuesday",
+    "message": "Tuesday",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/scheduler/CronExpressionBuilder.tsx", 33]]
   },
   "settings.session.unify_same_title": {
     "message": "Unify sessions with same title",
@@ -1500,7 +1630,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        145
+        120
       ]
     ],
     "translation": "View Task"
@@ -1511,6 +1641,20 @@
     "comments": [],
     "origin": [["src/app/projects/[projectId]/error.tsx", 40]],
     "translation": "We encountered an error while loading this project"
+  },
+  "cron_builder.wednesday": {
+    "translation": "Wednesday",
+    "message": "Wednesday",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/scheduler/CronExpressionBuilder.tsx", 34]]
+  },
+  "cron_builder.weekly": {
+    "translation": "Weekly",
+    "message": "Weekly",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/scheduler/CronExpressionBuilder.tsx", 189]]
   },
   "projects.page.title": {
     "message": "Your Projects",

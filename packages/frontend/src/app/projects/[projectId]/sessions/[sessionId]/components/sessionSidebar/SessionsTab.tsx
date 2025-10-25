@@ -1,10 +1,7 @@
-"use client";
-
 import type { Session } from "@claude-code-viewer/backend/types";
 import { Trans } from "@lingui/react";
 import { useAtomValue } from "jotai";
 import { MessageSquareIcon, PlusIcon } from "lucide-react";
-import Link from "next/link";
 import type { FC } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -114,7 +111,8 @@ export const SessionsTab: FC<{
           const isPaused = sessionProcess?.status === "paused";
 
           return (
-            <Link
+            // TODO: Soft Navigation
+            <a
               key={session.id}
               href={`/projects/${projectId}/sessions/${session.id}`}
               className={cn(
@@ -160,7 +158,7 @@ export const SessionsTab: FC<{
                   )}
                 </div>
               </div>
-            </Link>
+            </a>
           );
         })}
 

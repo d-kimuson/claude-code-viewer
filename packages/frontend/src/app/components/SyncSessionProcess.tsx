@@ -1,5 +1,3 @@
-"use client";
-
 import type { PublicSessionProcess } from "@claude-code-viewer/shared/types/session-process";
 import { useSetAtom } from "jotai";
 import { type FC, type PropsWithChildren, useEffect } from "react";

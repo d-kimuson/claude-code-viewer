@@ -1,6 +1,4 @@
 import { QueryClient } from "@tanstack/react-query";
-import { Geist, Geist_Mono } from "next/font/google";
-import { ThemeProvider } from "next-themes";
 
 import { Toaster } from "../components/ui/sonner";
 import { honoClient } from "../lib/api/client";
@@ -12,19 +10,6 @@ import { SSEEventListeners } from "./components/SSEEventListeners";
 import { SyncSessionProcess } from "./components/SyncSessionProcess";
 
 import "./globals.css";
-
-export const dynamic = "force-dynamic";
-export const fetchCache = "force-no-store";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata = {
   title: "Claude Code Viewer",
@@ -49,25 +34,21 @@ export default async function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <RootErrorBoundary>
-            <QueryClientProviderWrapper>
-              <SSEProvider>
-                <SSEEventListeners>
-                  <SyncSessionProcess
-                    initProcesses={initSessionProcesses.processes}
-                  >
-                    {children}
-                  </SyncSessionProcess>
-                </SSEEventListeners>
-              </SSEProvider>
-            </QueryClientProviderWrapper>
-          </RootErrorBoundary>
-          <Toaster position="top-right" />
-        </ThemeProvider>
+      <body>
+        <RootErrorBoundary>
+          <QueryClientProviderWrapper>
+            <SSEProvider>
+              <SSEEventListeners>
+                <SyncSessionProcess
+                  initProcesses={initSessionProcesses.processes}
+                >
+                  {children}
+                </SyncSessionProcess>
+              </SSEEventListeners>
+            </SSEProvider>
+          </QueryClientProviderWrapper>
+        </RootErrorBoundary>
+        <Toaster position="top-right" />
       </body>
     </html>
   );

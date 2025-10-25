@@ -1,5 +1,3 @@
-"use client";
-
 import { Trans, useLingui } from "@lingui/react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { RefreshCwIcon } from "lucide-react";

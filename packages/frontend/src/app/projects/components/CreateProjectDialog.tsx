@@ -1,9 +1,6 @@
-"use client";
-
 import { Trans } from "@lingui/react";
 import { useMutation } from "@tanstack/react-query";
 import { Loader2, Plus } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { type FC, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -22,7 +19,6 @@ import { DirectoryPicker } from "./DirectoryPicker";
 export const CreateProjectDialog: FC = () => {
   const [open, setOpen] = useState(false);
   const [selectedPath, setSelectedPath] = useState<string>("");
-  const router = useRouter();
 
   const createProjectMutation = useMutation({
     mutationFn: async () => {
@@ -40,7 +36,8 @@ export const CreateProjectDialog: FC = () => {
     onSuccess: (result) => {
       toast.success("Project created successfully");
       setOpen(false);
-      router.push(`/projects/${result.projectId}/sessions/${result.sessionId}`);
+      // TODO: Soft Navigation
+      window.location.href = `/projects/${result.projectId}/sessions/${result.sessionId}`;
     },
 
     onError: (error) => {

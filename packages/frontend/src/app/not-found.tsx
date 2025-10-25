@@ -1,5 +1,4 @@
 import { FileQuestion, Home } from "lucide-react";
-import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -28,10 +27,11 @@ export default function NotFoundPage() {
         <CardContent>
           <div className="flex gap-2">
             <Button asChild variant="default">
-              <Link href="/">
+              {/* TODO: Soft Navigation */}
+              <a href="/">
                 <Home />
                 Go to Home
-              </Link>
+              </a>
             </Button>
           </div>
         </CardContent>

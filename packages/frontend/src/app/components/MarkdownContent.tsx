@@ -1,13 +1,7 @@
-"use client";
-
-import { useTheme } from "next-themes";
 import type { FC } from "react";
 import Markdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import {
-  oneDark,
-  oneLight,
-} from "react-syntax-highlighter/dist/esm/styles/prism";
+import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import remarkGfm from "remark-gfm";
 
 interface MarkdownContentProps {
@@ -19,8 +13,8 @@ export const MarkdownContent: FC<MarkdownContentProps> = ({
   content,
   className = "",
 }) => {
-  const { resolvedTheme } = useTheme();
-  const syntaxTheme = resolvedTheme === "dark" ? oneDark : oneLight;
+  // TODO: Implement theme change
+  const syntaxTheme = oneDark; // or oneLight;
 
   return (
     <div

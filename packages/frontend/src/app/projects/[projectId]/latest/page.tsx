@@ -1,5 +1,4 @@
 import { QueryClient } from "@tanstack/react-query";
-import { redirect } from "next/navigation";
 import { latestSessionQuery } from "../../../../lib/api/queries";
 
 interface LatestSessionPageProps {
@@ -18,8 +17,10 @@ export default async function LatestSessionPage({
   );
 
   if (!latestSession) {
-    redirect(`/projects`);
+    // TODO: Soft Navigation
+    window.location.href = "/projects";
   }
 
-  redirect(`/projects/${projectId}/sessions/${latestSession.id}`);
+  // TODO: Soft Navigation
+  window.location.href = `/projects/${projectId}/sessions/${latestSession?.id}`;
 }

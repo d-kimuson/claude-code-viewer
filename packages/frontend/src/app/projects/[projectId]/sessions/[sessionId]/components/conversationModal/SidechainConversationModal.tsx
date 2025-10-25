@@ -1,5 +1,3 @@
-"use client";
-
 import type { ToolResultContent } from "@claude-code-viewer/shared/conversation-schema/content/ToolResultContentSchema";
 import type {
   Conversation,

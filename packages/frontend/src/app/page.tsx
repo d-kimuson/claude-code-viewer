@@ -1,5 +1,4 @@
-import { redirect } from "next/navigation";
-
 export default function Home() {
-  redirect("/projects");
+  // TODO: Soft Navigation
+  window.location.href = "/projects";
 }

@@ -1,5 +1,3 @@
-"use client";
-
 import { Trans } from "@lingui/react";
 import { useMutation } from "@tanstack/react-query";
 import {

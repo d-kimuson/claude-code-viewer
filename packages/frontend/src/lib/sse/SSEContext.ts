@@ -1,5 +1,3 @@
-"use client";
-
 import type { SSEEvent } from "@claude-code-viewer/shared/types/sse";
 import { createContext, useContext } from "react";
 

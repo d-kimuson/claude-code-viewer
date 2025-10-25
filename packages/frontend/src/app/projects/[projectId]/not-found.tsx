@@ -1,6 +1,5 @@
 import { Trans } from "@lingui/react";
 import { FolderSearch, Home } from "lucide-react";
-import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -37,13 +36,14 @@ export default async function ProjectNotFoundPage() {
         <CardContent>
           <div className="flex gap-2">
             <Button asChild variant="default">
-              <Link href="/projects">
+              {/* TODO: Soft Navigation */}
+              <a href="/projects">
                 <Home />
                 <Trans
                   id="project.not_found.back_to_projects"
                   message="Back to Projects"
                 />
-              </Link>
+              </a>
             </Button>
           </div>
         </CardContent>

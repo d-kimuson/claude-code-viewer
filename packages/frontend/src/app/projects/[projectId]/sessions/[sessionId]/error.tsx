@@ -1,7 +1,4 @@
-"use client";
-
 import { AlertCircle, ArrowLeft, RefreshCw } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -20,9 +17,8 @@ export default function SessionErrorPage({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  const router = useRouter();
-  const params = useParams<{ projectId: string }>();
-  const projectId = params.projectId;
+  // TODO: parse project id from path
+  const projectId = "dummy";
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
@@ -58,7 +54,10 @@ export default function SessionErrorPage({
               Try Again
             </Button>
             <Button
-              onClick={() => router.push(`/projects/${projectId}/latest`)}
+              onClick={() => {
+                // TODO: Soft Navigation
+                window.location.href = `/projects/${projectId}/latest`;
+              }}
               variant="outline"
             >
               <ArrowLeft />

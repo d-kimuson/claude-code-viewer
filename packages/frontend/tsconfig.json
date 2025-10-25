@@ -9,12 +9,6 @@
     "isolatedModules": true,
     // build optimization
     "incremental": true,
-    // plugins
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
     // paths alias
     "paths": {
       "@/*": ["./src/*"]
@@ -22,12 +16,5 @@
     // typecheck
     "types": ["vitest/globals"]
   },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
-    "next-env.d.ts",
-    "./.next/types/**/*.ts"
-  ],
-  "exclude": ["node_modules"]
+  "include": ["src"]
 }

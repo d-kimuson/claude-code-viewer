@@ -1,5 +1,3 @@
-"use client";
-
 import { type Messages, setupI18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
 import { type FC, type PropsWithChildren, useState } from "react";

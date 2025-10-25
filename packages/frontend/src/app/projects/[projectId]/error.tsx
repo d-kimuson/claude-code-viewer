@@ -1,8 +1,5 @@
-"use client";
-
 import { Trans } from "@lingui/react";
 import { AlertCircle, ArrowLeft, RefreshCw } from "lucide-react";
-import { useRouter } from "next/navigation";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -21,8 +18,6 @@ export default function ProjectErrorPage({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  const router = useRouter();
-
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
       <Card className="w-full max-w-2xl">
@@ -67,7 +62,13 @@ export default function ProjectErrorPage({
               <RefreshCw />
               <Trans id="project.error.try_again" message="Try Again" />
             </Button>
-            <Button onClick={() => router.push("/projects")} variant="outline">
+            <Button
+              onClick={() => {
+                // TODO: Soft Navigation
+                window.location.href = "/projects";
+              }}
+              variant="outline"
+            >
               <ArrowLeft />
               <Trans
                 id="project.error.back_to_projects"

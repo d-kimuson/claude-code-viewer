@@ -1,6 +1,4 @@
 import { MessageCircleOff } from "lucide-react";
-import Link from "next/link";
-
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -29,10 +27,11 @@ export default function SessionNotFoundPage() {
         <CardContent>
           <div className="flex gap-2">
             <Button asChild variant="default">
-              <Link href="/projects">
+              {/* TODO: Soft Navigation */}
+              <a href="/projects">
                 <MessageCircleOff />
                 Back to Projects
-              </Link>
+              </a>
             </Button>
           </div>
         </CardContent>

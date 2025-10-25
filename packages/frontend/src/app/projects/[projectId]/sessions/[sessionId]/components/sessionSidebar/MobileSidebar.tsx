@@ -1,5 +1,3 @@
-"use client";
-
 import { Trans, useLingui } from "@lingui/react";
 import {
   ArrowLeftIcon,
@@ -9,7 +7,6 @@ import {
   SettingsIcon,
   XIcon,
 } from "lucide-react";
-import Link from "next/link";
 import { type FC, Suspense, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { NotificationSettings } from "@/components/NotificationSettings";
@@ -191,12 +188,13 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Link
+                {/* TODO: Soft Navigation */}
+                <a
                   href="/projects"
                   className="w-12 h-12 flex items-center justify-center border-b border-sidebar-border hover:bg-sidebar-accent transition-colors"
                 >
                   <ArrowLeftIcon className="w-4 h-4 text-sidebar-foreground/70" />
-                </Link>
+                </a>
               </TooltipTrigger>
               <TooltipContent side="right">
                 <p>

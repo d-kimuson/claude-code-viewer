@@ -1,8 +1,5 @@
-"use client";
-
 import { Trans } from "@lingui/react";
 import { FolderIcon } from "lucide-react";
-import Link from "next/link";
 import type { FC } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -74,12 +71,13 @@ export const ProjectList: FC = () => {
           </CardContent>
           <CardContent className="pt-0">
             <Button asChild className="w-full">
-              <Link href={`/projects/${project.id}/latest`}>
+              {/* TODO: Soft Navigation */}
+              <a href={`/projects/${project.id}/latest`}>
                 <Trans
                   id="project_list.view_conversations"
                   message="View Conversations"
                 />
-              </Link>
+              </a>
             </Button>
           </CardContent>
         </Card>

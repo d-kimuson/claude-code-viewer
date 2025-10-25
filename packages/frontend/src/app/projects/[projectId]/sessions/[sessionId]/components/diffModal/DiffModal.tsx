@@ -1,5 +1,3 @@
-"use client";
-
 import { Trans, useLingui } from "@lingui/react";
 import {
   ChevronDown,

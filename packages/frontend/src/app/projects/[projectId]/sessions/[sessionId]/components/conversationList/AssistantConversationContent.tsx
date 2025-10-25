@@ -1,18 +1,11 @@
-"use client";
-
 import type { ToolResultContent } from "@claude-code-viewer/shared/conversation-schema/content/ToolResultContentSchema";
 import type { SidechainConversation } from "@claude-code-viewer/shared/conversation-schema/index";
 import type { AssistantMessageContent } from "@claude-code-viewer/shared/conversation-schema/message/AssistantMessageSchema";
 import { Trans } from "@lingui/react";
 import { ChevronDown, Eye, Lightbulb, Wrench } from "lucide-react";
-import Image from "next/image";
-import { useTheme } from "next-themes";
 import type { FC } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import {
-  oneDark,
-  oneLight,
-} from "react-syntax-highlighter/dist/esm/styles/prism";
+import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import z from "zod";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -42,8 +35,8 @@ export const AssistantConversationContent: FC<{
   getSidechainConversationByPrompt,
   getSidechainConversations,
 }) => {
-  const { resolvedTheme } = useTheme();
-  const syntaxTheme = resolvedTheme === "dark" ? oneDark : oneLight;
+  // TODO: Implement theme change
+  const syntaxTheme = oneDark; // or oneLight;
   if (content.type === "text") {
     return (
       <div className="w-full mx-1 sm:mx-2 my-4 sm:my-6">
@@ -195,7 +188,7 @@ export const AssistantConversationContent: FC<{
                       toolResult.content.map((item) => {
                         if (item.type === "image") {
                           return (
-                            <Image
+                            <img
                               key={item.source.data}
                               src={`data:${item.source.media_type};base64,${item.source.data}`}
                               alt="Tool Result"

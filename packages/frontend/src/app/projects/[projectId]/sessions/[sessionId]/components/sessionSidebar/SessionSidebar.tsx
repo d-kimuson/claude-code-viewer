@@ -1,5 +1,3 @@
-"use client";
-
 import { Trans } from "@lingui/react";
 import {
   ArrowLeftIcon,
@@ -7,7 +5,6 @@ import {
   MessageSquareIcon,
   PlugIcon,
 } from "lucide-react";
-import Link from "next/link";
 import { type FC, useMemo } from "react";
 import type { SidebarTab } from "@/components/GlobalSidebar";
 import { GlobalSidebar } from "@/components/GlobalSidebar";
@@ -102,12 +99,13 @@ export const SessionSidebar: FC<{
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Link
+                  {/* TODO: Soft Navigation */}
+                  <a
                     href="/projects"
                     className="w-12 h-12 flex items-center justify-center hover:bg-sidebar-accent transition-colors"
                   >
                     <ArrowLeftIcon className="w-4 h-4 text-sidebar-foreground/70" />
-                  </Link>
+                  </a>
                 </TooltipTrigger>
                 <TooltipContent side="right">
                   <p>

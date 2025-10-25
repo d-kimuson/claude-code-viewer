@@ -52,3 +52,6 @@ dist/*
 
 # speckit
 specs
+
+# turbo
+.turbo

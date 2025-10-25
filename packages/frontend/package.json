@@ -3,10 +3,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && tsc",
-    "serve": "vite preview",
+    "build": "vite build",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "lingui:extract": "lingui extract --clean",
+    "lingui:compile": "lingui compile --typescript"
   },
   "dependencies": {
     "@claude-code-viewer/shared": "workspace:*",
@@ -29,6 +30,7 @@
     "@tanstack/react-router-devtools": "catalog:",
     "class-variance-authority": "catalog:",
     "clsx": "catalog:",
+    "date-fns": "catalog:",
     "hono": "catalog:",
     "jotai": "catalog:",
     "lucide-react": "catalog:",

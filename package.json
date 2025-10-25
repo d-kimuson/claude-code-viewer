@@ -22,9 +22,7 @@
     "claude-code-viewer": "./dist/index.js"
   },
   "scripts": {
-    "dev": "run-p 'dev:*'",
-    "dev:next": "next dev --turbopack",
-    "start": "node dist/index.js",
+    "dev": "turbo run dev",
     "build": "./scripts/build.sh",
     "lint": "run-s 'lint:*'",
     "lint:biome-format": "biome format .",
@@ -32,26 +30,18 @@
     "fix": "run-s 'fix:*'",
     "fix:biome-format": "biome format --write .",
     "fix:biome-lint": "biome check --write --unsafe .",
-    "typecheck": "tsc --noEmit",
-    "test": "vitest --run",
-    "test:watch": "vitest",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
     "e2e": "./scripts/e2e/exec_e2e.sh",
     "e2e:start-server": "./scripts/e2e/start_server.sh",
-    "e2e:capture-snapshots": "./scripts/e2e/capture_snapshots.sh",
-    "lingui:extract": "lingui extract --clean",
-    "lingui:compile": "lingui compile --typescript"
-  },
-  "dependencies": {
-    "date-fns": "catalog:",
-    "es-toolkit": "catalog:"
+    "e2e:capture-snapshots": "./scripts/e2e/capture_snapshots.sh"
   },
   "devDependencies": {
     "@biomejs/biome": "catalog:",
-    "@tsconfig/strictest": "catalog:",
-    "npm-run-all2": "catalog:",
     "playwright": "catalog:",
     "release-it": "catalog:",
-    "release-it-pnpm": "catalog:"
+    "release-it-pnpm": "catalog:",
+    "turbo": "catalog:"
   },
   "packageManager": "pnpm@10.18.3+sha512.bbd16e6d7286fd7e01f6b3c0b3c932cda2965c06a908328f74663f10a9aea51f1129eea615134bf992831b009eabe167ecb7008b597f40ff9bc75946aadfb08d"
 }

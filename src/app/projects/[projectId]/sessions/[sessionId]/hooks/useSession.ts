@@ -34,6 +34,36 @@ export const useSession = (projectId: string, sessionId: string) => {
     return new Map(entries);
   }, [session.conversations]);
 
+  const toolUseResultMap = useMemo(() => {
+    const entries = session.conversations.flatMap((conversation) => {
+      if (conversation.type !== "user") {
+        return [];
+      }
+
+      if (typeof conversation.message.content === "string") {
+        return [];
+      }
+
+      if (conversation.toolUseResult === undefined) {
+        return [];
+      }
+
+      return conversation.message.content.flatMap((message) => {
+        if (typeof message === "string") {
+          return [];
+        }
+
+        if (message.type !== "tool_result") {
+          return [];
+        }
+
+        return [[message.tool_use_id, conversation.toolUseResult] as const];
+      });
+    });
+
+    return new Map(entries);
+  }, [session.conversations]);
+
   const getToolResult = useCallback(
     (toolUseId: string) => {
       return toolResultMap.get(toolUseId);
@@ -41,9 +71,17 @@ export const useSession = (projectId: string, sessionId: string) => {
     [toolResultMap],
   );
 
+  const getToolUseResult = useCallback(
+    (toolUseId: string) => {
+      return toolUseResultMap.get(toolUseId);
+    },
+    [toolUseResultMap],
+  );
+
   return {
     session,
     conversations: session.conversations,
     getToolResult,
+    getToolUseResult,
   };
 };

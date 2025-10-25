@@ -31,10 +31,8 @@ export const SessionPageContent: FC<{
   projectId: string;
   sessionId: string;
 }> = ({ projectId, sessionId }) => {
-  const { session, conversations, getToolResult } = useSession(
-    projectId,
-    sessionId,
-  );
+  const { session, conversations, getToolResult, getToolUseResult } =
+    useSession(projectId, sessionId);
   const { data: projectData } = useProject(projectId);
   // biome-ignore lint/style/noNonNullAssertion: useSuspenseInfiniteQuery guarantees at least one page
   const project = projectData.pages[0]!.project;
@@ -221,6 +219,7 @@ export const SessionPageContent: FC<{
             <ConversationList
               conversations={conversations}
               getToolResult={getToolResult}
+              getToolUseResult={getToolUseResult}
             />
 
             {relatedSessionProcess?.status === "running" && (

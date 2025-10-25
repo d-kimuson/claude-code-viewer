@@ -15,6 +15,7 @@ import { UserConversationContent } from "./UserConversationContent";
 export const ConversationItem: FC<{
   conversation: Conversation;
   getToolResult: (toolUseId: string) => ToolResultContent | undefined;
+  getToolUseResult: (toolUseId: string) => unknown | undefined;
   isRootSidechain: (conversation: Conversation) => boolean;
   getSidechainConversationByPrompt: (
     prompt: string,
@@ -24,6 +25,7 @@ export const ConversationItem: FC<{
 }> = ({
   conversation,
   getToolResult,
+  getToolUseResult,
   isRootSidechain,
   getSidechainConversationByPrompt,
   getSidechainConversations,
@@ -78,6 +80,7 @@ export const ConversationItem: FC<{
           isSidechain: false,
         }))}
         getToolResult={getToolResult}
+        getToolUseResult={getToolUseResult}
       />
     );
   }
@@ -87,17 +90,13 @@ export const ConversationItem: FC<{
       typeof conversation.message.content === "string" ? (
         <UserConversationContent
           content={conversation.message.content}
-          conversation={conversation}
           id={`message-${conversation.uuid}`}
         />
       ) : (
         <ul className="w-full" id={`message-${conversation.uuid}`}>
           {conversation.message.content.map((content) => (
             <li key={content.toString()}>
-              <UserConversationContent
-                content={content}
-                conversation={conversation}
-              />
+              <UserConversationContent content={content} />
             </li>
           ))}
         </ul>
@@ -119,6 +118,7 @@ export const ConversationItem: FC<{
             <AssistantConversationContent
               content={content}
               getToolResult={getToolResult}
+              getToolUseResult={getToolUseResult}
               getSidechainConversationByPrompt={
                 getSidechainConversationByPrompt
               }

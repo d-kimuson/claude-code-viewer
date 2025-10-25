@@ -10,16 +10,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import type { UserEntry } from "@/lib/conversation-schema";
 import type { UserMessageContent } from "@/lib/conversation-schema/message/UserMessageSchema";
-import { TodoWriteResult } from "./TodoWriteResult";
 import { UserTextContent } from "./UserTextContent";
 
 export const UserConversationContent: FC<{
   content: UserMessageContent;
-  conversation: UserEntry;
   id?: string;
-}> = ({ content, conversation, id }) => {
+}> = ({ content, id }) => {
   if (typeof content === "string") {
     return <UserTextContent text={content} id={id} />;
   }
@@ -98,11 +95,7 @@ export const UserConversationContent: FC<{
   }
 
   if (content.type === "tool_result") {
-    // TodoWrite の結果は特別にチェックボックスとして表示
-    if (conversation.toolUseResult !== undefined) {
-      return <TodoWriteResult toolResult={conversation.toolUseResult} />;
-    }
-    // その他のツール結果は Assistant の呼び出し側に添えるので
+    // ツール結果は Assistant の呼び出し側に添えるので
     return null;
   }
 

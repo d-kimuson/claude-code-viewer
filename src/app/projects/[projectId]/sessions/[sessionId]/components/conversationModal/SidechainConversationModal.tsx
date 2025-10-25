@@ -26,6 +26,7 @@ type SidechainConversationModalProps = {
   sidechainConversations: Conversation[];
   trigger?: React.ReactNode;
   getToolResult: (toolUseId: string) => ToolResultContent | undefined;
+  getToolUseResult: (toolUseId: string) => unknown | undefined;
 };
 
 const sidechainTitle = (conversations: Conversation[]): string => {
@@ -47,7 +48,13 @@ const sidechainTitle = (conversations: Conversation[]): string => {
 
 export const SidechainConversationModal: FC<
   SidechainConversationModalProps
-> = ({ conversation, sidechainConversations, trigger, getToolResult }) => {
+> = ({
+  conversation,
+  sidechainConversations,
+  trigger,
+  getToolResult,
+  getToolUseResult,
+}) => {
   const title = sidechainTitle(sidechainConversations);
   const rootUuid = conversation.uuid;
   const messageCount = sidechainConversations.length;
@@ -116,6 +123,7 @@ export const SidechainConversationModal: FC<
           <ConversationList
             conversations={sidechainConversations}
             getToolResult={getToolResult}
+            getToolUseResult={getToolUseResult}
           />
         </div>
       </DialogContent>

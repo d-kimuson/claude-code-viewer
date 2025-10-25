@@ -115,11 +115,13 @@ const SchemaErrorDisplay: FC<{ errorLine: string }> = ({ errorLine }) => {
 type ConversationListProps = {
   conversations: (Conversation | ErrorJsonl)[];
   getToolResult: (toolUseId: string) => ToolResultContent | undefined;
+  getToolUseResult: (toolUseId: string) => unknown | undefined;
 };
 
 export const ConversationList: FC<ConversationListProps> = ({
   conversations,
   getToolResult,
+  getToolUseResult,
 }) => {
   const validConversations = useMemo(
     () =>
@@ -150,6 +152,7 @@ export const ConversationList: FC<ConversationListProps> = ({
             key={getConversationKey(conversation)}
             conversation={conversation}
             getToolResult={getToolResult}
+            getToolUseResult={getToolUseResult}
             isRootSidechain={isRootSidechain}
             getSidechainConversations={getSidechainConversations}
             getSidechainConversationByPrompt={getSidechainConversationByPrompt}

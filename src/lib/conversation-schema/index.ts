@@ -18,3 +18,5 @@ export const ConversationSchema = z.union([
 
 export type Conversation = z.infer<typeof ConversationSchema>;
 export type SidechainConversation = UserEntry | AssistantEntry | SystemEntry;
+
+export type { UserEntry, AssistantEntry, SystemEntry };

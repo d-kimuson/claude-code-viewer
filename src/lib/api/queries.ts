@@ -249,3 +249,16 @@ export const claudeCodeFeaturesQuery = {
     return await response.json();
   },
 } as const;
+
+export const schedulerJobsQuery = {
+  queryKey: ["scheduler", "jobs"],
+  queryFn: async () => {
+    const response = await honoClient.api.scheduler.jobs.$get();
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch scheduler jobs: ${response.statusText}`);
+    }
+
+    return await response.json();
+  },
+} as const;

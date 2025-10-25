@@ -17,7 +17,14 @@ import { GitController } from "../core/git/presentation/GitController";
 import { CommitRequestSchema, PushRequestSchema } from "../core/git/schema";
 import { EnvService } from "../core/platform/services/EnvService";
 import { UserConfigService } from "../core/platform/services/UserConfigService";
+import type { ProjectRepository } from "../core/project/infrastructure/ProjectRepository";
 import { ProjectController } from "../core/project/presentation/ProjectController";
+import type { SchedulerConfigBaseDir } from "../core/scheduler/config";
+import { SchedulerController } from "../core/scheduler/presentation/SchedulerController";
+import {
+  newSchedulerJobSchema,
+  updateSchedulerJobSchema,
+} from "../core/scheduler/schema";
 import type { VirtualConversationDatabase } from "../core/session/infrastructure/VirtualConversationDatabase";
 import { SessionController } from "../core/session/presentation/SessionController";
 import type { SessionMetaService } from "../core/session/services/SessionMetaService";
@@ -40,6 +47,7 @@ export const routes = (app: HonoAppType) =>
     const sseController = yield* SSEController;
     const fileSystemController = yield* FileSystemController;
     const claudeCodeController = yield* ClaudeCodeController;
+    const schedulerController = yield* SchedulerController;
 
     // services
     const envService = yield* EnvService;
@@ -54,6 +62,10 @@ export const routes = (app: HonoAppType) =>
       | FileSystem.FileSystem
       | Path.Path
       | CommandExecutor.CommandExecutor
+      | UserConfigService
+      | ClaudeCodeLifeCycleService
+      | ProjectRepository
+      | SchedulerConfigBaseDir
     >();
 
     if ((yield* envService.getEnv("NEXT_PHASE")) !== "phase-production-build") {
@@ -438,6 +450,63 @@ export const routes = (app: HonoAppType) =>
               console.error("Streaming error:", err);
             },
           );
+        })
+
+        /**
+         * SchedulerController Routes
+         */
+
+        .get("/scheduler/jobs", async (c) => {
+          const response = await effectToResponse(
+            c,
+            schedulerController.getJobs().pipe(Effect.provide(runtime)),
+          );
+          return response;
+        })
+
+        .post(
+          "/scheduler/jobs",
+          zValidator("json", newSchedulerJobSchema),
+          async (c) => {
+            const response = await effectToResponse(
+              c,
+              schedulerController
+                .addJob({
+                  job: c.req.valid("json"),
+                })
+                .pipe(Effect.provide(runtime)),
+            );
+            return response;
+          },
+        )
+
+        .patch(
+          "/scheduler/jobs/:id",
+          zValidator("json", updateSchedulerJobSchema),
+          async (c) => {
+            const response = await effectToResponse(
+              c,
+              schedulerController
+                .updateJob({
+                  id: c.req.param("id"),
+                  job: c.req.valid("json"),
+                })
+                .pipe(Effect.provide(runtime)),
+            );
+            return response;
+          },
+        )
+
+        .delete("/scheduler/jobs/:id", async (c) => {
+          const response = await effectToResponse(
+            c,
+            schedulerController
+              .deleteJob({
+                id: c.req.param("id"),
+              })
+              .pipe(Effect.provide(runtime)),
+          );
+          return response;
         })
 
         /**

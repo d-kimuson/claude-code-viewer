@@ -16,6 +16,9 @@ import { GitService } from "../../../server/core/git/services/GitService";
 import { ProjectRepository } from "../../../server/core/project/infrastructure/ProjectRepository";
 import { ProjectController } from "../../../server/core/project/presentation/ProjectController";
 import { ProjectMetaService } from "../../../server/core/project/services/ProjectMetaService";
+import { SchedulerConfigBaseDir } from "../../../server/core/scheduler/config";
+import { SchedulerService } from "../../../server/core/scheduler/domain/Scheduler";
+import { SchedulerController } from "../../../server/core/scheduler/presentation/SchedulerController";
 import { SessionRepository } from "../../../server/core/session/infrastructure/SessionRepository";
 import { VirtualConversationDatabase } from "../../../server/core/session/infrastructure/VirtualConversationDatabase";
 import { SessionController } from "../../../server/core/session/presentation/SessionController";
@@ -40,6 +43,7 @@ await Effect.runPromise(
       Effect.provide(ClaudeCodePermissionController.Live),
       Effect.provide(FileSystemController.Live),
       Effect.provide(SSEController.Live),
+      Effect.provide(SchedulerController.Live),
     )
     .pipe(
       /** Application */
@@ -53,6 +57,8 @@ await Effect.runPromise(
       Effect.provide(ClaudeCodeSessionProcessService.Live),
       Effect.provide(ClaudeCodeService.Live),
       Effect.provide(GitService.Live),
+      Effect.provide(SchedulerService.Live),
+      Effect.provide(SchedulerConfigBaseDir.Live),
     )
     .pipe(
       /** Infrastructure */

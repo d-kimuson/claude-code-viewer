@@ -5,8 +5,7 @@
     "./types": "./src/types.ts"
   },
   "scripts": {
-    "dev": "tsx watch src/main.ts",
-    "start": "tsx src/main.ts",
+    "dev": "NODE_ENV=development tsx watch src/main.ts --env-file-if-exists=../../.env.local",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

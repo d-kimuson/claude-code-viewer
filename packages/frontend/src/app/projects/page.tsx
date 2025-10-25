@@ -1,14 +1,11 @@
 import { Trans } from "@lingui/react";
 import { HistoryIcon } from "lucide-react";
-import { Suspense } from "react";
+import { type FC, Suspense } from "react";
 import { GlobalSidebar } from "@/components/GlobalSidebar";
 import { CreateProjectDialog } from "./components/CreateProjectDialog";
 import { ProjectList } from "./components/ProjectList";
 
-export const dynamic = "force-dynamic";
-export const fetchCache = "force-no-store";
-
-export default async function ProjectsPage() {
+export const ProjectsPage: FC = () => {
   return (
     <div className="flex h-screen max-h-screen overflow-hidden">
       <GlobalSidebar />
@@ -55,4 +52,4 @@ export default async function ProjectsPage() {
       </div>
     </div>
   );
-}
+};

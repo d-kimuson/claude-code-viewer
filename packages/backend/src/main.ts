@@ -75,7 +75,20 @@ await Effect.runPromise(
     ),
 );
 
-serve({
-  fetch: honoApp.fetch,
-  port: 4000,
-});
+const port =
+  // biome-ignore lint/style/noProcessEnv: allow only here
+  process.env.NODE_ENV === "development"
+    ? // biome-ignore lint/style/noProcessEnv: allow only here
+      (process.env.DEV_BE_PORT ?? "3401")
+    : // biome-ignore lint/style/noProcessEnv: allow only here
+      (process.env.PORT ?? "3000");
+
+serve(
+  {
+    fetch: honoApp.fetch,
+    port: parseInt(port, 10),
+  },
+  (info) => {
+    console.log(`Server is running on http://localhost:${info.port}`);
+  },
+);

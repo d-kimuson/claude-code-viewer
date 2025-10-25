@@ -15,7 +15,8 @@
       "!dist",
       "!playwright.config.ts",
       "!packages/frontend/src/lib/$path.ts",
-      "!packages/frontend/src/lib/i18n/locales/*/messages.ts"
+      "!packages/frontend/src/lib/i18n/locales/*/messages.ts",
+      "!packages/frontend/src/routeTree.gen.ts"
     ]
   },
   "formatter": {
@@ -48,6 +49,12 @@
   "overrides": [
     {
       "includes": ["e2e/**"],
+      "linter": {
+        "enabled": false
+      }
+    },
+    {
+      "includes": ["**/*.config.ts"],
       "linter": {
         "enabled": false
       }

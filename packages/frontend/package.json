@@ -22,7 +22,6 @@
     "@radix-ui/react-tabs": "catalog:",
     "@radix-ui/react-tooltip": "catalog:",
     "@tailwindcss/vite": "catalog:",
-    "@tanstack/nitro-v2-vite-plugin": "catalog:",
     "@tanstack/react-devtools": "catalog:",
     "@tanstack/react-query": "catalog:",
     "@tanstack/react-router": "catalog:",

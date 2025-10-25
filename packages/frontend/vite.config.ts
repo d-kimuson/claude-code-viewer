@@ -1,7 +1,6 @@
 import { fileURLToPath, URL } from "node:url";
 import { lingui } from "@lingui/vite-plugin";
 import tailwindcss from "@tailwindcss/vite";
-import { nitroV2Plugin } from "@tanstack/nitro-v2-vite-plugin";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import viteReact from "@vitejs/plugin-react-swc";
 import dotenv from "dotenv";
@@ -11,7 +10,6 @@ dotenv.config({ path: "../../.env.local" });
 
 export default defineConfig({
   plugins: [
-    nitroV2Plugin(),
     tanstackRouter({
       target: "react",
       autoCodeSplitting: true,

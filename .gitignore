@@ -55,3 +55,6 @@ specs
 
 # turbo
 .turbo
+
+# vite
+**/dist

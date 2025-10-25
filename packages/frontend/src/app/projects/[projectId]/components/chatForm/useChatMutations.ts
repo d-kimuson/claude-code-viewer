@@ -1,10 +1,12 @@
 import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import { honoClient } from "../../../../../lib/api/client";
 
 export const useCreateSessionProcessMutation = (
   projectId: string,
   onSuccess?: () => void,
 ) => {
+  const navigate = useNavigate();
   return useMutation({
     mutationFn: async (options: {
       message: string;
@@ -33,8 +35,13 @@ export const useCreateSessionProcessMutation = (
     },
     onSuccess: async (response) => {
       onSuccess?.();
-      // TODO: Soft Navigation
-      window.location.href = `/projects/${projectId}/sessions/${response.sessionProcess.sessionId}`;
+      navigate({
+        to: "/projects/$projectId/sessions/$sessionId",
+        params: {
+          projectId,
+          sessionId: response.sessionProcess.sessionId,
+        },
+      });
     },
   });
 };

@@ -38,6 +38,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "catalog:",
+    "npm-run-all2": "catalog:",
     "playwright": "catalog:",
     "release-it": "catalog:",
     "release-it-pnpm": "catalog:",

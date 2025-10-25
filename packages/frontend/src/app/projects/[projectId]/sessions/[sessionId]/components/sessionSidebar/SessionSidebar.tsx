@@ -1,4 +1,5 @@
 import { Trans } from "@lingui/react";
+import { Link } from "@tanstack/react-router";
 import {
   ArrowLeftIcon,
   CalendarClockIcon,
@@ -99,13 +100,12 @@ export const SessionSidebar: FC<{
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  {/* TODO: Soft Navigation */}
-                  <a
-                    href="/projects"
+                  <Link
+                    to="/projects"
                     className="w-12 h-12 flex items-center justify-center hover:bg-sidebar-accent transition-colors"
                   >
                     <ArrowLeftIcon className="w-4 h-4 text-sidebar-foreground/70" />
-                  </a>
+                  </Link>
                 </TooltipTrigger>
                 <TooltipContent side="right">
                   <p>

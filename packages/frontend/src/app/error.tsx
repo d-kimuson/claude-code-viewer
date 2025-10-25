@@ -1,3 +1,4 @@
+import { useNavigate } from "@tanstack/react-router";
 import { AlertCircle, Home, RefreshCw } from "lucide-react";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -17,6 +18,7 @@ export default function ErrorPage({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const navigate = useNavigate();
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
       <Card className="w-full max-w-2xl">
@@ -52,7 +54,7 @@ export default function ErrorPage({
             </Button>
             <Button
               onClick={() => {
-                window.location.href = "/";
+                navigate({ to: "/" });
               }}
               variant="outline"
             >

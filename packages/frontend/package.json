@@ -5,7 +5,6 @@
     "dev": "vite",
     "build": "vite build",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run",
     "lingui:extract": "lingui extract --clean",
     "lingui:compile": "lingui compile --typescript"
   },

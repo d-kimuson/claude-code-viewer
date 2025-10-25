@@ -1,3 +1,4 @@
+import { useNavigate, useParams } from "@tanstack/react-router";
 import { AlertCircle, ArrowLeft, RefreshCw } from "lucide-react";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -17,8 +18,8 @@ export default function SessionErrorPage({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  // TODO: parse project id from path
-  const projectId = "dummy";
+  const navigate = useNavigate();
+  const { projectId } = useParams({ strict: false });
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
@@ -55,10 +56,15 @@ export default function SessionErrorPage({
             </Button>
             <Button
               onClick={() => {
-                // TODO: Soft Navigation
-                window.location.href = `/projects/${projectId}/latest`;
+                if (projectId) {
+                  navigate({
+                    to: "/projects/$projectId/latest",
+                    params: { projectId },
+                  });
+                }
               }}
               variant="outline"
+              disabled={!projectId}
             >
               <ArrowLeft />
               Back to Project

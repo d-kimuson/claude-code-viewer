@@ -29,6 +29,7 @@ export const SessionPageContent: FC<{
   projectId: string;
   sessionId: string;
 }> = ({ projectId, sessionId }) => {
+  console.log("[debug] SessionPageContent", projectId, sessionId);
   const { session, conversations, getToolResult } = useSession(
     projectId,
     sessionId,
@@ -36,6 +37,7 @@ export const SessionPageContent: FC<{
   const { data: projectData } = useProject(projectId);
   // biome-ignore lint/style/noNonNullAssertion: useSuspenseInfiniteQuery guarantees at least one page
   const project = projectData.pages[0]!.project;
+  console.log("[debug] projectData", projectData);
 
   const abortTask = useMutation({
     mutationFn: async (sessionProcessId: string) => {
@@ -94,7 +96,7 @@ export const SessionPageContent: FC<{
   ]);
 
   return (
-    <>
+    <div className="flex h-screen max-h-screen overflow-hidden">
       <SessionSidebar
         currentSessionId={sessionId}
         projectId={projectId}
@@ -273,6 +275,6 @@ export const SessionPageContent: FC<{
         isOpen={isDialogOpen}
         onResponse={onPermissionResponse}
       />
-    </>
+    </div>
   );
 };

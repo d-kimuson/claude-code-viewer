@@ -1,4 +1,5 @@
 import { Trans, useLingui } from "@lingui/react";
+import { Link } from "@tanstack/react-router";
 import {
   ArrowLeftIcon,
   InfoIcon,
@@ -188,13 +189,12 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                {/* TODO: Soft Navigation */}
-                <a
-                  href="/projects"
+                <Link
+                  to="/projects"
                   className="w-12 h-12 flex items-center justify-center border-b border-sidebar-border hover:bg-sidebar-accent transition-colors"
                 >
                   <ArrowLeftIcon className="w-4 h-4 text-sidebar-foreground/70" />
-                </a>
+                </Link>
               </TooltipTrigger>
               <TooltipContent side="right">
                 <p>

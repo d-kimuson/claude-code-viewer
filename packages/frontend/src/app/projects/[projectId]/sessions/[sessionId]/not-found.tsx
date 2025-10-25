@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { MessageCircleOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -27,11 +28,10 @@ export default function SessionNotFoundPage() {
         <CardContent>
           <div className="flex gap-2">
             <Button asChild variant="default">
-              {/* TODO: Soft Navigation */}
-              <a href="/projects">
+              <Link to="/projects">
                 <MessageCircleOff />
                 Back to Projects
-              </a>
+              </Link>
             </Button>
           </div>
         </CardContent>

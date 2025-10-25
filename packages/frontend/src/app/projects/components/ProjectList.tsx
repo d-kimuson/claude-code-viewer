@@ -1,4 +1,5 @@
 import { Trans } from "@lingui/react";
+import { Link } from "@tanstack/react-router";
 import { FolderIcon } from "lucide-react";
 import type { FC } from "react";
 import { Button } from "@/components/ui/button";
@@ -71,13 +72,15 @@ export const ProjectList: FC = () => {
           </CardContent>
           <CardContent className="pt-0">
             <Button asChild className="w-full">
-              {/* TODO: Soft Navigation */}
-              <a href={`/projects/${project.id}/latest`}>
+              <Link
+                to="/projects/$projectId/latest"
+                params={{ projectId: project.id }}
+              >
                 <Trans
                   id="project_list.view_conversations"
                   message="View Conversations"
                 />
-              </a>
+              </Link>
             </Button>
           </CardContent>
         </Card>

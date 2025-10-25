@@ -1,5 +1,6 @@
 import { Trans } from "@lingui/react";
 import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import { Loader2, Plus } from "lucide-react";
 import { type FC, useState } from "react";
 import { toast } from "sonner";
@@ -17,6 +18,7 @@ import { honoClient } from "@/lib/api/client";
 import { DirectoryPicker } from "./DirectoryPicker";
 
 export const CreateProjectDialog: FC = () => {
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [selectedPath, setSelectedPath] = useState<string>("");
 
@@ -36,8 +38,13 @@ export const CreateProjectDialog: FC = () => {
     onSuccess: (result) => {
       toast.success("Project created successfully");
       setOpen(false);
-      // TODO: Soft Navigation
-      window.location.href = `/projects/${result.projectId}/sessions/${result.sessionId}`;
+      navigate({
+        to: "/projects/$projectId/sessions/$sessionId",
+        params: {
+          projectId: result.projectId,
+          sessionId: result.sessionId,
+        },
+      });
     },
 
     onError: (error) => {

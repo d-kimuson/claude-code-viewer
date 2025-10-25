@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { FileQuestion, Home } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -27,11 +28,10 @@ export default function NotFoundPage() {
         <CardContent>
           <div className="flex gap-2">
             <Button asChild variant="default">
-              {/* TODO: Soft Navigation */}
-              <a href="/">
+              <Link to="/">
                 <Home />
                 Go to Home
-              </a>
+              </Link>
             </Button>
           </div>
         </CardContent>

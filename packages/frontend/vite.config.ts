@@ -4,8 +4,8 @@ import tailwindcss from "@tailwindcss/vite";
 import { nitroV2Plugin } from "@tanstack/nitro-v2-vite-plugin";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import viteReact from "@vitejs/plugin-react-swc";
-import { defineConfig } from "vite";
 import dotenv from "dotenv";
+import { defineConfig } from "vite";
 
 dotenv.config({ path: "../../.env.local" });
 

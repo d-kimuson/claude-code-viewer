@@ -2,7 +2,11 @@
   "name": "@claude-code-viewer/frontend",
   "type": "module",
   "scripts": {
-    "typecheck": "tsc --noEmit"
+    "dev": "vite --port 3000",
+    "build": "vite build && tsc",
+    "serve": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
   },
   "dependencies": {
     "@claude-code-viewer/shared": "workspace:*",
@@ -17,7 +21,12 @@
     "@radix-ui/react-slot": "catalog:",
     "@radix-ui/react-tabs": "catalog:",
     "@radix-ui/react-tooltip": "catalog:",
+    "@tailwindcss/vite": "catalog:",
+    "@tanstack/nitro-v2-vite-plugin": "catalog:",
+    "@tanstack/react-devtools": "catalog:",
     "@tanstack/react-query": "catalog:",
+    "@tanstack/react-router": "catalog:",
+    "@tanstack/react-router-devtools": "catalog:",
     "class-variance-authority": "catalog:",
     "clsx": "catalog:",
     "hono": "catalog:",
@@ -41,12 +50,16 @@
     "@lingui/format-json": "catalog:",
     "@lingui/loader": "catalog:",
     "@tailwindcss/postcss": "catalog:",
+    "@tanstack/router-plugin": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "@types/react-syntax-highlighter": "catalog:",
+    "@vitejs/plugin-react": "catalog:",
     "tailwindcss": "catalog:",
     "tw-animate-css": "catalog:",
     "typescript": "catalog:",
-    "vitest": "catalog:"
+    "vite": "catalog:",
+    "vitest": "catalog:",
+    "web-vitals": "catalog:"
   }
 }

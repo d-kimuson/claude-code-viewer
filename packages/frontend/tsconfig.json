@@ -2,8 +2,9 @@
   "extends": "./node_modules/@claude-code-viewer/tsconfig/configs/base.json",
   "compilerOptions": {
     // transpile target
-    "target": "ES2020",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "jsx": "react-jsx",
     "noEmit": true,
     // module
     "isolatedModules": true,
@@ -14,7 +15,7 @@
       "@/*": ["./src/*"]
     },
     // typecheck
-    "types": ["vitest/globals"]
+    "types": ["vitest/globals", "vite/client"]
   },
   "include": ["src"]
 }

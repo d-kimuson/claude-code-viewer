@@ -1,0 +1,12 @@
+{
+  "projectName": "frontend",
+  "mode": "code-router",
+  "typescript": true,
+  "tailwind": true,
+  "packageManager": "pnpm",
+  "git": true,
+  "addOnOptions": {},
+  "version": 1,
+  "framework": "react-cra",
+  "chosenAddOns": ["nitro"]
+}

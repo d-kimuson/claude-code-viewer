@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/select";
 import { useTheme } from "@/hooks/useTheme";
 import { projectDetailQuery, projectListQuery } from "../lib/api/queries";
+import type { SupportedLocale } from "../lib/i18n/schema";
 
 interface SettingsControlsProps {
   openingProjectId: string;
@@ -87,16 +88,12 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
     updateConfig(newConfig);
   };
 
-  const handleLocaleChange = async (value: string) => {
+  const handleLocaleChange = async (value: SupportedLocale) => {
     const newConfig = {
       ...config,
-      locale: value as "ja" | "en",
+      locale: value,
     };
-    updateConfig(newConfig, {
-      onSuccess: async () => {
-        window.location.reload();
-      },
-    });
+    updateConfig(newConfig);
   };
 
   const handleThemeChange = async (value: "light" | "dark" | "system") => {

@@ -101,18 +101,7 @@ export const GlobalSidebar: FC<GlobalSidebarProps> = ({
       <Trans id="settings.section.system_info" message="System Information" />
     ),
     content: (
-      <Suspense
-        fallback={
-          <div className="h-full flex items-center justify-center p-4">
-            <div className="text-sm text-sidebar-foreground/70">
-              <Trans
-                id="system_info.loading"
-                message="Loading system information..."
-              />
-            </div>
-          </div>
-        }
-      >
+      <Suspense fallback={<Loading />}>
         <SystemInfoCard />
       </Suspense>
     ),

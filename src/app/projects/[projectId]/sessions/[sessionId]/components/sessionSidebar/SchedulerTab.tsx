@@ -2,7 +2,6 @@ import { Trans, useLingui } from "@lingui/react";
 import { EditIcon, PlusIcon, RefreshCwIcon, TrashIcon } from "lucide-react";
 import { type FC, useState } from "react";
 import { toast } from "sonner";
-import { SchedulerJobDialog } from "@/components/scheduler/SchedulerJobDialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,13 +20,21 @@ import {
   useSchedulerJobs,
   useUpdateSchedulerJob,
 } from "@/hooks/useScheduler";
+import { Loading } from "../../../../../../../components/Loading";
+import { SchedulerJobDialog } from "../scheduler/SchedulerJobDialog";
 
 export const SchedulerTab: FC<{ projectId: string; sessionId: string }> = ({
   projectId,
   sessionId,
 }) => {
   const { i18n } = useLingui();
-  const { data: jobs, isLoading, error, refetch } = useSchedulerJobs();
+  const {
+    data: jobs,
+    isLoading,
+    isFetching,
+    error,
+    refetch,
+  } = useSchedulerJobs();
   const createJob = useCreateSchedulerJob();
   const updateJob = useUpdateSchedulerJob();
   const deleteJob = useDeleteSchedulerJob();
@@ -164,11 +171,11 @@ export const SchedulerTab: FC<{ projectId: string; sessionId: string }> = ({
               variant="ghost"
               size="sm"
               className="h-7 w-7 p-0"
-              disabled={isLoading}
+              disabled={isLoading || isFetching}
               title={i18n._({ id: "common.reload", message: "Reload" })}
             >
               <RefreshCwIcon
-                className={`w-3 h-3 ${isLoading ? "animate-spin" : ""}`}
+                className={`w-3 h-3 ${isLoading || isFetching ? "animate-spin" : ""}`}
               />
             </Button>
             <Button
@@ -194,7 +201,7 @@ export const SchedulerTab: FC<{ projectId: string; sessionId: string }> = ({
         {isLoading && (
           <div className="flex items-center justify-center h-32">
             <div className="text-sm text-muted-foreground">
-              <Trans id="common.loading" message="Loading..." />
+              <Loading />
             </div>
           </div>
         )}

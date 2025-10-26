@@ -6,7 +6,7 @@ import {
   MessageSquareIcon,
   PlugIcon,
 } from "lucide-react";
-import { type FC, useMemo } from "react";
+import { type FC, Suspense, useMemo } from "react";
 import type { SidebarTab } from "@/components/GlobalSidebar";
 import { GlobalSidebar } from "@/components/GlobalSidebar";
 import {
@@ -16,7 +16,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import { useProject } from "../../../../hooks/useProject";
+import { Loading } from "../../../../../../../components/Loading";
 import { McpTab } from "./McpTab";
 import { MobileSidebar } from "./MobileSidebar";
 import { SchedulerTab } from "./SchedulerTab";
@@ -35,14 +35,6 @@ export const SessionSidebar: FC<{
   isMobileOpen = false,
   onMobileOpenChange,
 }) => {
-  const {
-    data: projectData,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  } = useProject(projectId);
-  const sessions = projectData.pages.flatMap((page) => page.sessions);
-
   const additionalTabs: SidebarTab[] = useMemo(
     () => [
       {
@@ -50,17 +42,12 @@ export const SessionSidebar: FC<{
         icon: MessageSquareIcon,
         title: "Show session list",
         content: (
-          <SessionsTab
-            sessions={sessions.map((session) => ({
-              ...session,
-              lastModifiedAt: new Date(session.lastModifiedAt),
-            }))}
-            currentSessionId={currentSessionId}
-            projectId={projectId}
-            hasNextPage={hasNextPage}
-            isFetchingNextPage={isFetchingNextPage}
-            onLoadMore={() => fetchNextPage()}
-          />
+          <Suspense fallback={<Loading />}>
+            <SessionsTab
+              currentSessionId={currentSessionId}
+              projectId={projectId}
+            />
+          </Suspense>
         ),
       },
       {
@@ -78,14 +65,7 @@ export const SessionSidebar: FC<{
         ),
       },
     ],
-    [
-      sessions,
-      currentSessionId,
-      projectId,
-      hasNextPage,
-      isFetchingNextPage,
-      fetchNextPage,
-    ],
+    [currentSessionId, projectId],
   );
 
   return (

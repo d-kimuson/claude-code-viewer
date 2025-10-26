@@ -105,12 +105,6 @@ export const useUpdateSchedulerJob = () => {
       id: string;
       updates: UpdateSchedulerJob;
     }): Promise<SchedulerJob> => {
-      // TODO: Hono RPC type inference for nested routes (.route()) with $patch is incomplete
-      // This causes a TypeScript error even though the runtime behavior is correct
-      // Possible solutions:
-      // 1. Move scheduler routes directly to main route.ts instead of using .route()
-      // 2. Wait for Hono RPC to improve type inference for nested routes
-      // 3. Use type assertion (currently forbidden by CLAUDE.md)
       const response = await honoClient.api.scheduler.jobs[":id"].$patch({
         param: { id },
         json: updates,

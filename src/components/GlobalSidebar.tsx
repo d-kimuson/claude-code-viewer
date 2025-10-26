@@ -9,6 +9,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import { Loading } from "./Loading";
 import { NotificationSettings } from "./NotificationSettings";
 import { SettingsControls } from "./SettingsControls";
 import { SystemInfoCard } from "./SystemInfoCard";
@@ -182,7 +183,7 @@ export const GlobalSidebar: FC<GlobalSidebarProps> = ({
       {/* Content Area - Only shown when expanded */}
       {isExpanded && (
         <div className="flex-1 flex flex-col overflow-hidden">
-          {activeTabContent}
+          <Suspense fallback={<Loading />}>{activeTabContent}</Suspense>
         </div>
       )}
     </div>

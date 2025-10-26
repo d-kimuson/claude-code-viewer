@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { RefreshCwIcon } from "lucide-react";
 import type { FC } from "react";
 import { Button } from "@/components/ui/button";
+import { Loading } from "../../../../../../../components/Loading";
 import { mcpListQuery } from "../../../../../../../lib/api/queries";
 
 export const McpTab: FC<{ projectId: string }> = ({ projectId }) => {
@@ -13,9 +14,14 @@ export const McpTab: FC<{ projectId: string }> = ({ projectId }) => {
     data: mcpData,
     isLoading,
     error,
+    isFetching,
   } = useQuery({
     queryKey: mcpListQuery(projectId).queryKey,
     queryFn: mcpListQuery(projectId).queryFn,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchInterval: false,
   });
 
   const handleReload = () => {
@@ -36,11 +42,11 @@ export const McpTab: FC<{ projectId: string }> = ({ projectId }) => {
             variant="ghost"
             size="sm"
             className="h-7 w-7 p-0"
-            disabled={isLoading}
+            disabled={isLoading || isFetching}
             title={i18n._("Reload MCP servers")}
           >
             <RefreshCwIcon
-              className={`w-3 h-3 ${isLoading ? "animate-spin" : ""}`}
+              className={`w-3 h-3 ${isLoading || isFetching ? "animate-spin" : ""}`}
             />
           </Button>
         </div>
@@ -50,7 +56,7 @@ export const McpTab: FC<{ projectId: string }> = ({ projectId }) => {
         {isLoading && (
           <div className="flex items-center justify-center h-32">
             <div className="text-sm text-muted-foreground">
-              <Trans id="common.loading" message="Loading..." />
+              <Loading />
             </div>
           </div>
         )}

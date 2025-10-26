@@ -21,7 +21,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import { useProject } from "../../../../hooks/useProject";
 import { McpTab } from "./McpTab";
 import { SessionsTab } from "./SessionsTab";
 
@@ -39,13 +38,6 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
   onClose,
 }) => {
   const { i18n } = useLingui();
-  const {
-    data: projectData,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  } = useProject(projectId);
-  const sessions = projectData.pages.flatMap((page) => page.sessions);
   const [activeTab, setActiveTab] = useState<
     "sessions" | "mcp" | "settings" | "system-info"
   >("sessions");
@@ -93,15 +85,8 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
       case "sessions":
         return (
           <SessionsTab
-            sessions={sessions.map((session) => ({
-              ...session,
-              lastModifiedAt: new Date(session.lastModifiedAt),
-            }))}
             currentSessionId={currentSessionId}
             projectId={projectId}
-            hasNextPage={hasNextPage}
-            isFetchingNextPage={isFetchingNextPage}
-            onLoadMore={() => fetchNextPage()}
             isMobile={true}
           />
         );

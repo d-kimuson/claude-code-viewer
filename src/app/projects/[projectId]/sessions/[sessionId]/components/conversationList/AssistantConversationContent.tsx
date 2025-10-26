@@ -16,6 +16,7 @@ import {
 import type { ToolResultContent } from "@/lib/conversation-schema/content/ToolResultContentSchema";
 import type { AssistantMessageContent } from "@/lib/conversation-schema/message/AssistantMessageSchema";
 import { Button } from "../../../../../../../components/ui/button";
+import { useTheme } from "../../../../../../../hooks/useTheme";
 import type { SidechainConversation } from "../../../../../../../lib/conversation-schema";
 import { MarkdownContent } from "../../../../../../components/MarkdownContent";
 import { SidechainConversationModal } from "../conversationModal/SidechainConversationModal";
@@ -38,7 +39,7 @@ export const AssistantConversationContent: FC<{
   getSidechainConversationByPrompt,
   getSidechainConversations,
 }) => {
-  const resolvedTheme = "light" as "light" | "dark"; // TODO: 設定から取り出す
+  const { resolvedTheme } = useTheme();
   const syntaxTheme = resolvedTheme === "dark" ? oneDark : oneLight;
   if (content.type === "text") {
     return (

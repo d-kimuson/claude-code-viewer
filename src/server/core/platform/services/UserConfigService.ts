@@ -9,6 +9,7 @@ const LayerImpl = Effect.gen(function* () {
     enterKeyBehavior: "shift-enter-send",
     permissionMode: "default",
     locale: "ja",
+    theme: "system",
   });
 
   const setUserConfig = (newConfig: UserConfig) =>

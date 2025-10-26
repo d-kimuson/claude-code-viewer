@@ -6,6 +6,7 @@ import {
   oneLight,
 } from "react-syntax-highlighter/dist/esm/styles/prism";
 import remarkGfm from "remark-gfm";
+import { useTheme } from "../../hooks/useTheme";
 
 interface MarkdownContentProps {
   content: string;
@@ -16,7 +17,7 @@ export const MarkdownContent: FC<MarkdownContentProps> = ({
   content,
   className = "",
 }) => {
-  const resolvedTheme = "light" as "light" | "dark"; // TODO: 設定から取り出す
+  const { resolvedTheme } = useTheme();
   const syntaxTheme = resolvedTheme === "dark" ? oneDark : oneLight;
 
   return (

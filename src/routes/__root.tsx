@@ -3,15 +3,15 @@ import { createRootRoute, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { RootErrorBoundary } from "../app/components/RootErrorBoundary";
 import { SSEEventListeners } from "../app/components/SSEEventListeners";
+import { ThemeProvider } from "../components/ThemeProvider";
 import { Toaster } from "../components/ui/sonner";
-import { QueryClientProviderWrapper } from "../lib/api/QueryClientProviderWrapper";
 import { LinguiClientProvider } from "../lib/i18n/LinguiProvider";
 import { SSEProvider } from "../lib/sse/components/SSEProvider";
 
 export const Route = createRootRoute({
   component: () => (
     <RootErrorBoundary>
-      <QueryClientProviderWrapper>
+      <ThemeProvider>
         <LinguiClientProvider>
           <SSEProvider>
             <SSEEventListeners>
@@ -30,7 +30,7 @@ export const Route = createRootRoute({
             </SSEEventListeners>
           </SSEProvider>
         </LinguiClientProvider>
-      </QueryClientProviderWrapper>
+      </ThemeProvider>
       <Toaster position="top-right" />
     </RootErrorBoundary>
   ),

@@ -10,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useTheme } from "@/hooks/useTheme";
 import { projectDetailQuery, projectListQuery } from "../lib/api/queries";
 
 interface SettingsControlsProps {
@@ -32,7 +33,7 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
   const themeId = useId();
   const { config, updateConfig } = useConfig();
   const queryClient = useQueryClient();
-  const theme = "system"; // TODO: 設定から取り出す
+  const { theme } = useTheme();
   const { i18n } = useLingui();
 
   const handleHideNoUserMessageChange = async () => {
@@ -96,6 +97,14 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
         window.location.reload();
       },
     });
+  };
+
+  const handleThemeChange = async (value: "light" | "dark" | "system") => {
+    const newConfig = {
+      ...config,
+      theme: value,
+    };
+    updateConfig(newConfig);
   };
 
   return (
@@ -298,12 +307,7 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
             <Trans id="settings.theme" message="Theme" />
           </label>
         )}
-        <Select
-          value={theme || "system"}
-          onValueChange={() => {
-            // TODO: 設定を更新する
-          }}
-        >
+        <Select value={theme ?? "system"} onValueChange={handleThemeChange}>
           <SelectTrigger id={themeId} className="w-full">
             <SelectValue placeholder={i18n._("Select theme")} />
           </SelectTrigger>

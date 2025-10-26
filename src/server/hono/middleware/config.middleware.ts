@@ -19,6 +19,7 @@ export const configMiddleware = createMiddleware<HonoContext>(
           enterKeyBehavior: "shift-enter-send",
           permissionMode: "default",
           locale: "ja",
+          theme: "system",
         } satisfies UserConfig),
       );
     }

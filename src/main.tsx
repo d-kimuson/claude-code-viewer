@@ -5,6 +5,7 @@ import ReactDOM from "react-dom/client";
 import { routeTree } from "./routeTree.gen";
 
 import "./styles.css";
+import { QueryClientProviderWrapper } from "./lib/api/QueryClientProviderWrapper";
 
 const router = createRouter({
   routeTree,
@@ -26,7 +27,9 @@ if (rootElement && !rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
     <StrictMode>
-      <RouterProvider router={router} />
+      <QueryClientProviderWrapper>
+        <RouterProvider router={router} />
+      </QueryClientProviderWrapper>
     </StrictMode>,
   );
 }

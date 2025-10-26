@@ -62,6 +62,7 @@ export const testPlatformLayer = (overrides?: {
           overrides?.userConfig?.enterKeyBehavior ?? "shift-enter-send",
         permissionMode: overrides?.userConfig?.permissionMode ?? "default",
         locale: overrides?.userConfig?.locale ?? "ja",
+        theme: overrides?.userConfig?.theme ?? "system",
       }),
   });
 

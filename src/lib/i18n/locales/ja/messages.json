@@ -1669,5 +1669,58 @@
     "comments": [],
     "origin": [["src/components/SettingsControls.tsx", 281]],
     "translation": "日本語"
+  },
+  "notfound.default.title": {
+    "message": "Page Not Found",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/NotFound.tsx", 19]],
+    "translation": "ページが見つかりません"
+  },
+  "notfound.default.description": {
+    "message": "The page you are looking for does not exist or has been moved.",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/NotFound.tsx", 23]],
+    "translation": "お探しのページは存在しないか、移動されました。"
+  },
+  "notfound.button.go_home": {
+    "message": "Go to Home",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/NotFound.tsx", 48]],
+    "translation": "ホームに戻る"
+  },
+  "notfound.project.title": {
+    "message": "Project Not Found",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/routes/projects/$projectId/latest/index.tsx", 15]],
+    "translation": "プロジェクトが見つかりません"
+  },
+  "notfound.project.description": {
+    "message": "The project you are looking for does not exist.",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/routes/projects/$projectId/latest/index.tsx", 19]],
+    "translation": "お探しのプロジェクトは存在しません。"
+  },
+  "notfound.session.title": {
+    "message": "Session Not Found",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      ["src/routes/projects/$projectId/sessions/$sessionId/index.tsx", 13]
+    ],
+    "translation": "セッションが見つかりません"
+  },
+  "notfound.session.description": {
+    "message": "The session you are looking for does not exist.",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      ["src/routes/projects/$projectId/sessions/$sessionId/index.tsx", 17]
+    ],
+    "translation": "お探しのセッションは存在しません。"
   }
 }

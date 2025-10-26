@@ -5,6 +5,7 @@ import ReactDOM from "react-dom/client";
 import { routeTree } from "./routeTree.gen";
 
 import "./styles.css";
+import { NotFound } from "./components/NotFound";
 import { QueryClientProviderWrapper } from "./lib/api/QueryClientProviderWrapper";
 
 const router = createRouter({
@@ -14,6 +15,7 @@ const router = createRouter({
   scrollRestoration: true,
   defaultStructuralSharing: true,
   defaultPreloadStaleTime: 0,
+  defaultNotFoundComponent: () => <NotFound />,
 });
 
 declare module "@tanstack/react-router" {

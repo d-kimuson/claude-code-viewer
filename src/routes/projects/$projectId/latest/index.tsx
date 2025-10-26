@@ -1,12 +1,27 @@
+import { Trans } from "@lingui/react";
 import {
   createFileRoute,
   useLoaderData,
   useRouter,
 } from "@tanstack/react-router";
+import { NotFound } from "../../../../components/NotFound";
 import { honoClient } from "../../../../lib/api/client";
 
 export const Route = createFileRoute("/projects/$projectId/latest/")({
   component: RouteComponent,
+  notFoundComponent: () => (
+    <NotFound
+      message={
+        <Trans id="notfound.project.title" message="Project Not Found" />
+      }
+      description={
+        <Trans
+          id="notfound.project.description"
+          message="The project you are looking for does not exist."
+        />
+      }
+    />
+  ),
   loader: async ({ params }) => {
     const { projectId } = params;
     const response = await honoClient.api.projects[":projectId"][

@@ -1,20 +1,27 @@
-import type { Messages } from "@lingui/core";
-import { messages as enMessages } from "./locales/en/messages";
-import { messages as jaMessages } from "./locales/ja/messages";
+import { i18n } from "@lingui/core";
 import type { SupportedLocale } from "./schema";
 
 export const locales: SupportedLocale[] = ["ja", "en"];
 
-export const i18nMessages = [
-  {
-    locale: "ja",
-    messages: jaMessages,
-  },
-  {
-    locale: "en",
-    messages: enMessages,
-  },
-] as const satisfies Array<{
-  locale: SupportedLocale;
-  messages: Messages;
-}>;
+const importMessages = async (locale: SupportedLocale) => {
+  switch (locale) {
+    case "ja":
+      return import("./locales/ja/messages");
+    case "en":
+      return import("./locales/en/messages");
+    default:
+      locale satisfies never;
+      throw new Error(`Unsupported locale: ${locale}`);
+  }
+};
+
+const loadedLocales: SupportedLocale[] = [];
+export const activateLocale = async (locale: SupportedLocale) => {
+  if (!loadedLocales.includes(locale)) {
+    const { messages } = await importMessages(locale);
+    i18n.load(locale, messages);
+    loadedLocales.push(locale);
+  }
+
+  i18n.activate(locale);
+};

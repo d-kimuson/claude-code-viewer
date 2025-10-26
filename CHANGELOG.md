@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.4.2-beta.1
+
+### &nbsp;&nbsp;&nbsp;Features
+
+- File upload(plain text, pdf, image) #34 &nbsp;-&nbsp; by **d-kimsuon** in https://github.com/d-kimuson/claude-code-viewer/issues/34 [<samp>(51280)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/51280f5)
+- Send reserved feature for current session &nbsp;-&nbsp; by **d-kimsuon** [<samp>(9fbe4)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/9fbe4d7)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.4.1...0.4.2-beta.1)
+
 ## 0.4.1
 
 ### &nbsp;&nbsp;&nbsp;Bug Fixes

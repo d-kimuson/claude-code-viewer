@@ -1,6 +1,4 @@
-import { TanStackDevtools } from "@tanstack/react-devtools";
 import { createRootRoute, Outlet } from "@tanstack/react-router";
-import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { RootErrorBoundary } from "../app/components/RootErrorBoundary";
 import { SSEEventListeners } from "../app/components/SSEEventListeners";
 import { SyncSessionProcess } from "../app/components/SyncSessionProcess";
@@ -18,17 +16,6 @@ export const Route = createRootRoute({
             <SSEEventListeners>
               <SyncSessionProcess>
                 <Outlet />
-                <TanStackDevtools
-                  config={{
-                    position: "bottom-right",
-                  }}
-                  plugins={[
-                    {
-                      name: "Tanstack Router",
-                      render: <TanStackRouterDevtoolsPanel />,
-                    },
-                  ]}
-                />
               </SyncSessionProcess>
             </SSEEventListeners>
           </SSEProvider>

@@ -40,7 +40,9 @@ export const SessionSidebar: FC<{
       {
         id: "sessions",
         icon: MessageSquareIcon,
-        title: "Show session list",
+        title: (
+          <Trans id="sidebar.show.session.list" message="Show session list" />
+        ),
         content: (
           <Suspense fallback={<Loading />}>
             <SessionsTab
@@ -53,13 +55,23 @@ export const SessionSidebar: FC<{
       {
         id: "mcp",
         icon: PlugIcon,
-        title: "Show MCP server settings",
+        title: (
+          <Trans
+            id="sidebar.show.mcp.settings"
+            message="Show MCP server settings"
+          />
+        ),
         content: <McpTab projectId={projectId} />,
       },
       {
         id: "scheduler",
         icon: CalendarClockIcon,
-        title: "Show scheduler jobs",
+        title: (
+          <Trans
+            id="sidebar.show.scheduler.jobs"
+            message="Show scheduler jobs"
+          />
+        ),
         content: (
           <SchedulerTab projectId={projectId} sessionId={currentSessionId} />
         ),

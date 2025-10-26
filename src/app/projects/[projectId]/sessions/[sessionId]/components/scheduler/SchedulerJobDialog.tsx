@@ -163,19 +163,19 @@ export const SchedulerJobDialog: FC<SchedulerJobDialogProps> = ({
             {job ? (
               <Trans
                 id="scheduler.dialog.title.edit"
-                message="スケジュールジョブを編集"
+                message="Edit Scheduled Job"
               />
             ) : (
               <Trans
                 id="scheduler.dialog.title.create"
-                message="スケジュールジョブを作成"
+                message="Create Scheduled Job"
               />
             )}
           </DialogTitle>
           <DialogDescription>
             <Trans
               id="scheduler.dialog.description"
-              message="Claude Code にメッセージを送信するスケジュールジョブを設定します"
+              message="Set up a scheduled job to send messages to Claude Code"
             />
           </DialogDescription>
         </DialogHeader>
@@ -185,12 +185,12 @@ export const SchedulerJobDialog: FC<SchedulerJobDialogProps> = ({
           <div className="flex items-center justify-between rounded-lg border p-4">
             <div className="space-y-0.5">
               <Label htmlFor="enabled" className="text-base font-semibold">
-                <Trans id="scheduler.form.enabled" message="有効化" />
+                <Trans id="scheduler.form.enabled" message="Enabled" />
               </Label>
               <p className="text-sm text-muted-foreground">
                 <Trans
                   id="scheduler.form.enabled.description"
-                  message="このスケジュールジョブを有効または無効にします"
+                  message="Enable or disable this scheduled job"
                 />
               </p>
             </div>
@@ -205,7 +205,7 @@ export const SchedulerJobDialog: FC<SchedulerJobDialogProps> = ({
           {/* Job Name */}
           <div className="space-y-2">
             <Label htmlFor="job-name">
-              <Trans id="scheduler.form.name" message="ジョブ名" />
+              <Trans id="scheduler.form.name" message="Job Name" />
             </Label>
             <Input
               id="job-name"
@@ -213,7 +213,7 @@ export const SchedulerJobDialog: FC<SchedulerJobDialogProps> = ({
               onChange={(e) => setName(e.target.value)}
               placeholder={_({
                 id: "scheduler.form.name.placeholder",
-                message: "例: 日次レポート",
+                message: "e.g., Daily Report",
               })}
               disabled={isSubmitting}
             />
@@ -224,7 +224,7 @@ export const SchedulerJobDialog: FC<SchedulerJobDialogProps> = ({
             <Label>
               <Trans
                 id="scheduler.form.schedule_type"
-                message="スケジュールタイプ"
+                message="Schedule Type"
               />
             </Label>
             <Select
@@ -241,13 +241,13 @@ export const SchedulerJobDialog: FC<SchedulerJobDialogProps> = ({
                 <SelectItem value="cron">
                   <Trans
                     id="scheduler.form.schedule_type.cron"
-                    message="定期実行 (Cron)"
+                    message="Recurring (Cron)"
                   />
                 </SelectItem>
                 <SelectItem value="reserved">
                   <Trans
                     id="scheduler.form.schedule_type.reserved"
-                    message="予約実行"
+                    message="One-time"
                   />
                 </SelectItem>
               </SelectContent>
@@ -265,7 +265,7 @@ export const SchedulerJobDialog: FC<SchedulerJobDialogProps> = ({
               <Label htmlFor="reserved-datetime">
                 <Trans
                   id="scheduler.form.reserved_time"
-                  message="実行予定日時"
+                  message="Scheduled Date and Time"
                 />
               </Label>
               <Input
@@ -278,7 +278,7 @@ export const SchedulerJobDialog: FC<SchedulerJobDialogProps> = ({
               <p className="text-xs text-muted-foreground">
                 <Trans
                   id="scheduler.form.reserved_time.hint"
-                  message="指定した日時に一度だけ実行されます。実行後は自動的に削除されます"
+                  message="Will run once at the specified time, then be automatically deleted"
                 />
               </p>
             </div>
@@ -287,7 +287,7 @@ export const SchedulerJobDialog: FC<SchedulerJobDialogProps> = ({
           {/* Message Content */}
           <div className="space-y-2">
             <Label htmlFor="message-content">
-              <Trans id="scheduler.form.message" message="メッセージ内容" />
+              <Trans id="scheduler.form.message" message="Message Content" />
             </Label>
             <div className="relative" ref={completion.containerRef}>
               <Textarea
@@ -301,14 +301,16 @@ export const SchedulerJobDialog: FC<SchedulerJobDialogProps> = ({
                 placeholder={i18n._({
                   id: "scheduler.form.message.placeholder",
                   message:
-                    "Claude Code に送信するメッセージを入力... (/ でコマンド補完、@ でファイル補完)",
+                    "Type message to send to Claude Code... (/ for commands, @ for files)",
                 })}
                 rows={4}
                 disabled={isSubmitting}
                 className="resize-none"
-                aria-label={i18n._(
-                  "Message input with completion support (/ for commands, @ for files)",
-                )}
+                aria-label={i18n._({
+                  id: "scheduler.form.message.aria_label",
+                  message:
+                    "Message input with completion support (/ for commands, @ for files)",
+                })}
                 aria-expanded={
                   messageContent.startsWith("/") || messageContent.includes("@")
                 }
@@ -333,7 +335,7 @@ export const SchedulerJobDialog: FC<SchedulerJobDialogProps> = ({
             <p className="text-xs text-muted-foreground">
               <Trans
                 id="scheduler.form.message.hint"
-                message="/ でコマンド補完、@ でファイル補完"
+                message="/ for commands, @ for files"
               />
             </p>
           </div>
@@ -344,7 +346,7 @@ export const SchedulerJobDialog: FC<SchedulerJobDialogProps> = ({
               <Label>
                 <Trans
                   id="scheduler.form.concurrency_policy"
-                  message="同時実行ポリシー"
+                  message="Concurrency Policy"
                 />
               </Label>
               <Select
@@ -361,13 +363,13 @@ export const SchedulerJobDialog: FC<SchedulerJobDialogProps> = ({
                   <SelectItem value="skip">
                     <Trans
                       id="scheduler.form.concurrency_policy.skip"
-                      message="実行中の場合はスキップ"
+                      message="Skip if running"
                     />
                   </SelectItem>
                   <SelectItem value="run">
                     <Trans
                       id="scheduler.form.concurrency_policy.run"
-                      message="実行中でも実行する"
+                      message="Run even if running"
                     />
                   </SelectItem>
                 </SelectContent>
@@ -382,18 +384,18 @@ export const SchedulerJobDialog: FC<SchedulerJobDialogProps> = ({
             onClick={() => onOpenChange(false)}
             disabled={isSubmitting}
           >
-            <Trans id="common.cancel" message="キャンセル" />
+            <Trans id="common.cancel" message="Cancel" />
           </Button>
           <Button
             onClick={handleSubmit}
             disabled={!isFormValid || isSubmitting}
           >
             {isSubmitting ? (
-              <Trans id="common.saving" message="保存中..." />
+              <Trans id="common.saving" message="Saving..." />
             ) : job ? (
-              <Trans id="common.update" message="更新" />
+              <Trans id="common.update" message="Update" />
             ) : (
-              <Trans id="common.create" message="作成" />
+              <Trans id="common.create" message="Create" />
             )}
           </Button>
         </DialogFooter>

@@ -25,18 +25,24 @@ export const ResumeChat: FC<{
   const getPlaceholder = () => {
     const behavior = config?.enterKeyBehavior;
     if (behavior === "enter-send") {
-      return i18n._(
-        "Type your message... (Start with / for commands, @ for files, Enter to send)",
-      );
+      return i18n._({
+        id: "chat.placeholder.resume.enter",
+        message:
+          "Type your message... (Start with / for commands, @ for files, Enter to send, or schedule for later)",
+      });
     }
     if (behavior === "command-enter-send") {
-      return i18n._(
-        "Type your message... (Start with / for commands, @ for files, Command+Enter to send)",
-      );
+      return i18n._({
+        id: "chat.placeholder.resume.command_enter",
+        message:
+          "Type your message... (Start with / for commands, @ for files, Command+Enter to send, or schedule for later)",
+      });
     }
-    return i18n._(
-      "Type your message... (Start with / for commands, @ for files, Shift+Enter to send)",
-    );
+    return i18n._({
+      id: "chat.placeholder.resume.shift_enter",
+      message:
+        "Type your message... (Start with / for commands, @ for files, Shift+Enter to send, or schedule for later)",
+    });
   };
 
   const buttonText = <Trans id="chat.resume" message="Resume" />;
@@ -55,6 +61,8 @@ export const ResumeChat: FC<{
           minHeight="min-h-[120px]"
           containerClassName=""
           buttonSize="lg"
+          enableScheduledSend={true}
+          baseSessionId={sessionId}
         />
       </div>
     </div>

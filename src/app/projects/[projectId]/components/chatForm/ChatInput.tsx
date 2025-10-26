@@ -8,8 +8,19 @@ import {
   XIcon,
 } from "lucide-react";
 import { type FC, useCallback, useId, useRef, useState } from "react";
+import { toast } from "sonner";
 import { Button } from "../../../../../components/ui/button";
+import { Input } from "../../../../../components/ui/input";
+import { Label } from "../../../../../components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../../../../components/ui/select";
 import { Textarea } from "../../../../../components/ui/textarea";
+import { useCreateSchedulerJob } from "../../../../../hooks/useScheduler";
 import { useConfig } from "../../../../hooks/useConfig";
 import type { CommandCompletionRef } from "./CommandCompletion";
 import type { FileCompletionRef } from "./FileCompletion";
@@ -33,6 +44,8 @@ export interface ChatInputProps {
   containerClassName?: string;
   disabled?: boolean;
   buttonSize?: "sm" | "default" | "lg";
+  enableScheduledSend?: boolean;
+  baseSessionId?: string | null;
 }
 
 export const ChatInput: FC<ChatInputProps> = ({
@@ -46,6 +59,8 @@ export const ChatInput: FC<ChatInputProps> = ({
   containerClassName = "",
   disabled = false,
   buttonSize = "lg",
+  enableScheduledSend = false,
+  baseSessionId = null,
 }) => {
   const { i18n } = useLingui();
   const [message, setMessage] = useState("");
@@ -56,6 +71,19 @@ export const ChatInput: FC<ChatInputProps> = ({
     relative: { top: number; left: number };
     absolute: { top: number; left: number };
   }>({ relative: { top: 0, left: 0 }, absolute: { top: 0, left: 0 } });
+  const [sendMode, setSendMode] = useState<"immediate" | "scheduled">(
+    "immediate",
+  );
+  const [scheduledTime, setScheduledTime] = useState(() => {
+    const now = new Date();
+    now.setHours(now.getHours() + 1);
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    const hours = String(now.getHours()).padStart(2, "0");
+    const minutes = String(now.getMinutes()).padStart(2, "0");
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  });
 
   const containerRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -64,6 +92,7 @@ export const ChatInput: FC<ChatInputProps> = ({
   const fileCompletionRef = useRef<FileCompletionRef>(null);
   const helpId = useId();
   const { config } = useConfig();
+  const createSchedulerJob = useCreateSchedulerJob();
 
   const handleSubmit = async () => {
     if (!message.trim() && attachedFiles.length === 0) return;
@@ -88,14 +117,73 @@ export const ChatInput: FC<ChatInputProps> = ({
 
     const finalText = message.trim() + additionalText;
 
-    await onSubmit({
-      text: finalText,
-      images: images.length > 0 ? images : undefined,
-      documents: documents.length > 0 ? documents : undefined,
-    });
+    if (enableScheduledSend && sendMode === "scheduled") {
+      // Create a scheduler job for scheduled send
+      const match = scheduledTime.match(
+        /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/,
+      );
+      if (!match) {
+        throw new Error("Invalid datetime format");
+      }
+      const year = Number(match[1]);
+      const month = Number(match[2]);
+      const day = Number(match[3]);
+      const hours = Number(match[4]);
+      const minutes = Number(match[5]);
+      const localDate = new Date(year, month - 1, day, hours, minutes);
 
-    setMessage("");
-    setAttachedFiles([]);
+      try {
+        await createSchedulerJob.mutateAsync({
+          name: `Scheduled message at ${scheduledTime}`,
+          schedule: {
+            type: "reserved",
+            reservedExecutionTime: localDate.toISOString(),
+          },
+          message: {
+            content: finalText,
+            projectId,
+            baseSessionId,
+          },
+          enabled: true,
+        });
+
+        toast.success(
+          i18n._({
+            id: "chat.scheduled_send.success",
+            message: "Message scheduled successfully",
+          }),
+          {
+            description: i18n._({
+              id: "chat.scheduled_send.success_description",
+              message: "You can view and manage it in the Scheduler tab",
+            }),
+          },
+        );
+
+        setMessage("");
+        setAttachedFiles([]);
+      } catch (error) {
+        toast.error(
+          i18n._({
+            id: "chat.scheduled_send.failed",
+            message: "Failed to schedule message",
+          }),
+          {
+            description: error instanceof Error ? error.message : undefined,
+          },
+        );
+      }
+    } else {
+      // Immediate send
+      await onSubmit({
+        text: finalText,
+        images: images.length > 0 ? images : undefined,
+        documents: documents.length > 0 ? documents : undefined,
+      });
+
+      setMessage("");
+      setAttachedFiles([]);
+    }
   };
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -338,33 +426,93 @@ export const ChatInput: FC<ChatInputProps> = ({
               )}
             </div>
 
-            <Button
-              onClick={handleSubmit}
-              disabled={
-                (!message.trim() && attachedFiles.length === 0) ||
-                isPending ||
-                disabled
-              }
-              size={buttonSize}
-              className="gap-2 transition-all duration-200 hover:shadow-md hover:scale-105 active:scale-95 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 disabled:from-muted disabled:to-muted"
-            >
-              {isPending ? (
-                <>
-                  <LoaderIcon className="w-4 h-4 animate-spin" />
-                  <span>
-                    <Trans
-                      id="chat.status.processing"
-                      message="Processing..."
-                    />
-                  </span>
-                </>
-              ) : (
-                <>
-                  <SendIcon className="w-4 h-4" />
-                  {buttonText}
-                </>
+            <div className="flex items-center gap-2">
+              {enableScheduledSend && (
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="send-mode" className="text-xs sr-only">
+                    <Trans id="chat.send_mode.label" message="Send mode" />
+                  </Label>
+                  <Select
+                    value={sendMode}
+                    onValueChange={(value: "immediate" | "scheduled") =>
+                      setSendMode(value)
+                    }
+                    disabled={isPending || disabled}
+                  >
+                    <SelectTrigger
+                      id="send-mode"
+                      className="h-8 w-[140px] text-xs"
+                    >
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="immediate">
+                        <Trans
+                          id="chat.send_mode.immediate"
+                          message="Send now"
+                        />
+                      </SelectItem>
+                      <SelectItem value="scheduled">
+                        <Trans
+                          id="chat.send_mode.scheduled"
+                          message="Schedule send"
+                        />
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+
+                  {sendMode === "scheduled" && (
+                    <div className="flex items-center gap-1.5">
+                      <Label
+                        htmlFor="scheduled-time"
+                        className="text-xs sr-only"
+                      >
+                        <Trans
+                          id="chat.send_mode.scheduled_time"
+                          message="Scheduled time"
+                        />
+                      </Label>
+                      <Input
+                        id="scheduled-time"
+                        type="datetime-local"
+                        value={scheduledTime}
+                        onChange={(e) => setScheduledTime(e.target.value)}
+                        disabled={isPending || disabled}
+                        className="h-8 w-[180px] text-xs"
+                      />
+                    </div>
+                  )}
+                </div>
               )}
-            </Button>
+
+              <Button
+                onClick={handleSubmit}
+                disabled={
+                  (!message.trim() && attachedFiles.length === 0) ||
+                  isPending ||
+                  disabled
+                }
+                size={buttonSize}
+                className="gap-2 transition-all duration-200 hover:shadow-md hover:scale-105 active:scale-95 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 disabled:from-muted disabled:to-muted"
+              >
+                {isPending ? (
+                  <>
+                    <LoaderIcon className="w-4 h-4 animate-spin" />
+                    <span>
+                      <Trans
+                        id="chat.status.processing"
+                        message="Processing..."
+                      />
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <SendIcon className="w-4 h-4" />
+                    {buttonText}
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
         </div>
         <InlineCompletion

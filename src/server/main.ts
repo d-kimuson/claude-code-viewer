@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { NodeContext } from "@effect/platform-node";

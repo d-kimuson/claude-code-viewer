@@ -23,8 +23,12 @@ Claude Code Viewer is a web-based Claude Code client focused on **comprehensive 
 | Resume Sessions | Resume conversations directly from existing session logs |
 | Continue Sessions | Claude Code Viewer provides advanced session process control. Sessions started through Claude Code Viewer remain alive (unless aborted), allowing you to continue conversations without resuming (no session-id reassignment) |
 | Create Projects | Create new projects from Claude Code Viewer. Select a directory through the web UI to execute the `/init` command and begin project setup |
+| File Upload & Preview | Upload images (PNG, JPEG, GIF, WebP), PDFs, and text files directly from the chat interface. Each file type displays with dedicated preview components—images render inline, PDFs embed with a viewer, and text files show formatted content |
+| Message Scheduler | Schedule Claude Code messages using cron expressions for recurring tasks or specific datetime for one-time execution. Supports concurrency control (skip/run) for periodic jobs and auto-deletion for reserved jobs |
 | Review Changes | Built-in Git Diff Viewer lets you review all changes directly within Claude Code Viewer |
 | Commit Changes | Execute Git commits directly from the web interface within the Git Diff Viewer |
+| Push Changes | Push committed changes directly from the Git Diff Viewer. Supports both separate push operations and combined commit-and-push workflows for streamlined deployment |
+| MCP Server Viewer | View MCP server configurations directly in the session sidebar. Lists all configured servers with their names and commands, with real-time reload capability |
 | System Information | Monitor Claude Code and Claude Code Viewer versions, feature compatibility, and system status |
 | Multi-language Support | Full internationalization support with English and Japanese language options |
 

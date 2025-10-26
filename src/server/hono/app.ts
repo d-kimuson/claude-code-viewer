@@ -7,6 +7,6 @@ export type HonoContext = {
   };
 };
 
-export const honoApp = new Hono<HonoContext>().basePath("/api");
+export const honoApp = new Hono<HonoContext>();
 
 export type HonoAppType = typeof honoApp;

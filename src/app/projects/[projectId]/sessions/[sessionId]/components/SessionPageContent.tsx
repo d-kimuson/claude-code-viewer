@@ -1,5 +1,3 @@
-"use client";
-
 import { Trans } from "@lingui/react";
 import { useMutation } from "@tanstack/react-query";
 import {
@@ -96,7 +94,7 @@ export const SessionPageContent: FC<{
   ]);
 
   return (
-    <>
+    <div className="flex h-screen max-h-screen overflow-hidden">
       <SessionSidebar
         currentSessionId={sessionId}
         projectId={projectId}
@@ -275,6 +273,6 @@ export const SessionPageContent: FC<{
         isOpen={isDialogOpen}
         onResponse={onPermissionResponse}
       />
-    </>
+    </div>
   );
 };

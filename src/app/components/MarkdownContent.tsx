@@ -1,6 +1,3 @@
-"use client";
-
-import { useTheme } from "next-themes";
 import type { FC } from "react";
 import Markdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
@@ -19,7 +16,7 @@ export const MarkdownContent: FC<MarkdownContentProps> = ({
   content,
   className = "",
 }) => {
-  const { resolvedTheme } = useTheme();
+  const resolvedTheme = "light" as "light" | "dark"; // TODO: 設定から取り出す
   const syntaxTheme = resolvedTheme === "dark" ? oneDark : oneLight;
 
   return (

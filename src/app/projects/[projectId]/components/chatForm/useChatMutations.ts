@@ -1,12 +1,12 @@
 import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { useNavigate } from "@tanstack/react-router";
 import { honoClient } from "../../../../../lib/api/client";
 
 export const useCreateSessionProcessMutation = (
   projectId: string,
   onSuccess?: () => void,
 ) => {
-  const router = useRouter();
+  const navigate = useNavigate();
 
   return useMutation({
     mutationFn: async (options: {
@@ -36,9 +36,13 @@ export const useCreateSessionProcessMutation = (
     },
     onSuccess: async (response) => {
       onSuccess?.();
-      router.push(
-        `/projects/${projectId}/sessions/${response.sessionProcess.sessionId}`,
-      );
+      navigate({
+        to: "/projects/$projectId/sessions/$sessionId",
+        params: {
+          projectId: projectId,
+          sessionId: response.sessionProcess.sessionId,
+        },
+      });
     },
   });
 };

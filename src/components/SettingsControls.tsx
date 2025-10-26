@@ -1,8 +1,5 @@
-"use client";
-
 import { Trans, useLingui } from "@lingui/react";
 import { useQueryClient } from "@tanstack/react-query";
-import { useTheme } from "next-themes";
 import { type FC, useId } from "react";
 import { useConfig } from "@/app/hooks/useConfig";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -35,7 +32,7 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
   const themeId = useId();
   const { config, updateConfig } = useConfig();
   const queryClient = useQueryClient();
-  const { theme, setTheme } = useTheme();
+  const theme = "system"; // TODO: 設定から取り出す
   const { i18n } = useLingui();
 
   const handleHideNoUserMessageChange = async () => {
@@ -301,7 +298,12 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
             <Trans id="settings.theme" message="Theme" />
           </label>
         )}
-        <Select value={theme || "system"} onValueChange={setTheme}>
+        <Select
+          value={theme || "system"}
+          onValueChange={() => {
+            // TODO: 設定を更新する
+          }}
+        >
           <SelectTrigger id={themeId} className="w-full">
             <SelectValue placeholder={i18n._("Select theme")} />
           </SelectTrigger>

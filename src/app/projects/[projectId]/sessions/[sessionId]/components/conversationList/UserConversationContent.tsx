@@ -1,6 +1,5 @@
 import { Trans } from "@lingui/react";
 import { AlertCircle, Image as ImageIcon } from "lucide-react";
-import Image from "next/image";
 import type { FC } from "react";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -54,7 +53,7 @@ export const UserConversationContent: FC<{
           </CardHeader>
           <CardContent>
             <div className="rounded-lg border overflow-hidden bg-background">
-              <Image
+              <img
                 src={`data:${content.source.media_type};base64,${content.source.data}`}
                 alt="User uploaded content"
                 className="max-w-full h-auto max-h-96 object-contain"

@@ -1,5 +1,3 @@
-"use client";
-
 import { Trans } from "@lingui/react";
 import type { LucideIcon } from "lucide-react";
 import { InfoIcon, SettingsIcon } from "lucide-react";

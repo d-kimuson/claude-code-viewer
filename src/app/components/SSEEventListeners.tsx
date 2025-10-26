@@ -1,5 +1,3 @@
-"use client";
-
 import { useQueryClient } from "@tanstack/react-query";
 import { useSetAtom } from "jotai";
 import type { FC, PropsWithChildren } from "react";

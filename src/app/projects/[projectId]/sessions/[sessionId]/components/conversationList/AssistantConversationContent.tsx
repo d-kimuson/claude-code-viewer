@@ -1,9 +1,5 @@
-"use client";
-
 import { Trans } from "@lingui/react";
 import { ChevronDown, Eye, Lightbulb, Wrench } from "lucide-react";
-import Image from "next/image";
-import { useTheme } from "next-themes";
 import type { FC } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import {
@@ -42,7 +38,7 @@ export const AssistantConversationContent: FC<{
   getSidechainConversationByPrompt,
   getSidechainConversations,
 }) => {
-  const { resolvedTheme } = useTheme();
+  const resolvedTheme = "light" as "light" | "dark"; // TODO: 設定から取り出す
   const syntaxTheme = resolvedTheme === "dark" ? oneDark : oneLight;
   if (content.type === "text") {
     return (
@@ -195,7 +191,7 @@ export const AssistantConversationContent: FC<{
                       toolResult.content.map((item) => {
                         if (item.type === "image") {
                           return (
-                            <Image
+                            <img
                               key={item.source.data}
                               src={`data:${item.source.media_type};base64,${item.source.data}`}
                               alt="Tool Result"

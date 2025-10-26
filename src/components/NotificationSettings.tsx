@@ -1,5 +1,3 @@
-"use client";
-
 import { Trans } from "@lingui/react";
 import { useAtom } from "jotai";
 import { type FC, useCallback, useId } from "react";

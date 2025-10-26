@@ -91,13 +91,13 @@ export const routes = (app: HonoAppType) =>
         })
 
         // routes
-        .get("/config", async (c) => {
+        .get("/api/config", async (c) => {
           return c.json({
             config: c.get("userConfig"),
           });
         })
 
-        .put("/config", zValidator("json", userConfigSchema), async (c) => {
+        .put("/api/config", zValidator("json", userConfigSchema), async (c) => {
           const { ...config } = c.req.valid("json");
 
           setCookie(c, "ccv-config", JSON.stringify(config));
@@ -107,7 +107,7 @@ export const routes = (app: HonoAppType) =>
           });
         })
 
-        .get("/version", async (c) => {
+        .get("/api/version", async (c) => {
           return c.json({
             version: packageJson.version,
           });
@@ -117,7 +117,7 @@ export const routes = (app: HonoAppType) =>
          * ProjectController Routes
          */
 
-        .get("/projects", async (c) => {
+        .get("/api/projects", async (c) => {
           const response = await effectToResponse(
             c,
             projectController.getProjects(),
@@ -126,7 +126,7 @@ export const routes = (app: HonoAppType) =>
         })
 
         .get(
-          "/projects/:projectId",
+          "/api/projects/:projectId",
           zValidator("query", z.object({ cursor: z.string().optional() })),
           async (c) => {
             const response = await effectToResponse(
@@ -143,7 +143,7 @@ export const routes = (app: HonoAppType) =>
         )
 
         .post(
-          "/projects",
+          "/api/projects",
           zValidator(
             "json",
             z.object({
@@ -163,7 +163,7 @@ export const routes = (app: HonoAppType) =>
           },
         )
 
-        .get("/projects/:projectId/latest-session", async (c) => {
+        .get("/api/projects/:projectId/latest-session", async (c) => {
           const response = await effectToResponse(
             c,
             projectController
@@ -179,7 +179,7 @@ export const routes = (app: HonoAppType) =>
          * SessionController Routes
          */
 
-        .get("/projects/:projectId/sessions/:sessionId", async (c) => {
+        .get("/api/projects/:projectId/sessions/:sessionId", async (c) => {
           const response = await effectToResponse(
             c,
             sessionController
@@ -193,7 +193,7 @@ export const routes = (app: HonoAppType) =>
          * GitController Routes
          */
 
-        .get("/projects/:projectId/git/branches", async (c) => {
+        .get("/api/projects/:projectId/git/branches", async (c) => {
           const response = await effectToResponse(
             c,
             gitController
@@ -205,7 +205,7 @@ export const routes = (app: HonoAppType) =>
           return response;
         })
 
-        .get("/projects/:projectId/git/commits", async (c) => {
+        .get("/api/projects/:projectId/git/commits", async (c) => {
           const response = await effectToResponse(
             c,
             gitController
@@ -218,7 +218,7 @@ export const routes = (app: HonoAppType) =>
         })
 
         .post(
-          "/projects/:projectId/git/diff",
+          "/api/projects/:projectId/git/diff",
           zValidator(
             "json",
             z.object({
@@ -241,7 +241,7 @@ export const routes = (app: HonoAppType) =>
         )
 
         .post(
-          "/projects/:projectId/git/commit",
+          "/api/projects/:projectId/git/commit",
           zValidator("json", CommitRequestSchema),
           async (c) => {
             const response = await effectToResponse(
@@ -258,7 +258,7 @@ export const routes = (app: HonoAppType) =>
         )
 
         .post(
-          "/projects/:projectId/git/push",
+          "/api/projects/:projectId/git/push",
           zValidator("json", PushRequestSchema),
           async (c) => {
             const response = await effectToResponse(
@@ -275,7 +275,7 @@ export const routes = (app: HonoAppType) =>
         )
 
         .post(
-          "/projects/:projectId/git/commit-and-push",
+          "/api/projects/:projectId/git/commit-and-push",
           zValidator("json", CommitRequestSchema),
           async (c) => {
             const response = await effectToResponse(
@@ -295,7 +295,7 @@ export const routes = (app: HonoAppType) =>
          * ClaudeCodeController Routes
          */
 
-        .get("/projects/:projectId/claude-commands", async (c) => {
+        .get("/api/projects/:projectId/claude-commands", async (c) => {
           const response = await effectToResponse(
             c,
             claudeCodeController.getClaudeCommands({
@@ -305,7 +305,7 @@ export const routes = (app: HonoAppType) =>
           return response;
         })
 
-        .get("/projects/:projectId/mcp/list", async (c) => {
+        .get("/api/projects/:projectId/mcp/list", async (c) => {
           const response = await effectToResponse(
             c,
             claudeCodeController
@@ -317,7 +317,7 @@ export const routes = (app: HonoAppType) =>
           return response;
         })
 
-        .get("/cc/meta", async (c) => {
+        .get("/api/cc/meta", async (c) => {
           const response = await effectToResponse(
             c,
             claudeCodeController
@@ -327,7 +327,7 @@ export const routes = (app: HonoAppType) =>
           return response;
         })
 
-        .get("/cc/features", async (c) => {
+        .get("/api/cc/features", async (c) => {
           const response = await effectToResponse(
             c,
             claudeCodeController
@@ -341,7 +341,7 @@ export const routes = (app: HonoAppType) =>
          * ClaudeCodeSessionProcessController Routes
          */
 
-        .get("/cc/session-processes", async (c) => {
+        .get("/api/cc/session-processes", async (c) => {
           const response = await effectToResponse(
             c,
             claudeCodeSessionProcessController.getSessionProcesses(),
@@ -351,7 +351,7 @@ export const routes = (app: HonoAppType) =>
 
         // new or resume
         .post(
-          "/cc/session-processes",
+          "/api/cc/session-processes",
           zValidator(
             "json",
             z.object({
@@ -373,7 +373,7 @@ export const routes = (app: HonoAppType) =>
 
         // continue
         .post(
-          "/cc/session-processes/:sessionProcessId/continue",
+          "/api/cc/session-processes/:sessionProcessId/continue",
           zValidator(
             "json",
             z.object({
@@ -397,7 +397,7 @@ export const routes = (app: HonoAppType) =>
         )
 
         .post(
-          "/cc/session-processes/:sessionProcessId/abort",
+          "/api/cc/session-processes/:sessionProcessId/abort",
           zValidator("json", z.object({ projectId: z.string() })),
           async (c) => {
             const { sessionProcessId } = c.req.param();
@@ -413,7 +413,7 @@ export const routes = (app: HonoAppType) =>
          */
 
         .post(
-          "/cc/permission-response",
+          "/api/cc/permission-response",
           zValidator(
             "json",
             z.object({
@@ -436,7 +436,7 @@ export const routes = (app: HonoAppType) =>
          * SSEController Routes
          */
 
-        .get("/sse", async (c) => {
+        .get("/api/sse", async (c) => {
           return streamSSE(
             c,
             async (rawStream) => {
@@ -456,7 +456,7 @@ export const routes = (app: HonoAppType) =>
          * SchedulerController Routes
          */
 
-        .get("/scheduler/jobs", async (c) => {
+        .get("/api/scheduler/jobs", async (c) => {
           const response = await effectToResponse(
             c,
             schedulerController.getJobs().pipe(Effect.provide(runtime)),
@@ -465,7 +465,7 @@ export const routes = (app: HonoAppType) =>
         })
 
         .post(
-          "/scheduler/jobs",
+          "/api/scheduler/jobs",
           zValidator("json", newSchedulerJobSchema),
           async (c) => {
             const response = await effectToResponse(
@@ -481,7 +481,7 @@ export const routes = (app: HonoAppType) =>
         )
 
         .patch(
-          "/scheduler/jobs/:id",
+          "/api/scheduler/jobs/:id",
           zValidator("json", updateSchedulerJobSchema),
           async (c) => {
             const response = await effectToResponse(
@@ -497,7 +497,7 @@ export const routes = (app: HonoAppType) =>
           },
         )
 
-        .delete("/scheduler/jobs/:id", async (c) => {
+        .delete("/api/scheduler/jobs/:id", async (c) => {
           const response = await effectToResponse(
             c,
             schedulerController
@@ -514,12 +514,12 @@ export const routes = (app: HonoAppType) =>
          */
 
         .get(
-          "/fs/file-completion",
+          "/api/fs/file-completion",
           zValidator(
             "query",
             z.object({
               projectId: z.string(),
-              basePath: z.string().optional().default("/"),
+              basePath: z.string().optional().default("/api/"),
             }),
           ),
           async (c) => {
@@ -535,7 +535,7 @@ export const routes = (app: HonoAppType) =>
         )
 
         .get(
-          "/fs/directory-browser",
+          "/api/fs/directory-browser",
           zValidator(
             "query",
             z.object({

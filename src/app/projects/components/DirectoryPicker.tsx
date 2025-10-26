@@ -1,5 +1,3 @@
-"use client";
-
 import { Trans } from "@lingui/react";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronRight, Folder } from "lucide-react";

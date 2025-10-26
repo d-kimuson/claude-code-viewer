@@ -1,9 +1,7 @@
-"use client";
-
 import { Trans } from "@lingui/react";
+import { Link } from "@tanstack/react-router";
 import { useAtomValue } from "jotai";
 import { MessageSquareIcon, PlusIcon } from "lucide-react";
-import Link from "next/link";
 import type { FC } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -116,7 +114,8 @@ export const SessionsTab: FC<{
           return (
             <Link
               key={session.id}
-              href={`/projects/${projectId}/sessions/${session.id}`}
+              to={"/projects/$projectId/sessions/$sessionId"}
+              params={{ projectId, sessionId: session.id }}
               className={cn(
                 "block rounded-lg p-2.5 transition-all duration-200 hover:bg-blue-50/60 dark:hover:bg-blue-950/40 hover:border-blue-300/60 dark:hover:border-blue-700/60 hover:shadow-sm border border-sidebar-border/40 bg-sidebar/30",
                 isActive &&

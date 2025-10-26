@@ -6,13 +6,13 @@ This document provides technical details for developers contributing to Claude C
 
 ### Frontend
 
-- **Framework**: Next.js 15 (App Router)
+- **Framework**: Vite + TanStack Router
 - **UI Libraries**: React 19, Radix UI, Tailwind CSS
 - **State Management**: Jotai (global state), TanStack Query (server state)
 
 ### Backend
 
-- **API Framework**: Hono integrated with Next.js API Routes
+- **API Framework**: Hono (standalone server with @hono/node-server)
   - Type-safe communication via Hono RPC
   - Validation using `@hono/zod-validator`
 - **Effect-TS**: All backend business logic is implemented using Effect-TS
@@ -61,27 +61,21 @@ pnpm install
 
 ## Starting the Development Server
 
-### Development Mode (with limitations)
+### Development Mode
 
 ```bash
 pnpm dev
 ```
 
-The development server will start, but **with the following limitations**:
+This command starts:
+- Frontend: Vite development server (port 3400 by default)
+- Backend: Node server with tsx watch (port 3401 by default)
 
-#### Next.js Development Server Constraints
+Both servers run simultaneously using `npm-run-all2` for parallel execution.
 
-The Next.js development server behaves like an Edge Runtime where API Routes don't share memory space. This causes:
+### Production Mode
 
-1. **Initialization runs on every request**: Initialization occurs for each API request, degrading performance
-2. **Session process continuation unavailable**: Cannot resume Paused sessions across different requests
-3. **SSE connection and process management inconsistencies**: Events that should be notified via SSE aren't shared between processes
-
-Therefore, **development mode is sufficient for UI verification and minor changes**, but **production build startup is essential for comprehensive testing of session process management and SSE integration**.
-
-### Production Mode (Recommended)
-
-For comprehensive functionality testing, build and run in production mode:
+Build and run in production mode:
 
 ```bash
 # Build
@@ -91,7 +85,12 @@ pnpm build
 pnpm start
 ```
 
-The built application is output to the `dist/` directory and started with `pnpm start`.
+The built application is output to the `dist/` directory:
+- `dist/static/` - Frontend static files (built by Vite)
+- `dist/main.js` - Backend server (built by esbuild)
+- `dist/index.js` - CLI entry point
+
+The production server serves static files and handles API requests on a single port (3000 by default).
 
 ## Quality Assurance
 
@@ -164,25 +163,32 @@ When the `vrt` label is added to a PR, CI automatically captures and commits sna
 
 ```
 src/
-├── app/                    # Next.js App Router
-│   ├── api/[[...route]]/  # Hono API Routes
-│   ├── components/         # Page-specific components
-│   ├── projects/          # Project-related pages
-│   └── ...
-├── components/            # Shared UI components
-├── lib/                   # Frontend common logic
-│   ├── api/              # API client (Hono RPC)
-│   ├── sse/              # SSE connection management
+├── routes/                # TanStack Router routes
+│   ├── __root.tsx        # Root route with providers
+│   ├── index.tsx         # Home route
+│   └── projects/         # Project-related routes
+├── app/                   # Shared components and hooks (legacy directory name)
+│   ├── components/       # Shared components
+│   ├── hooks/            # Custom hooks
+│   └── projects/         # Project-related page components
+├── components/           # UI components library
+│   └── ui/              # shadcn/ui components
+├── lib/                  # Frontend common logic
+│   ├── api/             # API client (Hono RPC)
+│   ├── sse/             # SSE connection management
 │   └── conversation-schema/  # Zod schemas for conversation logs
-├── server/               # Backend implementation
-│   ├── core/            # Core domain logic (Effect-TS)
-│   │   ├── claude-code/ # Claude Code integration
-│   │   ├── events/      # SSE event management
-│   │   ├── session/     # Session management
+├── server/              # Backend implementation
+│   ├── core/           # Core domain logic (Effect-TS)
+│   │   ├── claude-code/  # Claude Code integration
+│   │   ├── events/       # SSE event management
+│   │   ├── session/      # Session management
 │   │   └── ...
-│   ├── hono/            # Hono application
-│   └── lib/             # Backend common utilities
-└── testing/             # Test helpers and mocks
+│   ├── hono/           # Hono application
+│   │   ├── app.ts      # Hono app instance
+│   │   └── route.ts    # API routes definition
+│   ├── lib/            # Backend common utilities
+│   └── main.ts         # Server entry point
+└── testing/            # Test helpers and mocks
 ```
 
 ## Development Tips

@@ -1,5 +1,3 @@
-"use client";
-
 import { Trans, useLingui } from "@lingui/react";
 import { EditIcon, PlusIcon, RefreshCwIcon, TrashIcon } from "lucide-react";
 import { type FC, useState } from "react";

@@ -13,6 +13,7 @@ import { userMessageInputSchema } from "../core/claude-code/schema";
 import { ClaudeCodeLifeCycleService } from "../core/claude-code/services/ClaudeCodeLifeCycleService";
 import { TypeSafeSSE } from "../core/events/functions/typeSafeSSE";
 import { SSEController } from "../core/events/presentation/SSEController";
+import { FeatureFlagController } from "../core/feature-flag/presentation/FeatureFlagController";
 import { FileSystemController } from "../core/file-system/presentation/FileSystemController";
 import { GitController } from "../core/git/presentation/GitController";
 import { CommitRequestSchema, PushRequestSchema } from "../core/git/schema";
@@ -49,6 +50,7 @@ export const routes = (app: HonoAppType) =>
     const fileSystemController = yield* FileSystemController;
     const claudeCodeController = yield* ClaudeCodeController;
     const schedulerController = yield* SchedulerController;
+    const featureFlagController = yield* FeatureFlagController;
 
     // services
     const envService = yield* EnvService;
@@ -553,6 +555,18 @@ export const routes = (app: HonoAppType) =>
             return response;
           },
         )
+
+        /**
+         * FeatureFlagController Routes
+         */
+        .get("/api/flags", async (c) => {
+          const response = await effectToResponse(
+            c,
+            featureFlagController.getFlags().pipe(Effect.provide(runtime)),
+          );
+
+          return response;
+        })
     );
   });
 

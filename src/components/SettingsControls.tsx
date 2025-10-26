@@ -10,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useFeatureFlags } from "@/hooks/useFeatureFlags";
 import { useTheme } from "@/hooks/useTheme";
 import { projectDetailQuery, projectListQuery } from "../lib/api/queries";
 import type { SupportedLocale } from "../lib/i18n/schema";
@@ -36,6 +37,9 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
   const queryClient = useQueryClient();
   const { theme } = useTheme();
   const { i18n } = useLingui();
+  const { isFlagEnabled } = useFeatureFlags();
+
+  const isToolApprovalAvailable = isFlagEnabled("tool-approval");
 
   const handleHideNoUserMessageChange = async () => {
     const newConfig = {
@@ -222,6 +226,7 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
         <Select
           value={config?.permissionMode || "default"}
           onValueChange={handlePermissionModeChange}
+          disabled={!isToolApprovalAvailable}
         >
           <SelectTrigger id={permissionModeId} className="w-full">
             <SelectValue placeholder={i18n._("Select permission mode")} />
@@ -253,11 +258,19 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
             </SelectItem>
           </SelectContent>
         </Select>
-        {showDescriptions && (
+        {showDescriptions && isToolApprovalAvailable && (
           <p className="text-xs text-muted-foreground mt-1">
             <Trans
               id="settings.permission.mode.description"
               message="Control how Claude Code handles permission requests for file operations"
+            />
+          </p>
+        )}
+        {showDescriptions && !isToolApprovalAvailable && (
+          <p className="text-xs text-destructive mt-1">
+            <Trans
+              id="settings.permission.mode.unavailable"
+              message="This feature is not available in your Claude Code version. All tools will be automatically approved."
             />
           </p>
         )}

@@ -2,11 +2,8 @@ import { Trans } from "@lingui/react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { CheckCircle2, ChevronDown, ChevronRight, XCircle } from "lucide-react";
 import { type FC, type ReactNode, useState } from "react";
-import {
-  claudeCodeFeaturesQuery,
-  claudeCodeMetaQuery,
-  systemVersionQuery,
-} from "@/lib/api/queries";
+import { useFeatureFlags } from "@/hooks/useFeatureFlags";
+import { claudeCodeMetaQuery, systemVersionQuery } from "@/lib/api/queries";
 import { Badge } from "./ui/badge";
 import {
   Collapsible,
@@ -27,48 +24,33 @@ interface FeatureInfo {
 
 const getFeatureInfo = (featureName: string): FeatureInfo => {
   switch (featureName) {
-    case "canUseTool":
+    case "tool-approval":
       return {
         title: (
           <Trans
-            id="system_info.feature.can_use_tool.title"
-            message="Tool Use Permission Control"
+            id="system_info.feature.tool_approval.title"
+            message="Tool Execution Approval"
           />
         ),
         description: (
           <Trans
-            id="system_info.feature.can_use_tool.description"
-            message="Dynamically control tool usage permissions and request user approval before tool execution (v1.0.82+)"
+            id="system_info.feature.tool_approval.description"
+            message="Allows you to approve or reject tool executions before Claude runs them, giving you full control over actions"
           />
         ),
       };
-    case "uuidOnSDKMessage":
-      return {
-        title: (
-          <Trans
-            id="system_info.feature.uuid_on_sdk_message.title"
-            message="Message UUID Support"
-          />
-        ),
-        description: (
-          <Trans
-            id="system_info.feature.uuid_on_sdk_message.description"
-            message="Adds unique identifiers to SDK messages for better tracking (v1.0.86+)"
-          />
-        ),
-      };
-    case "agentSdk":
+    case "agent-sdk":
       return {
         title: (
           <Trans
             id="system_info.feature.agent_sdk.title"
-            message="Claude Agent SDK"
+            message="Enhanced Agent Mode"
           />
         ),
         description: (
           <Trans
             id="system_info.feature.agent_sdk.description"
-            message="Uses Claude Agent SDK instead of Claude Code SDK (v1.0.125+)"
+            message="Uses @anthropic-ai/claude-agent-sdk instead of @anthropic-ai/claude-code for enhanced capabilities"
           />
         ),
       };
@@ -96,9 +78,7 @@ export const SystemInfoCard: FC = () => {
     ...claudeCodeMetaQuery,
   });
 
-  const { data: claudeCodeFeaturesData } = useSuspenseQuery({
-    ...claudeCodeFeaturesQuery,
-  });
+  const { flags } = useFeatureFlags();
 
   return (
     <div className="h-full flex flex-col">
@@ -185,7 +165,7 @@ export const SystemInfoCard: FC = () => {
             <CollapsibleContent className="pt-3">
               <TooltipProvider>
                 <ul className="space-y-2 pl-2">
-                  {claudeCodeFeaturesData?.features.map(({ name, enabled }) => {
+                  {flags.map(({ name, enabled }) => {
                     const featureInfo = getFeatureInfo(name);
                     return (
                       <li key={name} className="flex items-start gap-2">

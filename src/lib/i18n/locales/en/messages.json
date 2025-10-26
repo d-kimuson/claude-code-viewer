@@ -368,11 +368,11 @@
     "translation": "Choose your preferred language"
   },
   "system_info.feature.agent_sdk.title": {
-    "message": "Claude Agent SDK",
+    "message": "Enhanced Agent Mode",
     "placeholders": {},
     "comments": [],
-    "origin": [["src/components/SystemInfoCard.tsx", 65]],
-    "translation": "Claude Agent SDK"
+    "origin": [["src/components/SystemInfoCard.tsx", 49]],
+    "translation": "Enhanced Agent Mode"
   },
   "system_info.claude_code": {
     "message": "Claude Code",
@@ -486,6 +486,13 @@
     "origin": [["src/components/SettingsControls.tsx", 255]],
     "translation": "Control how Claude Code handles permission requests for file operations"
   },
+  "settings.permission.mode.unavailable": {
+    "message": "This feature is not available in your Claude Code version. All tools will be automatically approved.",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SettingsControls.tsx", 272]],
+    "translation": "This feature is not available in your Claude Code version. All tools will be automatically approved."
+  },
   "session.conversation.in.progress": {
     "message": "Conversation is in progress...",
     "placeholders": {},
@@ -598,13 +605,6 @@
     "comments": [],
     "origin": [["src/components/GlobalSidebar.tsx", 56]],
     "translation": "Display and behavior preferences"
-  },
-  "system_info.feature.can_use_tool.description": {
-    "message": "Dynamically control tool usage permissions and request user approval before tool execution (v1.0.82+)",
-    "placeholders": {},
-    "comments": [],
-    "origin": [["src/components/SystemInfoCard.tsx", 41]],
-    "translation": "Dynamically control tool usage permissions and request user approval before tool execution (v1.0.82+)"
   },
   "settings.locale.en": {
     "message": "English",
@@ -1506,13 +1506,6 @@
     ],
     "translation": "Tool Result"
   },
-  "system_info.feature.can_use_tool.title": {
-    "message": "Tool Use Permission Control",
-    "placeholders": {},
-    "comments": [],
-    "origin": [["src/components/SystemInfoCard.tsx", 35]],
-    "translation": "Tool Use Permission Control"
-  },
   "sessions.total": {
     "message": "total",
     "placeholders": {},
@@ -1629,11 +1622,25 @@
     "translation": "Document type not supported for display"
   },
   "system_info.feature.agent_sdk.description": {
-    "message": "Uses Claude Agent SDK instead of Claude Code SDK (v1.0.125+)",
+    "message": "Uses @anthropic-ai/claude-agent-sdk instead of @anthropic-ai/claude-code for enhanced capabilities",
     "placeholders": {},
     "comments": [],
-    "origin": [["src/components/SystemInfoCard.tsx", 71]],
-    "translation": "Uses Claude Agent SDK instead of Claude Code SDK (v1.0.125+)"
+    "origin": [["src/components/SystemInfoCard.tsx", 53]],
+    "translation": "Uses @anthropic-ai/claude-agent-sdk instead of @anthropic-ai/claude-code for enhanced capabilities"
+  },
+  "system_info.feature.tool_approval.title": {
+    "message": "Tool Execution Approval",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SystemInfoCard.tsx", 35]],
+    "translation": "Tool Execution Approval"
+  },
+  "system_info.feature.tool_approval.description": {
+    "message": "Allows you to approve or reject tool executions before Claude runs them, giving you full control over actions",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SystemInfoCard.tsx", 41]],
+    "translation": "Allows you to approve or reject tool executions before Claude runs them, giving you full control over actions"
   },
   "system_info.version_label": {
     "message": "Version",

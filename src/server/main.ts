@@ -13,6 +13,7 @@ import { ClaudeCodeService } from "./core/claude-code/services/ClaudeCodeService
 import { ClaudeCodeSessionProcessService } from "./core/claude-code/services/ClaudeCodeSessionProcessService";
 import { SSEController } from "./core/events/presentation/SSEController";
 import { FileWatcherService } from "./core/events/services/fileWatcher";
+import { FeatureFlagController } from "./core/feature-flag/presentation/FeatureFlagController";
 import { FileSystemController } from "./core/file-system/presentation/FileSystemController";
 import { GitController } from "./core/git/presentation/GitController";
 import { GitService } from "./core/git/services/GitService";
@@ -68,6 +69,7 @@ const program = routes(honoApp)
     Effect.provide(FileSystemController.Live),
     Effect.provide(SSEController.Live),
     Effect.provide(SchedulerController.Live),
+    Effect.provide(FeatureFlagController.Live),
   )
   .pipe(
     /** Application */

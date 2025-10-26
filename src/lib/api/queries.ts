@@ -262,3 +262,16 @@ export const schedulerJobsQuery = {
     return await response.json();
   },
 } as const;
+
+export const featureFlagsQuery = {
+  queryKey: ["flags"],
+  queryFn: async () => {
+    const response = await honoClient.api.flags.$get();
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch feature flags: ${response.statusText}`);
+    }
+
+    return await response.json();
+  },
+} as const;

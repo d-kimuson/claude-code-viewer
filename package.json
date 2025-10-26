@@ -15,11 +15,11 @@
     "node": ">=20.19.0"
   },
   "exports": {
-    ".": "./dist/index.js",
+    ".": "./dist/main.js",
     "./package.json": "./package.json"
   },
   "bin": {
-    "claude-code-viewer": "./dist/index.js"
+    "claude-code-viewer": "./dist/main.js"
   },
   "scripts": {
     "dev": "run-p 'dev:*'",

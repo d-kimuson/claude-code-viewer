@@ -8,112 +8,112 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from "./routes/__root";
-import { Route as IndexRouteImport } from "./routes/index";
-import { Route as ProjectsProjectIdLatestIndexRouteImport } from "./routes/projects/$projectId/latest/index";
-import { Route as ProjectsProjectIdSessionsSessionIdIndexRouteImport } from "./routes/projects/$projectId/sessions/$sessionId/index";
-import { Route as ProjectsIndexRouteImport } from "./routes/projects/index";
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as ProjectsIndexRouteImport } from './routes/projects/index'
+import { Route as ProjectsProjectIdLatestIndexRouteImport } from './routes/projects/$projectId/latest/index'
+import { Route as ProjectsProjectIdSessionsSessionIdIndexRouteImport } from './routes/projects/$projectId/sessions/$sessionId/index'
 
 const IndexRoute = IndexRouteImport.update({
-  id: "/",
-  path: "/",
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const ProjectsIndexRoute = ProjectsIndexRouteImport.update({
-  id: "/projects/",
-  path: "/projects/",
+  id: '/projects/',
+  path: '/projects/',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const ProjectsProjectIdLatestIndexRoute =
   ProjectsProjectIdLatestIndexRouteImport.update({
-    id: "/projects/$projectId/latest/",
-    path: "/projects/$projectId/latest/",
+    id: '/projects/$projectId/latest/',
+    path: '/projects/$projectId/latest/',
     getParentRoute: () => rootRouteImport,
-  } as any);
+  } as any)
 const ProjectsProjectIdSessionsSessionIdIndexRoute =
   ProjectsProjectIdSessionsSessionIdIndexRouteImport.update({
-    id: "/projects/$projectId/sessions/$sessionId/",
-    path: "/projects/$projectId/sessions/$sessionId/",
+    id: '/projects/$projectId/sessions/$sessionId/',
+    path: '/projects/$projectId/sessions/$sessionId/',
     getParentRoute: () => rootRouteImport,
-  } as any);
+  } as any)
 
 export interface FileRoutesByFullPath {
-  "/": typeof IndexRoute;
-  "/projects": typeof ProjectsIndexRoute;
-  "/projects/$projectId/latest": typeof ProjectsProjectIdLatestIndexRoute;
-  "/projects/$projectId/sessions/$sessionId": typeof ProjectsProjectIdSessionsSessionIdIndexRoute;
+  '/': typeof IndexRoute
+  '/projects': typeof ProjectsIndexRoute
+  '/projects/$projectId/latest': typeof ProjectsProjectIdLatestIndexRoute
+  '/projects/$projectId/sessions/$sessionId': typeof ProjectsProjectIdSessionsSessionIdIndexRoute
 }
 export interface FileRoutesByTo {
-  "/": typeof IndexRoute;
-  "/projects": typeof ProjectsIndexRoute;
-  "/projects/$projectId/latest": typeof ProjectsProjectIdLatestIndexRoute;
-  "/projects/$projectId/sessions/$sessionId": typeof ProjectsProjectIdSessionsSessionIdIndexRoute;
+  '/': typeof IndexRoute
+  '/projects': typeof ProjectsIndexRoute
+  '/projects/$projectId/latest': typeof ProjectsProjectIdLatestIndexRoute
+  '/projects/$projectId/sessions/$sessionId': typeof ProjectsProjectIdSessionsSessionIdIndexRoute
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport;
-  "/": typeof IndexRoute;
-  "/projects/": typeof ProjectsIndexRoute;
-  "/projects/$projectId/latest/": typeof ProjectsProjectIdLatestIndexRoute;
-  "/projects/$projectId/sessions/$sessionId/": typeof ProjectsProjectIdSessionsSessionIdIndexRoute;
+  __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/projects/': typeof ProjectsIndexRoute
+  '/projects/$projectId/latest/': typeof ProjectsProjectIdLatestIndexRoute
+  '/projects/$projectId/sessions/$sessionId/': typeof ProjectsProjectIdSessionsSessionIdIndexRoute
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath;
+  fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | "/"
-    | "/projects"
-    | "/projects/$projectId/latest"
-    | "/projects/$projectId/sessions/$sessionId";
-  fileRoutesByTo: FileRoutesByTo;
+    | '/'
+    | '/projects'
+    | '/projects/$projectId/latest'
+    | '/projects/$projectId/sessions/$sessionId'
+  fileRoutesByTo: FileRoutesByTo
   to:
-    | "/"
-    | "/projects"
-    | "/projects/$projectId/latest"
-    | "/projects/$projectId/sessions/$sessionId";
+    | '/'
+    | '/projects'
+    | '/projects/$projectId/latest'
+    | '/projects/$projectId/sessions/$sessionId'
   id:
-    | "__root__"
-    | "/"
-    | "/projects/"
-    | "/projects/$projectId/latest/"
-    | "/projects/$projectId/sessions/$sessionId/";
-  fileRoutesById: FileRoutesById;
+    | '__root__'
+    | '/'
+    | '/projects/'
+    | '/projects/$projectId/latest/'
+    | '/projects/$projectId/sessions/$sessionId/'
+  fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute;
-  ProjectsIndexRoute: typeof ProjectsIndexRoute;
-  ProjectsProjectIdLatestIndexRoute: typeof ProjectsProjectIdLatestIndexRoute;
-  ProjectsProjectIdSessionsSessionIdIndexRoute: typeof ProjectsProjectIdSessionsSessionIdIndexRoute;
+  IndexRoute: typeof IndexRoute
+  ProjectsIndexRoute: typeof ProjectsIndexRoute
+  ProjectsProjectIdLatestIndexRoute: typeof ProjectsProjectIdLatestIndexRoute
+  ProjectsProjectIdSessionsSessionIdIndexRoute: typeof ProjectsProjectIdSessionsSessionIdIndexRoute
 }
 
-declare module "@tanstack/react-router" {
+declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    "/": {
-      id: "/";
-      path: "/";
-      fullPath: "/";
-      preLoaderRoute: typeof IndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/projects/": {
-      id: "/projects/";
-      path: "/projects";
-      fullPath: "/projects";
-      preLoaderRoute: typeof ProjectsIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/projects/$projectId/latest/": {
-      id: "/projects/$projectId/latest/";
-      path: "/projects/$projectId/latest";
-      fullPath: "/projects/$projectId/latest";
-      preLoaderRoute: typeof ProjectsProjectIdLatestIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/projects/$projectId/sessions/$sessionId/": {
-      id: "/projects/$projectId/sessions/$sessionId/";
-      path: "/projects/$projectId/sessions/$sessionId";
-      fullPath: "/projects/$projectId/sessions/$sessionId";
-      preLoaderRoute: typeof ProjectsProjectIdSessionsSessionIdIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projects/': {
+      id: '/projects/'
+      path: '/projects'
+      fullPath: '/projects'
+      preLoaderRoute: typeof ProjectsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projects/$projectId/latest/': {
+      id: '/projects/$projectId/latest/'
+      path: '/projects/$projectId/latest'
+      fullPath: '/projects/$projectId/latest'
+      preLoaderRoute: typeof ProjectsProjectIdLatestIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projects/$projectId/sessions/$sessionId/': {
+      id: '/projects/$projectId/sessions/$sessionId/'
+      path: '/projects/$projectId/sessions/$sessionId'
+      fullPath: '/projects/$projectId/sessions/$sessionId'
+      preLoaderRoute: typeof ProjectsProjectIdSessionsSessionIdIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -123,7 +123,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProjectsProjectIdLatestIndexRoute: ProjectsProjectIdLatestIndexRoute,
   ProjectsProjectIdSessionsSessionIdIndexRoute:
     ProjectsProjectIdSessionsSessionIdIndexRoute,
-};
+}
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>();
+  ._addFileTypes<FileRouteTypes>()

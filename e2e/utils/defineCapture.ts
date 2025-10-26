@@ -34,13 +34,13 @@ export const defineCapture = (options: {
           await page.goto(href);
 
           await page.waitForLoadState("domcontentloaded");
-          await page.waitForTimeout(1000);
+          await page.waitForTimeout(2000);
 
           if (testCase) {
             await testCase.setup(page);
           }
 
-          await page.waitForTimeout(1000);
+          await page.waitForTimeout(2000);
 
           const picturePath = testCase
             ? resolve(

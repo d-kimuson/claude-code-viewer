@@ -12,7 +12,10 @@ export const sessionDetailCapture = defineCapture({
         );
         if (await menuButton.isVisible()) {
           await menuButton.click();
-          await page.waitForTimeout(1000);
+          await page.waitForSelector(
+            '[data-testid="sessions-tab-button-mobile"]',
+            { state: "visible", timeout: 1000 },
+          );
 
           const sessionsTabButton = page.locator(
             '[data-testid="sessions-tab-button-mobile"]',
@@ -41,14 +44,16 @@ export const sessionDetailCapture = defineCapture({
         );
         if (await menuButton.isVisible()) {
           await menuButton.click();
-          await page.waitForTimeout(1000);
+          await page.waitForSelector(
+            '[data-testid="settings-tab-button-mobile"]',
+          );
 
           const settingsTabButton = page.locator(
             '[data-testid="settings-tab-button-mobile"]',
           );
           if (await settingsTabButton.isVisible()) {
             await settingsTabButton.click();
-            await page.waitForTimeout(1000);
+            await page.waitForTimeout(2000);
           }
         } else {
           const settingsTabButton = page.locator(
@@ -56,7 +61,7 @@ export const sessionDetailCapture = defineCapture({
           );
           if (await settingsTabButton.isVisible()) {
             await settingsTabButton.click();
-            await page.waitForTimeout(1000);
+            await page.waitForTimeout(2000);
           }
         }
       },
@@ -70,19 +75,21 @@ export const sessionDetailCapture = defineCapture({
         );
         if (await menuButton.isVisible()) {
           await menuButton.click();
-          await page.waitForTimeout(1000);
+          await page.waitForSelector(
+            '[data-testid="start-new-chat-button-mobile"]',
+          );
 
           const startNewChatButton = page.locator(
             '[data-testid="start-new-chat-button-mobile"]',
           );
           await startNewChatButton.click();
-          await page.waitForTimeout(1000);
+          await page.waitForTimeout(2000);
         } else {
           const startNewChatButton = page.locator(
             '[data-testid="start-new-chat-button"]',
           );
           await startNewChatButton.click();
-          await page.waitForTimeout(1000);
+          await page.waitForTimeout(2000);
         }
       },
     },
@@ -95,7 +102,7 @@ export const sessionDetailCapture = defineCapture({
           .first();
         if (await sidechainTaskButton.isVisible()) {
           await sidechainTaskButton.click();
-          await page.waitForTimeout(1000);
+          await page.waitForSelector('[data-testid="sidechain-task-modal"]');
 
           // モーダルが開いたことを確認
           const modal = page.locator('[data-testid="sidechain-task-modal"]');

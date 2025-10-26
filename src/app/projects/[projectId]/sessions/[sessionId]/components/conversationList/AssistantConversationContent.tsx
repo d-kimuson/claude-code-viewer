@@ -112,6 +112,7 @@ export const AssistantConversationContent: FC<{
               variant="ghost"
               size="sm"
               className="h-auto py-1.5 px-3 text-xs hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-none flex items-center gap-1"
+              data-testid="sidechain-task-button"
             >
               <Eye className="h-3 w-3" />
               <Trans

@@ -21,11 +21,11 @@
 
 ## Project Overview
 
-Claude Code Viewer reads Claude Code session logs directly from JSONL files (`~/.claude/projects/`) with zero data loss. It's a web-based client built as a CLI tool serving a Next.js application.
+Claude Code Viewer reads Claude Code session logs directly from JSONL files (`~/.claude/projects/`) with zero data loss. It's a web-based client built as a CLI tool serving a Vite application.
 
 **Core Architecture**:
-- Frontend: Next.js 15 + React 19 + TanStack Query
-- Backend: Hono + Effect-TS (all business logic)
+- Frontend: Vite + TanStack Router + React 19 + TanStack Query
+- Backend: Hono (standalone server) + Effect-TS (all business logic)
 - Data: Direct JSONL reads with strict Zod validation
 - Real-time: Server-Sent Events (SSE) for live updates
 
@@ -54,10 +54,11 @@ pnpm test
 
 ## Key Directory Patterns
 
-- `src/app/api/[[...route]]/` - Hono API entry point (all routes defined here)
+- `src/server/hono/route.ts` - Hono API routes definition (all routes defined here)
 - `src/server/core/` - Effect-TS business logic (domain modules: session, project, git, etc.)
 - `src/lib/conversation-schema/` - Zod schemas for JSONL validation
 - `src/testing/layers/` - Reusable Effect test layers (`testPlatformLayer` is the foundation)
+- `src/routes/` - TanStack Router routes
 
 ## Coding Standards
 

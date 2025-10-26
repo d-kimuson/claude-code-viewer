@@ -13,6 +13,7 @@ export const userConfigSchema = z.object({
     .optional()
     .default("default"),
   locale: localeSchema.optional().default("en"),
+  theme: z.enum(["light", "dark", "system"]).optional().default("system"),
 });
 
 export type UserConfig = z.infer<typeof userConfigSchema>;

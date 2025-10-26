@@ -1,6 +1,3 @@
-"use client";
-
-import { useTheme } from "next-themes";
 import type { FC } from "react";
 import Markdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
@@ -9,6 +6,7 @@ import {
   oneLight,
 } from "react-syntax-highlighter/dist/esm/styles/prism";
 import remarkGfm from "remark-gfm";
+import { useTheme } from "../../hooks/useTheme";
 
 interface MarkdownContentProps {
   content: string;

@@ -1,5 +1,3 @@
-"use client";
-
 import { Trans } from "@lingui/react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { CheckCircle2, ChevronDown, ChevronRight, XCircle } from "lucide-react";

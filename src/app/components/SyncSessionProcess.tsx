@@ -1,5 +1,3 @@
-"use client";
-
 import { useSetAtom } from "jotai";
 import { type FC, type PropsWithChildren, useEffect } from "react";
 import type { PublicSessionProcess } from "../../types/session-process";

@@ -9,31 +9,17 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "preserve",
-    // build optimization
-    "incremental": true,
-    // plugins
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
+    "jsx": "react-jsx",
     // paths alias
     "paths": {
       "@/*": ["./src/*"]
     },
     // typecheck
-    "types": ["node", "vitest/globals"],
+    "types": ["node", "vitest/globals", "vite/client"],
     "exactOptionalPropertyTypes": false,
+    "noPropertyAccessFromIndexSignature": false,
     "allowJs": true
   },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
-    "next-env.d.ts",
-    "./.next/types/**/*.ts"
-  ],
+  "include": ["src"],
   "exclude": ["node_modules"]
 }

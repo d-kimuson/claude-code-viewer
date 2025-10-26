@@ -15,7 +15,8 @@
       "!**/*.css",
       "!dist",
       "!playwright.config.ts",
-      "!src/lib/i18n/locales/*/messages.ts"
+      "!src/lib/i18n/locales/*/messages.ts",
+      "!src/routeTree.gen.ts"
     ]
   },
   "formatter": {
@@ -48,6 +49,12 @@
   "overrides": [
     {
       "includes": ["e2e/**"],
+      "linter": {
+        "enabled": false
+      }
+    },
+    {
+      "includes": ["**/*.config.ts"],
       "linter": {
         "enabled": false
       }

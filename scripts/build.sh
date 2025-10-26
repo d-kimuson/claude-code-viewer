@@ -2,17 +2,10 @@
 
 set -euxo pipefail
 
-if [ -d "dist/.next" ]; then
-  rm -rf dist/.next
-fi
-
-if [ -d "dist/standalone" ]; then
-  rm -rf dist/standalone
+if [ -d "dist" ]; then
+  rm -rf dist
 fi
 
 pnpm lingui:compile
-pnpm exec next build
-cp -r public .next/standalone/
-cp -r .next/static .next/standalone/.next/
-
-cp -r .next/standalone ./dist/
+pnpm build:frontend
+pnpm build:backend

@@ -1,6 +1,5 @@
-"use client";
-
 import { Trans, useLingui } from "@lingui/react";
+import { Link } from "@tanstack/react-router";
 import {
   ArrowLeftIcon,
   InfoIcon,
@@ -9,7 +8,6 @@ import {
   SettingsIcon,
   XIcon,
 } from "lucide-react";
-import Link from "next/link";
 import { type FC, Suspense, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { NotificationSettings } from "@/components/NotificationSettings";
@@ -23,7 +21,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import { useProject } from "../../../../hooks/useProject";
 import { McpTab } from "./McpTab";
 import { SessionsTab } from "./SessionsTab";
 
@@ -41,13 +38,6 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
   onClose,
 }) => {
   const { i18n } = useLingui();
-  const {
-    data: projectData,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  } = useProject(projectId);
-  const sessions = projectData.pages.flatMap((page) => page.sessions);
   const [activeTab, setActiveTab] = useState<
     "sessions" | "mcp" | "settings" | "system-info"
   >("sessions");
@@ -95,15 +85,8 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
       case "sessions":
         return (
           <SessionsTab
-            sessions={sessions.map((session) => ({
-              ...session,
-              lastModifiedAt: new Date(session.lastModifiedAt),
-            }))}
             currentSessionId={currentSessionId}
             projectId={projectId}
-            hasNextPage={hasNextPage}
-            isFetchingNextPage={isFetchingNextPage}
-            onLoadMore={() => fetchNextPage()}
             isMobile={true}
           />
         );
@@ -192,7 +175,7 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  href="/projects"
+                  to="/projects"
                   className="w-12 h-12 flex items-center justify-center border-b border-sidebar-border hover:bg-sidebar-accent transition-colors"
                 >
                   <ArrowLeftIcon className="w-4 h-4 text-sidebar-foreground/70" />

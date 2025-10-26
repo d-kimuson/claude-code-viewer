@@ -1,5 +1,3 @@
-"use client";
-
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
 import { useServerEventListener } from "@/lib/sse/hook/useServerEventListener";

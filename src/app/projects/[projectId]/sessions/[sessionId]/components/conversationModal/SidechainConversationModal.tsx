@@ -1,5 +1,3 @@
-"use client";
-
 import { Trans } from "@lingui/react";
 import { Eye, MessageSquare } from "lucide-react";
 import type { FC } from "react";

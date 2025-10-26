@@ -1,5 +1,3 @@
-"use client";
-
 import { Trans, useLingui } from "@lingui/react";
 import { type FC, useEffect, useState } from "react";
 import { InlineCompletion } from "@/app/projects/[projectId]/components/chatForm/InlineCompletion";

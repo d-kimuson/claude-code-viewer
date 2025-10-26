@@ -1,5 +1,3 @@
-"use client";
-
 import { AlertCircle, Home, RefreshCw } from "lucide-react";
 import type { FC, PropsWithChildren } from "react";
 import { ErrorBoundary } from "react-error-boundary";

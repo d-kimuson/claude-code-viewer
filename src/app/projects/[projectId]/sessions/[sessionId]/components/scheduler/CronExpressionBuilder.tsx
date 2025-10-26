@@ -1,5 +1,3 @@
-"use client";
-
 import { Trans } from "@lingui/react";
 import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";

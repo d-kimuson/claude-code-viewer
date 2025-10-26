@@ -1,8 +1,5 @@
-"use client";
-
 import { Trans, useLingui } from "@lingui/react";
 import { useQueryClient } from "@tanstack/react-query";
-import { useTheme } from "next-themes";
 import { type FC, useId } from "react";
 import { useConfig } from "@/app/hooks/useConfig";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -13,7 +10,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useTheme } from "@/hooks/useTheme";
 import { projectDetailQuery, projectListQuery } from "../lib/api/queries";
+import type { SupportedLocale } from "../lib/i18n/schema";
 
 interface SettingsControlsProps {
   openingProjectId: string;
@@ -35,7 +34,7 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
   const themeId = useId();
   const { config, updateConfig } = useConfig();
   const queryClient = useQueryClient();
-  const { theme, setTheme } = useTheme();
+  const { theme } = useTheme();
   const { i18n } = useLingui();
 
   const handleHideNoUserMessageChange = async () => {
@@ -89,16 +88,20 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
     updateConfig(newConfig);
   };
 
-  const handleLocaleChange = async (value: string) => {
+  const handleLocaleChange = async (value: SupportedLocale) => {
     const newConfig = {
       ...config,
-      locale: value as "ja" | "en",
+      locale: value,
     };
-    updateConfig(newConfig, {
-      onSuccess: async () => {
-        window.location.reload();
-      },
-    });
+    updateConfig(newConfig);
+  };
+
+  const handleThemeChange = async (value: "light" | "dark" | "system") => {
+    const newConfig = {
+      ...config,
+      theme: value,
+    };
+    updateConfig(newConfig);
   };
 
   return (
@@ -301,7 +304,7 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
             <Trans id="settings.theme" message="Theme" />
           </label>
         )}
-        <Select value={theme || "system"} onValueChange={setTheme}>
+        <Select value={theme ?? "system"} onValueChange={handleThemeChange}>
           <SelectTrigger id={themeId} className="w-full">
             <SelectValue placeholder={i18n._("Select theme")} />
           </SelectTrigger>

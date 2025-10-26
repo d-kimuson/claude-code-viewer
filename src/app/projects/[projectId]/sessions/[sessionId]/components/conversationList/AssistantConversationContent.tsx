@@ -1,9 +1,5 @@
-"use client";
-
 import { Trans } from "@lingui/react";
 import { ChevronDown, Eye, Lightbulb, Wrench } from "lucide-react";
-import Image from "next/image";
-import { useTheme } from "next-themes";
 import type { FC } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import {
@@ -20,6 +16,7 @@ import {
 import type { ToolResultContent } from "@/lib/conversation-schema/content/ToolResultContentSchema";
 import type { AssistantMessageContent } from "@/lib/conversation-schema/message/AssistantMessageSchema";
 import { Button } from "../../../../../../../components/ui/button";
+import { useTheme } from "../../../../../../../hooks/useTheme";
 import type { SidechainConversation } from "../../../../../../../lib/conversation-schema";
 import { MarkdownContent } from "../../../../../../components/MarkdownContent";
 import { SidechainConversationModal } from "../conversationModal/SidechainConversationModal";
@@ -115,6 +112,7 @@ export const AssistantConversationContent: FC<{
               variant="ghost"
               size="sm"
               className="h-auto py-1.5 px-3 text-xs hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-none flex items-center gap-1"
+              data-testid="sidechain-task-button"
             >
               <Eye className="h-3 w-3" />
               <Trans
@@ -195,7 +193,7 @@ export const AssistantConversationContent: FC<{
                       toolResult.content.map((item) => {
                         if (item.type === "image") {
                           return (
-                            <Image
+                            <img
                               key={item.source.data}
                               src={`data:${item.source.media_type};base64,${item.source.data}`}
                               alt="Tool Result"

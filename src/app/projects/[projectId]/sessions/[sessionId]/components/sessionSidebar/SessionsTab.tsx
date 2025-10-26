@@ -1,37 +1,31 @@
-"use client";
-
 import { Trans } from "@lingui/react";
+import { Link } from "@tanstack/react-router";
 import { useAtomValue } from "jotai";
 import { MessageSquareIcon, PlusIcon } from "lucide-react";
-import Link from "next/link";
 import type { FC } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { formatLocaleDate } from "../../../../../../../lib/date/formatLocaleDate";
-import type { Session } from "../../../../../../../server/core/types";
 import { useConfig } from "../../../../../../hooks/useConfig";
 import { NewChatModal } from "../../../../components/newChat/NewChatModal";
+import { useProject } from "../../../../hooks/useProject";
 import { firstUserMessageToTitle } from "../../../../services/firstCommandToTitle";
 import { sessionProcessesAtom } from "../../store/sessionProcessesAtom";
 
 export const SessionsTab: FC<{
-  sessions: Session[];
   currentSessionId: string;
   projectId: string;
-  hasNextPage?: boolean;
-  isFetchingNextPage?: boolean;
-  onLoadMore?: () => void;
   isMobile?: boolean;
-}> = ({
-  sessions,
-  currentSessionId,
-  projectId,
-  hasNextPage,
-  isFetchingNextPage,
-  onLoadMore,
-  isMobile = false,
-}) => {
+}> = ({ currentSessionId, projectId, isMobile = false }) => {
+  const {
+    data: projectData,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useProject(projectId);
+  const sessions = projectData.pages.flatMap((page) => page.sessions);
+
   const sessionProcesses = useAtomValue(sessionProcessesAtom);
   const { config } = useConfig();
 
@@ -63,8 +57,8 @@ export const SessionsTab: FC<{
     }
 
     // Then sort by lastModifiedAt (newest first)
-    const aTime = a.lastModifiedAt ? a.lastModifiedAt.getTime() : 0;
-    const bTime = b.lastModifiedAt ? b.lastModifiedAt.getTime() : 0;
+    const aTime = a.lastModifiedAt ? new Date(a.lastModifiedAt).getTime() : 0;
+    const bTime = b.lastModifiedAt ? new Date(b.lastModifiedAt).getTime() : 0;
     return bTime - aTime;
   });
 
@@ -116,7 +110,8 @@ export const SessionsTab: FC<{
           return (
             <Link
               key={session.id}
-              href={`/projects/${projectId}/sessions/${session.id}`}
+              to={"/projects/$projectId/sessions/$sessionId"}
+              params={{ projectId, sessionId: session.id }}
               className={cn(
                 "block rounded-lg p-2.5 transition-all duration-200 hover:bg-blue-50/60 dark:hover:bg-blue-950/40 hover:border-blue-300/60 dark:hover:border-blue-700/60 hover:shadow-sm border border-sidebar-border/40 bg-sidebar/30",
                 isActive &&
@@ -165,10 +160,10 @@ export const SessionsTab: FC<{
         })}
 
         {/* Load More Button */}
-        {hasNextPage && onLoadMore && (
+        {hasNextPage && fetchNextPage && (
           <div className="p-2">
             <Button
-              onClick={onLoadMore}
+              onClick={() => fetchNextPage()}
               disabled={isFetchingNextPage}
               variant="outline"
               size="sm"

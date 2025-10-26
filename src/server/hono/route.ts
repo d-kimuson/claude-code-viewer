@@ -9,6 +9,7 @@ import packageJson from "../../../package.json" with { type: "json" };
 import { ClaudeCodeController } from "../core/claude-code/presentation/ClaudeCodeController";
 import { ClaudeCodePermissionController } from "../core/claude-code/presentation/ClaudeCodePermissionController";
 import { ClaudeCodeSessionProcessController } from "../core/claude-code/presentation/ClaudeCodeSessionProcessController";
+import { userMessageInputSchema } from "../core/claude-code/schema";
 import { ClaudeCodeLifeCycleService } from "../core/claude-code/services/ClaudeCodeLifeCycleService";
 import { TypeSafeSSE } from "../core/events/functions/typeSafeSSE";
 import { SSEController } from "../core/events/presentation/SSEController";
@@ -356,7 +357,7 @@ export const routes = (app: HonoAppType) =>
             "json",
             z.object({
               projectId: z.string(),
-              message: z.string(),
+              input: userMessageInputSchema,
               baseSessionId: z.string().optional(),
             }),
           ),
@@ -378,7 +379,7 @@ export const routes = (app: HonoAppType) =>
             "json",
             z.object({
               projectId: z.string(),
-              continueMessage: z.string(),
+              input: userMessageInputSchema,
               baseSessionId: z.string(),
             }),
           ),

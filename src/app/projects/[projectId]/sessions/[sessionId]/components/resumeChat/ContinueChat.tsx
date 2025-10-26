@@ -3,6 +3,7 @@ import type { FC } from "react";
 import { useConfig } from "../../../../../../hooks/useConfig";
 import {
   ChatInput,
+  type MessageInput,
   useContinueSessionProcessMutation,
 } from "../../../../components/chatForm";
 
@@ -18,8 +19,8 @@ export const ContinueChat: FC<{
   );
   const { config } = useConfig();
 
-  const handleSubmit = async (message: string) => {
-    await continueSessionProcess.mutateAsync({ message, sessionProcessId });
+  const handleSubmit = async (input: MessageInput) => {
+    await continueSessionProcess.mutateAsync({ input, sessionProcessId });
   };
 
   const getPlaceholder = () => {

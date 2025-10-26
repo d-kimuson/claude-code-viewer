@@ -5,6 +5,6 @@ export const ImageContentSchema = z.object({
   source: z.object({
     type: z.literal("base64"),
     data: z.string(),
-    media_type: z.enum(["image/png"]),
+    media_type: z.enum(["image/png", "image/jpeg", "image/gif", "image/webp"]),
   }),
 });

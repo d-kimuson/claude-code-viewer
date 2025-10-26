@@ -1,4 +1,4 @@
-export type { ChatInputProps } from "./ChatInput";
+export type { ChatInputProps, MessageInput } from "./ChatInput";
 export { ChatInput } from "./ChatInput";
 export type { CommandCompletionRef } from "./CommandCompletion";
 export { CommandCompletion } from "./CommandCompletion";

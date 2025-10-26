@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { DocumentContentSchema } from "../content/DocumentContentSchema";
 import { ImageContentSchema } from "../content/ImageContentSchema";
 import { TextContentSchema } from "../content/TextContentSchema";
 import { ToolResultContentSchema } from "../content/ToolResultContentSchema";
@@ -8,6 +9,7 @@ const UserMessageContentSchema = z.union([
   TextContentSchema,
   ToolResultContentSchema,
   ImageContentSchema,
+  DocumentContentSchema,
 ]);
 
 export type UserMessageContent = z.infer<typeof UserMessageContentSchema>;

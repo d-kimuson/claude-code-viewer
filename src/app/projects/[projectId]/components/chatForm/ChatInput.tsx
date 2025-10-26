@@ -2,8 +2,10 @@ import { Trans, useLingui } from "@lingui/react";
 import {
   AlertCircleIcon,
   LoaderIcon,
+  PaperclipIcon,
   SendIcon,
   SparklesIcon,
+  XIcon,
 } from "lucide-react";
 import { type FC, useCallback, useId, useRef, useState } from "react";
 import { Button } from "../../../../../components/ui/button";
@@ -11,11 +13,18 @@ import { Textarea } from "../../../../../components/ui/textarea";
 import { useConfig } from "../../../../hooks/useConfig";
 import type { CommandCompletionRef } from "./CommandCompletion";
 import type { FileCompletionRef } from "./FileCompletion";
+import type { DocumentBlock, ImageBlock } from "./fileUtils";
 import { InlineCompletion } from "./InlineCompletion";
+
+export interface MessageInput {
+  text: string;
+  images?: ImageBlock[];
+  documents?: DocumentBlock[];
+}
 
 export interface ChatInputProps {
   projectId: string;
-  onSubmit: (message: string) => Promise<void>;
+  onSubmit: (input: MessageInput) => Promise<void>;
   isPending: boolean;
   error?: Error | null;
   placeholder: string;
@@ -40,6 +49,9 @@ export const ChatInput: FC<ChatInputProps> = ({
 }) => {
   const { i18n } = useLingui();
   const [message, setMessage] = useState("");
+  const [attachedFiles, setAttachedFiles] = useState<
+    Array<{ file: File; id: string }>
+  >([]);
   const [cursorPosition, setCursorPosition] = useState<{
     relative: { top: number; left: number };
     absolute: { top: number; left: number };
@@ -47,15 +59,63 @@ export const ChatInput: FC<ChatInputProps> = ({
 
   const containerRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const commandCompletionRef = useRef<CommandCompletionRef>(null);
   const fileCompletionRef = useRef<FileCompletionRef>(null);
   const helpId = useId();
   const { config } = useConfig();
 
   const handleSubmit = async () => {
-    if (!message.trim()) return;
-    await onSubmit(message.trim());
+    if (!message.trim() && attachedFiles.length === 0) return;
+
+    const { processFile } = await import("./fileUtils");
+
+    const images: ImageBlock[] = [];
+    const documents: DocumentBlock[] = [];
+    let additionalText = "";
+
+    for (const { file } of attachedFiles) {
+      const result = await processFile(file);
+
+      if (result.type === "text") {
+        additionalText += `\n\nFile: ${file.name}\n${result.content}`;
+      } else if (result.type === "image") {
+        images.push(result.block);
+      } else if (result.type === "document") {
+        documents.push(result.block);
+      }
+    }
+
+    const finalText = message.trim() + additionalText;
+
+    await onSubmit({
+      text: finalText,
+      images: images.length > 0 ? images : undefined,
+      documents: documents.length > 0 ? documents : undefined,
+    });
+
     setMessage("");
+    setAttachedFiles([]);
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+
+    const newFiles = Array.from(files).map((file) => ({
+      file,
+      id: `${file.name}-${Date.now()}-${Math.random()}`,
+    }));
+
+    setAttachedFiles((prev) => [...prev, ...newFiles]);
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const handleRemoveFile = (id: string) => {
+    setAttachedFiles((prev) => prev.filter((f) => f.id !== id));
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -159,7 +219,7 @@ export const ChatInput: FC<ChatInputProps> = ({
     textareaRef.current?.focus();
   };
 
-  const handleFileSelect = (filePath: string) => {
+  const handleFilePathSelect = (filePath: string) => {
     setMessage(filePath);
     textareaRef.current?.focus();
   };
@@ -216,8 +276,50 @@ export const ChatInput: FC<ChatInputProps> = ({
             />
           </div>
 
+          {attachedFiles.length > 0 && (
+            <div className="px-5 py-3 flex flex-wrap gap-2 border-t border-border/40">
+              {attachedFiles.map(({ file, id }) => (
+                <div
+                  key={id}
+                  className="flex items-center gap-2 px-3 py-1.5 bg-muted rounded-lg text-sm"
+                >
+                  <span className="truncate max-w-[200px]">{file.name}</span>
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveFile(id)}
+                    className="text-muted-foreground hover:text-foreground transition-colors"
+                    disabled={isPending}
+                  >
+                    <XIcon className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
           <div className="flex items-center justify-between gap-3 px-5 py-3 bg-muted/30 border-t border-border/40">
             <div className="flex items-center gap-2">
+              <input
+                ref={fileInputRef}
+                type="file"
+                multiple
+                accept="image/png,image/jpeg,image/gif,image/webp,application/pdf,text/plain"
+                onChange={handleFileSelect}
+                className="hidden"
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={isPending || disabled}
+                className="gap-1.5"
+              >
+                <PaperclipIcon className="w-4 h-4" />
+                <span className="text-xs">
+                  <Trans id="chat.attach_file" message="Attach" />
+                </span>
+              </Button>
               <span
                 className="text-xs font-medium text-muted-foreground/80"
                 id={helpId}
@@ -238,7 +340,11 @@ export const ChatInput: FC<ChatInputProps> = ({
 
             <Button
               onClick={handleSubmit}
-              disabled={!message.trim() || isPending || disabled}
+              disabled={
+                (!message.trim() && attachedFiles.length === 0) ||
+                isPending ||
+                disabled
+              }
               size={buttonSize}
               className="gap-2 transition-all duration-200 hover:shadow-md hover:scale-105 active:scale-95 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 disabled:from-muted disabled:to-muted"
             >
@@ -267,7 +373,7 @@ export const ChatInput: FC<ChatInputProps> = ({
           commandCompletionRef={commandCompletionRef}
           fileCompletionRef={fileCompletionRef}
           handleCommandSelect={handleCommandSelect}
-          handleFileSelect={handleFileSelect}
+          handleFileSelect={handleFilePathSelect}
           cursorPosition={cursorPosition}
         />
       </div>

@@ -27,7 +27,9 @@ export const executeJob = (job: SchedulerJob) =>
         sessionId: message.baseSessionId ?? undefined,
       },
       userConfig,
-      message: message.content,
+      input: {
+        text: message.content,
+      },
     });
   });
 

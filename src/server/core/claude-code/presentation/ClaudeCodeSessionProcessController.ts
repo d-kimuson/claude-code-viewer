@@ -4,6 +4,7 @@ import type { ControllerResponse } from "../../../lib/effect/toEffectResponse";
 import type { InferEffect } from "../../../lib/effect/types";
 import { UserConfigService } from "../../platform/services/UserConfigService";
 import { ProjectRepository } from "../../project/infrastructure/ProjectRepository";
+import type { UserMessageInput } from "../functions/createMessageGenerator";
 import { ClaudeCodeLifeCycleService } from "../services/ClaudeCodeLifeCycleService";
 
 const LayerImpl = Effect.gen(function* () {
@@ -33,11 +34,11 @@ const LayerImpl = Effect.gen(function* () {
 
   const createSessionProcess = (options: {
     projectId: string;
-    message: string;
+    input: UserMessageInput;
     baseSessionId?: string | undefined;
   }) =>
     Effect.gen(function* () {
-      const { projectId, message, baseSessionId } = options;
+      const { projectId, input, baseSessionId } = options;
 
       const { project } = yield* projectRepository.getProject(projectId);
       const userConfig = yield* userConfigService.getUserConfig();
@@ -56,7 +57,7 @@ const LayerImpl = Effect.gen(function* () {
           sessionId: baseSessionId,
         },
         userConfig,
-        message,
+        input,
       });
 
       const { sessionId } = yield* result.yieldSessionInitialized();
@@ -75,13 +76,12 @@ const LayerImpl = Effect.gen(function* () {
 
   const continueSessionProcess = (options: {
     projectId: string;
-    continueMessage: string;
+    input: UserMessageInput;
     baseSessionId: string;
     sessionProcessId: string;
   }) =>
     Effect.gen(function* () {
-      const { projectId, continueMessage, baseSessionId, sessionProcessId } =
-        options;
+      const { projectId, input, baseSessionId, sessionProcessId } = options;
 
       const { project } = yield* projectRepository.getProject(projectId);
 
@@ -94,7 +94,7 @@ const LayerImpl = Effect.gen(function* () {
 
       const result = yield* claudeCodeLifeCycleService.continueTask({
         sessionProcessId,
-        message: continueMessage,
+        input,
         baseSessionId,
       });
 

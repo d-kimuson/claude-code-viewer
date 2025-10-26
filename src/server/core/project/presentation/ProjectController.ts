@@ -138,7 +138,9 @@ const LayerImpl = Effect.gen(function* () {
           sessionId: undefined,
         },
         userConfig,
-        message: "/init",
+        input: {
+          text: "/init",
+        },
       });
 
       const { sessionId } = yield* result.yieldSessionFileCreated();

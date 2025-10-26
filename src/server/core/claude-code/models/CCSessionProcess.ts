@@ -1,5 +1,6 @@
 import { Effect } from "effect";
 import type { UserEntry } from "../../../../lib/conversation-schema/entry/UserEntrySchema";
+import type { UserMessageInput } from "../functions/createMessageGenerator";
 import type { InitMessageContext } from "../types";
 import * as ClaudeCode from "./ClaudeCode";
 import type * as CCTask from "./ClaudeCodeTask";
@@ -10,7 +11,7 @@ export type CCSessionProcessDef = {
   projectId: string;
   cwd: string;
   abortController: AbortController;
-  setNextMessage: (message: string) => void;
+  setNextMessage: (input: UserMessageInput) => void;
 };
 
 type CCSessionProcessStateBase = {

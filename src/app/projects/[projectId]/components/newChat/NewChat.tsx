@@ -1,7 +1,11 @@
 import { Trans, useLingui } from "@lingui/react";
 import type { FC } from "react";
 import { useConfig } from "../../../../hooks/useConfig";
-import { ChatInput, useCreateSessionProcessMutation } from "../chatForm";
+import {
+  ChatInput,
+  type MessageInput,
+  useCreateSessionProcessMutation,
+} from "../chatForm";
 
 export const NewChat: FC<{
   projectId: string;
@@ -14,8 +18,8 @@ export const NewChat: FC<{
   );
   const { config } = useConfig();
 
-  const handleSubmit = async (message: string) => {
-    await createSessionProcess.mutateAsync({ message });
+  const handleSubmit = async (input: MessageInput) => {
+    await createSessionProcess.mutateAsync({ input });
   };
 
   const getPlaceholder = () => {

@@ -14,7 +14,10 @@ import type { EnvService } from "../../platform/services/EnvService";
 import { SessionRepository } from "../../session/infrastructure/SessionRepository";
 import { VirtualConversationDatabase } from "../../session/infrastructure/VirtualConversationDatabase";
 import type { SessionMetaService } from "../../session/services/SessionMetaService";
-import { createMessageGenerator } from "../functions/createMessageGenerator";
+import {
+  createMessageGenerator,
+  type UserMessageInput,
+} from "../functions/createMessageGenerator";
 import * as CCSessionProcess from "../models/CCSessionProcess";
 import * as ClaudeCode from "../models/ClaudeCode";
 import { ClaudeCodePermissionService } from "./ClaudeCodePermissionService";
@@ -46,9 +49,9 @@ const LayerImpl = Effect.gen(function* () {
   const continueTask = (options: {
     sessionProcessId: string;
     baseSessionId: string;
-    message: string;
+    input: UserMessageInput;
   }) => {
-    const { sessionProcessId, baseSessionId, message } = options;
+    const { sessionProcessId, baseSessionId, input } = options;
 
     return Effect.gen(function* () {
       const { sessionProcess, task } =
@@ -65,7 +68,7 @@ const LayerImpl = Effect.gen(function* () {
       const virtualConversation =
         yield* CCSessionProcess.createVirtualConversation(sessionProcess, {
           sessionId: baseSessionId,
-          userMessage: message,
+          userMessage: input.text,
         });
 
       yield* virtualConversationDatabase.createVirtualConversation(
@@ -74,7 +77,7 @@ const LayerImpl = Effect.gen(function* () {
         [virtualConversation],
       );
 
-      sessionProcess.def.setNextMessage(message);
+      sessionProcess.def.setNextMessage(input);
       return {
         sessionProcess,
         task,
@@ -89,9 +92,9 @@ const LayerImpl = Effect.gen(function* () {
       projectId: string;
       sessionId?: string;
     };
-    message: string;
+    input: UserMessageInput;
   }) => {
-    const { baseSession, message, userConfig } = options;
+    const { baseSession, input, userConfig } = options;
 
     return Effect.gen(function* () {
       const {
@@ -131,11 +134,11 @@ const LayerImpl = Effect.gen(function* () {
       }>();
 
       setMessageGeneratorHooks({
-        onNewUserMessageResolved: async (message) => {
+        onNewUserMessageResolved: async (input) => {
           Effect.runFork(
             sessionProcessService.toNotInitializedState({
               sessionProcessId: sessionProcess.def.sessionProcessId,
-              rawUserMessage: message,
+              rawUserMessage: input.text,
             }),
           );
         },
@@ -276,7 +279,7 @@ const LayerImpl = Effect.gen(function* () {
           }),
         );
 
-        setNextMessage(message);
+        setNextMessage(input);
 
         try {
           for await (const message of messageIter) {

@@ -1580,6 +1580,54 @@
     ],
     "translation": "Image attached by user"
   },
+  "user.content.document.pdf": {
+    "message": "PDF Document",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/UserConversationContent.tsx",
+        121
+      ]
+    ],
+    "translation": "PDF Document"
+  },
+  "user.content.document.text": {
+    "message": "Text Document",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/UserConversationContent.tsx",
+        163
+      ]
+    ],
+    "translation": "Text Document"
+  },
+  "user.content.unsupported_document": {
+    "message": "Unsupported Document",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/UserConversationContent.tsx",
+        200
+      ]
+    ],
+    "translation": "Unsupported Document"
+  },
+  "user.content.unsupported_document.description": {
+    "message": "Document type not supported for display",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/UserConversationContent.tsx",
+        210
+      ]
+    ],
+    "translation": "Document type not supported for display"
+  },
   "system_info.feature.agent_sdk.description": {
     "message": "Uses Claude Agent SDK instead of Claude Code SDK (v1.0.125+)",
     "placeholders": {},

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.2-beta.2
+
+*No significant changes*
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.4.2-beta.1...0.4.2-beta.2)
+
 ## 0.4.2-beta.1
 
 ### &nbsp;&nbsp;&nbsp;Features

@@ -283,8 +283,29 @@ const LayerImpl = Effect.gen(function* () {
 
         try {
           for await (const message of messageIter) {
+            if (
+              message.type === "system" &&
+              message.subtype === "hook_response"
+            ) {
+              continue;
+            }
+
+            if (
+              message.type === "system" &&
+              message.subtype === "compact_boundary"
+            ) {
+              continue;
+            }
+
             const result = await Runtime.runPromise(runtime)(
-              handleMessage(message),
+              handleMessage(
+                message.type === "system"
+                  ? {
+                      ...message,
+                      plugins: [],
+                    }
+                  : message,
+              ),
             ).catch((error) => {
               // iter 自体が落ちてなければ継続したいので握りつぶす
               Effect.runFork(

@@ -1,7 +1,7 @@
 import type {
   SDKResultMessage,
   SDKSystemMessage,
-} from "@anthropic-ai/claude-code";
+} from "@anthropic-ai/claude-agent-sdk";
 import { Effect } from "effect";
 import { describe, expect, it } from "vitest";
 import { testPlatformLayer } from "../../../../testing/layers/testPlatformLayer";

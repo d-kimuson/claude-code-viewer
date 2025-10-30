@@ -1,4 +1,5 @@
 import { createRootRoute, Outlet } from "@tanstack/react-router";
+import { HelmetProvider } from "react-helmet-async";
 import { RootErrorBoundary } from "../app/components/RootErrorBoundary";
 import { SSEEventListeners } from "../app/components/SSEEventListeners";
 import { SyncSessionProcess } from "../app/components/SyncSessionProcess";
@@ -10,17 +11,19 @@ import { SSEProvider } from "../lib/sse/components/SSEProvider";
 export const Route = createRootRoute({
   component: () => (
     <RootErrorBoundary>
-      <ThemeProvider>
-        <LinguiClientProvider>
-          <SSEProvider>
-            <SSEEventListeners>
-              <SyncSessionProcess>
-                <Outlet />
-              </SyncSessionProcess>
-            </SSEEventListeners>
-          </SSEProvider>
-        </LinguiClientProvider>
-      </ThemeProvider>
+      <HelmetProvider>
+        <ThemeProvider>
+          <LinguiClientProvider>
+            <SSEProvider>
+              <SSEEventListeners>
+                <SyncSessionProcess>
+                  <Outlet />
+                </SyncSessionProcess>
+              </SSEEventListeners>
+            </SSEProvider>
+          </LinguiClientProvider>
+        </ThemeProvider>
+      </HelmetProvider>
       <Toaster position="top-right" />
     </RootErrorBoundary>
   ),

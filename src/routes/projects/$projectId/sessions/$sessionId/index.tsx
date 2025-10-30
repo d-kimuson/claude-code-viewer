@@ -1,5 +1,7 @@
 import { Trans } from "@lingui/react";
 import { createFileRoute } from "@tanstack/react-router";
+import { Helmet } from "react-helmet-async";
+import { useProject } from "../../../../../app/projects/[projectId]/hooks/useProject";
 import { SessionPageContent } from "../../../../../app/projects/[projectId]/sessions/[sessionId]/components/SessionPageContent";
 import { NotFound } from "../../../../../components/NotFound";
 
@@ -24,10 +26,22 @@ export const Route = createFileRoute(
 
 function RouteComponent() {
   const params = Route.useParams();
+  const { data } = useProject(params.projectId);
+  const projectName = data.pages[0]?.project.meta.projectName;
+
+  const title = projectName
+    ? `${projectName} - Claude Code Viewer`
+    : "Claude Code Viewer";
+
   return (
-    <SessionPageContent
-      projectId={params.projectId}
-      sessionId={params.sessionId}
-    />
+    <>
+      <Helmet>
+        <title>{title}</title>
+      </Helmet>
+      <SessionPageContent
+        projectId={params.projectId}
+        sessionId={params.sessionId}
+      />
+    </>
   );
 }

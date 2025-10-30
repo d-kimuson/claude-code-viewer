@@ -2,8 +2,8 @@ import { Trans } from "@lingui/react";
 import { HistoryIcon } from "lucide-react";
 import { type FC, Suspense } from "react";
 import { GlobalSidebar } from "@/components/GlobalSidebar";
-import { CreateProjectDialog } from "./components/CreateProjectDialog";
 import { ProjectList } from "./components/ProjectList";
+import { SetupProjectDialog } from "./components/SetupProjectDialog";
 
 export const ProjectsPage: FC = () => {
   return (
@@ -30,7 +30,7 @@ export const ProjectsPage: FC = () => {
                 <h2 className="text-xl font-semibold">
                   <Trans id="projects.page.title" message="Your Projects" />
                 </h2>
-                <CreateProjectDialog />
+                <SetupProjectDialog />
               </div>
               <Suspense
                 fallback={

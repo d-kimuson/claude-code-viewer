@@ -517,27 +517,6 @@
     ],
     "translation": "Conversation is paused..."
   },
-  "project.create.title": {
-    "message": "Create New Project",
-    "placeholders": {},
-    "comments": [],
-    "origin": [["src/app/projects/components/CreateProjectDialog.tsx", 64]],
-    "translation": "Create New Project"
-  },
-  "project.create.action.create": {
-    "message": "Create Project",
-    "placeholders": {},
-    "comments": [],
-    "origin": [["src/app/projects/components/CreateProjectDialog.tsx", 112]],
-    "translation": "Create Project"
-  },
-  "project.create.action.creating": {
-    "message": "Creating...",
-    "placeholders": {},
-    "comments": [],
-    "origin": [["src/app/projects/components/CreateProjectDialog.tsx", 106]],
-    "translation": "Creating..."
-  },
   "cron_builder.cron_expression": {
     "translation": "Cron Expression",
     "message": "Cron Expression",
@@ -973,7 +952,7 @@
     "placeholders": {},
     "comments": [],
     "origin": [["src/app/projects/components/ProjectList.tsx", 36]],
-    "translation": "No Claude Code projects found in your ~/.claude/projects directory. Start a conversation with Claude Code to create your first project."
+    "translation": "No Claude Code projects found in your ~/.claude/projects directory. Start a conversation with Claude Code to set up your first project."
   },
   "directory_picker.no_directories": {
     "message": "No directories found",
@@ -1207,13 +1186,6 @@
     ],
     "translation": "Schema Validation Error"
   },
-  "project.create.description": {
-    "message": "Select a directory to initialize as a Claude Code project. This will run <0>/init</0> in the selected directory.",
-    "placeholders": {},
-    "comments": [],
-    "origin": [["src/app/projects/components/CreateProjectDialog.tsx", 67]],
-    "translation": "Select a directory to initialize as a Claude Code project. This will run <0>/init</0> in the selected directory."
-  },
   "notification.description": {
     "message": "Select a sound to play when a task completes",
     "placeholders": {},
@@ -1252,12 +1224,12 @@
     "origin": [["src/app/projects/components/DirectoryPicker.tsx", 42]],
     "translation": "Select This Directory"
   },
-  "project.create.selected_directory": {
-    "message": "Selected directory:",
+  "directory_picker.show_hidden": {
+    "message": "Show hidden files",
     "placeholders": {},
     "comments": [],
-    "origin": [["src/app/projects/components/CreateProjectDialog.tsx", 84]],
-    "translation": "Selected directory:"
+    "origin": [["src/app/projects/components/DirectoryPicker.tsx", 56]],
+    "translation": "Show hidden files"
   },
   "chat.send": {
     "message": "Send",
@@ -2217,5 +2189,40 @@
       ]
     ],
     "translation": "Create"
+  },
+  "project.setup.title": {
+    "message": "Setup New Project",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/app/projects/components/CreateProjectDialog.tsx", 68]],
+    "translation": "Setup New Project"
+  },
+  "project.setup.action.setup": {
+    "message": "Setup Project",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/app/projects/components/CreateProjectDialog.tsx", 117]],
+    "translation": "Setup Project"
+  },
+  "project.setup.action.setting_up": {
+    "message": "Setting up...",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/app/projects/components/CreateProjectDialog.tsx", 111]],
+    "translation": "Setting up..."
+  },
+  "project.setup.description": {
+    "message": "Navigate to a directory to set up as a Claude Code project. If CLAUDE.md exists, the project will be described. Otherwise, <0>/init</0> will be run to initialize it.",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/app/projects/components/SetupProjectDialog.tsx", 72]],
+    "translation": "Navigate to a directory to set up as a Claude Code project. If CLAUDE.md exists, the project will be described. Otherwise, <0>/init</0> will be run to initialize it."
+  },
+  "project.setup.selected_directory": {
+    "message": "Selected directory:",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/app/projects/components/CreateProjectDialog.tsx", 89]],
+    "translation": "Selected directory:"
   }
 }

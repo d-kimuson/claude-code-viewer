@@ -1,3 +1,4 @@
+import { FileSystem, Path } from "@effect/platform";
 import { Context, Effect, Layer } from "effect";
 import type { ControllerResponse } from "../../../lib/effect/toEffectResponse";
 import type { InferEffect } from "../../../lib/effect/types";
@@ -15,6 +16,8 @@ const LayerImpl = Effect.gen(function* () {
   const userConfigService = yield* UserConfigService;
   const sessionRepository = yield* SessionRepository;
   const context = yield* ApplicationContext;
+  const fileSystem = yield* FileSystem.FileSystem;
+  const path = yield* Path.Path;
 
   const getProjects = () =>
     Effect.gen(function* () {
@@ -131,6 +134,10 @@ const LayerImpl = Effect.gen(function* () {
       const projectId = encodeProjectId(claudeProjectFilePath);
       const userConfig = yield* userConfigService.getUserConfig();
 
+      // Check if CLAUDE.md exists in the project directory
+      const claudeMdPath = path.join(projectPath, "CLAUDE.md");
+      const claudeMdExists = yield* fileSystem.exists(claudeMdPath);
+
       const result = yield* claudeCodeLifeCycleService.startTask({
         baseSession: {
           cwd: projectPath,
@@ -139,7 +146,7 @@ const LayerImpl = Effect.gen(function* () {
         },
         userConfig,
         input: {
-          text: "/init",
+          text: claudeMdExists ? "describe this project" : "/init",
         },
       });
 

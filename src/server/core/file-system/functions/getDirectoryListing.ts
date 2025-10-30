@@ -17,6 +17,7 @@ export type DirectoryListingResult = {
 export const getDirectoryListing = async (
   rootPath: string,
   basePath = "/",
+  showHidden = false,
 ): Promise<DirectoryListingResult> => {
   const normalizedBasePath =
     basePath === "/"
@@ -52,7 +53,7 @@ export const getDirectoryListing = async (
     }
 
     for (const dirent of dirents) {
-      if (dirent.name.startsWith(".")) {
+      if (!showHidden && dirent.name.startsWith(".")) {
         continue;
       }
 

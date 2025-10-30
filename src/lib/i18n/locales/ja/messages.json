@@ -517,27 +517,6 @@
     ],
     "translation": "会話を一時停止中..."
   },
-  "project.create.title": {
-    "message": "Create New Project",
-    "placeholders": {},
-    "comments": [],
-    "origin": [["src/app/projects/components/CreateProjectDialog.tsx", 64]],
-    "translation": "新規プロジェクトを作成"
-  },
-  "project.create.action.create": {
-    "message": "Create Project",
-    "placeholders": {},
-    "comments": [],
-    "origin": [["src/app/projects/components/CreateProjectDialog.tsx", 112]],
-    "translation": "プロジェクトを作成"
-  },
-  "project.create.action.creating": {
-    "message": "Creating...",
-    "placeholders": {},
-    "comments": [],
-    "origin": [["src/app/projects/components/CreateProjectDialog.tsx", 106]],
-    "translation": "作成中..."
-  },
   "cron_builder.cron_expression": {
     "translation": "Cron式",
     "message": "Cron Expression",
@@ -973,7 +952,7 @@
     "placeholders": {},
     "comments": [],
     "origin": [["src/app/projects/components/ProjectList.tsx", 36]],
-    "translation": "~/.claude/projectsディレクトリにClaude Codeプロジェクトが見つかりません。Claude Codeとの会話を開始して、最初のプロジェクトを作成してください。"
+    "translation": "~/.claude/projectsディレクトリにClaude Codeプロジェクトが見つかりません。Claude Codeとの会話を開始して、最初のプロジェクトをセットアップしてください。"
   },
   "directory_picker.no_directories": {
     "message": "No directories found",
@@ -1207,13 +1186,6 @@
     ],
     "translation": "スキーマ検証エラー"
   },
-  "project.create.description": {
-    "message": "Select a directory to initialize as a Claude Code project. This will run <0>/init</0> in the selected directory.",
-    "placeholders": {},
-    "comments": [],
-    "origin": [["src/app/projects/components/CreateProjectDialog.tsx", 67]],
-    "translation": "Claude Codeプロジェクトとして初期化するディレクトリを選択してください。選択したディレクトリで<0>/init</0>が実行されます。"
-  },
   "notification.description": {
     "message": "Select a sound to play when a task completes",
     "placeholders": {},
@@ -1252,12 +1224,12 @@
     "origin": [["src/app/projects/components/DirectoryPicker.tsx", 42]],
     "translation": "このディレクトリを選択"
   },
-  "project.create.selected_directory": {
-    "message": "Selected directory:",
+  "directory_picker.show_hidden": {
+    "message": "Show hidden files",
     "placeholders": {},
     "comments": [],
-    "origin": [["src/app/projects/components/CreateProjectDialog.tsx", 84]],
-    "translation": "選択したディレクトリ："
+    "origin": [["src/app/projects/components/DirectoryPicker.tsx", 56]],
+    "translation": "隠しファイルを表示"
   },
   "chat.send": {
     "message": "Send",
@@ -2217,5 +2189,40 @@
       ]
     ],
     "translation": "作成"
+  },
+  "project.setup.title": {
+    "message": "Setup New Project",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/app/projects/components/CreateProjectDialog.tsx", 68]],
+    "translation": "新規プロジェクトをセットアップ"
+  },
+  "project.setup.action.setup": {
+    "message": "Setup Project",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/app/projects/components/CreateProjectDialog.tsx", 117]],
+    "translation": "プロジェクトをセットアップ"
+  },
+  "project.setup.action.setting_up": {
+    "message": "Setting up...",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/app/projects/components/CreateProjectDialog.tsx", 111]],
+    "translation": "セットアップ中..."
+  },
+  "project.setup.description": {
+    "message": "Select a directory to set up as a Claude Code project. If CLAUDE.md exists, the project will be described. Otherwise, <0>/init</0> will be run to initialize it.",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/app/projects/components/SetupProjectDialog.tsx", 72]],
+    "translation": "Claude Codeプロジェクトとしてセットアップするディレクトリまで移動してください。CLAUDE.mdが存在する場合はプロジェクトを説明し、存在しない場合は<0>/init</0>で初期化します。"
+  },
+  "project.setup.selected_directory": {
+    "message": "Selected directory:",
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/app/projects/components/CreateProjectDialog.tsx", 89]],
+    "translation": "選択したディレクトリ："
   }
 }

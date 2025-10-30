@@ -17,12 +17,20 @@ export const projectListQuery = {
   },
 } as const;
 
-export const directoryListingQuery = (currentPath?: string) =>
+export const directoryListingQuery = (
+  currentPath?: string,
+  showHidden?: boolean,
+) =>
   ({
-    queryKey: ["directory-listing", currentPath],
+    queryKey: ["directory-listing", currentPath, showHidden],
     queryFn: async (): Promise<DirectoryListingResult> => {
       const response = await honoClient.api.fs["directory-browser"].$get({
-        query: currentPath ? { currentPath } : {},
+        query: {
+          ...(currentPath ? { currentPath } : {}),
+          ...(showHidden !== undefined
+            ? { showHidden: showHidden.toString() }
+            : {}),
+        },
       });
 
       if (!response.ok) {

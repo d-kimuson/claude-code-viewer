@@ -46,9 +46,10 @@ const LayerImpl = Effect.gen(function* () {
 
   const getDirectoryListingRoute = (options: {
     currentPath?: string | undefined;
+    showHidden?: boolean | undefined;
   }) =>
     Effect.promise(async () => {
-      const { currentPath } = options;
+      const { currentPath, showHidden = false } = options;
 
       const rootPath = "/";
       const defaultPath = homedir();
@@ -59,7 +60,11 @@ const LayerImpl = Effect.gen(function* () {
           ? targetPath.slice(rootPath.length)
           : targetPath;
 
-        const result = await getDirectoryListing(rootPath, relativePath);
+        const result = await getDirectoryListing(
+          rootPath,
+          relativePath,
+          showHidden,
+        );
 
         return {
           response: result,

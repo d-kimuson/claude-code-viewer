@@ -543,6 +543,10 @@ export const routes = (app: HonoAppType) =>
             "query",
             z.object({
               currentPath: z.string().optional(),
+              showHidden: z
+                .string()
+                .optional()
+                .transform((val) => val === "true"),
             }),
           ),
           async (c) => {

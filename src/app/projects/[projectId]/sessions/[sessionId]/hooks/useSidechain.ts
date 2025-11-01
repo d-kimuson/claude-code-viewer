@@ -9,7 +9,9 @@ export const useSidechain = (conversations: Conversation[]) => {
   const sidechainConversations = conversations
     .filter(
       (conv) =>
-        conv.type !== "summary" && conv.type !== "file-history-snapshot",
+        conv.type !== "summary" &&
+        conv.type !== "file-history-snapshot" &&
+        conv.type !== "queue-operation",
     )
     .filter((conv) => conv.isSidechain === true);
 
@@ -92,7 +94,8 @@ export const useSidechain = (conversations: Conversation[]) => {
     (conversation: Conversation) => {
       if (
         conversation.type === "summary" ||
-        conversation.type === "file-history-snapshot"
+        conversation.type === "file-history-snapshot" ||
+        conversation.type === "queue-operation"
       ) {
         return false;
       }

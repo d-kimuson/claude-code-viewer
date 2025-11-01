@@ -40,7 +40,8 @@ const LayerImpl = Effect.gen(function* () {
           conversation === undefined ||
           conversation.type === "summary" ||
           conversation.type === "x-error" ||
-          conversation.type === "file-history-snapshot"
+          conversation.type === "file-history-snapshot" ||
+          conversation.type === "queue-operation"
         ) {
           continue;
         }

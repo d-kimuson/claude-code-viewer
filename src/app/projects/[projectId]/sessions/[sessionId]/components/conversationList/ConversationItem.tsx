@@ -8,6 +8,7 @@ import { SidechainConversationModal } from "../conversationModal/SidechainConver
 import { AssistantConversationContent } from "./AssistantConversationContent";
 import { FileHistorySnapshotConversationContent } from "./FileHistorySnapshotConversationContent";
 import { MetaConversationContent } from "./MetaConversationContent";
+import { QueueOperationConversationContent } from "./QueueOperationConversationContent";
 import { SummaryConversationContent } from "./SummaryConversationContent";
 import { SystemConversationContent } from "./SystemConversationContent";
 import { UserConversationContent } from "./UserConversationContent";
@@ -49,6 +50,10 @@ export const ConversationItem: FC<{
     return (
       <FileHistorySnapshotConversationContent conversation={conversation} />
     );
+  }
+
+  if (conversation.type === "queue-operation") {
+    return <QueueOperationConversationContent conversation={conversation} />;
   }
 
   // sidechain = サブタスクのこと

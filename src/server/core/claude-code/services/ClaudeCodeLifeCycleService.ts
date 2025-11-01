@@ -18,6 +18,7 @@ import {
   createMessageGenerator,
   type UserMessageInput,
 } from "../functions/createMessageGenerator";
+import { fallbackSdkMessage } from "../functions/fallbackSdkMessage";
 import * as CCSessionProcess from "../models/CCSessionProcess";
 import * as ClaudeCode from "../models/ClaudeCode";
 import { ClaudeCodePermissionService } from "./ClaudeCodePermissionService";
@@ -146,6 +147,8 @@ const LayerImpl = Effect.gen(function* () {
 
       const handleMessage = (message: SDKMessage) =>
         Effect.gen(function* () {
+          console.log("[debug] handleMessage", message.type);
+
           const processState = yield* sessionProcessService.getSessionProcess(
             sessionProcess.def.sessionProcessId,
           );
@@ -283,29 +286,14 @@ const LayerImpl = Effect.gen(function* () {
 
         try {
           for await (const message of messageIter) {
-            if (
-              message.type === "system" &&
-              message.subtype === "hook_response"
-            ) {
-              continue;
-            }
+            const fallbackMessage = fallbackSdkMessage(message);
 
-            if (
-              message.type === "system" &&
-              message.subtype === "compact_boundary"
-            ) {
+            if (fallbackMessage === null) {
               continue;
             }
 
             const result = await Runtime.runPromise(runtime)(
-              handleMessage(
-                message.type === "system"
-                  ? {
-                      ...message,
-                      plugins: [],
-                    }
-                  : message,
-              ),
+              handleMessage(fallbackMessage),
             ).catch((error) => {
               // iter 自体が落ちてなければ継続したいので握りつぶす
               Effect.runFork(

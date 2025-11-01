@@ -1,22 +1,17 @@
 import { query as agentSdkQuery } from "@anthropic-ai/claude-agent-sdk";
-import { query as claudeCodeQuery } from "@anthropic-ai/claude-code";
+import {
+  type CanUseTool,
+  query as claudeCodeQuery,
+} from "@anthropic-ai/claude-code";
 import { Command, Path } from "@effect/platform";
 import { Data, Effect } from "effect";
 import { EnvService } from "../../platform/services/EnvService";
 import * as ClaudeCodeVersion from "./ClaudeCodeVersion";
 
-type CCQuery = typeof claudeCodeQuery;
-type CCQueryPrompt = Parameters<CCQuery>[0]["prompt"];
-type CCQueryOptions = NonNullable<Parameters<CCQuery>[0]["options"]>;
-
 type AgentSdkQuery = typeof agentSdkQuery;
+type AgentSdkPrompt = Parameters<AgentSdkQuery>[0]["prompt"];
 type AgentSdkQueryOptions = NonNullable<
   Parameters<AgentSdkQuery>[0]["options"]
->;
-
-type SharedOptions = Pick<
-  CCQueryOptions,
-  Extract<keyof AgentSdkQueryOptions, keyof CCQueryOptions>
 >;
 
 class ClaudeCodePathNotFoundError extends Data.TaggedError(
@@ -143,14 +138,17 @@ export const getAvailableFeatures = (
       : false,
 });
 
-export const query = (prompt: CCQueryPrompt, options: SharedOptions) => {
+export const query = (
+  prompt: AgentSdkPrompt,
+  options: AgentSdkQueryOptions,
+) => {
   const { canUseTool, permissionMode, ...baseOptions } = options;
 
   return Effect.gen(function* () {
     const { claudeCodeExecutablePath, claudeCodeVersion } = yield* Config;
     const availableFeatures = getAvailableFeatures(claudeCodeVersion);
 
-    const options: SharedOptions = {
+    const options: AgentSdkQueryOptions = {
       pathToClaudeCodeExecutable: claudeCodeExecutablePath,
       ...baseOptions,
       ...(availableFeatures.canUseTool
@@ -171,9 +169,30 @@ export const query = (prompt: CCQueryPrompt, options: SharedOptions) => {
       });
     }
 
+    const fallbackCanUseTool = (() => {
+      const canUseTool = options.canUseTool;
+      if (canUseTool === undefined) {
+        return undefined;
+      }
+
+      const fn: CanUseTool = async (toolName, input, canUseToolOptions) => {
+        const response = await canUseTool(toolName, input, {
+          signal: canUseToolOptions.signal,
+          suggestions: canUseToolOptions.suggestions,
+          toolUseID: undefined as unknown as string,
+        });
+        return response;
+      };
+
+      return fn;
+    })();
+
     return claudeCodeQuery({
       prompt,
-      options: options,
+      options: {
+        ...options,
+        canUseTool: fallbackCanUseTool,
+      },
     });
   });
 };

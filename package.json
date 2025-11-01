@@ -40,7 +40,7 @@
     "lingui:compile": "lingui compile --typescript"
   },
   "dependencies": {
-    "@anthropic-ai/claude-agent-sdk": "0.1.27",
+    "@anthropic-ai/claude-agent-sdk": "0.1.30",
     "@anthropic-ai/claude-code": "2.0.24",
     "@anthropic-ai/sdk": "0.67.0",
     "@effect/platform": "0.92.1",

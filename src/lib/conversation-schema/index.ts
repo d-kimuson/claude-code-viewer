@@ -4,6 +4,7 @@ import {
   AssistantEntrySchema,
 } from "./entry/AssistantEntrySchema";
 import { FileHistorySnapshotEntrySchema } from "./entry/FileHIstorySnapshotEntrySchema";
+import { QueueOperationEntrySchema } from "./entry/QueueOperationEntrySchema";
 import { SummaryEntrySchema } from "./entry/SummaryEntrySchema";
 import { type SystemEntry, SystemEntrySchema } from "./entry/SystemEntrySchema";
 import { type UserEntry, UserEntrySchema } from "./entry/UserEntrySchema";
@@ -14,6 +15,7 @@ export const ConversationSchema = z.union([
   SummaryEntrySchema,
   SystemEntrySchema,
   FileHistorySnapshotEntrySchema,
+  QueueOperationEntrySchema,
 ]);
 
 export type Conversation = z.infer<typeof ConversationSchema>;

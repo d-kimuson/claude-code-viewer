@@ -34,6 +34,10 @@ const getConversationKey = (conversation: Conversation) => {
     return `file-history-snapshot_${conversation.messageId}`;
   }
 
+  if (conversation.type === "queue-operation") {
+    return `queue-operation_${conversation.operation}_${conversation.sessionId}`;
+  }
+
   conversation satisfies never;
   throw new Error(`Unknown conversation type: ${conversation}`);
 };
@@ -158,6 +162,7 @@ export const ConversationList: FC<ConversationListProps> = ({
         const isSidechain =
           conversation.type !== "summary" &&
           conversation.type !== "file-history-snapshot" &&
+          conversation.type !== "queue-operation" &&
           conversation.isSidechain;
 
         return [

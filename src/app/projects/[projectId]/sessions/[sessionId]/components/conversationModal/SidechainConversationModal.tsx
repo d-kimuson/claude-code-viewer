@@ -31,7 +31,8 @@ const sidechainTitle = (conversations: Conversation[]): string => {
 
   const defaultTitle = `${conversations.length} conversations (${
     firstConversation?.type !== "summary" &&
-    firstConversation?.type !== "file-history-snapshot"
+    firstConversation?.type !== "file-history-snapshot" &&
+    firstConversation?.type !== "queue-operation"
       ? firstConversation?.uuid
       : ""
   })`;

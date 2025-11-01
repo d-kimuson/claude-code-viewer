@@ -6,11 +6,6 @@ import {
   Image as ImageIcon,
 } from "lucide-react";
 import type { FC } from "react";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import {
-  oneDark,
-  oneLight,
-} from "react-syntax-highlighter/dist/esm/styles/prism";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -24,18 +19,12 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import type { UserMessageContent } from "@/lib/conversation-schema/message/UserMessageSchema";
-import { detectFileType } from "@/lib/utils/file-type-detector";
-import { useTheme } from "../../../../../../../hooks/useTheme";
-import { MarkdownContent } from "../../../../../../components/MarkdownContent";
 import { UserTextContent } from "./UserTextContent";
 
 export const UserConversationContent: FC<{
   content: UserMessageContent;
   id?: string;
 }> = ({ content, id }) => {
-  const { resolvedTheme } = useTheme();
-  const syntaxTheme = resolvedTheme === "dark" ? oneDark : oneLight;
-
   if (typeof content === "string") {
     return <UserTextContent text={content} id={id} />;
   }
@@ -163,8 +152,6 @@ export const UserConversationContent: FC<{
 
     if (content.source.type === "text") {
       // テキストファイルの場合
-      const fileTypeInfo = detectFileType(content.source.media_type);
-
       return (
         <Card
           className="border-green-200 bg-green-50/50 dark:border-green-800 dark:bg-green-950/20 mb-2 p-0 overflow-hidden"
@@ -185,7 +172,7 @@ export const UserConversationContent: FC<{
                     variant="outline"
                     className="border-green-300 text-green-700 dark:border-green-700 dark:text-green-300"
                   >
-                    {fileTypeInfo.label}
+                    {content.source.media_type}
                   </Badge>
                   <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180 ml-auto" />
                 </div>
@@ -194,29 +181,9 @@ export const UserConversationContent: FC<{
             <CollapsibleContent>
               <div className="py-3 px-4 border-t border-green-200 dark:border-green-800">
                 <div className="rounded-lg border overflow-hidden bg-background">
-                  {fileTypeInfo.displayType === "markdown" ? (
-                    <div className="p-4 max-h-96 overflow-auto">
-                      <MarkdownContent content={content.source.data} />
-                    </div>
-                  ) : fileTypeInfo.displayType === "code" &&
-                    fileTypeInfo.language ? (
-                    <SyntaxHighlighter
-                      style={syntaxTheme}
-                      language={fileTypeInfo.language}
-                      PreTag="div"
-                      className="!m-0 !max-h-96 !overflow-auto"
-                      customStyle={{
-                        margin: 0,
-                        maxHeight: "24rem",
-                      }}
-                    >
-                      {content.source.data}
-                    </SyntaxHighlighter>
-                  ) : (
-                    <pre className="p-4 text-sm overflow-auto max-h-96">
-                      {content.source.data}
-                    </pre>
-                  )}
+                  <pre className="p-4 text-sm overflow-auto max-h-96">
+                    {content.source.data}
+                  </pre>
                 </div>
               </div>
             </CollapsibleContent>

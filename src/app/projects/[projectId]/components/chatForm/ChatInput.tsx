@@ -21,16 +21,20 @@ import {
 } from "../../../../../components/ui/select";
 import { Textarea } from "../../../../../components/ui/textarea";
 import { useCreateSchedulerJob } from "../../../../../hooks/useScheduler";
+import type {
+  DocumentBlockParam,
+  ImageBlockParam,
+} from "../../../../../server/core/claude-code/schema";
 import { useConfig } from "../../../../hooks/useConfig";
 import type { CommandCompletionRef } from "./CommandCompletion";
 import type { FileCompletionRef } from "./FileCompletion";
-import type { DocumentBlock, ImageBlock } from "./fileUtils";
+import { processFile } from "./fileUtils";
 import { InlineCompletion } from "./InlineCompletion";
 
 export interface MessageInput {
   text: string;
-  images?: ImageBlock[];
-  documents?: DocumentBlock[];
+  images?: ImageBlockParam[];
+  documents?: DocumentBlockParam[];
 }
 
 export interface ChatInputProps {
@@ -97,25 +101,31 @@ export const ChatInput: FC<ChatInputProps> = ({
   const handleSubmit = async () => {
     if (!message.trim() && attachedFiles.length === 0) return;
 
-    const { processFile } = await import("./fileUtils");
-
-    const images: ImageBlock[] = [];
-    const documents: DocumentBlock[] = [];
-    let additionalText = "";
+    const images: ImageBlockParam[] = [];
+    const documents: DocumentBlockParam[] = [];
 
     for (const { file } of attachedFiles) {
       const result = await processFile(file);
 
+      if (result === null) {
+        continue;
+      }
+
       if (result.type === "text") {
-        additionalText += `\n\nFile: ${file.name}\n${result.content}`;
+        documents.push({
+          type: "document",
+          source: {
+            type: "text",
+            media_type: "text/plain",
+            data: result.content,
+          },
+        });
       } else if (result.type === "image") {
         images.push(result.block);
       } else if (result.type === "document") {
         documents.push(result.block);
       }
     }
-
-    const finalText = message.trim() + additionalText;
 
     if (enableScheduledSend && sendMode === "scheduled") {
       // Create a scheduler job for scheduled send
@@ -140,7 +150,7 @@ export const ChatInput: FC<ChatInputProps> = ({
             reservedExecutionTime: localDate.toISOString(),
           },
           message: {
-            content: finalText,
+            content: message,
             projectId,
             baseSessionId,
           },
@@ -176,7 +186,7 @@ export const ChatInput: FC<ChatInputProps> = ({
     } else {
       // Immediate send
       await onSubmit({
-        text: finalText,
+        text: message,
         images: images.length > 0 ? images : undefined,
         documents: documents.length > 0 ? documents : undefined,
       });
@@ -391,7 +401,6 @@ export const ChatInput: FC<ChatInputProps> = ({
                 ref={fileInputRef}
                 type="file"
                 multiple
-                accept="image/png,image/jpeg,image/gif,image/webp,application/pdf,text/plain"
                 onChange={handleFileSelect}
                 className="hidden"
               />

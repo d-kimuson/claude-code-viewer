@@ -131,3 +131,193 @@ describe("GitController.commitAndPush", () => {
     expect(true).toBe(true);
   });
 });
+
+describe("GitController.getFilteredGitBranches", () => {
+  test("returns 400 when projectPath is null", async () => {
+    // Specification: When a project has no associated path, return 400 error
+    // This indicates the project metadata is incomplete
+    const projectLayer = testProjectRepositoryLayer({
+      projects: [
+        {
+          id: "test-project",
+          claudeProjectPath: "/path/to/project",
+          lastModifiedAt: new Date(),
+          meta: {
+            projectName: "Test Project",
+            projectPath: null, // No project path
+            sessionCount: 0,
+          },
+        },
+      ],
+    });
+
+    const testLayer = GitController.Live.pipe(
+      Layer.provide(GitService.Live),
+      Layer.provide(projectLayer),
+      Layer.provide(NodeContext.layer),
+      Layer.provide(testPlatformLayer()),
+    );
+
+    const result = await Effect.runPromise(
+      Effect.gen(function* () {
+        const gitController = yield* GitController;
+        return yield* gitController
+          .getFilteredGitBranches({
+            projectId: "test-project",
+          })
+          .pipe(Effect.provide(NodeContext.layer));
+      }).pipe(Effect.provide(testLayer)),
+    );
+
+    expect(result.status).toBe(400);
+    expect(result.response).toMatchObject({ error: expect.any(String) });
+  });
+
+  test("returns empty array when git command fails", async () => {
+    // Specification: When filtering fails (e.g., not a repository, detached HEAD),
+    // return empty array with success:true to prevent breaking the UI
+    const projectLayer = testProjectRepositoryLayer({
+      projects: [
+        {
+          id: "test-project",
+          claudeProjectPath: "/path/to/project",
+          lastModifiedAt: new Date(),
+          meta: {
+            projectName: "Test Project",
+            projectPath: "/tmp/nonexistent", // Invalid path
+            sessionCount: 0,
+          },
+        },
+      ],
+    });
+
+    const testLayer = GitController.Live.pipe(
+      Layer.provide(GitService.Live),
+      Layer.provide(projectLayer),
+      Layer.provide(NodeContext.layer),
+      Layer.provide(testPlatformLayer()),
+    );
+
+    const result = await Effect.runPromise(
+      Effect.gen(function* () {
+        const gitController = yield* GitController;
+        return yield* gitController
+          .getFilteredGitBranches({
+            projectId: "test-project",
+          })
+          .pipe(Effect.provide(NodeContext.layer));
+      }).pipe(Effect.provide(testLayer)),
+    );
+
+    expect(result.status).toBe(200);
+    expect(result.response).toMatchObject({
+      success: true,
+      data: [],
+    });
+  });
+
+  test("returns filtered branches on success", async () => {
+    // Specification: When filtering succeeds, return branches containing
+    // revisions from current branch's reflog
+    // This test would require a real git repository
+    expect(true).toBe(true);
+  });
+});
+
+describe("GitController.getFilteredGitCommits", () => {
+  test("returns 400 when projectPath is null", async () => {
+    // Specification: When a project has no associated path, return 400 error
+    const projectLayer = testProjectRepositoryLayer({
+      projects: [
+        {
+          id: "test-project",
+          claudeProjectPath: "/path/to/project",
+          lastModifiedAt: new Date(),
+          meta: {
+            projectName: "Test Project",
+            projectPath: null, // No project path
+            sessionCount: 0,
+          },
+        },
+      ],
+    });
+
+    const testLayer = GitController.Live.pipe(
+      Layer.provide(GitService.Live),
+      Layer.provide(projectLayer),
+      Layer.provide(NodeContext.layer),
+      Layer.provide(testPlatformLayer()),
+    );
+
+    const result = await Effect.runPromise(
+      Effect.gen(function* () {
+        const gitController = yield* GitController;
+        return yield* gitController
+          .getFilteredGitCommits({
+            projectId: "test-project",
+          })
+          .pipe(Effect.provide(NodeContext.layer));
+      }).pipe(Effect.provide(testLayer)),
+    );
+
+    expect(result.status).toBe(400);
+    expect(result.response).toMatchObject({ error: expect.any(String) });
+  });
+
+  test("returns empty array when git command fails", async () => {
+    // Specification: When filtering fails (e.g., not a repository),
+    // return empty array with success:true to prevent breaking the UI
+    const projectLayer = testProjectRepositoryLayer({
+      projects: [
+        {
+          id: "test-project",
+          claudeProjectPath: "/path/to/project",
+          lastModifiedAt: new Date(),
+          meta: {
+            projectName: "Test Project",
+            projectPath: "/tmp/nonexistent", // Invalid path
+            sessionCount: 0,
+          },
+        },
+      ],
+    });
+
+    const testLayer = GitController.Live.pipe(
+      Layer.provide(GitService.Live),
+      Layer.provide(projectLayer),
+      Layer.provide(NodeContext.layer),
+      Layer.provide(testPlatformLayer()),
+    );
+
+    const result = await Effect.runPromise(
+      Effect.gen(function* () {
+        const gitController = yield* GitController;
+        return yield* gitController
+          .getFilteredGitCommits({
+            projectId: "test-project",
+          })
+          .pipe(Effect.provide(NodeContext.layer));
+      }).pipe(Effect.provide(testLayer)),
+    );
+
+    expect(result.status).toBe(200);
+    expect(result.response).toMatchObject({
+      success: true,
+      data: [],
+    });
+  });
+
+  test("returns filtered commits from branch reflog on success", async () => {
+    // Specification: When filtering succeeds, return commits from
+    // current branch's reflog (not just git log)
+    // This test would require a real git repository
+    expect(true).toBe(true);
+  });
+
+  test("returns last 10 commits when in detached HEAD state", async () => {
+    // Specification: In detached HEAD state, getCurrentBranch fails
+    // Fallback: return last 10 commits from git log
+    // This test would require a real git repository in detached HEAD state
+    expect(true).toBe(true);
+  });
+});

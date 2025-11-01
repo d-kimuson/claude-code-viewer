@@ -168,6 +168,46 @@ export const gitCommitsQuery = (projectId: string) =>
     },
   }) as const;
 
+export const gitFilteredBranchesQuery = (projectId: string) =>
+  ({
+    queryKey: ["git", "filtered-branches", projectId],
+    queryFn: async () => {
+      const response = await honoClient.api.projects[":projectId"].git[
+        "filtered-branches"
+      ].$get({
+        param: { projectId },
+      });
+
+      if (!response.ok) {
+        throw new Error(
+          `Failed to fetch filtered branches: ${response.statusText}`,
+        );
+      }
+
+      return await response.json();
+    },
+  }) as const;
+
+export const gitFilteredCommitsQuery = (projectId: string) =>
+  ({
+    queryKey: ["git", "filtered-commits", projectId],
+    queryFn: async () => {
+      const response = await honoClient.api.projects[":projectId"].git[
+        "filtered-commits"
+      ].$get({
+        param: { projectId },
+      });
+
+      if (!response.ok) {
+        throw new Error(
+          `Failed to fetch filtered commits: ${response.statusText}`,
+        );
+      }
+
+      return await response.json();
+    },
+  }) as const;
+
 export const mcpListQuery = (projectId: string) =>
   ({
     queryKey: ["mcp", "list", projectId],

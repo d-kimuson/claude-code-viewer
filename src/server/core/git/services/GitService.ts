@@ -4,6 +4,7 @@ import type { InferEffect } from "../../../lib/effect/types";
 import { EnvService } from "../../platform/services/EnvService";
 import { parseGitBranchesOutput } from "../functions/parseGitBranchesOutput";
 import { parseGitCommitsOutput } from "../functions/parseGitCommitsOutput";
+import { parseLines } from "../functions/utils";
 
 class NotARepositoryError extends Data.TaggedError("NotARepositoryError")<{
   cwd: string;
@@ -103,6 +104,95 @@ const LayerImpl = Effect.gen(function* () {
         cwd,
       );
       return parseGitCommitsOutput(result);
+    });
+
+  const getFilteredBranches = (cwd: string) =>
+    Effect.gen(function* () {
+      // Get current branch
+      const currentBranch = yield* getCurrentBranch(cwd);
+
+      // Get reflog revisions for current branch
+      const reflogResult = yield* execGitCommand(
+        ["reflog", currentBranch],
+        cwd,
+      );
+      const reflogLines = parseLines(reflogResult);
+      const revisions: string[] = [];
+      for (const line of reflogLines) {
+        const match = line.match(/^([a-f0-9]+)\s/);
+        if (match && typeof match[1] === "string") {
+          revisions.push(match[1]);
+        }
+      }
+
+      if (revisions.length === 0) {
+        return {
+          success: true,
+          data: [],
+        };
+      }
+
+      // Get all branches
+      const allBranches = yield* getBranches(cwd);
+
+      // Check which branches contain the reflog revisions
+      const filteredBranchNames = new Set<string>();
+      for (const revision of revisions) {
+        const branchesResult = yield* Effect.either(
+          execGitCommand(["branch", "--contains", revision], cwd),
+        );
+
+        if (Either.isRight(branchesResult)) {
+          const branchLines = parseLines(branchesResult.right);
+          for (const line of branchLines) {
+            const branchName = line.replace(/^\*?\s*/, "").trim();
+            if (branchName) {
+              filteredBranchNames.add(branchName);
+            }
+          }
+        }
+      }
+
+      // Filter branches
+      const filteredBranches = allBranches.data.filter((branch) =>
+        filteredBranchNames.has(branch.name),
+      );
+
+      return {
+        success: true,
+        data: filteredBranches,
+      };
+    });
+
+  const getFilteredCommits = (cwd: string) =>
+    Effect.gen(function* () {
+      // Get current branch
+      const currentBranchResult = yield* Effect.either(getCurrentBranch(cwd));
+      if (Either.isLeft(currentBranchResult)) {
+        // If we can't determine current branch (e.g., detached HEAD),
+        // return last 10 commits from git log as fallback
+        const logResult = yield* execGitCommand(
+          [
+            "log",
+            "--oneline",
+            "-n",
+            "10",
+            "--format=%H|%s|%an|%ad",
+            "--date=iso",
+          ],
+          cwd,
+        );
+        return parseGitCommitsOutput(logResult);
+      }
+      const currentBranch = currentBranchResult.right;
+
+      // Get reflog revisions for current branch
+      const reflogResult = yield* execGitCommand(
+        ["reflog", currentBranch, "--format=%H|%s|%an|%ad", "--date=iso"],
+        cwd,
+      );
+
+      return parseGitCommitsOutput(reflogResult);
     });
 
   const stageFiles = (cwd: string, files: string[]) =>
@@ -231,6 +321,8 @@ const LayerImpl = Effect.gen(function* () {
     getCurrentBranch,
     branchExists,
     getCommits,
+    getFilteredBranches,
+    getFilteredCommits,
     stageFiles,
     commit,
     push,

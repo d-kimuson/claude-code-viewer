@@ -25,8 +25,8 @@ import { cn } from "@/lib/utils";
 import {
   useCommitAndPush,
   useCommitFiles,
-  useGitBranches,
-  useGitCommits,
+  useFilteredGitBranches,
+  useFilteredGitCommits,
   useGitDiff,
   usePushCommits,
 } from "../../hooks/useGit";
@@ -160,9 +160,9 @@ export const DiffModal: FC<DiffModalProps> = ({
 
   // API hooks
   const { data: branchesData, isLoading: isLoadingBranches } =
-    useGitBranches(projectId);
+    useFilteredGitBranches(projectId);
   const { data: commitsData, isLoading: isLoadingCommits } =
-    useGitCommits(projectId);
+    useFilteredGitCommits(projectId);
   const {
     mutate: getDiff,
     data: diffData,

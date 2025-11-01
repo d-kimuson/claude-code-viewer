@@ -220,6 +220,30 @@ export const routes = (app: HonoAppType) =>
           return response;
         })
 
+        .get("/api/projects/:projectId/git/filtered-branches", async (c) => {
+          const response = await effectToResponse(
+            c,
+            gitController
+              .getFilteredGitBranches({
+                ...c.req.param(),
+              })
+              .pipe(Effect.provide(runtime)),
+          );
+          return response;
+        })
+
+        .get("/api/projects/:projectId/git/filtered-commits", async (c) => {
+          const response = await effectToResponse(
+            c,
+            gitController
+              .getFilteredGitCommits({
+                ...c.req.param(),
+              })
+              .pipe(Effect.provide(runtime)),
+          );
+          return response;
+        })
+
         .post(
           "/api/projects/:projectId/git/diff",
           zValidator(

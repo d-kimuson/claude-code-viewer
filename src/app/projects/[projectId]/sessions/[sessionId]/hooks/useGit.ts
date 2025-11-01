@@ -3,6 +3,8 @@ import { honoClient } from "@/lib/api/client";
 import {
   gitBranchesQuery,
   gitCommitsQuery,
+  gitFilteredBranchesQuery,
+  gitFilteredCommitsQuery,
 } from "../../../../../../lib/api/queries";
 
 export const useGitBranches = (projectId: string) => {
@@ -17,6 +19,22 @@ export const useGitCommits = (projectId: string) => {
   return useQuery({
     queryKey: gitCommitsQuery(projectId).queryKey,
     queryFn: gitCommitsQuery(projectId).queryFn,
+    staleTime: 30000, // 30 seconds
+  });
+};
+
+export const useFilteredGitBranches = (projectId: string) => {
+  return useQuery({
+    queryKey: gitFilteredBranchesQuery(projectId).queryKey,
+    queryFn: gitFilteredBranchesQuery(projectId).queryFn,
+    staleTime: 30000, // 30 seconds
+  });
+};
+
+export const useFilteredGitCommits = (projectId: string) => {
+  return useQuery({
+    queryKey: gitFilteredCommitsQuery(projectId).queryKey,
+    queryFn: gitFilteredCommitsQuery(projectId).queryFn,
     staleTime: 30000, // 30 seconds
   });
 };

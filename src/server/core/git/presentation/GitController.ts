@@ -75,6 +75,75 @@ const LayerImpl = Effect.gen(function* () {
       } as const satisfies ControllerResponse;
     });
 
+  const getFilteredGitBranches = (options: { projectId: string }) =>
+    Effect.gen(function* () {
+      const { projectId } = options;
+
+      const { project } = yield* projectRepository.getProject(projectId);
+
+      if (project.meta.projectPath === null) {
+        return {
+          response: { error: "Project path not found" },
+          status: 400,
+        } as const satisfies ControllerResponse;
+      }
+
+      const projectPath = project.meta.projectPath;
+      const branches = yield* Effect.either(
+        gitService.getFilteredBranches(projectPath),
+      );
+
+      if (Either.isLeft(branches)) {
+        return {
+          response: {
+            success: true,
+            data: [],
+          },
+          status: 200,
+        } as const satisfies ControllerResponse;
+      }
+
+      return {
+        response: branches.right,
+        status: 200,
+      } as const satisfies ControllerResponse;
+    });
+
+  const getFilteredGitCommits = (options: { projectId: string }) =>
+    Effect.gen(function* () {
+      const { projectId } = options;
+
+      const { project } = yield* projectRepository.getProject(projectId);
+
+      if (project.meta.projectPath === null) {
+        return {
+          response: { error: "Project path not found" },
+          status: 400,
+        } as const satisfies ControllerResponse;
+      }
+
+      const projectPath = project.meta.projectPath;
+
+      const commits = yield* Effect.either(
+        gitService.getFilteredCommits(projectPath),
+      );
+
+      if (Either.isLeft(commits)) {
+        return {
+          response: {
+            success: true,
+            data: [],
+          },
+          status: 200,
+        } as const satisfies ControllerResponse;
+      }
+
+      return {
+        response: commits.right,
+        status: 200,
+      } as const satisfies ControllerResponse;
+    });
+
   const getGitDiff = (options: {
     projectId: string;
     fromRef: string;
@@ -337,6 +406,8 @@ const LayerImpl = Effect.gen(function* () {
   return {
     getGitBranches,
     getGitCommits,
+    getFilteredGitBranches,
+    getFilteredGitCommits,
     getGitDiff,
     commitFiles,
     pushCommits,

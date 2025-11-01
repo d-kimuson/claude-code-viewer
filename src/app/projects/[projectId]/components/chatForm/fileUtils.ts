@@ -1,26 +1,10 @@
-/**
- * File utilities for file upload and encoding
- */
+import {
+  type DocumentBlockParam,
+  type ImageBlockParam,
+  mediaTypeSchema,
+} from "../../../../../server/core/claude-code/schema";
 
 export type FileType = "text" | "image" | "pdf";
-
-export type ImageBlock = {
-  type: "image";
-  source: {
-    type: "base64";
-    media_type: "image/png" | "image/jpeg" | "image/gif" | "image/webp";
-    data: string;
-  };
-};
-
-export type DocumentBlock = {
-  type: "document";
-  source: {
-    type: "base64";
-    media_type: "application/pdf";
-    data: string;
-  };
-};
 
 /**
  * Determine file type based on MIME type
@@ -106,8 +90,9 @@ export const processFile = async (
   file: File,
 ): Promise<
   | { type: "text"; content: string }
-  | { type: "image"; block: ImageBlock }
-  | { type: "document"; block: DocumentBlock }
+  | { type: "image"; block: ImageBlockParam }
+  | { type: "document"; block: DocumentBlockParam }
+  | null
 > => {
   const fileType = determineFileType(file.type);
 
@@ -119,14 +104,18 @@ export const processFile = async (
   const base64Data = await fileToBase64(file);
 
   if (fileType === "image") {
-    const mediaType = file.type as ImageBlock["source"]["media_type"];
+    const mediaType = mediaTypeSchema.safeParse(file.type);
+    if (!mediaType.success) {
+      return null;
+    }
+
     return {
       type: "image",
       block: {
         type: "image",
         source: {
           type: "base64",
-          media_type: mediaType,
+          media_type: mediaType.data,
           data: base64Data,
         },
       },

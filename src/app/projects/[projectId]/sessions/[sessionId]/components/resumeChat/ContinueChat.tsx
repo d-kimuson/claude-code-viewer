@@ -11,7 +11,8 @@ export const ContinueChat: FC<{
   projectId: string;
   sessionId: string;
   sessionProcessId: string;
-}> = ({ projectId, sessionId, sessionProcessId }) => {
+  sessionProcessStatus?: "running" | "paused";
+}> = ({ projectId, sessionId, sessionProcessId, sessionProcessStatus }) => {
   const { i18n } = useLingui();
   const continueSessionProcess = useContinueSessionProcessMutation(
     projectId,
@@ -29,43 +30,40 @@ export const ContinueChat: FC<{
       return i18n._({
         id: "chat.placeholder.continue.enter",
         message:
-          "Type your message... (Start with / for commands, @ for files, Enter to send, or schedule for later)",
+          "Type your message... (Start with / for commands, @ for files, Enter to send)",
       });
     }
     if (behavior === "command-enter-send") {
       return i18n._({
         id: "chat.placeholder.continue.command_enter",
         message:
-          "Type your message... (Start with / for commands, @ for files, Command+Enter to send, or schedule for later)",
+          "Type your message... (Start with / for commands, @ for files, Command+Enter to send)",
       });
     }
     return i18n._({
       id: "chat.placeholder.continue.shift_enter",
       message:
-        "Type your message... (Start with / for commands, @ for files, Shift+Enter to send, or schedule for later)",
+        "Type your message... (Start with / for commands, @ for files, Shift+Enter to send)",
     });
   };
 
-  const buttonText = <Trans id="chat.send" message="Send" />;
+  const isRunning = sessionProcessStatus === "running";
 
   return (
-    <div className="relative mt-8 mb-6">
-      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-border to-transparent h-px top-0" />
-      <div className="pt-8">
-        <ChatInput
-          projectId={projectId}
-          onSubmit={handleSubmit}
-          isPending={continueSessionProcess.isPending}
-          error={continueSessionProcess.error}
-          placeholder={getPlaceholder()}
-          buttonText={buttonText}
-          minHeight="min-h-[120px]"
-          containerClassName=""
-          buttonSize="lg"
-          enableScheduledSend={true}
-          baseSessionId={sessionId}
-        />
-      </div>
+    <div className="w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 pb-3">
+      <ChatInput
+        projectId={projectId}
+        onSubmit={handleSubmit}
+        isPending={continueSessionProcess.isPending}
+        error={continueSessionProcess.error}
+        placeholder={getPlaceholder()}
+        buttonText={<Trans id="chat.send" message="Send" />}
+        containerClassName=""
+        buttonSize="default"
+        enableScheduledSend={!isRunning}
+        baseSessionId={sessionId}
+        disabled={isRunning}
+      />
     </div>
   );
 };

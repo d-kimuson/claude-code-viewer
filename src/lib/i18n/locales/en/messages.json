@@ -505,17 +505,29 @@
     ],
     "translation": "Conversation is in progress..."
   },
-  "session.conversation.paused": {
-    "message": "Conversation is paused...",
+  "session.conversation.running": {
+    "message": "Running",
     "placeholders": {},
     "comments": [],
     "origin": [
       [
-        "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageContent.tsx",
-        186
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
+        164
       ]
     ],
-    "translation": "Conversation is paused..."
+    "translation": "Running"
+  },
+  "session.conversation.paused": {
+    "message": "Paused",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
+        192
+      ]
+    ],
+    "translation": "Paused"
   },
   "cron_builder.cron_expression": {
     "translation": "Cron Expression",
@@ -1289,7 +1301,7 @@
     "translation": "Attach"
   },
   "chat.placeholder.continue.enter": {
-    "message": "Type your message... (Start with / for commands, @ for files, Enter to send, or schedule for later)",
+    "message": "Type your message... (Start with / for commands, @ for files, Enter to send)",
     "placeholders": {},
     "comments": [],
     "origin": [
@@ -1298,10 +1310,10 @@
         32
       ]
     ],
-    "translation": "Type your message... (Start with / for commands, @ for files, Enter to send, or schedule for later)"
+    "translation": "Type your message... (Start with / for commands, @ for files, Enter to send)"
   },
   "chat.placeholder.continue.command_enter": {
-    "message": "Type your message... (Start with / for commands, @ for files, Command+Enter to send, or schedule for later)",
+    "message": "Type your message... (Start with / for commands, @ for files, Command+Enter to send)",
     "placeholders": {},
     "comments": [],
     "origin": [
@@ -1310,10 +1322,10 @@
         39
       ]
     ],
-    "translation": "Type your message... (Start with / for commands, @ for files, Command+Enter to send, or schedule for later)"
+    "translation": "Type your message... (Start with / for commands, @ for files, Command+Enter to send)"
   },
   "chat.placeholder.continue.shift_enter": {
-    "message": "Type your message... (Start with / for commands, @ for files, Shift+Enter to send, or schedule for later)",
+    "message": "Type your message... (Start with / for commands, @ for files, Shift+Enter to send)",
     "placeholders": {},
     "comments": [],
     "origin": [
@@ -1322,10 +1334,10 @@
         45
       ]
     ],
-    "translation": "Type your message... (Start with / for commands, @ for files, Shift+Enter to send, or schedule for later)"
+    "translation": "Type your message... (Start with / for commands, @ for files, Shift+Enter to send)"
   },
   "chat.placeholder.resume.enter": {
-    "message": "Type your message... (Start with / for commands, @ for files, Enter to send, or schedule for later)",
+    "message": "Type your message... (Start with / for commands, @ for files, Enter to send)",
     "placeholders": {},
     "comments": [],
     "origin": [
@@ -1334,10 +1346,10 @@
         31
       ]
     ],
-    "translation": "Type your message... (Start with / for commands, @ for files, Enter to send, or schedule for later)"
+    "translation": "Type your message... (Start with / for commands, @ for files, Enter to send)"
   },
   "chat.placeholder.resume.command_enter": {
-    "message": "Type your message... (Start with / for commands, @ for files, Command+Enter to send, or schedule for later)",
+    "message": "Type your message... (Start with / for commands, @ for files, Command+Enter to send)",
     "placeholders": {},
     "comments": [],
     "origin": [
@@ -1346,10 +1358,10 @@
         38
       ]
     ],
-    "translation": "Type your message... (Start with / for commands, @ for files, Command+Enter to send, or schedule for later)"
+    "translation": "Type your message... (Start with / for commands, @ for files, Command+Enter to send)"
   },
   "chat.placeholder.resume.shift_enter": {
-    "message": "Type your message... (Start with / for commands, @ for files, Shift+Enter to send, or schedule for later)",
+    "message": "Type your message... (Start with / for commands, @ for files, Shift+Enter to send)",
     "placeholders": {},
     "comments": [],
     "origin": [
@@ -1358,7 +1370,7 @@
         44
       ]
     ],
-    "translation": "Type your message... (Start with / for commands, @ for files, Shift+Enter to send, or schedule for later)"
+    "translation": "Type your message... (Start with / for commands, @ for files, Shift+Enter to send)"
   },
   "chat.scheduled_send.success": {
     "message": "Message scheduled successfully",
@@ -2224,5 +2236,161 @@
     "comments": [],
     "origin": [["src/app/projects/components/CreateProjectDialog.tsx", 89]],
     "translation": "Selected directory:"
+  },
+  "control.title": {
+    "message": "Control",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/ControlTab.tsx",
+        66
+      ]
+    ],
+    "translation": "Control"
+  },
+  "control.description": {
+    "message": "Session metadata and controls",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/ControlTab.tsx",
+        70
+      ]
+    ],
+    "translation": "Session metadata and controls"
+  },
+  "control.metadata": {
+    "message": "Metadata",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/ControlTab.tsx",
+        80
+      ]
+    ],
+    "translation": "Metadata"
+  },
+  "control.project_path": {
+    "message": "Project Path",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/ControlTab.tsx",
+        87
+      ]
+    ],
+    "translation": "Project Path"
+  },
+  "control.session_id": {
+    "message": "Session ID",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/ControlTab.tsx",
+        105
+      ]
+    ],
+    "translation": "Session ID"
+  },
+  "control.branch": {
+    "message": "Branch",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/ControlTab.tsx",
+        124
+      ]
+    ],
+    "translation": "Branch"
+  },
+  "control.status": {
+    "message": "Status",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/ControlTab.tsx",
+        141
+      ]
+    ],
+    "translation": "Status"
+  },
+  "control.status.inactive": {
+    "message": "No active process",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/ControlTab.tsx",
+        204
+      ]
+    ],
+    "translation": "No active process"
+  },
+  "control.actions": {
+    "message": "Actions",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/ControlTab.tsx",
+        212
+      ]
+    ],
+    "translation": "Actions"
+  },
+  "control.open_git_dialog": {
+    "message": "Open Git Dialog",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/ControlTab.tsx",
+        223
+      ]
+    ],
+    "translation": "Open Git Dialog"
+  },
+  "control.new_chat": {
+    "message": "New Chat",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/ControlTab.tsx",
+        235
+      ]
+    ],
+    "translation": "New Chat"
+  },
+  "control.scroll_to_top": {
+    "message": "Scroll to Top",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/ControlTab.tsx",
+        247
+      ]
+    ],
+    "translation": "Scroll to Top"
+  },
+  "control.scroll_to_bottom": {
+    "message": "Scroll to Bottom",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/ControlTab.tsx",
+        257
+      ]
+    ],
+    "translation": "Scroll to Bottom"
   }
 }

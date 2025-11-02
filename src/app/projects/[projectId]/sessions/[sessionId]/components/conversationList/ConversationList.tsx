@@ -35,7 +35,7 @@ const getConversationKey = (conversation: Conversation) => {
   }
 
   if (conversation.type === "queue-operation") {
-    return `queue-operation_${conversation.operation}_${conversation.sessionId}`;
+    return `queue-operation_${conversation.operation}_${conversation.sessionId}_${conversation.timestamp}`;
   }
 
   conversation satisfies never;

@@ -7,7 +7,14 @@ import {
   SparklesIcon,
   XIcon,
 } from "lucide-react";
-import { type FC, useCallback, useId, useRef, useState } from "react";
+import {
+  type FC,
+  useCallback,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+} from "react";
 import { toast } from "sonner";
 import { Button } from "../../../../../components/ui/button";
 import { Input } from "../../../../../components/ui/input";
@@ -59,13 +66,28 @@ export const ChatInput: FC<ChatInputProps> = ({
   error,
   placeholder,
   buttonText,
-  minHeight = "min-h-[100px]",
+  minHeight: minHeightProp = "min-h-[64px]",
   containerClassName = "",
   disabled = false,
   buttonSize = "lg",
   enableScheduledSend = false,
   baseSessionId = null,
 }) => {
+  // Parse minHeight prop to get pixel value (default to 48px for 1.5 lines)
+  // Supports both "200px" and Tailwind format like "min-h-[200px]"
+  const parseMinHeight = (value: string): number => {
+    // Try to extract pixel value using regex (handles both formats)
+    const match = value.match(/(\d+)px/);
+    if (match?.[1]) {
+      const parsed = parseInt(match[1], 10);
+      if (!Number.isNaN(parsed)) {
+        return parsed;
+      }
+    }
+    // Fallback to default
+    return 48;
+  };
+  const minHeightValue = parseMinHeight(minHeightProp);
   const { i18n } = useLingui();
   const [message, setMessage] = useState("");
   const [attachedFiles, setAttachedFiles] = useState<
@@ -97,6 +119,28 @@ export const ChatInput: FC<ChatInputProps> = ({
   const helpId = useId();
   const { config } = useConfig();
   const createSchedulerJob = useCreateSchedulerJob();
+
+  // Auto-resize textarea based on content
+  // biome-ignore lint/correctness/useExhaustiveDependencies: message is intentionally included to trigger resize
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+
+    // Reset height to auto to get the correct scrollHeight
+    textarea.style.height = "auto";
+    // Set height to scrollHeight, but respect min/max constraints
+    const scrollHeight = textarea.scrollHeight;
+    const maxHeight = 200; // Maximum height in pixels (approx 5 lines)
+    textarea.style.height = `${Math.max(minHeightValue, Math.min(scrollHeight, maxHeight))}px`;
+  }, [message, minHeightValue]);
+
+  // Set initial height to 1 line on mount
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+    // Set initial height to minHeight value
+    textarea.style.height = `${minHeightValue}px`;
+  }, [minHeightValue]);
 
   const handleSubmit = async () => {
     if (!message.trim() && attachedFiles.length === 0) return;
@@ -362,7 +406,10 @@ export const ChatInput: FC<ChatInputProps> = ({
               }}
               onKeyDown={handleKeyDown}
               placeholder={placeholder}
-              className={`${minHeight} resize-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent px-5 py-4 text-lg transition-all duration-200 placeholder:text-muted-foreground/60`}
+              className="resize-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent px-5 py-2 text-base transition-all duration-200 placeholder:text-muted-foreground/60 overflow-y-auto leading-6"
+              style={{
+                minHeight: `${minHeightValue}px`,
+              }}
               disabled={isPending || disabled}
               aria-label={i18n._("Message input with completion support")}
               aria-describedby={helpId}
@@ -394,7 +441,7 @@ export const ChatInput: FC<ChatInputProps> = ({
             </div>
           )}
 
-          <div className="flex items-center justify-between gap-3 px-5 py-3 bg-muted/30 border-t border-border/40">
+          <div className="flex items-center justify-between gap-3 px-5 py-1 bg-muted/30 border-t border-border/40">
             <div className="flex items-center gap-2">
               <input
                 ref={fileInputRef}

@@ -505,17 +505,29 @@
     ],
     "translation": "会話を進行中..."
   },
-  "session.conversation.paused": {
-    "message": "Conversation is paused...",
+  "session.conversation.running": {
+    "message": "Running",
     "placeholders": {},
     "comments": [],
     "origin": [
       [
-        "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageContent.tsx",
-        186
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
+        164
       ]
     ],
-    "translation": "会話を一時停止中..."
+    "translation": "実行中"
+  },
+  "session.conversation.paused": {
+    "message": "Paused",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
+        192
+      ]
+    ],
+    "translation": "一時停止"
   },
   "cron_builder.cron_expression": {
     "translation": "Cron式",
@@ -1289,7 +1301,7 @@
     "translation": "添付"
   },
   "chat.placeholder.continue.enter": {
-    "message": "Type your message... (Start with / for commands, @ for files, Enter to send, or schedule for later)",
+    "message": "Type your message... (Start with / for commands, @ for files, Enter to send)",
     "placeholders": {},
     "comments": [],
     "origin": [
@@ -1298,10 +1310,10 @@
         32
       ]
     ],
-    "translation": "メッセージを入力... （/でコマンド、@でファイル、Enterで送信、または予約送信）"
+    "translation": "メッセージを入力... （/でコマンド、@でファイル、Enterで送信）"
   },
   "chat.placeholder.continue.command_enter": {
-    "message": "Type your message... (Start with / for commands, @ for files, Command+Enter to send, or schedule for later)",
+    "message": "Type your message... (Start with / for commands, @ for files, Command+Enter to send)",
     "placeholders": {},
     "comments": [],
     "origin": [
@@ -1310,10 +1322,10 @@
         39
       ]
     ],
-    "translation": "メッセージを入力... （/でコマンド、@でファイル、Command+Enterで送信、または予約送信）"
+    "translation": "メッセージを入力... （/でコマンド、@でファイル、Command+Enterで送信）"
   },
   "chat.placeholder.continue.shift_enter": {
-    "message": "Type your message... (Start with / for commands, @ for files, Shift+Enter to send, or schedule for later)",
+    "message": "Type your message... (Start with / for commands, @ for files, Shift+Enter to send)",
     "placeholders": {},
     "comments": [],
     "origin": [
@@ -1322,10 +1334,10 @@
         45
       ]
     ],
-    "translation": "メッセージを入力... （/でコマンド、@でファイル、Shift+Enterで送信、または予約送信）"
+    "translation": "メッセージを入力... （/でコマンド、@でファイル、Shift+Enterで送信）"
   },
   "chat.placeholder.resume.enter": {
-    "message": "Type your message... (Start with / for commands, @ for files, Enter to send, or schedule for later)",
+    "message": "Type your message... (Start with / for commands, @ for files, Enter to send)",
     "placeholders": {},
     "comments": [],
     "origin": [
@@ -1334,10 +1346,10 @@
         31
       ]
     ],
-    "translation": "メッセージを入力... （/でコマンド、@でファイル、Enterで送信、または予約送信）"
+    "translation": "メッセージを入力... （/でコマンド、@でファイル、Enterで送信）"
   },
   "chat.placeholder.resume.command_enter": {
-    "message": "Type your message... (Start with / for commands, @ for files, Command+Enter to send, or schedule for later)",
+    "message": "Type your message... (Start with / for commands, @ for files, Command+Enter to send)",
     "placeholders": {},
     "comments": [],
     "origin": [
@@ -1346,10 +1358,10 @@
         38
       ]
     ],
-    "translation": "メッセージを入力... （/でコマンド、@でファイル、Command+Enterで送信、または予約送信）"
+    "translation": "メッセージを入力... （/でコマンド、@でファイル、Command+Enterで送信）"
   },
   "chat.placeholder.resume.shift_enter": {
-    "message": "Type your message... (Start with / for commands, @ for files, Shift+Enter to send, or schedule for later)",
+    "message": "Type your message... (Start with / for commands, @ for files, Shift+Enter to send)",
     "placeholders": {},
     "comments": [],
     "origin": [
@@ -1358,7 +1370,7 @@
         44
       ]
     ],
-    "translation": "メッセージを入力... （/でコマンド、@でファイル、Shift+Enterで送信、または予約送信）"
+    "translation": "メッセージを入力... （/でコマンド、@でファイル、Shift+Enterで送信）"
   },
   "chat.scheduled_send.success": {
     "message": "Message scheduled successfully",
@@ -2224,5 +2236,191 @@
     "comments": [],
     "origin": [["src/app/projects/components/CreateProjectDialog.tsx", 89]],
     "translation": "選択したディレクトリ："
+  },
+  "control.title": {
+    "message": "Control",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/ControlTab.tsx",
+        66
+      ]
+    ],
+    "translation": "コントロール"
+  },
+  "control.description": {
+    "message": "Session metadata and controls",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/ControlTab.tsx",
+        70
+      ]
+    ],
+    "translation": "セッションのメタデータとコントロール"
+  },
+  "control.metadata": {
+    "message": "Metadata",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/ControlTab.tsx",
+        80
+      ]
+    ],
+    "translation": "メタデータ"
+  },
+  "control.project_path": {
+    "message": "Project Path",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/ControlTab.tsx",
+        87
+      ]
+    ],
+    "translation": "プロジェクトパス"
+  },
+  "control.session_id": {
+    "message": "Session ID",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/ControlTab.tsx",
+        105
+      ]
+    ],
+    "translation": "セッションID"
+  },
+  "control.branch": {
+    "message": "Branch",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/ControlTab.tsx",
+        124
+      ]
+    ],
+    "translation": "ブランチ"
+  },
+  "control.status": {
+    "message": "Status",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/ControlTab.tsx",
+        141
+      ]
+    ],
+    "translation": "ステータス"
+  },
+  "control.status.inactive": {
+    "message": "No active process",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/ControlTab.tsx",
+        204
+      ]
+    ],
+    "translation": "アクティブなプロセスなし"
+  },
+  "control.actions": {
+    "message": "Actions",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/ControlTab.tsx",
+        212
+      ]
+    ],
+    "translation": "アクション"
+  },
+  "control.open_git_dialog": {
+    "message": "Open Git Dialog",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/ControlTab.tsx",
+        223
+      ]
+    ],
+    "translation": "Gitダイアログを開く"
+  },
+  "control.new_chat": {
+    "message": "New Chat",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/ControlTab.tsx",
+        235
+      ]
+    ],
+    "translation": "新しいチャット"
+  },
+  "control.scroll_to_top": {
+    "message": "Scroll to Top",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/ControlTab.tsx",
+        247
+      ]
+    ],
+    "translation": "トップにスクロール"
+  },
+  "control.scroll_to_bottom": {
+    "message": "Scroll to Bottom",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/ControlTab.tsx",
+        257
+      ]
+    ],
+    "translation": "ボトムにスクロール"
+  },
+  "control.git": {
+    "message": "Git",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      ["src/app/projects/[projectId]/components/chatForm/ChatInput.tsx", 459]
+    ],
+    "translation": "Git"
+  },
+  "control.new": {
+    "message": "新規",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      ["src/app/projects/[projectId]/components/chatForm/ChatInput.tsx", 479]
+    ],
+    "translation": "新規"
+  },
+  "control.scroll": {
+    "message": "スクロール",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
+        98
+      ]
+    ],
+    "translation": "スクロール"
   }
 }

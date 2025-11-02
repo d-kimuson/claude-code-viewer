@@ -1,5 +1,5 @@
 import { Trans } from "@lingui/react";
-import { Link } from "@tanstack/react-router";
+import { Link, useSearch } from "@tanstack/react-router";
 import { useAtomValue } from "jotai";
 import { MessageSquareIcon, PlusIcon } from "lucide-react";
 import type { FC } from "react";
@@ -28,6 +28,12 @@ export const SessionsTab: FC<{
 
   const sessionProcesses = useAtomValue(sessionProcessesAtom);
   const { config } = useConfig();
+  const search = useSearch({
+    from: "/projects/$projectId/sessions/$sessionId/",
+  });
+
+  // Preserve current tab state or default to "sessions"
+  const currentTab = search.tab ?? "sessions";
 
   // Sort sessions: Running > Paused > Others, then by lastModifiedAt (newest first)
   const sortedSessions = [...sessions].sort((a, b) => {
@@ -112,6 +118,7 @@ export const SessionsTab: FC<{
               key={session.id}
               to={"/projects/$projectId/sessions/$sessionId"}
               params={{ projectId, sessionId: session.id }}
+              search={{ tab: currentTab }}
               className={cn(
                 "block rounded-lg p-2.5 transition-all duration-200 hover:bg-blue-50/60 dark:hover:bg-blue-950/40 hover:border-blue-300/60 dark:hover:border-blue-700/60 hover:shadow-sm border border-sidebar-border/40 bg-sidebar/30",
                 isActive &&

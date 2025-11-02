@@ -21,6 +21,7 @@ import { McpTab } from "./McpTab";
 import { MobileSidebar } from "./MobileSidebar";
 import { SchedulerTab } from "./SchedulerTab";
 import { SessionsTab } from "./SessionsTab";
+import type { Tab } from "./schema";
 
 export const SessionSidebar: FC<{
   currentSessionId: string;
@@ -28,12 +29,14 @@ export const SessionSidebar: FC<{
   className?: string;
   isMobileOpen?: boolean;
   onMobileOpenChange?: (open: boolean) => void;
+  initialTab: Tab;
 }> = ({
   currentSessionId,
   projectId,
   className,
   isMobileOpen = false,
   onMobileOpenChange,
+  initialTab,
 }) => {
   const additionalTabs: SidebarTab[] = useMemo(
     () => [
@@ -87,7 +90,7 @@ export const SessionSidebar: FC<{
         <GlobalSidebar
           projectId={projectId}
           additionalTabs={additionalTabs}
-          defaultActiveTab="sessions"
+          defaultActiveTab={initialTab}
           headerButton={
             <TooltipProvider>
               <Tooltip>

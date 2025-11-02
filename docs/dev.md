@@ -19,6 +19,7 @@ This document provides technical details for developers contributing to Claude C
   - Service layer managed through Effect Context (dependency injection container)
   - Controller → Service layered architecture, with each layer implemented in Effect
   - Type-safe error handling and side effect control
+  - Abstracts Node.js built-ins (`FileSystem.FileSystem`, `Path.Path`, `Command.string`) for testability
 
 ### Data Source and Storage
 
@@ -31,10 +32,12 @@ This document provides technical details for developers contributing to Claude C
 
 ### Real-time Synchronization
 
-- **Server-Sent Events (SSE)**: Provides `/api/sse` endpoint
+- **Server-Sent Events (SSE)**: Provides `/api/sse` endpoint (src/server/hono/route.ts:430-444)
   - Clients maintain persistent SSE connections to listen for server events
   - Real-time delivery of session log updates, process state changes, etc.
-  - Type-safe SSE events (`TypeSafeSSE`) guarantee payload types for each event kind
+  - Type-safe SSE events (`TypeSafeSSE` service) guarantee payload types for each event kind via `SSEEventDeclaration`
+  - Event types: connect, heartbeat, sessionListChanged, sessionChanged, sessionProcessChanged, permissionRequested
+  - `SSEController` subscribes to EventBus and broadcasts typed events using `TypeSafeSSE.writeSSE()`
   - Client-side easily subscribes to events using the `useServerEventListener` hook
 
 ### Session Process Management
@@ -67,11 +70,11 @@ pnpm install
 pnpm dev
 ```
 
-This command starts:
-- Frontend: Vite development server (port 3400 by default)
-- Backend: Node server with tsx watch (port 3401 by default)
+This command starts both servers in parallel using `npm-run-all2`:
+- Frontend: Vite development server (port 3400 by default, configurable via `DEV_FE_PORT`)
+- Backend: Node server with tsx watch (port 3401 by default, configurable via `DEV_BE_PORT`)
 
-Both servers run simultaneously using `npm-run-all2` for parallel execution.
+Frontend proxy configuration forwards `/api` requests to the backend server.
 
 ### Production Mode
 
@@ -85,12 +88,23 @@ pnpm build
 pnpm start
 ```
 
-The built application is output to the `dist/` directory:
-- `dist/static/` - Frontend static files (built by Vite)
-- `dist/main.js` - Backend server (built by esbuild)
-- `dist/index.js` - CLI entry point
+**Build Process** (`./scripts/build.sh`):
+1. Clean `dist/` directory
+2. Compile i18n files (`lingui:compile`)
+3. Build frontend with Vite → `dist/static/`
+4. Bundle backend with esbuild → `dist/main.js` (ESM format, external dependencies excluded)
 
-The production server serves static files and handles API requests on a single port (3000 by default).
+**Build Output Structure**:
+```
+dist/
+├── main.js          # Backend server bundle + CLI entry point
+├── main.js.map      # Source map
+└── static/          # Frontend static files (Vite output)
+    ├── index.html
+    └── assets/
+```
+
+The production server serves static files and handles API requests on a single port (3000 by default, configurable via `PORT`). The `dist/main.js` is registered as the CLI binary in `package.json`'s `bin` field.
 
 ## Quality Assurance
 
@@ -101,12 +115,17 @@ The production server serves static files and handles API requests on a single p
 **Commands**:
 
 ```bash
-# Auto-fix issues
+# Auto-fix issues (format + lint with unsafe fixes)
 pnpm fix
 
-# Check only (run in CI)
+# Check only (format + lint check, run in CI)
 pnpm lint
 ```
+
+**Configuration**: `/biome.json`
+- Recommended rules enabled
+- `noProcessEnv` set to error level
+- e2e and config files excluded from checks
 
 **CI Requirement**: Passing Biome checks is mandatory for PR merges.
 
@@ -124,6 +143,10 @@ pnpm test
 pnpm test:watch
 ```
 
+**Configuration**:
+- Global mode enabled
+- Setup file: `src/testing/setup/vitest.setup.ts`
+
 **Test Coverage**: Primarily business logic under `src/server/core/`
 
 **CI Requirement**: All tests must pass for PR merges.
@@ -140,7 +163,9 @@ Strict type configuration (`@tsconfig/strictest`) is adopted, emphasizing type s
 
 Playwright-based snapshot capture is implemented to visually confirm UI changes.
 
-**Note**: This is Visual Regression Testing (VRT) for confirming UI changes, not traditional testing.
+**Note**: This is Visual Regression Testing (VRT) for confirming UI changes, not traditional E2E testing.
+
+**Implementation**: Custom TypeScript script (not standard Playwright config file)
 
 #### Local Execution
 
@@ -157,7 +182,7 @@ pnpm e2e:capture-snapshots   # Capture snapshots
 
 #### Automatic Updates in CI
 
-When the `vrt` label is added to a PR, CI automatically captures and commits snapshots. Use this label for PRs with UI changes to update snapshots.
+When the `vrt` label is added to a PR, the VRT workflow (`.github/workflows/vrt.yml`) automatically captures and commits snapshots. Use this label for PRs with UI changes to update snapshots.
 
 ## Project Structure
 

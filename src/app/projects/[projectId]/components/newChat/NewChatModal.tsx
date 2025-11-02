@@ -30,7 +30,7 @@ export const NewChatModal: FC<{
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <MessageSquareIcon className="w-5 h-5" />
-            <Trans id="chat.modal.title" message="Start New Chat" />
+            <Trans id="chat.modal.title" />
           </DialogTitle>
         </DialogHeader>
         <NewChat projectId={projectId} onSuccess={handleSuccess} />

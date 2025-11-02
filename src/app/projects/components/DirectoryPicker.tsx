@@ -38,7 +38,7 @@ export const DirectoryPicker: FC<DirectoryPickerProps> = ({ onPathChange }) => {
     <div className="border rounded-md">
       <div className="p-3 border-b bg-muted/50">
         <p className="text-sm font-medium">
-          <Trans id="directory_picker.current" message="Current:" />{" "}
+          <Trans id="directory_picker.current" />{" "}
           <span className="font-mono">{data?.currentPath || "~"}</span>
         </p>
       </div>
@@ -49,16 +49,13 @@ export const DirectoryPicker: FC<DirectoryPickerProps> = ({ onPathChange }) => {
           onCheckedChange={(checked) => setShowHidden(checked === true)}
         />
         <Label htmlFor="show-hidden" className="text-sm cursor-pointer">
-          <Trans
-            id="directory_picker.show_hidden"
-            message="Show hidden files"
-          />
+          <Trans id="directory_picker.show_hidden" />
         </Label>
       </div>
       <div className="max-h-96 overflow-auto">
         {isLoading ? (
           <div className="p-8 text-center text-sm text-muted-foreground">
-            <Trans id="directory_picker.loading" message="Loading..." />
+            <Trans id="directory_picker.loading" />
           </div>
         ) : data?.entries && data.entries.length > 0 ? (
           <div className="divide-y">
@@ -88,10 +85,7 @@ export const DirectoryPicker: FC<DirectoryPickerProps> = ({ onPathChange }) => {
           </div>
         ) : (
           <div className="p-8 text-center text-sm text-muted-foreground">
-            <Trans
-              id="directory_picker.no_directories"
-              message="No directories found"
-            />
+            <Trans id="directory_picker.no_directories" />
           </div>
         )}
       </div>

@@ -35,7 +35,7 @@ const getConversationKey = (conversation: Conversation) => {
   }
 
   if (conversation.type === "queue-operation") {
-    return `queue-operation_${conversation.operation}_${conversation.sessionId}`;
+    return `queue-operation_${conversation.operation}_${conversation.sessionId}_${conversation.timestamp}`;
   }
 
   conversation satisfies never;
@@ -52,10 +52,7 @@ const SchemaErrorDisplay: FC<{ errorLine: string }> = ({ errorLine }) => {
               <div className="flex items-center gap-2">
                 <AlertTriangle className="h-3 w-3 text-red-500" />
                 <span className="text-xs font-medium text-red-600">
-                  <Trans
-                    id="conversation.error.schema"
-                    message="Schema Error"
-                  />
+                  <Trans id="conversation.error.schema" />
                 </span>
               </div>
               <ChevronDown className="h-3 w-3 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
@@ -70,36 +67,24 @@ const SchemaErrorDisplay: FC<{ errorLine: string }> = ({ errorLine }) => {
                 >
                   <AlertTriangle className="h-4 w-4" />
                   <AlertTitle className="text-red-800">
-                    <Trans
-                      id="conversation.error.schema_validation"
-                      message="Schema Validation Error"
-                    />
+                    <Trans id="conversation.error.schema_validation" />
                   </AlertTitle>
                   <AlertDescription className="text-red-700">
-                    <Trans
-                      id="conversation.error.schema_validation.description"
-                      message="This conversation entry failed to parse correctly. This might indicate a format change or parsing issue."
-                    />{" "}
+                    <Trans id="conversation.error.schema_validation.description" />{" "}
                     <a
                       href="https://github.com/d-kimuson/claude-code-viewer/issues"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1 text-red-600 hover:text-red-800 underline underline-offset-4"
                     >
-                      <Trans
-                        id="conversation.error.report_issue"
-                        message="Report this issue"
-                      />
+                      <Trans id="conversation.error.report_issue" />
                       <ExternalLink className="h-3 w-3" />
                     </a>
                   </AlertDescription>
                 </Alert>
                 <div className="bg-gray-50 border rounded px-3 py-2">
                   <h5 className="text-xs font-medium text-gray-700 mb-2">
-                    <Trans
-                      id="conversation.error.raw_content"
-                      message="Raw Content:"
-                    />
+                    <Trans id="conversation.error.raw_content" />
                   </h5>
                   <pre className="text-xs overflow-x-auto whitespace-pre-wrap break-all font-mono text-gray-800">
                     {errorLine}

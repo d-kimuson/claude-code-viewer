@@ -46,7 +46,7 @@ export const UserConversationContent: FC<{
                 <div className="flex items-center gap-2">
                   <ImageIcon className="h-4 w-4 text-purple-600 dark:text-purple-400" />
                   <span className="text-sm font-medium">
-                    <Trans id="user.content.image" message="Image" />
+                    <Trans id="user.content.image" />
                   </span>
                   <Badge
                     variant="outline"
@@ -83,20 +83,14 @@ export const UserConversationContent: FC<{
           <div className="flex items-center gap-2">
             <AlertCircle className="h-4 w-4 text-red-600 dark:text-red-400" />
             <CardTitle className="text-sm font-medium">
-              <Trans
-                id="user.content.unsupported_media"
-                message="Unsupported Media"
-              />
+              <Trans id="user.content.unsupported_media" />
             </CardTitle>
             <Badge variant="destructive">
-              <Trans id="common.error" message="Error" />
+              <Trans id="common.error" />
             </Badge>
           </div>
           <CardDescription className="text-xs">
-            <Trans
-              id="user.content.unsupported_media.description"
-              message="Media type not supported for display"
-            />
+            <Trans id="user.content.unsupported_media.description" />
           </CardDescription>
         </CardHeader>
       </Card>
@@ -118,10 +112,7 @@ export const UserConversationContent: FC<{
                   <div className="flex items-center gap-2">
                     <FileText className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                     <span className="text-sm font-medium">
-                      <Trans
-                        id="user.content.document.pdf"
-                        message="PDF Document"
-                      />
+                      <Trans id="user.content.document.pdf" />
                     </span>
                     <Badge
                       variant="outline"
@@ -163,10 +154,7 @@ export const UserConversationContent: FC<{
                 <div className="flex items-center gap-2">
                   <FileText className="h-4 w-4 text-green-600 dark:text-green-400" />
                   <span className="text-sm font-medium">
-                    <Trans
-                      id="user.content.document.text"
-                      message="Text Document"
-                    />
+                    <Trans id="user.content.document.text" />
                   </span>
                   <Badge
                     variant="outline"
@@ -201,20 +189,14 @@ export const UserConversationContent: FC<{
           <div className="flex items-center gap-2">
             <AlertCircle className="h-4 w-4 text-red-600 dark:text-red-400" />
             <CardTitle className="text-sm font-medium">
-              <Trans
-                id="user.content.unsupported_document"
-                message="Unsupported Document"
-              />
+              <Trans id="user.content.unsupported_document" />
             </CardTitle>
             <Badge variant="destructive">
-              <Trans id="common.error" message="Error" />
+              <Trans id="common.error" />
             </Badge>
           </div>
           <CardDescription className="text-xs">
-            <Trans
-              id="user.content.unsupported_document.description"
-              message="Document type not supported for display"
-            />
+            <Trans id="user.content.unsupported_document.description" />
           </CardDescription>
         </CardHeader>
       </Card>

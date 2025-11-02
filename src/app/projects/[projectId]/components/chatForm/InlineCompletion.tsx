@@ -107,7 +107,7 @@ export const InlineCompletion: FC<{
 
   return (
     <div
-      className="absolute w-full max-w-sm sm:max-w-md lg:max-w-lg xl:max-w-xl"
+      className="absolute w-full max-w-sm sm:max-w-md lg:max-w-lg xl:max-w-xl z-50"
       style={{
         top: position.top,
         left: position.left,

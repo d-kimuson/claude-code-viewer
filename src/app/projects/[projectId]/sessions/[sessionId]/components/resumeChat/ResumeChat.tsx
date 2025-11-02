@@ -28,43 +28,39 @@ export const ResumeChat: FC<{
       return i18n._({
         id: "chat.placeholder.resume.enter",
         message:
-          "Type your message... (Start with / for commands, @ for files, Enter to send, or schedule for later)",
+          "Type your message... (Start with / for commands, @ for files, Enter to send)",
       });
     }
     if (behavior === "command-enter-send") {
       return i18n._({
         id: "chat.placeholder.resume.command_enter",
         message:
-          "Type your message... (Start with / for commands, @ for files, Command+Enter to send, or schedule for later)",
+          "Type your message... (Start with / for commands, @ for files, Command+Enter to send)",
       });
     }
     return i18n._({
       id: "chat.placeholder.resume.shift_enter",
       message:
-        "Type your message... (Start with / for commands, @ for files, Shift+Enter to send, or schedule for later)",
+        "Type your message... (Start with / for commands, @ for files, Shift+Enter to send)",
     });
   };
 
-  const buttonText = <Trans id="chat.resume" message="Resume" />;
+  const buttonText = <Trans id="chat.resume" />;
 
   return (
-    <div className="relative mt-8 mb-6">
-      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-border to-transparent h-px top-0" />
-      <div className="pt-8">
-        <ChatInput
-          projectId={projectId}
-          onSubmit={handleSubmit}
-          isPending={createSessionProcess.isPending}
-          error={createSessionProcess.error}
-          placeholder={getPlaceholder()}
-          buttonText={buttonText}
-          minHeight="min-h-[120px]"
-          containerClassName=""
-          buttonSize="lg"
-          enableScheduledSend={true}
-          baseSessionId={sessionId}
-        />
-      </div>
+    <div className="w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 pb-3">
+      <ChatInput
+        projectId={projectId}
+        onSubmit={handleSubmit}
+        isPending={createSessionProcess.isPending}
+        error={createSessionProcess.error}
+        placeholder={getPlaceholder()}
+        buttonText={buttonText}
+        containerClassName=""
+        buttonSize="default"
+        enableScheduledSend={true}
+        baseSessionId={sessionId}
+      />
     </div>
   );
 };

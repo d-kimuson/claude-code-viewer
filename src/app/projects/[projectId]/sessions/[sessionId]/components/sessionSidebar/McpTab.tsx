@@ -35,7 +35,7 @@ export const McpTab: FC<{ projectId: string }> = ({ projectId }) => {
       <div className="p-3 border-b border-sidebar-border">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-semibold text-sidebar-foreground">
-            <Trans id="mcp.title" message="MCP Servers" />
+            <Trans id="mcp.title" />
           </h2>
           <Button
             onClick={handleReload}
@@ -65,7 +65,6 @@ export const McpTab: FC<{ projectId: string }> = ({ projectId }) => {
           <div className="text-sm text-red-500">
             <Trans
               id="mcp.error.load_failed"
-              message="Failed to load MCP servers: {error}"
               values={{ error: (error as Error).message }}
             />
           </div>
@@ -73,7 +72,7 @@ export const McpTab: FC<{ projectId: string }> = ({ projectId }) => {
 
         {mcpData && mcpData.servers.length === 0 && (
           <div className="text-sm text-muted-foreground text-center py-8">
-            <Trans id="mcp.no.servers" message="No MCP servers found" />
+            <Trans id="mcp.no.servers" />
           </div>
         )}
 

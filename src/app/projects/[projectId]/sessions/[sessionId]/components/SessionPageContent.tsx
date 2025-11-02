@@ -2,27 +2,24 @@ import type { FC } from "react";
 import { Suspense, useState } from "react";
 
 import { Loading } from "@/components/Loading";
-import { SessionPageMain } from "./SessionPageMain";
-import { SessionSidebar } from "./sessionSidebar/SessionSidebar";
+import { SessionPageMainWrapper } from "./SessionPageMainWrapper";
+import type { Tab } from "./sessionSidebar/schema";
 
 export const SessionPageContent: FC<{
   projectId: string;
   sessionId: string;
-}> = ({ projectId, sessionId }) => {
+  tab: Tab;
+}> = ({ projectId, sessionId, tab }) => {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   return (
     <div className="flex h-screen max-h-screen overflow-hidden">
-      <SessionSidebar
-        currentSessionId={sessionId}
-        projectId={projectId}
-        isMobileOpen={isMobileSidebarOpen}
-        onMobileOpenChange={setIsMobileSidebarOpen}
-      />
       <Suspense fallback={<Loading />}>
-        <SessionPageMain
+        <SessionPageMainWrapper
           projectId={projectId}
           sessionId={sessionId}
+          tab={tab}
+          isMobileSidebarOpen={isMobileSidebarOpen}
           setIsMobileSidebarOpen={setIsMobileSidebarOpen}
         />
       </Suspense>

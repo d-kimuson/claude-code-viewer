@@ -17,10 +17,7 @@ export const ProjectsPage: FC = () => {
               Claude Code Viewer
             </h1>
             <p className="text-muted-foreground">
-              <Trans
-                id="projects.page.description"
-                message="Browse your Claude Code conversation history and project interactions"
-              />
+              <Trans id="projects.page.description" />
             </p>
           </header>
 
@@ -28,7 +25,7 @@ export const ProjectsPage: FC = () => {
             <section>
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xl font-semibold">
-                  <Trans id="projects.page.title" message="Your Projects" />
+                  <Trans id="projects.page.title" />
                 </h2>
                 <SetupProjectDialog />
               </div>
@@ -36,10 +33,7 @@ export const ProjectsPage: FC = () => {
                 fallback={
                   <div className="flex items-center justify-center py-12">
                     <div className="text-muted-foreground">
-                      <Trans
-                        id="projects.page.loading"
-                        message="Loading projects..."
-                      />
+                      <Trans id="projects.page.loading" />
                     </div>
                   </div>
                 }

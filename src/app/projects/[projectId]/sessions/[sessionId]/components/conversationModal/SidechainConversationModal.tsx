@@ -64,8 +64,7 @@ export const SidechainConversationModal: FC<
             <div className="flex items-center gap-2 overflow-hidden w-full">
               <Eye className="h-4 w-4 flex-shrink-0 text-primary" />
               <span className="overflow-hidden text-ellipsis text-left flex-1">
-                <Trans id="assistant.tool.view_task" message="View Task" />:{" "}
-                {title}
+                <Trans id="assistant.tool.view_task" />: {title}
               </span>
               <Badge
                 variant="secondary"
@@ -94,7 +93,7 @@ export const SidechainConversationModal: FC<
               </DialogTitle>
               <DialogDescription className="text-xs flex items-center gap-2 flex-wrap">
                 <span className="flex items-center gap-1">
-                  <Trans id="assistant.tool.task_id" message="Task ID" />:{" "}
+                  <Trans id="assistant.tool.task_id" />:{" "}
                   <code className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">
                     {rootUuid.slice(0, 8)}
                   </code>
@@ -103,7 +102,6 @@ export const SidechainConversationModal: FC<
                 <span>
                   <Trans
                     id="assistant.tool.message_count"
-                    message="{count} messages"
                     values={{ count: messageCount }}
                   />
                 </span>

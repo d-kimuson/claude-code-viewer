@@ -21,6 +21,7 @@ import { McpTab } from "./McpTab";
 import { MobileSidebar } from "./MobileSidebar";
 import { SchedulerTab } from "./SchedulerTab";
 import { SessionsTab } from "./SessionsTab";
+import type { Tab } from "./schema";
 
 export const SessionSidebar: FC<{
   currentSessionId: string;
@@ -28,21 +29,21 @@ export const SessionSidebar: FC<{
   className?: string;
   isMobileOpen?: boolean;
   onMobileOpenChange?: (open: boolean) => void;
+  initialTab: Tab;
 }> = ({
   currentSessionId,
   projectId,
   className,
   isMobileOpen = false,
   onMobileOpenChange,
+  initialTab,
 }) => {
   const additionalTabs: SidebarTab[] = useMemo(
     () => [
       {
         id: "sessions",
         icon: MessageSquareIcon,
-        title: (
-          <Trans id="sidebar.show.session.list" message="Show session list" />
-        ),
+        title: <Trans id="sidebar.show.session.list" />,
         content: (
           <Suspense fallback={<Loading />}>
             <SessionsTab
@@ -55,23 +56,13 @@ export const SessionSidebar: FC<{
       {
         id: "mcp",
         icon: PlugIcon,
-        title: (
-          <Trans
-            id="sidebar.show.mcp.settings"
-            message="Show MCP server settings"
-          />
-        ),
+        title: <Trans id="sidebar.show.mcp.settings" />,
         content: <McpTab projectId={projectId} />,
       },
       {
         id: "scheduler",
         icon: CalendarClockIcon,
-        title: (
-          <Trans
-            id="sidebar.show.scheduler.jobs"
-            message="Show scheduler jobs"
-          />
-        ),
+        title: <Trans id="sidebar.show.scheduler.jobs" />,
         content: (
           <SchedulerTab projectId={projectId} sessionId={currentSessionId} />
         ),
@@ -87,7 +78,7 @@ export const SessionSidebar: FC<{
         <GlobalSidebar
           projectId={projectId}
           additionalTabs={additionalTabs}
-          defaultActiveTab="sessions"
+          defaultActiveTab={initialTab}
           headerButton={
             <TooltipProvider>
               <Tooltip>
@@ -101,10 +92,7 @@ export const SessionSidebar: FC<{
                 </TooltipTrigger>
                 <TooltipContent side="right">
                   <p>
-                    <Trans
-                      id="sidebar.back.to.projects"
-                      message="Back to projects"
-                    />
+                    <Trans id="sidebar.back.to.projects" />
                   </p>
                 </TooltipContent>
               </Tooltip>

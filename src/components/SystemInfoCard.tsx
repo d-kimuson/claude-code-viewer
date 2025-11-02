@@ -26,43 +26,20 @@ const getFeatureInfo = (featureName: string): FeatureInfo => {
   switch (featureName) {
     case "tool-approval":
       return {
-        title: (
-          <Trans
-            id="system_info.feature.tool_approval.title"
-            message="Tool Execution Approval"
-          />
-        ),
+        title: <Trans id="system_info.feature.tool_approval.title" />,
         description: (
-          <Trans
-            id="system_info.feature.tool_approval.description"
-            message="Allows you to approve or reject tool executions before Claude runs them, giving you full control over actions"
-          />
+          <Trans id="system_info.feature.tool_approval.description" />
         ),
       };
     case "agent-sdk":
       return {
-        title: (
-          <Trans
-            id="system_info.feature.agent_sdk.title"
-            message="Enhanced Agent Mode"
-          />
-        ),
-        description: (
-          <Trans
-            id="system_info.feature.agent_sdk.description"
-            message="Uses @anthropic-ai/claude-agent-sdk instead of @anthropic-ai/claude-code for enhanced capabilities"
-          />
-        ),
+        title: <Trans id="system_info.feature.agent_sdk.title" />,
+        description: <Trans id="system_info.feature.agent_sdk.description" />,
       };
     default:
       return {
         title: featureName,
-        description: (
-          <Trans
-            id="system_info.feature.unknown.description"
-            message="Feature information not available"
-          />
-        ),
+        description: <Trans id="system_info.feature.unknown.description" />,
       };
   }
 };
@@ -84,13 +61,10 @@ export const SystemInfoCard: FC = () => {
     <div className="h-full flex flex-col">
       <div className="border-b border-sidebar-border p-4">
         <h2 className="font-semibold text-lg">
-          <Trans id="system_info.title" message="System Information" />
+          <Trans id="system_info.title" />
         </h2>
         <p className="text-xs text-sidebar-foreground/70">
-          <Trans
-            id="system_info.description"
-            message="Version and feature information"
-          />
+          <Trans id="system_info.description" />
         </p>
       </div>
 
@@ -98,14 +72,11 @@ export const SystemInfoCard: FC = () => {
         {/* Claude Code Viewer Version */}
         <div className="space-y-3">
           <h3 className="font-medium text-sm text-sidebar-foreground">
-            <Trans
-              id="system_info.viewer_version"
-              message="Claude Code Viewer"
-            />
+            <Trans id="system_info.viewer_version" />
           </h3>
           <div className="flex justify-between items-center pl-2">
             <span className="text-xs text-sidebar-foreground/70">
-              <Trans id="system_info.version_label" message="Version" />
+              <Trans id="system_info.version_label" />
             </span>
             <Badge variant="secondary" className="text-xs font-mono">
               v{versionData?.version || "Unknown"}
@@ -116,17 +87,17 @@ export const SystemInfoCard: FC = () => {
         {/* Claude Code Information */}
         <div className="space-y-3">
           <h3 className="font-medium text-sm text-sidebar-foreground">
-            <Trans id="system_info.claude_code" message="Claude Code" />
+            <Trans id="system_info.claude_code" />
           </h3>
           <div className="space-y-2 pl-2">
             <div className="space-y-1">
               <div className="text-xs text-sidebar-foreground/70">
-                <Trans id="system_info.executable_path" message="Executable" />
+                <Trans id="system_info.executable_path" />
               </div>
               <div className="text-xs text-sidebar-foreground font-mono break-all">
                 {claudeCodeMetaData?.executablePath || (
                   <span className="text-sidebar-foreground/50">
-                    <Trans id="system_info.unknown" message="Unknown" />
+                    <Trans id="system_info.unknown" />
                   </span>
                 )}
               </div>
@@ -134,11 +105,11 @@ export const SystemInfoCard: FC = () => {
 
             <div className="flex justify-between items-center pt-1">
               <span className="text-xs text-sidebar-foreground/70">
-                <Trans id="system_info.version_label" message="Version" />
+                <Trans id="system_info.version_label" />
               </span>
               <Badge variant="secondary" className="text-xs font-mono">
                 {claudeCodeMetaData?.version || (
-                  <Trans id="system_info.unknown" message="Unknown" />
+                  <Trans id="system_info.unknown" />
                 )}
               </Badge>
             </div>
@@ -150,10 +121,7 @@ export const SystemInfoCard: FC = () => {
           <Collapsible open={isExpanded} onOpenChange={setIsExpanded}>
             <CollapsibleTrigger className="flex w-full items-center justify-between group">
               <h3 className="font-medium text-sm text-sidebar-foreground">
-                <Trans
-                  id="system_info.available_features"
-                  message="Available Features"
-                />
+                <Trans id="system_info.available_features" />
               </h3>
               {isExpanded ? (
                 <ChevronDown className="h-4 w-4 text-sidebar-foreground/70 group-hover:text-sidebar-foreground transition-colors" />

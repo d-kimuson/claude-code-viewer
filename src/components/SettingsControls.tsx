@@ -121,19 +121,13 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
             htmlFor={checkboxId}
             className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
           >
-            <Trans
-              id="settings.session.hide_no_user_message"
-              message="Hide sessions without user messages"
-            />
+            <Trans id="settings.session.hide_no_user_message" />
           </label>
         )}
       </div>
       {showDescriptions && (
         <p className="text-xs text-muted-foreground mt-1 ml-6">
-          <Trans
-            id="settings.session.hide_no_user_message.description"
-            message="Only show sessions that contain user commands or messages"
-          />
+          <Trans id="settings.session.hide_no_user_message.description" />
         </p>
       )}
 
@@ -148,19 +142,13 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
             htmlFor={`${checkboxId}-unify`}
             className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
           >
-            <Trans
-              id="settings.session.unify_same_title"
-              message="Unify sessions with same title"
-            />
+            <Trans id="settings.session.unify_same_title" />
           </label>
         )}
       </div>
       {showDescriptions && (
         <p className="text-xs text-muted-foreground mt-1 ml-6">
-          <Trans
-            id="settings.session.unify_same_title.description"
-            message="Show only the latest session when multiple sessions have the same title"
-          />
+          <Trans id="settings.session.unify_same_title.description" />
         </p>
       )}
 
@@ -170,10 +158,7 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
             htmlFor={enterKeyBehaviorId}
             className="text-sm font-medium leading-none"
           >
-            <Trans
-              id="settings.input.enter_key_behavior"
-              message="Enter Key Behavior"
-            />
+            <Trans id="settings.input.enter_key_behavior" />
           </label>
         )}
         <Select
@@ -185,31 +170,19 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="shift-enter-send">
-              <Trans
-                id="settings.input.enter_key_behavior.shift_enter"
-                message="Shift+Enter to send (default)"
-              />
+              <Trans id="settings.input.enter_key_behavior.shift_enter" />
             </SelectItem>
             <SelectItem value="enter-send">
-              <Trans
-                id="settings.input.enter_key_behavior.enter"
-                message="Enter to send"
-              />
+              <Trans id="settings.input.enter_key_behavior.enter" />
             </SelectItem>
             <SelectItem value="command-enter-send">
-              <Trans
-                id="settings.input.enter_key_behavior.command_enter"
-                message="Command+Enter to send"
-              />
+              <Trans id="settings.input.enter_key_behavior.command_enter" />
             </SelectItem>
           </SelectContent>
         </Select>
         {showDescriptions && (
           <p className="text-xs text-muted-foreground mt-1">
-            <Trans
-              id="settings.input.enter_key_behavior.description"
-              message="Choose how the Enter key behaves in message input"
-            />
+            <Trans id="settings.input.enter_key_behavior.description" />
           </p>
         )}
       </div>
@@ -220,7 +193,7 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
             htmlFor={permissionModeId}
             className="text-sm font-medium leading-none"
           >
-            <Trans id="settings.permission.mode" message="Permission Mode" />
+            <Trans id="settings.permission.mode" />
           </label>
         )}
         <Select
@@ -233,45 +206,27 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="default">
-              <Trans
-                id="settings.permission.mode.default"
-                message="Default (Ask permission)"
-              />
+              <Trans id="settings.permission.mode.default" />
             </SelectItem>
             <SelectItem value="acceptEdits">
-              <Trans
-                id="settings.permission.mode.accept_edits"
-                message="Accept Edits (Auto-approve file edits)"
-              />
+              <Trans id="settings.permission.mode.accept_edits" />
             </SelectItem>
             <SelectItem value="bypassPermissions">
-              <Trans
-                id="settings.permission.mode.bypass_permissions"
-                message="Bypass Permissions (No prompts)"
-              />
+              <Trans id="settings.permission.mode.bypass_permissions" />
             </SelectItem>
             <SelectItem value="plan">
-              <Trans
-                id="settings.permission.mode.plan"
-                message="Plan Mode (Planning only)"
-              />
+              <Trans id="settings.permission.mode.plan" />
             </SelectItem>
           </SelectContent>
         </Select>
         {showDescriptions && isToolApprovalAvailable && (
           <p className="text-xs text-muted-foreground mt-1">
-            <Trans
-              id="settings.permission.mode.description"
-              message="Control how Claude Code handles permission requests for file operations"
-            />
+            <Trans id="settings.permission.mode.description" />
           </p>
         )}
         {showDescriptions && !isToolApprovalAvailable && (
           <p className="text-xs text-destructive mt-1">
-            <Trans
-              id="settings.permission.mode.unavailable"
-              message="This feature is not available in your Claude Code version. All tools will be automatically approved."
-            />
+            <Trans id="settings.permission.mode.unavailable" />
           </p>
         )}
       </div>
@@ -282,7 +237,7 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
             htmlFor={localeId}
             className="text-sm font-medium leading-none"
           >
-            <Trans id="settings.locale" message="Language" />
+            <Trans id="settings.locale" />
           </label>
         )}
         <Select
@@ -294,19 +249,16 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="ja">
-              <Trans id="settings.locale.ja" message="日本語" />
+              <Trans id="settings.locale.ja" />
             </SelectItem>
             <SelectItem value="en">
-              <Trans id="settings.locale.en" message="English" />
+              <Trans id="settings.locale.en" />
             </SelectItem>
           </SelectContent>
         </Select>
         {showDescriptions && (
           <p className="text-xs text-muted-foreground mt-1">
-            <Trans
-              id="settings.locale.description"
-              message="Choose your preferred language"
-            />
+            <Trans id="settings.locale.description" />
           </p>
         )}
       </div>
@@ -314,7 +266,7 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
       <div className="space-y-2">
         {showLabels && (
           <label htmlFor={themeId} className="text-sm font-medium leading-none">
-            <Trans id="settings.theme" message="Theme" />
+            <Trans id="settings.theme" />
           </label>
         )}
         <Select value={theme ?? "system"} onValueChange={handleThemeChange}>
@@ -323,22 +275,19 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="light">
-              <Trans id="settings.theme.light" message="Light" />
+              <Trans id="settings.theme.light" />
             </SelectItem>
             <SelectItem value="dark">
-              <Trans id="settings.theme.dark" message="Dark" />
+              <Trans id="settings.theme.dark" />
             </SelectItem>
             <SelectItem value="system">
-              <Trans id="settings.theme.system" message="System" />
+              <Trans id="settings.theme.system" />
             </SelectItem>
           </SelectContent>
         </Select>
         {showDescriptions && (
           <p className="text-xs text-muted-foreground mt-1">
-            <Trans
-              id="settings.theme.description"
-              message="Choose your preferred color theme"
-            />
+            <Trans id="settings.theme.description" />
           </p>
         )}
       </div>

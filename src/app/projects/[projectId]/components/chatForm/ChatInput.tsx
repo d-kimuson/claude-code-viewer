@@ -7,7 +7,14 @@ import {
   SparklesIcon,
   XIcon,
 } from "lucide-react";
-import { type FC, useCallback, useId, useRef, useState } from "react";
+import {
+  type FC,
+  useCallback,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+} from "react";
 import { toast } from "sonner";
 import { Button } from "../../../../../components/ui/button";
 import { Input } from "../../../../../components/ui/input";
@@ -59,13 +66,28 @@ export const ChatInput: FC<ChatInputProps> = ({
   error,
   placeholder,
   buttonText,
-  minHeight = "min-h-[100px]",
+  minHeight: minHeightProp = "min-h-[64px]",
   containerClassName = "",
   disabled = false,
   buttonSize = "lg",
   enableScheduledSend = false,
   baseSessionId = null,
 }) => {
+  // Parse minHeight prop to get pixel value (default to 48px for 1.5 lines)
+  // Supports both "200px" and Tailwind format like "min-h-[200px]"
+  const parseMinHeight = (value: string): number => {
+    // Try to extract pixel value using regex (handles both formats)
+    const match = value.match(/(\d+)px/);
+    if (match?.[1]) {
+      const parsed = parseInt(match[1], 10);
+      if (!Number.isNaN(parsed)) {
+        return parsed;
+      }
+    }
+    // Fallback to default
+    return 48;
+  };
+  const minHeightValue = parseMinHeight(minHeightProp);
   const { i18n } = useLingui();
   const [message, setMessage] = useState("");
   const [attachedFiles, setAttachedFiles] = useState<
@@ -97,6 +119,28 @@ export const ChatInput: FC<ChatInputProps> = ({
   const helpId = useId();
   const { config } = useConfig();
   const createSchedulerJob = useCreateSchedulerJob();
+
+  // Auto-resize textarea based on content
+  // biome-ignore lint/correctness/useExhaustiveDependencies: message is intentionally included to trigger resize
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+
+    // Reset height to auto to get the correct scrollHeight
+    textarea.style.height = "auto";
+    // Set height to scrollHeight, but respect min/max constraints
+    const scrollHeight = textarea.scrollHeight;
+    const maxHeight = 200; // Maximum height in pixels (approx 5 lines)
+    textarea.style.height = `${Math.max(minHeightValue, Math.min(scrollHeight, maxHeight))}px`;
+  }, [message, minHeightValue]);
+
+  // Set initial height to 1 line on mount
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+    // Set initial height to minHeight value
+    textarea.style.height = `${minHeightValue}px`;
+  }, [minHeightValue]);
 
   const handleSubmit = async () => {
     if (!message.trim() && attachedFiles.length === 0) return;
@@ -328,10 +372,7 @@ export const ChatInput: FC<ChatInputProps> = ({
         <div className="flex items-center gap-2.5 px-4 py-3 text-sm text-red-600 dark:text-red-400 bg-gradient-to-r from-red-50 to-red-100/50 dark:from-red-950/30 dark:to-red-900/20 border border-red-200/50 dark:border-red-800/50 rounded-xl mb-4 animate-in fade-in slide-in-from-top-2 duration-300 shadow-sm">
           <AlertCircleIcon className="w-4 h-4 shrink-0 mt-0.5" />
           <span className="font-medium">
-            <Trans
-              id="chat.error.send_failed"
-              message="Failed to send message. Please try again."
-            />
+            <Trans id="chat.error.send_failed" />
           </span>
         </div>
       )}
@@ -362,7 +403,10 @@ export const ChatInput: FC<ChatInputProps> = ({
               }}
               onKeyDown={handleKeyDown}
               placeholder={placeholder}
-              className={`${minHeight} resize-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent px-5 py-4 text-lg transition-all duration-200 placeholder:text-muted-foreground/60`}
+              className="resize-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent px-5 py-2 text-base transition-all duration-200 placeholder:text-muted-foreground/60 overflow-y-auto leading-6"
+              style={{
+                minHeight: `${minHeightValue}px`,
+              }}
               disabled={isPending || disabled}
               aria-label={i18n._("Message input with completion support")}
               aria-describedby={helpId}
@@ -394,7 +438,7 @@ export const ChatInput: FC<ChatInputProps> = ({
             </div>
           )}
 
-          <div className="flex items-center justify-between gap-3 px-5 py-3 bg-muted/30 border-t border-border/40">
+          <div className="flex items-center justify-between gap-3 px-5 py-1 bg-muted/30 border-t border-border/40">
             <div className="flex items-center gap-2">
               <input
                 ref={fileInputRef}
@@ -413,7 +457,7 @@ export const ChatInput: FC<ChatInputProps> = ({
               >
                 <PaperclipIcon className="w-4 h-4" />
                 <span className="text-xs">
-                  <Trans id="chat.attach_file" message="Attach" />
+                  <Trans id="chat.attach_file" />
                 </span>
               </Button>
               <span
@@ -425,10 +469,7 @@ export const ChatInput: FC<ChatInputProps> = ({
               {(message.startsWith("/") || message.includes("@")) && (
                 <span className="text-xs text-blue-600 dark:text-blue-400 font-medium flex items-center gap-1">
                   <SparklesIcon className="w-3 h-3" />
-                  <Trans
-                    id="chat.autocomplete.active"
-                    message="Autocomplete active"
-                  />
+                  <Trans id="chat.autocomplete.active" />
                 </span>
               )}
             </div>
@@ -437,7 +478,7 @@ export const ChatInput: FC<ChatInputProps> = ({
               {enableScheduledSend && (
                 <div className="flex items-center gap-2">
                   <Label htmlFor="send-mode" className="text-xs sr-only">
-                    <Trans id="chat.send_mode.label" message="Send mode" />
+                    <Trans id="chat.send_mode.label" />
                   </Label>
                   <Select
                     value={sendMode}
@@ -454,16 +495,10 @@ export const ChatInput: FC<ChatInputProps> = ({
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="immediate">
-                        <Trans
-                          id="chat.send_mode.immediate"
-                          message="Send now"
-                        />
+                        <Trans id="chat.send_mode.immediate" />
                       </SelectItem>
                       <SelectItem value="scheduled">
-                        <Trans
-                          id="chat.send_mode.scheduled"
-                          message="Schedule send"
-                        />
+                        <Trans id="chat.send_mode.scheduled" />
                       </SelectItem>
                     </SelectContent>
                   </Select>
@@ -474,10 +509,7 @@ export const ChatInput: FC<ChatInputProps> = ({
                         htmlFor="scheduled-time"
                         className="text-xs sr-only"
                       >
-                        <Trans
-                          id="chat.send_mode.scheduled_time"
-                          message="Scheduled time"
-                        />
+                        <Trans id="chat.send_mode.scheduled_time" />
                       </Label>
                       <Input
                         id="scheduled-time"
@@ -506,10 +538,7 @@ export const ChatInput: FC<ChatInputProps> = ({
                   <>
                     <LoaderIcon className="w-4 h-4 animate-spin" />
                     <span>
-                      <Trans
-                        id="chat.status.processing"
-                        message="Processing..."
-                      />
+                      <Trans id="chat.status.processing" />
                     </span>
                   </>
                 ) : (

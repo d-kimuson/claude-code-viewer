@@ -1,5 +1,5 @@
 import { Trans } from "@lingui/react";
-import { Link } from "@tanstack/react-router";
+import { Link, useSearch } from "@tanstack/react-router";
 import { useAtomValue } from "jotai";
 import { MessageSquareIcon, PlusIcon } from "lucide-react";
 import type { FC } from "react";
@@ -28,6 +28,12 @@ export const SessionsTab: FC<{
 
   const sessionProcesses = useAtomValue(sessionProcessesAtom);
   const { config } = useConfig();
+  const search = useSearch({
+    from: "/projects/$projectId/sessions/$sessionId/",
+  });
+
+  // Preserve current tab state or default to "sessions"
+  const currentTab = search.tab ?? "sessions";
 
   // Sort sessions: Running > Paused > Others, then by lastModifiedAt (newest first)
   const sortedSessions = [...sessions].sort((a, b) => {
@@ -67,7 +73,7 @@ export const SessionsTab: FC<{
       <div className="border-b border-sidebar-border p-4">
         <div className="flex items-center justify-between mb-2">
           <h2 className="font-semibold text-lg">
-            <Trans id="sessions.title" message="Sessions" />
+            <Trans id="sessions.title" />
           </h2>
           <NewChatModal
             projectId={projectId}
@@ -83,13 +89,13 @@ export const SessionsTab: FC<{
                 }
               >
                 <PlusIcon className="w-3.5 h-3.5" />
-                <Trans id="sessions.new" message="New" />
+                <Trans id="sessions.new" />
               </Button>
             }
           />
         </div>
         <p className="text-xs text-sidebar-foreground/70">
-          {sessions.length} <Trans id="sessions.total" message="total" />
+          {sessions.length} <Trans id="sessions.total" />
         </p>
       </div>
 
@@ -112,6 +118,7 @@ export const SessionsTab: FC<{
               key={session.id}
               to={"/projects/$projectId/sessions/$sessionId"}
               params={{ projectId, sessionId: session.id }}
+              search={{ tab: currentTab }}
               className={cn(
                 "block rounded-lg p-2.5 transition-all duration-200 hover:bg-blue-50/60 dark:hover:bg-blue-950/40 hover:border-blue-300/60 dark:hover:border-blue-700/60 hover:shadow-sm border border-sidebar-border/40 bg-sidebar/30",
                 isActive &&
@@ -133,9 +140,9 @@ export const SessionsTab: FC<{
                       )}
                     >
                       {isRunning ? (
-                        <Trans id="session.status.running" message="Running" />
+                        <Trans id="session.status.running" />
                       ) : (
-                        <Trans id="session.status.paused" message="Paused" />
+                        <Trans id="session.status.paused" />
                       )}
                     </Badge>
                   )}
@@ -170,9 +177,9 @@ export const SessionsTab: FC<{
               className="w-full"
             >
               {isFetchingNextPage ? (
-                <Trans id="common.loading" message="Loading..." />
+                <Trans id="common.loading" />
               ) : (
-                <Trans id="sessions.load.more" message="Load More" />
+                <Trans id="sessions.load.more" />
               )}
             </Button>
           </div>

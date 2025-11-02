@@ -87,17 +87,14 @@ export const NotificationSettings: FC<NotificationSettingsProps> = ({
               onClick={handleTestSound}
               className="px-3"
             >
-              <Trans id="notification.test" message="Test" />
+              <Trans id="notification.test" />
             </Button>
           )}
         </div>
 
         {showDescriptions && (
           <p className="text-xs text-muted-foreground">
-            <Trans
-              id="notification.description"
-              message="Select a sound to play when a task completes"
-            />
+            <Trans id="notification.description" />
           </p>
         )}
       </div>

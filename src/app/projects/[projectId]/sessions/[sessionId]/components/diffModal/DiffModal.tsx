@@ -50,11 +50,10 @@ const DiffSummaryComponent: FC<DiffSummaryProps> = ({ summary, className }) => {
           <FileText className="h-4 w-4 text-gray-600 dark:text-gray-400" />
           <span className="font-medium">
             <span className="hidden sm:inline">
-              {summary.filesChanged}{" "}
-              <Trans id="diff.files.changed" message="files changed" />
+              {summary.filesChanged} <Trans id="diff.files.changed" />
             </span>
             <span className="sm:hidden">
-              {summary.filesChanged} <Trans id="diff.files" message="files" />
+              {summary.filesChanged} <Trans id="diff.files" />
             </span>
           </span>
         </div>
@@ -417,7 +416,7 @@ export const DiffModal: FC<DiffModalProps> = ({
             {isDiffLoading ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                <Trans id="common.loading" message="Loading..." />
+                <Trans id="common.loading" />
               </>
             ) : (
               <RefreshCcwIcon className="w-4 h-4" />
@@ -467,7 +466,7 @@ export const DiffModal: FC<DiffModalProps> = ({
                   className="w-full flex items-center justify-between p-2 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors rounded-t-lg"
                 >
                   <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                    <Trans id="diff.commit.changes" message="Commit Changes" />
+                    <Trans id="diff.commit.changes" />
                   </span>
                   {isCommitSectionExpanded ? (
                     <ChevronUp className="h-4 w-4 text-gray-600 dark:text-gray-400" />
@@ -488,7 +487,7 @@ export const DiffModal: FC<DiffModalProps> = ({
                           onClick={handleSelectAll}
                           disabled={commitMutation.isPending}
                         >
-                          <Trans id="diff.select.all" message="Select All" />
+                          <Trans id="diff.select.all" />
                         </Button>
                         <Button
                           size="sm"
@@ -496,10 +495,7 @@ export const DiffModal: FC<DiffModalProps> = ({
                           onClick={handleDeselectAll}
                           disabled={commitMutation.isPending}
                         >
-                          <Trans
-                            id="diff.deselect.all"
-                            message="Deselect All"
-                          />
+                          <Trans id="diff.deselect.all" />
                         </Button>
                         <span className="text-sm text-gray-600 dark:text-gray-400">
                           {selectedCount} / {diffData.data.files.length} files
@@ -539,10 +535,7 @@ export const DiffModal: FC<DiffModalProps> = ({
                         htmlFor={commitMessageId}
                         className="text-sm font-medium text-gray-700 dark:text-gray-300"
                       >
-                        <Trans
-                          id="diff.commit.message"
-                          message="Commit message"
-                        />
+                        <Trans id="diff.commit.message" />
                       </label>
                       <Textarea
                         id={commitMessageId}
@@ -565,13 +558,10 @@ export const DiffModal: FC<DiffModalProps> = ({
                         {commitMutation.isPending ? (
                           <>
                             <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                            <Trans
-                              id="diff.committing"
-                              message="Committing..."
-                            />
+                            <Trans id="diff.committing" />
                           </>
                         ) : (
-                          <Trans id="diff.commit" message="Commit" />
+                          <Trans id="diff.commit" />
                         )}
                       </Button>
                       <Button
@@ -583,10 +573,10 @@ export const DiffModal: FC<DiffModalProps> = ({
                         {pushMutation.isPending ? (
                           <>
                             <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                            <Trans id="diff.pushing" message="Pushing..." />
+                            <Trans id="diff.pushing" />
                           </>
                         ) : (
-                          <Trans id="diff.push" message="Push" />
+                          <Trans id="diff.push" />
                         )}
                       </Button>
                       <Button
@@ -600,16 +590,10 @@ export const DiffModal: FC<DiffModalProps> = ({
                         {commitAndPushMutation.isPending ? (
                           <>
                             <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                            <Trans
-                              id="diff.committing.pushing"
-                              message="Committing & Pushing..."
-                            />
+                            <Trans id="diff.committing.pushing" />
                           </>
                         ) : (
-                          <Trans
-                            id="diff.commit.push"
-                            message="Commit & Push"
-                          />
+                          <Trans id="diff.commit.push" />
                         )}
                       </Button>
                       {isCommitDisabled &&
@@ -617,15 +601,9 @@ export const DiffModal: FC<DiffModalProps> = ({
                         !commitAndPushMutation.isPending && (
                           <span className="text-xs text-gray-500 dark:text-gray-400">
                             {selectedCount === 0 ? (
-                              <Trans
-                                id="diff.select.file"
-                                message="Select at least one file"
-                              />
+                              <Trans id="diff.select.file" />
                             ) : (
-                              <Trans
-                                id="diff.enter.message"
-                                message="Enter a commit message"
-                              />
+                              <Trans id="diff.enter.message" />
                             )}
                           </span>
                         )}
@@ -661,7 +639,7 @@ export const DiffModal: FC<DiffModalProps> = ({
             <div className="text-center space-y-2">
               <Loader2 className="w-8 h-8 animate-spin mx-auto" />
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                <Trans id="diff.loading" message="Loading diff..." />
+                <Trans id="diff.loading" />
               </p>
             </div>
           </div>

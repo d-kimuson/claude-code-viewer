@@ -52,7 +52,7 @@ export const ChatActionMenu: FC<ChatActionMenuProps> = ({
           >
             <GitCompareIcon className="w-3.5 h-3.5" />
             <span>
-              <Trans id="control.git" message="Git" />
+              <Trans id="control.git" />
             </span>
           </Button>
         )}
@@ -72,7 +72,7 @@ export const ChatActionMenu: FC<ChatActionMenuProps> = ({
             >
               <PlusIcon className="w-3.5 h-3.5" />
               <span>
-                <Trans id="control.new" message="新規" />
+                <Trans id="control.new" />
               </span>
             </Button>
           }
@@ -126,7 +126,7 @@ export const ChatActionMenu: FC<ChatActionMenuProps> = ({
               <XIcon className="w-3.5 h-3.5" />
             )}
             <span>
-              <Trans id="session.conversation.abort" message="Abort" />
+              <Trans id="session.conversation.abort" />
             </span>
           </Button>
         )}

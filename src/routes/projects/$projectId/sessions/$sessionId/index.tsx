@@ -18,15 +18,8 @@ export const Route = createFileRoute(
   component: RouteComponent,
   notFoundComponent: () => (
     <NotFound
-      message={
-        <Trans id="notfound.session.title" message="Session Not Found" />
-      }
-      description={
-        <Trans
-          id="notfound.session.description"
-          message="The session you are looking for does not exist."
-        />
-      }
+      message={<Trans id="notfound.session.title" />}
+      description={<Trans id="notfound.session.description" />}
     />
   ),
 });

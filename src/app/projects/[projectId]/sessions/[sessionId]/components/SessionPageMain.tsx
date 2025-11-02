@@ -159,7 +159,7 @@ export const SessionPageMain: FC<{
                     </Badge>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <Trans id="control.branch" message="Branch" />
+                    <Trans id="control.branch" />
                   </TooltipContent>
                 </Tooltip>
               )}
@@ -174,7 +174,7 @@ export const SessionPageMain: FC<{
                     </Badge>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <Trans id="control.session_id" message="Session ID" />
+                    <Trans id="control.session_id" />
                   </TooltipContent>
                 </Tooltip>
               )}
@@ -185,7 +185,7 @@ export const SessionPageMain: FC<{
                 className="bg-green-500/10 text-green-900 dark:text-green-200 border-green-500/20 flex-shrink-0 h-6 text-xs"
               >
                 <LoaderIcon className="w-3 h-3 mr-1 animate-spin" />
-                <Trans id="session.conversation.running" message="Running" />
+                <Trans id="session.conversation.running" />
               </Badge>
             )}
             {sessionProcessStatus === "paused" && (
@@ -194,7 +194,7 @@ export const SessionPageMain: FC<{
                 className="bg-orange-500/10 text-orange-900 dark:text-orange-200 border-orange-500/20 flex-shrink-0 h-6 text-xs"
               >
                 <PauseIcon className="w-3 h-3 mr-1" />
-                <Trans id="session.conversation.paused" message="Paused" />
+                <Trans id="session.conversation.paused" />
               </Badge>
             )}
             <Popover>
@@ -212,16 +212,13 @@ export const SessionPageMain: FC<{
                 <div className="space-y-4">
                   <div>
                     <h3 className="font-semibold text-sm mb-2">
-                      <Trans id="control.metadata" message="Metadata" />
+                      <Trans id="control.metadata" />
                     </h3>
                     <div className="space-y-2">
                       {projectPath && (
                         <div className="flex flex-col gap-1">
                           <span className="text-xs text-muted-foreground">
-                            <Trans
-                              id="control.project_path"
-                              message="Project Path"
-                            />
+                            <Trans id="control.project_path" />
                           </span>
                           <Tooltip>
                             <TooltipTrigger asChild>
@@ -238,7 +235,7 @@ export const SessionPageMain: FC<{
                       )}
                       <div className="flex flex-col gap-1">
                         <span className="text-xs text-muted-foreground">
-                          <Trans id="control.session_id" message="Session ID" />
+                          <Trans id="control.session_id" />
                         </span>
                         <Badge
                           variant="secondary"
@@ -250,7 +247,7 @@ export const SessionPageMain: FC<{
                       {currentBranch && (
                         <div className="flex flex-col gap-1">
                           <span className="text-xs text-muted-foreground">
-                            <Trans id="control.branch" message="Branch" />
+                            <Trans id="control.branch" />
                           </span>
                           <Badge
                             variant="secondary"
@@ -288,10 +285,7 @@ export const SessionPageMain: FC<{
                     <div className="absolute inset-0 rounded-full bg-primary/20 animate-ping" />
                   </div>
                   <p className="text-sm text-muted-foreground font-medium animate-pulse">
-                    <Trans
-                      id="session.processing"
-                      message="Claude Code is processing..."
-                    />
+                    <Trans id="session.processing" />
                   </p>
                 </div>
               </div>

@@ -372,10 +372,7 @@ export const ChatInput: FC<ChatInputProps> = ({
         <div className="flex items-center gap-2.5 px-4 py-3 text-sm text-red-600 dark:text-red-400 bg-gradient-to-r from-red-50 to-red-100/50 dark:from-red-950/30 dark:to-red-900/20 border border-red-200/50 dark:border-red-800/50 rounded-xl mb-4 animate-in fade-in slide-in-from-top-2 duration-300 shadow-sm">
           <AlertCircleIcon className="w-4 h-4 shrink-0 mt-0.5" />
           <span className="font-medium">
-            <Trans
-              id="chat.error.send_failed"
-              message="Failed to send message. Please try again."
-            />
+            <Trans id="chat.error.send_failed" />
           </span>
         </div>
       )}
@@ -460,7 +457,7 @@ export const ChatInput: FC<ChatInputProps> = ({
               >
                 <PaperclipIcon className="w-4 h-4" />
                 <span className="text-xs">
-                  <Trans id="chat.attach_file" message="Attach" />
+                  <Trans id="chat.attach_file" />
                 </span>
               </Button>
               <span
@@ -472,10 +469,7 @@ export const ChatInput: FC<ChatInputProps> = ({
               {(message.startsWith("/") || message.includes("@")) && (
                 <span className="text-xs text-blue-600 dark:text-blue-400 font-medium flex items-center gap-1">
                   <SparklesIcon className="w-3 h-3" />
-                  <Trans
-                    id="chat.autocomplete.active"
-                    message="Autocomplete active"
-                  />
+                  <Trans id="chat.autocomplete.active" />
                 </span>
               )}
             </div>
@@ -484,7 +478,7 @@ export const ChatInput: FC<ChatInputProps> = ({
               {enableScheduledSend && (
                 <div className="flex items-center gap-2">
                   <Label htmlFor="send-mode" className="text-xs sr-only">
-                    <Trans id="chat.send_mode.label" message="Send mode" />
+                    <Trans id="chat.send_mode.label" />
                   </Label>
                   <Select
                     value={sendMode}
@@ -501,16 +495,10 @@ export const ChatInput: FC<ChatInputProps> = ({
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="immediate">
-                        <Trans
-                          id="chat.send_mode.immediate"
-                          message="Send now"
-                        />
+                        <Trans id="chat.send_mode.immediate" />
                       </SelectItem>
                       <SelectItem value="scheduled">
-                        <Trans
-                          id="chat.send_mode.scheduled"
-                          message="Schedule send"
-                        />
+                        <Trans id="chat.send_mode.scheduled" />
                       </SelectItem>
                     </SelectContent>
                   </Select>
@@ -521,10 +509,7 @@ export const ChatInput: FC<ChatInputProps> = ({
                         htmlFor="scheduled-time"
                         className="text-xs sr-only"
                       >
-                        <Trans
-                          id="chat.send_mode.scheduled_time"
-                          message="Scheduled time"
-                        />
+                        <Trans id="chat.send_mode.scheduled_time" />
                       </Label>
                       <Input
                         id="scheduled-time"
@@ -553,10 +538,7 @@ export const ChatInput: FC<ChatInputProps> = ({
                   <>
                     <LoaderIcon className="w-4 h-4 animate-spin" />
                     <span>
-                      <Trans
-                        id="chat.status.processing"
-                        message="Processing..."
-                      />
+                      <Trans id="chat.status.processing" />
                     </span>
                   </>
                 ) : (

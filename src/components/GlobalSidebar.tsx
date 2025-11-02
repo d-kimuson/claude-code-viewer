@@ -39,23 +39,15 @@ export const GlobalSidebar: FC<GlobalSidebarProps> = ({
   const settingsTab: SidebarTab = {
     id: "settings",
     icon: SettingsIcon,
-    title: (
-      <Trans
-        id="settings.tab.title"
-        message="Settings for display and notifications"
-      />
-    ),
+    title: <Trans id="settings.tab.title" />,
     content: (
       <div className="h-full flex flex-col">
         <div className="border-b border-sidebar-border p-4">
           <h2 className="font-semibold text-lg">
-            <Trans id="settings.title" message="Settings" />
+            <Trans id="settings.title" />
           </h2>
           <p className="text-xs text-sidebar-foreground/70">
-            <Trans
-              id="settings.description"
-              message="Display and behavior preferences"
-            />
+            <Trans id="settings.description" />
           </p>
         </div>
 
@@ -63,7 +55,7 @@ export const GlobalSidebar: FC<GlobalSidebarProps> = ({
           fallback={
             <div className="flex-1 flex items-center justify-center p-4">
               <div className="text-sm text-sidebar-foreground/70">
-                <Trans id="settings.loading" message="Loading settings..." />
+                <Trans id="settings.loading" />
               </div>
             </div>
           }
@@ -71,20 +63,14 @@ export const GlobalSidebar: FC<GlobalSidebarProps> = ({
           <div className="flex-1 overflow-y-auto p-4 space-y-6">
             <div className="space-y-4">
               <h3 className="font-medium text-sm text-sidebar-foreground">
-                <Trans
-                  id="settings.section.session_display"
-                  message="Session Display"
-                />
+                <Trans id="settings.section.session_display" />
               </h3>
               <SettingsControls openingProjectId={projectId ?? ""} />
             </div>
 
             <div className="space-y-4">
               <h3 className="font-medium text-sm text-sidebar-foreground">
-                <Trans
-                  id="settings.section.notifications"
-                  message="Notifications"
-                />
+                <Trans id="settings.section.notifications" />
               </h3>
               <NotificationSettings />
             </div>
@@ -97,9 +83,7 @@ export const GlobalSidebar: FC<GlobalSidebarProps> = ({
   const systemInfoTab: SidebarTab = {
     id: "system-info",
     icon: InfoIcon,
-    title: (
-      <Trans id="settings.section.system_info" message="System Information" />
-    ),
+    title: <Trans id="settings.section.system_info" />,
     content: (
       <Suspense fallback={<Loading />}>
         <SystemInfoCard />

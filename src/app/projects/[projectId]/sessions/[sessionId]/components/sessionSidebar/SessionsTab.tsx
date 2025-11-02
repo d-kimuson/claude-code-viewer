@@ -73,7 +73,7 @@ export const SessionsTab: FC<{
       <div className="border-b border-sidebar-border p-4">
         <div className="flex items-center justify-between mb-2">
           <h2 className="font-semibold text-lg">
-            <Trans id="sessions.title" message="Sessions" />
+            <Trans id="sessions.title" />
           </h2>
           <NewChatModal
             projectId={projectId}
@@ -89,13 +89,13 @@ export const SessionsTab: FC<{
                 }
               >
                 <PlusIcon className="w-3.5 h-3.5" />
-                <Trans id="sessions.new" message="New" />
+                <Trans id="sessions.new" />
               </Button>
             }
           />
         </div>
         <p className="text-xs text-sidebar-foreground/70">
-          {sessions.length} <Trans id="sessions.total" message="total" />
+          {sessions.length} <Trans id="sessions.total" />
         </p>
       </div>
 
@@ -140,9 +140,9 @@ export const SessionsTab: FC<{
                       )}
                     >
                       {isRunning ? (
-                        <Trans id="session.status.running" message="Running" />
+                        <Trans id="session.status.running" />
                       ) : (
-                        <Trans id="session.status.paused" message="Paused" />
+                        <Trans id="session.status.paused" />
                       )}
                     </Badge>
                   )}
@@ -177,9 +177,9 @@ export const SessionsTab: FC<{
               className="w-full"
             >
               {isFetchingNextPage ? (
-                <Trans id="common.loading" message="Loading..." />
+                <Trans id="common.loading" />
               ) : (
-                <Trans id="sessions.load.more" message="Load More" />
+                <Trans id="sessions.load.more" />
               )}
             </Button>
           </div>

@@ -25,16 +25,10 @@ export const ProjectList: FC = () => {
       <CardContent className="flex flex-col items-center justify-center py-12">
         <FolderIcon className="w-12 h-12 text-muted-foreground mb-4" />
         <h3 className="text-lg font-medium mb-2">
-          <Trans
-            id="project_list.no_projects.title"
-            message="No projects found"
-          />
+          <Trans id="project_list.no_projects.title" />
         </h3>
         <p className="text-muted-foreground text-center max-w-md">
-          <Trans
-            id="project_list.no_projects.description"
-            message="No Claude Code projects found in your ~/.claude/projects directory. Start a conversation with Claude Code to create your first project."
-          />
+          <Trans id="project_list.no_projects.description" />
         </p>
       </CardContent>
     </Card>;
@@ -57,7 +51,7 @@ export const ProjectList: FC = () => {
           </CardHeader>
           <CardContent className="space-y-2">
             <p className="text-sm text-muted-foreground">
-              <Trans id="project_list.last_modified" message="Last modified:" />{" "}
+              <Trans id="project_list.last_modified" />{" "}
               {project.lastModifiedAt
                 ? formatLocaleDate(project.lastModifiedAt, {
                     locale: config.locale,
@@ -66,8 +60,7 @@ export const ProjectList: FC = () => {
                 : ""}
             </p>
             <p className="text-xs text-muted-foreground">
-              <Trans id="project_list.messages" message="Messages:" />{" "}
-              {project.meta.sessionCount}
+              <Trans id="project_list.messages" /> {project.meta.sessionCount}
             </p>
           </CardContent>
           <CardContent className="pt-0">
@@ -76,10 +69,7 @@ export const ProjectList: FC = () => {
                 to={"/projects/$projectId/latest"}
                 params={{ projectId: project.id }}
               >
-                <Trans
-                  id="project_list.view_conversations"
-                  message="View Conversations"
-                />
+                <Trans id="project_list.view_conversations" />
               </Link>
             </Button>
           </CardContent>

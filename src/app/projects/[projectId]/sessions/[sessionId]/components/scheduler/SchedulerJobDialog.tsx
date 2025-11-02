@@ -161,22 +161,13 @@ export const SchedulerJobDialog: FC<SchedulerJobDialogProps> = ({
         <DialogHeader>
           <DialogTitle>
             {job ? (
-              <Trans
-                id="scheduler.dialog.title.edit"
-                message="Edit Scheduled Job"
-              />
+              <Trans id="scheduler.dialog.title.edit" />
             ) : (
-              <Trans
-                id="scheduler.dialog.title.create"
-                message="Create Scheduled Job"
-              />
+              <Trans id="scheduler.dialog.title.create" />
             )}
           </DialogTitle>
           <DialogDescription>
-            <Trans
-              id="scheduler.dialog.description"
-              message="Set up a scheduled job to send messages to Claude Code"
-            />
+            <Trans id="scheduler.dialog.description" />
           </DialogDescription>
         </DialogHeader>
 
@@ -185,13 +176,10 @@ export const SchedulerJobDialog: FC<SchedulerJobDialogProps> = ({
           <div className="flex items-center justify-between rounded-lg border p-4">
             <div className="space-y-0.5">
               <Label htmlFor="enabled" className="text-base font-semibold">
-                <Trans id="scheduler.form.enabled" message="Enabled" />
+                <Trans id="scheduler.form.enabled" />
               </Label>
               <p className="text-sm text-muted-foreground">
-                <Trans
-                  id="scheduler.form.enabled.description"
-                  message="Enable or disable this scheduled job"
-                />
+                <Trans id="scheduler.form.enabled.description" />
               </p>
             </div>
             <Switch
@@ -205,7 +193,7 @@ export const SchedulerJobDialog: FC<SchedulerJobDialogProps> = ({
           {/* Job Name */}
           <div className="space-y-2">
             <Label htmlFor="job-name">
-              <Trans id="scheduler.form.name" message="Job Name" />
+              <Trans id="scheduler.form.name" />
             </Label>
             <Input
               id="job-name"
@@ -222,10 +210,7 @@ export const SchedulerJobDialog: FC<SchedulerJobDialogProps> = ({
           {/* Schedule Type */}
           <div className="space-y-2">
             <Label>
-              <Trans
-                id="scheduler.form.schedule_type"
-                message="Schedule Type"
-              />
+              <Trans id="scheduler.form.schedule_type" />
             </Label>
             <Select
               value={scheduleType}
@@ -239,16 +224,10 @@ export const SchedulerJobDialog: FC<SchedulerJobDialogProps> = ({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="cron">
-                  <Trans
-                    id="scheduler.form.schedule_type.cron"
-                    message="Recurring (Cron)"
-                  />
+                  <Trans id="scheduler.form.schedule_type.cron" />
                 </SelectItem>
                 <SelectItem value="reserved">
-                  <Trans
-                    id="scheduler.form.schedule_type.reserved"
-                    message="One-time"
-                  />
+                  <Trans id="scheduler.form.schedule_type.reserved" />
                 </SelectItem>
               </SelectContent>
             </Select>
@@ -263,10 +242,7 @@ export const SchedulerJobDialog: FC<SchedulerJobDialogProps> = ({
           ) : (
             <div className="space-y-2">
               <Label htmlFor="reserved-datetime">
-                <Trans
-                  id="scheduler.form.reserved_time"
-                  message="Scheduled Date and Time"
-                />
+                <Trans id="scheduler.form.reserved_time" />
               </Label>
               <Input
                 id="reserved-datetime"
@@ -276,10 +252,7 @@ export const SchedulerJobDialog: FC<SchedulerJobDialogProps> = ({
                 disabled={isSubmitting}
               />
               <p className="text-xs text-muted-foreground">
-                <Trans
-                  id="scheduler.form.reserved_time.hint"
-                  message="Will run once at the specified time, then be automatically deleted"
-                />
+                <Trans id="scheduler.form.reserved_time.hint" />
               </p>
             </div>
           )}
@@ -287,7 +260,7 @@ export const SchedulerJobDialog: FC<SchedulerJobDialogProps> = ({
           {/* Message Content */}
           <div className="space-y-2">
             <Label htmlFor="message-content">
-              <Trans id="scheduler.form.message" message="Message Content" />
+              <Trans id="scheduler.form.message" />
             </Label>
             <div className="relative" ref={completion.containerRef}>
               <Textarea
@@ -333,10 +306,7 @@ export const SchedulerJobDialog: FC<SchedulerJobDialogProps> = ({
               />
             </div>
             <p className="text-xs text-muted-foreground">
-              <Trans
-                id="scheduler.form.message.hint"
-                message="/ for commands, @ for files"
-              />
+              <Trans id="scheduler.form.message.hint" />
             </p>
           </div>
 
@@ -344,10 +314,7 @@ export const SchedulerJobDialog: FC<SchedulerJobDialogProps> = ({
           {scheduleType === "cron" && (
             <div className="space-y-2">
               <Label>
-                <Trans
-                  id="scheduler.form.concurrency_policy"
-                  message="Concurrency Policy"
-                />
+                <Trans id="scheduler.form.concurrency_policy" />
               </Label>
               <Select
                 value={concurrencyPolicy}
@@ -361,16 +328,10 @@ export const SchedulerJobDialog: FC<SchedulerJobDialogProps> = ({
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="skip">
-                    <Trans
-                      id="scheduler.form.concurrency_policy.skip"
-                      message="Skip if running"
-                    />
+                    <Trans id="scheduler.form.concurrency_policy.skip" />
                   </SelectItem>
                   <SelectItem value="run">
-                    <Trans
-                      id="scheduler.form.concurrency_policy.run"
-                      message="Run even if running"
-                    />
+                    <Trans id="scheduler.form.concurrency_policy.run" />
                   </SelectItem>
                 </SelectContent>
               </Select>
@@ -384,18 +345,18 @@ export const SchedulerJobDialog: FC<SchedulerJobDialogProps> = ({
             onClick={() => onOpenChange(false)}
             disabled={isSubmitting}
           >
-            <Trans id="common.cancel" message="Cancel" />
+            <Trans id="common.cancel" />
           </Button>
           <Button
             onClick={handleSubmit}
             disabled={!isFormValid || isSubmitting}
           >
             {isSubmitting ? (
-              <Trans id="common.saving" message="Saving..." />
+              <Trans id="common.saving" />
             ) : job ? (
-              <Trans id="common.update" message="Update" />
+              <Trans id="common.update" />
             ) : (
-              <Trans id="common.create" message="Create" />
+              <Trans id="common.create" />
             )}
           </Button>
         </DialogFooter>

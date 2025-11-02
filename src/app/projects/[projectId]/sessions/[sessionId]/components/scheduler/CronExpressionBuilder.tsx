@@ -27,31 +27,31 @@ interface ParsedCron {
 const WEEKDAYS = [
   {
     value: 0,
-    labelKey: <Trans id="cron_builder.sunday" message="Sunday" />,
+    labelKey: <Trans id="cron_builder.sunday" />,
   },
   {
     value: 1,
-    labelKey: <Trans id="cron_builder.monday" message="Monday" />,
+    labelKey: <Trans id="cron_builder.monday" />,
   },
   {
     value: 2,
-    labelKey: <Trans id="cron_builder.tuesday" message="Tuesday" />,
+    labelKey: <Trans id="cron_builder.tuesday" />,
   },
   {
     value: 3,
-    labelKey: <Trans id="cron_builder.wednesday" message="Wednesday" />,
+    labelKey: <Trans id="cron_builder.wednesday" />,
   },
   {
     value: 4,
-    labelKey: <Trans id="cron_builder.thursday" message="Thursday" />,
+    labelKey: <Trans id="cron_builder.thursday" />,
   },
   {
     value: 5,
-    labelKey: <Trans id="cron_builder.friday" message="Friday" />,
+    labelKey: <Trans id="cron_builder.friday" />,
   },
   {
     value: 6,
-    labelKey: <Trans id="cron_builder.saturday" message="Saturday" />,
+    labelKey: <Trans id="cron_builder.saturday" />,
   },
 ];
 
@@ -207,7 +207,7 @@ export function CronExpressionBuilder({
     <div className="space-y-4">
       <div className="space-y-2">
         <Label>
-          <Trans id="cron_builder.schedule_type" message="Schedule Type" />
+          <Trans id="cron_builder.schedule_type" />
         </Label>
         <Select value={mode} onValueChange={handleModeChange}>
           <SelectTrigger>
@@ -215,16 +215,16 @@ export function CronExpressionBuilder({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="hourly">
-              <Trans id="cron_builder.hourly" message="Hourly" />
+              <Trans id="cron_builder.hourly" />
             </SelectItem>
             <SelectItem value="daily">
-              <Trans id="cron_builder.daily" message="Daily" />
+              <Trans id="cron_builder.daily" />
             </SelectItem>
             <SelectItem value="weekly">
-              <Trans id="cron_builder.weekly" message="Weekly" />
+              <Trans id="cron_builder.weekly" />
             </SelectItem>
             <SelectItem value="custom">
-              <Trans id="cron_builder.custom" message="Custom" />
+              <Trans id="cron_builder.custom" />
             </SelectItem>
           </SelectContent>
         </Select>
@@ -234,7 +234,7 @@ export function CronExpressionBuilder({
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label>
-              <Trans id="cron_builder.hour" message="Hour (0-23)" />
+              <Trans id="cron_builder.hour" />
             </Label>
             <Input
               type="number"
@@ -246,7 +246,7 @@ export function CronExpressionBuilder({
           </div>
           <div className="space-y-2">
             <Label>
-              <Trans id="cron_builder.minute" message="Minute (0-59)" />
+              <Trans id="cron_builder.minute" />
             </Label>
             <Input
               type="number"
@@ -263,7 +263,7 @@ export function CronExpressionBuilder({
         <div className="space-y-4">
           <div className="space-y-2">
             <Label>
-              <Trans id="cron_builder.day_of_week" message="Day of Week" />
+              <Trans id="cron_builder.day_of_week" />
             </Label>
             <Select
               value={String(dayOfWeek)}
@@ -284,7 +284,7 @@ export function CronExpressionBuilder({
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>
-                <Trans id="cron_builder.hour" message="Hour (0-23)" />
+                <Trans id="cron_builder.hour" />
               </Label>
               <Input
                 type="number"
@@ -296,7 +296,7 @@ export function CronExpressionBuilder({
             </div>
             <div className="space-y-2">
               <Label>
-                <Trans id="cron_builder.minute" message="Minute (0-59)" />
+                <Trans id="cron_builder.minute" />
               </Label>
               <Input
                 type="number"
@@ -313,10 +313,7 @@ export function CronExpressionBuilder({
       {mode === "custom" && (
         <div className="space-y-2">
           <Label>
-            <Trans
-              id="cron_builder.cron_expression"
-              message="Cron Expression"
-            />
+            <Trans id="cron_builder.cron_expression" />
           </Label>
           <Input
             value={customExpression}
@@ -328,7 +325,7 @@ export function CronExpressionBuilder({
 
       <div className="rounded-md border p-3 text-sm">
         <div className="font-medium mb-1">
-          <Trans id="cron_builder.preview" message="Preview" />
+          <Trans id="cron_builder.preview" />
         </div>
         <div className="text-muted-foreground">
           {error ? (
@@ -340,7 +337,7 @@ export function CronExpressionBuilder({
           )}
         </div>
         <div className="text-xs text-muted-foreground mt-2">
-          <Trans id="cron_builder.expression" message="Expression" />:{" "}
+          <Trans id="cron_builder.expression" />:{" "}
           <code>{mode === "custom" ? customExpression : value}</code>
         </div>
       </div>

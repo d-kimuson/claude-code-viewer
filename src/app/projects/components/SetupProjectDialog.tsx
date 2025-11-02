@@ -59,18 +59,17 @@ export const SetupProjectDialog: FC = () => {
       <DialogTrigger asChild>
         <Button data-testid="new-project-button">
           <Plus className="w-4 h-4 mr-2" />
-          <Trans id="project.new" message="New Project" />
+          <Trans id="project.new" />
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-2xl" data-testid="new-project-modal">
         <DialogHeader>
           <DialogTitle>
-            <Trans id="project.setup.title" message="Setup New Project" />
+            <Trans id="project.setup.title" />
           </DialogTitle>
           <DialogDescription>
             <Trans
               id="project.setup.description"
-              message="Navigate to a directory to set up as a Claude Code project. If CLAUDE.md exists, the project will be described. Otherwise, <0>/init</0> will be run to initialize it."
               components={{
                 0: <code className="text-sm bg-muted px-1 py-0.5 rounded" />,
               }}
@@ -82,7 +81,7 @@ export const SetupProjectDialog: FC = () => {
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => setOpen(false)}>
-            <Trans id="common.action.cancel" message="Cancel" />
+            <Trans id="common.action.cancel" />
           </Button>
           <Button
             onClick={async () => await setupProjectMutation.mutateAsync()}
@@ -91,13 +90,10 @@ export const SetupProjectDialog: FC = () => {
             {setupProjectMutation.isPending ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                <Trans
-                  id="project.setup.action.setting_up"
-                  message="Setting up..."
-                />
+                <Trans id="project.setup.action.setting_up" />
               </>
             ) : (
-              <Trans id="project.setup.action.setup" message="Setup Project" />
+              <Trans id="project.setup.action.setup" />
             )}
           </Button>
         </DialogFooter>

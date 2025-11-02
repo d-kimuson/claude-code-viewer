@@ -57,7 +57,7 @@ export const ContinueChat: FC<{
         isPending={continueSessionProcess.isPending}
         error={continueSessionProcess.error}
         placeholder={getPlaceholder()}
-        buttonText={<Trans id="chat.send" message="Send" />}
+        buttonText={<Trans id="chat.send" />}
         containerClassName=""
         buttonSize="default"
         enableScheduledSend={!isRunning}

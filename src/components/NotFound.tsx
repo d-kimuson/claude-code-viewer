@@ -16,13 +16,8 @@ interface NotFoundProps {
 }
 
 export const NotFound: FC<NotFoundProps> = ({
-  message = <Trans id="notfound.default.title" message="Page Not Found" />,
-  description = (
-    <Trans
-      id="notfound.default.description"
-      message="The page you are looking for does not exist or has been moved."
-    />
-  ),
+  message = <Trans id="notfound.default.title" />,
+  description = <Trans id="notfound.default.description" />,
 }) => {
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
@@ -45,7 +40,7 @@ export const NotFound: FC<NotFoundProps> = ({
               variant="default"
             >
               <Home />
-              <Trans id="notfound.button.go_home" message="Go to Home" />
+              <Trans id="notfound.button.go_home" />
             </Button>
           </div>
         </CardContent>

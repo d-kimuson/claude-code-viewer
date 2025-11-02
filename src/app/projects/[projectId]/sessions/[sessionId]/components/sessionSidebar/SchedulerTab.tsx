@@ -163,7 +163,7 @@ export const SchedulerTab: FC<{ projectId: string; sessionId: string }> = ({
       <div className="p-3 border-b border-sidebar-border">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-sm font-semibold text-sidebar-foreground">
-            <Trans id="scheduler.title" message="Scheduler" />
+            <Trans id="scheduler.title" />
           </h2>
           <div className="flex gap-1">
             <Button
@@ -210,7 +210,6 @@ export const SchedulerTab: FC<{ projectId: string; sessionId: string }> = ({
           <div className="text-sm text-red-500">
             <Trans
               id="scheduler.error.load_failed"
-              message="Failed to load scheduler jobs: {error}"
               values={{ error: error.message }}
             />
           </div>
@@ -218,10 +217,7 @@ export const SchedulerTab: FC<{ projectId: string; sessionId: string }> = ({
 
         {jobs && jobs.length === 0 && (
           <div className="text-sm text-muted-foreground text-center py-8">
-            <Trans
-              id="scheduler.no_jobs"
-              message="No scheduled jobs. Click + to create one."
-            />
+            <Trans id="scheduler.no_jobs" />
           </div>
         )}
 
@@ -243,15 +239,9 @@ export const SchedulerTab: FC<{ projectId: string; sessionId: string }> = ({
                         className="text-xs"
                       >
                         {job.enabled ? (
-                          <Trans
-                            id="scheduler.status.enabled"
-                            message="Enabled"
-                          />
+                          <Trans id="scheduler.status.enabled" />
                         ) : (
-                          <Trans
-                            id="scheduler.status.disabled"
-                            message="Disabled"
-                          />
+                          <Trans id="scheduler.status.disabled" />
                         )}
                       </Badge>
                     </div>
@@ -283,7 +273,7 @@ export const SchedulerTab: FC<{ projectId: string; sessionId: string }> = ({
                   <div className="text-xs text-muted-foreground mt-2 pt-2 border-t border-sidebar-border">
                     <div className="flex items-center justify-between">
                       <span>
-                        <Trans id="scheduler.last_run" message="Last run: " />
+                        <Trans id="scheduler.last_run" />
                         <span>{formatLastRun(job.lastRunAt)}</span>
                       </span>
                       {job.lastRunStatus && (
@@ -326,13 +316,10 @@ export const SchedulerTab: FC<{ projectId: string; sessionId: string }> = ({
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              <Trans id="scheduler.delete_dialog.title" message="Delete Job" />
+              <Trans id="scheduler.delete_dialog.title" />
             </DialogTitle>
             <DialogDescription>
-              <Trans
-                id="scheduler.delete_dialog.description"
-                message="Are you sure you want to delete this job? This action cannot be undone."
-              />
+              <Trans id="scheduler.delete_dialog.description" />
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -344,7 +331,7 @@ export const SchedulerTab: FC<{ projectId: string; sessionId: string }> = ({
               }}
               disabled={deleteJob.isPending}
             >
-              <Trans id="common.cancel" message="Cancel" />
+              <Trans id="common.cancel" />
             </Button>
             <Button
               variant="destructive"
@@ -352,9 +339,9 @@ export const SchedulerTab: FC<{ projectId: string; sessionId: string }> = ({
               disabled={deleteJob.isPending}
             >
               {deleteJob.isPending ? (
-                <Trans id="common.deleting" message="Deleting..." />
+                <Trans id="common.deleting" />
               ) : (
-                <Trans id="common.delete" message="Delete" />
+                <Trans id="common.delete" />
               )}
             </Button>
           </DialogFooter>

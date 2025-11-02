@@ -99,10 +99,7 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
               fallback={
                 <div className="flex-1 flex items-center justify-center p-4">
                   <div className="text-sm text-sidebar-foreground/70">
-                    <Trans
-                      id="settings.loading"
-                      message="Loading settings..."
-                    />
+                    <Trans id="settings.loading" />
                   </div>
                 </div>
               }
@@ -110,20 +107,14 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
               <div className="flex-1 overflow-y-auto p-4 space-y-6">
                 <div className="space-y-4">
                   <h3 className="font-medium text-sm text-sidebar-foreground">
-                    <Trans
-                      id="settings.session.display"
-                      message="Session Display"
-                    />
+                    <Trans id="settings.session.display" />
                   </h3>
                   <SettingsControls openingProjectId={projectId} />
                 </div>
 
                 <div className="space-y-4">
                   <h3 className="font-medium text-sm text-sidebar-foreground">
-                    <Trans
-                      id="settings.notifications"
-                      message="Notifications"
-                    />
+                    <Trans id="settings.notifications" />
                   </h3>
                   <NotificationSettings />
                 </div>
@@ -183,10 +174,7 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
               </TooltipTrigger>
               <TooltipContent side="right">
                 <p>
-                  <Trans
-                    id="sidebar.back.to.projects"
-                    message="Back to projects"
-                  />
+                  <Trans id="sidebar.back.to.projects" />
                 </p>
               </TooltipContent>
             </Tooltip>
@@ -211,10 +199,7 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
                 </TooltipTrigger>
                 <TooltipContent side="right">
                   <p>
-                    <Trans
-                      id="sidebar.show.session.list"
-                      message="Show session list"
-                    />
+                    <Trans id="sidebar.show.session.list" />
                   </p>
                 </TooltipContent>
               </Tooltip>
@@ -238,10 +223,7 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
                 </TooltipTrigger>
                 <TooltipContent side="right">
                   <p>
-                    <Trans
-                      id="sidebar.show.mcp.settings"
-                      message="Show MCP server settings"
-                    />
+                    <Trans id="sidebar.show.mcp.settings" />
                   </p>
                 </TooltipContent>
               </Tooltip>
@@ -264,10 +246,7 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
                   </button>
                 </TooltipTrigger>
                 <TooltipContent side="right">
-                  <Trans
-                    id="settings.tab.title"
-                    message="Settings for display and notifications"
-                  />
+                  <Trans id="settings.tab.title" />
                 </TooltipContent>
               </Tooltip>
 
@@ -289,10 +268,7 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
                   </button>
                 </TooltipTrigger>
                 <TooltipContent side="right">
-                  <Trans
-                    id="system.info.tab.title"
-                    message="Show system information"
-                  />
+                  <Trans id="system.info.tab.title" />
                 </TooltipContent>
               </Tooltip>
             </div>

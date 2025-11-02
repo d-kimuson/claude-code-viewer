@@ -58,7 +58,7 @@ export const AssistantConversationContent: FC<{
               <div className="flex items-center gap-2">
                 <Lightbulb className="h-4 w-4 text-muted-foreground group-hover:text-yellow-600 transition-colors" />
                 <CardTitle className="text-sm font-medium group-hover:text-foreground transition-colors">
-                  <Trans id="assistant.thinking" message="Thinking" />
+                  <Trans id="assistant.thinking" />
                 </CardTitle>
                 <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180" />
               </div>
@@ -115,10 +115,7 @@ export const AssistantConversationContent: FC<{
               data-testid="sidechain-task-button"
             >
               <Eye className="h-3 w-3" />
-              <Trans
-                id="assistant.tool.view_task_details"
-                message="View Task"
-              />
+              <Trans id="assistant.tool.view_task_details" />
             </Button>
           }
         />
@@ -157,7 +154,7 @@ export const AssistantConversationContent: FC<{
             <div className="space-y-3 py-3 px-4 border-t border-blue-200 dark:border-blue-800">
               <div>
                 <h4 className="text-xs font-medium text-muted-foreground mb-1">
-                  <Trans id="assistant.tool.tool_id" message="Tool ID" />
+                  <Trans id="assistant.tool.tool_id" />
                 </h4>
                 <code className="text-xs bg-background/50 px-2 py-1 rounded border border-blue-200 dark:border-blue-800 font-mono">
                   {content.id}
@@ -165,10 +162,7 @@ export const AssistantConversationContent: FC<{
               </div>
               <div>
                 <h4 className="text-xs font-medium text-muted-foreground mb-2">
-                  <Trans
-                    id="assistant.tool.input_parameters"
-                    message="Input Parameters"
-                  />
+                  <Trans id="assistant.tool.input_parameters" />
                 </h4>
                 <SyntaxHighlighter
                   style={syntaxTheme}
@@ -182,7 +176,7 @@ export const AssistantConversationContent: FC<{
               {toolResult && (
                 <div>
                   <h4 className="text-xs font-medium text-muted-foreground mb-2">
-                    <Trans id="assistant.tool.result" message="Tool Result" />
+                    <Trans id="assistant.tool.result" />
                   </h4>
                   <div className="bg-background rounded border p-3">
                     {typeof toolResult.content === "string" ? (

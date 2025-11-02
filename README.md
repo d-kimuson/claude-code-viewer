@@ -110,6 +110,11 @@ Settings can be configured from the sidebar in Claude Code Viewer.
 | Notifications | None | Enables sound notifications when running session processes complete. Choose from multiple notification sounds with test playback functionality. |
 | Language | System | Interface language selection. Supports English and Japanese with automatic system detection. |
 
+## Internationalization (i18n)
+
+Claude Code Viewer currently supports **English** and **Japanese**. Adding new languages is straightforward—simply add a new `messages.json` file for your locale (see [src/i18n/locales/](./src/i18n/locales/) for examples).
+
+However, we haven't added other languages yet because we're uncertain about demand. **If you'd like support for your language, please open an issue**—we'll add it quickly!
 
 ## Alternatives & Differentiation
 

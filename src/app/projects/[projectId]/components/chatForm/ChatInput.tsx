@@ -364,7 +364,6 @@ export const ChatInput: FC<ChatInputProps> = ({
               placeholder={placeholder}
               className={`${minHeight} resize-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent px-5 py-4 text-lg transition-all duration-200 placeholder:text-muted-foreground/60`}
               disabled={isPending || disabled}
-              maxLength={4000}
               aria-label={i18n._("Message input with completion support")}
               aria-describedby={helpId}
               aria-expanded={message.startsWith("/") || message.includes("@")}
@@ -422,7 +421,6 @@ export const ChatInput: FC<ChatInputProps> = ({
                 id={helpId}
               >
                 {message.length}
-                <span className="text-muted-foreground/50">/4000</span>
               </span>
               {(message.startsWith("/") || message.includes("@")) && (
                 <span className="text-xs text-blue-600 dark:text-blue-400 font-medium flex items-center gap-1">

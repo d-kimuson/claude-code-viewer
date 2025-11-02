@@ -69,3 +69,41 @@ describe("GitService.push", () => {
     expect(true).toBe(true);
   });
 });
+
+describe("GitService.findBaseBranch", () => {
+  test("should return null when no base branch is found", async () => {
+    const gitService = await Effect.runPromise(
+      GitService.pipe(Effect.provide(testLayer)),
+    );
+
+    const result = await Effect.runPromise(
+      Effect.either(
+        gitService.findBaseBranch("/tmp/nonexistent", "feature-branch"),
+      ).pipe(Effect.provide(NodeContext.layer)),
+    );
+
+    // Should fail due to missing repo
+    expect(Either.isLeft(result)).toBe(true);
+  });
+});
+
+describe("GitService.getCommitsBetweenBranches", () => {
+  test("should fail with missing repo", async () => {
+    const gitService = await Effect.runPromise(
+      GitService.pipe(Effect.provide(testLayer)),
+    );
+
+    const result = await Effect.runPromise(
+      Effect.either(
+        gitService.getCommitsBetweenBranches(
+          "/tmp/nonexistent",
+          "base-branch",
+          "HEAD",
+        ),
+      ).pipe(Effect.provide(NodeContext.layer)),
+    );
+
+    // Should fail due to missing repo
+    expect(Either.isLeft(result)).toBe(true);
+  });
+});

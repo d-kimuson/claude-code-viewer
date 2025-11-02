@@ -196,23 +196,11 @@ export const routes = (app: HonoAppType) =>
          * GitController Routes
          */
 
-        .get("/api/projects/:projectId/git/branches", async (c) => {
+        .get("/api/projects/:projectId/git/current-revisions", async (c) => {
           const response = await effectToResponse(
             c,
             gitController
-              .getGitBranches({
-                ...c.req.param(),
-              })
-              .pipe(Effect.provide(runtime)),
-          );
-          return response;
-        })
-
-        .get("/api/projects/:projectId/git/commits", async (c) => {
-          const response = await effectToResponse(
-            c,
-            gitController
-              .getGitCommits({
+              .getCurrentRevisions({
                 ...c.req.param(),
               })
               .pipe(Effect.provide(runtime)),

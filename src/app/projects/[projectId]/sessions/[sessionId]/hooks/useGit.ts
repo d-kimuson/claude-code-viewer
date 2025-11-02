@@ -1,22 +1,11 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { honoClient } from "@/lib/api/client";
-import {
-  gitBranchesQuery,
-  gitCommitsQuery,
-} from "../../../../../../lib/api/queries";
+import { gitCurrentRevisionsQuery } from "../../../../../../lib/api/queries";
 
-export const useGitBranches = (projectId: string) => {
+export const useGitCurrentRevisions = (projectId: string) => {
   return useQuery({
-    queryKey: gitBranchesQuery(projectId).queryKey,
-    queryFn: gitBranchesQuery(projectId).queryFn,
-    staleTime: 30000, // 30 seconds
-  });
-};
-
-export const useGitCommits = (projectId: string) => {
-  return useQuery({
-    queryKey: gitCommitsQuery(projectId).queryKey,
-    queryFn: gitCommitsQuery(projectId).queryFn,
+    queryKey: gitCurrentRevisionsQuery(projectId).queryKey,
+    queryFn: gitCurrentRevisionsQuery(projectId).queryFn,
     staleTime: 30000, // 30 seconds
   });
 };

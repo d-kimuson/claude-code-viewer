@@ -226,6 +226,168 @@ const LayerImpl = Effect.gen(function* () {
       return { branch, output: "success" };
     });
 
+  const getBranchHash = (cwd: string, branchName: string) =>
+    Effect.gen(function* () {
+      const result = yield* execGitCommand(["rev-parse", branchName], cwd).pipe(
+        Effect.map((output) => output.trim().split("\n")[0] ?? null),
+      );
+      return result;
+    });
+
+  const getBranchNamesByCommitHash = (cwd: string, hash: string) =>
+    Effect.gen(function* () {
+      const result = yield* execGitCommand(
+        ["branch", "--contains", hash, "--format=%(refname:short)"],
+        cwd,
+      );
+      return result
+        .split("\n")
+        .map((line) => line.trim())
+        .filter((line) => line !== "");
+    });
+
+  const compareCommitHash = (
+    cwd: string,
+    targetHash: string,
+    compareHash: string,
+  ) =>
+    Effect.gen(function* () {
+      const aheadResult = yield* execGitCommand(
+        ["rev-list", `${targetHash}..${compareHash}`],
+        cwd,
+      );
+      const aheadCounts = aheadResult
+        .split("\n")
+        .map((line) => line.trim())
+        .filter((line) => line !== "").length;
+
+      const behindResult = yield* execGitCommand(
+        ["rev-list", `${compareHash}..${targetHash}`],
+        cwd,
+      );
+      const behindCounts = behindResult
+        .split("\n")
+        .map((line) => line.trim())
+        .filter((line) => line !== "").length;
+
+      if (aheadCounts === 0 && behindCounts === 0) {
+        return "un-related" as const;
+      }
+
+      if (aheadCounts > 0) {
+        return "ahead" as const;
+      }
+
+      if (behindCounts > 0) {
+        return "behind" as const;
+      }
+
+      return "un-related" as const;
+    });
+
+  const getCommitsWithParent = (
+    cwd: string,
+    options: { offset: number; limit: number },
+  ) =>
+    Effect.gen(function* () {
+      const { offset, limit } = options;
+      const result = yield* execGitCommand(
+        [
+          "log",
+          "-n",
+          String(limit),
+          "--skip",
+          String(offset),
+          "--graph",
+          "--pretty=format:%h %p",
+        ],
+        cwd,
+      );
+
+      const lines = result
+        .split("\n")
+        .map((line) => line.trim())
+        .filter((line) => line !== "");
+
+      const commits: Array<{ current: string; parent: string }> = [];
+
+      for (const line of lines) {
+        const match = /^\* (?<current>.+) (?<parent>.+)$/.exec(line);
+        if (match?.groups?.current && match.groups.parent) {
+          commits.push({
+            current: match.groups.current,
+            parent: match.groups.parent,
+          });
+        }
+      }
+
+      return commits;
+    });
+
+  const findBaseBranch = (cwd: string, targetBranch: string) =>
+    Effect.gen(function* () {
+      let offset = 0;
+      const limit = 20;
+
+      while (offset < 100) {
+        const commits = yield* getCommitsWithParent(cwd, { offset, limit });
+
+        for (const commit of commits) {
+          const branchNames = yield* getBranchNamesByCommitHash(
+            cwd,
+            commit.current,
+          );
+
+          if (!branchNames.includes(targetBranch)) {
+            continue;
+          }
+
+          const otherBranchNames = branchNames.filter(
+            (branchName) => branchName !== targetBranch,
+          );
+
+          if (otherBranchNames.length === 0) {
+            continue;
+          }
+
+          for (const branchName of otherBranchNames) {
+            const comparison = yield* compareCommitHash(
+              cwd,
+              targetBranch,
+              branchName,
+            );
+
+            if (comparison === "behind") {
+              return { branch: branchName, hash: commit.current };
+            }
+          }
+        }
+
+        offset += limit;
+      }
+
+      return null;
+    });
+
+  const getCommitsBetweenBranches = (
+    cwd: string,
+    baseBranch: string,
+    targetBranch: string,
+  ) =>
+    Effect.gen(function* () {
+      const result = yield* execGitCommand(
+        [
+          "log",
+          `${baseBranch}..${targetBranch}`,
+          "--format=%H|%s|%an|%ad",
+          "--date=iso",
+        ],
+        cwd,
+      );
+
+      return parseGitCommitsOutput(result);
+    });
+
   return {
     getBranches,
     getCurrentBranch,
@@ -234,6 +396,12 @@ const LayerImpl = Effect.gen(function* () {
     stageFiles,
     commit,
     push,
+    getBranchHash,
+    getBranchNamesByCommitHash,
+    compareCommitHash,
+    getCommitsWithParent,
+    findBaseBranch,
+    getCommitsBetweenBranches,
   };
 });
 

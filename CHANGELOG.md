@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.4.3
+
+### &nbsp;&nbsp;&nbsp;Features
+
+- Support markdown and source code file display &nbsp;-&nbsp; by **d-kimsuon** and **Claude** in https://github.com/d-kimuson/claude-code-viewer/issues/40 [<samp>(e17b5)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/e17b58b)
+- Filter git revisions to show only base and current branches &nbsp;-&nbsp; by **d-kimsuon** and **Claude** in https://github.com/d-kimuson/claude-code-viewer/issues/47 [<samp>(158db)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/158db20)
+- Remove 4000 character limit for new chat input &nbsp;-&nbsp; by **d-kimsuon** and **Claude** in https://github.com/d-kimuson/claude-code-viewer/issues/44 [<samp>(76ab4)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/76ab4d6)
+
+### &nbsp;&nbsp;&nbsp;Bug Fixes
+
+- Change unifySameTitleSession default value to false &nbsp;-&nbsp; by **d-kimsuon** and **Claude** in https://github.com/d-kimuson/claude-code-viewer/issues/48 [<samp>(6c93f)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/6c93fe5)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.4.2...0.4.3)
+
 ## 0.4.2
 
 *No significant changes*

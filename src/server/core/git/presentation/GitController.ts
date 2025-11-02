@@ -10,71 +10,6 @@ const LayerImpl = Effect.gen(function* () {
   const gitService = yield* GitService;
   const projectRepository = yield* ProjectRepository;
 
-  const getGitBranches = (options: { projectId: string }) =>
-    Effect.gen(function* () {
-      const { projectId } = options;
-
-      const { project } = yield* projectRepository.getProject(projectId);
-
-      if (project.meta.projectPath === null) {
-        return {
-          response: { error: "Project path not found" },
-          status: 400,
-        } as const satisfies ControllerResponse;
-      }
-
-      const projectPath = project.meta.projectPath;
-      const branches = yield* Effect.either(
-        gitService.getBranches(projectPath),
-      );
-
-      if (Either.isLeft(branches)) {
-        return {
-          response: {
-            success: false,
-          },
-          status: 200,
-        } as const satisfies ControllerResponse;
-      }
-
-      return {
-        response: branches.right,
-        status: 200,
-      } as const satisfies ControllerResponse;
-    });
-
-  const getGitCommits = (options: { projectId: string }) =>
-    Effect.gen(function* () {
-      const { projectId } = options;
-
-      const { project } = yield* projectRepository.getProject(projectId);
-
-      if (project.meta.projectPath === null) {
-        return {
-          response: { error: "Project path not found" },
-          status: 400,
-        } as const satisfies ControllerResponse;
-      }
-
-      const projectPath = project.meta.projectPath;
-
-      const commits = yield* Effect.either(gitService.getCommits(projectPath));
-
-      if (Either.isLeft(commits)) {
-        return {
-          response: {
-            success: false,
-          },
-          status: 200,
-        } as const satisfies ControllerResponse;
-      }
-
-      return {
-        response: commits.right,
-        status: 200,
-      } as const satisfies ControllerResponse;
-    });
-
   const getGitDiff = (options: {
     projectId: string;
     fromRef: string;
@@ -334,13 +269,115 @@ const LayerImpl = Effect.gen(function* () {
       } as const satisfies ControllerResponse;
     });
 
+  const getCurrentRevisions = (options: { projectId: string }) =>
+    Effect.gen(function* () {
+      const { projectId } = options;
+
+      const { project } = yield* projectRepository.getProject(projectId);
+
+      if (project.meta.projectPath === null) {
+        return {
+          response: { error: "Project path not found" },
+          status: 400,
+        } as const satisfies ControllerResponse;
+      }
+
+      const projectPath = project.meta.projectPath;
+
+      // Get current branch
+      const currentBranchResult = yield* Effect.either(
+        gitService.getCurrentBranch(projectPath),
+      );
+
+      if (Either.isLeft(currentBranchResult)) {
+        return {
+          response: {
+            success: false,
+          },
+          status: 200,
+        } as const satisfies ControllerResponse;
+      }
+
+      const currentBranch = currentBranchResult.right;
+
+      // Find base branch
+      const baseBranchResult = yield* Effect.either(
+        gitService.findBaseBranch(projectPath, currentBranch),
+      );
+
+      // Get all branches to extract branch details
+      const allBranchesResult = yield* Effect.either(
+        gitService.getBranches(projectPath),
+      );
+
+      if (Either.isLeft(allBranchesResult)) {
+        return {
+          response: {
+            success: false,
+          },
+          status: 200,
+        } as const satisfies ControllerResponse;
+      }
+
+      const allBranches = allBranchesResult.right.data;
+
+      // Find current branch details
+      const currentBranchDetails = allBranches.find(
+        (branch) => branch.name === currentBranch,
+      );
+
+      // Find base branch details if exists
+      let baseBranchDetails: (typeof allBranches)[number] | undefined;
+      if (Either.isRight(baseBranchResult) && baseBranchResult.right !== null) {
+        const baseBranchName = baseBranchResult.right.branch;
+        baseBranchDetails = allBranches.find(
+          (branch) => branch.name === baseBranchName,
+        );
+      }
+
+      // Get commits if base branch exists
+      let commits: Array<{
+        sha: string;
+        message: string;
+        author: string;
+        date: string;
+      }> = [];
+
+      if (Either.isRight(baseBranchResult) && baseBranchResult.right !== null) {
+        const baseBranchHash = baseBranchResult.right.hash;
+        const commitsResult = yield* Effect.either(
+          gitService.getCommitsBetweenBranches(
+            projectPath,
+            baseBranchHash,
+            "HEAD",
+          ),
+        );
+
+        if (Either.isRight(commitsResult)) {
+          commits = commitsResult.right.data;
+        }
+      }
+
+      return {
+        response: {
+          success: true,
+          data: {
+            baseBranch: baseBranchDetails ?? null,
+            currentBranch: currentBranchDetails ?? null,
+            head: currentBranchDetails?.commit ?? null,
+            commits,
+          },
+        },
+        status: 200,
+      } as const satisfies ControllerResponse;
+    });
+
   return {
-    getGitBranches,
-    getGitCommits,
     getGitDiff,
     commitFiles,
     pushCommits,
     commitAndPush,
+    getCurrentRevisions,
   };
 });
 

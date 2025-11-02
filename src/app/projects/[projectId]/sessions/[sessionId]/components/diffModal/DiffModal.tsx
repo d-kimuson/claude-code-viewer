@@ -25,8 +25,7 @@ import { cn } from "@/lib/utils";
 import {
   useCommitAndPush,
   useCommitFiles,
-  useGitBranches,
-  useGitCommits,
+  useGitCurrentRevisions,
   useGitDiff,
   usePushCommits,
 } from "../../hooks/useGit";
@@ -159,10 +158,8 @@ export const DiffModal: FC<DiffModalProps> = ({
   const [isCommitSectionExpanded, setIsCommitSectionExpanded] = useState(false);
 
   // API hooks
-  const { data: branchesData, isLoading: isLoadingBranches } =
-    useGitBranches(projectId);
-  const { data: commitsData, isLoading: isLoadingCommits } =
-    useGitCommits(projectId);
+  const { data: revisionsData, isLoading: isLoadingRevisions } =
+    useGitCurrentRevisions(projectId);
   const {
     mutate: getDiff,
     data: diffData,
@@ -173,9 +170,9 @@ export const DiffModal: FC<DiffModalProps> = ({
   const pushMutation = usePushCommits(projectId);
   const commitAndPushMutation = useCommitAndPush(projectId);
 
-  // Transform branches and commits data to GitRef format
+  // Transform revisions data to GitRef format
   const gitRefs: GitRef[] =
-    branchesData?.success && branchesData.data
+    revisionsData?.success && revisionsData.data
       ? [
           {
             name: "working" as const,
@@ -187,21 +184,35 @@ export const DiffModal: FC<DiffModalProps> = ({
             type: "commit" as const,
             displayName: "HEAD",
           },
-          ...branchesData.data.map((branch) => ({
-            name: `branch:${branch.name}` as const,
-            type: "branch" as const,
-            displayName: branch.name + (branch.current ? " (current)" : ""),
-            sha: branch.commit,
-          })),
-          // Add commits from current branch
-          ...(commitsData?.success && commitsData.data
-            ? commitsData.data.map((commit) => ({
-                name: `commit:${commit.sha}` as const,
-                type: "commit" as const,
-                displayName: `${commit.message.substring(0, 50)}${commit.message.length > 50 ? "..." : ""}`,
-                sha: commit.sha,
-              }))
+          // Add base branch if exists
+          ...(revisionsData.data.baseBranch
+            ? [
+                {
+                  name: `branch:${revisionsData.data.baseBranch.name}` as const,
+                  type: "branch" as const,
+                  displayName: `${revisionsData.data.baseBranch.name} (base)`,
+                  sha: revisionsData.data.baseBranch.commit,
+                },
+              ]
             : []),
+          // Add current branch if exists
+          ...(revisionsData.data.currentBranch
+            ? [
+                {
+                  name: `branch:${revisionsData.data.currentBranch.name}` as const,
+                  type: "branch" as const,
+                  displayName: `${revisionsData.data.currentBranch.name} (current)`,
+                  sha: revisionsData.data.currentBranch.commit,
+                },
+              ]
+            : []),
+          // Add commits from current branch
+          ...revisionsData.data.commits.map((commit) => ({
+            name: `commit:${commit.sha}` as const,
+            type: "commit" as const,
+            displayName: `${commit.message.substring(0, 50)}${commit.message.length > 50 ? "..." : ""}`,
+            sha: commit.sha,
+          })),
         ]
       : [];
 
@@ -397,10 +408,7 @@ export const DiffModal: FC<DiffModalProps> = ({
           <Button
             onClick={handleCompare}
             disabled={
-              isDiffLoading ||
-              isLoadingBranches ||
-              isLoadingCommits ||
-              compareFrom === compareTo
+              isDiffLoading || isLoadingRevisions || compareFrom === compareTo
             }
             className="sm:self-end w-full sm:w-auto"
           >

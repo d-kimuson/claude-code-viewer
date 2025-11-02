@@ -132,36 +132,20 @@ export const sessionProcessesQuery = {
   },
 } as const;
 
-export const gitBranchesQuery = (projectId: string) =>
+export const gitCurrentRevisionsQuery = (projectId: string) =>
   ({
-    queryKey: ["git", "branches", projectId],
+    queryKey: ["git", "current-revisions", projectId],
     queryFn: async () => {
-      const response = await honoClient.api.projects[
-        ":projectId"
-      ].git.branches.$get({
+      const response = await honoClient.api.projects[":projectId"].git[
+        "current-revisions"
+      ].$get({
         param: { projectId },
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to fetch branches: ${response.statusText}`);
-      }
-
-      return await response.json();
-    },
-  }) as const;
-
-export const gitCommitsQuery = (projectId: string) =>
-  ({
-    queryKey: ["git", "commits", projectId],
-    queryFn: async () => {
-      const response = await honoClient.api.projects[
-        ":projectId"
-      ].git.commits.$get({
-        param: { projectId },
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch commits: ${response.statusText}`);
+        throw new Error(
+          `Failed to fetch current revisions: ${response.statusText}`,
+        );
       }
 
       return await response.json();

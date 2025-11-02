@@ -45,4 +45,36 @@ export interface DiffModalProps {
   onOpenChange: (open: boolean) => void;
   defaultCompareFrom?: string;
   defaultCompareTo?: string;
+  revisionsData?:
+    | {
+        success: true;
+        data: {
+          baseBranch: {
+            name: string;
+            current: boolean;
+            remote?: string;
+            commit: string;
+            ahead?: number;
+            behind?: number;
+          } | null;
+          currentBranch: {
+            name: string;
+            current: boolean;
+            remote?: string;
+            commit: string;
+            ahead?: number;
+            behind?: number;
+          } | null;
+          head: string | null;
+          commits: Array<{
+            sha: string;
+            message: string;
+            author: string;
+            date: string;
+          }>;
+        };
+      }
+    | {
+        success: false;
+      };
 }

@@ -140,6 +140,7 @@ export const DiffModal: FC<DiffModalProps> = ({
   projectId,
   defaultCompareFrom = "HEAD",
   defaultCompareTo = "working",
+  revisionsData: parentRevisionsData,
 }) => {
   const { i18n } = useLingui();
   const commitMessageId = useId();
@@ -157,9 +158,10 @@ export const DiffModal: FC<DiffModalProps> = ({
   // Commit section collapse state (default: collapsed)
   const [isCommitSectionExpanded, setIsCommitSectionExpanded] = useState(false);
 
-  // API hooks
-  const { data: revisionsData, isLoading: isLoadingRevisions } =
+  // API hooks - use parent data if available, otherwise fetch
+  const { data: fetchedRevisionsData, isLoading: isLoadingRevisions } =
     useGitCurrentRevisions(projectId);
+  const revisionsData = parentRevisionsData ?? fetchedRevisionsData;
   const {
     mutate: getDiff,
     data: diffData,

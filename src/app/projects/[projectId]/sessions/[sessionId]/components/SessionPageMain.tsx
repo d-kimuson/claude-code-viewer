@@ -1,6 +1,7 @@
 import { Trans } from "@lingui/react";
 import { useMutation } from "@tanstack/react-query";
 import {
+  GitBranchIcon,
   GitCompareIcon,
   LoaderIcon,
   MenuIcon,
@@ -17,6 +18,7 @@ import { Badge } from "../../../../../../components/ui/badge";
 import { honoClient } from "../../../../../../lib/api/client";
 import { useProject } from "../../../hooks/useProject";
 import { firstUserMessageToTitle } from "../../../services/firstCommandToTitle";
+import { useGitCurrentRevisions } from "../hooks/useGit";
 import { useSession } from "../hooks/useSession";
 import { useSessionProcess } from "../hooks/useSessionProcess";
 import { ConversationList } from "./conversationList/ConversationList";
@@ -39,6 +41,7 @@ export const SessionPageMain: FC<{
   const { currentPermissionRequest, isDialogOpen, onPermissionResponse } =
     usePermissionRequests();
   const [isDiffModalOpen, setIsDiffModalOpen] = useState(false);
+  const { data: revisionsData } = useGitCurrentRevisions(projectId);
 
   const abortTask = useMutation({
     mutationFn: async (sessionProcessId: string) => {
@@ -120,6 +123,15 @@ export const SessionPageMain: FC<{
                   className="h-6 sm:h-8 text-xs sm:text-sm flex items-center"
                 >
                   {project.meta.projectPath ?? project.claudeProjectPath}
+                </Badge>
+              )}
+              {revisionsData?.success && revisionsData.data.currentBranch && (
+                <Badge
+                  variant="secondary"
+                  className="h-6 sm:h-8 text-xs sm:text-sm flex items-center gap-1"
+                >
+                  <GitBranchIcon className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                  {revisionsData.data.currentBranch.name}
                 </Badge>
               )}
               <Badge
@@ -256,6 +268,7 @@ export const SessionPageMain: FC<{
         projectId={projectId}
         isOpen={isDiffModalOpen}
         onOpenChange={setIsDiffModalOpen}
+        revisionsData={revisionsData}
       />
 
       {/* Permission Dialog */}

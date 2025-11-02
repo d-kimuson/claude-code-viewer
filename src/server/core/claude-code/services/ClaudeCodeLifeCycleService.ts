@@ -147,8 +147,6 @@ const LayerImpl = Effect.gen(function* () {
 
       const handleMessage = (message: SDKMessage) =>
         Effect.gen(function* () {
-          console.log("[debug] handleMessage", message.type);
-
           const processState = yield* sessionProcessService.getSessionProcess(
             sessionProcess.def.sessionProcessId,
           );
@@ -287,10 +285,6 @@ const LayerImpl = Effect.gen(function* () {
         try {
           for await (const message of messageIter) {
             const fallbackMessage = fallbackSdkMessage(message);
-
-            if (fallbackMessage === null) {
-              continue;
-            }
 
             const result = await Runtime.runPromise(runtime)(
               handleMessage(fallbackMessage),

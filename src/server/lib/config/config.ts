@@ -3,7 +3,7 @@ import { localeSchema } from "../../../lib/i18n/schema";
 
 export const userConfigSchema = z.object({
   hideNoUserMessageSession: z.boolean().optional().default(true),
-  unifySameTitleSession: z.boolean().optional().default(true),
+  unifySameTitleSession: z.boolean().optional().default(false),
   enterKeyBehavior: z
     .enum(["shift-enter-send", "enter-send", "command-enter-send"])
     .optional()

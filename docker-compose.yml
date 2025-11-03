@@ -4,9 +4,9 @@ services:
     environment:
       NODE_ENV: production
       PORT: 3400
-      ANTHROPIC_BASE_URL: 
-      ANTHROPIC_API_KEY:
-      ANTHROPIC_AUTH_TOKEN:
+      ANTHROPIC_BASE_URL: ""
+      ANTHROPIC_API_KEY: ""
+      ANTHROPIC_AUTH_TOKEN: ""
     ports:
       - "3400:3400"
     volumes:

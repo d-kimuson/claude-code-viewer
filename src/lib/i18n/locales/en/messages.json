@@ -303,6 +303,12 @@
     "origin": [["src/components/SettingsControls.tsx", 255]],
     "translation": "English"
   },
+  "settings.locale.zh_CN": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SettingsControls.tsx", 258]],
+    "translation": "Chinese (Simplified)"
+  },
   "settings.locale.description": {
     "placeholders": {},
     "comments": [],

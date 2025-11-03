@@ -3,7 +3,7 @@ import { formatter } from "@lingui/format-json";
 import type { SupportedLocale } from "./src/lib/i18n/schema";
 
 const config = defineConfig({
-  locales: ["ja", "en"] satisfies SupportedLocale[],
+  locales: ["ja", "en", "zh_CN"] satisfies SupportedLocale[],
   sourceLocale: "en",
   fallbackLocales: {
     default: "en",

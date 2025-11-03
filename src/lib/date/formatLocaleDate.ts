@@ -1,6 +1,7 @@
 import { format } from "date-fns";
 import { enUS } from "date-fns/locale/en-US";
 import { ja } from "date-fns/locale/ja";
+import { zhCN } from "date-fns/locale/zh-CN";
 import type { SupportedLocale } from "../i18n/schema";
 
 export const convertDateFnsLocale = (locale: SupportedLocale) => {
@@ -9,6 +10,8 @@ export const convertDateFnsLocale = (locale: SupportedLocale) => {
       return ja;
     case "en":
       return enUS;
+    case "zh_CN":
+      return zhCN;
     default:
       locale satisfies never;
       return enUS;
@@ -48,6 +51,15 @@ export const formatLocaleDate = (
           return "MM/dd/yyyy";
         case "time":
           return "MM/dd/yyyy HH:mm";
+      }
+    } else if (locale === "zh_CN") {
+      switch (target) {
+        case "month":
+          return "yyyy年M月";
+        case "day":
+          return "yyyy年M月d日";
+        case "time":
+          return "yyyy年M月d日 HH:mm";
       }
     }
     // default

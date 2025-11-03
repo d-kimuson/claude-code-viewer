@@ -1,0 +1,31 @@
+# VCS metadata
+.git
+.gitignore
+
+# Local dependencies and caches
+node_modules
+.pnpm-store
+
+# Build artifacts
+dist
+build
+.turbo
+.cache
+
+# Test fixtures and docs not needed in image
+e2e
+mock-global-claude-dir
+docs
+coverage
+
+# Editor and OS files
+.DS_Store
+.idea
+.vscode
+
+# Logs and environment files
+*.log
+npm-debug.log*
+pnpm-debug.log*
+.env
+.env.*

@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.4.4
+
+### &nbsp;&nbsp;&nbsp;Features
+
+- Support docker & docker-compose &nbsp;-&nbsp; by **scarletsky** [<samp>(5e5a1)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/5e5a1fd)
+- **i18n**: Support zh_CN &nbsp;-&nbsp; by **scarletsky** in https://github.com/d-kimuson/claude-code-viewer/issues/51 [<samp>(de3d4)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/de3d43b)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.4.3...0.4.4)
+
 ## 0.4.3
 
 ### &nbsp;&nbsp;&nbsp;Features

@@ -63,6 +63,40 @@ claude-code-viewer
 
 The server will start on port 3400 (or your specified PORT). Open `http://localhost:3400` in your browser to access the interface.
 
+### Docker Deployment
+
+Build the image locally:
+
+```bash
+docker build -t claude-code-viewer .
+```
+
+Run the container directly:
+
+```bash
+docker run --rm -p 3400:3400 \
+  -e ANTHROPIC_BASE_URL=... \
+  -e ANTHROPIC_API_KEY=... \
+  -e ANTHROPIC_AUTH_TOKEN=... \
+  claude-code-viewer
+```
+
+Alternatively, use the provided Compose configuration:
+
+```bash
+docker compose up --build
+```
+
+> Note: `docker-compose.yml` ships without mounting `claude_home` by default. If you need the container to reuse an existing Claude workspace, map a volume to `/root/.claude`, for example:
+>
+> ```yaml
+> services:
+>   app:
+>     volumes:
+>       - /path/to/claude_home:/root/.claude
+> ```
+
+
 ## Data Source
 
 The application reads Claude Code conversation logs from:

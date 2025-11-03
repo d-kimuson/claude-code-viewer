@@ -1,0 +1,20 @@
+services:
+  app:
+    build: .
+    environment:
+      NODE_ENV: production
+      PORT: 3400
+      ANTHROPIC_BASE_URL: ""
+      ANTHROPIC_API_KEY: ""
+      ANTHROPIC_AUTH_TOKEN: ""
+    ports:
+      - "3400:3400"
+    volumes:
+      # - claude_home:/root/.claude
+      - workspace:/root/workspace
+    restart: unless-stopped
+    init: true
+
+volumes:
+  claude_home:
+  workspace:

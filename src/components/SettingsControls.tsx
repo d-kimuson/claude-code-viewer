@@ -254,6 +254,9 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
             <SelectItem value="en">
               <Trans id="settings.locale.en" />
             </SelectItem>
+            <SelectItem value="zh_CN">
+              <Trans id="settings.locale.zh_CN" />
+            </SelectItem>
           </SelectContent>
         </Select>
         {showDescriptions && (

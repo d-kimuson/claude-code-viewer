@@ -5,7 +5,7 @@
     "origin": [
       ["src/routes/projects/$projectId/sessions/$sessionId/index.tsx", 21]
     ],
-    "translation": "セッションが見つかりません"
+    "translation": "会话未找到"
   },
   "notfound.session.description": {
     "placeholders": {},
@@ -13,121 +13,121 @@
     "origin": [
       ["src/routes/projects/$projectId/sessions/$sessionId/index.tsx", 22]
     ],
-    "translation": "お探しのセッションは存在しません。"
+    "translation": "您查找的会话不存在。"
   },
   "notfound.project.title": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/routes/projects/$projectId/latest/index.tsx", 14]],
-    "translation": "プロジェクトが見つかりません"
+    "translation": "未找到项目"
   },
   "notfound.project.description": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/routes/projects/$projectId/latest/index.tsx", 15]],
-    "translation": "お探しのプロジェクトは存在しません。"
+    "translation": "您查找的项目不存在。"
   },
   "notification.none": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/lib/notifications.tsx", 103]],
-    "translation": "なし"
+    "translation": "无"
   },
   "notification.beep": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/lib/notifications.tsx", 104]],
-    "translation": "ビープ音"
+    "translation": "哔哔声"
   },
   "notification.chime": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/lib/notifications.tsx", 105]],
-    "translation": "チャイム"
+    "translation": "铃声"
   },
   "notification.ping": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/lib/notifications.tsx", 106]],
-    "translation": "ピン"
+    "translation": "Ping 音"
   },
   "notification.pop": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/lib/notifications.tsx", 107]],
-    "translation": "ポップ"
+    "translation": "Pop 音"
   },
   "notfound.default.title": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/NotFound.tsx", 19]],
-    "translation": "ページが見つかりません"
+    "translation": "页面未找到"
   },
   "notfound.default.description": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/NotFound.tsx", 20]],
-    "translation": "お探しのページは存在しないか、移動されました。"
+    "translation": "您查找的页面不存在或已被移动。"
   },
   "notfound.button.go_home": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/NotFound.tsx", 43]],
-    "translation": "ホームに戻る"
+    "translation": "返回首页"
   },
   "notification.test": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/NotificationSettings.tsx", 90]],
-    "translation": "テスト"
+    "translation": "测试"
   },
   "notification.description": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/NotificationSettings.tsx", 97]],
-    "translation": "Claude Code のタスクが完了した時に再生する音を選択してください"
+    "translation": "选择 Claude Code 任务完成时播放的提示音"
   },
   "system_info.feature.tool_approval.title": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/SystemInfoCard.tsx", 29]],
-    "translation": "ツール実行承認"
+    "translation": "工具审批"
   },
   "system_info.feature.tool_approval.description": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/SystemInfoCard.tsx", 31]],
-    "translation": "Claude がツールを実行する前に承認または拒否でき、アクションを完全にコントロールできます"
+    "translation": "在 Claude 执行工具前批准或拒绝,让您完全掌控操作"
   },
   "system_info.feature.agent_sdk.title": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/SystemInfoCard.tsx", 36]],
-    "translation": "拡張エージェントモード"
+    "translation": "扩展 Agent 模式"
   },
   "system_info.feature.agent_sdk.description": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/SystemInfoCard.tsx", 37]],
-    "translation": "@anthropic-ai/claude-code ではなく @anthropic-ai/claude-agent-sdk を利用します"
+    "translation": "使用 @anthropic-ai/claude-agent-sdk 而非 @anthropic-ai/claude-code"
   },
   "system_info.feature.unknown.description": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/SystemInfoCard.tsx", 42]],
-    "translation": "機能情報は利用できません"
+    "translation": "功能信息不可用"
   },
   "system_info.title": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/SystemInfoCard.tsx", 64]],
-    "translation": "システム情報"
+    "translation": "系统信息"
   },
   "system_info.description": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/SystemInfoCard.tsx", 67]],
-    "translation": "バージョンと機能情報"
+    "translation": "版本和功能信息"
   },
   "system_info.viewer_version": {
     "placeholders": {},
@@ -142,7 +142,7 @@
       ["src/components/SystemInfoCard.tsx", 79],
       ["src/components/SystemInfoCard.tsx", 108]
     ],
-    "translation": "バージョン"
+    "translation": "版本"
   },
   "system_info.claude_code": {
     "placeholders": {},
@@ -154,7 +154,7 @@
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/SystemInfoCard.tsx", 95]],
-    "translation": "実行ファイル"
+    "translation": "可执行文件路径"
   },
   "system_info.unknown": {
     "placeholders": {},
@@ -163,193 +163,193 @@
       ["src/components/SystemInfoCard.tsx", 100],
       ["src/components/SystemInfoCard.tsx", 112]
     ],
-    "translation": "不明"
+    "translation": "未知"
   },
   "system_info.available_features": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/SystemInfoCard.tsx", 124]],
-    "translation": "利用可能機能"
+    "translation": "可用功能"
   },
   "settings.session.hide_no_user_message": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/SettingsControls.tsx", 124]],
-    "translation": "ユーザーメッセージのないセッションを非表示"
+    "translation": "隐藏无用户消息的会话"
   },
   "settings.session.hide_no_user_message.description": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/SettingsControls.tsx", 130]],
-    "translation": "ユーザーコマンドまたはメッセージを含むセッションのみを表示"
+    "translation": "仅显示包含用户命令或消息的会话"
   },
   "settings.session.unify_same_title": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/SettingsControls.tsx", 145]],
-    "translation": "同じタイトルのセッションを統合"
+    "translation": "合并同名会话"
   },
   "settings.session.unify_same_title.description": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/SettingsControls.tsx", 151]],
-    "translation": "同じタイトルの複数のセッションがある場合、最新のセッションのみを表示"
+    "translation": "当多个会话标题相同时,仅显示最新的会话"
   },
   "settings.input.enter_key_behavior": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/SettingsControls.tsx", 161]],
-    "translation": "Enterキーの動作"
+    "translation": "回车键行为"
   },
   "Select enter key behavior": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/SettingsControls.tsx", 169]],
-    "translation": "Enterキーの動作を選択"
+    "translation": "选择回车键行为"
   },
   "settings.input.enter_key_behavior.shift_enter": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/SettingsControls.tsx", 173]],
-    "translation": "Shift+Enterで送信（デフォルト）"
+    "translation": "使用 Shift+Enter 发送(默认)"
   },
   "settings.input.enter_key_behavior.enter": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/SettingsControls.tsx", 176]],
-    "translation": "Enterで送信"
+    "translation": "使用 Enter 发送"
   },
   "settings.input.enter_key_behavior.command_enter": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/SettingsControls.tsx", 179]],
-    "translation": "Command+Enterで送信"
+    "translation": "使用 Command+Enter 发送"
   },
   "settings.input.enter_key_behavior.description": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/SettingsControls.tsx", 185]],
-    "translation": "メッセージ入力でのEnterキーの動作を選択"
+    "translation": "选择消息输入的回车键行为"
   },
   "settings.permission.mode": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/SettingsControls.tsx", 196]],
-    "translation": "権限モード"
+    "translation": "权限模式"
   },
   "Select permission mode": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/SettingsControls.tsx", 205]],
-    "translation": "権限モードを選択"
+    "translation": "选择权限模式"
   },
   "settings.permission.mode.default": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/SettingsControls.tsx", 209]],
-    "translation": "デフォルト（権限を確認）"
+    "translation": "默认(确认权限)"
   },
   "settings.permission.mode.accept_edits": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/SettingsControls.tsx", 212]],
-    "translation": "編集を承認（ファイル編集を自動承認）"
+    "translation": "接受编辑(自动批准文件编辑)"
   },
   "settings.permission.mode.bypass_permissions": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/SettingsControls.tsx", 215]],
-    "translation": "権限をバイパス（プロンプトなし）"
+    "translation": "跳过权限(无提示)"
   },
   "settings.permission.mode.plan": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/SettingsControls.tsx", 218]],
-    "translation": "プランモード（計画のみ）"
+    "translation": "计划模式(仅规划)"
   },
   "settings.permission.mode.description": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/SettingsControls.tsx", 224]],
-    "translation": "ファイル操作の権限リクエストの処理方法を制御"
+    "translation": "控制如何处理文件操作权限请求"
   },
   "settings.permission.mode.unavailable": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/SettingsControls.tsx", 229]],
-    "translation": "お使いのClaude Codeバージョンではこの機能は利用できません。すべてのツールは自動で承認されます。"
+    "translation": "此功能在您的 Claude Code 版本中不可用。所有工具都会自动批准。"
   },
   "settings.locale": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/SettingsControls.tsx", 240]],
-    "translation": "言語"
+    "translation": "语言"
   },
   "Select language": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/SettingsControls.tsx", 248]],
-    "translation": "言語を選択"
+    "translation": "选择语言"
   },
   "settings.locale.ja": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/SettingsControls.tsx", 252]],
-    "translation": "日本語"
+    "translation": "日语"
   },
   "settings.locale.en": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/SettingsControls.tsx", 255]],
-    "translation": "English"
+    "translation": "英语"
   },
   "settings.locale.zh_CN": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/SettingsControls.tsx", 258]],
-    "translation": "中国語（簡体字）"
+    "translation": "简体中文"
   },
   "settings.locale.description": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/SettingsControls.tsx", 261]],
-    "translation": "お好みの言語を選択"
+    "translation": "选择您偏好的语言"
   },
   "settings.theme": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/SettingsControls.tsx", 269]],
-    "translation": "テーマ"
+    "translation": "主题"
   },
   "Select theme": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/SettingsControls.tsx", 274]],
-    "translation": "テーマを選択"
+    "translation": "选择主题"
   },
   "settings.theme.light": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/SettingsControls.tsx", 278]],
-    "translation": "ライト"
+    "translation": "浅色"
   },
   "settings.theme.dark": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/SettingsControls.tsx", 281]],
-    "translation": "ダーク"
+    "translation": "深色"
   },
   "settings.theme.system": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/SettingsControls.tsx", 284]],
-    "translation": "システム"
+    "translation": "跟随系统"
   },
   "settings.theme.description": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/SettingsControls.tsx", 290]],
-    "translation": "お好みのカラーテーマを選択"
+    "translation": "选择您偏好的颜色主题"
   },
   "settings.tab.title": {
     "placeholders": {},
@@ -361,19 +361,19 @@
       ],
       ["src/components/GlobalSidebar.tsx", 42]
     ],
-    "translation": "表示と通知の設定"
+    "translation": "显示和通知设置"
   },
   "settings.title": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/GlobalSidebar.tsx", 47]],
-    "translation": "設定"
+    "translation": "设置"
   },
   "settings.description": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/GlobalSidebar.tsx", 50]],
-    "translation": "表示と動作の設定"
+    "translation": "显示和行为设置"
   },
   "settings.loading": {
     "placeholders": {},
@@ -385,13 +385,13 @@
       ],
       ["src/components/GlobalSidebar.tsx", 58]
     ],
-    "translation": "設定を読み込み中..."
+    "translation": "正在加载设置..."
   },
   "settings.section.session_display": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/GlobalSidebar.tsx", 66]],
-    "translation": "セッション表示"
+    "translation": "会话显示"
   },
   "settings.section.notifications": {
     "placeholders": {},
@@ -403,115 +403,115 @@
     "placeholders": {},
     "comments": [],
     "origin": [["src/components/GlobalSidebar.tsx", 86]],
-    "translation": "システム情報"
+    "translation": "系统信息"
   },
   "projects.page.description": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/app/projects/page.tsx", 20]],
-    "translation": "Claude Codeの会話履歴とプロジェクトの操作を閲覧"
+    "translation": "查看 Claude Code 对话历史和项目操作"
   },
   "projects.page.title": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/app/projects/page.tsx", 28]],
-    "translation": "プロジェクト"
+    "translation": "项目"
   },
   "projects.page.loading": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/app/projects/page.tsx", 36]],
-    "translation": "プロジェクトを読み込み中..."
+    "translation": "正在加载项目..."
   },
   "project_list.no_projects.title": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/app/projects/components/ProjectList.tsx", 28]],
-    "translation": "プロジェクトが見つかりません"
+    "translation": "未找到项目"
   },
   "project_list.no_projects.description": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/app/projects/components/ProjectList.tsx", 31]],
-    "translation": "~/.claude/projectsディレクトリにClaude Codeプロジェクトが見つかりません。Claude Codeとの会話を開始して、最初のプロジェクトをセットアップしてください。"
+    "translation": "在您的 ~/.claude/projects 目录中未找到 Claude Code 项目。与 Claude Code 开始对话以创建您的第一个项目。"
   },
   "project_list.last_modified": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/app/projects/components/ProjectList.tsx", 54]],
-    "translation": "最終更新："
+    "translation": "最后修改时间:"
   },
   "project_list.messages": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/app/projects/components/ProjectList.tsx", 63]],
-    "translation": "メッセージ："
+    "translation": "消息数:"
   },
   "project_list.view_conversations": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/app/projects/components/ProjectList.tsx", 72]],
-    "translation": "会話を表示"
+    "translation": "查看对话"
   },
   "project.new": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/app/projects/components/SetupProjectDialog.tsx", 62]],
-    "translation": "新規プロジェクト"
+    "translation": "新建项目"
   },
   "project.setup.title": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/app/projects/components/SetupProjectDialog.tsx", 68]],
-    "translation": "新規プロジェクトをセットアップ"
+    "translation": "设置新项目"
   },
   "project.setup.description": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/app/projects/components/SetupProjectDialog.tsx", 71]],
-    "translation": "Claude Codeプロジェクトとしてセットアップするディレクトリまで移動してください。CLAUDE.mdが存在する場合はプロジェクトを説明し、存在しない場合は<0>/init</0>で初期化します。"
+    "translation": "导航到要设置为 Claude Code 项目的目录。如果存在 CLAUDE.md,它将描述项目;否则使用 <0>/init</0> 初始化。"
   },
   "common.action.cancel": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/app/projects/components/SetupProjectDialog.tsx", 84]],
-    "translation": "キャンセル"
+    "translation": "取消"
   },
   "project.setup.action.setting_up": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/app/projects/components/SetupProjectDialog.tsx", 93]],
-    "translation": "セットアップ中..."
+    "translation": "正在设置..."
   },
   "project.setup.action.setup": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/app/projects/components/SetupProjectDialog.tsx", 96]],
-    "translation": "プロジェクトをセットアップ"
+    "translation": "设置项目"
   },
   "directory_picker.current": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/app/projects/components/DirectoryPicker.tsx", 41]],
-    "translation": "現在："
+    "translation": "当前:"
   },
   "directory_picker.show_hidden": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/app/projects/components/DirectoryPicker.tsx", 52]],
-    "translation": "隠しファイルを表示"
+    "translation": "显示隐藏文件"
   },
   "directory_picker.loading": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/app/projects/components/DirectoryPicker.tsx", 58]],
-    "translation": "読み込み中..."
+    "translation": "加载中..."
   },
   "directory_picker.no_directories": {
     "placeholders": {},
     "comments": [],
     "origin": [["src/app/projects/components/DirectoryPicker.tsx", 88]],
-    "translation": "ディレクトリが見つかりません"
+    "translation": "未找到目录"
   },
   "sidebar.show.session.list": {
     "placeholders": {},
@@ -526,7 +526,7 @@
         46
       ]
     ],
-    "translation": "セッション一覧を表示"
+    "translation": "显示会话列表"
   },
   "sidebar.show.mcp.settings": {
     "placeholders": {},
@@ -541,7 +541,7 @@
         59
       ]
     ],
-    "translation": "MCPサーバー設定を表示"
+    "translation": "显示 MCP 服务器设置"
   },
   "sidebar.show.scheduler.jobs": {
     "placeholders": {},
@@ -552,7 +552,7 @@
         65
       ]
     ],
-    "translation": "スケジューラジョブを表示"
+    "translation": "显示定时任务"
   },
   "sidebar.back.to.projects": {
     "placeholders": {},
@@ -567,7 +567,7 @@
         95
       ]
     ],
-    "translation": "プロジェクト一覧に戻る"
+    "translation": "返回项目列表"
   },
   "mcp.title": {
     "placeholders": {},
@@ -578,7 +578,7 @@
         38
       ]
     ],
-    "translation": "MCPサーバー"
+    "translation": "MCP 服务器"
   },
   "Reload MCP servers": {
     "placeholders": {},
@@ -589,7 +589,7 @@
         46
       ]
     ],
-    "translation": "MCPサーバーを再読み込み"
+    "translation": "重新加载 MCP 服务器"
   },
   "mcp.error.load_failed": {
     "placeholders": {
@@ -602,7 +602,7 @@
         66
       ]
     ],
-    "translation": "MCPサーバーの読み込みに失敗しました: {error}"
+    "translation": "加载 MCP 服务器失败:{error}"
   },
   "mcp.no.servers": {
     "placeholders": {},
@@ -613,7 +613,7 @@
         75
       ]
     ],
-    "translation": "MCPサーバーが見つかりません"
+    "translation": "未找到 MCP 服务器"
   },
   "control.branch": {
     "placeholders": {},
@@ -628,7 +628,7 @@
         250
       ]
     ],
-    "translation": "ブランチ"
+    "translation": "分支"
   },
   "control.session_id": {
     "placeholders": {},
@@ -643,7 +643,7 @@
         238
       ]
     ],
-    "translation": "セッションID"
+    "translation": "会话 ID"
   },
   "session.conversation.running": {
     "placeholders": {},
@@ -654,7 +654,7 @@
         188
       ]
     ],
-    "translation": "実行中"
+    "translation": "运行中"
   },
   "session.conversation.paused": {
     "placeholders": {},
@@ -665,7 +665,7 @@
         197
       ]
     ],
-    "translation": "一時停止"
+    "translation": "已暂停"
   },
   "control.metadata": {
     "placeholders": {},
@@ -676,7 +676,7 @@
         215
       ]
     ],
-    "translation": "メタデータ"
+    "translation": "元数据"
   },
   "control.project_path": {
     "placeholders": {},
@@ -687,7 +687,7 @@
         221
       ]
     ],
-    "translation": "プロジェクトパス"
+    "translation": "项目路径"
   },
   "session.processing": {
     "placeholders": {},
@@ -698,7 +698,7 @@
         288
       ]
     ],
-    "translation": "Claude Codeが処理中..."
+    "translation": "Claude Code 正在处理..."
   },
   "sessions.title": {
     "placeholders": {},
@@ -709,7 +709,7 @@
         76
       ]
     ],
-    "translation": "セッション"
+    "translation": "会话"
   },
   "sessions.new": {
     "placeholders": {},
@@ -720,7 +720,7 @@
         92
       ]
     ],
-    "translation": "新規"
+    "translation": "新建"
   },
   "sessions.total": {
     "placeholders": {},
@@ -731,7 +731,7 @@
         98
       ]
     ],
-    "translation": "合計"
+    "translation": "总计"
   },
   "session.status.running": {
     "placeholders": {},
@@ -742,7 +742,7 @@
         143
       ]
     ],
-    "translation": "実行中"
+    "translation": "运行中"
   },
   "session.status.paused": {
     "placeholders": {},
@@ -753,7 +753,7 @@
         145
       ]
     ],
-    "translation": "一時停止"
+    "translation": "已暂停"
   },
   "common.loading": {
     "placeholders": {},
@@ -768,7 +768,7 @@
         180
       ]
     ],
-    "translation": "読み込み中..."
+    "translation": "加载中..."
   },
   "sessions.load.more": {
     "placeholders": {},
@@ -779,7 +779,7 @@
         182
       ]
     ],
-    "translation": "さらに読み込む"
+    "translation": "加载更多"
   },
   "chat.resume": {
     "placeholders": {},
@@ -790,7 +790,7 @@
         48
       ]
     ],
-    "translation": "再開"
+    "translation": "继续"
   },
   "chat.send": {
     "placeholders": {},
@@ -801,7 +801,7 @@
         60
       ]
     ],
-    "translation": "送信"
+    "translation": "发送"
   },
   "scheduler.title": {
     "placeholders": {},
@@ -812,7 +812,7 @@
         166
       ]
     ],
-    "translation": "スケジューラ"
+    "translation": "定时任务"
   },
   "scheduler.error.load_failed": {
     "placeholders": {
@@ -825,7 +825,7 @@
         211
       ]
     ],
-    "translation": "スケジューラジョブの読み込みに失敗しました: {error}"
+    "translation": "加载定时任务失败:{error}"
   },
   "scheduler.no_jobs": {
     "placeholders": {},
@@ -836,7 +836,7 @@
         220
       ]
     ],
-    "translation": "スケジューラジョブがありません"
+    "translation": "暂无定时任务"
   },
   "scheduler.status.enabled": {
     "placeholders": {},
@@ -847,7 +847,7 @@
         242
       ]
     ],
-    "translation": "有効"
+    "translation": "已启用"
   },
   "scheduler.status.disabled": {
     "placeholders": {},
@@ -858,7 +858,7 @@
         244
       ]
     ],
-    "translation": "無効"
+    "translation": "已禁用"
   },
   "scheduler.last_run": {
     "placeholders": {},
@@ -869,7 +869,7 @@
         276
       ]
     ],
-    "translation": "最終実行"
+    "translation": "上次运行"
   },
   "scheduler.delete_dialog.title": {
     "placeholders": {},
@@ -880,7 +880,7 @@
         319
       ]
     ],
-    "translation": "スケジューラジョブを削除"
+    "translation": "删除定时任务"
   },
   "scheduler.delete_dialog.description": {
     "placeholders": {},
@@ -891,7 +891,7 @@
         322
       ]
     ],
-    "translation": "このスケジューラジョブを削除してもよろしいですか？この操作は取り消せません。"
+    "translation": "确定要删除此定时任务吗?此操作无法撤销。"
   },
   "common.cancel": {
     "placeholders": {},
@@ -906,7 +906,7 @@
         334
       ]
     ],
-    "translation": "キャンセル"
+    "translation": "取消"
   },
   "common.deleting": {
     "placeholders": {},
@@ -917,7 +917,7 @@
         342
       ]
     ],
-    "translation": "削除中..."
+    "translation": "删除中..."
   },
   "common.delete": {
     "placeholders": {},
@@ -928,7 +928,7 @@
         344
       ]
     ],
-    "translation": "削除"
+    "translation": "删除"
   },
   "control.git": {
     "placeholders": {},
@@ -950,7 +950,7 @@
         75
       ]
     ],
-    "translation": "新規"
+    "translation": "新建"
   },
   "session.conversation.abort": {
     "placeholders": {},
@@ -972,7 +972,7 @@
         110
       ]
     ],
-    "translation": "セッション表示"
+    "translation": "会话显示"
   },
   "settings.notifications": {
     "placeholders": {},
@@ -994,7 +994,7 @@
         153
       ]
     ],
-    "translation": "サイドバーを閉じる"
+    "translation": "关闭侧边栏"
   },
   "system.info.tab.title": {
     "placeholders": {},
@@ -1005,7 +1005,7 @@
         271
       ]
     ],
-    "translation": "システム情報を表示"
+    "translation": "显示系统信息"
   },
   "assistant.tool.view_task": {
     "placeholders": {},
@@ -1016,7 +1016,7 @@
         67
       ]
     ],
-    "translation": "タスクを表示"
+    "translation": "查看任务"
   },
   "assistant.tool.task_id": {
     "placeholders": {},
@@ -1027,7 +1027,7 @@
         96
       ]
     ],
-    "translation": "タスクID"
+    "translation": "任务 ID"
   },
   "assistant.tool.message_count": {
     "placeholders": {
@@ -1040,7 +1040,7 @@
         103
       ]
     ],
-    "translation": "{count}件のメッセージ"
+    "translation": "{count} 条消息"
   },
   "scheduler.dialog.title.edit": {
     "placeholders": {},
@@ -1051,7 +1051,7 @@
         164
       ]
     ],
-    "translation": "スケジュールジョブを編集"
+    "translation": "编辑定时任务"
   },
   "scheduler.dialog.title.create": {
     "placeholders": {},
@@ -1062,7 +1062,7 @@
         166
       ]
     ],
-    "translation": "スケジュールジョブを作成"
+    "translation": "创建定时任务"
   },
   "scheduler.dialog.description": {
     "placeholders": {},
@@ -1073,7 +1073,7 @@
         170
       ]
     ],
-    "translation": "Claude Codeにメッセージを送信するスケジュールジョブを設定します"
+    "translation": "配置定时任务以向 Claude Code 发送消息"
   },
   "scheduler.form.enabled": {
     "placeholders": {},
@@ -1084,7 +1084,7 @@
         179
       ]
     ],
-    "translation": "有効化"
+    "translation": "启用"
   },
   "scheduler.form.enabled.description": {
     "placeholders": {},
@@ -1095,7 +1095,7 @@
         182
       ]
     ],
-    "translation": "このスケジュールジョブを有効または無効にします"
+    "translation": "启用或禁用此定时任务"
   },
   "scheduler.form.name": {
     "placeholders": {},
@@ -1106,7 +1106,7 @@
         196
       ]
     ],
-    "translation": "ジョブ名"
+    "translation": "任务名称"
   },
   "scheduler.form.schedule_type": {
     "placeholders": {},
@@ -1117,7 +1117,7 @@
         213
       ]
     ],
-    "translation": "スケジュールタイプ"
+    "translation": "调度类型"
   },
   "scheduler.form.schedule_type.cron": {
     "placeholders": {},
@@ -1128,7 +1128,7 @@
         227
       ]
     ],
-    "translation": "定期実行 (Cron)"
+    "translation": "循环执行(Cron)"
   },
   "scheduler.form.schedule_type.reserved": {
     "placeholders": {},
@@ -1139,7 +1139,7 @@
         230
       ]
     ],
-    "translation": "予約実行"
+    "translation": "一次性执行"
   },
   "scheduler.form.reserved_time": {
     "placeholders": {},
@@ -1150,7 +1150,7 @@
         245
       ]
     ],
-    "translation": "実行予定日時"
+    "translation": "预定执行时间"
   },
   "scheduler.form.reserved_time.hint": {
     "placeholders": {},
@@ -1161,7 +1161,7 @@
         255
       ]
     ],
-    "translation": "指定した日時に一度だけ実行されます。実行後は自動的に削除されます"
+    "translation": "将在指定的日期和时间执行一次,然后自动删除"
   },
   "scheduler.form.message": {
     "placeholders": {},
@@ -1172,7 +1172,7 @@
         263
       ]
     ],
-    "translation": "メッセージ内容"
+    "translation": "消息内容"
   },
   "scheduler.form.message.hint": {
     "placeholders": {},
@@ -1183,7 +1183,7 @@
         309
       ]
     ],
-    "translation": "/でコマンド補完、@でファイル補完"
+    "translation": "输入 / 获取命令补全,@ 获取文件补全"
   },
   "scheduler.form.concurrency_policy": {
     "placeholders": {},
@@ -1194,7 +1194,7 @@
         317
       ]
     ],
-    "translation": "同時実行ポリシー"
+    "translation": "并发策略"
   },
   "scheduler.form.concurrency_policy.skip": {
     "placeholders": {},
@@ -1205,7 +1205,7 @@
         331
       ]
     ],
-    "translation": "実行中の場合はスキップ"
+    "translation": "如果已在运行则跳过"
   },
   "scheduler.form.concurrency_policy.run": {
     "placeholders": {},
@@ -1216,7 +1216,7 @@
         334
       ]
     ],
-    "translation": "実行中でも実行する"
+    "translation": "即使已在运行也执行"
   },
   "common.saving": {
     "placeholders": {},
@@ -1249,7 +1249,7 @@
         359
       ]
     ],
-    "translation": "作成"
+    "translation": "创建"
   },
   "user.content.image": {
     "placeholders": {},
@@ -1260,7 +1260,7 @@
         49
       ]
     ],
-    "translation": "添付画像"
+    "translation": "附加图片"
   },
   "user.content.unsupported_media": {
     "placeholders": {},
@@ -1271,7 +1271,7 @@
         86
       ]
     ],
-    "translation": "サポートされていないメディア"
+    "translation": "不支持的媒体"
   },
   "common.error": {
     "placeholders": {},
@@ -1286,7 +1286,7 @@
         195
       ]
     ],
-    "translation": "エラー"
+    "translation": "错误"
   },
   "user.content.unsupported_media.description": {
     "placeholders": {},
@@ -1297,7 +1297,7 @@
         93
       ]
     ],
-    "translation": "表示がサポートされていないメディア形式です"
+    "translation": "不支持显示此媒体格式"
   },
   "user.content.document.pdf": {
     "placeholders": {},
@@ -1308,7 +1308,7 @@
         115
       ]
     ],
-    "translation": "PDF文書"
+    "translation": "PDF 文档"
   },
   "user.content.document.text": {
     "placeholders": {},
@@ -1319,7 +1319,7 @@
         157
       ]
     ],
-    "translation": "テキスト文書"
+    "translation": "文本文档"
   },
   "user.content.unsupported_document": {
     "placeholders": {},
@@ -1330,7 +1330,7 @@
         192
       ]
     ],
-    "translation": "サポートされていない文書"
+    "translation": "不支持的文档"
   },
   "user.content.unsupported_document.description": {
     "placeholders": {},
@@ -1341,7 +1341,7 @@
         199
       ]
     ],
-    "translation": "文書タイプは表示がサポートされていません"
+    "translation": "不支持显示此文档类型"
   },
   "conversation.error.schema": {
     "placeholders": {},
@@ -1352,7 +1352,7 @@
         55
       ]
     ],
-    "translation": "スキーマエラー"
+    "translation": "模式错误"
   },
   "conversation.error.schema_validation": {
     "placeholders": {},
@@ -1363,7 +1363,7 @@
         70
       ]
     ],
-    "translation": "スキーマ検証エラー"
+    "translation": "模式验证错误"
   },
   "conversation.error.schema_validation.description": {
     "placeholders": {},
@@ -1374,7 +1374,7 @@
         73
       ]
     ],
-    "translation": "この会話エントリの解析に失敗しました。フォーマットの変更または解析の問題が考えられます。"
+    "translation": "无法解析此对话条目。这可能是由于格式更改或解析问题。"
   },
   "conversation.error.report_issue": {
     "placeholders": {},
@@ -1385,7 +1385,7 @@
         80
       ]
     ],
-    "translation": "この問題を報告"
+    "translation": "报告此问题"
   },
   "conversation.error.raw_content": {
     "placeholders": {},
@@ -1396,7 +1396,7 @@
         87
       ]
     ],
-    "translation": "生データ："
+    "translation": "原始数据:"
   },
   "chat.modal.title": {
     "placeholders": {},
@@ -1404,7 +1404,7 @@
     "origin": [
       ["src/app/projects/[projectId]/components/newChat/NewChatModal.tsx", 33]
     ],
-    "translation": "新しいチャットを開始"
+    "translation": "开始新对话"
   },
   "Type your message here... (Start with / for commands, @ for files, Enter to send)": {
     "placeholders": {},
@@ -1412,7 +1412,7 @@
     "origin": [
       ["src/app/projects/[projectId]/components/newChat/NewChat.tsx", 28]
     ],
-    "translation": "ここにメッセージを入力... （/でコマンド、@でファイル、Enterで送信）"
+    "translation": "在此输入消息...(输入 / 使用命令,@ 使用文件,Enter 发送)"
   },
   "Type your message here... (Start with / for commands, @ for files, Command+Enter to send)": {
     "placeholders": {},
@@ -1420,7 +1420,7 @@
     "origin": [
       ["src/app/projects/[projectId]/components/newChat/NewChat.tsx", 33]
     ],
-    "translation": "ここにメッセージを入力... （/でコマンド、@でファイル、Command+Enterで送信）"
+    "translation": "在此输入消息...(输入 / 使用命令,@ 使用文件,Command+Enter 发送)"
   },
   "Type your message here... (Start with / for commands, @ for files, Shift+Enter to send)": {
     "placeholders": {},
@@ -1428,7 +1428,7 @@
     "origin": [
       ["src/app/projects/[projectId]/components/newChat/NewChat.tsx", 37]
     ],
-    "translation": "ここにメッセージを入力... （/でコマンド、@でファイル、Shift+Enterで送信）"
+    "translation": "在此输入消息...(输入 / 使用命令,@ 使用文件,Shift+Enter 发送)"
   },
   "chat.button.start": {
     "placeholders": {},
@@ -1436,7 +1436,7 @@
     "origin": [
       ["src/app/projects/[projectId]/components/newChat/NewChat.tsx", 49]
     ],
-    "translation": "チャット開始"
+    "translation": "开始对话"
   },
   "cron_builder.sunday": {
     "placeholders": {},
@@ -1447,7 +1447,7 @@
         30
       ]
     ],
-    "translation": "日曜日"
+    "translation": "星期日"
   },
   "cron_builder.monday": {
     "placeholders": {},
@@ -1458,7 +1458,7 @@
         34
       ]
     ],
-    "translation": "月曜日"
+    "translation": "星期一"
   },
   "cron_builder.tuesday": {
     "placeholders": {},
@@ -1469,7 +1469,7 @@
         38
       ]
     ],
-    "translation": "火曜日"
+    "translation": "星期二"
   },
   "cron_builder.wednesday": {
     "placeholders": {},
@@ -1480,7 +1480,7 @@
         42
       ]
     ],
-    "translation": "水曜日"
+    "translation": "星期三"
   },
   "cron_builder.thursday": {
     "placeholders": {},
@@ -1491,7 +1491,7 @@
         46
       ]
     ],
-    "translation": "木曜日"
+    "translation": "星期四"
   },
   "cron_builder.friday": {
     "placeholders": {},
@@ -1502,7 +1502,7 @@
         50
       ]
     ],
-    "translation": "金曜日"
+    "translation": "星期五"
   },
   "cron_builder.saturday": {
     "placeholders": {},
@@ -1513,7 +1513,7 @@
         54
       ]
     ],
-    "translation": "土曜日"
+    "translation": "星期六"
   },
   "cron_builder.schedule_type": {
     "placeholders": {},
@@ -1524,7 +1524,7 @@
         210
       ]
     ],
-    "translation": "スケジュールタイプ"
+    "translation": "调度类型"
   },
   "cron_builder.hourly": {
     "placeholders": {},
@@ -1535,7 +1535,7 @@
         218
       ]
     ],
-    "translation": "毎時"
+    "translation": "每小时"
   },
   "cron_builder.daily": {
     "placeholders": {},
@@ -1546,7 +1546,7 @@
         221
       ]
     ],
-    "translation": "毎日"
+    "translation": "每天"
   },
   "cron_builder.weekly": {
     "placeholders": {},
@@ -1557,7 +1557,7 @@
         224
       ]
     ],
-    "translation": "毎週"
+    "translation": "每周"
   },
   "cron_builder.custom": {
     "placeholders": {},
@@ -1568,7 +1568,7 @@
         227
       ]
     ],
-    "translation": "カスタム"
+    "translation": "自定义"
   },
   "cron_builder.hour": {
     "placeholders": {},
@@ -1583,7 +1583,7 @@
         287
       ]
     ],
-    "translation": "時 (0-23)"
+    "translation": "小时(0-23)"
   },
   "cron_builder.minute": {
     "placeholders": {},
@@ -1598,7 +1598,7 @@
         299
       ]
     ],
-    "translation": "分 (0-59)"
+    "translation": "分钟(0-59)"
   },
   "cron_builder.day_of_week": {
     "placeholders": {},
@@ -1609,7 +1609,7 @@
         266
       ]
     ],
-    "translation": "曜日"
+    "translation": "星期"
   },
   "cron_builder.cron_expression": {
     "placeholders": {},
@@ -1620,7 +1620,7 @@
         316
       ]
     ],
-    "translation": "Cron式"
+    "translation": "Cron 表达式"
   },
   "cron_builder.preview": {
     "placeholders": {},
@@ -1631,7 +1631,7 @@
         328
       ]
     ],
-    "translation": "プレビュー"
+    "translation": "预览"
   },
   "cron_builder.expression": {
     "placeholders": {},
@@ -1642,7 +1642,7 @@
         340
       ]
     ],
-    "translation": "Cron式"
+    "translation": "Cron 表达式"
   },
   "Available files and directories": {
     "placeholders": {},
@@ -1653,7 +1653,7 @@
         267
       ]
     ],
-    "translation": "利用可能なファイルとディレクトリ"
+    "translation": "可用的文件和目录"
   },
   "diff.files.changed": {
     "placeholders": {},
@@ -1664,7 +1664,7 @@
         53
       ]
     ],
-    "translation": "ファイルが変更されました"
+    "translation": "个文件已更改"
   },
   "diff.files": {
     "placeholders": {},
@@ -1675,7 +1675,7 @@
         56
       ]
     ],
-    "translation": "ファイル"
+    "translation": "文件"
   },
   "Uncommitted changes": {
     "placeholders": {},
@@ -1686,7 +1686,7 @@
         181
       ]
     ],
-    "translation": "未コミットの変更"
+    "translation": "未提交的更改"
   },
   "Failed to commit": {
     "placeholders": {},
@@ -1697,7 +1697,7 @@
         312
       ]
     ],
-    "translation": "コミットに失敗しました"
+    "translation": "提交失败"
   },
   "Failed to push": {
     "placeholders": {},
@@ -1708,7 +1708,7 @@
         330
       ]
     ],
-    "translation": "プッシュに失敗しました"
+    "translation": "推送失败"
   },
   "Retry Push": {
     "placeholders": {},
@@ -1719,7 +1719,7 @@
         365
       ]
     ],
-    "translation": "プッシュを再試行"
+    "translation": "重试推送"
   },
   "Failed to commit and push": {
     "placeholders": {},
@@ -1730,7 +1730,7 @@
         378
       ]
     ],
-    "translation": "コミットとプッシュに失敗しました"
+    "translation": "提交和推送失败"
   },
   "Compare from": {
     "placeholders": {},
@@ -1741,7 +1741,7 @@
         397
       ]
     ],
-    "translation": "比較元"
+    "translation": "比较起点"
   },
   "Compare to": {
     "placeholders": {},
@@ -1752,7 +1752,7 @@
         403
       ]
     ],
-    "translation": "比較先"
+    "translation": "比较终点"
   },
   "diff.commit.changes": {
     "placeholders": {},
@@ -1763,7 +1763,7 @@
         469
       ]
     ],
-    "translation": "変更をコミット"
+    "translation": "提交更改"
   },
   "diff.select.all": {
     "placeholders": {},
@@ -1774,7 +1774,7 @@
         490
       ]
     ],
-    "translation": "すべて選択"
+    "translation": "全选"
   },
   "diff.deselect.all": {
     "placeholders": {},
@@ -1785,7 +1785,7 @@
         498
       ]
     ],
-    "translation": "すべて選択解除"
+    "translation": "取消全选"
   },
   "diff.commit.message": {
     "placeholders": {},
@@ -1796,7 +1796,7 @@
         538
       ]
     ],
-    "translation": "コミットメッセージ"
+    "translation": "提交信息"
   },
   "diff.committing": {
     "placeholders": {},
@@ -1807,7 +1807,7 @@
         561
       ]
     ],
-    "translation": "コミット中..."
+    "translation": "提交中..."
   },
   "diff.commit": {
     "placeholders": {},
@@ -1818,7 +1818,7 @@
         564
       ]
     ],
-    "translation": "コミット"
+    "translation": "提交"
   },
   "diff.pushing": {
     "placeholders": {},
@@ -1829,7 +1829,7 @@
         576
       ]
     ],
-    "translation": "プッシュ中..."
+    "translation": "推送中..."
   },
   "diff.push": {
     "placeholders": {},
@@ -1840,7 +1840,7 @@
         579
       ]
     ],
-    "translation": "プッシュ"
+    "translation": "推送"
   },
   "diff.committing.pushing": {
     "placeholders": {},
@@ -1851,7 +1851,7 @@
         593
       ]
     ],
-    "translation": "コミット＆プッシュ中..."
+    "translation": "提交并推送中..."
   },
   "diff.commit.push": {
     "placeholders": {},
@@ -1862,7 +1862,7 @@
         596
       ]
     ],
-    "translation": "コミット＆プッシュ"
+    "translation": "提交并推送"
   },
   "diff.select.file": {
     "placeholders": {},
@@ -1873,7 +1873,7 @@
         604
       ]
     ],
-    "translation": "少なくとも1つのファイルを選択してください"
+    "translation": "请至少选择一个文件"
   },
   "diff.enter.message": {
     "placeholders": {},
@@ -1884,7 +1884,7 @@
         606
       ]
     ],
-    "translation": "コミットメッセージを入力"
+    "translation": "请输入提交信息"
   },
   "diff.loading": {
     "placeholders": {},
@@ -1895,7 +1895,7 @@
         642
       ]
     ],
-    "translation": "差分を読み込み中..."
+    "translation": "加载差异中..."
   },
   "assistant.thinking": {
     "placeholders": {},
@@ -1917,7 +1917,7 @@
         118
       ]
     ],
-    "translation": "タスクを確認"
+    "translation": "查看任务详情"
   },
   "assistant.tool.tool_id": {
     "placeholders": {},
@@ -1928,7 +1928,7 @@
         157
       ]
     ],
-    "translation": "ツールID"
+    "translation": "工具 ID"
   },
   "assistant.tool.input_parameters": {
     "placeholders": {},
@@ -1939,7 +1939,7 @@
         165
       ]
     ],
-    "translation": "入力パラメータ"
+    "translation": "输入参数"
   },
   "assistant.tool.result": {
     "placeholders": {},
@@ -1950,7 +1950,7 @@
         179
       ]
     ],
-    "translation": "ツール実行結果"
+    "translation": "工具结果"
   },
   "Available commands": {
     "placeholders": {},
@@ -1961,7 +1961,7 @@
         193
       ]
     ],
-    "translation": "利用可能なコマンド"
+    "translation": "可用命令"
   },
   "chat.error.send_failed": {
     "placeholders": {},
@@ -1969,7 +1969,7 @@
     "origin": [
       ["src/app/projects/[projectId]/components/chatForm/ChatInput.tsx", 375]
     ],
-    "translation": "メッセージの送信に失敗しました。もう一度お試しください。"
+    "translation": "发送消息失败。请重试。"
   },
   "Message input with completion support": {
     "placeholders": {},
@@ -1977,7 +1977,7 @@
     "origin": [
       ["src/app/projects/[projectId]/components/chatForm/ChatInput.tsx", 411]
     ],
-    "translation": "補完機能付きメッセージ入力"
+    "translation": "带补全支持的消息输入"
   },
   "chat.attach_file": {
     "placeholders": {},
@@ -1985,7 +1985,7 @@
     "origin": [
       ["src/app/projects/[projectId]/components/chatForm/ChatInput.tsx", 460]
     ],
-    "translation": "添付"
+    "translation": "附加"
   },
   "chat.autocomplete.active": {
     "placeholders": {},
@@ -1993,7 +1993,7 @@
     "origin": [
       ["src/app/projects/[projectId]/components/chatForm/ChatInput.tsx", 472]
     ],
-    "translation": "オートコンプリート有効"
+    "translation": "自动补全已激活"
   },
   "chat.send_mode.label": {
     "placeholders": {},
@@ -2001,7 +2001,7 @@
     "origin": [
       ["src/app/projects/[projectId]/components/chatForm/ChatInput.tsx", 481]
     ],
-    "translation": "送信モード"
+    "translation": "发送模式"
   },
   "chat.send_mode.immediate": {
     "placeholders": {},
@@ -2009,7 +2009,7 @@
     "origin": [
       ["src/app/projects/[projectId]/components/chatForm/ChatInput.tsx", 498]
     ],
-    "translation": "今すぐ送信"
+    "translation": "立即发送"
   },
   "chat.send_mode.scheduled": {
     "placeholders": {},
@@ -2017,7 +2017,7 @@
     "origin": [
       ["src/app/projects/[projectId]/components/chatForm/ChatInput.tsx", 501]
     ],
-    "translation": "予約送信"
+    "translation": "定时发送"
   },
   "chat.send_mode.scheduled_time": {
     "placeholders": {},
@@ -2025,7 +2025,7 @@
     "origin": [
       ["src/app/projects/[projectId]/components/chatForm/ChatInput.tsx", 512]
     ],
-    "translation": "送信予定時刻"
+    "translation": "定时发送时间"
   },
   "chat.status.processing": {
     "placeholders": {},
@@ -2033,7 +2033,7 @@
     "origin": [
       ["src/app/projects/[projectId]/components/chatForm/ChatInput.tsx", 541]
     ],
-    "translation": "処理中..."
+    "translation": "处理中..."
   },
   "scheduler.create_job": {
     "message": "Create Job",
@@ -2045,7 +2045,7 @@
         189
       ]
     ],
-    "translation": "ジョブを作成"
+    "translation": "创建任务"
   },
   "scheduler.job.create_failed": {
     "message": "Failed to create job",
@@ -2057,7 +2057,7 @@
         60
       ]
     ],
-    "translation": "ジョブの作成に失敗しました"
+    "translation": "创建任务失败"
   },
   "scheduler.job.delete_failed": {
     "message": "Failed to delete job",
@@ -2069,7 +2069,7 @@
         122
       ]
     ],
-    "translation": "ジョブの削除に失敗しました"
+    "translation": "删除任务失败"
   },
   "chat.scheduled_send.failed": {
     "message": "Failed to schedule message",
@@ -2078,7 +2078,7 @@
     "origin": [
       ["src/app/projects/[projectId]/components/chatForm/ChatInput.tsx", 221]
     ],
-    "translation": "メッセージの予約に失敗しました"
+    "translation": "定时发送消息失败"
   },
   "scheduler.job.update_failed": {
     "message": "Failed to update job",
@@ -2090,7 +2090,7 @@
         93
       ]
     ],
-    "translation": "ジョブの更新に失敗しました"
+    "translation": "更新任务失败"
   },
   "scheduler.job.created": {
     "message": "Job created successfully",
@@ -2102,7 +2102,7 @@
         51
       ]
     ],
-    "translation": "ジョブを作成しました"
+    "translation": "任务创建成功"
   },
   "scheduler.job.deleted": {
     "message": "Job deleted successfully",
@@ -2114,7 +2114,7 @@
         112
       ]
     ],
-    "translation": "ジョブを削除しました"
+    "translation": "任务删除成功"
   },
   "scheduler.job.updated": {
     "message": "Job updated successfully",
@@ -2126,7 +2126,7 @@
         83
       ]
     ],
-    "translation": "ジョブを更新しました"
+    "translation": "任务更新成功"
   },
   "scheduler.form.message.aria_label": {
     "message": "Message input with completion support (/ for commands, @ for files)",
@@ -2138,7 +2138,7 @@
         282
       ]
     ],
-    "translation": "補完機能付きメッセージ入力 (/でコマンド、@でファイル)"
+    "translation": "带补全支持的消息输入(输入 / 使用命令,@ 使用文件)"
   },
   "chat.scheduled_send.success": {
     "message": "Message scheduled successfully",
@@ -2147,7 +2147,7 @@
     "origin": [
       ["src/app/projects/[projectId]/components/chatForm/ChatInput.tsx", 205]
     ],
-    "translation": "メッセージを予約しました"
+    "translation": "消息定时发送成功"
   },
   "control.new_chat": {
     "message": "New Chat",
@@ -2159,7 +2159,7 @@
         68
       ]
     ],
-    "translation": "新しいチャット"
+    "translation": "新建对话"
   },
   "control.open_git_dialog": {
     "message": "Open Git Dialog",
@@ -2171,7 +2171,7 @@
         48
       ]
     ],
-    "translation": "Gitダイアログを開く"
+    "translation": "打开 Git 对话框"
   },
   "common.reload": {
     "message": "Reload",
@@ -2183,7 +2183,7 @@
         175
       ]
     ],
-    "translation": "再読み込み"
+    "translation": "刷新"
   },
   "control.scroll_to_bottom": {
     "message": "Scroll to Bottom",
@@ -2195,7 +2195,7 @@
         104
       ]
     ],
-    "translation": "ボトムにスクロール"
+    "translation": "滚动到底部"
   },
   "control.scroll_to_top": {
     "message": "Scroll to Top",
@@ -2207,7 +2207,7 @@
         88
       ]
     ],
-    "translation": "トップにスクロール"
+    "translation": "滚动到顶部"
   },
   "scheduler.form.message.placeholder": {
     "message": "Type message to send to Claude Code... (/ for commands, @ for files)",
@@ -2219,7 +2219,7 @@
         274
       ]
     ],
-    "translation": "Claude Codeに送信するメッセージを入力... (/でコマンド補完、@でファイル補完)"
+    "translation": "输入要发送给 Claude Code 的消息...(输入 / 使用命令,@ 使用文件)"
   },
   "chat.placeholder.resume.command_enter": {
     "message": "Type your message... (Start with / for commands, @ for files, Command+Enter to send)",
@@ -2231,7 +2231,7 @@
         35
       ]
     ],
-    "translation": "メッセージを入力... （/でコマンド、@でファイル、Command+Enterで送信）"
+    "translation": "输入消息...(输入 / 使用命令,@ 使用文件,Command+Enter 发送)"
   },
   "chat.placeholder.continue.command_enter": {
     "message": "Type your message... (Start with / for commands, @ for files, Command+Enter to send)",
@@ -2243,7 +2243,7 @@
         37
       ]
     ],
-    "translation": "メッセージを入力... （/でコマンド、@でファイル、Command+Enterで送信）"
+    "translation": "输入消息...(输入 / 使用命令,@ 使用文件,Command+Enter 发送)"
   },
   "chat.placeholder.resume.enter": {
     "message": "Type your message... (Start with / for commands, @ for files, Enter to send)",
@@ -2255,7 +2255,7 @@
         28
       ]
     ],
-    "translation": "メッセージを入力... （/でコマンド、@でファイル、Enterで送信）"
+    "translation": "输入消息...(输入 / 使用命令,@ 使用文件,Enter 发送)"
   },
   "chat.placeholder.continue.enter": {
     "message": "Type your message... (Start with / for commands, @ for files, Enter to send)",
@@ -2267,7 +2267,7 @@
         30
       ]
     ],
-    "translation": "メッセージを入力... （/でコマンド、@でファイル、Enterで送信）"
+    "translation": "输入消息...(输入 / 使用命令,@ 使用文件,Enter 发送)"
   },
   "chat.placeholder.resume.shift_enter": {
     "message": "Type your message... (Start with / for commands, @ for files, Shift+Enter to send)",
@@ -2279,7 +2279,7 @@
         41
       ]
     ],
-    "translation": "メッセージを入力... （/でコマンド、@でファイル、Shift+Enterで送信）"
+    "translation": "输入消息...(输入 / 使用命令,@ 使用文件,Shift+Enter 发送)"
   },
   "chat.placeholder.continue.shift_enter": {
     "message": "Type your message... (Start with / for commands, @ for files, Shift+Enter to send)",
@@ -2291,7 +2291,7 @@
         43
       ]
     ],
-    "translation": "メッセージを入力... （/でコマンド、@でファイル、Shift+Enterで送信）"
+    "translation": "输入消息...(输入 / 使用命令,@ 使用文件,Shift+Enter 发送)"
   },
   "chat.scheduled_send.success_description": {
     "message": "You can view and manage it in the Scheduler tab",
@@ -2300,6 +2300,6 @@
     "origin": [
       ["src/app/projects/[projectId]/components/chatForm/ChatInput.tsx", 210]
     ],
-    "translation": "スケジューラタブで確認・管理できます"
+    "translation": "您可以在定时任务选项卡中查看和管理"
   }
 }

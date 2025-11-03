@@ -1,7 +1,7 @@
 import { i18n } from "@lingui/core";
 import type { SupportedLocale } from "./schema";
 
-export const locales: SupportedLocale[] = ["ja", "en"];
+export const locales: SupportedLocale[] = ["ja", "en", "zh_CN"];
 
 const importMessages = async (locale: SupportedLocale) => {
   switch (locale) {
@@ -9,6 +9,8 @@ const importMessages = async (locale: SupportedLocale) => {
       return import("./locales/ja/messages");
     case "en":
       return import("./locales/en/messages");
+    case "zh_CN":
+      return import("./locales/zh_CN/messages");
     default:
       locale satisfies never;
       throw new Error(`Unsupported locale: ${locale}`);

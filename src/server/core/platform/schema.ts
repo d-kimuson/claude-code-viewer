@@ -6,6 +6,7 @@ export const envSchema = z.object({
     .optional()
     .default("development"),
   CLAUDE_CODE_VIEWER_CC_EXECUTABLE_PATH: z.string().optional(),
+  CLAUDE_CODE_VIEWER_DIR: z.string().optional(),
   GLOBAL_CLAUDE_DIR: z.string().optional(),
   NEXT_PHASE: z.string().optional(),
   PORT: z

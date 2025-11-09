@@ -6,3 +6,9 @@ export const claudeCodeViewerCacheDirPath = resolve(
   ".claude-code-viewer",
   "cache",
 );
+
+export const processPidsFilePath = resolve(
+  homedir(),
+  ".claude-code-viewer",
+  "process-pids.json",
+);

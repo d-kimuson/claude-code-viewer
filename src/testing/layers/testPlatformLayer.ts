@@ -27,6 +27,19 @@ export const testPlatformLayer = (overrides?: {
       claudeProjectsDirPath: resolve(claudeDirForTest, "projects"),
       ...overrides?.applicationContext?.claudeCodePaths,
     },
+
+    claudeCodeViewerPaths: {
+      claudeCodeViewerDirPath: resolve(
+        process.cwd(),
+        "mock-claude-code-viewer",
+      ),
+      processPidsFilePath: resolve(
+        process.cwd(),
+        "mock-claude-code-viewer",
+        "process-pids.json",
+      ),
+      ...overrides?.applicationContext?.claudeCodeViewerPaths,
+    },
   });
 
   const envServiceLayer = Layer.mock(EnvService, {

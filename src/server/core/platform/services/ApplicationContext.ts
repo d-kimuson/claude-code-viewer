@@ -18,6 +18,16 @@ const LayerImpl = Effect.gen(function* () {
       ),
     );
 
+  const claudeCodeViewerDirPath = yield* envService
+    .getEnv("CLAUDE_CODE_VIEWER_DIR")
+    .pipe(
+      Effect.map((envVar: string | undefined) =>
+        envVar === undefined
+          ? path.resolve(homedir(), ".claude-code-viewer")
+          : path.resolve(envVar),
+      ),
+    );
+
   const claudeCodePaths = {
     globalClaudeDirectoryPath,
     claudeCommandsDirPath: path.resolve(globalClaudeDirectoryPath, "commands"),
@@ -28,8 +38,20 @@ const LayerImpl = Effect.gen(function* () {
     claudeProjectsDirPath: string;
   };
 
+  const claudeCodeViewerPaths = {
+    claudeCodeViewerDirPath,
+    processPidsFilePath: path.resolve(
+      claudeCodeViewerDirPath,
+      "process-pids.json",
+    ),
+  } as const satisfies {
+    claudeCodeViewerDirPath: string;
+    processPidsFilePath: string;
+  };
+
   return {
     claudeCodePaths,
+    claudeCodeViewerPaths,
   };
 });
 

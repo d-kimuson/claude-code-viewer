@@ -6,6 +6,7 @@ import { NodeContext } from "@effect/platform-node";
 import { serve } from "@hono/node-server";
 import { serveStatic } from "@hono/node-server/serve-static";
 import { Effect } from "effect";
+import { ProcessPidRepository } from "./core/claude-code/infrastructure/ProcessPidRepository";
 import { ClaudeCodeController } from "./core/claude-code/presentation/ClaudeCodeController";
 import { ClaudeCodePermissionController } from "./core/claude-code/presentation/ClaudeCodePermissionController";
 import { ClaudeCodeSessionProcessController } from "./core/claude-code/presentation/ClaudeCodeSessionProcessController";
@@ -13,6 +14,7 @@ import { ClaudeCodeLifeCycleService } from "./core/claude-code/services/ClaudeCo
 import { ClaudeCodePermissionService } from "./core/claude-code/services/ClaudeCodePermissionService";
 import { ClaudeCodeService } from "./core/claude-code/services/ClaudeCodeService";
 import { ClaudeCodeSessionProcessService } from "./core/claude-code/services/ClaudeCodeSessionProcessService";
+import { ProcessDetectionService } from "./core/claude-code/services/ProcessDetectionService";
 import { SSEController } from "./core/events/presentation/SSEController";
 import { FileWatcherService } from "./core/events/services/fileWatcher";
 import { FeatureFlagController } from "./core/feature-flag/presentation/FeatureFlagController";
@@ -87,6 +89,7 @@ const program = routes(honoApp)
     Effect.provide(GitService.Live),
     Effect.provide(SchedulerService.Live),
     Effect.provide(SchedulerConfigBaseDir.Live),
+    Effect.provide(ProcessDetectionService.Live),
   )
   .pipe(
     /** Infrastructure */
@@ -95,6 +98,7 @@ const program = routes(honoApp)
     Effect.provide(ProjectMetaService.Live),
     Effect.provide(SessionMetaService.Live),
     Effect.provide(VirtualConversationDatabase.Live),
+    Effect.provide(ProcessPidRepository.Live),
   )
   .pipe(
     /** Platform */

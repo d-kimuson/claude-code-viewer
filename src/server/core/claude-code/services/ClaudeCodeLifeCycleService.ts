@@ -23,6 +23,8 @@ import * as CCSessionProcess from "../models/CCSessionProcess";
 import * as ClaudeCode from "../models/ClaudeCode";
 import { ClaudeCodePermissionService } from "./ClaudeCodePermissionService";
 import { ClaudeCodeSessionProcessService } from "./ClaudeCodeSessionProcessService";
+import { ProcessDetectionService } from "./ProcessDetectionService";
+import { ProcessPidRepository } from "../infrastructure/ProcessPidRepository";
 
 export type MessageGenerator = () => AsyncGenerator<
   SDKUserMessage,
@@ -36,6 +38,8 @@ const LayerImpl = Effect.gen(function* () {
   const sessionProcessService = yield* ClaudeCodeSessionProcessService;
   const virtualConversationDatabase = yield* VirtualConversationDatabase;
   const permissionService = yield* ClaudeCodePermissionService;
+  const processDetectionService = yield* ProcessDetectionService;
+  const processPidRepository = yield* ProcessPidRepository;
 
   const runtime = yield* Effect.runtime<
     | FileSystem.FileSystem
@@ -45,6 +49,8 @@ const LayerImpl = Effect.gen(function* () {
     | SessionMetaService
     | ClaudeCodePermissionService
     | EnvService
+    | ProcessDetectionService
+    | ProcessPidRepository
   >();
 
   const continueTask = (options: {
@@ -262,6 +268,13 @@ const LayerImpl = Effect.gen(function* () {
         });
 
       const handleSessionProcessDaemon = async () => {
+        // Capture process list before spawning Claude Code process
+        const beforeProcesses = await Runtime.runPromise(runtime)(
+          processDetectionService
+            .getCurrentProcessList()
+            .pipe(Effect.catchAll(() => Effect.succeed([]))),
+        );
+
         const messageIter = await Runtime.runPromise(runtime)(
           Effect.gen(function* () {
             const permissionOptions =
@@ -278,6 +291,50 @@ const LayerImpl = Effect.gen(function* () {
               ...permissionOptions,
             });
           }),
+        );
+
+        // Detect and save PID after process spawn
+        Runtime.runFork(runtime)(
+          Effect.gen(function* () {
+            // Wait briefly for the process to spawn
+            yield* Effect.sleep("200 millis");
+
+            const afterProcesses =
+              yield* processDetectionService.getCurrentProcessList();
+
+            const detectedPid = yield* processDetectionService.detectClaudeCodePid(
+              {
+                beforeProcesses,
+                afterProcesses,
+                cwd: sessionProcess.def.cwd,
+                commandPattern: "claude-agent-sdk",
+              },
+            );
+
+            if (detectedPid !== null) {
+              yield* processPidRepository.savePid(
+                sessionProcess.def.sessionProcessId,
+                detectedPid,
+                {
+                  projectId: sessionProcess.def.projectId,
+                  cwd: sessionProcess.def.cwd,
+                },
+              );
+
+              console.log(
+                `[PID Tracking] Detected and saved PID ${detectedPid} for session process ${sessionProcess.def.sessionProcessId}`,
+              );
+            } else {
+              console.warn(
+                `[PID Tracking] Failed to detect PID for session process ${sessionProcess.def.sessionProcessId}`,
+              );
+            }
+          }).pipe(
+            Effect.catchAll((error) => {
+              console.error("[PID Tracking] Error during PID detection:", error);
+              return Effect.void;
+            }),
+          ),
         );
 
         setNextMessage(input);
@@ -389,13 +446,54 @@ const LayerImpl = Effect.gen(function* () {
       return processes.filter((process) => CCSessionProcess.isPublic(process));
     });
 
-  const abortTask = (sessionProcessId: string): Effect.Effect<void, Error> =>
+  const abortTask = (sessionProcessId: string) =>
     Effect.gen(function* () {
       const currentProcess =
         yield* sessionProcessService.getSessionProcess(sessionProcessId);
 
+      // Step 1: Graceful shutdown via AbortController
       currentProcess.def.abortController.abort();
 
+      // Step 2: Wait briefly for graceful shutdown
+      yield* Effect.sleep("3 seconds");
+
+      // Step 3: Check if process is still alive and force kill if necessary
+      const pidMetadata = yield* processPidRepository.getPid(sessionProcessId);
+
+      if (pidMetadata !== null) {
+        const isAlive = yield* processDetectionService.isProcessAlive(
+          pidMetadata.pid,
+        );
+
+        if (isAlive) {
+          console.warn(
+            `[PID Tracking] Process ${pidMetadata.pid} still alive after graceful shutdown, force killing...`,
+          );
+
+          const killed = yield* processDetectionService.killProcess(
+            pidMetadata.pid,
+          );
+
+          if (killed) {
+            console.log(
+              `[PID Tracking] Successfully killed process ${pidMetadata.pid}`,
+            );
+          } else {
+            console.error(
+              `[PID Tracking] Failed to kill process ${pidMetadata.pid}`,
+            );
+          }
+        } else {
+          console.log(
+            `[PID Tracking] Process ${pidMetadata.pid} already terminated`,
+          );
+        }
+
+        // Step 4: Remove PID record regardless of kill result
+        yield* processPidRepository.removePid(sessionProcessId);
+      }
+
+      // Step 5: Update process state to completed
       yield* sessionProcessService.toCompletedState({
         sessionProcessId: currentProcess.def.sessionProcessId,
         error: new Error("Task aborted"),
@@ -406,6 +504,47 @@ const LayerImpl = Effect.gen(function* () {
     Effect.gen(function* () {
       const processes = yield* sessionProcessService.getSessionProcesses();
 
+      // Step 1: Abort all processes via AbortController
+      for (const process of processes) {
+        process.def.abortController.abort();
+      }
+
+      // Step 2: Wait briefly for graceful shutdown
+      yield* Effect.sleep("3 seconds");
+
+      // Step 3: Force kill any processes that are still alive
+      const allPids = yield* processPidRepository.getAllPids();
+
+      for (const pidMetadata of allPids) {
+        const isAlive = yield* processDetectionService.isProcessAlive(
+          pidMetadata.pid,
+        );
+
+        if (isAlive) {
+          console.warn(
+            `[PID Tracking] Process ${pidMetadata.pid} (session ${pidMetadata.sessionProcessId}) still alive, force killing...`,
+          );
+
+          const killed = yield* processDetectionService.killProcess(
+            pidMetadata.pid,
+          );
+
+          if (killed) {
+            console.log(
+              `[PID Tracking] Successfully killed process ${pidMetadata.pid}`,
+            );
+          } else {
+            console.error(
+              `[PID Tracking] Failed to kill process ${pidMetadata.pid}`,
+            );
+          }
+        }
+      }
+
+      // Step 4: Clear all PID records
+      yield* processPidRepository.clearAllPids();
+
+      // Step 5: Update all process states to completed
       for (const process of processes) {
         yield* sessionProcessService.toCompletedState({
           sessionProcessId: process.def.sessionProcessId,

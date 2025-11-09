@@ -392,7 +392,7 @@ export const routes = (app: HonoAppType) =>
           zValidator("json", z.object({ projectId: z.string() })),
           async (c) => {
             const { sessionProcessId } = c.req.param();
-            void Effect.runFork(
+            void Runtime.runFork(runtime)(
               claudeCodeLifeCycleService.abortTask(sessionProcessId),
             );
             return c.json({ message: "Task aborted" });

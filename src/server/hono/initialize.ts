@@ -1,5 +1,6 @@
 import { Context, Effect, Layer, Ref, Schedule } from "effect";
 import { ProcessPidRepository } from "../core/claude-code/infrastructure/ProcessPidRepository";
+import { ClaudeCodeLifeCycleService } from "../core/claude-code/services/ClaudeCodeLifeCycleService";
 import { ProcessDetectionService } from "../core/claude-code/services/ProcessDetectionService";
 import { EventBus } from "../core/events/services/EventBus";
 import { FileWatcherService } from "../core/events/services/fileWatcher";
@@ -31,6 +32,7 @@ export class InitializeService extends Context.Tag("InitializeService")<
       const virtualConversationDatabase = yield* VirtualConversationDatabase;
       const processPidRepository = yield* ProcessPidRepository;
       const processDetectionService = yield* ProcessDetectionService;
+      const claudeCodeLifeCycleService = yield* ClaudeCodeLifeCycleService;
 
       // 状態管理用の Ref
       const listenersRef = yield* Ref.make<{
@@ -178,8 +180,17 @@ export class InitializeService extends Context.Tag("InitializeService")<
         }).pipe(Effect.withSpan("start-initialization")) as Effect.Effect<void>;
       };
 
-      const stopCleanup = (): Effect.Effect<void> =>
-        Effect.gen(function* () {
+      const stopCleanup = (): Effect.Effect<void> => {
+        return Effect.gen(function* () {
+          // Abort all running Claude Code processes
+          yield* claudeCodeLifeCycleService.abortAllTasks().pipe(
+            Effect.catchAll((error) => {
+              console.error("Error aborting tasks during cleanup:", error);
+              // Continue cleanup even if aborting tasks fails
+              return Effect.void;
+            }),
+          );
+
           const listeners = yield* Ref.get(listenersRef);
           if (listeners.sessionChanged) {
             yield* eventBus.off("sessionChanged", listeners.sessionChanged);
@@ -194,7 +205,8 @@ export class InitializeService extends Context.Tag("InitializeService")<
 
           yield* Ref.set(listenersRef, {});
           yield* fileWatcher.stop();
-        });
+        }) as Effect.Effect<void>;
+      };
 
       return {
         startInitialization,

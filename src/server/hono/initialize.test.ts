@@ -7,6 +7,7 @@ import { testSessionMetaServiceLayer } from "../../testing/layers/testSessionMet
 import { testSessionRepositoryLayer } from "../../testing/layers/testSessionRepositoryLayer";
 import type { ProcessPidMetadata } from "../core/claude-code/infrastructure/ProcessPidRepository";
 import { ProcessPidRepository } from "../core/claude-code/infrastructure/ProcessPidRepository";
+import { ClaudeCodeLifeCycleService } from "../core/claude-code/services/ClaudeCodeLifeCycleService";
 import { ProcessDetectionService } from "../core/claude-code/services/ProcessDetectionService";
 import { EventBus } from "../core/events/services/EventBus";
 import { FileWatcherService } from "../core/events/services/fileWatcher";
@@ -43,11 +44,24 @@ const defaultProcessDetectionService = Layer.succeed(ProcessDetectionService, {
   killProcess: () => Effect.succeed(true),
 });
 
+// Default mock for ClaudeCodeLifeCycleService
+const defaultClaudeCodeLifeCycleService = Layer.succeed(
+  ClaudeCodeLifeCycleService,
+  {
+    startTask: () => Effect.die("startTask not mocked in this test"),
+    abortTask: () => Effect.void,
+    abortAllTasks: () => Effect.void,
+    continueTask: () => Effect.die("continueTask not mocked in this test"),
+    getPublicSessionProcesses: () => Effect.succeed([]),
+  },
+);
+
 const allDependencies = Layer.mergeAll(
   fileWatcherWithEventBus,
   VirtualConversationDatabase.Live,
   defaultProcessPidRepository,
   defaultProcessDetectionService,
+  defaultClaudeCodeLifeCycleService,
   testProjectMetaServiceLayer({
     meta: {
       projectName: "Test Project",
@@ -283,6 +297,76 @@ describe("InitializeService", () => {
     });
   });
 
+  describe("stopCleanup process termination", () => {
+    it("calls abortAllTasks when stopCleanup is invoked", async () => {
+      const abortAllTasksCalledRef = Effect.runSync(Ref.make(false));
+
+      // Mock ClaudeCodeLifeCycleService
+      const mockClaudeCodeLifeCycleService = Layer.succeed(
+        ClaudeCodeLifeCycleService,
+        {
+          startTask: () => Effect.die("startTask not mocked in this test"),
+          abortTask: () => Effect.void,
+          abortAllTasks: () =>
+            Effect.sync(() => {
+              Effect.runSync(Ref.set(abortAllTasksCalledRef, true));
+            }),
+          continueTask: () =>
+            Effect.die("continueTask not mocked in this test"),
+          getPublicSessionProcesses: () => Effect.succeed([]),
+        },
+      );
+
+      // Override the default mock with test-specific mock
+      const baseDependencies = Layer.mergeAll(
+        fileWatcherWithEventBus,
+        VirtualConversationDatabase.Live,
+        defaultProcessPidRepository,
+        defaultProcessDetectionService,
+        mockClaudeCodeLifeCycleService, // Test-specific mock
+        testProjectMetaServiceLayer({
+          meta: {
+            projectName: "Test Project",
+            projectPath: "/path/to/project",
+            sessionCount: 0,
+          },
+        }),
+        testSessionMetaServiceLayer({
+          meta: {
+            messageCount: 0,
+            firstUserMessage: null,
+          },
+        }),
+        testPlatformLayer(),
+      );
+
+      const testLayer = Layer.provide(
+        InitializeService.Live,
+        baseDependencies,
+      ).pipe(Layer.merge(baseDependencies));
+
+      const program = Effect.gen(function* () {
+        const initialize = yield* InitializeService;
+        yield* initialize.startInitialization();
+        yield* initialize.stopCleanup();
+
+        const abortAllTasksCalled = yield* Ref.get(abortAllTasksCalledRef);
+        return abortAllTasksCalled;
+      });
+
+      const result = await Effect.runPromise(
+        program.pipe(
+          Effect.provide(testLayer),
+          Effect.provide(testProjectRepositoryLayer()),
+          Effect.provide(testSessionRepositoryLayer()),
+          Effect.provide(testPlatformLayer()),
+        ),
+      );
+
+      expect(result).toBe(true);
+    });
+  });
+
   describe("startup cleanup of stale processes", () => {
     it("cleans up stale processes on startup when PID file exists", async () => {
       const killedPidsRef = Effect.runSync(Ref.make<number[]>([]));
@@ -346,6 +430,7 @@ describe("InitializeService", () => {
         VirtualConversationDatabase.Live,
         mockProcessPidRepository, // Test-specific mock
         mockProcessDetectionService, // Test-specific mock
+        defaultClaudeCodeLifeCycleService, // Use default mock
         testProjectMetaServiceLayer({
           meta: {
             projectName: "Test Project",
@@ -450,6 +535,7 @@ describe("InitializeService", () => {
         VirtualConversationDatabase.Live,
         mockProcessPidRepository, // Test-specific mock
         mockProcessDetectionService, // Test-specific mock
+        defaultClaudeCodeLifeCycleService, // Use default mock
         testProjectMetaServiceLayer({
           meta: {
             projectName: "Test Project",
@@ -542,6 +628,7 @@ describe("InitializeService", () => {
         VirtualConversationDatabase.Live,
         mockProcessPidRepository, // Test-specific mock
         mockProcessDetectionService, // Test-specific mock
+        defaultClaudeCodeLifeCycleService, // Use default mock
         testProjectMetaServiceLayer({
           meta: {
             projectName: "Test Project",

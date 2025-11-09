@@ -50,5 +50,8 @@ dist/*
 # claude code
 .claude/settings.local.json
 
+# cc-delegate
+.cc-delegate/
+
 # speckit
 specs

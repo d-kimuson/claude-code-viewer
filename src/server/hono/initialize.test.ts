@@ -5,6 +5,9 @@ import { testProjectMetaServiceLayer } from "../../testing/layers/testProjectMet
 import { testProjectRepositoryLayer } from "../../testing/layers/testProjectRepositoryLayer";
 import { testSessionMetaServiceLayer } from "../../testing/layers/testSessionMetaServiceLayer";
 import { testSessionRepositoryLayer } from "../../testing/layers/testSessionRepositoryLayer";
+import type { ProcessPidMetadata } from "../core/claude-code/infrastructure/ProcessPidRepository";
+import { ProcessPidRepository } from "../core/claude-code/infrastructure/ProcessPidRepository";
+import { ProcessDetectionService } from "../core/claude-code/services/ProcessDetectionService";
 import { EventBus } from "../core/events/services/EventBus";
 import { FileWatcherService } from "../core/events/services/fileWatcher";
 import type { InternalEventDeclaration } from "../core/events/types/InternalEventDeclaration";
@@ -16,9 +19,35 @@ const fileWatcherWithEventBus = FileWatcherService.Live.pipe(
   Layer.provide(EventBus.Live),
 );
 
+// Default mock for ProcessPidRepository (empty PIDs)
+const defaultProcessPidRepository = Layer.succeed(ProcessPidRepository, {
+  savePid: (sessionProcessId, pid, metadata) =>
+    Effect.succeed({
+      pid,
+      sessionProcessId,
+      projectId: metadata.projectId,
+      cwd: metadata.cwd,
+      createdAt: new Date().toISOString(),
+    }),
+  removePid: () => Effect.succeed(null),
+  getPid: () => Effect.succeed(null),
+  getAllPids: () => Effect.succeed([]),
+  clearAllPids: () => Effect.void,
+});
+
+// Default mock for ProcessDetectionService
+const defaultProcessDetectionService = Layer.succeed(ProcessDetectionService, {
+  getCurrentProcessList: () => Effect.succeed([]),
+  detectClaudeCodePid: () => Effect.succeed(null),
+  isProcessAlive: () => Effect.succeed(false),
+  killProcess: () => Effect.succeed(true),
+});
+
 const allDependencies = Layer.mergeAll(
   fileWatcherWithEventBus,
   VirtualConversationDatabase.Live,
+  defaultProcessPidRepository,
+  defaultProcessDetectionService,
   testProjectMetaServiceLayer({
     meta: {
       projectName: "Test Project",
@@ -251,6 +280,309 @@ describe("InitializeService", () => {
       );
 
       expect(result).toBe("cleaned up");
+    });
+  });
+
+  describe("startup cleanup of stale processes", () => {
+    it("cleans up stale processes on startup when PID file exists", async () => {
+      const killedPidsRef = Effect.runSync(Ref.make<number[]>([]));
+      const pidsRef = Effect.runSync(
+        Ref.make<ProcessPidMetadata[]>([
+          {
+            pid: 12345,
+            sessionProcessId: "session-1",
+            projectId: "project-1",
+            cwd: "/path/to/project-1",
+            createdAt: new Date().toISOString(),
+          },
+          {
+            pid: 12346,
+            sessionProcessId: "session-2",
+            projectId: "project-2",
+            cwd: "/path/to/project-2",
+            createdAt: new Date().toISOString(),
+          },
+        ]),
+      );
+
+      // Mock ProcessPidRepository
+      const mockProcessPidRepository = Layer.succeed(ProcessPidRepository, {
+        savePid: (sessionProcessId, pid, metadata) =>
+          Effect.succeed({
+            pid,
+            sessionProcessId,
+            projectId: metadata.projectId,
+            cwd: metadata.cwd,
+            createdAt: new Date().toISOString(),
+          }),
+        removePid: () => Effect.succeed(null),
+        getPid: () => Effect.succeed(null),
+        getAllPids: () =>
+          Effect.sync(() => Ref.get(pidsRef)).pipe(Effect.flatten),
+        clearAllPids: () =>
+          Effect.sync(() => Ref.set(pidsRef, [])).pipe(Effect.flatten),
+      });
+
+      // Mock ProcessDetectionService
+      const mockProcessDetectionService = Layer.succeed(
+        ProcessDetectionService,
+        {
+          getCurrentProcessList: () => Effect.succeed([]),
+          detectClaudeCodePid: () => Effect.succeed(null),
+          isProcessAlive: () => Effect.succeed(true), // All processes are alive
+          killProcess: (pid) =>
+            Effect.sync(() => {
+              Effect.runSync(
+                Ref.update(killedPidsRef, (pids) => [...pids, pid]),
+              );
+              return true;
+            }),
+        },
+      );
+
+      // Override the default mocks with test-specific mocks
+      const baseDependencies = Layer.mergeAll(
+        fileWatcherWithEventBus,
+        VirtualConversationDatabase.Live,
+        mockProcessPidRepository, // Test-specific mock
+        mockProcessDetectionService, // Test-specific mock
+        testProjectMetaServiceLayer({
+          meta: {
+            projectName: "Test Project",
+            projectPath: "/path/to/project",
+            sessionCount: 0,
+          },
+        }),
+        testSessionMetaServiceLayer({
+          meta: {
+            messageCount: 0,
+            firstUserMessage: null,
+          },
+        }),
+        testPlatformLayer(),
+      );
+
+      const testLayer = Layer.provide(
+        InitializeService.Live,
+        baseDependencies,
+      ).pipe(Layer.merge(baseDependencies));
+
+      const program = Effect.gen(function* () {
+        const initialize = yield* InitializeService;
+        yield* initialize.startInitialization();
+
+        const killedPids = yield* Ref.get(killedPidsRef);
+        const remainingPids = yield* Ref.get(pidsRef);
+
+        return { killedPids, remainingPids };
+      });
+
+      const result = await Effect.runPromise(
+        program.pipe(
+          Effect.provide(testLayer),
+          Effect.provide(testProjectRepositoryLayer()),
+          Effect.provide(testSessionRepositoryLayer()),
+          Effect.provide(testPlatformLayer()),
+        ),
+      );
+
+      // Verify that both processes were killed
+      expect(result.killedPids).toHaveLength(2);
+      expect(result.killedPids).toContain(12345);
+      expect(result.killedPids).toContain(12346);
+
+      // Verify that PID file was cleared
+      expect(result.remainingPids).toHaveLength(0);
+    });
+
+    it("removes dead processes from PID file without killing", async () => {
+      const killedPidsRef = Effect.runSync(Ref.make<number[]>([]));
+      const pidsRef = Effect.runSync(
+        Ref.make<ProcessPidMetadata[]>([
+          {
+            pid: 99999,
+            sessionProcessId: "session-1",
+            projectId: "project-1",
+            cwd: "/path/to/project-1",
+            createdAt: new Date().toISOString(),
+          },
+        ]),
+      );
+
+      // Mock ProcessPidRepository
+      const mockProcessPidRepository = Layer.succeed(ProcessPidRepository, {
+        savePid: (sessionProcessId, pid, metadata) =>
+          Effect.succeed({
+            pid,
+            sessionProcessId,
+            projectId: metadata.projectId,
+            cwd: metadata.cwd,
+            createdAt: new Date().toISOString(),
+          }),
+        removePid: () => Effect.succeed(null),
+        getPid: () => Effect.succeed(null),
+        getAllPids: () =>
+          Effect.sync(() => Ref.get(pidsRef)).pipe(Effect.flatten),
+        clearAllPids: () =>
+          Effect.sync(() => Ref.set(pidsRef, [])).pipe(Effect.flatten),
+      });
+
+      // Mock ProcessDetectionService - process is not alive
+      const mockProcessDetectionService = Layer.succeed(
+        ProcessDetectionService,
+        {
+          getCurrentProcessList: () => Effect.succeed([]),
+          detectClaudeCodePid: () => Effect.succeed(null),
+          isProcessAlive: () => Effect.succeed(false), // Process is dead
+          killProcess: (pid: number) =>
+            Effect.sync(() => {
+              Effect.runSync(
+                Ref.update(killedPidsRef, (pids) => [...pids, pid]),
+              );
+              return true;
+            }),
+        },
+      );
+
+      // Override the default mocks with test-specific mocks
+      const baseDependencies = Layer.mergeAll(
+        fileWatcherWithEventBus,
+        VirtualConversationDatabase.Live,
+        mockProcessPidRepository, // Test-specific mock
+        mockProcessDetectionService, // Test-specific mock
+        testProjectMetaServiceLayer({
+          meta: {
+            projectName: "Test Project",
+            projectPath: "/path/to/project",
+            sessionCount: 0,
+          },
+        }),
+        testSessionMetaServiceLayer({
+          meta: {
+            messageCount: 0,
+            firstUserMessage: null,
+          },
+        }),
+        testPlatformLayer(),
+      );
+
+      const testLayer = Layer.provide(
+        InitializeService.Live,
+        baseDependencies,
+      ).pipe(Layer.merge(baseDependencies));
+
+      const program = Effect.gen(function* () {
+        const initialize = yield* InitializeService;
+        yield* initialize.startInitialization();
+
+        const killedPids = yield* Ref.get(killedPidsRef);
+        const remainingPids = yield* Ref.get(pidsRef);
+
+        return { killedPids, remainingPids };
+      });
+
+      const result = await Effect.runPromise(
+        program.pipe(
+          Effect.provide(testLayer),
+          Effect.provide(testProjectRepositoryLayer()),
+          Effect.provide(testSessionRepositoryLayer()),
+          Effect.provide(testPlatformLayer()),
+        ),
+      );
+
+      // Verify that no kill was attempted (process already dead)
+      expect(result.killedPids).toHaveLength(0);
+
+      // Verify that PID file was still cleared
+      expect(result.remainingPids).toHaveLength(0);
+    });
+
+    it("handles empty PID file gracefully", async () => {
+      const killedPidsRef = Effect.runSync(Ref.make<number[]>([]));
+      const pidsRef = Effect.runSync(Ref.make<ProcessPidMetadata[]>([]));
+
+      // Mock ProcessPidRepository with empty PIDs
+      const mockProcessPidRepository = Layer.succeed(ProcessPidRepository, {
+        savePid: (sessionProcessId, pid, metadata) =>
+          Effect.succeed({
+            pid,
+            sessionProcessId,
+            projectId: metadata.projectId,
+            cwd: metadata.cwd,
+            createdAt: new Date().toISOString(),
+          }),
+        removePid: () => Effect.succeed(null),
+        getPid: () => Effect.succeed(null),
+        getAllPids: () =>
+          Effect.sync(() => Ref.get(pidsRef)).pipe(Effect.flatten),
+        clearAllPids: () =>
+          Effect.sync(() => Ref.set(pidsRef, [])).pipe(Effect.flatten),
+      });
+
+      // Mock ProcessDetectionService
+      const mockProcessDetectionService = Layer.succeed(
+        ProcessDetectionService,
+        {
+          getCurrentProcessList: () => Effect.succeed([]),
+          detectClaudeCodePid: () => Effect.succeed(null),
+          isProcessAlive: () => Effect.succeed(true),
+          killProcess: (pid: number) =>
+            Effect.sync(() => {
+              Effect.runSync(
+                Ref.update(killedPidsRef, (pids) => [...pids, pid]),
+              );
+              return true;
+            }),
+        },
+      );
+
+      // Override the default mocks with test-specific mocks
+      const baseDependencies = Layer.mergeAll(
+        fileWatcherWithEventBus,
+        VirtualConversationDatabase.Live,
+        mockProcessPidRepository, // Test-specific mock
+        mockProcessDetectionService, // Test-specific mock
+        testProjectMetaServiceLayer({
+          meta: {
+            projectName: "Test Project",
+            projectPath: "/path/to/project",
+            sessionCount: 0,
+          },
+        }),
+        testSessionMetaServiceLayer({
+          meta: {
+            messageCount: 0,
+            firstUserMessage: null,
+          },
+        }),
+        testPlatformLayer(),
+      );
+
+      const testLayer = Layer.provide(
+        InitializeService.Live,
+        baseDependencies,
+      ).pipe(Layer.merge(baseDependencies));
+
+      const program = Effect.gen(function* () {
+        const initialize = yield* InitializeService;
+        // Should complete without errors
+        yield* initialize.startInitialization();
+
+        const killedPids = yield* Ref.get(killedPidsRef);
+        return killedPids;
+      });
+
+      const result = await Effect.runPromise(
+        program.pipe(
+          Effect.provide(testLayer),
+          Effect.provide(testProjectRepositoryLayer()),
+          Effect.provide(testSessionRepositoryLayer()),
+          Effect.provide(testPlatformLayer()),
+        ),
+      );
+
+      // No processes to kill
+      expect(result).toHaveLength(0);
     });
   });
 });

@@ -1,4 +1,6 @@
 import { Context, Effect, Layer, Ref, Schedule } from "effect";
+import { ProcessPidRepository } from "../core/claude-code/infrastructure/ProcessPidRepository";
+import { ProcessDetectionService } from "../core/claude-code/services/ProcessDetectionService";
 import { EventBus } from "../core/events/services/EventBus";
 import { FileWatcherService } from "../core/events/services/fileWatcher";
 import type { InternalEventDeclaration } from "../core/events/types/InternalEventDeclaration";
@@ -27,6 +29,8 @@ export class InitializeService extends Context.Tag("InitializeService")<
       const projectMetaService = yield* ProjectMetaService;
       const sessionMetaService = yield* SessionMetaService;
       const virtualConversationDatabase = yield* VirtualConversationDatabase;
+      const processPidRepository = yield* ProcessPidRepository;
+      const processDetectionService = yield* ProcessDetectionService;
 
       // 状態管理用の Ref
       const listenersRef = yield* Ref.make<{
@@ -40,6 +44,63 @@ export class InitializeService extends Context.Tag("InitializeService")<
 
       const startInitialization = (): Effect.Effect<void> => {
         return Effect.gen(function* () {
+          // Cleanup stale processes from previous runs
+          yield* Effect.gen(function* () {
+            const allPids = yield* processPidRepository.getAllPids();
+
+            if (allPids.length === 0) {
+              console.log("No stale processes to clean up");
+              return;
+            }
+
+            console.log(
+              `Found ${allPids.length} process(es) from previous run(s), cleaning up...`,
+            );
+
+            let killedCount = 0;
+            let alreadyDeadCount = 0;
+
+            for (const metadata of allPids) {
+              const isAlive = yield* processDetectionService.isProcessAlive(
+                metadata.pid,
+              );
+
+              if (isAlive) {
+                console.log(
+                  `Killing stale process ${metadata.pid} (session: ${metadata.sessionProcessId})`,
+                );
+                const killed = yield* processDetectionService.killProcess(
+                  metadata.pid,
+                );
+                if (killed) {
+                  killedCount++;
+                } else {
+                  console.warn(
+                    `Failed to kill process ${metadata.pid}, but removing from PID file`,
+                  );
+                }
+              } else {
+                console.log(
+                  `Process ${metadata.pid} already terminated (session: ${metadata.sessionProcessId})`,
+                );
+                alreadyDeadCount++;
+              }
+            }
+
+            // Clear all PIDs after cleanup
+            yield* processPidRepository.clearAllPids();
+
+            console.log(
+              `Cleanup complete: ${killedCount} killed, ${alreadyDeadCount} already dead`,
+            );
+          }).pipe(
+            Effect.catchAll((error) => {
+              console.error("Error during process cleanup:", error);
+              // Continue initialization even if cleanup fails
+              return Effect.void;
+            }),
+          );
+
           // ファイルウォッチャーを開始
           yield* fileWatcher.startWatching();
 

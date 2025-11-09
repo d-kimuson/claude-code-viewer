@@ -34,7 +34,18 @@ describe("ClaudeCodeLifeCycleService - PID Tracking Integration", () => {
       const MockProcessPidRepository = Layer.succeed(
         ProcessPidRepository,
         ProcessPidRepository.of({
-          savePid: (_sessionProcessId, _pid, _metadata) => Effect.void as never,
+          savePid: (sessionProcessId, pid, metadata) =>
+            Effect.sync(() => {
+              const pidMetadata = {
+                pid,
+                sessionProcessId,
+                projectId: metadata.projectId,
+                cwd: metadata.cwd,
+                createdAt: new Date().toISOString(),
+              };
+              pidStorage.set(sessionProcessId, pidMetadata);
+              return pidMetadata;
+            }),
           removePid: (sessionProcessId) =>
             Effect.sync(() => {
               const metadata = pidStorage.get(sessionProcessId);
@@ -118,7 +129,14 @@ describe("ClaudeCodeLifeCycleService - PID Tracking Integration", () => {
       const MockProcessPidRepository = Layer.succeed(
         ProcessPidRepository,
         ProcessPidRepository.of({
-          savePid: (_sessionProcessId, _pid, _metadata) => Effect.void as never,
+          savePid: (sessionProcessId, pid, metadata) =>
+            Effect.succeed({
+              pid,
+              sessionProcessId,
+              projectId: metadata.projectId,
+              cwd: metadata.cwd,
+              createdAt: new Date().toISOString(),
+            }),
           removePid: (sessionProcessId) =>
             Effect.sync(() => {
               const metadata = pidStorage.get(sessionProcessId);
@@ -203,7 +221,14 @@ describe("ClaudeCodeLifeCycleService - PID Tracking Integration", () => {
       const MockProcessPidRepository = Layer.succeed(
         ProcessPidRepository,
         ProcessPidRepository.of({
-          savePid: (_sessionProcessId, _pid, _metadata) => Effect.void as never,
+          savePid: (sessionProcessId, pid, metadata) =>
+            Effect.succeed({
+              pid,
+              sessionProcessId,
+              projectId: metadata.projectId,
+              cwd: metadata.cwd,
+              createdAt: new Date().toISOString(),
+            }),
           removePid: (sessionProcessId) =>
             Effect.sync(() => {
               const metadata = pidStorage.get(sessionProcessId);
@@ -288,7 +313,14 @@ describe("ClaudeCodeLifeCycleService - PID Tracking Integration", () => {
       const MockProcessPidRepository = Layer.succeed(
         ProcessPidRepository,
         ProcessPidRepository.of({
-          savePid: (_sessionProcessId, _pid, _metadata) => Effect.void as never,
+          savePid: (sessionProcessId, pid, metadata) =>
+            Effect.succeed({
+              pid,
+              sessionProcessId,
+              projectId: metadata.projectId,
+              cwd: metadata.cwd,
+              createdAt: new Date().toISOString(),
+            }),
           removePid: (sessionProcessId) =>
             Effect.sync(() => {
               const metadata = pidStorage.get(sessionProcessId);

@@ -66,10 +66,16 @@ const LayerImpl = Effect.gen(function* () {
   /**
    * Detect Claude Code process PID by comparing before/after process snapshots
    * Returns the PID of the newly spawned process, or null if not detected
+   *
+   * Detection strategy:
+   * 1. Filter by new PIDs (not in beforeProcesses)
+   * 2. Match commandPattern (e.g., "claude-agent-sdk")
+   * 3. Prefer processes whose command contains the cwd (additional safety check)
+   * 4. If multiple matches, return the one with the highest PID (most recent)
    */
   const detectClaudeCodePid = (options: DetectClaudeCodePidOptions) =>
     Effect.gen(function* () {
-      const { beforeProcesses, afterProcesses, commandPattern } = options;
+      const { beforeProcesses, afterProcesses, cwd, commandPattern } = options;
 
       // Create a set of PIDs that existed before
       const beforePids = new Set(beforeProcesses.map((p) => p.pid));
@@ -81,7 +87,19 @@ const LayerImpl = Effect.gen(function* () {
         return isNew && matchesPattern;
       });
 
-      // If multiple matches, return the one with the highest PID (most recent)
+      // If multiple matches, prefer the one whose command contains cwd
+      // This reduces false positives when multiple Claude Code processes spawn simultaneously
+      if (newProcesses.length > 1) {
+        const withCwd = newProcesses.filter((p) => p.command.includes(cwd));
+        if (withCwd.length > 0) {
+          const sorted = withCwd.sort((a, b) => b.pid - a.pid);
+          const firstProcess = sorted[0];
+          if (!firstProcess) return null;
+          return firstProcess.pid;
+        }
+      }
+
+      // If single match or no cwd match, return the one with the highest PID (most recent)
       if (newProcesses.length > 0) {
         const sorted = newProcesses.sort((a, b) => b.pid - a.pid);
         const firstProcess = sorted[0];
@@ -113,6 +131,12 @@ const LayerImpl = Effect.gen(function* () {
   /**
    * Kill a process with the given PID
    * Returns true if successful, false if the process doesn't exist
+   *
+   * Signal strategy:
+   * - Uses SIGTERM (default signal) to allow graceful shutdown
+   * - This is called after a 3-second wait following AbortController.abort()
+   * - If stronger termination is needed in the future, consider SIGKILL (-9)
+   *   but SIGTERM is preferred as it allows cleanup handlers to run
    */
   const killProcess = (pid: number) =>
     Effect.gen(function* () {

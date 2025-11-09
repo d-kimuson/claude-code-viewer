@@ -65,7 +65,9 @@ const LayerImpl = Effect.gen(function* () {
       return parsed ?? { processes: {} };
     });
 
-  // Write the PID file atomically
+  // Write the PID file
+  // TODO: Consider atomic writes (tmp file + rename) for better crash safety
+  // Current implementation: direct write, with recovery logic in readPidFile
   const writePidFile = (data: ProcessPidsFile) =>
     Effect.gen(function* () {
       yield* ensureDirectory();

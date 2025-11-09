@@ -3,8 +3,8 @@ import { Effect, Layer } from "effect";
 import { describe, expect, test } from "vitest";
 import { testPlatformLayer } from "../../../../testing/layers/testPlatformLayer";
 import type { ProcessPidMetadata } from "../infrastructure/ProcessPidRepository";
-import { ProcessDetectionService } from "./ProcessDetectionService";
 import { ProcessPidRepository } from "../infrastructure/ProcessPidRepository";
+import { ProcessDetectionService } from "./ProcessDetectionService";
 
 /**
  * Unit tests for PID tracking integration in ClaudeCodeLifeCycleService
@@ -34,8 +34,7 @@ describe("ClaudeCodeLifeCycleService - PID Tracking Integration", () => {
       const MockProcessPidRepository = Layer.succeed(
         ProcessPidRepository,
         ProcessPidRepository.of({
-          savePid: (_sessionProcessId, _pid, _metadata) =>
-            Effect.void as never,
+          savePid: (_sessionProcessId, _pid, _metadata) => Effect.void as never,
           removePid: (sessionProcessId) =>
             Effect.sync(() => {
               const metadata = pidStorage.get(sessionProcessId);
@@ -69,9 +68,8 @@ describe("ClaudeCodeLifeCycleService - PID Tracking Integration", () => {
         const processDetectionService = yield* ProcessDetectionService;
 
         // Simulate abortTask logic
-        const pidMetadata = yield* processPidRepository.getPid(
-          mockSessionProcessId,
-        );
+        const pidMetadata =
+          yield* processPidRepository.getPid(mockSessionProcessId);
 
         if (pidMetadata !== null) {
           const isAlive = yield* processDetectionService.isProcessAlive(
@@ -120,8 +118,7 @@ describe("ClaudeCodeLifeCycleService - PID Tracking Integration", () => {
       const MockProcessPidRepository = Layer.succeed(
         ProcessPidRepository,
         ProcessPidRepository.of({
-          savePid: (_sessionProcessId, _pid, _metadata) =>
-            Effect.void as never,
+          savePid: (_sessionProcessId, _pid, _metadata) => Effect.void as never,
           removePid: (sessionProcessId) =>
             Effect.sync(() => {
               const metadata = pidStorage.get(sessionProcessId);
@@ -158,9 +155,8 @@ describe("ClaudeCodeLifeCycleService - PID Tracking Integration", () => {
         const processDetectionService = yield* ProcessDetectionService;
 
         // Simulate abortTask logic
-        const pidMetadata = yield* processPidRepository.getPid(
-          mockSessionProcessId,
-        );
+        const pidMetadata =
+          yield* processPidRepository.getPid(mockSessionProcessId);
 
         if (pidMetadata !== null) {
           const isAlive = yield* processDetectionService.isProcessAlive(
@@ -178,9 +174,8 @@ describe("ClaudeCodeLifeCycleService - PID Tracking Integration", () => {
 
         return {
           killCalls,
-          remainingPid: yield* processPidRepository.getPid(
-            mockSessionProcessId,
-          ),
+          remainingPid:
+            yield* processPidRepository.getPid(mockSessionProcessId),
         };
       });
 
@@ -208,8 +203,7 @@ describe("ClaudeCodeLifeCycleService - PID Tracking Integration", () => {
       const MockProcessPidRepository = Layer.succeed(
         ProcessPidRepository,
         ProcessPidRepository.of({
-          savePid: (_sessionProcessId, _pid, _metadata) =>
-            Effect.void as never,
+          savePid: (_sessionProcessId, _pid, _metadata) => Effect.void as never,
           removePid: (sessionProcessId) =>
             Effect.sync(() => {
               const metadata = pidStorage.get(sessionProcessId);
@@ -240,9 +234,8 @@ describe("ClaudeCodeLifeCycleService - PID Tracking Integration", () => {
         const processPidRepository = yield* ProcessPidRepository;
 
         // Simulate abortTask logic
-        const pidMetadata = yield* processPidRepository.getPid(
-          mockSessionProcessId,
-        );
+        const pidMetadata =
+          yield* processPidRepository.getPid(mockSessionProcessId);
 
         // Should be null, and we should handle it gracefully
         return pidMetadata;
@@ -295,8 +288,7 @@ describe("ClaudeCodeLifeCycleService - PID Tracking Integration", () => {
       const MockProcessPidRepository = Layer.succeed(
         ProcessPidRepository,
         ProcessPidRepository.of({
-          savePid: (_sessionProcessId, _pid, _metadata) =>
-            Effect.void as never,
+          savePid: (_sessionProcessId, _pid, _metadata) => Effect.void as never,
           removePid: (sessionProcessId) =>
             Effect.sync(() => {
               const metadata = pidStorage.get(sessionProcessId);
@@ -318,7 +310,8 @@ describe("ClaudeCodeLifeCycleService - PID Tracking Integration", () => {
         ProcessDetectionService.of({
           getCurrentProcessList: () => Effect.succeed([]),
           detectClaudeCodePid: () => Effect.succeed(null),
-          isProcessAlive: (pid) => Effect.succeed(aliveChecks.get(pid) ?? false),
+          isProcessAlive: (pid) =>
+            Effect.succeed(aliveChecks.get(pid) ?? false),
           killProcess: (pid) =>
             Effect.sync(() => {
               killCalls.push(pid);

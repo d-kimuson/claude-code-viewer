@@ -19,12 +19,12 @@ import {
   type UserMessageInput,
 } from "../functions/createMessageGenerator";
 import { fallbackSdkMessage } from "../functions/fallbackSdkMessage";
+import { ProcessPidRepository } from "../infrastructure/ProcessPidRepository";
 import * as CCSessionProcess from "../models/CCSessionProcess";
 import * as ClaudeCode from "../models/ClaudeCode";
 import { ClaudeCodePermissionService } from "./ClaudeCodePermissionService";
 import { ClaudeCodeSessionProcessService } from "./ClaudeCodeSessionProcessService";
 import { ProcessDetectionService } from "./ProcessDetectionService";
-import { ProcessPidRepository } from "../infrastructure/ProcessPidRepository";
 
 export type MessageGenerator = () => AsyncGenerator<
   SDKUserMessage,
@@ -302,14 +302,13 @@ const LayerImpl = Effect.gen(function* () {
             const afterProcesses =
               yield* processDetectionService.getCurrentProcessList();
 
-            const detectedPid = yield* processDetectionService.detectClaudeCodePid(
-              {
+            const detectedPid =
+              yield* processDetectionService.detectClaudeCodePid({
                 beforeProcesses,
                 afterProcesses,
                 cwd: sessionProcess.def.cwd,
                 commandPattern: "claude-agent-sdk",
-              },
-            );
+              });
 
             if (detectedPid !== null) {
               yield* processPidRepository.savePid(
@@ -331,7 +330,10 @@ const LayerImpl = Effect.gen(function* () {
             }
           }).pipe(
             Effect.catchAll((error) => {
-              console.error("[PID Tracking] Error during PID detection:", error);
+              console.error(
+                "[PID Tracking] Error during PID detection:",
+                error,
+              );
               return Effect.void;
             }),
           ),

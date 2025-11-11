@@ -1,6 +1,7 @@
 import { Context, Effect, Layer, Ref } from "effect";
 import type { UserConfig } from "../../../lib/config/config";
 import type { InferEffect } from "../../../lib/effect/types";
+import { DEFAULT_LOCALE } from "../../../../lib/i18n/localeDetection";
 
 const LayerImpl = Effect.gen(function* () {
   const configRef = yield* Ref.make<UserConfig>({
@@ -8,7 +9,7 @@ const LayerImpl = Effect.gen(function* () {
     unifySameTitleSession: false,
     enterKeyBehavior: "shift-enter-send",
     permissionMode: "default",
-    locale: "ja",
+    locale: DEFAULT_LOCALE,
     theme: "system",
   });
 

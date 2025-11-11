@@ -10,6 +10,7 @@ import {
 import { EnvService } from "../../server/core/platform/services/EnvService";
 import { UserConfigService } from "../../server/core/platform/services/UserConfigService";
 import type { UserConfig } from "../../server/lib/config/config";
+import { DEFAULT_LOCALE } from "../../lib/i18n/localeDetection";
 
 const claudeDirForTest = resolve(process.cwd(), "mock-global-claude-dir");
 
@@ -61,7 +62,7 @@ export const testPlatformLayer = (overrides?: {
         enterKeyBehavior:
           overrides?.userConfig?.enterKeyBehavior ?? "shift-enter-send",
         permissionMode: overrides?.userConfig?.permissionMode ?? "default",
-        locale: overrides?.userConfig?.locale ?? "ja",
+        locale: overrides?.userConfig?.locale ?? DEFAULT_LOCALE,
         theme: overrides?.userConfig?.theme ?? "system",
       }),
   });

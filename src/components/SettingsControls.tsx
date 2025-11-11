@@ -1,6 +1,6 @@
 import { Trans, useLingui } from "@lingui/react";
 import { useQueryClient } from "@tanstack/react-query";
-import { type FC, useId } from "react";
+import { type FC, useId, useMemo } from "react";
 import { useConfig } from "@/app/hooks/useConfig";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -13,6 +13,10 @@ import {
 import { useFeatureFlags } from "@/hooks/useFeatureFlags";
 import { useTheme } from "@/hooks/useTheme";
 import { projectDetailQuery, projectListQuery } from "../lib/api/queries";
+import {
+  DEFAULT_LOCALE,
+  detectLocaleFromNavigator,
+} from "../lib/i18n/localeDetection";
 import type { SupportedLocale } from "../lib/i18n/schema";
 
 interface SettingsControlsProps {
@@ -40,6 +44,9 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
   const { isFlagEnabled } = useFeatureFlags();
 
   const isToolApprovalAvailable = isFlagEnabled("tool-approval");
+  const inferredLocale = useMemo(() => {
+    return detectLocaleFromNavigator() ?? DEFAULT_LOCALE;
+  }, []);
 
   const handleHideNoUserMessageChange = async () => {
     const newConfig = {
@@ -241,7 +248,7 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
           </label>
         )}
         <Select
-          value={config?.locale || "ja"}
+          value={config?.locale || inferredLocale}
           onValueChange={handleLocaleChange}
         >
           <SelectTrigger id={localeId} className="w-full">

@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
-import type { SupportedLocale } from "./schema";
 import {
   DEFAULT_LOCALE,
   detectLocaleFromAcceptLanguage,
   detectLocaleFromNavigator,
   resolvePreferredLocale,
 } from "./localeDetection";
+import type { SupportedLocale } from "./schema";
 
 describe("localeDetection", () => {
   describe("detectLocaleFromAcceptLanguage", () => {

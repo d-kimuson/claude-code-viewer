@@ -1,6 +1,7 @@
 import { resolve } from "node:path";
 import { Path } from "@effect/platform";
 import { Effect, Layer } from "effect";
+import { DEFAULT_LOCALE } from "../../lib/i18n/localeDetection";
 import { EventBus } from "../../server/core/events/services/EventBus";
 import type { EnvSchema } from "../../server/core/platform/schema";
 import {
@@ -10,7 +11,6 @@ import {
 import { EnvService } from "../../server/core/platform/services/EnvService";
 import { UserConfigService } from "../../server/core/platform/services/UserConfigService";
 import type { UserConfig } from "../../server/lib/config/config";
-import { DEFAULT_LOCALE } from "../../lib/i18n/localeDetection";
 
 const claudeDirForTest = resolve(process.cwd(), "mock-global-claude-dir");
 

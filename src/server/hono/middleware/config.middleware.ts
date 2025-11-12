@@ -1,11 +1,11 @@
 import { getCookie, setCookie } from "hono/cookie";
 import { createMiddleware } from "hono/factory";
-import type { UserConfig } from "../../lib/config/config";
-import { parseUserConfig } from "../../lib/config/parseUserConfig";
 import {
   DEFAULT_LOCALE,
   detectLocaleFromAcceptLanguage,
 } from "../../../lib/i18n/localeDetection";
+import type { UserConfig } from "../../lib/config/config";
+import { parseUserConfig } from "../../lib/config/parseUserConfig";
 import type { HonoContext } from "../app";
 
 export const configMiddleware = createMiddleware<HonoContext>(

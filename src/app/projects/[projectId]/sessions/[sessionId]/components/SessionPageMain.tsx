@@ -260,19 +260,20 @@ export const SessionPageMain: FC<{
                       )}
                       <div className="flex flex-col gap-1">
                         <span className="text-xs text-muted-foreground">
-                          Session Cost
+                          <Trans id="session.cost.label" />
                         </span>
                         <div className="space-y-1.5">
                           <Badge
                             variant="secondary"
                             className="h-7 text-xs flex items-center w-fit font-semibold"
                           >
-                            Total: ${session.meta.cost.totalUsd.toFixed(3)}
+                            <Trans id="session.cost.total" />: $
+                            {session.meta.cost.totalUsd.toFixed(3)}
                           </Badge>
                           <div className="text-xs space-y-1 pl-2">
                             <div className="flex justify-between gap-4">
                               <span className="text-muted-foreground">
-                                Input tokens:
+                                <Trans id="session.cost.input_tokens" />:
                               </span>
                               <span>
                                 $
@@ -286,7 +287,7 @@ export const SessionPageMain: FC<{
                             </div>
                             <div className="flex justify-between gap-4">
                               <span className="text-muted-foreground">
-                                Output tokens:
+                                <Trans id="session.cost.output_tokens" />:
                               </span>
                               <span>
                                 $
@@ -300,7 +301,7 @@ export const SessionPageMain: FC<{
                             </div>
                             <div className="flex justify-between gap-4">
                               <span className="text-muted-foreground">
-                                Cache creation:
+                                <Trans id="session.cost.cache_creation" />:
                               </span>
                               <span>
                                 $
@@ -314,7 +315,7 @@ export const SessionPageMain: FC<{
                             </div>
                             <div className="flex justify-between gap-4">
                               <span className="text-muted-foreground">
-                                Cache read:
+                                <Trans id="session.cost.cache_read" />:
                               </span>
                               <span>
                                 $

@@ -4,6 +4,7 @@ import { join } from "node:path";
 import { NodeContext, NodeFileSystem, NodePath } from "@effect/platform-node";
 import { Effect, Layer } from "effect";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
+import { DEFAULT_LOCALE } from "../../../../lib/i18n/localeDetection";
 import { ClaudeCodeLifeCycleService } from "../../claude-code/services/ClaudeCodeLifeCycleService";
 import { ClaudeCodeSessionProcessService } from "../../claude-code/services/ClaudeCodeSessionProcessService";
 import { EnvService } from "../../platform/services/EnvService";
@@ -59,7 +60,7 @@ describe("SchedulerService", () => {
         unifySameTitleSession: true,
         enterKeyBehavior: "shift-enter-send",
         permissionMode: "default",
-        locale: "ja",
+        locale: DEFAULT_LOCALE,
       }),
   } as never);
 

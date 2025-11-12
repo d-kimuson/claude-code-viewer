@@ -1,6 +1,7 @@
 import { resolve } from "node:path";
 import { Path } from "@effect/platform";
 import { Effect, Layer } from "effect";
+import { DEFAULT_LOCALE } from "../../lib/i18n/localeDetection";
 import { EventBus } from "../../server/core/events/services/EventBus";
 import type { EnvSchema } from "../../server/core/platform/schema";
 import {
@@ -61,7 +62,7 @@ export const testPlatformLayer = (overrides?: {
         enterKeyBehavior:
           overrides?.userConfig?.enterKeyBehavior ?? "shift-enter-send",
         permissionMode: overrides?.userConfig?.permissionMode ?? "default",
-        locale: overrides?.userConfig?.locale ?? "ja",
+        locale: overrides?.userConfig?.locale ?? DEFAULT_LOCALE,
         theme: overrides?.userConfig?.theme ?? "system",
       }),
   });

@@ -10,6 +10,7 @@ import { FileWatcherService } from "../core/events/services/fileWatcher";
 import type { InternalEventDeclaration } from "../core/events/types/InternalEventDeclaration";
 import { ProjectRepository } from "../core/project/infrastructure/ProjectRepository";
 import { VirtualConversationDatabase } from "../core/session/infrastructure/VirtualConversationDatabase";
+import { createMockSessionMeta } from "../core/session/testing/createMockSessionMeta";
 import { InitializeService } from "./initialize";
 
 const fileWatcherWithEventBus = FileWatcherService.Live.pipe(
@@ -27,10 +28,10 @@ const allDependencies = Layer.mergeAll(
     },
   }),
   testSessionMetaServiceLayer({
-    meta: {
+    meta: createMockSessionMeta({
       messageCount: 0,
       firstUserMessage: null,
-    },
+    }),
   }),
   testPlatformLayer(),
 );
@@ -74,22 +75,22 @@ describe("InitializeService", () => {
                   id: "session-1",
                   jsonlFilePath: "/path/to/session-1.jsonl",
                   lastModifiedAt: new Date(),
-                  meta: {
+                  meta: createMockSessionMeta({
                     messageCount: 5,
                     firstUserMessage: {
                       kind: "command",
                       commandName: "test",
                     },
-                  },
+                  }),
                 },
                 {
                   id: "session-2",
                   jsonlFilePath: "/path/to/session-2.jsonl",
                   lastModifiedAt: new Date(),
-                  meta: {
+                  meta: createMockSessionMeta({
                     messageCount: 3,
                     firstUserMessage: null,
-                  },
+                  }),
                 },
               ],
             }),

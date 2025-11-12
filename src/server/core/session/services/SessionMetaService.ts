@@ -11,6 +11,10 @@ import {
   parsedUserMessageSchema,
 } from "../../claude-code/functions/parseUserMessage";
 import type { SessionMeta } from "../../types";
+import {
+  calculateTokenCost,
+  type TokenUsage,
+} from "../functions/calculateSessionCost";
 import { decodeSessionId } from "../functions/id";
 import { extractFirstUserMessage } from "../functions/isValidFirstMessage";
 
@@ -76,6 +80,49 @@ export class SessionMetaService extends Context.Tag("SessionMetaService")<
           return firstUserMessage;
         });
 
+      const aggregateTokenUsageAndCost = (
+        content: string,
+      ): {
+        totalUsage: TokenUsage;
+        totalCost: ReturnType<typeof calculateTokenCost>;
+        modelName: string;
+      } => {
+        let inputTokens = 0;
+        let outputTokens = 0;
+        let cacheCreationTokens = 0;
+        let cacheReadTokens = 0;
+        let lastModelName = "claude-3.5-sonnet"; // Default model
+
+        const conversations = parseJsonl(content);
+        for (const conversation of conversations) {
+          if (conversation.type === "assistant") {
+            const usage = conversation.message.usage;
+            inputTokens += usage.input_tokens;
+            outputTokens += usage.output_tokens;
+            cacheCreationTokens += usage.cache_creation_input_tokens ?? 0;
+            cacheReadTokens += usage.cache_read_input_tokens ?? 0;
+
+            // Track the model name (use the latest one)
+            lastModelName = conversation.message.model;
+          }
+        }
+
+        const aggregatedUsage: TokenUsage = {
+          input_tokens: inputTokens,
+          output_tokens: outputTokens,
+          cache_creation_input_tokens: cacheCreationTokens,
+          cache_read_input_tokens: cacheReadTokens,
+        };
+
+        const totalCost = calculateTokenCost(aggregatedUsage, lastModelName);
+
+        return {
+          totalUsage: aggregatedUsage,
+          totalCost,
+          modelName: lastModelName,
+        };
+      };
+
       const getSessionMeta = (
         projectId: string,
         sessionId: string,
@@ -96,9 +143,17 @@ export class SessionMetaService extends Context.Tag("SessionMetaService")<
             lines,
           );
 
+          // Calculate cost information
+          const { totalCost } = aggregateTokenUsageAndCost(content);
+
           const sessionMeta: SessionMeta = {
             messageCount: lines.length,
             firstUserMessage: firstUserMessage,
+            cost: {
+              totalUsd: totalCost.totalUsd,
+              breakdown: totalCost.breakdown,
+              tokenUsage: totalCost.tokenUsage,
+            },
           };
 
           yield* Ref.update(sessionMetaCacheRef, (cache) => {

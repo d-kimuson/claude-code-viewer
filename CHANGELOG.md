@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.4.5
+
+### &nbsp;&nbsp;&nbsp;Features
+
+- Detect language, do not hard code `ja` &nbsp;-&nbsp; by **scarletsky** [<samp>(86279)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/86279dd)
+- Add pricing constants and cost calculation functions &nbsp;-&nbsp; by **d-kimsuon** and **Claude** [<samp>(64397)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/643970a)
+- Extend SessionMeta schema with cost information &nbsp;-&nbsp; by **d-kimsuon** and **Claude** [<samp>(571bc)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/571bc1f)
+- Add UI display for session cost in list and detail views &nbsp;-&nbsp; by **d-kimsuon** and **Claude** [<samp>(d9b36)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/d9b364e)
+- Add i18n translations for session cost labels &nbsp;-&nbsp; by **d-kimsuon** and **Claude** [<samp>(68500)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/68500bf)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.4.4...0.4.5)
+
 ## 0.4.4
 
 ### &nbsp;&nbsp;&nbsp;Features

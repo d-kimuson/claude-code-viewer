@@ -370,5 +370,59 @@ describe("SessionMetaService", () => {
       expect(result.cost.tokenUsage.outputTokens).toBe(0);
       expect(result.cost.totalUsd).toBe(0);
     });
+
+    it("calculates costs correctly with mixed models (Haiku + Opus)", async () => {
+      const FileSystemMock = makeFileSystemMock({
+        readFileString: () =>
+          Effect.succeed(
+            // First message: Haiku with 1M input tokens ($0.25/MTok) and 1M output tokens ($1.25/MTok)
+            '{"type":"assistant","uuid":"550e8400-e29b-41d4-a716-446655440001","timestamp":"2024-01-01T00:00:01.000Z","isSidechain":false,"userType":"external","cwd":"/test","sessionId":"test-session","version":"1.0.0","parentUuid":"550e8400-e29b-41d4-a716-446655440000","message":{"type":"message","role":"assistant","model":"claude-3-haiku-20240307","content":[],"usage":{"input_tokens":1000000,"output_tokens":1000000,"cache_creation_input_tokens":0,"cache_read_input_tokens":0},"stop_reason":null,"stop_sequence":null,"id":"msg_01"}}\n' +
+              // Second message: Opus with 1M input tokens ($15/MTok) and 1M output tokens ($75/MTok)
+              '{"type":"assistant","uuid":"550e8400-e29b-41d4-a716-446655440002","timestamp":"2024-01-01T00:00:02.000Z","isSidechain":false,"userType":"external","cwd":"/test","sessionId":"test-session","version":"1.0.0","parentUuid":"550e8400-e29b-41d4-a716-446655440001","message":{"type":"message","role":"assistant","model":"claude-3-opus-20240229","content":[],"usage":{"input_tokens":1000000,"output_tokens":1000000,"cache_creation_input_tokens":0,"cache_read_input_tokens":0},"stop_reason":null,"stop_sequence":null,"id":"msg_02"}}',
+          ),
+        exists: () => Effect.succeed(false),
+        makeDirectory: () => Effect.void,
+        writeFileString: () => Effect.void,
+      });
+
+      const PathMock = makePathMock();
+      const PersistentServiceMock = makePersistentServiceMock();
+
+      const program = Effect.gen(function* () {
+        const storage = yield* SessionMetaService;
+        const projectId = Buffer.from("/test/project").toString("base64url");
+        const sessionId = Buffer.from("/test/project/session.jsonl").toString(
+          "base64url",
+        );
+
+        return yield* storage.getSessionMeta(projectId, sessionId);
+      });
+
+      const result = await Effect.runPromise(
+        program.pipe(
+          Effect.provide(SessionMetaService.Live),
+          Effect.provide(FileSystemMock),
+          Effect.provide(PathMock),
+          Effect.provide(PersistentServiceMock),
+        ),
+      );
+
+      // Verify aggregated token counts
+      expect(result.cost.tokenUsage.inputTokens).toBe(2000000);
+      expect(result.cost.tokenUsage.outputTokens).toBe(2000000);
+
+      // Expected cost calculation:
+      // Haiku: 1M input * $0.25 + 1M output * $1.25 = $0.25 + $1.25 = $1.50
+      // Opus: 1M input * $15 + 1M output * $75 = $15 + $75 = $90
+      // Total: $1.50 + $90 = $91.50
+      const expectedTotal = 1.5 + 90.0;
+      expect(result.cost.totalUsd).toBeCloseTo(expectedTotal, 2);
+
+      // Verify breakdown shows correct aggregated costs
+      // Input: Haiku $0.25 + Opus $15 = $15.25
+      expect(result.cost.breakdown.inputTokensUsd).toBeCloseTo(15.25, 2);
+      // Output: Haiku $1.25 + Opus $75 = $76.25
+      expect(result.cost.breakdown.outputTokensUsd).toBeCloseTo(76.25, 2);
+    });
   });
 });

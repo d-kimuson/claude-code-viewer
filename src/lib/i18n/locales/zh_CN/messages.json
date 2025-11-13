@@ -2301,5 +2301,41 @@
       ["src/app/projects/[projectId]/components/chatForm/ChatInput.tsx", 210]
     ],
     "translation": "您可以在定时任务选项卡中查看和管理"
+  },
+  "session.cost.label": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [],
+    "translation": "会话成本"
+  },
+  "session.cost.total": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [],
+    "translation": "总计"
+  },
+  "session.cost.input_tokens": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [],
+    "translation": "输入令牌"
+  },
+  "session.cost.output_tokens": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [],
+    "translation": "输出令牌"
+  },
+  "session.cost.cache_creation": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [],
+    "translation": "缓存创建"
+  },
+  "session.cost.cache_read": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [],
+    "translation": "缓存读取"
   }
 }

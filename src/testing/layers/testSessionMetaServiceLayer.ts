@@ -1,5 +1,6 @@
 import { Effect, Layer } from "effect";
 import { SessionMetaService } from "../../server/core/session/services/SessionMetaService";
+import { createMockSessionMeta } from "../../server/core/session/testing/createMockSessionMeta";
 import type { SessionMeta } from "../../server/core/types";
 
 export const testSessionMetaServiceLayer = (options?: {
@@ -7,10 +8,7 @@ export const testSessionMetaServiceLayer = (options?: {
   invalidateSession?: () => Effect.Effect<void>;
 }) => {
   const {
-    meta = {
-      messageCount: 0,
-      firstUserMessage: null,
-    },
+    meta = createMockSessionMeta(),
     invalidateSession = () => Effect.void,
   } = options ?? {};
 

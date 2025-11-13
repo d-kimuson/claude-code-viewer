@@ -2301,5 +2301,41 @@
       ["src/app/projects/[projectId]/components/chatForm/ChatInput.tsx", 210]
     ],
     "translation": "スケジューラタブで確認・管理できます"
+  },
+  "session.cost.label": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [],
+    "translation": "セッションコスト"
+  },
+  "session.cost.total": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [],
+    "translation": "合計"
+  },
+  "session.cost.input_tokens": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [],
+    "translation": "入力トークン"
+  },
+  "session.cost.output_tokens": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [],
+    "translation": "出力トークン"
+  },
+  "session.cost.cache_creation": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [],
+    "translation": "キャッシュ作成"
+  },
+  "session.cost.cache_read": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [],
+    "translation": "キャッシュ読込"
   }
 }

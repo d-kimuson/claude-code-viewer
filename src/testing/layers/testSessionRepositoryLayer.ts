@@ -1,21 +1,9 @@
 import { Effect, Layer } from "effect";
 import { SessionRepository } from "../../server/core/session/infrastructure/SessionRepository";
+import type { Session } from "../../server/core/types";
 
 export const testSessionRepositoryLayer = (options?: {
-  sessions: Array<{
-    id: string;
-    jsonlFilePath: string;
-    lastModifiedAt: Date;
-    meta: {
-      messageCount: number;
-      firstUserMessage: {
-        kind: "command";
-        commandName: string;
-        commandArgs?: string;
-        commandMessage?: string;
-      } | null;
-    };
-  }>;
+  sessions: Array<Session>;
 }) => {
   const { sessions = [] } = options ?? {};
 

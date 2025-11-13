@@ -11,6 +11,7 @@ import type { ErrorJsonl, SessionDetail, SessionMeta } from "../../types";
 import { SessionRepository } from "../infrastructure/SessionRepository";
 import { VirtualConversationDatabase } from "../infrastructure/VirtualConversationDatabase";
 import { SessionMetaService } from "../services/SessionMetaService";
+import { createMockSessionMeta } from "../testing/createMockSessionMeta";
 
 const testSessionMetaServiceLayer = (meta: SessionMeta) => {
   return Layer.mock(SessionMetaService, {
@@ -58,10 +59,10 @@ describe("SessionRepository", () => {
       const sessionId = "test-session";
       const sessionPath = `/test/project/${sessionId}.jsonl`;
       const mockDate = new Date("2024-01-01T00:00:00.000Z");
-      const mockMeta: SessionMeta = {
+      const mockMeta: SessionMeta = createMockSessionMeta({
         messageCount: 3,
         firstUserMessage: null,
-      };
+      });
 
       const mockContent = `{"type":"user","message":{"role":"user","content":"Hello"}}\n{"type":"assistant","message":{"role":"assistant","content":"Hi"}}\n{"type":"user","message":{"role":"user","content":"Test"}}`;
 
@@ -141,10 +142,12 @@ describe("SessionRepository", () => {
         exists: () => Effect.succeed(false),
       });
 
-      const SessionMetaServiceMock = testSessionMetaServiceLayer({
-        messageCount: 0,
-        firstUserMessage: null,
-      });
+      const SessionMetaServiceMock = testSessionMetaServiceLayer(
+        createMockSessionMeta({
+          messageCount: 0,
+          firstUserMessage: null,
+        }),
+      );
       const PredictSessionsDatabaseMock = Layer.succeed(
         VirtualConversationDatabase,
         {
@@ -194,10 +197,12 @@ describe("SessionRepository", () => {
         exists: () => Effect.succeed(false),
       });
 
-      const SessionMetaServiceMock = testSessionMetaServiceLayer({
-        messageCount: 0,
-        firstUserMessage: null,
-      });
+      const SessionMetaServiceMock = testSessionMetaServiceLayer(
+        createMockSessionMeta({
+          messageCount: 0,
+          firstUserMessage: null,
+        }),
+      );
       const PredictSessionsDatabaseMock = testPredictSessionsDatabaseLayer(
         new Map(),
       );
@@ -228,10 +233,12 @@ describe("SessionRepository", () => {
         exists: () => Effect.succeed(false),
       });
 
-      const SessionMetaServiceMock = testSessionMetaServiceLayer({
-        messageCount: 0,
-        firstUserMessage: null,
-      });
+      const SessionMetaServiceMock = testSessionMetaServiceLayer(
+        createMockSessionMeta({
+          messageCount: 0,
+          firstUserMessage: null,
+        }),
+      );
       const PredictSessionsDatabaseMock = testPredictSessionsDatabaseLayer(
         new Map(),
       );
@@ -262,10 +269,10 @@ describe("SessionRepository", () => {
       const date1 = new Date("2024-01-01T00:00:00.000Z");
       const date2 = new Date("2024-01-02T00:00:00.000Z");
 
-      const mockMeta: SessionMeta = {
+      const mockMeta: SessionMeta = createMockSessionMeta({
         messageCount: 1,
         firstUserMessage: null,
-      };
+      });
 
       const FileSystemMock = testFileSystemLayer({
         exists: (path: string) => Effect.succeed(path === projectPath),
@@ -320,10 +327,10 @@ describe("SessionRepository", () => {
       const projectId = Buffer.from(projectPath).toString("base64url");
       const mockDate = new Date("2024-01-01T00:00:00.000Z");
 
-      const mockMeta: SessionMeta = {
+      const mockMeta: SessionMeta = createMockSessionMeta({
         messageCount: 1,
         firstUserMessage: null,
-      };
+      });
 
       const FileSystemMock = testFileSystemLayer({
         exists: (path: string) => Effect.succeed(path === projectPath),
@@ -367,10 +374,10 @@ describe("SessionRepository", () => {
       const projectId = Buffer.from(projectPath).toString("base64url");
       const mockDate = new Date("2024-01-01T00:00:00.000Z");
 
-      const mockMeta: SessionMeta = {
+      const mockMeta: SessionMeta = createMockSessionMeta({
         messageCount: 1,
         firstUserMessage: null,
-      };
+      });
 
       const FileSystemMock = testFileSystemLayer({
         exists: (path: string) => Effect.succeed(path === projectPath),
@@ -428,10 +435,12 @@ describe("SessionRepository", () => {
           ),
       });
 
-      const SessionMetaServiceMock = testSessionMetaServiceLayer({
-        messageCount: 0,
-        firstUserMessage: null,
-      });
+      const SessionMetaServiceMock = testSessionMetaServiceLayer(
+        createMockSessionMeta({
+          messageCount: 0,
+          firstUserMessage: null,
+        }),
+      );
       const PredictSessionsDatabaseMock = testPredictSessionsDatabaseLayer(
         new Map(),
       );
@@ -460,10 +469,10 @@ describe("SessionRepository", () => {
       const mockDate = new Date("2024-01-01T00:00:00.000Z");
       const virtualDate = new Date("2024-01-03T00:00:00.000Z");
 
-      const mockMeta: SessionMeta = {
+      const mockMeta: SessionMeta = createMockSessionMeta({
         messageCount: 1,
         firstUserMessage: null,
-      };
+      });
 
       const mockConversations: (Conversation | ErrorJsonl)[] = [
         {

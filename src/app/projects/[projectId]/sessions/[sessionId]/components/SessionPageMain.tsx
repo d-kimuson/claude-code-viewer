@@ -1,6 +1,7 @@
 import { Trans } from "@lingui/react";
 import { useMutation } from "@tanstack/react-query";
 import {
+  DownloadIcon,
   GitBranchIcon,
   InfoIcon,
   LoaderIcon,
@@ -33,6 +34,7 @@ import { usePermissionRequests } from "@/hooks/usePermissionRequests";
 import { useTaskNotifications } from "@/hooks/useTaskNotifications";
 import { honoClient } from "@/lib/api/client";
 import { firstUserMessageToTitle } from "../../../services/firstCommandToTitle";
+import { useExportSession } from "../hooks/useExportSession";
 import type { useGitCurrentRevisions } from "../hooks/useGit";
 import { useGitCurrentRevisions as useGitCurrentRevisionsHook } from "../hooks/useGit";
 import { useSession } from "../hooks/useSession";
@@ -101,6 +103,7 @@ const SessionPageMainContent: FC<
     usePermissionRequests();
   const { data: revisionsDataFallback } = useGitCurrentRevisionsHook(projectId);
   const revisionsData = revisionsDataProp ?? revisionsDataFallback;
+  const exportSession = useExportSession();
 
   const sessionProcess = useSessionProcess();
   const relatedSessionProcess = useMemo(() => {
@@ -269,6 +272,23 @@ const SessionPageMainContent: FC<
                 <Trans id="session.conversation.paused" />
               </Badge>
             )}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="flex-shrink-0 h-6 w-6"
+                  onClick={() => exportSession.mutate({ projectId, sessionId })}
+                  disabled={exportSession.isPending}
+                  aria-label="Export session to HTML"
+                >
+                  <DownloadIcon
+                    className={`w-3.5 h-3.5 ${exportSession.isPending ? "animate-pulse" : ""}`}
+                  />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Export to HTML</TooltipContent>
+            </Tooltip>
             <Popover>
               <PopoverTrigger asChild>
                 <Button

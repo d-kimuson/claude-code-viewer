@@ -1,5 +1,8 @@
 onlyBuiltDependencies:
+  - '@parcel/watcher'
+  - '@swc/core'
   - '@tailwindcss/oxide'
   - esbuild
+  - msgpackr-extract
   - sharp
   - workerd

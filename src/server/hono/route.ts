@@ -192,6 +192,19 @@ export const routes = (app: HonoAppType) =>
           return response;
         })
 
+        .get(
+          "/api/projects/:projectId/sessions/:sessionId/export",
+          async (c) => {
+            const response = await effectToResponse(
+              c,
+              sessionController
+                .exportSessionHtml({ ...c.req.param() })
+                .pipe(Effect.provide(runtime)),
+            );
+            return response;
+          },
+        )
+
         /**
          * GitController Routes
          */

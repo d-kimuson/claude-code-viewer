@@ -684,14 +684,11 @@ export const generateSessionHtml = (
     }
 
     .collapsible-content {
-      max-height: 1000px;
-      overflow: hidden;
-      transition: max-height 0.3s ease-out, opacity 0.2s ease-out;
+      overflow: visible;
     }
 
     .collapsible.collapsed .collapsible-content {
-      max-height: 0;
-      opacity: 0;
+      display: none;
     }
 
     .thinking-text {

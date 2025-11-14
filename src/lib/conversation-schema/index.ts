@@ -6,7 +6,12 @@ import {
 import { FileHistorySnapshotEntrySchema } from "./entry/FileHIstorySnapshotEntrySchema";
 import { QueueOperationEntrySchema } from "./entry/QueueOperationEntrySchema";
 import { SummaryEntrySchema } from "./entry/SummaryEntrySchema";
-import { type SystemEntry, SystemEntrySchema } from "./entry/SystemEntrySchema";
+import {
+  type SystemEntry,
+  SystemEntrySchema,
+  type ApiError,
+  ApiErrorSchema,
+} from "./entry/SystemEntrySchema";
 import { type UserEntry, UserEntrySchema } from "./entry/UserEntrySchema";
 
 export const ConversationSchema = z.union([
@@ -20,3 +25,7 @@ export const ConversationSchema = z.union([
 
 export type Conversation = z.infer<typeof ConversationSchema>;
 export type SidechainConversation = UserEntry | AssistantEntry | SystemEntry;
+
+// Re-export ApiError types for external use
+export type { ApiError };
+export { ApiErrorSchema };

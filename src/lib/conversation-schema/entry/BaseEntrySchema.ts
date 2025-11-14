@@ -7,11 +7,11 @@ export const BaseEntrySchema = z.object({
   cwd: z.string(),
   sessionId: z.string(),
   version: z.string(),
-  uuid: z.uuid(),
+  uuid: z.string().uuid(),
   timestamp: z.string(),
 
   // nullable
-  parentUuid: z.uuid().nullable(),
+  parentUuid: z.string().uuid().nullable(),
 
   // optional
   isMeta: z.boolean().optional(),

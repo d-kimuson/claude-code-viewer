@@ -5,6 +5,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { normalizeQueueOperationContent } from "@/lib/conversation-schema/entry/normalizeQueueOperationContent";
 import type { QueueOperationEntry } from "@/lib/conversation-schema/entry/QueueOperationEntrySchema";
 
 export const QueueOperationConversationContent: FC<{
@@ -50,7 +51,7 @@ export const QueueOperationConversationContent: FC<{
                   Content:
                 </span>
                 <pre className="mt-1 overflow-x-auto whitespace-pre-wrap">
-                  {conversation.content}
+                  {normalizeQueueOperationContent(conversation.content)}
                 </pre>
               </div>
             )}

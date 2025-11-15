@@ -28,6 +28,7 @@ export const configMiddleware = createMiddleware<HonoContext>(
           permissionMode: "default",
           locale: preferredLocale,
           theme: "system",
+          autoResumeOnRateLimit: false,
         } satisfies UserConfig),
       );
     }

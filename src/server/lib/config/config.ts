@@ -14,6 +14,7 @@ export const userConfigSchema = z.object({
     .default("default"),
   locale: localeSchema.optional().default("en"),
   theme: z.enum(["light", "dark", "system"]).optional().default("system"),
+  autoResumeOnRateLimit: z.boolean().optional().default(false),
 });
 
 export type UserConfig = z.infer<typeof userConfigSchema>;

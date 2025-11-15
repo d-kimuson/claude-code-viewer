@@ -37,6 +37,7 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
   const permissionModeId = useId();
   const localeId = useId();
   const themeId = useId();
+  const autoResumeCheckboxId = useId();
   const { config, updateConfig } = useConfig();
   const queryClient = useQueryClient();
   const { theme } = useTheme();
@@ -74,6 +75,14 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
         });
       },
     });
+  };
+
+  const handleAutoResumeOnRateLimitChange = async () => {
+    const newConfig = {
+      ...config,
+      autoResumeOnRateLimit: !config?.autoResumeOnRateLimit,
+    };
+    updateConfig(newConfig);
   };
 
   const handleEnterKeyBehaviorChange = async (value: string) => {
@@ -156,6 +165,27 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
       {showDescriptions && (
         <p className="text-xs text-muted-foreground mt-1 ml-6">
           <Trans id="settings.session.unify_same_title.description" />
+        </p>
+      )}
+
+      <div className="flex items-center space-x-2">
+        <Checkbox
+          id={autoResumeCheckboxId}
+          checked={config?.autoResumeOnRateLimit}
+          onCheckedChange={handleAutoResumeOnRateLimitChange}
+        />
+        {showLabels && (
+          <label
+            htmlFor={autoResumeCheckboxId}
+            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+          >
+            <Trans id="settings.session.auto_resume_on_rate_limit" />
+          </label>
+        )}
+      </div>
+      {showDescriptions && (
+        <p className="text-xs text-muted-foreground mt-1 ml-6">
+          <Trans id="settings.session.auto_resume_on_rate_limit.description" />
         </p>
       )}
 

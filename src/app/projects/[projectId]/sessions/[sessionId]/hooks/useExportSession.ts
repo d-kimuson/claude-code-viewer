@@ -14,7 +14,10 @@ export const useExportSession = () => {
       });
 
       if (!response.ok) {
-        throw new Error(response.statusText);
+        const errorData = await response.json().catch(() => null);
+        const errorMessage =
+          errorData?.error || response.statusText || "Failed to export session";
+        throw new Error(errorMessage);
       }
 
       const data = await response.json();

@@ -77,10 +77,18 @@ const renderMarkdown = (content: string): string => {
   html = html.replace(/^# (.+)$/gm, '<h1 class="markdown-h1">$1</h1>');
 
   // Links
-  html = html.replace(
-    /\[([^\]]+)\]\(([^)]+)\)/g,
-    '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>',
-  );
+  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_match, text, href) => {
+    // Only allow http(s) and mailto links
+    const safeHref =
+      typeof href === "string" && /^(https?:\/\/|mailto:)/i.test(href)
+        ? href
+        : "";
+    const escapedHref = escapeHtml(safeHref);
+    const escapedText = escapeHtml(text);
+    return escapedHref
+      ? `<a href="${escapedHref}" target="_blank" rel="noopener noreferrer">${escapedText}</a>`
+      : escapedText;
+  });
 
   // Paragraphs
   html = html
@@ -570,7 +578,7 @@ export const generateSessionHtml = (
     .markdown-p {
       margin-bottom: 1rem;
       line-height: 1.75;
-      word-break: break-all;
+      overflow-wrap: break-word;
     }
 
     .inline-code {
@@ -771,7 +779,6 @@ export const generateSessionHtml = (
       font-family: monospace;
       font-size: 0.75rem;
       white-space: pre-wrap;
-      word-break: break-all;
       overflow-wrap: break-word;
     }
 

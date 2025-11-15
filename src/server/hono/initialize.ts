@@ -6,6 +6,7 @@ import { ProjectRepository } from "../core/project/infrastructure/ProjectReposit
 import { ProjectMetaService } from "../core/project/services/ProjectMetaService";
 import { SessionRepository } from "../core/session/infrastructure/SessionRepository";
 import { VirtualConversationDatabase } from "../core/session/infrastructure/VirtualConversationDatabase";
+import { RateLimitMonitor } from "../core/session/services/RateLimitMonitor";
 import { SessionMetaService } from "../core/session/services/SessionMetaService";
 
 interface InitializeServiceInterface {
@@ -27,6 +28,7 @@ export class InitializeService extends Context.Tag("InitializeService")<
       const projectMetaService = yield* ProjectMetaService;
       const sessionMetaService = yield* SessionMetaService;
       const virtualConversationDatabase = yield* VirtualConversationDatabase;
+      const rateLimitMonitor = yield* RateLimitMonitor;
 
       // 状態管理用の Ref
       const listenersRef = yield* Ref.make<{
@@ -42,6 +44,9 @@ export class InitializeService extends Context.Tag("InitializeService")<
         return Effect.gen(function* () {
           // ファイルウォッチャーを開始
           yield* fileWatcher.startWatching();
+
+          // レート制限監視を開始
+          yield* rateLimitMonitor.startMonitoring();
 
           // ハートビートを定期的に送信
           const daemon = Effect.repeat(
@@ -133,6 +138,7 @@ export class InitializeService extends Context.Tag("InitializeService")<
 
           yield* Ref.set(listenersRef, {});
           yield* fileWatcher.stop();
+          yield* rateLimitMonitor.stopMonitoring();
         });
 
       return {

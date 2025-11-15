@@ -10,6 +10,7 @@ import { FileWatcherService } from "../core/events/services/fileWatcher";
 import type { InternalEventDeclaration } from "../core/events/types/InternalEventDeclaration";
 import { ProjectRepository } from "../core/project/infrastructure/ProjectRepository";
 import { VirtualConversationDatabase } from "../core/session/infrastructure/VirtualConversationDatabase";
+import { RateLimitMonitor } from "../core/session/services/RateLimitMonitor";
 import { createMockSessionMeta } from "../core/session/testing/createMockSessionMeta";
 import { InitializeService } from "./initialize";
 
@@ -20,6 +21,7 @@ const fileWatcherWithEventBus = FileWatcherService.Live.pipe(
 const allDependencies = Layer.mergeAll(
   fileWatcherWithEventBus,
   VirtualConversationDatabase.Live,
+  RateLimitMonitor.Live,
   testProjectMetaServiceLayer({
     meta: {
       projectName: "Test Project",

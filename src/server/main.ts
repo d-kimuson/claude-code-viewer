@@ -28,6 +28,7 @@ import { SchedulerController } from "./core/scheduler/presentation/SchedulerCont
 import { SessionRepository } from "./core/session/infrastructure/SessionRepository";
 import { VirtualConversationDatabase } from "./core/session/infrastructure/VirtualConversationDatabase";
 import { SessionController } from "./core/session/presentation/SessionController";
+import { RateLimitMonitor } from "./core/session/services/RateLimitMonitor";
 import { SessionMetaService } from "./core/session/services/SessionMetaService";
 import { honoApp } from "./hono/app";
 import { InitializeService } from "./hono/initialize";
@@ -77,6 +78,7 @@ const program = routes(honoApp)
     /** Application */
     Effect.provide(InitializeService.Live),
     Effect.provide(FileWatcherService.Live),
+    Effect.provide(RateLimitMonitor.Live),
   )
   .pipe(
     /** Domain */

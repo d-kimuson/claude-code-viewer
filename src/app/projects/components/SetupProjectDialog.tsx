@@ -39,11 +39,14 @@ export const SetupProjectDialog: FC = () => {
       toast.success("Project set up successfully");
       setOpen(false);
       navigate({
-        to: "/projects/$projectId/sessions/$sessionId",
+        to: "/projects/$projectId/session",
         params: {
           projectId: result.projectId,
-          sessionId: result.sessionId,
         },
+        search: (prev) => ({
+          ...prev,
+          sessionId: result.sessionId,
+        }),
       });
     },
 

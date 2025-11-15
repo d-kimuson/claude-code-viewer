@@ -24,7 +24,7 @@ import { SessionsTab } from "./SessionsTab";
 import type { Tab } from "./schema";
 
 export const SessionSidebar: FC<{
-  currentSessionId: string;
+  currentSessionId?: string;
   projectId: string;
   className?: string;
   isMobileOpen?: boolean;
@@ -38,6 +38,7 @@ export const SessionSidebar: FC<{
   onMobileOpenChange,
   initialTab,
 }) => {
+  const activeSessionId = currentSessionId ?? "";
   const additionalTabs: SidebarTab[] = useMemo(
     () => [
       {
@@ -47,7 +48,7 @@ export const SessionSidebar: FC<{
         content: (
           <Suspense fallback={<Loading />}>
             <SessionsTab
-              currentSessionId={currentSessionId}
+              currentSessionId={activeSessionId}
               projectId={projectId}
             />
           </Suspense>
@@ -64,11 +65,11 @@ export const SessionSidebar: FC<{
         icon: CalendarClockIcon,
         title: <Trans id="sidebar.show.scheduler.jobs" />,
         content: (
-          <SchedulerTab projectId={projectId} sessionId={currentSessionId} />
+          <SchedulerTab projectId={projectId} sessionId={activeSessionId} />
         ),
       },
     ],
-    [currentSessionId, projectId],
+    [activeSessionId, projectId],
   );
 
   return (
@@ -103,7 +104,7 @@ export const SessionSidebar: FC<{
 
       {/* Mobile sidebar */}
       <MobileSidebar
-        currentSessionId={currentSessionId}
+        currentSessionId={activeSessionId}
         projectId={projectId}
         isOpen={isMobileOpen}
         onClose={() => onMobileOpenChange?.(false)}

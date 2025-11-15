@@ -66,7 +66,7 @@ export const ProjectList: FC = () => {
           <CardContent className="pt-0">
             <Button asChild className="w-full">
               <Link
-                to={"/projects/$projectId/latest"}
+                to={"/projects/$projectId/session"}
                 params={{ projectId: project.id }}
               >
                 <Trans id="project_list.view_conversations" />

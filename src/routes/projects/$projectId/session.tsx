@@ -2,18 +2,17 @@ import { Trans } from "@lingui/react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Helmet } from "react-helmet-async";
 import { z } from "zod";
-import { useProject } from "../../../../../app/projects/[projectId]/hooks/useProject";
-import { SessionPageContent } from "../../../../../app/projects/[projectId]/sessions/[sessionId]/components/SessionPageContent";
-import { tabSchema } from "../../../../../app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/schema";
-import { NotFound } from "../../../../../components/NotFound";
+import { useProject } from "../../../app/projects/[projectId]/hooks/useProject";
+import { SessionPageContent } from "../../../app/projects/[projectId]/sessions/[sessionId]/components/SessionPageContent";
+import { tabSchema } from "../../../app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/schema";
+import { NotFound } from "../../../components/NotFound";
 
 const sessionSearchSchema = z.object({
+  sessionId: z.string().optional(),
   tab: tabSchema.optional().default("sessions"),
 });
 
-export const Route = createFileRoute(
-  "/projects/$projectId/sessions/$sessionId/",
-)({
+export const Route = createFileRoute("/projects/$projectId/session")({
   validateSearch: sessionSearchSchema,
   component: RouteComponent,
   notFoundComponent: () => (
@@ -30,6 +29,8 @@ function RouteComponent() {
   const { data } = useProject(params.projectId);
   const projectName = data.pages[0]?.project.meta.projectName;
 
+  const { sessionId, tab } = search;
+
   const title = projectName
     ? `${projectName} - Claude Code Viewer`
     : "Claude Code Viewer";
@@ -41,8 +42,8 @@ function RouteComponent() {
       </Helmet>
       <SessionPageContent
         projectId={params.projectId}
-        sessionId={params.sessionId}
-        tab={search.tab}
+        sessionId={sessionId}
+        tab={tab}
       />
     </>
   );

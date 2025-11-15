@@ -112,7 +112,7 @@ export const GlobalSidebar: FC<GlobalSidebarProps> = ({
     <div
       className={cn(
         "h-full border-r border-sidebar-border transition-all duration-300 ease-in-out flex bg-sidebar text-sidebar-foreground",
-        isExpanded ? "w-72 lg:w-80" : "w-12",
+        isExpanded ? "w-80 lg:w-80" : "w-12",
         className,
       )}
     >

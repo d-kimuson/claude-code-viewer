@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { formatLocaleDate } from "../../../../../../../lib/date/formatLocaleDate";
 import { useConfig } from "../../../../../../hooks/useConfig";
-import { NewChatModal } from "../../../../components/newChat/NewChatModal";
 import { useProject } from "../../../../hooks/useProject";
 import { firstUserMessageToTitle } from "../../../../services/firstCommandToTitle";
 import { sessionProcessesAtom } from "../../store/sessionProcessesAtom";
@@ -17,7 +16,7 @@ export const SessionsTab: FC<{
   currentSessionId: string;
   projectId: string;
   isMobile?: boolean;
-}> = ({ currentSessionId, projectId, isMobile = false }) => {
+}> = ({ currentSessionId, projectId }) => {
   const {
     data: projectData,
     fetchNextPage,
@@ -29,11 +28,13 @@ export const SessionsTab: FC<{
   const sessionProcesses = useAtomValue(sessionProcessesAtom);
   const { config } = useConfig();
   const search = useSearch({
-    from: "/projects/$projectId/sessions/$sessionId/",
+    from: "/projects/$projectId/session",
   });
 
   // Preserve current tab state or default to "sessions"
   const currentTab = search.tab ?? "sessions";
+
+  const isNewChatActive = currentSessionId === "";
 
   // Sort sessions: Running > Paused > Others, then by lastModifiedAt (newest first)
   const sortedSessions = [...sessions].sort((a, b) => {
@@ -75,24 +76,6 @@ export const SessionsTab: FC<{
           <h2 className="font-semibold text-lg">
             <Trans id="sessions.title" />
           </h2>
-          <NewChatModal
-            projectId={projectId}
-            trigger={
-              <Button
-                size="sm"
-                variant="outline"
-                className="gap-1.5"
-                data-testid={
-                  isMobile === true
-                    ? "start-new-chat-button-mobile"
-                    : "start-new-chat-button"
-                }
-              >
-                <PlusIcon className="w-3.5 h-3.5" />
-                <Trans id="sessions.new" />
-              </Button>
-            }
-          />
         </div>
         <p className="text-xs text-sidebar-foreground/70">
           {sessions.length} <Trans id="sessions.total" />
@@ -100,6 +83,27 @@ export const SessionsTab: FC<{
       </div>
 
       <div className="flex-1 overflow-y-auto p-2 space-y-0.5">
+        <Link
+          to="/projects/$projectId/session"
+          params={{ projectId }}
+          search={{ tab: currentTab }}
+          className={cn(
+            "block rounded-lg p-2.5 transition-all duration-200 border-2 border-dashed border-sidebar-border/60 hover:border-blue-400/80 hover:bg-blue-50/50 dark:hover:bg-blue-950/40 bg-sidebar/10",
+            isNewChatActive &&
+              "bg-blue-100 dark:bg-blue-900/40 border-blue-400 dark:border-blue-500 shadow-sm",
+          )}
+        >
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+              <PlusIcon className="w-4 h-4" />
+            </div>
+            <div className="space-y-0.5">
+              <p className="text-sm font-semibold text-sidebar-foreground">
+                <Trans id="chat.modal.title" />
+              </p>
+            </div>
+          </div>
+        </Link>
         {sortedSessions.map((session) => {
           const isActive = session.id === currentSessionId;
           const title =
@@ -116,9 +120,9 @@ export const SessionsTab: FC<{
           return (
             <Link
               key={session.id}
-              to={"/projects/$projectId/sessions/$sessionId"}
-              params={{ projectId, sessionId: session.id }}
-              search={{ tab: currentTab }}
+              to="/projects/$projectId/session"
+              params={{ projectId }}
+              search={{ tab: currentTab, sessionId: session.id }}
               className={cn(
                 "block rounded-lg p-2.5 transition-all duration-200 hover:bg-blue-50/60 dark:hover:bg-blue-950/40 hover:border-blue-300/60 dark:hover:border-blue-700/60 hover:shadow-sm border border-sidebar-border/40 bg-sidebar/30",
                 isActive &&

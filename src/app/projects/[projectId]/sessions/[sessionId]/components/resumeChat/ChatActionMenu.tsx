@@ -1,5 +1,6 @@
 import { Trans, useLingui } from "@lingui/react";
 import type { UseMutationResult } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import {
   ArrowDownIcon,
   ArrowUpIcon,
@@ -11,7 +12,6 @@ import {
 import type { FC } from "react";
 import { Button } from "@/components/ui/button";
 import type { PublicSessionProcess } from "../../../../../../../types/session-process";
-import { NewChatModal } from "../../../../components/newChat/NewChatModal";
 
 interface ChatActionMenuProps {
   projectId: string;
@@ -21,6 +21,7 @@ interface ChatActionMenuProps {
   onOpenDiffModal?: () => void;
   sessionProcess?: PublicSessionProcess;
   abortTask?: UseMutationResult<unknown, Error, string, unknown>;
+  isNewChat?: boolean;
 }
 
 export const ChatActionMenu: FC<ChatActionMenuProps> = ({
@@ -31,8 +32,21 @@ export const ChatActionMenu: FC<ChatActionMenuProps> = ({
   onOpenDiffModal,
   sessionProcess,
   abortTask,
+  isNewChat = false,
 }) => {
   const { i18n } = useLingui();
+  const navigate = useNavigate();
+
+  const handleStartNewChat = () => {
+    navigate({
+      to: "/projects/$projectId/session",
+      params: { projectId },
+      search: (prev) => {
+        const { sessionId: _removed, ...rest } = prev;
+        return rest;
+      },
+    });
+  };
 
   return (
     <div className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 mb-1">
@@ -56,27 +70,23 @@ export const ChatActionMenu: FC<ChatActionMenuProps> = ({
             </span>
           </Button>
         )}
-        <NewChatModal
-          projectId={projectId}
-          trigger={
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              disabled={isPending}
-              className="h-7 px-2 gap-1.5 text-xs bg-muted/20 rounded-lg border border-border/40"
-              title={i18n._({
-                id: "control.new_chat",
-                message: "New Chat",
-              })}
-            >
-              <PlusIcon className="w-3.5 h-3.5" />
-              <span>
-                <Trans id="control.new" />
-              </span>
-            </Button>
-          }
-        />
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          disabled={isPending || isNewChat}
+          className="h-7 px-2 gap-1.5 text-xs bg-muted/20 rounded-lg border border-border/40"
+          onClick={handleStartNewChat}
+          title={i18n._({
+            id: "control.new_chat",
+            message: "New Chat",
+          })}
+        >
+          <PlusIcon className="w-3.5 h-3.5" />
+          <span>
+            <Trans id="control.new" />
+          </span>
+        </Button>
         {onScrollToTop && (
           <Button
             type="button"

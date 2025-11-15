@@ -1,13 +1,21 @@
 import { Trans } from "@lingui/react";
-import type { UseMutationResult } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import {
   GitBranchIcon,
   InfoIcon,
   LoaderIcon,
   MenuIcon,
+  MessageSquareIcon,
   PauseIcon,
 } from "lucide-react";
-import { type FC, type RefObject, useEffect, useMemo, useState } from "react";
+import {
+  type FC,
+  type ReactNode,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { PermissionDialog } from "@/components/PermissionDialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -23,7 +31,7 @@ import {
 } from "@/components/ui/tooltip";
 import { usePermissionRequests } from "@/hooks/usePermissionRequests";
 import { useTaskNotifications } from "@/hooks/useTaskNotifications";
-import type { PublicSessionProcess } from "@/types/session-process";
+import { honoClient } from "@/lib/api/client";
 import { firstUserMessageToTitle } from "../../../services/firstCommandToTitle";
 import type { useGitCurrentRevisions } from "../hooks/useGit";
 import { useGitCurrentRevisions as useGitCurrentRevisionsHook } from "../hooks/useGit";
@@ -34,62 +42,98 @@ import { DiffModal } from "./diffModal";
 import { ChatActionMenu } from "./resumeChat/ChatActionMenu";
 import { ContinueChat } from "./resumeChat/ContinueChat";
 import { ResumeChat } from "./resumeChat/ResumeChat";
+import { StartNewChat } from "./resumeChat/StartNewChat";
 
-export const SessionPageMain: FC<{
+type SessionPageMainProps = {
   projectId: string;
-  sessionId: string;
+  sessionId?: string;
   setIsMobileSidebarOpen: (open: boolean) => void;
-  isDiffModalOpen: boolean;
-  setIsDiffModalOpen: (open: boolean) => void;
-  scrollContainerRef: RefObject<HTMLDivElement | null>;
-  onScrollToTop?: () => void;
-  onScrollToBottom?: () => void;
-  onOpenDiffModal?: () => void;
-  abortTask?: UseMutationResult<unknown, Error, string, unknown>;
   projectPath?: string;
   currentBranch?: string;
-  sessionProcessStatus?: PublicSessionProcess["status"];
   revisionsData?: ReturnType<typeof useGitCurrentRevisions>["data"];
-}> = ({
+  projectName: string;
+};
+
+type SessionData = ReturnType<typeof useSession>;
+
+export const SessionPageMain: FC<SessionPageMainProps> = (props) => {
+  if (!props.sessionId) {
+    return <SessionPageMainContent {...props} sessionData={null} />;
+  }
+
+  return <SessionPageMainWithData {...props} sessionId={props.sessionId} />;
+};
+
+const SessionPageMainWithData: FC<
+  SessionPageMainProps & { sessionId: string }
+> = (props) => {
+  const sessionData = useSession(props.projectId, props.sessionId);
+  return (
+    <SessionPageMainContent
+      {...props}
+      sessionId={props.sessionId}
+      sessionData={sessionData}
+    />
+  );
+};
+
+const SessionPageMainContent: FC<
+  SessionPageMainProps & {
+    sessionId?: string;
+    sessionData: SessionData | null;
+  }
+> = ({
   projectId,
   sessionId,
   setIsMobileSidebarOpen,
-  isDiffModalOpen,
-  setIsDiffModalOpen,
-  scrollContainerRef,
-  onScrollToTop,
-  onScrollToBottom,
-  onOpenDiffModal,
-  abortTask,
   projectPath,
   currentBranch,
-  sessionProcessStatus,
   revisionsData: revisionsDataProp,
+  projectName,
+  sessionData,
 }) => {
-  const { session, conversations, getToolResult } = useSession(
-    projectId,
-    sessionId,
-  );
+  const conversations = sessionData?.conversations ?? [];
+  const emptyToolResult: SessionData["getToolResult"] = () => undefined;
+  const getToolResult = sessionData?.getToolResult ?? emptyToolResult;
+  const isExistingSession =
+    Boolean(sessionId) && sessionData !== null && sessionData !== undefined;
   const { currentPermissionRequest, isDialogOpen, onPermissionResponse } =
     usePermissionRequests();
   const { data: revisionsDataFallback } = useGitCurrentRevisionsHook(projectId);
   const revisionsData = revisionsDataProp ?? revisionsDataFallback;
 
   const sessionProcess = useSessionProcess();
+  const relatedSessionProcess = useMemo(() => {
+    if (!sessionId) return undefined;
+    return sessionProcess.getSessionProcess(sessionId);
+  }, [sessionProcess, sessionId]);
 
-  const relatedSessionProcess = useMemo(
-    () => sessionProcess.getSessionProcess(sessionId),
-    [sessionProcess, sessionId],
-  );
-
-  // Set up task completion notifications
   useTaskNotifications(relatedSessionProcess?.status === "running");
 
   const [previousConversationLength, setPreviousConversationLength] =
     useState(0);
+  const [isDiffModalOpen, setIsDiffModalOpen] = useState(false);
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
-  // 自動スクロール処理
+  const abortTask = useMutation({
+    mutationFn: async (sessionProcessId: string) => {
+      const response = await honoClient.api.cc["session-processes"][
+        ":sessionProcessId"
+      ].abort.$post({
+        param: { sessionProcessId },
+        json: { projectId },
+      });
+
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      }
+
+      return response.json();
+    },
+  });
+
   useEffect(() => {
+    if (!isExistingSession) return;
     if (
       relatedSessionProcess?.status === "running" &&
       conversations.length !== previousConversationLength
@@ -105,10 +149,40 @@ export const SessionPageMain: FC<{
     }
   }, [
     conversations,
+    isExistingSession,
     relatedSessionProcess?.status,
     previousConversationLength,
-    scrollContainerRef.current,
   ]);
+
+  const handleScrollToTop = () => {
+    const scrollContainer = scrollContainerRef.current;
+    if (scrollContainer) {
+      scrollContainer.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  const handleScrollToBottom = () => {
+    const scrollContainer = scrollContainerRef.current;
+    if (scrollContainer) {
+      scrollContainer.scrollTo({
+        top: scrollContainer.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  let headerTitle: ReactNode = projectName ?? projectId;
+  if (!isExistingSession) {
+    headerTitle = <Trans id="chat.modal.title" />;
+  } else if (sessionData && sessionId) {
+    headerTitle =
+      sessionData.session.meta.firstUserMessage !== null
+        ? firstUserMessageToTitle(sessionData.session.meta.firstUserMessage)
+        : sessionId;
+  }
 
   return (
     <>
@@ -125,9 +199,7 @@ export const SessionPageMain: FC<{
               <MenuIcon className="w-4 h-4" />
             </Button>
             <h1 className="text-lg sm:text-2xl md:text-3xl font-bold break-all overflow-ellipsis line-clamp-1 min-w-0">
-              {session.meta.firstUserMessage !== null
-                ? firstUserMessageToTitle(session.meta.firstUserMessage)
-                : sessionId}
+              {headerTitle}
             </h1>
           </div>
           <div className="flex items-center gap-2 min-w-0">
@@ -163,7 +235,7 @@ export const SessionPageMain: FC<{
                   </TooltipContent>
                 </Tooltip>
               )}
-              {sessionId && (
+              {isExistingSession && sessionId && (
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Badge
@@ -179,7 +251,7 @@ export const SessionPageMain: FC<{
                 </Tooltip>
               )}
             </div>
-            {sessionProcessStatus === "running" && (
+            {relatedSessionProcess?.status === "running" && (
               <Badge
                 variant="secondary"
                 className="bg-green-500/10 text-green-900 dark:text-green-200 border-green-500/20 flex-shrink-0 h-6 text-xs"
@@ -188,7 +260,7 @@ export const SessionPageMain: FC<{
                 <Trans id="session.conversation.running" />
               </Badge>
             )}
-            {sessionProcessStatus === "paused" && (
+            {relatedSessionProcess?.status === "paused" && (
               <Badge
                 variant="secondary"
                 className="bg-orange-500/10 text-orange-900 dark:text-orange-200 border-orange-500/20 flex-shrink-0 h-6 text-xs"
@@ -233,17 +305,19 @@ export const SessionPageMain: FC<{
                           </Tooltip>
                         </div>
                       )}
-                      <div className="flex flex-col gap-1">
-                        <span className="text-xs text-muted-foreground">
-                          <Trans id="control.session_id" />
-                        </span>
-                        <Badge
-                          variant="secondary"
-                          className="h-7 text-xs flex items-center w-fit font-mono"
-                        >
-                          {sessionId}
-                        </Badge>
-                      </div>
+                      {sessionId && isExistingSession && (
+                        <div className="flex flex-col gap-1">
+                          <span className="text-xs text-muted-foreground">
+                            <Trans id="control.session_id" />
+                          </span>
+                          <Badge
+                            variant="secondary"
+                            className="h-7 text-xs flex items-center w-fit font-mono"
+                          >
+                            {sessionId}
+                          </Badge>
+                        </div>
+                      )}
                       {currentBranch && (
                         <div className="flex flex-col gap-1">
                           <span className="text-xs text-muted-foreground">
@@ -258,78 +332,82 @@ export const SessionPageMain: FC<{
                           </Badge>
                         </div>
                       )}
-                      <div className="flex flex-col gap-1">
-                        <span className="text-xs text-muted-foreground">
-                          <Trans id="session.cost.label" />
-                        </span>
-                        <div className="space-y-1.5">
-                          <Badge
-                            variant="secondary"
-                            className="h-7 text-xs flex items-center w-fit font-semibold"
-                          >
-                            <Trans id="session.cost.total" />: $
-                            {session.meta.cost.totalUsd.toFixed(3)}
-                          </Badge>
-                          <div className="text-xs space-y-1 pl-2">
-                            <div className="flex justify-between gap-4">
-                              <span className="text-muted-foreground">
-                                <Trans id="session.cost.input_tokens" />:
-                              </span>
-                              <span>
-                                $
-                                {session.meta.cost.breakdown.inputTokensUsd.toFixed(
-                                  3,
-                                )}{" "}
-                                (
-                                {session.meta.cost.tokenUsage.inputTokens.toLocaleString()}
-                                )
-                              </span>
-                            </div>
-                            <div className="flex justify-between gap-4">
-                              <span className="text-muted-foreground">
-                                <Trans id="session.cost.output_tokens" />:
-                              </span>
-                              <span>
-                                $
-                                {session.meta.cost.breakdown.outputTokensUsd.toFixed(
-                                  3,
-                                )}{" "}
-                                (
-                                {session.meta.cost.tokenUsage.outputTokens.toLocaleString()}
-                                )
-                              </span>
-                            </div>
-                            <div className="flex justify-between gap-4">
-                              <span className="text-muted-foreground">
-                                <Trans id="session.cost.cache_creation" />:
-                              </span>
-                              <span>
-                                $
-                                {session.meta.cost.breakdown.cacheCreationUsd.toFixed(
-                                  3,
-                                )}{" "}
-                                (
-                                {session.meta.cost.tokenUsage.cacheCreationTokens.toLocaleString()}
-                                )
-                              </span>
-                            </div>
-                            <div className="flex justify-between gap-4">
-                              <span className="text-muted-foreground">
-                                <Trans id="session.cost.cache_read" />:
-                              </span>
-                              <span>
-                                $
-                                {session.meta.cost.breakdown.cacheReadUsd.toFixed(
-                                  3,
-                                )}{" "}
-                                (
-                                {session.meta.cost.tokenUsage.cacheReadTokens.toLocaleString()}
-                                )
-                              </span>
+                      {isExistingSession && sessionData && (
+                        <div className="flex flex-col gap-1">
+                          <span className="text-xs text-muted-foreground">
+                            <Trans id="session.cost.label" />
+                          </span>
+                          <div className="space-y-1.5">
+                            <Badge
+                              variant="secondary"
+                              className="h-7 text-xs flex items-center w-fit font-semibold"
+                            >
+                              <Trans id="session.cost.total" />: $
+                              {sessionData.session.meta.cost.totalUsd.toFixed(
+                                3,
+                              )}
+                            </Badge>
+                            <div className="text-xs space-y-1 pl-2">
+                              <div className="flex justify-between gap-4">
+                                <span className="text-muted-foreground">
+                                  <Trans id="session.cost.input_tokens" />:
+                                </span>
+                                <span>
+                                  $
+                                  {sessionData.session.meta.cost.breakdown.inputTokensUsd.toFixed(
+                                    3,
+                                  )}{" "}
+                                  (
+                                  {sessionData.session.meta.cost.tokenUsage.inputTokens.toLocaleString()}
+                                  )
+                                </span>
+                              </div>
+                              <div className="flex justify-between gap-4">
+                                <span className="text-muted-foreground">
+                                  <Trans id="session.cost.output_tokens" />:
+                                </span>
+                                <span>
+                                  $
+                                  {sessionData.session.meta.cost.breakdown.outputTokensUsd.toFixed(
+                                    3,
+                                  )}{" "}
+                                  (
+                                  {sessionData.session.meta.cost.tokenUsage.outputTokens.toLocaleString()}
+                                  )
+                                </span>
+                              </div>
+                              <div className="flex justify-between gap-4">
+                                <span className="text-muted-foreground">
+                                  <Trans id="session.cost.cache_creation" />:
+                                </span>
+                                <span>
+                                  $
+                                  {sessionData.session.meta.cost.breakdown.cacheCreationUsd.toFixed(
+                                    3,
+                                  )}{" "}
+                                  (
+                                  {sessionData.session.meta.cost.tokenUsage.cacheCreationTokens.toLocaleString()}
+                                  )
+                                </span>
+                              </div>
+                              <div className="flex justify-between gap-4">
+                                <span className="text-muted-foreground">
+                                  <Trans id="session.cost.cache_read" />:
+                                </span>
+                                <span>
+                                  $
+                                  {sessionData.session.meta.cost.breakdown.cacheReadUsd.toFixed(
+                                    3,
+                                  )}{" "}
+                                  (
+                                  {sessionData.session.meta.cost.tokenUsage.cacheReadTokens.toLocaleString()}
+                                  )
+                                </span>
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -345,61 +423,80 @@ export const SessionPageMain: FC<{
         >
           <main className="w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 relative min-w-0 pb-4">
             <ConversationList
-              conversations={conversations}
+              conversations={isExistingSession ? conversations : []}
               getToolResult={getToolResult}
             />
-
-            {relatedSessionProcess?.status === "running" && (
-              <div className="flex justify-start items-center py-8 animate-in fade-in duration-500">
-                <div className="flex flex-col items-center gap-4">
-                  <div className="relative">
-                    <LoaderIcon className="w-8 h-8 animate-spin text-primary" />
-                    <div className="absolute inset-0 rounded-full bg-primary/20 animate-ping" />
-                  </div>
-                  <p className="text-sm text-muted-foreground font-medium animate-pulse">
-                    <Trans id="session.processing" />
+            {!isExistingSession && (
+              <div className="rounded-2xl border border-dashed border-muted-foreground/40 bg-muted/30 p-8 text-center space-y-3">
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-background shadow-sm">
+                  <MessageSquareIcon className="w-5 h-5 text-muted-foreground" />
+                </div>
+                <div className="space-y-1">
+                  <p className="text-base font-semibold">
+                    <Trans id="chat.modal.title" />
+                  </p>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    <Trans id="session.empty_state.description" />
                   </p>
                 </div>
               </div>
             )}
+            {isExistingSession &&
+              relatedSessionProcess?.status === "running" && (
+                <div className="flex justify-start items-center py-8 animate-in fade-in duration-500">
+                  <div className="flex flex-col items-center gap-4">
+                    <div className="relative">
+                      <LoaderIcon className="w-8 h-8 animate-spin text-primary" />
+                      <div className="absolute inset-0 rounded-full bg-primary/20 animate-ping" />
+                    </div>
+                    <p className="text-sm text-muted-foreground font-medium animate-pulse">
+                      <Trans id="session.processing" />
+                    </p>
+                  </div>
+                </div>
+              )}
           </main>
         </div>
 
         <div className="w-full pt-3">
           <ChatActionMenu
             projectId={projectId}
-            onScrollToTop={onScrollToTop}
-            onScrollToBottom={onScrollToBottom}
-            onOpenDiffModal={onOpenDiffModal}
+            onScrollToTop={handleScrollToTop}
+            onScrollToBottom={handleScrollToBottom}
+            onOpenDiffModal={
+              isExistingSession ? () => setIsDiffModalOpen(true) : undefined
+            }
             sessionProcess={relatedSessionProcess}
             abortTask={abortTask}
+            isNewChat={!isExistingSession}
           />
         </div>
 
-        {/* Fixed Chat Form */}
         <div className="flex-shrink-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-          {relatedSessionProcess !== undefined ? (
+          {isExistingSession && sessionId && relatedSessionProcess ? (
             <ContinueChat
               projectId={projectId}
               sessionId={sessionId}
               sessionProcessId={relatedSessionProcess.id}
               sessionProcessStatus={relatedSessionProcess.status}
             />
-          ) : (
+          ) : isExistingSession && sessionId ? (
             <ResumeChat projectId={projectId} sessionId={sessionId} />
+          ) : (
+            <StartNewChat projectId={projectId} />
           )}
         </div>
       </div>
 
-      {/* Diff Modal */}
-      <DiffModal
-        projectId={projectId}
-        isOpen={isDiffModalOpen}
-        onOpenChange={setIsDiffModalOpen}
-        revisionsData={revisionsData}
-      />
+      {isExistingSession && (
+        <DiffModal
+          projectId={projectId}
+          isOpen={isDiffModalOpen}
+          onOpenChange={setIsDiffModalOpen}
+          revisionsData={revisionsData}
+        />
+      )}
 
-      {/* Permission Dialog */}
       <PermissionDialog
         permissionRequest={currentPermissionRequest}
         isOpen={isDialogOpen}

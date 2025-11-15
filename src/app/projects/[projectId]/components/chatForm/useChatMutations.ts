@@ -38,11 +38,14 @@ export const useCreateSessionProcessMutation = (
     onSuccess: async (response) => {
       onSuccess?.();
       navigate({
-        to: "/projects/$projectId/sessions/$sessionId",
+        to: "/projects/$projectId/session",
         params: {
-          projectId: projectId,
-          sessionId: response.sessionProcess.sessionId,
+          projectId,
         },
+        search: (prev) => ({
+          ...prev,
+          sessionId: response.sessionProcess.sessionId,
+        }),
       });
     },
   });

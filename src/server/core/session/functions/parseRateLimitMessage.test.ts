@@ -153,3 +153,74 @@ test("calculateResumeDateTime should return null for invalid time format", () =>
   expect(calculateResumeDateTime("invalid", now)).toBeNull();
   expect(calculateResumeDateTime("25pm", now)).toBeNull();
 });
+
+test("parseRateLimitMessage should parse real session log data from 6bfc24e3-8911-4063-b4a1-236e49d13a6f", () => {
+  // This is the actual entry from line 960 of the real session log
+  const realRateLimitEntry = {
+    parentUuid: "038f6b1d-d121-49ba-a327-60aed960d92e",
+    isSidechain: false,
+    userType: "external" as const,
+    cwd: "/home/kaito/repos/claude-code-viewer",
+    sessionId: "6bfc24e3-8911-4063-b4a1-236e49d13a6f",
+    version: "2.0.24",
+    gitBranch: "feature/6423aa72-strict-process-management",
+    type: "assistant" as const,
+    uuid: "ac93493b-80c8-41bc-a6b8-856dcccbdc69",
+    timestamp: "2025-11-09T07:55:43.888Z",
+    message: {
+      id: "2adab99b-e90b-4991-bf0a-1f017d51d738",
+      container: null,
+      model: "<synthetic>" as const,
+      role: "assistant" as const,
+      stop_reason: "stop_sequence" as const,
+      stop_sequence: "",
+      type: "message" as const,
+      usage: {
+        input_tokens: 0,
+        output_tokens: 0,
+        cache_creation_input_tokens: 0,
+        cache_read_input_tokens: 0,
+        server_tool_use: {
+          web_search_requests: 0,
+        },
+        service_tier: null,
+        cache_creation: {
+          ephemeral_1h_input_tokens: 0,
+          ephemeral_5m_input_tokens: 0,
+        },
+      },
+      content: [
+        {
+          type: "text" as const,
+          text: "Session limit reached ∙ resets 7pm",
+        },
+      ],
+    },
+    isApiErrorMessage: true,
+  };
+
+  // Should correctly parse the rate limit message
+  const resetTime = parseRateLimitMessage(realRateLimitEntry);
+  expect(resetTime).toBe("7pm");
+
+  // Should correctly parse the reset time
+  const parsedTime = parseResetTime("7pm");
+  expect(parsedTime).toEqual({ hour: 19, minute: 0 });
+
+  // Should correctly calculate resume time (1 minute after reset)
+  // Entry timestamp: 2025-11-09T07:55:43.888Z (7:55 AM UTC)
+  // Reset time: 7pm (19:00) -> Same day
+  // Resume time: 7:01pm (19:01)
+  const entryTime = new Date("2025-11-09T07:55:43.888Z");
+  const resumeTime = calculateResumeDateTime("7pm", entryTime);
+
+  expect(resumeTime).toBeDefined();
+  if (resumeTime) {
+    const resumeDate = new Date(resumeTime);
+    expect(resumeDate.getUTCFullYear()).toBe(2025);
+    expect(resumeDate.getUTCMonth()).toBe(10); // November (0-indexed)
+    expect(resumeDate.getUTCDate()).toBe(9);
+    expect(resumeDate.getUTCHours()).toBe(19);
+    expect(resumeDate.getUTCMinutes()).toBe(1);
+  }
+});

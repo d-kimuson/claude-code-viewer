@@ -70,6 +70,7 @@ const extractResetTime = (text: string): string | null => {
   if (!match || match[1] === undefined) {
     return null;
   }
+
   return match[1];
 };
 

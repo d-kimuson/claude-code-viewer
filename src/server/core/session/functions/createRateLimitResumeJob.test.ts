@@ -300,3 +300,101 @@ test("createRateLimitResumeJob should update existing job if one exists", async 
     expect(resumeTime.getUTCMinutes()).toBe(1);
   }
 });
+
+test("createRateLimitResumeJob should create job from real session log data 6bfc24e3-8911-4063-b4a1-236e49d13a6f", async () => {
+  // This is the actual entry from line 960 of the real session log
+  const realRateLimitEntry = {
+    parentUuid: "038f6b1d-d121-49ba-a327-60aed960d92e",
+    isSidechain: false,
+    userType: "external" as const,
+    cwd: "/home/kaito/repos/claude-code-viewer",
+    sessionId: "6bfc24e3-8911-4063-b4a1-236e49d13a6f",
+    version: "2.0.24",
+    gitBranch: "feature/6423aa72-strict-process-management",
+    type: "assistant" as const,
+    uuid: "ac93493b-80c8-41bc-a6b8-856dcccbdc69",
+    timestamp: "2025-11-09T07:55:43.888Z",
+    message: {
+      id: "2adab99b-e90b-4991-bf0a-1f017d51d738",
+      container: null,
+      model: "<synthetic>" as const,
+      role: "assistant" as const,
+      stop_reason: "stop_sequence" as const,
+      stop_sequence: "",
+      type: "message" as const,
+      usage: {
+        input_tokens: 0,
+        output_tokens: 0,
+        cache_creation_input_tokens: 0,
+        cache_read_input_tokens: 0,
+        server_tool_use: {
+          web_search_requests: 0,
+        },
+        service_tier: null,
+        cache_creation: {
+          ephemeral_1h_input_tokens: 0,
+          ephemeral_5m_input_tokens: 0,
+        },
+      },
+      content: [
+        {
+          type: "text" as const,
+          text: "Session limit reached ∙ resets 7pm",
+        },
+      ],
+    },
+    isApiErrorMessage: true,
+  };
+
+  const result = await Effect.runPromise(
+    createRateLimitResumeJob({
+      entry: realRateLimitEntry,
+      sessionId: "6bfc24e3-8911-4063-b4a1-236e49d13a6f",
+      projectId: "-home-kaito-repos-claude-code-viewer",
+      autoResumeEnabled: true,
+    }).pipe(Effect.provide(testLayer)),
+  );
+
+  // Should successfully create a job
+  expect(result).not.toBeNull();
+  if (result) {
+    expect(result.name).toContain("Auto-resume");
+    expect(result.name).toContain("6bfc24e3-8911-4063-b4a1-236e49d13a6f");
+    expect(result.schedule.type).toBe("reserved");
+    expect(result.message.content).toBe("continue");
+    expect(result.message.projectId).toBe(
+      "-home-kaito-repos-claude-code-viewer",
+    );
+    expect(result.message.baseSessionId).toBe(
+      "6bfc24e3-8911-4063-b4a1-236e49d13a6f",
+    );
+    expect(result.enabled).toBe(true);
+
+    // Verify the schedule time is set correctly (based on current time, not entry timestamp)
+    // Reset time: 7pm (19:00) -> Resume time: 7:01pm (19:01)
+    if (result.schedule.type === "reserved") {
+      const resumeTime = new Date(result.schedule.reservedExecutionTime);
+      const now = new Date();
+
+      expect(resumeTime.getUTCHours()).toBe(19);
+      expect(resumeTime.getUTCMinutes()).toBe(1);
+
+      // Should be either today or tomorrow depending on current time
+      const todayOrTomorrow =
+        now.getUTCHours() < 19 ||
+        (now.getUTCHours() === 19 && now.getUTCMinutes() <= 1);
+
+      if (todayOrTomorrow) {
+        expect(resumeTime.getUTCFullYear()).toBe(now.getUTCFullYear());
+        expect(resumeTime.getUTCMonth()).toBe(now.getUTCMonth());
+        expect(resumeTime.getUTCDate()).toBe(now.getUTCDate());
+      } else {
+        const tomorrow = new Date(now);
+        tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
+        expect(resumeTime.getUTCFullYear()).toBe(tomorrow.getUTCFullYear());
+        expect(resumeTime.getUTCMonth()).toBe(tomorrow.getUTCMonth());
+        expect(resumeTime.getUTCDate()).toBe(tomorrow.getUTCDate());
+      }
+    }
+  }
+});

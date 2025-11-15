@@ -1,14 +1,18 @@
 import { Effect, Layer, Ref } from "effect";
 import { describe, expect, it } from "vitest";
+import { testFileSystemLayer } from "../../testing/layers/testFileSystemLayer";
 import { testPlatformLayer } from "../../testing/layers/testPlatformLayer";
 import { testProjectMetaServiceLayer } from "../../testing/layers/testProjectMetaServiceLayer";
 import { testProjectRepositoryLayer } from "../../testing/layers/testProjectRepositoryLayer";
 import { testSessionMetaServiceLayer } from "../../testing/layers/testSessionMetaServiceLayer";
 import { testSessionRepositoryLayer } from "../../testing/layers/testSessionRepositoryLayer";
+import { ClaudeCodeLifeCycleService } from "../core/claude-code/services/ClaudeCodeLifeCycleService";
 import { EventBus } from "../core/events/services/EventBus";
 import { FileWatcherService } from "../core/events/services/fileWatcher";
 import type { InternalEventDeclaration } from "../core/events/types/InternalEventDeclaration";
 import { ProjectRepository } from "../core/project/infrastructure/ProjectRepository";
+import { SchedulerConfigBaseDir } from "../core/scheduler/config";
+import { SchedulerService } from "../core/scheduler/domain/Scheduler";
 import { VirtualConversationDatabase } from "../core/session/infrastructure/VirtualConversationDatabase";
 import { RateLimitMonitor } from "../core/session/services/RateLimitMonitor";
 import { createMockSessionMeta } from "../core/session/testing/createMockSessionMeta";
@@ -18,10 +22,27 @@ const fileWatcherWithEventBus = FileWatcherService.Live.pipe(
   Layer.provide(EventBus.Live),
 );
 
+// Mock layers needed for RateLimitMonitor
+const rateLimitMonitorDependencies = Layer.mergeAll(
+  Layer.mock(SchedulerService, {
+    getJobs: () => Effect.succeed([]),
+    addJob: () => Effect.die("addJob should not be called in initialize tests"),
+    updateJob: () => Effect.die("updateJob should not be called"),
+    deleteJob: () => Effect.succeed(undefined),
+  }),
+  Layer.mock(ClaudeCodeLifeCycleService, {
+    startTask: () => Effect.die("startTask should not be called"),
+    continueTask: () => Effect.die("continueTask should not be called"),
+    abortTask: () => Effect.die("abortTask should not be called"),
+  }),
+  Layer.succeed(SchedulerConfigBaseDir, "/tmp/test-scheduler"),
+  testFileSystemLayer(),
+);
+
 const allDependencies = Layer.mergeAll(
   fileWatcherWithEventBus,
   VirtualConversationDatabase.Live,
-  RateLimitMonitor.Live,
+  Layer.provide(RateLimitMonitor.Live, rateLimitMonitorDependencies),
   testProjectMetaServiceLayer({
     meta: {
       projectName: "Test Project",

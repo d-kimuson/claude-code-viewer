@@ -195,6 +195,18 @@
     "origin": [["src/components/SettingsControls.tsx", 151]],
     "translation": "When multiple sessions have the same title, show only the latest session"
   },
+  "settings.session.auto_resume_on_rate_limit": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SettingsControls.tsx", 182]],
+    "translation": "Auto Resume After Rate Limits"
+  },
+  "settings.session.auto_resume_on_rate_limit.description": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SettingsControls.tsx", 188]],
+    "translation": "Automatically resume sessions after temporary rate limit errors"
+  },
   "settings.input.enter_key_behavior": {
     "placeholders": {},
     "comments": [],

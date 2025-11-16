@@ -272,23 +272,27 @@ const SessionPageMainContent: FC<
                 <Trans id="session.conversation.paused" />
               </Badge>
             )}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="flex-shrink-0 h-6 w-6"
-                  onClick={() => exportSession.mutate({ projectId, sessionId })}
-                  disabled={exportSession.isPending}
-                  aria-label="Export session to HTML"
-                >
-                  <DownloadIcon
-                    className={`w-3.5 h-3.5 ${exportSession.isPending ? "animate-pulse" : ""}`}
-                  />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Export to HTML</TooltipContent>
-            </Tooltip>
+            {sessionId !== undefined && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="flex-shrink-0 h-6 w-6"
+                    onClick={() =>
+                      exportSession.mutate({ projectId, sessionId })
+                    }
+                    disabled={exportSession.isPending}
+                    aria-label="Export session to HTML"
+                  >
+                    <DownloadIcon
+                      className={`w-3.5 h-3.5 ${exportSession.isPending ? "animate-pulse" : ""}`}
+                    />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Export to HTML</TooltipContent>
+              </Tooltip>
+            )}
             <Popover>
               <PopoverTrigger asChild>
                 <Button

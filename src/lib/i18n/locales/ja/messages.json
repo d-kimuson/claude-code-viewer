@@ -195,6 +195,18 @@
     "origin": [["src/components/SettingsControls.tsx", 151]],
     "translation": "同じタイトルの複数のセッションがある場合、最新のセッションのみを表示"
   },
+  "settings.session.auto_resume_on_rate_limit": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SettingsControls.tsx", 182]],
+    "translation": "レート制限時に自動再開"
+  },
+  "settings.session.auto_resume_on_rate_limit.description": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SettingsControls.tsx", 188]],
+    "translation": "レート制限エラーが発生したら自動で再開を試みます"
+  },
   "settings.input.enter_key_behavior": {
     "placeholders": {},
     "comments": [],

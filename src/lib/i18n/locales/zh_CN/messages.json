@@ -195,6 +195,18 @@
     "origin": [["src/components/SettingsControls.tsx", 151]],
     "translation": "当多个会话标题相同时,仅显示最新的会话"
   },
+  "settings.session.auto_resume_on_rate_limit": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SettingsControls.tsx", 182]],
+    "translation": "速率限制时自动恢复"
+  },
+  "settings.session.auto_resume_on_rate_limit.description": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [["src/components/SettingsControls.tsx", 188]],
+    "translation": "遇到速率限制错误后自动尝试恢复会话"
+  },
   "settings.input.enter_key_behavior": {
     "placeholders": {},
     "comments": [],

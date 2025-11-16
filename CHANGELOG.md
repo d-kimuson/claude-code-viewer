@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.4.6
+
+### &nbsp;&nbsp;&nbsp;Features
+
+- Add export (download) option for conversations &nbsp;-&nbsp; by **Sam** [<samp>(7f389)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/7f389e5)
+- Session detail page now reads the session via query parameter, enabling a smoother handoff from the new session page and reducing layout shifts.
+
+### &nbsp;&nbsp;&nbsp;Bug Fixes
+
+- Support array content format in queue-operation enqueue schema &nbsp;-&nbsp; by **d-kimsuon** and **Claude** [<samp>(a35fe)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/a35febe)
+- Issue where Effect-TS fails to launch due to mismatched peer versions &nbsp;-&nbsp; by **d-kimsuon** [<samp>(1aed3)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/1aed365)
+- Issue where default options are not reflected correctly. &nbsp;-&nbsp; by **d-kimuson** [<samp>(6155f)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/6155fec)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.4.5...0.4.6)
+
 ## 0.4.5
 
 ### &nbsp;&nbsp;&nbsp;Features

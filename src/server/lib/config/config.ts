@@ -16,4 +16,6 @@ export const userConfigSchema = z.object({
   theme: z.enum(["light", "dark", "system"]).optional().default("system"),
 });
 
+export const defaultUserConfig = userConfigSchema.parse({});
+
 export type UserConfig = z.infer<typeof userConfigSchema>;

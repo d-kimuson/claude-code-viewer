@@ -55,3 +55,6 @@ dist/*
 
 # speckit
 specs
+
+# e2e check
+e2e-check-temp

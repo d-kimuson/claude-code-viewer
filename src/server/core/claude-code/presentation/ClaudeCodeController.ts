@@ -1,9 +1,11 @@
+import * as path from "node:path";
 import { FileSystem, Path } from "@effect/platform";
 import { Context, Effect, Layer } from "effect";
 import type { ControllerResponse } from "../../../lib/effect/toEffectResponse";
 import type { InferEffect } from "../../../lib/effect/types";
 import { ApplicationContext } from "../../platform/services/ApplicationContext";
 import { ProjectRepository } from "../../project/infrastructure/ProjectRepository";
+import { scanCommandFilesRecursively } from "../functions/scanCommandFiles";
 import * as ClaudeCodeVersion from "../models/ClaudeCodeVersion";
 import { ClaudeCodeService } from "../services/ClaudeCodeService";
 
@@ -11,8 +13,9 @@ const LayerImpl = Effect.gen(function* () {
   const projectRepository = yield* ProjectRepository;
   const claudeCodeService = yield* ClaudeCodeService;
   const context = yield* ApplicationContext;
-  const fs = yield* FileSystem.FileSystem;
-  const path = yield* Path.Path;
+  // FileSystem and Path are required by scanCommandFilesRecursively
+  yield* FileSystem.FileSystem;
+  yield* Path.Path;
 
   const getClaudeCommands = (options: { projectId: string }) =>
     Effect.gen(function* () {
@@ -20,46 +23,16 @@ const LayerImpl = Effect.gen(function* () {
 
       const { project } = yield* projectRepository.getProject(projectId);
 
-      const globalCommands: string[] = yield* fs
-        .readDirectory(context.claudeCodePaths.claudeCommandsDirPath)
-        .pipe(
-          Effect.map((items) =>
-            items
-              .filter((item) => item.endsWith(".md"))
-              .map((item) => item.replace(/\.md$/, "")),
-          ),
-        )
-        .pipe(
-          Effect.match({
-            onSuccess: (items) => items,
-            onFailure: () => {
-              return [];
-            },
-          }),
-        );
+      const globalCommands: string[] = yield* scanCommandFilesRecursively(
+        context.claudeCodePaths.claudeCommandsDirPath,
+      );
 
       const projectCommands: string[] =
         project.meta.projectPath === null
           ? []
-          : yield* fs
-              .readDirectory(
-                path.resolve(project.meta.projectPath, ".claude", "commands"),
-              )
-              .pipe(
-                Effect.map((items) =>
-                  items
-                    .filter((item) => item.endsWith(".md"))
-                    .map((item) => item.replace(/\.md$/, "")),
-                ),
-              )
-              .pipe(
-                Effect.match({
-                  onSuccess: (items) => items,
-                  onFailure: () => {
-                    return [];
-                  },
-                }),
-              );
+          : yield* scanCommandFilesRecursively(
+              path.resolve(project.meta.projectPath, ".claude", "commands"),
+            );
 
       return {
         response: {

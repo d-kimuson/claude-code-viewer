@@ -302,9 +302,11 @@ export const routes = (app: HonoAppType) =>
         .get("/api/projects/:projectId/claude-commands", async (c) => {
           const response = await effectToResponse(
             c,
-            claudeCodeController.getClaudeCommands({
-              ...c.req.param(),
-            }),
+            claudeCodeController
+              .getClaudeCommands({
+                ...c.req.param(),
+              })
+              .pipe(Effect.provide(runtime)),
           );
           return response;
         })

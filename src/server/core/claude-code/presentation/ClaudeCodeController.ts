@@ -1,4 +1,3 @@
-import * as path from "node:path";
 import { FileSystem, Path } from "@effect/platform";
 import { Context, Effect, Layer } from "effect";
 import type { ControllerResponse } from "../../../lib/effect/toEffectResponse";
@@ -15,7 +14,7 @@ const LayerImpl = Effect.gen(function* () {
   const context = yield* ApplicationContext;
   // FileSystem and Path are required by scanCommandFilesRecursively
   yield* FileSystem.FileSystem;
-  yield* Path.Path;
+  const path = yield* Path.Path;
 
   const getClaudeCommands = (options: { projectId: string }) =>
     Effect.gen(function* () {

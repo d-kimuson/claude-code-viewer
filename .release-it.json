@@ -5,9 +5,6 @@
       "inFile": "CHANGELOG.md"
     }
   },
-  "hooks": {
-    "after:bump": "pnpm build && claude -p /prepare-release"
-  },
   "git": {
     "commitMessage": "chore: release v${version}",
     "tagName": "v${version}"

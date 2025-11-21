@@ -18,7 +18,7 @@ import type { AssistantMessageContent } from "@/lib/conversation-schema/message/
 import { useTheme } from "../../../../../../../hooks/useTheme";
 import type { SidechainConversation } from "../../../../../../../lib/conversation-schema";
 import { MarkdownContent } from "../../../../../../components/MarkdownContent";
-import { TaskModalContainer } from "./TaskModalContainer";
+import { TaskModal } from "./TaskModal";
 import { ToolInputOneLine } from "./ToolInputOneLine";
 
 export const taskToolInputSchema = z.object({
@@ -93,7 +93,7 @@ export const AssistantConversationContent: FC<{
       }
 
       return (
-        <TaskModalContainer
+        <TaskModal
           prompt={taskInput.data.prompt}
           projectId={projectId}
           sessionId={sessionId}

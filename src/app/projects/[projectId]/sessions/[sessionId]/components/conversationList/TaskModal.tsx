@@ -13,38 +13,71 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { agentSessionQuery } from "@/lib/api/queries";
+import type { SidechainConversation } from "@/lib/conversation-schema";
 import type { ToolResultContent } from "@/lib/conversation-schema/content/ToolResultContentSchema";
 import { extractFirstUserText } from "../../../../../../../server/core/session/functions/extractFirstUserText";
 import { ConversationList } from "./ConversationList";
 
-type AgentSessionTaskModalProps = {
+type TaskModalProps = {
   prompt: string;
   projectId: string;
   sessionId: string;
+  getSidechainConversationByPrompt: (
+    prompt: string,
+  ) => SidechainConversation | undefined;
+  getSidechainConversations: (rootUuid: string) => SidechainConversation[];
   getToolResult: (toolUseId: string) => ToolResultContent | undefined;
 };
 
 /**
- * Agent session task modal component for Claude Code v2.0.28+.
- * Displays task details fetched from a separate agent-*.jsonl file via API.
- * Always shows the button for Task tools, fetching data on modal open.
+ * Task modal component with fallback logic.
+ * Always shows the "View Task" button for Task tools.
+ *
+ * Fallback strategy:
+ * 1. First check legacy sidechain data (embedded in same session file)
+ * 2. If legacy data exists (length > 0), display it without API request
+ * 3. If legacy data is empty, fetch from agent session API endpoint
+ *
+ * This approach supports both old Claude Code versions (embedded sidechain)
+ * and new versions (separate agent-*.jsonl files) without version detection.
  */
-export const AgentSessionTaskModal: FC<AgentSessionTaskModalProps> = ({
+export const TaskModal: FC<TaskModalProps> = ({
   prompt,
   projectId,
   sessionId,
+  getSidechainConversationByPrompt,
+  getSidechainConversations,
   getToolResult,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
+  // Check legacy sidechain data first
+  const legacyConversation = getSidechainConversationByPrompt(prompt);
+  const legacySidechainConversations =
+    legacyConversation !== undefined
+      ? getSidechainConversations(legacyConversation.uuid)
+      : [];
+  const hasLegacyData = legacySidechainConversations.length > 0;
+
+  // Only fetch from API if legacy data is not available and modal is open
+  const shouldFetchFromApi = isOpen && !hasLegacyData;
+
   const { data, isLoading, error, refetch } = useQuery({
     ...agentSessionQuery(projectId, sessionId, prompt),
-    enabled: isOpen,
+    enabled: shouldFetchFromApi,
     staleTime: 0,
   });
 
-  const conversations = data?.conversations ?? [];
-  const agentSessionId = data?.agentSessionId;
+  // Determine which data source to use
+  const conversations = hasLegacyData
+    ? legacySidechainConversations.map((original) => ({
+        ...original,
+        isSidechain: false,
+      }))
+    : (data?.conversations ?? []);
+
+  const agentSessionId = hasLegacyData ? undefined : data?.agentSessionId;
+  const taskId = hasLegacyData ? legacyConversation?.uuid : agentSessionId;
 
   const title = (() => {
     const firstConversation = conversations.at(0);
@@ -54,6 +87,14 @@ export const AgentSessionTaskModal: FC<AgentSessionTaskModalProps> = ({
     return extractFirstUserText(firstConversation) ?? prompt;
   })();
 
+  // Determine loading/error states (only applicable when using API)
+  const showLoading = shouldFetchFromApi && isLoading;
+  const showError = shouldFetchFromApi && error !== null;
+  const showNoData =
+    !showLoading && !showError && conversations.length === 0 && isOpen;
+  const showConversations =
+    !showLoading && !showError && conversations.length > 0;
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
@@ -61,7 +102,7 @@ export const AgentSessionTaskModal: FC<AgentSessionTaskModalProps> = ({
           variant="ghost"
           size="sm"
           className="h-auto py-1.5 px-3 text-xs hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-none flex items-center gap-1"
-          data-testid="agent-session-task-button"
+          data-testid="task-modal-button"
         >
           <Eye className="h-3 w-3" />
           <Trans id="assistant.tool.view_task_details" />
@@ -69,7 +110,7 @@ export const AgentSessionTaskModal: FC<AgentSessionTaskModalProps> = ({
       </DialogTrigger>
       <DialogContent
         className="w-[95vw] md:w-[90vw] lg:w-[85vw] max-w-[1400px] h-[85vh] max-h-[85vh] flex flex-col p-0"
-        data-testid="agent-session-task-modal"
+        data-testid="task-modal"
       >
         <DialogHeader className="px-6 py-4 border-b bg-muted/30">
           <div className="flex items-start gap-3">
@@ -83,12 +124,12 @@ export const AgentSessionTaskModal: FC<AgentSessionTaskModalProps> = ({
                 {title.length > 120 ? `${title.slice(0, 120)}...` : title}
               </DialogTitle>
               <DialogDescription className="text-xs flex items-center gap-2 flex-wrap">
-                {agentSessionId && (
+                {taskId !== undefined && taskId !== null && (
                   <>
                     <span className="flex items-center gap-1">
                       <Trans id="assistant.tool.task_id" />:{" "}
                       <code className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">
-                        {agentSessionId.slice(0, 8)}
+                        {taskId.slice(0, 8)}
                       </code>
                     </span>
                     <span className="text-muted-foreground">|</span>
@@ -105,7 +146,7 @@ export const AgentSessionTaskModal: FC<AgentSessionTaskModalProps> = ({
           </div>
         </DialogHeader>
         <div className="flex-1 overflow-auto px-6 py-4">
-          {isLoading && (
+          {showLoading && (
             <div className="flex flex-col items-center justify-center h-full gap-4">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
               <p className="text-sm text-muted-foreground">
@@ -113,7 +154,7 @@ export const AgentSessionTaskModal: FC<AgentSessionTaskModalProps> = ({
               </p>
             </div>
           )}
-          {error && (
+          {showError && (
             <div className="flex flex-col items-center justify-center h-full gap-4">
               <XCircle className="h-8 w-8 text-destructive" />
               <p className="text-sm text-destructive">
@@ -124,7 +165,7 @@ export const AgentSessionTaskModal: FC<AgentSessionTaskModalProps> = ({
               </Button>
             </div>
           )}
-          {!isLoading && !error && conversations.length === 0 && (
+          {showNoData && (
             <div className="flex flex-col items-center justify-center h-full gap-4">
               <Badge variant="secondary" className="text-sm">
                 <Trans id="assistant.tool.no_task_data" />
@@ -134,7 +175,7 @@ export const AgentSessionTaskModal: FC<AgentSessionTaskModalProps> = ({
               </p>
             </div>
           )}
-          {!isLoading && !error && conversations.length > 0 && (
+          {showConversations && (
             <ConversationList
               conversations={[...conversations]}
               getToolResult={getToolResult}

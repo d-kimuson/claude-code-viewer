@@ -28,6 +28,7 @@ export const taskToolInputSchema = z.object({
 export const AssistantConversationContent: FC<{
   content: AssistantMessageContent;
   getToolResult: (toolUseId: string) => ToolResultContent | undefined;
+  getAgentIdForToolUse: (toolUseId: string) => string | undefined;
   getSidechainConversationByPrompt: (
     prompt: string,
   ) => SidechainConversation | undefined;
@@ -37,6 +38,7 @@ export const AssistantConversationContent: FC<{
 }> = ({
   content,
   getToolResult,
+  getAgentIdForToolUse,
   getSidechainConversationByPrompt,
   getSidechainConversations,
   projectId,
@@ -92,11 +94,15 @@ export const AssistantConversationContent: FC<{
         return undefined;
       }
 
+      // Get agentId from toolUseResult if available (new Claude Code versions)
+      const agentId = getAgentIdForToolUse(content.id);
+
       return (
         <TaskModal
           prompt={taskInput.data.prompt}
           projectId={projectId}
           sessionId={sessionId}
+          agentId={agentId}
           getSidechainConversationByPrompt={getSidechainConversationByPrompt}
           getSidechainConversations={getSidechainConversations}
           getToolResult={getToolResult}

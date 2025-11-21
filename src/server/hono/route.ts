@@ -207,31 +207,20 @@ export const routes = (app: HonoAppType) =>
           },
         )
 
-        .get(
-          "/api/projects/:projectId/sessions/:sessionId/agent-session",
-          zValidator(
-            "query",
-            z.object({
-              prompt: z.string(),
-            }),
-          ),
-          async (c) => {
-            const { projectId, sessionId } = c.req.param();
-            const { prompt } = c.req.valid("query");
+        .get("/api/projects/:projectId/agent-sessions/:agentId", async (c) => {
+          const { projectId, agentId } = c.req.param();
 
-            const response = await effectToResponse(
-              c,
-              agentSessionController
-                .getAgentSession({
-                  projectId,
-                  sessionId,
-                  prompt,
-                })
-                .pipe(Effect.provide(runtime)),
-            );
-            return response;
-          },
-        )
+          const response = await effectToResponse(
+            c,
+            agentSessionController
+              .getAgentSession({
+                projectId,
+                agentId,
+              })
+              .pipe(Effect.provide(runtime)),
+          );
+          return response;
+        })
 
         /**
          * GitController Routes

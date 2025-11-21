@@ -2,28 +2,25 @@ import { Context, Effect, Layer } from "effect";
 import type { ControllerResponse } from "../../../lib/effect/toEffectResponse";
 import type { InferEffect } from "../../../lib/effect/types";
 import { AgentSessionRepository } from "../infrastructure/AgentSessionRepository";
-import { AgentSessionMappingService } from "../services/AgentSessionMappingService";
 
 const LayerImpl = Effect.gen(function* () {
-  const mappingService = yield* AgentSessionMappingService;
   const repository = yield* AgentSessionRepository;
 
-  const getAgentSession = (params: {
-    projectId: string;
-    sessionId: string;
-    prompt: string;
-  }) =>
+  /**
+   * Get agent session by agentId.
+   * Directly reads agent-${agentId}.jsonl file without mapping service.
+   */
+  const getAgentSession = (params: { projectId: string; agentId: string }) =>
     Effect.gen(function* () {
-      const { projectId, sessionId, prompt } = params;
+      const { projectId, agentId } = params;
 
-      // Find agent file path using mapping service
-      const agentFilePath = yield* mappingService.getAgentFilePath(
+      // Read conversations directly using agentId
+      const conversations = yield* repository.getAgentSessionByAgentId(
         projectId,
-        sessionId,
-        prompt,
+        agentId,
       );
 
-      if (agentFilePath === null) {
+      if (conversations === null) {
         return {
           status: 200,
           response: {
@@ -33,22 +30,10 @@ const LayerImpl = Effect.gen(function* () {
         } as const satisfies ControllerResponse;
       }
 
-      // Extract agent session id from file path (agent-<hash>.jsonl)
-      const agentSessionId =
-        agentFilePath
-          .split("/")
-          .at(-1)
-          ?.replace("agent-", "")
-          .replace(".jsonl", "") ?? null;
-
-      // Read conversations from agent file
-      const conversations =
-        yield* repository.getAgentSessionConversations(agentFilePath);
-
       return {
         status: 200,
         response: {
-          agentSessionId,
+          agentSessionId: agentId,
           conversations,
         },
       } as const satisfies ControllerResponse;

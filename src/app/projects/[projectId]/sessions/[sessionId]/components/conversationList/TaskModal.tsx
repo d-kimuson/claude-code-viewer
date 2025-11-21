@@ -22,6 +22,11 @@ type TaskModalProps = {
   prompt: string;
   projectId: string;
   sessionId: string;
+  /**
+   * agentId from toolUseResult.agentId for new Claude Code versions.
+   * Used to directly fetch agent-${agentId}.jsonl file.
+   */
+  agentId: string | undefined;
   getSidechainConversationByPrompt: (
     prompt: string,
   ) => SidechainConversation | undefined;
@@ -36,7 +41,7 @@ type TaskModalProps = {
  * Fallback strategy:
  * 1. First check legacy sidechain data (embedded in same session file)
  * 2. If legacy data exists (length > 0), display it without API request
- * 3. If legacy data is empty, fetch from agent session API endpoint
+ * 3. If legacy data is empty and agentId exists, fetch from agent session API endpoint
  *
  * This approach supports both old Claude Code versions (embedded sidechain)
  * and new versions (separate agent-*.jsonl files) without version detection.
@@ -45,6 +50,7 @@ export const TaskModal: FC<TaskModalProps> = ({
   prompt,
   projectId,
   sessionId,
+  agentId,
   getSidechainConversationByPrompt,
   getSidechainConversations,
   getToolResult,
@@ -59,11 +65,14 @@ export const TaskModal: FC<TaskModalProps> = ({
       : [];
   const hasLegacyData = legacySidechainConversations.length > 0;
 
-  // Only fetch from API if legacy data is not available and modal is open
-  const shouldFetchFromApi = isOpen && !hasLegacyData;
+  // Only fetch from API if:
+  // 1. Legacy data is not available
+  // 2. agentId exists (new Claude Code version)
+  // 3. Modal is open
+  const shouldFetchFromApi = isOpen && !hasLegacyData && agentId !== undefined;
 
   const { data, isLoading, error, refetch } = useQuery({
-    ...agentSessionQuery(projectId, sessionId, prompt),
+    ...agentSessionQuery(projectId, agentId ?? ""),
     enabled: shouldFetchFromApi,
     staleTime: 0,
   });

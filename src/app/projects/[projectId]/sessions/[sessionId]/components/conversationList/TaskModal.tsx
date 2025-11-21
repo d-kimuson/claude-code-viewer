@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/react";
 import { useQuery } from "@tanstack/react-query";
 import { Eye, Loader2, MessageSquare, XCircle } from "lucide-react";
-import { type FC, useState } from "react";
+import { type FC, useMemo, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,6 +15,7 @@ import {
 import { agentSessionQuery } from "@/lib/api/queries";
 import type { SidechainConversation } from "@/lib/conversation-schema";
 import type { ToolResultContent } from "@/lib/conversation-schema/content/ToolResultContentSchema";
+import type { UserEntry } from "../../../../../../../lib/conversation-schema/entry/UserEntrySchema";
 import { extractFirstUserText } from "../../../../../../../server/core/session/functions/extractFirstUserText";
 import { ConversationList } from "./ConversationList";
 
@@ -104,6 +105,12 @@ export const TaskModal: FC<TaskModalProps> = ({
   const showConversations =
     !showLoading && !showError && conversations.length > 0;
 
+  const firstConversation = useMemo(() => {
+    return conversations.find(
+      (c) => c.type === "user" || c.type === "assistant" || c.type === "system",
+    );
+  }, [conversations]);
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
@@ -186,7 +193,35 @@ export const TaskModal: FC<TaskModalProps> = ({
           )}
           {showConversations && (
             <ConversationList
-              conversations={[...conversations]}
+              conversations={[
+                ...(hasLegacyData
+                  ? []
+                  : [
+                      {
+                        type: "user",
+                        message: {
+                          role: "user",
+                          content: prompt,
+                        },
+                        isSidechain: false,
+                        userType: "external",
+                        cwd: firstConversation?.cwd ?? "dummy",
+                        sessionId: sessionId,
+                        version: firstConversation?.version ?? "dummy",
+                        uuid: "dummy",
+                        timestamp: firstConversation?.timestamp ?? "dummy",
+                        parentUuid: null,
+                        isMeta: false,
+                        toolUseResult: undefined,
+                        gitBranch: firstConversation?.gitBranch ?? "dummy",
+                        isCompactSummary: false,
+                      } satisfies UserEntry,
+                    ]),
+                ...conversations.map((c) => ({
+                  ...c,
+                  isSidechain: false,
+                })),
+              ]}
               getToolResult={getToolResult}
               projectId={projectId}
               sessionId={sessionId}

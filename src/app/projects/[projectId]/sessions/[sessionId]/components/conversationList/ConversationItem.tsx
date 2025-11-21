@@ -4,7 +4,6 @@ import type {
   SidechainConversation,
 } from "@/lib/conversation-schema";
 import type { ToolResultContent } from "@/lib/conversation-schema/content/ToolResultContentSchema";
-import { SidechainConversationModal } from "../conversationModal/SidechainConversationModal";
 import { AssistantConversationContent } from "./AssistantConversationContent";
 import { FileHistorySnapshotConversationContent } from "./FileHistorySnapshotConversationContent";
 import { MetaConversationContent } from "./MetaConversationContent";
@@ -29,10 +28,8 @@ export const ConversationItem: FC<{
   conversation,
   getToolResult,
   getAgentIdForToolUse,
-  isRootSidechain,
   getSidechainConversationByPrompt,
   getSidechainConversations,
-  existsRelatedTaskCall,
   projectId,
   sessionId,
 }) => {
@@ -60,39 +57,6 @@ export const ConversationItem: FC<{
 
   if (conversation.type === "queue-operation") {
     return <QueueOperationConversationContent conversation={conversation} />;
-  }
-
-  // sidechain = サブタスクのこと
-  if (conversation.isSidechain) {
-    // Root 以外はモーダルで中身を表示するのでここでは描画しない
-    if (!isRootSidechain(conversation)) {
-      return null;
-    }
-
-    if (conversation.type !== "user") {
-      return null;
-    }
-
-    const prompt = conversation.message.content;
-
-    if (typeof prompt === "string" && existsRelatedTaskCall(prompt) === true) {
-      return null;
-    }
-
-    return (
-      <SidechainConversationModal
-        conversation={conversation}
-        sidechainConversations={getSidechainConversations(
-          conversation.uuid,
-        ).map((original) => ({
-          ...original,
-          isSidechain: false,
-        }))}
-        getToolResult={getToolResult}
-        projectId={projectId}
-        sessionId={sessionId}
-      />
-    );
   }
 
   if (conversation.type === "user") {

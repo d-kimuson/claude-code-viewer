@@ -140,6 +140,12 @@ export const ConversationList: FC<ConversationListProps> = ({
     existsRelatedTaskCall,
   } = useSidechain(validConversations);
 
+  const isDebug = validConversations.length === 11;
+
+  if (isDebug) {
+    console.log("validConversations", validConversations);
+  }
+
   // Build a map of tool_use_id -> agentId from user entries with toolUseResult
   const toolUseIdToAgentIdMap = useMemo(() => {
     const map = new Map<string, string>();
@@ -179,6 +185,10 @@ export const ConversationList: FC<ConversationListProps> = ({
               errorLine={conversation.line}
             />
           );
+        }
+
+        if (isDebug) {
+          console.log("conversation", conversation);
         }
 
         const elm = (

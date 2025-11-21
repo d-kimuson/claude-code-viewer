@@ -22,6 +22,8 @@ export const ConversationItem: FC<{
   ) => SidechainConversation | undefined;
   getSidechainConversations: (rootUuid: string) => SidechainConversation[];
   existsRelatedTaskCall: (prompt: string) => boolean;
+  projectId: string;
+  sessionId: string;
 }> = ({
   conversation,
   getToolResult,
@@ -29,6 +31,8 @@ export const ConversationItem: FC<{
   getSidechainConversationByPrompt,
   getSidechainConversations,
   existsRelatedTaskCall,
+  projectId,
+  sessionId,
 }) => {
   if (conversation.type === "summary") {
     return (
@@ -83,6 +87,8 @@ export const ConversationItem: FC<{
           isSidechain: false,
         }))}
         getToolResult={getToolResult}
+        projectId={projectId}
+        sessionId={sessionId}
       />
     );
   }
@@ -124,6 +130,8 @@ export const ConversationItem: FC<{
                 getSidechainConversationByPrompt
               }
               getSidechainConversations={getSidechainConversations}
+              projectId={projectId}
+              sessionId={sessionId}
             />
           </li>
         ))}

@@ -209,16 +209,15 @@ export const routes = (app: HonoAppType) =>
 
         .get(
           "/api/projects/:projectId/sessions/:sessionId/agent-session",
+          zValidator(
+            "query",
+            z.object({
+              prompt: z.string(),
+            }),
+          ),
           async (c) => {
             const { projectId, sessionId } = c.req.param();
-            const { prompt } = c.req.query();
-
-            if (!prompt) {
-              return c.json(
-                { error: "prompt query parameter is required" },
-                400,
-              );
-            }
+            const { prompt } = c.req.valid("query");
 
             const response = await effectToResponse(
               c,

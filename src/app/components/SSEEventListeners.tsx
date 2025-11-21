@@ -18,5 +18,23 @@ export const SSEEventListeners: FC<PropsWithChildren> = ({ children }) => {
     });
   });
 
+  useServerEventListener("agentSessionChanged", async (event) => {
+    // Invalidate all agent-session queries for this project
+    // Since we don't know which prompt corresponds to the changed file,
+    // we invalidate all agent-session queries for the project
+    await queryClient.invalidateQueries({
+      predicate: (query) => {
+        const queryKey = query.queryKey;
+        // Match pattern: ["projects", projectId, "sessions", *, "agent-session", *]
+        return (
+          Array.isArray(queryKey) &&
+          queryKey[0] === "projects" &&
+          queryKey[1] === event.projectId &&
+          queryKey[4] === "agent-session"
+        );
+      },
+    });
+  });
+
   return <>{children}</>;
 };

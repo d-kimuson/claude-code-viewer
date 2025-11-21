@@ -130,7 +130,7 @@ describe("AgentSessionMappingService", () => {
       const { result1, result2 } = await Effect.runPromise(
         program.pipe(
           Effect.provide(AgentSessionMappingService.Live),
-          Effect.provide(testPlatformLayer()),
+          Effect.provide(testLayer),
         ),
       );
 
@@ -162,7 +162,7 @@ describe("AgentSessionMappingService", () => {
       const { result1, result2 } = await Effect.runPromise(
         program.pipe(
           Effect.provide(AgentSessionMappingService.Live),
-          Effect.provide(testPlatformLayer()),
+          Effect.provide(testLayer),
         ),
       );
 
@@ -203,7 +203,7 @@ describe("AgentSessionMappingService", () => {
       const { result1, result2 } = await Effect.runPromise(
         program.pipe(
           Effect.provide(AgentSessionMappingService.Live),
-          Effect.provide(testPlatformLayer()),
+          Effect.provide(testLayer),
         ),
       );
 
@@ -244,7 +244,7 @@ describe("AgentSessionMappingService", () => {
       const { result1, result2 } = await Effect.runPromise(
         program.pipe(
           Effect.provide(AgentSessionMappingService.Live),
-          Effect.provide(testPlatformLayer()),
+          Effect.provide(testLayer),
         ),
       );
 

@@ -267,3 +267,35 @@ export const featureFlagsQuery = {
     return await response.json();
   },
 } as const;
+
+export const agentSessionQuery = (
+  projectId: string,
+  sessionId: string,
+  prompt: string,
+) =>
+  ({
+    queryKey: [
+      "projects",
+      projectId,
+      "sessions",
+      sessionId,
+      "agent-session",
+      prompt,
+    ],
+    queryFn: async () => {
+      const response = await honoClient.api.projects[":projectId"].sessions[
+        ":sessionId"
+      ]["agent-session"].$get({
+        param: { projectId, sessionId },
+        query: { prompt },
+      });
+
+      if (!response.ok) {
+        throw new Error(
+          `Failed to fetch agent session: ${response.statusText}`,
+        );
+      }
+
+      return await response.json();
+    },
+  }) as const;

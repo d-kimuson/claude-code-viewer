@@ -449,6 +449,8 @@ const SessionPageMainContent: FC<
             <ConversationList
               conversations={isExistingSession ? conversations : []}
               getToolResult={getToolResult}
+              projectId={projectId}
+              sessionId={sessionId ?? ""}
             />
             {!isExistingSession && (
               <div className="rounded-2xl border border-dashed border-muted-foreground/40 bg-muted/30 p-8 text-center space-y-3">

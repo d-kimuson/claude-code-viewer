@@ -47,6 +47,17 @@ const LayerImpl = Effect.gen(function* () {
         );
       };
 
+      const onAgentSessionChanged = (
+        event: InternalEventDeclaration["agentSessionChanged"],
+      ) => {
+        Effect.runFork(
+          typeSafeSSE.writeSSE("agentSessionChanged", {
+            projectId: event.projectId,
+            agentSessionId: event.agentSessionId,
+          }),
+        );
+      };
+
       const onSessionProcessChanged = (
         event: InternalEventDeclaration["sessionProcessChanged"],
       ) => {
@@ -69,6 +80,7 @@ const LayerImpl = Effect.gen(function* () {
 
       yield* eventBus.on("sessionListChanged", onSessionListChanged);
       yield* eventBus.on("sessionChanged", onSessionChanged);
+      yield* eventBus.on("agentSessionChanged", onAgentSessionChanged);
       yield* eventBus.on("sessionProcessChanged", onSessionProcessChanged);
       yield* eventBus.on("heartbeat", onHeartbeat);
       yield* eventBus.on("permissionRequested", onPermissionRequested);
@@ -80,6 +92,7 @@ const LayerImpl = Effect.gen(function* () {
             Effect.gen(function* () {
               yield* eventBus.off("sessionListChanged", onSessionListChanged);
               yield* eventBus.off("sessionChanged", onSessionChanged);
+              yield* eventBus.off("agentSessionChanged", onAgentSessionChanged);
               yield* eventBus.off(
                 "sessionProcessChanged",
                 onSessionProcessChanged,

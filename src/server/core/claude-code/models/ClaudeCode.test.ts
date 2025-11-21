@@ -93,4 +93,56 @@ describe("ClaudeCode.AvailableFeatures", () => {
       expect(features.uuidOnSDKMessage).toBe(true);
     });
   });
+
+  describe("sidechainSeparation feature flag", () => {
+    it("should be false when claudeCodeVersion is null", () => {
+      const features = ClaudeCode.getAvailableFeatures(null);
+      expect(features.sidechainSeparation).toBe(false);
+    });
+
+    it("should be false when claudeCodeVersion is v2.0.27", () => {
+      const features = ClaudeCode.getAvailableFeatures({
+        major: 2,
+        minor: 0,
+        patch: 27,
+      });
+      expect(features.sidechainSeparation).toBe(false);
+    });
+
+    it("should be true when claudeCodeVersion is v2.0.28", () => {
+      const features = ClaudeCode.getAvailableFeatures({
+        major: 2,
+        minor: 0,
+        patch: 28,
+      });
+      expect(features.sidechainSeparation).toBe(true);
+    });
+
+    it("should be true when claudeCodeVersion is v2.0.30 (greater than threshold)", () => {
+      const features = ClaudeCode.getAvailableFeatures({
+        major: 2,
+        minor: 0,
+        patch: 30,
+      });
+      expect(features.sidechainSeparation).toBe(true);
+    });
+
+    it("should be true when claudeCodeVersion is v2.1.0 (higher minor version)", () => {
+      const features = ClaudeCode.getAvailableFeatures({
+        major: 2,
+        minor: 1,
+        patch: 0,
+      });
+      expect(features.sidechainSeparation).toBe(true);
+    });
+
+    it("should be false when claudeCodeVersion is v1.x.x (lower major version)", () => {
+      const features = ClaudeCode.getAvailableFeatures({
+        major: 1,
+        minor: 0,
+        patch: 200,
+      });
+      expect(features.sidechainSeparation).toBe(false);
+    });
+  });
 });

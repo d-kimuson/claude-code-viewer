@@ -6,6 +6,7 @@ import { parseUserMessage } from "../../claude-code/functions/parseUserMessage";
 import { decodeProjectId } from "../../project/functions/id";
 import type { Session, SessionDetail } from "../../types";
 import { decodeSessionId, encodeSessionId } from "../functions/id";
+import { isRegularSessionFile } from "../functions/isRegularSessionFile";
 import { VirtualConversationDatabase } from "../infrastructure/VirtualConversationDatabase";
 import { SessionMetaService } from "../services/SessionMetaService";
 
@@ -164,30 +165,28 @@ const LayerImpl = Effect.gen(function* () {
         },
       }).pipe(Effect.catchAll(() => Effect.succeed([])));
 
-      // Process session files
-      const sessionEffects = dirents
-        .filter((entry) => entry.endsWith(".jsonl"))
-        .map((entry) =>
-          Effect.gen(function* () {
-            const fullPath = path.resolve(claudeProjectPath, entry);
-            const sessionId = encodeSessionId(fullPath);
+      // Process session files (excluding agent-*.jsonl files)
+      const sessionEffects = dirents.filter(isRegularSessionFile).map((entry) =>
+        Effect.gen(function* () {
+          const fullPath = path.resolve(claudeProjectPath, entry);
+          const sessionId = encodeSessionId(fullPath);
 
-            // Get file stats with error handling
-            const stat = yield* Effect.tryPromise(() =>
-              fs.stat(fullPath).pipe(Effect.runPromise),
-            ).pipe(Effect.catchAll(() => Effect.succeed(null)));
+          // Get file stats with error handling
+          const stat = yield* Effect.tryPromise(() =>
+            fs.stat(fullPath).pipe(Effect.runPromise),
+          ).pipe(Effect.catchAll(() => Effect.succeed(null)));
 
-            if (!stat) {
-              return null;
-            }
+          if (!stat) {
+            return null;
+          }
 
-            return {
-              id: sessionId,
-              jsonlFilePath: fullPath,
-              lastModifiedAt: Option.getOrElse(stat.mtime, () => new Date()),
-            };
-          }),
-        );
+          return {
+            id: sessionId,
+            jsonlFilePath: fullPath,
+            lastModifiedAt: Option.getOrElse(stat.mtime, () => new Date()),
+          };
+        }),
+      );
 
       // Execute all effects in parallel and filter out nulls
       const sessionsWithNulls = yield* Effect.all(sessionEffects, {

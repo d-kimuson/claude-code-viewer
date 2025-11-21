@@ -23,6 +23,10 @@ const LayerImpl = Effect.gen(function* () {
               name: "agent-sdk",
               enabled: claudeCodeFeatures.agentSdk,
             },
+            {
+              name: "sidechain-separation",
+              enabled: claudeCodeFeatures.sidechainSeparation,
+            },
           ] satisfies Flag[],
         },
         status: 200,

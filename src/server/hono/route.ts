@@ -6,6 +6,7 @@ import { streamSSE } from "hono/streaming";
 import prexit from "prexit";
 import { z } from "zod";
 import packageJson from "../../../package.json" with { type: "json" };
+import { AgentSessionController } from "../core/agent-session/presentation/AgentSessionController";
 import { ClaudeCodeController } from "../core/claude-code/presentation/ClaudeCodeController";
 import { ClaudeCodePermissionController } from "../core/claude-code/presentation/ClaudeCodePermissionController";
 import { ClaudeCodeSessionProcessController } from "../core/claude-code/presentation/ClaudeCodeSessionProcessController";
@@ -41,6 +42,7 @@ export const routes = (app: HonoAppType) =>
     // controllers
     const projectController = yield* ProjectController;
     const sessionController = yield* SessionController;
+    const agentSessionController = yield* AgentSessionController;
     const gitController = yield* GitController;
     const claudeCodeSessionProcessController =
       yield* ClaudeCodeSessionProcessController;
@@ -204,6 +206,21 @@ export const routes = (app: HonoAppType) =>
             return response;
           },
         )
+
+        .get("/api/projects/:projectId/agent-sessions/:agentId", async (c) => {
+          const { projectId, agentId } = c.req.param();
+
+          const response = await effectToResponse(
+            c,
+            agentSessionController
+              .getAgentSession({
+                projectId,
+                agentId,
+              })
+              .pipe(Effect.provide(runtime)),
+          );
+          return response;
+        })
 
         /**
          * GitController Routes

@@ -6,6 +6,10 @@ export type Flag =
   | {
       name: "agent-sdk";
       enabled: boolean;
+    }
+  | {
+      name: "sidechain-separation";
+      enabled: boolean;
     };
 
 export type FlagName = Flag["name"];

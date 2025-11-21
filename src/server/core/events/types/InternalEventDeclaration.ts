@@ -15,6 +15,11 @@ export type InternalEventDeclaration = {
     sessionId: string;
   };
 
+  agentSessionChanged: {
+    projectId: string;
+    agentSessionId: string;
+  };
+
   sessionProcessChanged: {
     processes: PublicSessionProcess[];
     changed: CCSessionProcess.CCSessionProcessState;

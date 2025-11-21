@@ -1,5 +1,5 @@
 import { Trans } from "@lingui/react";
-import { ChevronDown, Eye, Lightbulb, Wrench } from "lucide-react";
+import { ChevronDown, Lightbulb, Wrench } from "lucide-react";
 import type { FC } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import {
@@ -15,11 +15,10 @@ import {
 } from "@/components/ui/collapsible";
 import type { ToolResultContent } from "@/lib/conversation-schema/content/ToolResultContentSchema";
 import type { AssistantMessageContent } from "@/lib/conversation-schema/message/AssistantMessageSchema";
-import { Button } from "../../../../../../../components/ui/button";
 import { useTheme } from "../../../../../../../hooks/useTheme";
 import type { SidechainConversation } from "../../../../../../../lib/conversation-schema";
 import { MarkdownContent } from "../../../../../../components/MarkdownContent";
-import { SidechainConversationModal } from "../conversationModal/SidechainConversationModal";
+import { TaskModal } from "./TaskModal";
 import { ToolInputOneLine } from "./ToolInputOneLine";
 
 export const taskToolInputSchema = z.object({
@@ -29,15 +28,21 @@ export const taskToolInputSchema = z.object({
 export const AssistantConversationContent: FC<{
   content: AssistantMessageContent;
   getToolResult: (toolUseId: string) => ToolResultContent | undefined;
+  getAgentIdForToolUse: (toolUseId: string) => string | undefined;
   getSidechainConversationByPrompt: (
     prompt: string,
   ) => SidechainConversation | undefined;
   getSidechainConversations: (rootUuid: string) => SidechainConversation[];
+  projectId: string;
+  sessionId: string;
 }> = ({
   content,
   getToolResult,
+  getAgentIdForToolUse,
   getSidechainConversationByPrompt,
   getSidechainConversations,
+  projectId,
+  sessionId,
 }) => {
   const { resolvedTheme } = useTheme();
   const syntaxTheme = resolvedTheme === "dark" ? oneDark : oneLight;
@@ -89,35 +94,18 @@ export const AssistantConversationContent: FC<{
         return undefined;
       }
 
-      const conversation = getSidechainConversationByPrompt(
-        taskInput.data.prompt,
-      );
-
-      if (conversation === undefined) {
-        return undefined;
-      }
+      // Get agentId from toolUseResult if available (new Claude Code versions)
+      const agentId = getAgentIdForToolUse(content.id);
 
       return (
-        <SidechainConversationModal
-          conversation={conversation}
-          sidechainConversations={getSidechainConversations(
-            conversation.uuid,
-          ).map((original) => ({
-            ...original,
-            isSidechain: false,
-          }))}
+        <TaskModal
+          prompt={taskInput.data.prompt}
+          projectId={projectId}
+          sessionId={sessionId}
+          agentId={agentId}
+          getSidechainConversationByPrompt={getSidechainConversationByPrompt}
+          getSidechainConversations={getSidechainConversations}
           getToolResult={getToolResult}
-          trigger={
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-auto py-1.5 px-3 text-xs hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-none flex items-center gap-1"
-              data-testid="sidechain-task-button"
-            >
-              <Eye className="h-3 w-3" />
-              <Trans id="assistant.tool.view_task_details" />
-            </Button>
-          }
         />
       );
     })();

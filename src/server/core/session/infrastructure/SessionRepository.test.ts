@@ -463,6 +463,60 @@ describe("SessionRepository", () => {
       expect(result.sessions).toEqual([]);
     });
 
+    it("excludes agent-*.jsonl files from session list", async () => {
+      const projectPath = "/test/project";
+      const projectId = Buffer.from(projectPath).toString("base64url");
+      const mockDate = new Date("2024-01-01T00:00:00.000Z");
+
+      const mockMeta: SessionMeta = createMockSessionMeta({
+        messageCount: 1,
+        firstUserMessage: null,
+      });
+
+      const FileSystemMock = testFileSystemLayer({
+        exists: (path: string) => Effect.succeed(path === projectPath),
+        readDirectory: (path: string) =>
+          path === projectPath
+            ? Effect.succeed([
+                "session1.jsonl",
+                "agent-abc123.jsonl", // This should be excluded
+                "session2.jsonl",
+                "agent-def456.jsonl", // This should be excluded
+              ])
+            : Effect.succeed([]),
+        stat: () =>
+          Effect.succeed(createFileInfo({ mtime: Option.some(mockDate) })),
+      });
+
+      const SessionMetaServiceMock = testSessionMetaServiceLayer(mockMeta);
+      const PredictSessionsDatabaseMock = testPredictSessionsDatabaseLayer(
+        new Map(),
+      );
+
+      const program = Effect.gen(function* () {
+        const repo = yield* SessionRepository;
+        return yield* repo.getSessions(projectId);
+      });
+
+      const result = await Effect.runPromise(
+        program.pipe(
+          Effect.provide(SessionRepository.Live),
+          Effect.provide(SessionMetaServiceMock),
+          Effect.provide(PredictSessionsDatabaseMock),
+          Effect.provide(FileSystemMock),
+          Effect.provide(testPlatformLayer()),
+        ),
+      );
+
+      // Should only contain session1 and session2, not agent files
+      expect(result.sessions).toHaveLength(2);
+      expect(result.sessions.some((s) => s.id === "session1")).toBe(true);
+      expect(result.sessions.some((s) => s.id === "session2")).toBe(true);
+      expect(result.sessions.some((s) => s.id.startsWith("agent-"))).toBe(
+        false,
+      );
+    });
+
     it("returns including predicted sessions", async () => {
       const projectPath = "/test/project";
       const projectId = Buffer.from(projectPath).toString("base64url");

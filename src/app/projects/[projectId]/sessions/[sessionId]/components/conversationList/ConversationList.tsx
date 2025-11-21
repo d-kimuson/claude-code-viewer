@@ -1,6 +1,6 @@
 import { Trans } from "@lingui/react";
 import { AlertTriangle, ChevronDown, ExternalLink } from "lucide-react";
-import { type FC, useMemo } from "react";
+import { type FC, useCallback, useMemo } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
   Collapsible,
@@ -12,6 +12,22 @@ import type { ToolResultContent } from "@/lib/conversation-schema/content/ToolRe
 import type { ErrorJsonl } from "../../../../../../../server/core/types";
 import { useSidechain } from "../../hooks/useSidechain";
 import { ConversationItem } from "./ConversationItem";
+
+/**
+ * Type guard to check if toolUseResult contains agentId.
+ * The agentId field is available in newer Claude Code versions
+ * where agent sessions are stored in separate agent-*.jsonl files.
+ */
+const hasAgentId = (
+  toolUseResult: unknown,
+): toolUseResult is { agentId: string } => {
+  return (
+    typeof toolUseResult === "object" &&
+    toolUseResult !== null &&
+    "agentId" in toolUseResult &&
+    typeof (toolUseResult as { agentId: unknown }).agentId === "string"
+  );
+};
 
 const getConversationKey = (conversation: Conversation) => {
   if (conversation.type === "user") {
@@ -102,11 +118,15 @@ const SchemaErrorDisplay: FC<{ errorLine: string }> = ({ errorLine }) => {
 type ConversationListProps = {
   conversations: (Conversation | ErrorJsonl)[];
   getToolResult: (toolUseId: string) => ToolResultContent | undefined;
+  projectId: string;
+  sessionId: string;
 };
 
 export const ConversationList: FC<ConversationListProps> = ({
   conversations,
   getToolResult,
+  projectId,
+  sessionId,
 }) => {
   const validConversations = useMemo(
     () =>
@@ -120,6 +140,41 @@ export const ConversationList: FC<ConversationListProps> = ({
     existsRelatedTaskCall,
   } = useSidechain(validConversations);
 
+  const isDebug = validConversations.length === 11;
+
+  if (isDebug) {
+    console.log("validConversations", validConversations);
+  }
+
+  // Build a map of tool_use_id -> agentId from user entries with toolUseResult
+  const toolUseIdToAgentIdMap = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const conv of validConversations) {
+      if (conv.type !== "user") continue;
+      const messageContent = conv.message.content;
+      if (typeof messageContent === "string") continue;
+
+      for (const content of messageContent) {
+        // content can be string or object - need to check type
+        if (typeof content === "string") continue;
+        if (content.type === "tool_result") {
+          const toolUseResult = conv.toolUseResult;
+          if (hasAgentId(toolUseResult)) {
+            map.set(content.tool_use_id, toolUseResult.agentId);
+          }
+        }
+      }
+    }
+    return map;
+  }, [validConversations]);
+
+  const getAgentIdForToolUse = useCallback(
+    (toolUseId: string): string | undefined => {
+      return toolUseIdToAgentIdMap.get(toolUseId);
+    },
+    [toolUseIdToAgentIdMap],
+  );
+
   return (
     <ul>
       {conversations.flatMap((conversation) => {
@@ -132,15 +187,22 @@ export const ConversationList: FC<ConversationListProps> = ({
           );
         }
 
+        if (isDebug) {
+          console.log("conversation", conversation);
+        }
+
         const elm = (
           <ConversationItem
             key={getConversationKey(conversation)}
             conversation={conversation}
             getToolResult={getToolResult}
+            getAgentIdForToolUse={getAgentIdForToolUse}
             isRootSidechain={isRootSidechain}
             getSidechainConversations={getSidechainConversations}
             getSidechainConversationByPrompt={getSidechainConversationByPrompt}
             existsRelatedTaskCall={existsRelatedTaskCall}
+            projectId={projectId}
+            sessionId={sessionId}
           />
         );
 

@@ -4,7 +4,6 @@ import type {
   SidechainConversation,
 } from "@/lib/conversation-schema";
 import type { ToolResultContent } from "@/lib/conversation-schema/content/ToolResultContentSchema";
-import { SidechainConversationModal } from "../conversationModal/SidechainConversationModal";
 import { AssistantConversationContent } from "./AssistantConversationContent";
 import { FileHistorySnapshotConversationContent } from "./FileHistorySnapshotConversationContent";
 import { MetaConversationContent } from "./MetaConversationContent";
@@ -16,19 +15,23 @@ import { UserConversationContent } from "./UserConversationContent";
 export const ConversationItem: FC<{
   conversation: Conversation;
   getToolResult: (toolUseId: string) => ToolResultContent | undefined;
+  getAgentIdForToolUse: (toolUseId: string) => string | undefined;
   isRootSidechain: (conversation: Conversation) => boolean;
   getSidechainConversationByPrompt: (
     prompt: string,
   ) => SidechainConversation | undefined;
   getSidechainConversations: (rootUuid: string) => SidechainConversation[];
   existsRelatedTaskCall: (prompt: string) => boolean;
+  projectId: string;
+  sessionId: string;
 }> = ({
   conversation,
   getToolResult,
-  isRootSidechain,
+  getAgentIdForToolUse,
   getSidechainConversationByPrompt,
   getSidechainConversations,
-  existsRelatedTaskCall,
+  projectId,
+  sessionId,
 }) => {
   if (conversation.type === "summary") {
     return (
@@ -54,37 +57,6 @@ export const ConversationItem: FC<{
 
   if (conversation.type === "queue-operation") {
     return <QueueOperationConversationContent conversation={conversation} />;
-  }
-
-  // sidechain = サブタスクのこと
-  if (conversation.isSidechain) {
-    // Root 以外はモーダルで中身を表示するのでここでは描画しない
-    if (!isRootSidechain(conversation)) {
-      return null;
-    }
-
-    if (conversation.type !== "user") {
-      return null;
-    }
-
-    const prompt = conversation.message.content;
-
-    if (typeof prompt === "string" && existsRelatedTaskCall(prompt) === true) {
-      return null;
-    }
-
-    return (
-      <SidechainConversationModal
-        conversation={conversation}
-        sidechainConversations={getSidechainConversations(
-          conversation.uuid,
-        ).map((original) => ({
-          ...original,
-          isSidechain: false,
-        }))}
-        getToolResult={getToolResult}
-      />
-    );
   }
 
   if (conversation.type === "user") {
@@ -120,10 +92,13 @@ export const ConversationItem: FC<{
             <AssistantConversationContent
               content={content}
               getToolResult={getToolResult}
+              getAgentIdForToolUse={getAgentIdForToolUse}
               getSidechainConversationByPrompt={
                 getSidechainConversationByPrompt
               }
               getSidechainConversations={getSidechainConversations}
+              projectId={projectId}
+              sessionId={sessionId}
             />
           </li>
         ))}

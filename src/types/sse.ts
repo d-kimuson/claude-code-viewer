@@ -17,6 +17,11 @@ export type SSEEventDeclaration = {
     sessionId: string;
   };
 
+  agentSessionChanged: {
+    projectId: string;
+    agentSessionId: string;
+  };
+
   sessionProcessChanged: {
     processes: PublicSessionProcess[];
   };

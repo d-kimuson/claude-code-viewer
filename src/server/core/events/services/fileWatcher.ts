@@ -1,16 +1,10 @@
 import { type FSWatcher, watch } from "node:fs";
 import { Path } from "@effect/platform";
 import { Context, Effect, Layer, Ref } from "effect";
-import z from "zod";
 import { ApplicationContext } from "../../platform/services/ApplicationContext";
 import { encodeProjectIdFromSessionFilePath } from "../../project/functions/id";
+import { parseSessionFilePath } from "../functions/parseSessionFilePath";
 import { EventBus } from "./EventBus";
-
-const fileRegExp = /(?<projectId>.*?)\/(?<sessionId>.*?)\.jsonl/;
-const fileRegExpGroupSchema = z.object({
-  projectId: z.string(),
-  sessionId: z.string(),
-});
 
 interface FileWatcherServiceInterface {
   readonly startWatching: () => Effect.Effect<void>;
@@ -57,22 +51,22 @@ export class FileWatcherService extends Context.Tag("FileWatcherService")<
                 (_eventType, filename) => {
                   if (!filename) return;
 
-                  const groups = fileRegExpGroupSchema.safeParse(
-                    filename.match(fileRegExp)?.groups,
-                  );
+                  const fileMatch = parseSessionFilePath(filename);
+                  if (fileMatch === null) return;
 
-                  if (!groups.success) return;
-
-                  const { sessionId } = groups.data;
-
-                  // フルパスを構築してエンコードされた projectId を取得
+                  // Build full path to get encoded projectId
                   const fullPath = path.join(
                     context.claudeCodePaths.claudeProjectsDirPath,
                     filename,
                   );
                   const encodedProjectId =
                     encodeProjectIdFromSessionFilePath(fullPath);
-                  const debounceKey = `${encodedProjectId}/${sessionId}`;
+
+                  // Determine debounce key based on file type
+                  const debounceKey =
+                    fileMatch.type === "agent"
+                      ? `${encodedProjectId}/agent-${fileMatch.agentSessionId}`
+                      : `${encodedProjectId}/${fileMatch.sessionId}`;
 
                   Effect.runPromise(
                     Effect.gen(function* () {
@@ -83,18 +77,29 @@ export class FileWatcherService extends Context.Tag("FileWatcherService")<
                       }
 
                       const newTimer = setTimeout(() => {
-                        Effect.runFork(
-                          eventBus.emit("sessionChanged", {
-                            projectId: encodedProjectId,
-                            sessionId,
-                          }),
-                        );
+                        if (fileMatch.type === "agent") {
+                          // Agent session file changed
+                          Effect.runFork(
+                            eventBus.emit("agentSessionChanged", {
+                              projectId: encodedProjectId,
+                              agentSessionId: fileMatch.agentSessionId,
+                            }),
+                          );
+                        } else {
+                          // Regular session file changed
+                          Effect.runFork(
+                            eventBus.emit("sessionChanged", {
+                              projectId: encodedProjectId,
+                              sessionId: fileMatch.sessionId,
+                            }),
+                          );
 
-                        Effect.runFork(
-                          eventBus.emit("sessionListChanged", {
-                            projectId: encodedProjectId,
-                          }),
-                        );
+                          Effect.runFork(
+                            eventBus.emit("sessionListChanged", {
+                              projectId: encodedProjectId,
+                            }),
+                          );
+                        }
 
                         Effect.runPromise(
                           Effect.gen(function* () {

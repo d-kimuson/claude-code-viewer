@@ -6,6 +6,8 @@ import { NodeContext } from "@effect/platform-node";
 import { serve } from "@hono/node-server";
 import { serveStatic } from "@hono/node-server/serve-static";
 import { Effect } from "effect";
+import { AgentSessionLayer } from "./core/agent-session";
+import { AgentSessionController } from "./core/agent-session/presentation/AgentSessionController";
 import { ClaudeCodeController } from "./core/claude-code/presentation/ClaudeCodeController";
 import { ClaudeCodePermissionController } from "./core/claude-code/presentation/ClaudeCodePermissionController";
 import { ClaudeCodeSessionProcessController } from "./core/claude-code/presentation/ClaudeCodeSessionProcessController";
@@ -64,6 +66,7 @@ const program = routes(honoApp)
     /** Presentation */
     Effect.provide(ProjectController.Live),
     Effect.provide(SessionController.Live),
+    Effect.provide(AgentSessionController.Live),
     Effect.provide(GitController.Live),
     Effect.provide(ClaudeCodeController.Live),
     Effect.provide(ClaudeCodeSessionProcessController.Live),
@@ -95,6 +98,7 @@ const program = routes(honoApp)
     Effect.provide(ProjectMetaService.Live),
     Effect.provide(SessionMetaService.Live),
     Effect.provide(VirtualConversationDatabase.Live),
+    Effect.provide(AgentSessionLayer),
   )
   .pipe(
     /** Platform */

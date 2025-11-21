@@ -6,6 +6,7 @@ import { streamSSE } from "hono/streaming";
 import prexit from "prexit";
 import { z } from "zod";
 import packageJson from "../../../package.json" with { type: "json" };
+import { AgentSessionController } from "../core/agent-session/presentation/AgentSessionController";
 import { ClaudeCodeController } from "../core/claude-code/presentation/ClaudeCodeController";
 import { ClaudeCodePermissionController } from "../core/claude-code/presentation/ClaudeCodePermissionController";
 import { ClaudeCodeSessionProcessController } from "../core/claude-code/presentation/ClaudeCodeSessionProcessController";
@@ -41,6 +42,7 @@ export const routes = (app: HonoAppType) =>
     // controllers
     const projectController = yield* ProjectController;
     const sessionController = yield* SessionController;
+    const agentSessionController = yield* AgentSessionController;
     const gitController = yield* GitController;
     const claudeCodeSessionProcessController =
       yield* ClaudeCodeSessionProcessController;
@@ -199,6 +201,33 @@ export const routes = (app: HonoAppType) =>
               c,
               sessionController
                 .exportSessionHtml({ ...c.req.param() })
+                .pipe(Effect.provide(runtime)),
+            );
+            return response;
+          },
+        )
+
+        .get(
+          "/api/projects/:projectId/sessions/:sessionId/agent-session",
+          async (c) => {
+            const { projectId, sessionId } = c.req.param();
+            const { prompt } = c.req.query();
+
+            if (!prompt) {
+              return c.json(
+                { error: "prompt query parameter is required" },
+                400,
+              );
+            }
+
+            const response = await effectToResponse(
+              c,
+              agentSessionController
+                .getAgentSession({
+                  projectId,
+                  sessionId,
+                  prompt,
+                })
                 .pipe(Effect.provide(runtime)),
             );
             return response;

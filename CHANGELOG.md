@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.4.7
+
+### &nbsp;&nbsp;&nbsp;Features
+
+- Support slash commands in subdirectories: Command files (`.claude/commands/`) can now be nested in subdirectories and are properly discovered &nbsp;-&nbsp; by **d-kimsuon** and **Claude** [<samp>(097b2)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/097b28e) [<samp>(d5577)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/d55778f)
+- Agent session separation: Now supports viewing subagent conversations in Claude Code v2.0.28+ log format &nbsp;-&nbsp; by **d-kimsuon** and **Claude** [<samp>(f4d80)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/f4d80e4)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.4.6...0.4.7)
+
 ## 0.4.6
 
 ### &nbsp;&nbsp;&nbsp;Features

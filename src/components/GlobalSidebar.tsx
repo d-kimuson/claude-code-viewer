@@ -1,6 +1,7 @@
 import { Trans } from "@lingui/react";
+import { useNavigate } from "@tanstack/react-router";
 import type { LucideIcon } from "lucide-react";
-import { InfoIcon, SettingsIcon } from "lucide-react";
+import { InfoIcon, LogOut, SettingsIcon } from "lucide-react";
 import { type FC, type ReactNode, Suspense, useState } from "react";
 import {
   Tooltip,
@@ -9,6 +10,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import { useAuth } from "./AuthProvider";
 import { Loading } from "./Loading";
 import { NotificationSettings } from "./NotificationSettings";
 import { SettingsControls } from "./SettingsControls";
@@ -36,6 +38,13 @@ export const GlobalSidebar: FC<GlobalSidebarProps> = ({
   defaultActiveTab,
   headerButton,
 }) => {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await logout();
+    navigate({ to: "/login" });
+  };
   const settingsTab: SidebarTab = {
     id: "settings",
     icon: SettingsIcon,
@@ -122,7 +131,7 @@ export const GlobalSidebar: FC<GlobalSidebarProps> = ({
           {headerButton && (
             <div className="border-b border-sidebar-border">{headerButton}</div>
           )}
-          <div className="flex flex-col p-2 space-y-1">
+          <div className="flex-1 flex flex-col p-2 space-y-1">
             {allTabs.map((tab) => {
               const Icon = tab.icon;
               return (
@@ -149,6 +158,28 @@ export const GlobalSidebar: FC<GlobalSidebarProps> = ({
                 </Tooltip>
               );
             })}
+          </div>
+          {/* Logout button at bottom */}
+          <div className="p-2 border-t border-sidebar-border">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className={cn(
+                    "w-8 h-8 flex items-center justify-center rounded-md transition-colors",
+                    "hover:bg-destructive/10 hover:text-destructive",
+                    "text-sidebar-foreground/70",
+                  )}
+                  data-testid="logout-button"
+                >
+                  <LogOut className="w-4 h-4" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="right">
+                <p>Logout</p>
+              </TooltipContent>
+            </Tooltip>
           </div>
         </TooltipProvider>
       </div>

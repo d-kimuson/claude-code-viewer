@@ -5,11 +5,6 @@ import { deleteCookie, getCookie, setCookie } from "hono/cookie";
 import { streamSSE } from "hono/streaming";
 import prexit from "prexit";
 import { z } from "zod";
-import {
-  AUTH_PASSWORD,
-  VALID_SESSION_TOKEN,
-  authMiddleware,
-} from "./middleware/auth.middleware";
 import packageJson from "../../../package.json" with { type: "json" };
 import { AgentSessionController } from "../core/agent-session/presentation/AgentSessionController";
 import { ClaudeCodeController } from "../core/claude-code/presentation/ClaudeCodeController";
@@ -40,6 +35,11 @@ import { userConfigSchema } from "../lib/config/config";
 import { effectToResponse } from "../lib/effect/toEffectResponse";
 import type { HonoAppType } from "./app";
 import { InitializeService } from "./initialize";
+import {
+  AUTH_PASSWORD,
+  authMiddleware,
+  VALID_SESSION_TOKEN,
+} from "./middleware/auth.middleware";
 import { configMiddleware } from "./middleware/config.middleware";
 
 export const routes = (app: HonoAppType) =>
@@ -111,7 +111,10 @@ export const routes = (app: HonoAppType) =>
             // Check if auth is configured
             if (!AUTH_PASSWORD) {
               return c.json(
-                { error: "Authentication not configured. Set CCV_AUTH_PASSWORD environment variable." },
+                {
+                  error:
+                    "Authentication not configured. Set CCV_AUTH_PASSWORD environment variable.",
+                },
                 500,
               );
             }

@@ -39,27 +39,24 @@ const PUBLIC_API_ROUTES = [
   "/api/version",
 ];
 
-export const authMiddleware = createMiddleware<HonoContext>(
-  async (c, next) => {
-    // Skip auth for public routes
-    if (PUBLIC_API_ROUTES.includes(c.req.path)) {
-      return next();
-    }
+export const authMiddleware = createMiddleware<HonoContext>(async (c, next) => {
+  // Skip auth for public routes
+  if (PUBLIC_API_ROUTES.includes(c.req.path)) {
+    return next();
+  }
 
-    // Skip auth for non-API routes (let frontend handle auth state)
-    if (!c.req.path.startsWith("/api")) {
-      return next();
-    }
+  // Skip auth for non-API routes (let frontend handle auth state)
+  if (!c.req.path.startsWith("/api")) {
+    return next();
+  }
 
-    const sessionToken = getCookie(c, "ccv-session");
+  const sessionToken = getCookie(c, "ccv-session");
 
-    if (!sessionToken || sessionToken !== VALID_SESSION_TOKEN) {
-      return c.json({ error: "Unauthorized" }, 401);
-    }
+  if (!sessionToken || sessionToken !== VALID_SESSION_TOKEN) {
+    return c.json({ error: "Unauthorized" }, 401);
+  }
 
-    await next();
-  },
-);
+  await next();
+});
 
 export { AUTH_PASSWORD };
-

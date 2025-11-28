@@ -131,10 +131,8 @@ function LoginPage() {
               )}
             </Button>
           </form>
-
         </CardContent>
       </Card>
     </div>
   );
 }
-

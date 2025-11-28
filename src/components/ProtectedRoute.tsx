@@ -1,6 +1,6 @@
 import { useNavigate } from "@tanstack/react-router";
 import { Loader2 } from "lucide-react";
-import { useEffect, type ReactNode } from "react";
+import { type ReactNode, useEffect } from "react";
 import { useAuth } from "./AuthProvider";
 
 interface ProtectedRouteProps {
@@ -34,4 +34,3 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
 
   return <>{children}</>;
 }
-

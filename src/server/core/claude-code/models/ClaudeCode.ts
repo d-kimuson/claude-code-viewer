@@ -84,7 +84,11 @@ export const Config = Effect.gen(function* () {
   const claudeCodeExecutablePath = yield* resolveClaudeCodePath;
 
   const claudeCodeVersion = ClaudeCodeVersion.fromCLIString(
-    yield* Command.string(Command.make(claudeCodeExecutablePath, "--version")),
+    yield* Command.string(
+      Command.make(claudeCodeExecutablePath, "--version").pipe(
+        Command.runInShell(true),
+      ),
+    ),
   );
 
   return {

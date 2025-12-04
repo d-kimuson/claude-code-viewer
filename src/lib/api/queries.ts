@@ -287,3 +287,28 @@ export const agentSessionQuery = (projectId: string, agentId: string) =>
       return await response.json();
     },
   }) as const;
+
+export const searchQuery = (
+  query: string,
+  options?: { limit?: number; projectId?: string },
+) =>
+  ({
+    queryKey: ["search", query, options?.limit, options?.projectId],
+    queryFn: async () => {
+      const response = await honoClient.api.search.$get({
+        query: {
+          q: query,
+          ...(options?.limit !== undefined
+            ? { limit: options.limit.toString() }
+            : {}),
+          ...(options?.projectId ? { projectId: options.projectId } : {}),
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to search: ${response.statusText}`);
+      }
+
+      return await response.json();
+    },
+  }) as const;

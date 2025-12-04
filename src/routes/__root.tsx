@@ -3,6 +3,7 @@ import { HelmetProvider } from "react-helmet-async";
 import { RootErrorBoundary } from "../app/components/RootErrorBoundary";
 import { SSEEventListeners } from "../app/components/SSEEventListeners";
 import { SyncSessionProcess } from "../app/components/SyncSessionProcess";
+import { SearchProvider } from "../components/SearchProvider";
 import { ThemeProvider } from "../components/ThemeProvider";
 import { Toaster } from "../components/ui/sonner";
 import { LinguiClientProvider } from "../lib/i18n/LinguiProvider";
@@ -17,7 +18,9 @@ export const Route = createRootRoute({
             <SSEProvider>
               <SSEEventListeners>
                 <SyncSessionProcess>
-                  <Outlet />
+                  <SearchProvider>
+                    <Outlet />
+                  </SearchProvider>
                 </SyncSessionProcess>
               </SSEEventListeners>
             </SSEProvider>

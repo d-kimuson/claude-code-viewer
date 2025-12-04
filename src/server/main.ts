@@ -27,6 +27,8 @@ import { ProjectMetaService } from "./core/project/services/ProjectMetaService";
 import { SchedulerConfigBaseDir } from "./core/scheduler/config";
 import { SchedulerService } from "./core/scheduler/domain/Scheduler";
 import { SchedulerController } from "./core/scheduler/presentation/SchedulerController";
+import { SearchController } from "./core/search/presentation/SearchController";
+import { SearchService } from "./core/search/services/SearchService";
 import { SessionRepository } from "./core/session/infrastructure/SessionRepository";
 import { VirtualConversationDatabase } from "./core/session/infrastructure/VirtualConversationDatabase";
 import { SessionController } from "./core/session/presentation/SessionController";
@@ -75,6 +77,7 @@ const program = routes(honoApp)
     Effect.provide(SSEController.Live),
     Effect.provide(SchedulerController.Live),
     Effect.provide(FeatureFlagController.Live),
+    Effect.provide(SearchController.Live),
   )
   .pipe(
     /** Application */
@@ -90,6 +93,7 @@ const program = routes(honoApp)
     Effect.provide(GitService.Live),
     Effect.provide(SchedulerService.Live),
     Effect.provide(SchedulerConfigBaseDir.Live),
+    Effect.provide(SearchService.Live),
   )
   .pipe(
     /** Infrastructure */

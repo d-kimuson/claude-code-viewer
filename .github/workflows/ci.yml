@@ -36,5 +36,10 @@ jobs:
       - name: Check lingui translations
         run: ./scripts/lingui-check.sh
 
+      - name: Compile lingui and check for changes
+        run: |
+          pnpm lingui:compile
+          git diff --exit-code || (echo "Error: lingui compilation produced unexpected changes" && exit 1)
+
       - name: Run e2e check
         run: ./scripts/e2e-check.sh

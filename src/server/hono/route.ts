@@ -1,7 +1,7 @@
 import type { CommandExecutor, FileSystem, Path } from "@effect/platform";
 import { zValidator } from "@hono/zod-validator";
 import { Effect, Runtime } from "effect";
-import { setCookie } from "hono/cookie";
+import { deleteCookie, getCookie, setCookie } from "hono/cookie";
 import { streamSSE } from "hono/streaming";
 import prexit from "prexit";
 import { z } from "zod";
@@ -35,6 +35,7 @@ import { userConfigSchema } from "../lib/config/config";
 import { effectToResponse } from "../lib/effect/toEffectResponse";
 import type { HonoAppType } from "./app";
 import { InitializeService } from "./initialize";
+import { AuthMiddleware } from "./middleware/auth.middleware";
 import { configMiddleware } from "./middleware/config.middleware";
 
 export const routes = (app: HonoAppType) =>
@@ -59,6 +60,10 @@ export const routes = (app: HonoAppType) =>
     const userConfigService = yield* UserConfigService;
     const claudeCodeLifeCycleService = yield* ClaudeCodeLifeCycleService;
     const initializeService = yield* InitializeService;
+
+    // middleware
+    const { authMiddleware, validSessionToken, authEnabled, anthPassword } =
+      yield* AuthMiddleware;
 
     const runtime = yield* Effect.runtime<
       | EnvService
@@ -85,6 +90,7 @@ export const routes = (app: HonoAppType) =>
       app
         // middleware
         .use(configMiddleware)
+        .use(authMiddleware)
         .use(async (c, next) => {
           await Effect.runPromise(
             userConfigService.setUserConfig({
@@ -93,6 +99,53 @@ export const routes = (app: HonoAppType) =>
           );
 
           await next();
+        })
+
+        // auth routes
+        .post(
+          "/api/auth/login",
+          zValidator("json", z.object({ password: z.string() })),
+          async (c) => {
+            const { password } = c.req.valid("json");
+
+            // Check if auth is configured
+            if (!authEnabled) {
+              return c.json(
+                {
+                  error:
+                    "Authentication not configured. Set CLAUDE_CODE_VIEWER_AUTH_PASSWORD environment variable.",
+                },
+                500,
+              );
+            }
+
+            if (password !== anthPassword) {
+              return c.json({ error: "Invalid password" }, 401);
+            }
+
+            setCookie(c, "ccv-session", validSessionToken, {
+              httpOnly: true,
+              secure: false, // Set to true in production with HTTPS
+              sameSite: "Lax",
+              path: "/",
+              maxAge: 60 * 60 * 24 * 7, // 7 days
+            });
+
+            return c.json({ success: true });
+          },
+        )
+
+        .post("/api/auth/logout", async (c) => {
+          deleteCookie(c, "ccv-session", { path: "/" });
+          return c.json({ success: true });
+        })
+
+        .get("/api/auth/check", async (c) => {
+          const sessionToken = getCookie(c, "ccv-session");
+          const isAuthenticated = authEnabled
+            ? sessionToken === validSessionToken
+            : true;
+          return c.json({ authenticated: isAuthenticated, authEnabled });
         })
 
         // routes

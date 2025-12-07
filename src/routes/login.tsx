@@ -40,7 +40,17 @@ function LoginPage() {
     setError("");
     setIsSubmitting(true);
 
-    await login(password);
+    try {
+      await login(password);
+    } catch (error) {
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Invalid password. Please try again.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (

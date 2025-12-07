@@ -93,6 +93,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.1",
+    "@effect/language-service": "^0.60.0",
     "@lingui/cli": "5.5.1",
     "@lingui/conf": "5.5.1",
     "@lingui/format-json": "5.5.1",

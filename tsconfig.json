@@ -18,7 +18,13 @@
     "types": ["node", "vitest/globals", "vite/client"],
     "exactOptionalPropertyTypes": false,
     "noPropertyAccessFromIndexSignature": false,
-    "allowJs": true
+    "allowJs": true,
+    "plugins": [
+      // Effect-TS
+      {
+        "name": "@effect/language-service"
+      }
+    ]
   },
   "include": ["src"],
   "exclude": ["node_modules"]

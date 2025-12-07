@@ -2,6 +2,7 @@
   "editor.tabSize": 2,
   // typescript
   "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
   "typescript.preferences.importModuleSpecifier": "relative",
   // biome
   "biome.enabled": true,

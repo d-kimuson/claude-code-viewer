@@ -17,7 +17,9 @@ const LayerImpl = Effect.gen(function* () {
       if (query.trim().length < 2) {
         return {
           status: 400,
-          response: { error: "Query must contain at least 2 non-whitespace characters" },
+          response: {
+            error: "Query must contain at least 2 non-whitespace characters",
+          },
         } as const satisfies ControllerResponse;
       }
 

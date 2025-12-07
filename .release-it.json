@@ -15,5 +15,15 @@
   "npm": {
     "publish": true,
     "skipChecks": false
+  },
+  "hooks": {
+    "before:init": [
+      "pnpm i --frozen-lockfile --ignore-scripts",
+      "pnpm lint",
+      "pnpm typecheck",
+      "./scripts/lingui-check.sh"
+    ],
+    "after:bump": "pnpm build && claude -p '/refine-release-note'",
+    "after:release": "echo Successfully released ${name} v${version} to ${repo.repository}."
   }
 }

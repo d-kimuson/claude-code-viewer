@@ -76,6 +76,7 @@
     "hono": "4.10.3",
     "jotai": "2.15.0",
     "lucide-react": "0.548.0",
+    "minisearch": "7.2.0",
     "parse-git-diff": "0.0.19",
     "prexit": "2.3.0",
     "react": "19.2.0",

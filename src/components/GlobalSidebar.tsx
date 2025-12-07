@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/react";
 import { useNavigate } from "@tanstack/react-router";
 import type { LucideIcon } from "lucide-react";
-import { InfoIcon, LogOut, SettingsIcon } from "lucide-react";
+import { InfoIcon, LogOut, SearchIcon, SettingsIcon } from "lucide-react";
 import { type FC, type ReactNode, Suspense, useState } from "react";
 import {
   Tooltip,
@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 import { useAuth } from "./AuthProvider";
 import { Loading } from "./Loading";
 import { NotificationSettings } from "./NotificationSettings";
+import { useSearch } from "./SearchProvider";
 import { SettingsControls } from "./SettingsControls";
 import { SystemInfoCard } from "./SystemInfoCard";
 
@@ -38,6 +39,7 @@ export const GlobalSidebar: FC<GlobalSidebarProps> = ({
   defaultActiveTab,
   headerButton,
 }) => {
+  const { openSearch } = useSearch();
   const { authEnabled, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -45,6 +47,7 @@ export const GlobalSidebar: FC<GlobalSidebarProps> = ({
     await logout();
     navigate({ to: "/login" });
   };
+
   const settingsTab: SidebarTab = {
     id: "settings",
     icon: SettingsIcon,
@@ -131,6 +134,29 @@ export const GlobalSidebar: FC<GlobalSidebarProps> = ({
           {headerButton && (
             <div className="border-b border-sidebar-border">{headerButton}</div>
           )}
+          <div className="p-2 border-b border-sidebar-border">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  onClick={openSearch}
+                  className={cn(
+                    "w-8 h-8 flex items-center justify-center rounded-md transition-colors",
+                    "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                    "text-sidebar-foreground/70",
+                  )}
+                  data-testid="search-button"
+                >
+                  <SearchIcon className="w-4 h-4" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="right">
+                <p>
+                  Search <kbd className="ml-1 text-xs opacity-60">⌘K</kbd>
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </div>
           <div className="flex-1 flex flex-col p-2 space-y-1">
             {allTabs.map((tab) => {
               const Icon = tab.icon;

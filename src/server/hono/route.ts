@@ -28,6 +28,7 @@ import {
   newSchedulerJobSchema,
   updateSchedulerJobSchema,
 } from "../core/scheduler/schema";
+import { SearchController } from "../core/search/presentation/SearchController";
 import type { VirtualConversationDatabase } from "../core/session/infrastructure/VirtualConversationDatabase";
 import { SessionController } from "../core/session/presentation/SessionController";
 import type { SessionMetaService } from "../core/session/services/SessionMetaService";
@@ -54,6 +55,7 @@ export const routes = (app: HonoAppType) =>
     const claudeCodeController = yield* ClaudeCodeController;
     const schedulerController = yield* SchedulerController;
     const featureFlagController = yield* FeatureFlagController;
+    const searchController = yield* SearchController;
 
     // services
     const envService = yield* EnvService;
@@ -628,6 +630,34 @@ export const routes = (app: HonoAppType) =>
               fileSystemController.getDirectoryListingRoute({
                 ...c.req.valid("query"),
               }),
+            );
+            return response;
+          },
+        )
+
+        /**
+         * SearchController Routes
+         */
+        .get(
+          "/api/search",
+          zValidator(
+            "query",
+            z.object({
+              q: z.string().min(2),
+              limit: z
+                .string()
+                .optional()
+                .transform((val) => (val ? parseInt(val, 10) : undefined)),
+              projectId: z.string().optional(),
+            }),
+          ),
+          async (c) => {
+            const { q, limit, projectId } = c.req.valid("query");
+            const response = await effectToResponse(
+              c,
+              searchController
+                .search({ query: q, limit, projectId })
+                .pipe(Effect.provide(runtime)),
             );
             return response;
           },

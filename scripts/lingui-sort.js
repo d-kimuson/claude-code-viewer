@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync, readdirSync, statSync } from "node:fs";
+import { readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -33,7 +33,7 @@ for (const locale of locales) {
 
     writeFileSync(
       filePath,
-      JSON.stringify(sortedData, null, 2) + "\n",
+      `${JSON.stringify(sortedData, null, 2)}\n`,
       "utf-8",
     );
 

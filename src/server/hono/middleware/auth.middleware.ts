@@ -1,9 +1,9 @@
+import { Context, Effect, Layer } from "effect";
 import { getCookie } from "hono/cookie";
 import { createMiddleware } from "hono/factory";
-import type { HonoContext } from "../app";
 import { EnvService } from "../../core/platform/services/EnvService";
-import { Context, Effect, Layer } from "effect";
 import type { InferEffect } from "../../lib/effect/types";
+import type { HonoContext } from "../app";
 
 // Session token is a simple hash of the password
 const generateSessionToken = (password: string | undefined): string => {
@@ -23,20 +23,12 @@ const PUBLIC_API_ROUTES = [
 const LayerImpl = Effect.gen(function* () {
   const envService = yield* EnvService;
 
-  const AUTH_PASSWORD = yield* envService.getEnv(
+  const anthPassword = yield* envService.getEnv(
     "CLAUDE_CODE_VIEWER_AUTH_PASSWORD",
-  );
+  ) ?? undefined;
+  const authEnabled = anthPassword !== undefined;
 
-  if (!AUTH_PASSWORD) {
-    console.error(
-      "⚠️  CLAUDE_CODE_VIEWER_AUTH_PASSWORD environment variable is not set. Authentication will fail.",
-    );
-    console.error(
-      "   Please set CLAUDE_CODE_VIEWER_AUTH_PASSWORD in .env.local (development) or .env (production)",
-    );
-  }
-
-  const VALID_SESSION_TOKEN = generateSessionToken(AUTH_PASSWORD);
+  const validSessionToken = generateSessionToken(anthPassword);
 
   const authMiddleware = createMiddleware<HonoContext>(async (c, next) => {
     // Skip auth for public routes
@@ -49,9 +41,14 @@ const LayerImpl = Effect.gen(function* () {
       return next();
     }
 
+    // Skip auth check if authentication is not enabled
+    if (!authEnabled) {
+      return next();
+    }
+
     const sessionToken = getCookie(c, "ccv-session");
 
-    if (!sessionToken || sessionToken !== VALID_SESSION_TOKEN) {
+    if (!sessionToken || sessionToken !== validSessionToken) {
       return c.json({ error: "Unauthorized" }, 401);
     }
 
@@ -59,8 +56,9 @@ const LayerImpl = Effect.gen(function* () {
   });
 
   return {
-    AUTH_PASSWORD,
-    VALID_SESSION_TOKEN,
+    authEnabled,
+    anthPassword,
+    validSessionToken,
     authMiddleware,
   };
 });

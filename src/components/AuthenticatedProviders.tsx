@@ -15,10 +15,10 @@ interface AuthenticatedProvidersProps {
 export function AuthenticatedProviders({
   children,
 }: AuthenticatedProvidersProps) {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated } = useAuth();
 
   // When not authenticated or still loading, render children without SSE providers
-  if (isLoading || !isAuthenticated) {
+  if (!isAuthenticated) {
     return <>{children}</>;
   }
 

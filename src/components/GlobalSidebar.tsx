@@ -38,7 +38,7 @@ export const GlobalSidebar: FC<GlobalSidebarProps> = ({
   defaultActiveTab,
   headerButton,
 }) => {
-  const { logout } = useAuth();
+  const { authEnabled, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -159,28 +159,30 @@ export const GlobalSidebar: FC<GlobalSidebarProps> = ({
               );
             })}
           </div>
-          {/* Logout button at bottom */}
-          <div className="p-2 border-t border-sidebar-border">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  type="button"
-                  onClick={handleLogout}
-                  className={cn(
-                    "w-8 h-8 flex items-center justify-center rounded-md transition-colors",
-                    "hover:bg-destructive/10 hover:text-destructive",
-                    "text-sidebar-foreground/70",
-                  )}
-                  data-testid="logout-button"
-                >
-                  <LogOut className="w-4 h-4" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent side="right">
-                <p>Logout</p>
-              </TooltipContent>
-            </Tooltip>
-          </div>
+          {/* Logout button at bottom - only show when auth is enabled */}
+          {authEnabled && (
+            <div className="p-2 border-t border-sidebar-border">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className={cn(
+                      "w-8 h-8 flex items-center justify-center rounded-md transition-colors",
+                      "hover:bg-destructive/10 hover:text-destructive",
+                      "text-sidebar-foreground/70",
+                    )}
+                    data-testid="logout-button"
+                  >
+                    <LogOut className="w-4 h-4" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="right">
+                  <p>Logout</p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
+          )}
         </TooltipProvider>
       </div>
 

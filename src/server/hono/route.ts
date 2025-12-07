@@ -35,8 +35,8 @@ import { userConfigSchema } from "../lib/config/config";
 import { effectToResponse } from "../lib/effect/toEffectResponse";
 import type { HonoAppType } from "./app";
 import { InitializeService } from "./initialize";
-import { configMiddleware } from "./middleware/config.middleware";
 import { AuthMiddleware } from "./middleware/auth.middleware";
+import { configMiddleware } from "./middleware/config.middleware";
 
 export const routes = (app: HonoAppType) =>
   Effect.gen(function* () {
@@ -62,7 +62,7 @@ export const routes = (app: HonoAppType) =>
     const initializeService = yield* InitializeService;
 
     // middleware
-    const { authMiddleware, VALID_SESSION_TOKEN, AUTH_PASSWORD } =
+    const { authMiddleware, validSessionToken, authEnabled, anthPassword } =
       yield* AuthMiddleware;
 
     const runtime = yield* Effect.runtime<
@@ -109,7 +109,7 @@ export const routes = (app: HonoAppType) =>
             const { password } = c.req.valid("json");
 
             // Check if auth is configured
-            if (!AUTH_PASSWORD) {
+            if (!authEnabled) {
               return c.json(
                 {
                   error:
@@ -119,11 +119,11 @@ export const routes = (app: HonoAppType) =>
               );
             }
 
-            if (password !== AUTH_PASSWORD) {
+            if (password !== anthPassword) {
               return c.json({ error: "Invalid password" }, 401);
             }
 
-            setCookie(c, "ccv-session", VALID_SESSION_TOKEN, {
+            setCookie(c, "ccv-session", validSessionToken, {
               httpOnly: true,
               secure: false, // Set to true in production with HTTPS
               sameSite: "Lax",
@@ -142,8 +142,10 @@ export const routes = (app: HonoAppType) =>
 
         .get("/api/auth/check", async (c) => {
           const sessionToken = getCookie(c, "ccv-session");
-          const isAuthenticated = sessionToken === VALID_SESSION_TOKEN;
-          return c.json({ authenticated: isAuthenticated });
+          const isAuthenticated = authEnabled
+            ? sessionToken === validSessionToken
+            : true;
+          return c.json({ authenticated: isAuthenticated, authEnabled });
         })
 
         // routes

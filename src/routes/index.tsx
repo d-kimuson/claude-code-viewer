@@ -9,17 +9,15 @@ export const Route = createFileRoute("/")({
 
 function RouteComponent() {
   const navigate = useNavigate();
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
-    if (!isLoading) {
-      if (isAuthenticated) {
-        navigate({ to: "/projects" });
-      } else {
-        navigate({ to: "/login" });
-      }
+    if (isAuthenticated) {
+      navigate({ to: "/projects" });
+    } else {
+      navigate({ to: "/login" });
     }
-  }, [isAuthenticated, isLoading, navigate]);
+  }, [isAuthenticated, navigate]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">

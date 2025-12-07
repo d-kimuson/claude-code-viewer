@@ -22,37 +22,26 @@ function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { isAuthenticated, isLoading, login } = useAuth();
+  const { authEnabled, isAuthenticated, login } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isLoading && isAuthenticated) {
+    // If auth is not enabled, redirect to projects
+    if (!authEnabled) {
+      navigate({ to: "/projects" });
+    } else if (isAuthenticated) {
+      // If already authenticated, redirect to projects
       navigate({ to: "/projects" });
     }
-  }, [isAuthenticated, isLoading, navigate]);
+  }, [authEnabled, isAuthenticated, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setIsSubmitting(true);
 
-    const success = await login(password);
-
-    if (success) {
-      navigate({ to: "/projects" });
-    } else {
-      setError("Invalid password. Please try again.");
-      setIsSubmitting(false);
-    }
+    await login(password);
   };
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-muted/30 p-4">

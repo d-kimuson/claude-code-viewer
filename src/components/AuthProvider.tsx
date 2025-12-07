@@ -1,78 +1,69 @@
 import {
-  createContext,
-  type ReactNode,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
+import { useAtomValue, useSetAtom } from "jotai";
+import { type FC, type PropsWithChildren, useEffect } from "react";
+import { honoClient } from "../lib/api/client";
+import { authCheckQuery } from "../lib/api/queries";
+import { authAtom } from "../lib/auth/store/authAtom";
 
-interface AuthContextType {
-  isAuthenticated: boolean;
-  isLoading: boolean;
-  login: (password: string) => Promise<boolean>;
-  logout: () => Promise<void>;
-}
+export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
+  const setAuthState = useSetAtom(authAtom);
 
-const AuthContext = createContext<AuthContextType | null>(null);
-
-export function AuthProvider({ children }: { children: ReactNode }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-
-  const checkAuth = useCallback(async () => {
-    try {
-      const response = await fetch("/api/auth/check");
-      const data = await response.json();
-      setIsAuthenticated(data.authenticated);
-    } catch {
-      setIsAuthenticated(false);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  const { data: authState } = useSuspenseQuery({
+    queryKey: authCheckQuery.queryKey,
+    queryFn: authCheckQuery.queryFn,
+  });
 
   useEffect(() => {
-    checkAuth();
-  }, [checkAuth]);
+    setAuthState({
+      authEnabled: authState.authEnabled,
+      authenticated: authState.authenticated,
+    });
+  }, [authState, setAuthState]);
 
-  const login = useCallback(async (password: string): Promise<boolean> => {
-    try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password }),
+  return <>{children}</>;
+};
+
+export const useAuth = () => {
+  const authState = useAtomValue(authAtom);
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const loginMutation = useMutation({
+    mutationFn: async (password: string) => {
+      await honoClient.api.auth.login.$post({
+        json: { password },
+      });
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: authCheckQuery.queryKey,
       });
 
-      if (response.ok) {
-        setIsAuthenticated(true);
-        return true;
-      }
-      return false;
-    } catch {
-      return false;
-    }
-  }, []);
+      navigate({ to: "/projects" });
+    },
+  });
 
-  const logout = useCallback(async () => {
-    try {
-      await fetch("/api/auth/logout", { method: "POST" });
-    } finally {
-      setIsAuthenticated(false);
-    }
-  }, []);
+  const logoutMutation = useMutation({
+    mutationFn: async () => {
+      await honoClient.api.auth.logout.$post();
 
-  return (
-    <AuthContext.Provider value={{ isAuthenticated, isLoading, login, logout }}>
-      {children}
-    </AuthContext.Provider>
-  );
-}
+      await queryClient.invalidateQueries({
+        queryKey: authCheckQuery.queryKey,
+      });
+    },
+    onSuccess: () => {
+      navigate({ to: "/login" });
+    },
+  });
 
-export function useAuth() {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
-}
+  return {
+    authEnabled: authState.authEnabled,
+    isAuthenticated: authState.authenticated,
+    login: loginMutation.mutateAsync,
+    logout: logoutMutation.mutateAsync,
+  };
+};

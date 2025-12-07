@@ -38,7 +38,8 @@
     "e2e:start-server": "./scripts/e2e/start_server.sh",
     "e2e:capture-snapshots": "./scripts/e2e/capture_snapshots.sh",
     "lingui:extract": "lingui extract --clean && node ./scripts/lingui-sort.js",
-    "lingui:compile": "lingui compile --typescript"
+    "lingui:compile": "lingui compile --typescript",
+    "prepare": "lefthook install"
   },
   "dependencies": {
     "@anthropic-ai/claude-agent-sdk": "0.1.30",
@@ -109,6 +110,7 @@
     "@vitejs/plugin-react-swc": "4.2.0",
     "dotenv": "17.2.3",
     "esbuild": "0.25.11",
+    "lefthook": "^2.0.8",
     "npm-run-all2": "8.0.4",
     "playwright": "1.56.1",
     "release-it": "19.0.5",

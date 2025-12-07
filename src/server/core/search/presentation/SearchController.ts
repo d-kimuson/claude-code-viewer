@@ -14,10 +14,10 @@ const LayerImpl = Effect.gen(function* () {
     Effect.gen(function* () {
       const { query, limit, projectId } = options;
 
-      if (!query || query.trim().length < 2) {
+      if (query.trim().length < 2) {
         return {
           status: 400,
-          response: { error: "Query must be at least 2 characters" },
+          response: { error: "Query must contain at least 2 non-whitespace characters" },
         } as const satisfies ControllerResponse;
       }
 

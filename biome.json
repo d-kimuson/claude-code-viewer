@@ -16,6 +16,7 @@
       "!dist",
       "!playwright.config.ts",
       "!src/lib/i18n/locales/*/messages.ts",
+      "!src/lib/i18n/locales/*/messages.json",
       "!src/routeTree.gen.ts"
     ]
   },

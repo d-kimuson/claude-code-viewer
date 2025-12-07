@@ -27,6 +27,7 @@ export function SearchDialog({
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
+  const resultRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const navigate = useNavigate();
 
   // Debounce search query
@@ -59,6 +60,14 @@ export function SearchDialog({
   useEffect(() => {
     setSelectedIndex(0);
   }, [debouncedQuery]);
+
+  // Scroll selected item into view
+  useEffect(() => {
+    resultRefs.current[selectedIndex]?.scrollIntoView({
+      block: "nearest",
+      behavior: "smooth",
+    });
+  }, [selectedIndex]);
 
   const handleSelect = useCallback(
     (result: (typeof results)[number]) => {
@@ -137,6 +146,9 @@ export function SearchDialog({
               {results.map((result, index) => (
                 <button
                   key={`${result.sessionId}-${result.conversationIndex}`}
+                  ref={(el) => {
+                    resultRefs.current[index] = el;
+                  }}
                   type="button"
                   className={`w-full text-left p-3 rounded-md cursor-pointer transition-colors ${
                     index === selectedIndex

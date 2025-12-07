@@ -19,6 +19,7 @@ Claude Code Viewer is a web-based Claude Code client focused on **comprehensive 
 | Feature | Description |
 | --- | --- |
 | View Chat Logs | View Claude Code session logs in real-time through the web UI. Supports historical logs as it uses standard Claude Code logs (~/.claude/projects/...) as the data source |
+| Search Conversations | Full-text search across conversations with `⌘K` (macOS) or `Ctrl+K` (Linux). Search within a specific project or across all projects. Features fuzzy matching, prefix search, and keyboard navigation (↑↓ to navigate, Enter to select) |
 | Start Conversations | Start Claude Code sessions directly from Claude Code Viewer. Enjoy core functionality like file/command completion, pause/resume, and tool approval through a superior web experience |
 | Resume Sessions | Resume conversations directly from existing session logs |
 | Continue Sessions | Claude Code Viewer provides advanced session process control. Sessions started through Claude Code Viewer remain alive (unless aborted), allowing you to continue conversations without resuming (no session-id reassignment) |
@@ -75,6 +76,7 @@ Run the container directly:
 
 ```bash
 docker run --rm -p 3400:3400 \
+  -e CLAUDE_CODE_VIEWER_AUTH_PASSWORD=your-password \
   -e ANTHROPIC_BASE_URL=... \
   -e ANTHROPIC_API_KEY=... \
   -e ANTHROPIC_AUTH_TOKEN=... \
@@ -128,6 +130,7 @@ Claude Code Viewer reads several reserved environment variables. All values are 
 | Key | Description |
 | --- | --- |
 | CLAUDE_CODE_VIEWER_CC_EXECUTABLE_PATH | Path to Claude Code installation. If not set, uses system PATH installation, or falls back to bundled version from dependencies |
+| CLAUDE_CODE_VIEWER_AUTH_PASSWORD | Password for authentication. When set, enables password-based authentication to protect access to Claude Code Viewer. All `/api` routes (except login, logout, check, config, and version endpoints) require authentication. If not set, authentication is disabled and the application is publicly accessible |
 | PORT | Port number for Claude Code Viewer to run on |
 
 ### User Settings
@@ -195,7 +198,7 @@ Claude Code Viewer is designed with remote hosting in mind. To support remote de
 - **Real-time Notifications**: Audio notifications for task completion to maintain workflow awareness
 - **System Monitoring**: Monitor Claude Code compatibility and feature availability across environments
 
-The application features a separated client-server architecture that enables remote hosting. However, **authentication and authorization features are not included** (and are not on the roadmap). If you plan to host Claude Code Viewer remotely, carefully evaluate your security requirements and implement appropriate access controls at the infrastructure level.
+The application features a separated client-server architecture that enables remote hosting. **Basic password authentication is available** via the `CLAUDE_CODE_VIEWER_AUTH_PASSWORD` environment variable. When set, users must authenticate with the configured password before accessing the application. However, this is a simple single-password authentication mechanism without advanced features like multi-user support, role-based access control, or OAuth integration. If you require more sophisticated authentication, carefully evaluate your security requirements and implement appropriate access controls at the infrastructure level (e.g., reverse proxy with OAuth, VPN, IP whitelisting).
 
 ## License
 

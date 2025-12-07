@@ -5,7 +5,6 @@ export const envSchema = z.object({
     .enum(["development", "production", "test"])
     .optional()
     .default("development"),
-  CLAUDE_CODE_VIEWER_CC_EXECUTABLE_PATH: z.string().optional(),
   GLOBAL_CLAUDE_DIR: z.string().optional(),
   NEXT_PHASE: z.string().optional(),
   PORT: z
@@ -14,6 +13,8 @@ export const envSchema = z.object({
     .default("3000")
     .transform((val) => parseInt(val, 10)),
   PATH: z.string().optional(),
+  CLAUDE_CODE_VIEWER_CC_EXECUTABLE_PATH: z.string().optional(),
+  CLAUDE_CODE_VIEWER_AUTH_PASSWORD: z.string().optional(),
 });
 
 export type EnvSchema = z.infer<typeof envSchema>;

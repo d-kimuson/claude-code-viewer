@@ -1,34 +1,15 @@
-import { config } from "dotenv";
 import { getCookie } from "hono/cookie";
 import { createMiddleware } from "hono/factory";
 import type { HonoContext } from "../app";
-
-// Load environment variables - this must happen before accessing process.env
-// biome-ignore lint/style/noProcessEnv: allow only here
-const isDev = process.env.NODE_ENV === "development";
-config({ path: isDev ? ".env.local" : ".env" });
-
-// Simple authentication using a password from environment variable
-// Set CCV_AUTH_PASSWORD in .env.local (development) or .env (production)
-// biome-ignore lint/style/noProcessEnv: allow only here
-const AUTH_PASSWORD = process.env.CCV_AUTH_PASSWORD;
-
-if (!AUTH_PASSWORD) {
-  console.error(
-    "⚠️  CCV_AUTH_PASSWORD environment variable is not set. Authentication will fail.",
-  );
-  console.error(
-    "   Please set CCV_AUTH_PASSWORD in .env.local (development) or .env (production)",
-  );
-}
+import { EnvService } from "../../core/platform/services/EnvService";
+import { Context, Effect, Layer } from "effect";
+import type { InferEffect } from "../../lib/effect/types";
 
 // Session token is a simple hash of the password
 const generateSessionToken = (password: string | undefined): string => {
   if (!password) return "";
   return Buffer.from(`ccv-session:${password}`).toString("base64");
 };
-
-export const VALID_SESSION_TOKEN = generateSessionToken(AUTH_PASSWORD);
 
 // Routes that don't require authentication
 const PUBLIC_API_ROUTES = [
@@ -39,24 +20,55 @@ const PUBLIC_API_ROUTES = [
   "/api/version",
 ];
 
-export const authMiddleware = createMiddleware<HonoContext>(async (c, next) => {
-  // Skip auth for public routes
-  if (PUBLIC_API_ROUTES.includes(c.req.path)) {
-    return next();
+const LayerImpl = Effect.gen(function* () {
+  const envService = yield* EnvService;
+
+  const AUTH_PASSWORD = yield* envService.getEnv(
+    "CLAUDE_CODE_VIEWER_AUTH_PASSWORD",
+  );
+
+  if (!AUTH_PASSWORD) {
+    console.error(
+      "⚠️  CLAUDE_CODE_VIEWER_AUTH_PASSWORD environment variable is not set. Authentication will fail.",
+    );
+    console.error(
+      "   Please set CLAUDE_CODE_VIEWER_AUTH_PASSWORD in .env.local (development) or .env (production)",
+    );
   }
 
-  // Skip auth for non-API routes (let frontend handle auth state)
-  if (!c.req.path.startsWith("/api")) {
-    return next();
-  }
+  const VALID_SESSION_TOKEN = generateSessionToken(AUTH_PASSWORD);
 
-  const sessionToken = getCookie(c, "ccv-session");
+  const authMiddleware = createMiddleware<HonoContext>(async (c, next) => {
+    // Skip auth for public routes
+    if (PUBLIC_API_ROUTES.includes(c.req.path)) {
+      return next();
+    }
 
-  if (!sessionToken || sessionToken !== VALID_SESSION_TOKEN) {
-    return c.json({ error: "Unauthorized" }, 401);
-  }
+    // Skip auth for non-API routes (let frontend handle auth state)
+    if (!c.req.path.startsWith("/api")) {
+      return next();
+    }
 
-  await next();
+    const sessionToken = getCookie(c, "ccv-session");
+
+    if (!sessionToken || sessionToken !== VALID_SESSION_TOKEN) {
+      return c.json({ error: "Unauthorized" }, 401);
+    }
+
+    await next();
+  });
+
+  return {
+    AUTH_PASSWORD,
+    VALID_SESSION_TOKEN,
+    authMiddleware,
+  };
 });
 
-export { AUTH_PASSWORD };
+export type IAuthMiddleware = InferEffect<typeof LayerImpl>;
+export class AuthMiddleware extends Context.Tag("AuthMiddleware")<
+  AuthMiddleware,
+  IAuthMiddleware
+>() {
+  static Live = Layer.effect(this, LayerImpl);
+}

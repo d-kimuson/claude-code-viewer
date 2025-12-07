@@ -4,10 +4,10 @@ services:
     environment:
       NODE_ENV: production
       PORT: 3400
-      CCV_AUTH_PASSWORD: "" # Required: Set your authentication password here
-      ANTHROPIC_BASE_URL: ""
-      ANTHROPIC_API_KEY: ""
-      ANTHROPIC_AUTH_TOKEN: ""
+      CLAUDE_CODE_VIEWER_AUTH_PASSWORD: "${CLAUDE_CODE_VIEWER_AUTH_PASSWORD}"
+      ANTHROPIC_BASE_URL: "${ANTHROPIC_BASE_URL}"
+      ANTHROPIC_API_KEY: "${ANTHROPIC_API_KEY}"
+      ANTHROPIC_AUTH_TOKEN: "${ANTHROPIC_AUTH_TOKEN}"
     ports:
       - "3400:3400"
     volumes:

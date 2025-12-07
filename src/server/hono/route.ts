@@ -35,12 +35,8 @@ import { userConfigSchema } from "../lib/config/config";
 import { effectToResponse } from "../lib/effect/toEffectResponse";
 import type { HonoAppType } from "./app";
 import { InitializeService } from "./initialize";
-import {
-  AUTH_PASSWORD,
-  authMiddleware,
-  VALID_SESSION_TOKEN,
-} from "./middleware/auth.middleware";
 import { configMiddleware } from "./middleware/config.middleware";
+import { AuthMiddleware } from "./middleware/auth.middleware";
 
 export const routes = (app: HonoAppType) =>
   Effect.gen(function* () {
@@ -64,6 +60,10 @@ export const routes = (app: HonoAppType) =>
     const userConfigService = yield* UserConfigService;
     const claudeCodeLifeCycleService = yield* ClaudeCodeLifeCycleService;
     const initializeService = yield* InitializeService;
+
+    // middleware
+    const { authMiddleware, VALID_SESSION_TOKEN, AUTH_PASSWORD } =
+      yield* AuthMiddleware;
 
     const runtime = yield* Effect.runtime<
       | EnvService
@@ -113,7 +113,7 @@ export const routes = (app: HonoAppType) =>
               return c.json(
                 {
                   error:
-                    "Authentication not configured. Set CCV_AUTH_PASSWORD environment variable.",
+                    "Authentication not configured. Set CLAUDE_CODE_VIEWER_AUTH_PASSWORD environment variable.",
                 },
                 500,
               );

@@ -35,6 +35,7 @@ import { honoApp } from "./hono/app";
 import { InitializeService } from "./hono/initialize";
 import { routes } from "./hono/route";
 import { platformLayer } from "./lib/effect/layers";
+import { AuthMiddleware } from "./hono/middleware/auth.middleware";
 
 // biome-ignore lint/style/noProcessEnv: allow only here
 const isDevelopment = process.env.NODE_ENV === "development";
@@ -80,6 +81,7 @@ const program = routes(honoApp)
     /** Application */
     Effect.provide(InitializeService.Live),
     Effect.provide(FileWatcherService.Live),
+    Effect.provide(AuthMiddleware.Live),
   )
   .pipe(
     /** Domain */

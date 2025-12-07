@@ -23,7 +23,7 @@
       "pnpm typecheck",
       "./scripts/lingui-check.sh"
     ],
-    "after:bump": "pnpm build && claude -p '/refine-release-note'",
+    "before:git:release": "pnpm build && claude -p '/refine-release-note'",
     "after:release": "echo Successfully released ${name} v${version} to ${repo.repository}."
   }
 }

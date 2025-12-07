@@ -35,6 +35,7 @@ import { SessionController } from "./core/session/presentation/SessionController
 import { SessionMetaService } from "./core/session/services/SessionMetaService";
 import { honoApp } from "./hono/app";
 import { InitializeService } from "./hono/initialize";
+import { AuthMiddleware } from "./hono/middleware/auth.middleware";
 import { routes } from "./hono/route";
 import { platformLayer } from "./lib/effect/layers";
 
@@ -83,6 +84,7 @@ const program = routes(honoApp)
     /** Application */
     Effect.provide(InitializeService.Live),
     Effect.provide(FileWatcherService.Live),
+    Effect.provide(AuthMiddleware.Live),
   )
   .pipe(
     /** Domain */

@@ -2,6 +2,14 @@ import type { DirectoryListingResult } from "../../server/core/file-system/funct
 import type { FileCompletionResult } from "../../server/core/file-system/functions/getFileCompletion";
 import { honoClient } from "./client";
 
+export const authCheckQuery = {
+  queryKey: ["auth", "check"],
+  queryFn: async () => {
+    const response = await honoClient.api.auth.check.$get();
+    return await response.json();
+  },
+} as const;
+
 export const projectListQuery = {
   queryKey: ["projects"],
   queryFn: async () => {

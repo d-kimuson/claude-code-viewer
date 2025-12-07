@@ -6,6 +6,7 @@ import { useProject } from "../../../app/projects/[projectId]/hooks/useProject";
 import { SessionPageContent } from "../../../app/projects/[projectId]/sessions/[sessionId]/components/SessionPageContent";
 import { tabSchema } from "../../../app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/schema";
 import { NotFound } from "../../../components/NotFound";
+import { ProtectedRoute } from "../../../components/ProtectedRoute";
 
 const sessionSearchSchema = z.object({
   sessionId: z.string().optional(),
@@ -36,7 +37,7 @@ function RouteComponent() {
     : "Claude Code Viewer";
 
   return (
-    <>
+    <ProtectedRoute>
       <Helmet>
         <title>{title}</title>
       </Helmet>
@@ -45,6 +46,6 @@ function RouteComponent() {
         sessionId={sessionId}
         tab={tab}
       />
-    </>
+    </ProtectedRoute>
   );
 }

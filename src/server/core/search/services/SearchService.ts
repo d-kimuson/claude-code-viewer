@@ -215,7 +215,7 @@ const LayerImpl = Effect.gen(function* () {
         let snippet: string;
         if (matchIndex !== -1) {
           const start = Math.max(0, matchIndex - 50);
-          const end = Math.min(text.length, matchIndex + snippetLength);
+          const end = Math.min(text.length, start + snippetLength);
           snippet =
             (start > 0 ? "..." : "") +
             text.slice(start, end) +

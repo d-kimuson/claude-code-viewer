@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.4.8
+
+### &nbsp;&nbsp;&nbsp;Features
+
+- **Password Authentication**: Protect your Claude Code Viewer instance with simple password-based authentication. Set `CLAUDE_CODE_VIEWER_AUTH_PASSWORD` environment variable to enable login protection for remote deployments &nbsp;-&nbsp; by **Harshit Arora** [<samp>(c2002)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/c20022c)
+- **Full-text Search**: Search across all conversations with `⌘K` (macOS) or `Ctrl+K` (Linux). Features fuzzy matching, prefix search, and keyboard navigation for quick access to past discussions &nbsp;-&nbsp; by **Sam** [<samp>(741f3)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/741f36d)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.4.6...0.4.8)
+
 ## 0.4.7
 
 ### &nbsp;&nbsp;&nbsp;Features

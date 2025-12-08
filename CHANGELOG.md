@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.9
+
+*No significant changes*
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.4.8...0.4.9)
+
 ## 0.4.8
 
 ### &nbsp;&nbsp;&nbsp;Features

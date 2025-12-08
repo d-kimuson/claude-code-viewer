@@ -57,4 +57,4 @@ dist/*
 specs
 
 # e2e check
-e2e-check-temp
+temp-pack

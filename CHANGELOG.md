@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.10
+
+### &nbsp;&nbsp;&nbsp;Bug Fixes
+
+- Bug that resolve buildIn Claude though claude installed in system &nbsp;-&nbsp; by **d-kimsuon** [<samp>(c5625)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/c5625e7)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.4.9...0.4.10)
+
 ## 0.4.9
 
 *No significant changes*

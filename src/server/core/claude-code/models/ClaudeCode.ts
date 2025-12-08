@@ -39,7 +39,7 @@ const resolveClaudeCodePath = Effect.gen(function* () {
       Command.env({
         PATH: pathEnv,
       }),
-      Command.runInShell(true),
+      // DO NOT Specify `runInShell(true)` here, it causes resolve node_modules/.bin/claude to be executed.
     ),
   ).pipe(
     Effect.map((output) => output.trim()),
@@ -51,33 +51,23 @@ const resolveClaudeCodePath = Effect.gen(function* () {
     return whichClaude;
   }
 
-  // 3. Project dependency @anthropic-ai/claude-code/cli.js (fallback)
-  const projectClaudeCode = yield* Effect.try(() => {
-    // Next.js では import.meta.resolve が使えない
-    // __dirname もバンドルされてしまうため、無理やりパスを組み立てる
-    const parts = __dirname.split("/");
-    const packagePath = parts
-      .slice(0, parts.indexOf("claude-code-viewer") + 1)
-      .join("/");
-
-    return path.join(
-      packagePath,
-      "node_modules",
-      "@anthropic-ai",
-      "claude-code",
-      "cli.js",
-    );
-  }).pipe(
-    Effect.catchAll(() => {
-      return Effect.fail(
-        new ClaudeCodePathNotFoundError({
-          message: "Claude Code CLI not found in any location",
-        }),
-      );
-    }),
+  const buildInClaude = yield* Command.string(
+    Command.make("which", "claude").pipe(Command.runInShell(true)),
+  ).pipe(
+    Effect.map((output) => output.trim()),
+    Effect.map((output) => (output === "" ? null : output)), // 存在しない時、空文字になる模様
+    Effect.catchAll(() => Effect.succeed(null)),
   );
 
-  return projectClaudeCode;
+  if (buildInClaude === null) {
+    return yield* Effect.fail(
+      new ClaudeCodePathNotFoundError({
+        message: "Claude Code CLI not found in any location",
+      }),
+    );
+  }
+
+  return buildInClaude;
 });
 
 export const Config = Effect.gen(function* () {

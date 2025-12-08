@@ -5,6 +5,10 @@ set -ueo pipefail
 temp_dir="e2e-check-temp"
 temp_cache_dir="npm-cache" # 空のキャッシュディレクトリを使うことでクリーンインストール時の動作を再現
 
+if [ -d "$temp_dir" ]; then
+  rm -rf "$temp_dir"
+fi
+
 pnpm build
 output_file=$(pnpm pack --pack-destination ./$temp_dir --json 2>&1 | sed -n '/^{/,$p' | jq -r '.filename')
 

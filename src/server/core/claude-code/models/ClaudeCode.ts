@@ -5,6 +5,7 @@ import {
 } from "@anthropic-ai/claude-code";
 import { Command, Path } from "@effect/platform";
 import { Data, Effect } from "effect";
+import { uniq } from "es-toolkit";
 import { EnvService } from "../../platform/services/EnvService";
 import * as ClaudeCodeVersion from "./ClaudeCodeVersion";
 
@@ -14,11 +15,22 @@ type AgentSdkQueryOptions = NonNullable<
   Parameters<AgentSdkQuery>[0]["options"]
 >;
 
-/**
- * npx 実行時のキャッシュディレクトリ（_npx/.../node_modules/.bin）内のパスを検出する。
- */
-export const isNpxShimPath = (path: string) =>
-  /_npx[/\\].*node_modules[\\/]\.bin/.test(path);
+const npxCacheRegExp = /_npx[/\\].*node_modules[\\/]\.bin/;
+const localNodeModulesBinRegExp = new RegExp(
+  `${process.cwd()}/node_modules/.bin`,
+);
+
+export const claudeCodePathPriority = (path: string): number => {
+  if (npxCacheRegExp.test(path)) {
+    return 0;
+  }
+
+  if (localNodeModulesBinRegExp.test(path)) {
+    return 1;
+  }
+
+  return 2;
+};
 
 class ClaudeCodePathNotFoundError extends Data.TaggedError(
   "ClaudeCodePathNotFoundError",
@@ -30,7 +42,7 @@ const resolveClaudeCodePath = Effect.gen(function* () {
   const path = yield* Path.Path;
   const envService = yield* EnvService;
 
-  // 1. Environment variable (highest priority)
+  // Environment variable (highest priority)
   const specifiedExecutablePath = yield* envService.getEnv(
     "CLAUDE_CODE_VIEWER_CC_EXECUTABLE_PATH",
   );
@@ -38,35 +50,38 @@ const resolveClaudeCodePath = Effect.gen(function* () {
     return path.resolve(specifiedExecutablePath);
   }
 
-  // 2. System PATH lookup
-  const pathEnv = yield* envService.getEnv("PATH");
-  const whichClaude = yield* Command.string(
-    Command.make("which", "claude").pipe(
-      Command.env({
-        PATH: pathEnv,
-      }),
-      // DO NOT Specify `runInShell(true)` here, it causes resolve node_modules/.bin/claude to be executed.
+  // System PATH lookup
+  const claudePaths = yield* Command.string(
+    Command.make("which", "-a", "claude").pipe(Command.runInShell(true)),
+  ).pipe(
+    Effect.map(
+      (output) =>
+        output
+          .split("\n")
+          .map((line) => line.trim())
+          .filter((line) => line !== "") ?? [],
     ),
-  ).pipe(
-    Effect.map((output) => output.trim()),
-    // npx 実行時に `.npm/_npx/.../node_modules/.bin/claude` が最優先で解決されるのを防ぐ
-    Effect.map((output) => (output === "" ? null : output)), // 存在しない時、空文字になる模様
-    Effect.catchAll(() => Effect.succeed(null)),
+    Effect.map((paths) =>
+      uniq(paths).toSorted((a, b) => {
+        const aPriority = claudeCodePathPriority(a);
+        const bPriority = claudeCodePathPriority(b);
+
+        if (aPriority < bPriority) {
+          return 1;
+        }
+        if (aPriority > bPriority) {
+          return -1;
+        }
+
+        return 0;
+      }),
+    ),
+    Effect.catchAll(() => Effect.succeed<string[]>([])),
   );
 
-  if (whichClaude !== null && !isNpxShimPath(whichClaude)) {
-    return whichClaude;
-  }
+  const resolvedClaudePath = claudePaths.at(0);
 
-  const buildInClaude = yield* Command.string(
-    Command.make("which", "claude").pipe(Command.runInShell(true)),
-  ).pipe(
-    Effect.map((output) => output.trim()),
-    Effect.map((output) => (output === "" ? null : output)), // 存在しない時、空文字になる模様
-    Effect.catchAll(() => Effect.succeed(null)),
-  );
-
-  if (buildInClaude === null) {
+  if (resolvedClaudePath === undefined) {
     return yield* Effect.fail(
       new ClaudeCodePathNotFoundError({
         message: "Claude Code CLI not found in any location",
@@ -74,7 +89,7 @@ const resolveClaudeCodePath = Effect.gen(function* () {
     );
   }
 
-  return buildInClaude;
+  return resolvedClaudePath;
 });
 
 export const Config = Effect.gen(function* () {

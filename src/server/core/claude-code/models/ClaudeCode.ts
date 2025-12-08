@@ -14,6 +14,12 @@ type AgentSdkQueryOptions = NonNullable<
   Parameters<AgentSdkQuery>[0]["options"]
 >;
 
+/**
+ * npx 実行時のキャッシュディレクトリ（_npx/.../node_modules/.bin）内のパスを検出する。
+ */
+export const isNpxShimPath = (path: string) =>
+  /_npx[/\\].*node_modules[\\/]\.bin/.test(path);
+
 class ClaudeCodePathNotFoundError extends Data.TaggedError(
   "ClaudeCodePathNotFoundError",
 )<{
@@ -43,11 +49,12 @@ const resolveClaudeCodePath = Effect.gen(function* () {
     ),
   ).pipe(
     Effect.map((output) => output.trim()),
+    // npx 実行時に `.npm/_npx/.../node_modules/.bin/claude` が最優先で解決されるのを防ぐ
     Effect.map((output) => (output === "" ? null : output)), // 存在しない時、空文字になる模様
     Effect.catchAll(() => Effect.succeed(null)),
   );
 
-  if (whichClaude !== null) {
+  if (whichClaude !== null && !isNpxShimPath(whichClaude)) {
     return whichClaude;
   }
 
@@ -59,7 +66,7 @@ const resolveClaudeCodePath = Effect.gen(function* () {
     Effect.catchAll(() => Effect.succeed(null)),
   );
 
-  if (buildInClaude === null) {
+  if (buildInClaude === null || isNpxShimPath(buildInClaude)) {
     return yield* Effect.fail(
       new ClaudeCodePathNotFoundError({
         message: "Claude Code CLI not found in any location",

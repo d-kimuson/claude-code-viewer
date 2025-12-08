@@ -66,7 +66,7 @@ const resolveClaudeCodePath = Effect.gen(function* () {
     Effect.catchAll(() => Effect.succeed(null)),
   );
 
-  if (buildInClaude === null || isNpxShimPath(buildInClaude)) {
+  if (buildInClaude === null) {
     return yield* Effect.fail(
       new ClaudeCodePathNotFoundError({
         message: "Claude Code CLI not found in any location",

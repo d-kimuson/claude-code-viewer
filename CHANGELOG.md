@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.11
+
+### &nbsp;&nbsp;&nbsp;Bug Fixes
+
+- Bug that resolve npx cache directory instead of system installed claude code &nbsp;-&nbsp; by **d-kimsuon** [<samp>(f438c)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/f438c31)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.4.10...0.4.11)
+
 ## 0.4.10
 
 ### &nbsp;&nbsp;&nbsp;Bug Fixes

@@ -23,7 +23,7 @@
       "pnpm typecheck",
       "./scripts/lingui-check.sh"
     ],
-    "before:git:release": "pnpm build",
+    "before:npm:release": "pnpm build",
     "after:release": "echo Successfully released ${name} v${version} to ${repo.repository}."
   }
 }

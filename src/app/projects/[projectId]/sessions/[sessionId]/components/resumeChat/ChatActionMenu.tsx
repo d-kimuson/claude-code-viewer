@@ -128,7 +128,7 @@ export const ChatActionMenu: FC<ChatActionMenuProps> = ({
               abortTask.mutate(sessionProcess.id);
             }}
             disabled={abortTask.isPending || isPending}
-            className="h-7 px-2 gap-1.5 text-xs bg-muted/20 rounded-lg border border-border/40"
+            className="h-7 px-2 gap-1.5 text-xs rounded-lg"
           >
             {abortTask.isPending ? (
               <LoaderIcon className="w-3.5 h-3.5 animate-spin" />

@@ -1,4 +1,4 @@
-import { FileSystem } from "@effect/platform";
+import { FileSystem, Path } from "@effect/platform";
 import { Context, Effect, Layer, Ref } from "effect";
 import {
   FileCacheStorage,
@@ -12,6 +12,7 @@ import {
 } from "../../claude-code/functions/parseUserMessage";
 import type { SessionMeta } from "../../types";
 import { aggregateTokenUsageAndCost } from "../functions/aggregateTokenUsageAndCost";
+import { getAgentSessionFilesForSession } from "../functions/getAgentSessionFilesForSession";
 import { decodeSessionId } from "../functions/id";
 import { extractFirstUserMessage } from "../functions/isValidFirstMessage";
 
@@ -34,6 +35,7 @@ export class SessionMetaService extends Context.Tag("SessionMetaService")<
     this,
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
+      const path = yield* Path.Path;
       const firstUserMessageCache =
         yield* FileCacheStorage<ParsedUserMessage | null>();
       const sessionMetaCacheRef = yield* Ref.make(
@@ -97,8 +99,54 @@ export class SessionMetaService extends Context.Tag("SessionMetaService")<
             lines,
           );
 
-          // Calculate cost information
-          const { totalCost } = aggregateTokenUsageAndCost([content]);
+          // Get project directory from session path
+          const projectPath = path.dirname(sessionPath);
+
+          // Parse first line to extract actual sessionId
+          const firstLine = lines[0];
+          let actualSessionId: string | undefined;
+          if (firstLine && firstLine.trim() !== "") {
+            try {
+              const firstLineData = JSON.parse(firstLine);
+              if (
+                typeof firstLineData === "object" &&
+                firstLineData !== null &&
+                "sessionId" in firstLineData &&
+                typeof firstLineData.sessionId === "string"
+              ) {
+                actualSessionId = firstLineData.sessionId;
+              }
+            } catch {
+              // Invalid JSON, skip sessionId extraction
+            }
+          }
+
+          // Discover agent session files that belong to this session
+          const agentFilePaths =
+            actualSessionId !== undefined
+              ? yield* getAgentSessionFilesForSession(
+                  projectPath,
+                  actualSessionId,
+                ).pipe(
+                  Effect.provide(Layer.succeed(FileSystem.FileSystem, fs)),
+                  Effect.provide(Layer.succeed(Path.Path, path)),
+                )
+              : [];
+
+          // Read contents of all agent files
+          const agentContents: string[] = [];
+          for (const agentPath of agentFilePaths) {
+            const agentContent = yield* fs
+              .readFileString(agentPath)
+              .pipe(Effect.catchAll(() => Effect.succeed(""))); // Skip files that fail to read
+            if (agentContent !== "") {
+              agentContents.push(agentContent);
+            }
+          }
+
+          // Calculate cost information including agent sessions
+          const fileContents = [content, ...agentContents];
+          const { totalCost } = aggregateTokenUsageAndCost(fileContents);
 
           const sessionMeta: SessionMeta = {
             messageCount: lines.length,

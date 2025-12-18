@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.4.14
+
+### &nbsp;&nbsp;&nbsp;Features
+
+- **Browser Preview**: View web pages directly within the viewer. URLs in conversation are automatically detected and displayed in an integrated preview panel with manual URL input support &nbsp;-&nbsp; by **d-kimsuon** and **Claude** [<samp>(8cdea)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/8cdea33) [<samp>(9a059)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/9a0599e) [<samp>(a9864)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/a986434) [<samp>(91c82)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/91c8293)
+
+### &nbsp;&nbsp;&nbsp;Bug Fixes
+
+- Session costs now correctly include usage from all subagent sessions &nbsp;-&nbsp; by **d-kimsuon** and **Claude** [<samp>(b8b7b)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/b8b7bd1) [<samp>(0047e)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/0047ebf)
+- Prioritize globally installed Claude Code over bundled version &nbsp;-&nbsp; by **d-kimsuon** [<samp>(9e9ea)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/9e9eaa4)
+- Improve abort button visibility in light mode &nbsp;-&nbsp; by **d-kimsuon** and **Claude** [<samp>(0e7da)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/0e7dafa)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.4.13...0.4.14)
+
 ## 0.4.13
 
 *No significant changes*

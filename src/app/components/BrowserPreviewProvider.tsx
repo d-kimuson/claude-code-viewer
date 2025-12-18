@@ -11,6 +11,7 @@ export const BrowserPreviewProvider: FC<BrowserPreviewProviderProps> = ({
 }) => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [currentUrl, setCurrentUrl] = useState<string | null>(null);
+  const [inputUrl, setInputUrl] = useState<string>("");
   const [reloadKey, setReloadKey] = useState(0);
   const [width, setWidth] = useState(50); // percentage
   const [isResizing, setIsResizing] = useState(false);
@@ -20,11 +21,13 @@ export const BrowserPreviewProvider: FC<BrowserPreviewProviderProps> = ({
   const openPreview = useCallback((url: string) => {
     setPreviewUrl(url);
     setCurrentUrl(url);
+    setInputUrl(url);
   }, []);
 
   const closePreview = useCallback(() => {
     setPreviewUrl(null);
     setCurrentUrl(null);
+    setInputUrl("");
     setReloadKey(0);
   }, []);
 
@@ -45,6 +48,7 @@ export const BrowserPreviewProvider: FC<BrowserPreviewProviderProps> = ({
           const newUrl = iframe.contentWindow.location.href;
           if (newUrl !== "about:blank" && newUrl !== currentUrl) {
             setCurrentUrl(newUrl);
+            setInputUrl(newUrl);
           }
         }
       } catch {
@@ -54,6 +58,22 @@ export const BrowserPreviewProvider: FC<BrowserPreviewProviderProps> = ({
 
     return () => clearInterval(interval);
   }, [currentUrl]);
+
+  const handleUrlSubmit = useCallback(() => {
+    if (inputUrl) {
+      setPreviewUrl(inputUrl);
+      setCurrentUrl(inputUrl);
+    }
+  }, [inputUrl]);
+
+  const handleUrlKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === "Enter") {
+        handleUrlSubmit();
+      }
+    },
+    [handleUrlSubmit],
+  );
 
   // Handle resize with strict state management
   const stopResizing = useCallback(() => {
@@ -160,15 +180,15 @@ export const BrowserPreviewProvider: FC<BrowserPreviewProviderProps> = ({
             onMouseDown={handleMouseDown}
           />
 
-          <div className="flex items-center gap-2 px-4 py-3 border-b border-border bg-muted/30 shadow-sm">
+          <div className="flex items-center gap-1.5 px-2 py-1.5 border-b border-border bg-muted/30">
             <button
               type="button"
               onClick={reloadPreview}
-              className="p-2 hover:bg-muted rounded-md transition-colors"
+              className="p-1.5 hover:bg-muted rounded transition-colors"
               aria-label="Reload"
             >
               <svg
-                className="w-4 h-4"
+                className="w-3.5 h-3.5"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -186,18 +206,20 @@ export const BrowserPreviewProvider: FC<BrowserPreviewProviderProps> = ({
             </button>
             <input
               type="text"
-              value={currentUrl || previewUrl}
-              readOnly
-              className="flex-1 px-3 py-2 bg-background border border-border rounded-md text-sm text-foreground font-mono"
+              value={inputUrl}
+              onChange={(e) => setInputUrl(e.target.value)}
+              onKeyDown={handleUrlKeyDown}
+              placeholder="Enter URL and press Enter"
+              className="flex-1 px-2 py-1 bg-background border border-border rounded text-xs text-foreground font-mono focus:outline-none focus:ring-1 focus:ring-primary"
             />
             <button
               type="button"
               onClick={closePreview}
-              className="p-2 hover:bg-muted rounded-md transition-colors"
+              className="p-1.5 hover:bg-muted rounded transition-colors"
               aria-label="Close"
             >
               <svg
-                className="w-4 h-4"
+                className="w-3.5 h-3.5"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"

@@ -1,18 +1,30 @@
 import type { FC } from "react";
 import { useState } from "react";
 import { useBrowserPreview } from "../../hooks/useBrowserPreview";
-import { isLocalhostUrl } from "../../lib/utils/isLocalhostUrl";
 
 interface MarkdownLinkProps {
   href?: string;
   children: React.ReactNode;
 }
 
+function isValidUrl(url: string | undefined): boolean {
+  if (!url) {
+    return false;
+  }
+
+  try {
+    new URL(url);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export const MarkdownLink: FC<MarkdownLinkProps> = ({ href, children }) => {
   const [isHovered, setIsHovered] = useState(false);
   const { openPreview } = useBrowserPreview();
 
-  const showPreviewButton = isLocalhostUrl(href);
+  const showPreviewButton = isValidUrl(href);
 
   const handlePreviewClick = (e: React.MouseEvent) => {
     e.preventDefault();

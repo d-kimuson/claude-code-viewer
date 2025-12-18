@@ -1,5 +1,11 @@
 {
   "session.empty_state.description": {
     "translation": "サイドバーから既存のセッションを選ぶか、下の入力欄から新しい会話を開始してください。"
+  },
+  "control.browser": {
+    "translation": "ブラウザ"
+  },
+  "control.open_browser": {
+    "translation": "ブラウザを開く"
   }
 }

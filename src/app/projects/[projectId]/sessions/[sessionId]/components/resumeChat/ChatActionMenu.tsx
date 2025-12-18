@@ -5,12 +5,14 @@ import {
   ArrowDownIcon,
   ArrowUpIcon,
   GitCompareIcon,
+  GlobeIcon,
   LoaderIcon,
   PlusIcon,
   XIcon,
 } from "lucide-react";
 import type { FC } from "react";
 import { Button } from "@/components/ui/button";
+import { useBrowserPreview } from "../../../../../../../hooks/useBrowserPreview";
 import type { PublicSessionProcess } from "../../../../../../../types/session-process";
 
 interface ChatActionMenuProps {
@@ -36,6 +38,7 @@ export const ChatActionMenu: FC<ChatActionMenuProps> = ({
 }) => {
   const { i18n } = useLingui();
   const navigate = useNavigate();
+  const { openPreview } = useBrowserPreview();
 
   const handleStartNewChat = () => {
     navigate({
@@ -70,6 +73,20 @@ export const ChatActionMenu: FC<ChatActionMenuProps> = ({
             </span>
           </Button>
         )}
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          onClick={() => openPreview("about:blank")}
+          disabled={isPending}
+          className="h-7 px-2 text-xs bg-muted/20 rounded-lg border border-border/40"
+          title={i18n._({
+            id: "control.open_browser",
+            message: "Open Browser",
+          })}
+        >
+          <GlobeIcon className="w-3.5 h-3.5" />
+        </Button>
         <Button
           type="button"
           variant="ghost"

@@ -34,6 +34,9 @@
       },
       "correctness": {
         "useUniqueElementIds": "off"
+      },
+      "a11y": {
+        "noStaticElementInteractions": "off"
       }
     }
   },

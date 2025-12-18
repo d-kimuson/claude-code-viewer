@@ -7,6 +7,7 @@ import {
 } from "react-syntax-highlighter/dist/esm/styles/prism";
 import remarkGfm from "remark-gfm";
 import { useTheme } from "../../hooks/useTheme";
+import { MarkdownLink } from "./MarkdownLink";
 
 interface MarkdownContentProps {
   content: string;
@@ -171,15 +172,9 @@ export const MarkdownContent: FC<MarkdownContentProps> = ({
           },
           a({ children, href, ...props }) {
             return (
-              <a
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:text-primary/80 underline underline-offset-4 decoration-primary/30 hover:decoration-primary/60 transition-colors"
-                {...props}
-              >
+              <MarkdownLink href={href} {...props}>
                 {children}
-              </a>
+              </MarkdownLink>
             );
           },
           // テーブルの改善

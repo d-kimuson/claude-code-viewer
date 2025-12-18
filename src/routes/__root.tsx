@@ -1,5 +1,6 @@
 import { createRootRoute, Outlet } from "@tanstack/react-router";
 import { HelmetProvider } from "react-helmet-async";
+import { BrowserPreviewProvider } from "../app/components/BrowserPreviewProvider";
 import { RootErrorBoundary } from "../app/components/RootErrorBoundary";
 import { AuthenticatedProviders } from "../components/AuthenticatedProviders";
 import { AuthProvider } from "../components/AuthProvider";
@@ -15,7 +16,9 @@ export const Route = createRootRoute({
           <AuthProvider>
             <LinguiClientProvider>
               <AuthenticatedProviders>
-                <Outlet />
+                <BrowserPreviewProvider>
+                  <Outlet />
+                </BrowserPreviewProvider>
               </AuthenticatedProviders>
             </LinguiClientProvider>
           </AuthProvider>

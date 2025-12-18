@@ -715,7 +715,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        69
+        72
       ]
     ],
     "translation": "Git"
@@ -737,7 +737,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        87
+        104
       ]
     ],
     "translation": "新建"
@@ -749,10 +749,22 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        80
+        97
       ]
     ],
     "translation": "新建对话"
+  },
+  "control.open_browser": {
+    "message": "Open Browser",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
+        83
+      ]
+    ],
+    "translation": "在浏览器中打开"
   },
   "control.open_git_dialog": {
     "message": "Open Git Dialog",
@@ -761,7 +773,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        62
+        65
       ]
     ],
     "translation": "打开 Git 对话框"
@@ -784,7 +796,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        114
+        131
       ]
     ],
     "translation": "滚动到底部"
@@ -796,7 +808,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        98
+        115
       ]
     ],
     "translation": "滚动到顶部"
@@ -1980,7 +1992,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        139
+        156
       ]
     ],
     "translation": "中止"

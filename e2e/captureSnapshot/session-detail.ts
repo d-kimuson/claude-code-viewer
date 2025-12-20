@@ -2,7 +2,7 @@ import { projectIds } from "../config";
 import { defineCapture } from "../utils/defineCapture";
 
 export const sessionDetailCapture = defineCapture({
-  href: `projects/${projectIds.sampleProject}/sessions/fe5e1c67-53e7-4862-81ae-d0e013e3270b`,
+  href: `projects/${projectIds.sampleProject}/session?sessionId=fe5e1c67-53e7-4862-81ae-d0e013e3270b`,
   cases: [
     {
       name: "sidebar-closed",

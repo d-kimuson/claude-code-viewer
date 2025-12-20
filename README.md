@@ -4,11 +4,11 @@
 [![CI](https://github.com/d-kimuson/claude-code-viewer/actions/workflows/ci.yml/badge.svg)](https://github.com/d-kimuson/claude-code-viewer/actions/workflows/ci.yml)
 [![GitHub Release](https://img.shields.io/github/v/release/d-kimuson/claude-code-viewer)](https://github.com/d-kimuson/claude-code-viewer/releases)
 
-![logo](./docs/assets/logo.png)
+<img height="auto" width="50%" alt="ccv-logo" src="https://github.com/user-attachments/assets/0e092b2b-6acd-4380-b924-eed7a28acd69" />
 
 A full-featured web-based Claude Code client that provides complete interactive functionality for managing Claude Code projects. Start new conversations, resume existing sessions, monitor running tasks in real-time, and browse your conversation history—all through a modern web interface.
 
-![demo](./docs/assets/claude-code-viewer-demo-min.gif)
+https://github.com/user-attachments/assets/090d4806-163f-4bac-972a-002c7433145e
 
 ## Introduction
 

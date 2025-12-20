@@ -34,7 +34,7 @@ Claude Code Viewer is a web-based Claude Code client focused on **comprehensive 
 | Push Changes | Push committed changes directly from the Git Diff Viewer. Supports both separate push operations and combined commit-and-push workflows for streamlined deployment |
 | MCP Server Viewer | View MCP server configurations directly in the session sidebar. Lists all configured servers with their names and commands, with real-time reload capability |
 | System Information | Monitor Claude Code and Claude Code Viewer versions, feature compatibility, and system status |
-| Multi-language Support | Full internationalization support with English and Japanese language options |
+| Multi-language Support | Full internationalization support with English, Japanese, and Simplified Chinese language options |
 
 ## Screenshots
 
@@ -148,13 +148,13 @@ Settings can be configured from the sidebar in Claude Code Viewer.
 | Permission Mode | Ask permission | Controls the approval logic when Claude Code requests tool invocations. By default, users approve requests through the UI. This feature requires Claude Code v1.0.82 or later; earlier versions automatically approve regardless of this setting. |
 | Theme | System | Toggles between Dark Mode and Light Mode. Default follows system settings. |
 | Notifications | None | Enables sound notifications when running session processes complete. Choose from multiple notification sounds with test playback functionality. |
-| Language | System | Interface language selection. Supports English and Japanese with automatic system detection. |
+| Language | System | Interface language selection. Supports English, Japanese, and Simplified Chinese with automatic system detection. |
 
 ## Internationalization (i18n)
 
-Claude Code Viewer currently supports **English** and **Japanese**. Adding new languages is straightforward—simply add a new `messages.json` file for your locale (see [src/i18n/locales/](./src/i18n/locales/) for examples).
+Claude Code Viewer currently supports **English**, **Japanese**, and **Simplified Chinese (简体中文)**. Adding new languages is straightforward—simply add a new `messages.json` file for your locale (see [src/i18n/locales/](./src/i18n/locales/) for examples).
 
-However, we haven't added other languages yet because we're uncertain about demand. **If you'd like support for your language, please open an issue**—we'll add it quickly!
+If you'd like support for your language, please open an issue—we'll add it quickly!
 
 ## Alternatives & Differentiation
 

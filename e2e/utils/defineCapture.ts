@@ -18,7 +18,8 @@ export const defineCapture = (options: {
   const paths = href
     .split("/")
     .map((path) => path.trim())
-    .filter((path) => path !== "");
+    .filter((path) => path !== "")
+    .map((path) => path.replace(/[?=&]/g, "_"));
 
   const colorSchemes = ["light", "dark"] as const;
 

@@ -4,9 +4,11 @@
 [![CI](https://github.com/d-kimuson/claude-code-viewer/actions/workflows/ci.yml/badge.svg)](https://github.com/d-kimuson/claude-code-viewer/actions/workflows/ci.yml)
 [![GitHub Release](https://img.shields.io/github/v/release/d-kimuson/claude-code-viewer)](https://github.com/d-kimuson/claude-code-viewer/releases)
 
+<img height="auto" width="50%" alt="ccv-logo" src="https://github.com/user-attachments/assets/0e092b2b-6acd-4380-b924-eed7a28acd69" />
+
 A full-featured web-based Claude Code client that provides complete interactive functionality for managing Claude Code projects. Start new conversations, resume existing sessions, monitor running tasks in real-time, and browse your conversation history—all through a modern web interface.
 
-![demo](./docs/assets/claude-code-viewer-demo-min.gif)
+https://github.com/user-attachments/assets/090d4806-163f-4bac-972a-002c7433145e
 
 ## Introduction
 
@@ -32,14 +34,14 @@ Claude Code Viewer is a web-based Claude Code client focused on **comprehensive 
 | Push Changes | Push committed changes directly from the Git Diff Viewer. Supports both separate push operations and combined commit-and-push workflows for streamlined deployment |
 | MCP Server Viewer | View MCP server configurations directly in the session sidebar. Lists all configured servers with their names and commands, with real-time reload capability |
 | System Information | Monitor Claude Code and Claude Code Viewer versions, feature compatibility, and system status |
-| Multi-language Support | Full internationalization support with English and Japanese language options |
+| Multi-language Support | Full internationalization support with English, Japanese, and Simplified Chinese language options |
 
 ## Screenshots
 
 | Feature | Capture |
 | --- | --- |
-| BasicChat (Desktop) | ![](./e2e/snapshots/projects/L2hvbWUvcnVubmVyL3dvcmsvY2xhdWRlLWNvZGUtdmlld2VyL2NsYXVkZS1jb2RlLXZpZXdlci9tb2NrLWdsb2JhbC1jbGF1ZGUtZGlyL3Byb2plY3RzL3NhbXBsZS1wcm9qZWN0/sessions/fe5e1c67-53e7-4862-81ae-d0e013e3270b/desktop-dark.png) |
-| BasicChat (Mobile) | ![](./e2e/snapshots/projects/L2hvbWUvcnVubmVyL3dvcmsvY2xhdWRlLWNvZGUtdmlld2VyL2NsYXVkZS1jb2RlLXZpZXdlci9tb2NrLWdsb2JhbC1jbGF1ZGUtZGlyL3Byb2plY3RzL3NhbXBsZS1wcm9qZWN0/sessions/fe5e1c67-53e7-4862-81ae-d0e013e3270b/mobile-dark.png) |
+| BasicChat (Desktop) | ![](./e2e/snapshots/projects/L2hvbWUvcnVubmVyL3dvcmsvY2xhdWRlLWNvZGUtdmlld2VyL2NsYXVkZS1jb2RlLXZpZXdlci9tb2NrLWdsb2JhbC1jbGF1ZGUtZGlyL3Byb2plY3RzL3NhbXBsZS1wcm9qZWN0/session_sessionId_fe5e1c67-53e7-4862-81ae-d0e013e3270b/desktop-dark.png) |
+| BasicChat (Mobile) | ![](./e2e/snapshots/projects/L2hvbWUvcnVubmVyL3dvcmsvY2xhdWRlLWNvZGUtdmlld2VyL2NsYXVkZS1jb2RlLXZpZXdlci9tb2NrLWdsb2JhbC1jbGF1ZGUtZGlyL3Byb2plY3RzL3NhbXBsZS1wcm9qZWN0/session_sessionId_fe5e1c67-53e7-4862-81ae-d0e013e3270b/mobile-dark.png) |
 | CommandCompletion | ![](./docs/assets/command_completion.png) |
 | FileCompletion | ![](./docs/assets/file_completion.png) |
 | Diff Viewer | ![](./docs/assets/git_diff.png) |
@@ -146,13 +148,13 @@ Settings can be configured from the sidebar in Claude Code Viewer.
 | Permission Mode | Ask permission | Controls the approval logic when Claude Code requests tool invocations. By default, users approve requests through the UI. This feature requires Claude Code v1.0.82 or later; earlier versions automatically approve regardless of this setting. |
 | Theme | System | Toggles between Dark Mode and Light Mode. Default follows system settings. |
 | Notifications | None | Enables sound notifications when running session processes complete. Choose from multiple notification sounds with test playback functionality. |
-| Language | System | Interface language selection. Supports English and Japanese with automatic system detection. |
+| Language | System | Interface language selection. Supports English, Japanese, and Simplified Chinese with automatic system detection. |
 
 ## Internationalization (i18n)
 
-Claude Code Viewer currently supports **English** and **Japanese**. Adding new languages is straightforward—simply add a new `messages.json` file for your locale (see [src/i18n/locales/](./src/i18n/locales/) for examples).
+Claude Code Viewer currently supports **English**, **Japanese**, and **Simplified Chinese (简体中文)**. Adding new languages is straightforward—simply add a new `messages.json` file for your locale (see [src/i18n/locales/](./src/i18n/locales/) for examples).
 
-However, we haven't added other languages yet because we're uncertain about demand. **If you'd like support for your language, please open an issue**—we'll add it quickly!
+If you'd like support for your language, please open an issue—we'll add it quickly!
 
 ## Alternatives & Differentiation
 

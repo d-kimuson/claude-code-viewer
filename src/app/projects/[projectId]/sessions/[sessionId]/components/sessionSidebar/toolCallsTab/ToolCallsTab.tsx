@@ -62,6 +62,7 @@ export const ToolCallsTab: FC<ToolCallsTabProps> = ({
         currentTab={search.tab}
         toolTypes={search.toolTypes}
         pathQuery={search.pathQuery}
+        resultCount={filteredToolCalls.length}
       />
       <div className="flex-1 overflow-y-auto">
         <ToolCallList

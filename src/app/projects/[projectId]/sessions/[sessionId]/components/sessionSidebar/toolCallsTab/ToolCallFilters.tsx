@@ -2,6 +2,7 @@ import { Trans } from "@lingui/react";
 import { useNavigate } from "@tanstack/react-router";
 import { FilterIcon, XIcon } from "lucide-react";
 import { type FC, useCallback, useMemo } from "react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Collapsible,
@@ -18,6 +19,7 @@ type ToolCallFiltersProps = {
   currentTab: Tab;
   toolTypes: string | undefined;
   pathQuery: string | undefined;
+  resultCount?: number;
 };
 
 export const ToolCallFilters: FC<ToolCallFiltersProps> = ({
@@ -26,6 +28,7 @@ export const ToolCallFilters: FC<ToolCallFiltersProps> = ({
   currentTab,
   toolTypes,
   pathQuery,
+  resultCount,
 }) => {
   const navigate = useNavigate();
 
@@ -91,6 +94,11 @@ export const ToolCallFilters: FC<ToolCallFiltersProps> = ({
           <h3 className="text-sm font-semibold text-sidebar-foreground">
             <Trans id="tool.calls.filters.title" />
           </h3>
+          {resultCount !== undefined && (
+            <Badge variant="secondary" className="ml-1">
+              {resultCount}
+            </Badge>
+          )}
         </div>
         {hasActiveFilters && (
           <Button

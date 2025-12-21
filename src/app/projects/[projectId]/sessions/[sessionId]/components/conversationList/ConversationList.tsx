@@ -1,6 +1,6 @@
 import { Trans } from "@lingui/react";
 import { AlertTriangle, ChevronDown, ExternalLink } from "lucide-react";
-import { type FC, useCallback, useMemo } from "react";
+import { type FC, useCallback, useEffect, useMemo, useRef } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
   Collapsible,
@@ -120,6 +120,7 @@ type ConversationListProps = {
   getToolResult: (toolUseId: string) => ToolResultContent | undefined;
   projectId: string;
   sessionId: string;
+  highlightConversationIndex?: number;
 };
 
 export const ConversationList: FC<ConversationListProps> = ({
@@ -127,7 +128,10 @@ export const ConversationList: FC<ConversationListProps> = ({
   getToolResult,
   projectId,
   sessionId,
+  highlightConversationIndex,
 }) => {
+  const conversationRefs = useRef<Map<number, HTMLLIElement>>(new Map());
+
   const validConversations = useMemo(
     () =>
       conversations.filter((conversation) => conversation.type !== "x-error"),
@@ -169,9 +173,33 @@ export const ConversationList: FC<ConversationListProps> = ({
     [toolUseIdToAgentIdMap],
   );
 
+  // Scroll to and highlight conversation item when navigated from tool call filter
+  useEffect(() => {
+    if (highlightConversationIndex === undefined) return;
+
+    const targetRef = conversationRefs.current.get(highlightConversationIndex);
+    if (!targetRef) return;
+
+    // Scroll into view with smooth behavior
+    targetRef.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+    });
+
+    // Add highlight class temporarily
+    targetRef.classList.add("bg-yellow-100", "dark:bg-yellow-900/30");
+
+    // Remove highlight after 2 seconds
+    const timer = setTimeout(() => {
+      targetRef.classList.remove("bg-yellow-100", "dark:bg-yellow-900/30");
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [highlightConversationIndex]);
+
   return (
     <ul>
-      {conversations.flatMap((conversation) => {
+      {conversations.flatMap((conversation, index) => {
         if (conversation.type === "x-error") {
           return (
             <SchemaErrorDisplay
@@ -208,6 +236,13 @@ export const ConversationList: FC<ConversationListProps> = ({
 
         return [
           <li
+            ref={(el) => {
+              if (el) {
+                conversationRefs.current.set(index, el);
+              } else {
+                conversationRefs.current.delete(index);
+              }
+            }}
             className={`w-full flex ${
               isSidechain ||
               conversation.type === "assistant" ||
@@ -215,7 +250,7 @@ export const ConversationList: FC<ConversationListProps> = ({
               conversation.type === "summary"
                 ? "justify-start"
                 : "justify-end"
-            } animate-in fade-in slide-in-from-bottom-2 duration-300`}
+            } animate-in fade-in slide-in-from-bottom-2 duration-300 transition-colors`}
             key={getConversationKey(conversation)}
           >
             <div className="w-full max-w-3xl lg:max-w-4xl sm:w-[90%] md:w-[85%]">

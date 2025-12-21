@@ -1,6 +1,6 @@
 {
   "tool.calls.list.empty": {
-    "translation": "",
+    "translation": "ツールコールが見つかりません",
     "placeholders": {},
     "comments": [],
     "origin": [
@@ -1432,7 +1432,7 @@
         92
       ]
     ],
-    "translation": ""
+    "translation": "フィルター"
   },
   "tool.calls.filters.clear": {
     "placeholders": {},
@@ -1443,7 +1443,7 @@
         103
       ]
     ],
-    "translation": ""
+    "translation": "クリア"
   },
   "tool.calls.filters.tool.types": {
     "placeholders": {},
@@ -1454,7 +1454,7 @@
         115
       ]
     ],
-    "translation": ""
+    "translation": "ツールタイプ"
   },
   "chat.resume": {
     "placeholders": {},

@@ -1,11 +1,11 @@
 import { describe, expect, test } from "vitest";
-import type { Conversation } from "@/lib/conversation-schema";
 import type { ToolResultContent } from "@/lib/conversation-schema/content/ToolResultContentSchema";
+import type { ExtendedConversation } from "@/server/core/types";
 import { extractToolCalls, filterToolCalls } from "./toolCallExtraction";
 
 describe("extractToolCalls", () => {
   test("should extract tool calls from assistant entries", () => {
-    const conversations: Conversation[] = [
+    const conversations: ExtendedConversation[] = [
       {
         type: "assistant",
         isSidechain: false,
@@ -84,7 +84,7 @@ describe("extractToolCalls", () => {
   });
 
   test("should match tool calls with their results", () => {
-    const conversations: Conversation[] = [
+    const conversations: ExtendedConversation[] = [
       {
         type: "assistant",
         isSidechain: false,
@@ -138,7 +138,7 @@ describe("extractToolCalls", () => {
   });
 
   test("should skip non-assistant entries", () => {
-    const conversations: Conversation[] = [
+    const conversations: ExtendedConversation[] = [
       {
         type: "user",
         isSidechain: false,
@@ -171,7 +171,7 @@ describe("extractToolCalls", () => {
   });
 
   test("should handle assistant entries with no tool calls", () => {
-    const conversations: Conversation[] = [
+    const conversations: ExtendedConversation[] = [
       {
         type: "assistant",
         isSidechain: false,
@@ -212,7 +212,7 @@ describe("extractToolCalls", () => {
   });
 
   test("should preserve conversation index for navigation", () => {
-    const conversations: Conversation[] = [
+    const conversations: ExtendedConversation[] = [
       {
         type: "assistant",
         isSidechain: false,

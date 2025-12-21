@@ -1,5 +1,5 @@
-import type { Conversation } from "@/lib/conversation-schema";
 import type { ToolResultContent } from "@/lib/conversation-schema/content/ToolResultContentSchema";
+import type { ExtendedConversation } from "@/server/core/types";
 
 /**
  * Information about a tool call extracted from conversation entries
@@ -25,12 +25,17 @@ export type ToolCallFilters = {
  * Extract all tool calls from conversation entries
  */
 export const extractToolCalls = (
-  conversations: Conversation[],
+  conversations: ExtendedConversation[],
   getToolResult: (toolUseId: string) => ToolResultContent | undefined,
 ): ToolCallInfo[] => {
   const toolCalls: ToolCallInfo[] = [];
 
   for (const [index, conversation] of conversations.entries()) {
+    // Skip error entries
+    if (conversation.type === "x-error") {
+      continue;
+    }
+
     // Only process assistant entries
     if (conversation.type !== "assistant") {
       continue;

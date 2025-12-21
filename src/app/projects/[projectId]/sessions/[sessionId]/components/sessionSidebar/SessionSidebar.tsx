@@ -5,6 +5,7 @@ import {
   CalendarClockIcon,
   MessageSquareIcon,
   PlugIcon,
+  WrenchIcon,
 } from "lucide-react";
 import { type FC, Suspense, useMemo } from "react";
 import type { SidebarTab } from "@/components/GlobalSidebar";
@@ -22,6 +23,7 @@ import { MobileSidebar } from "./MobileSidebar";
 import { SchedulerTab } from "./SchedulerTab";
 import { SessionsTab } from "./SessionsTab";
 import type { Tab } from "./schema";
+import { ToolCallsTab } from "./toolCallsTab/ToolCallsTab";
 
 export const SessionSidebar: FC<{
   currentSessionId?: string;
@@ -67,6 +69,16 @@ export const SessionSidebar: FC<{
         content: (
           <SchedulerTab projectId={projectId} sessionId={activeSessionId} />
         ),
+      },
+      {
+        id: "tool-calls",
+        icon: WrenchIcon,
+        title: <Trans id="sidebar.show.tool.calls" />,
+        content: activeSessionId ? (
+          <Suspense fallback={<Loading />}>
+            <ToolCallsTab projectId={projectId} sessionId={activeSessionId} />
+          </Suspense>
+        ) : null,
       },
     ],
     [activeSessionId, projectId],

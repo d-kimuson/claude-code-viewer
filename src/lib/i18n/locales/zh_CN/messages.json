@@ -1374,7 +1374,7 @@
     "origin": [
       [
         "src/routes/projects/$projectId/session.tsx",
-        22
+        25
       ]
     ],
     "translation": "您查找的会话不存在。"
@@ -1385,7 +1385,7 @@
     "origin": [
       [
         "src/routes/projects/$projectId/session.tsx",
-        21
+        24
       ]
     ],
     "translation": "会话未找到"
@@ -2565,7 +2565,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        96
+        108
       ]
     ],
     "translation": "返回项目列表"
@@ -2580,7 +2580,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        60
+        62
       ]
     ],
     "translation": "显示 MCP 服务器设置"
@@ -2591,7 +2591,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        66
+        68
       ]
     ],
     "translation": "显示定时任务"
@@ -2606,10 +2606,21 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        47
+        49
       ]
     ],
     "translation": "显示会话列表"
+  },
+  "sidebar.show.tool.calls": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
+        76
+      ]
+    ],
+    "translation": "显示工具调用"
   },
   "system.info.tab.title": {
     "placeholders": {},
@@ -2772,6 +2783,50 @@
       ]
     ],
     "translation": "Claude Code Viewer"
+  },
+  "tool.calls.filters.clear": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/toolCallsTab/ToolCallFilters.tsx",
+        111
+      ]
+    ],
+    "translation": "清除"
+  },
+  "tool.calls.filters.title": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/toolCallsTab/ToolCallFilters.tsx",
+        95
+      ]
+    ],
+    "translation": "筛选器"
+  },
+  "tool.calls.filters.tool.types": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/toolCallsTab/ToolCallFilters.tsx",
+        123
+      ]
+    ],
+    "translation": "工具类型"
+  },
+  "tool.calls.list.empty": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/toolCallsTab/ToolCallList.tsx",
+        21
+      ]
+    ],
+    "translation": "未找到工具调用"
   },
   "user.content.document.pdf": {
     "placeholders": {},

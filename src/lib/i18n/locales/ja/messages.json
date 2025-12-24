@@ -1374,7 +1374,7 @@
     "origin": [
       [
         "src/routes/projects/$projectId/session.tsx",
-        22
+        25
       ]
     ],
     "translation": "お探しのセッションは存在しません。"
@@ -1385,7 +1385,7 @@
     "origin": [
       [
         "src/routes/projects/$projectId/session.tsx",
-        21
+        24
       ]
     ],
     "translation": "セッションが見つかりません"
@@ -2565,7 +2565,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        96
+        108
       ]
     ],
     "translation": "プロジェクト一覧に戻る"
@@ -2580,7 +2580,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        60
+        62
       ]
     ],
     "translation": "MCPサーバー設定を表示"
@@ -2591,7 +2591,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        66
+        68
       ]
     ],
     "translation": "スケジューラジョブを表示"
@@ -2606,10 +2606,21 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        47
+        49
       ]
     ],
     "translation": "セッション一覧を表示"
+  },
+  "sidebar.show.tool.calls": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
+        76
+      ]
+    ],
+    "translation": "ツールコールを表示"
   },
   "system.info.tab.title": {
     "placeholders": {},
@@ -2772,6 +2783,50 @@
       ]
     ],
     "translation": "Claude Code Viewer"
+  },
+  "tool.calls.filters.clear": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/toolCallsTab/ToolCallFilters.tsx",
+        111
+      ]
+    ],
+    "translation": "クリア"
+  },
+  "tool.calls.filters.title": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/toolCallsTab/ToolCallFilters.tsx",
+        95
+      ]
+    ],
+    "translation": "フィルター"
+  },
+  "tool.calls.filters.tool.types": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/toolCallsTab/ToolCallFilters.tsx",
+        123
+      ]
+    ],
+    "translation": "ツールタイプ"
+  },
+  "tool.calls.list.empty": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/toolCallsTab/ToolCallList.tsx",
+        21
+      ]
+    ],
+    "translation": "ツールコールが見つかりません"
   },
   "user.content.document.pdf": {
     "placeholders": {},

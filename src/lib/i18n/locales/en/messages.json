@@ -30,7 +30,7 @@
         153
       ]
     ],
-    "translation": "Close Sidebar"
+    "translation": "Close sidebar"
   },
   "Compare from": {
     "placeholders": {},
@@ -184,7 +184,7 @@
         66
       ]
     ],
-    "translation": "Thinking"
+    "translation": "assistant.thinking"
   },
   "assistant.tool.error_loading_task": {
     "placeholders": {},
@@ -206,7 +206,7 @@
         153
       ]
     ],
-    "translation": "Input Parameters"
+    "translation": "assistant.tool.input_parameters"
   },
   "assistant.tool.loading_task": {
     "placeholders": {},
@@ -232,7 +232,7 @@
         155
       ]
     ],
-    "translation": "{count} messages"
+    "translation": "assistant.tool.message_count"
   },
   "assistant.tool.no_task_data": {
     "placeholders": {},
@@ -265,7 +265,7 @@
         167
       ]
     ],
-    "translation": "Tool Result"
+    "translation": "assistant.tool.result"
   },
   "assistant.tool.retry": {
     "placeholders": {},
@@ -287,7 +287,7 @@
         146
       ]
     ],
-    "translation": "Task ID"
+    "translation": "assistant.tool.task_id"
   },
   "assistant.tool.tool_id": {
     "placeholders": {},
@@ -298,7 +298,7 @@
         145
       ]
     ],
-    "translation": "Tool ID"
+    "translation": "assistant.tool.tool_id"
   },
   "assistant.tool.view_task_details": {
     "placeholders": {},
@@ -309,7 +309,7 @@
         124
       ]
     ],
-    "translation": "View Task Details"
+    "translation": "assistant.tool.view_task_details"
   },
   "chat.attach_file": {
     "placeholders": {},
@@ -320,7 +320,7 @@
         460
       ]
     ],
-    "translation": "Attach"
+    "translation": "chat.attach_file"
   },
   "chat.autocomplete.active": {
     "placeholders": {},
@@ -331,7 +331,7 @@
         472
       ]
     ],
-    "translation": "Autocomplete Active"
+    "translation": "chat.autocomplete.active"
   },
   "chat.button.start": {
     "placeholders": {},
@@ -342,7 +342,7 @@
         50
       ]
     ],
-    "translation": "Start Chat"
+    "translation": "chat.button.start"
   },
   "chat.error.send_failed": {
     "placeholders": {},
@@ -353,7 +353,7 @@
         375
       ]
     ],
-    "translation": "Failed to send message. Please try again."
+    "translation": "chat.error.send_failed"
   },
   "chat.modal.title": {
     "placeholders": {},
@@ -372,7 +372,7 @@
         102
       ]
     ],
-    "translation": "Start New Chat"
+    "translation": "chat.modal.title"
   },
   "chat.placeholder.continue.command_enter": {
     "message": "Type your message... (Start with / for commands, @ for files, Command+Enter to send)",
@@ -467,7 +467,7 @@
         48
       ]
     ],
-    "translation": "Resume"
+    "translation": "chat.resume"
   },
   "chat.scheduled_send.failed": {
     "message": "Failed to schedule message",
@@ -514,7 +514,7 @@
         60
       ]
     ],
-    "translation": "Send"
+    "translation": "chat.send"
   },
   "chat.send_mode.immediate": {
     "placeholders": {},
@@ -525,7 +525,7 @@
         498
       ]
     ],
-    "translation": "Send Now"
+    "translation": "chat.send_mode.immediate"
   },
   "chat.send_mode.label": {
     "placeholders": {},
@@ -536,7 +536,7 @@
         481
       ]
     ],
-    "translation": "Send Mode"
+    "translation": "chat.send_mode.label"
   },
   "chat.send_mode.scheduled": {
     "placeholders": {},
@@ -547,7 +547,7 @@
         501
       ]
     ],
-    "translation": "Schedule Send"
+    "translation": "chat.send_mode.scheduled"
   },
   "chat.send_mode.scheduled_time": {
     "placeholders": {},
@@ -558,7 +558,7 @@
         512
       ]
     ],
-    "translation": "Scheduled Send Time"
+    "translation": "chat.send_mode.scheduled_time"
   },
   "chat.status.processing": {
     "placeholders": {},
@@ -569,7 +569,7 @@
         541
       ]
     ],
-    "translation": "Processing..."
+    "translation": "chat.status.processing"
   },
   "common.action.cancel": {
     "placeholders": {},
@@ -580,7 +580,7 @@
         87
       ]
     ],
-    "translation": "Cancel"
+    "translation": "common.action.cancel"
   },
   "common.cancel": {
     "placeholders": {},
@@ -595,7 +595,7 @@
         334
       ]
     ],
-    "translation": "Cancel"
+    "translation": "common.cancel"
   },
   "common.create": {
     "placeholders": {},
@@ -606,7 +606,7 @@
         359
       ]
     ],
-    "translation": "Create"
+    "translation": "common.create"
   },
   "common.delete": {
     "placeholders": {},
@@ -617,7 +617,7 @@
         344
       ]
     ],
-    "translation": "Delete"
+    "translation": "common.delete"
   },
   "common.deleting": {
     "placeholders": {},
@@ -628,7 +628,7 @@
         342
       ]
     ],
-    "translation": "Deleting..."
+    "translation": "common.deleting"
   },
   "common.error": {
     "placeholders": {},
@@ -643,7 +643,7 @@
         195
       ]
     ],
-    "translation": "Error"
+    "translation": "common.error"
   },
   "common.loading": {
     "placeholders": {},
@@ -658,7 +658,7 @@
         190
       ]
     ],
-    "translation": "Loading..."
+    "translation": "common.loading"
   },
   "common.reload": {
     "message": "Reload",
@@ -681,7 +681,7 @@
         355
       ]
     ],
-    "translation": "Saving..."
+    "translation": "common.saving"
   },
   "common.update": {
     "placeholders": {},
@@ -692,7 +692,7 @@
         357
       ]
     ],
-    "translation": "Update"
+    "translation": "common.update"
   },
   "control.branch": {
     "placeholders": {},
@@ -707,7 +707,7 @@
         348
       ]
     ],
-    "translation": "Branch"
+    "translation": "control.branch"
   },
   "control.git": {
     "placeholders": {},
@@ -718,7 +718,7 @@
         72
       ]
     ],
-    "translation": "Git"
+    "translation": "control.git"
   },
   "control.metadata": {
     "placeholders": {},
@@ -729,7 +729,7 @@
         311
       ]
     ],
-    "translation": "Metadata"
+    "translation": "control.metadata"
   },
   "control.new": {
     "placeholders": {},
@@ -740,7 +740,7 @@
         104
       ]
     ],
-    "translation": "New"
+    "translation": "control.new"
   },
   "control.new_chat": {
     "message": "New Chat",
@@ -787,7 +787,7 @@
         317
       ]
     ],
-    "translation": "Project Path"
+    "translation": "control.project_path"
   },
   "control.scroll_to_bottom": {
     "message": "Scroll to Bottom",
@@ -826,7 +826,7 @@
         335
       ]
     ],
-    "translation": "Session ID"
+    "translation": "control.session_id"
   },
   "conversation.error.raw_content": {
     "placeholders": {},
@@ -837,7 +837,7 @@
         103
       ]
     ],
-    "translation": "Raw Data: "
+    "translation": "conversation.error.raw_content"
   },
   "conversation.error.report_issue": {
     "placeholders": {},
@@ -848,7 +848,7 @@
         96
       ]
     ],
-    "translation": "Report This Issue"
+    "translation": "conversation.error.report_issue"
   },
   "conversation.error.schema": {
     "placeholders": {},
@@ -859,7 +859,7 @@
         71
       ]
     ],
-    "translation": "Schema Error"
+    "translation": "conversation.error.schema"
   },
   "conversation.error.schema_validation": {
     "placeholders": {},
@@ -870,7 +870,7 @@
         86
       ]
     ],
-    "translation": "Schema Validation Error"
+    "translation": "conversation.error.schema_validation"
   },
   "conversation.error.schema_validation.description": {
     "placeholders": {},
@@ -881,7 +881,7 @@
         89
       ]
     ],
-    "translation": "Failed to parse this conversation entry. This may be due to format changes or parsing issues."
+    "translation": "conversation.error.schema_validation.description"
   },
   "cron_builder.cron_expression": {
     "placeholders": {},
@@ -892,7 +892,7 @@
         316
       ]
     ],
-    "translation": "Cron Expression"
+    "translation": "cron_builder.cron_expression"
   },
   "cron_builder.custom": {
     "placeholders": {},
@@ -903,7 +903,7 @@
         227
       ]
     ],
-    "translation": "Custom"
+    "translation": "cron_builder.custom"
   },
   "cron_builder.daily": {
     "placeholders": {},
@@ -914,7 +914,7 @@
         221
       ]
     ],
-    "translation": "Daily"
+    "translation": "cron_builder.daily"
   },
   "cron_builder.day_of_week": {
     "placeholders": {},
@@ -925,7 +925,7 @@
         266
       ]
     ],
-    "translation": "Day of Week"
+    "translation": "cron_builder.day_of_week"
   },
   "cron_builder.expression": {
     "placeholders": {},
@@ -936,7 +936,7 @@
         340
       ]
     ],
-    "translation": "Cron Expression"
+    "translation": "cron_builder.expression"
   },
   "cron_builder.friday": {
     "placeholders": {},
@@ -947,7 +947,7 @@
         50
       ]
     ],
-    "translation": "Friday"
+    "translation": "cron_builder.friday"
   },
   "cron_builder.hour": {
     "placeholders": {},
@@ -962,7 +962,7 @@
         287
       ]
     ],
-    "translation": "Hour (0-23)"
+    "translation": "cron_builder.hour"
   },
   "cron_builder.hourly": {
     "placeholders": {},
@@ -973,7 +973,7 @@
         218
       ]
     ],
-    "translation": "Hourly"
+    "translation": "cron_builder.hourly"
   },
   "cron_builder.minute": {
     "placeholders": {},
@@ -988,7 +988,7 @@
         299
       ]
     ],
-    "translation": "Minute (0-59)"
+    "translation": "cron_builder.minute"
   },
   "cron_builder.monday": {
     "placeholders": {},
@@ -999,7 +999,7 @@
         34
       ]
     ],
-    "translation": "Monday"
+    "translation": "cron_builder.monday"
   },
   "cron_builder.preview": {
     "placeholders": {},
@@ -1010,7 +1010,7 @@
         328
       ]
     ],
-    "translation": "Preview"
+    "translation": "cron_builder.preview"
   },
   "cron_builder.saturday": {
     "placeholders": {},
@@ -1021,7 +1021,7 @@
         54
       ]
     ],
-    "translation": "Saturday"
+    "translation": "cron_builder.saturday"
   },
   "cron_builder.schedule_type": {
     "placeholders": {},
@@ -1032,7 +1032,7 @@
         210
       ]
     ],
-    "translation": "Schedule Type"
+    "translation": "cron_builder.schedule_type"
   },
   "cron_builder.sunday": {
     "placeholders": {},
@@ -1043,7 +1043,7 @@
         30
       ]
     ],
-    "translation": "Sunday"
+    "translation": "cron_builder.sunday"
   },
   "cron_builder.thursday": {
     "placeholders": {},
@@ -1054,7 +1054,7 @@
         46
       ]
     ],
-    "translation": "Thursday"
+    "translation": "cron_builder.thursday"
   },
   "cron_builder.tuesday": {
     "placeholders": {},
@@ -1065,7 +1065,7 @@
         38
       ]
     ],
-    "translation": "Tuesday"
+    "translation": "cron_builder.tuesday"
   },
   "cron_builder.wednesday": {
     "placeholders": {},
@@ -1076,7 +1076,7 @@
         42
       ]
     ],
-    "translation": "Wednesday"
+    "translation": "cron_builder.wednesday"
   },
   "cron_builder.weekly": {
     "placeholders": {},
@@ -1087,7 +1087,7 @@
         224
       ]
     ],
-    "translation": "Weekly"
+    "translation": "cron_builder.weekly"
   },
   "diff.commit": {
     "placeholders": {},
@@ -1098,7 +1098,7 @@
         564
       ]
     ],
-    "translation": "Commit"
+    "translation": "diff.commit"
   },
   "diff.commit.changes": {
     "placeholders": {},
@@ -1109,7 +1109,7 @@
         469
       ]
     ],
-    "translation": "Commit Changes"
+    "translation": "diff.commit.changes"
   },
   "diff.commit.message": {
     "placeholders": {},
@@ -1120,7 +1120,7 @@
         538
       ]
     ],
-    "translation": "Commit Message"
+    "translation": "diff.commit.message"
   },
   "diff.commit.push": {
     "placeholders": {},
@@ -1131,7 +1131,7 @@
         596
       ]
     ],
-    "translation": "Commit & Push"
+    "translation": "diff.commit.push"
   },
   "diff.committing": {
     "placeholders": {},
@@ -1142,7 +1142,7 @@
         561
       ]
     ],
-    "translation": "Committing..."
+    "translation": "diff.committing"
   },
   "diff.committing.pushing": {
     "placeholders": {},
@@ -1153,7 +1153,7 @@
         593
       ]
     ],
-    "translation": "Committing & Pushing..."
+    "translation": "diff.committing.pushing"
   },
   "diff.deselect.all": {
     "placeholders": {},
@@ -1164,7 +1164,7 @@
         498
       ]
     ],
-    "translation": "Deselect All"
+    "translation": "diff.deselect.all"
   },
   "diff.enter.message": {
     "placeholders": {},
@@ -1175,7 +1175,7 @@
         606
       ]
     ],
-    "translation": "Please enter a commit message"
+    "translation": "diff.enter.message"
   },
   "diff.files": {
     "placeholders": {},
@@ -1186,7 +1186,7 @@
         56
       ]
     ],
-    "translation": "Files"
+    "translation": "diff.files"
   },
   "diff.files.changed": {
     "placeholders": {},
@@ -1197,7 +1197,7 @@
         53
       ]
     ],
-    "translation": "files changed"
+    "translation": "diff.files.changed"
   },
   "diff.loading": {
     "placeholders": {},
@@ -1208,7 +1208,7 @@
         642
       ]
     ],
-    "translation": "Loading diff..."
+    "translation": "diff.loading"
   },
   "diff.push": {
     "placeholders": {},
@@ -1219,7 +1219,7 @@
         579
       ]
     ],
-    "translation": "Push"
+    "translation": "diff.push"
   },
   "diff.pushing": {
     "placeholders": {},
@@ -1230,7 +1230,7 @@
         576
       ]
     ],
-    "translation": "Pushing..."
+    "translation": "diff.pushing"
   },
   "diff.select.all": {
     "placeholders": {},
@@ -1241,7 +1241,7 @@
         490
       ]
     ],
-    "translation": "Select All"
+    "translation": "diff.select.all"
   },
   "diff.select.file": {
     "placeholders": {},
@@ -1252,7 +1252,7 @@
         604
       ]
     ],
-    "translation": "Please select at least one file"
+    "translation": "diff.select.file"
   },
   "directory_picker.current": {
     "placeholders": {},
@@ -1263,7 +1263,7 @@
         41
       ]
     ],
-    "translation": "Current: "
+    "translation": "directory_picker.current"
   },
   "directory_picker.loading": {
     "placeholders": {},
@@ -1274,7 +1274,7 @@
         58
       ]
     ],
-    "translation": "Loading..."
+    "translation": "directory_picker.loading"
   },
   "directory_picker.no_directories": {
     "placeholders": {},
@@ -1285,7 +1285,7 @@
         88
       ]
     ],
-    "translation": "No Directories Found"
+    "translation": "directory_picker.no_directories"
   },
   "directory_picker.show_hidden": {
     "placeholders": {},
@@ -1296,7 +1296,7 @@
         52
       ]
     ],
-    "translation": "Show Hidden Files"
+    "translation": "directory_picker.show_hidden"
   },
   "mcp.error.load_failed": {
     "placeholders": {
@@ -1311,7 +1311,7 @@
         66
       ]
     ],
-    "translation": "Failed to load MCP servers: {error}"
+    "translation": "mcp.error.load_failed"
   },
   "mcp.no.servers": {
     "placeholders": {},
@@ -1322,7 +1322,7 @@
         75
       ]
     ],
-    "translation": "No MCP Servers Found"
+    "translation": "mcp.no.servers"
   },
   "mcp.title": {
     "placeholders": {},
@@ -1333,7 +1333,7 @@
         38
       ]
     ],
-    "translation": "MCP Servers"
+    "translation": "mcp.title"
   },
   "notfound.button.go_home": {
     "placeholders": {},
@@ -1344,7 +1344,7 @@
         43
       ]
     ],
-    "translation": "Go Home"
+    "translation": "notfound.button.go_home"
   },
   "notfound.default.description": {
     "placeholders": {},
@@ -1355,7 +1355,7 @@
         20
       ]
     ],
-    "translation": "The page you are looking for does not exist or has been moved."
+    "translation": "notfound.default.description"
   },
   "notfound.default.title": {
     "placeholders": {},
@@ -1366,7 +1366,7 @@
         19
       ]
     ],
-    "translation": "Page Not Found"
+    "translation": "notfound.default.title"
   },
   "notfound.session.description": {
     "placeholders": {},
@@ -1374,10 +1374,10 @@
     "origin": [
       [
         "src/routes/projects/$projectId/session.tsx",
-        22
+        25
       ]
     ],
-    "translation": "The session you are looking for does not exist."
+    "translation": "notfound.session.description"
   },
   "notfound.session.title": {
     "placeholders": {},
@@ -1385,10 +1385,10 @@
     "origin": [
       [
         "src/routes/projects/$projectId/session.tsx",
-        21
+        24
       ]
     ],
-    "translation": "Session Not Found"
+    "translation": "notfound.session.title"
   },
   "notification.beep": {
     "placeholders": {},
@@ -1399,7 +1399,7 @@
         104
       ]
     ],
-    "translation": "Beep"
+    "translation": "notification.beep"
   },
   "notification.chime": {
     "placeholders": {},
@@ -1410,7 +1410,7 @@
         105
       ]
     ],
-    "translation": "Chime"
+    "translation": "notification.chime"
   },
   "notification.description": {
     "placeholders": {},
@@ -1421,7 +1421,7 @@
         97
       ]
     ],
-    "translation": "Select sound to play when Claude Code task completes"
+    "translation": "notification.description"
   },
   "notification.none": {
     "placeholders": {},
@@ -1432,7 +1432,7 @@
         103
       ]
     ],
-    "translation": "None"
+    "translation": "notification.none"
   },
   "notification.ping": {
     "placeholders": {},
@@ -1443,7 +1443,7 @@
         106
       ]
     ],
-    "translation": "Ping"
+    "translation": "notification.ping"
   },
   "notification.pop": {
     "placeholders": {},
@@ -1454,7 +1454,7 @@
         107
       ]
     ],
-    "translation": "Pop"
+    "translation": "notification.pop"
   },
   "notification.test": {
     "placeholders": {},
@@ -1465,7 +1465,7 @@
         90
       ]
     ],
-    "translation": "Test"
+    "translation": "notification.test"
   },
   "project.new": {
     "placeholders": {},
@@ -1476,7 +1476,7 @@
         65
       ]
     ],
-    "translation": "New Project"
+    "translation": "project.new"
   },
   "project.setup.action.setting_up": {
     "placeholders": {},
@@ -1487,7 +1487,7 @@
         96
       ]
     ],
-    "translation": "Setting up..."
+    "translation": "project.setup.action.setting_up"
   },
   "project.setup.action.setup": {
     "placeholders": {},
@@ -1498,7 +1498,7 @@
         99
       ]
     ],
-    "translation": "Set Up Project"
+    "translation": "project.setup.action.setup"
   },
   "project.setup.description": {
     "placeholders": {},
@@ -1509,7 +1509,7 @@
         74
       ]
     ],
-    "translation": "Navigate to the directory to set up as a Claude Code project. If CLAUDE.md exists, it describes the project; otherwise initialize with <0>/init</0>."
+    "translation": "project.setup.description"
   },
   "project.setup.title": {
     "placeholders": {},
@@ -1520,7 +1520,7 @@
         71
       ]
     ],
-    "translation": "Set Up New Project"
+    "translation": "project.setup.title"
   },
   "project_list.last_modified": {
     "placeholders": {},
@@ -1531,7 +1531,7 @@
         54
       ]
     ],
-    "translation": "Last Modified: "
+    "translation": "project_list.last_modified"
   },
   "project_list.messages": {
     "placeholders": {},
@@ -1542,7 +1542,7 @@
         63
       ]
     ],
-    "translation": "Messages: "
+    "translation": "project_list.messages"
   },
   "project_list.no_projects.description": {
     "placeholders": {},
@@ -1553,7 +1553,7 @@
         31
       ]
     ],
-    "translation": "No Claude Code projects found in your ~/.claude/projects directory. Start a conversation with Claude Code to set up your first project."
+    "translation": "project_list.no_projects.description"
   },
   "project_list.no_projects.title": {
     "placeholders": {},
@@ -1564,7 +1564,7 @@
         28
       ]
     ],
-    "translation": "No Projects Found"
+    "translation": "project_list.no_projects.title"
   },
   "project_list.view_conversations": {
     "placeholders": {},
@@ -1575,7 +1575,7 @@
         72
       ]
     ],
-    "translation": "View Conversations"
+    "translation": "project_list.view_conversations"
   },
   "projects.page.description": {
     "placeholders": {},
@@ -1586,7 +1586,7 @@
         20
       ]
     ],
-    "translation": "View Claude Code conversation history and project operations"
+    "translation": "projects.page.description"
   },
   "projects.page.loading": {
     "placeholders": {},
@@ -1597,7 +1597,7 @@
         36
       ]
     ],
-    "translation": "Loading projects..."
+    "translation": "projects.page.loading"
   },
   "projects.page.title": {
     "placeholders": {},
@@ -1608,7 +1608,7 @@
         28
       ]
     ],
-    "translation": "Projects"
+    "translation": "projects.page.title"
   },
   "scheduler.create_job": {
     "message": "Create Job",
@@ -1631,7 +1631,7 @@
         322
       ]
     ],
-    "translation": "Are you sure you want to delete this scheduler job? This action cannot be undone."
+    "translation": "scheduler.delete_dialog.description"
   },
   "scheduler.delete_dialog.title": {
     "placeholders": {},
@@ -1642,7 +1642,7 @@
         319
       ]
     ],
-    "translation": "Delete Scheduler Job"
+    "translation": "scheduler.delete_dialog.title"
   },
   "scheduler.dialog.description": {
     "placeholders": {},
@@ -1653,7 +1653,7 @@
         170
       ]
     ],
-    "translation": "Configure a scheduled job to send messages to Claude Code"
+    "translation": "scheduler.dialog.description"
   },
   "scheduler.dialog.title.create": {
     "placeholders": {},
@@ -1664,7 +1664,7 @@
         166
       ]
     ],
-    "translation": "Create Scheduled Job"
+    "translation": "scheduler.dialog.title.create"
   },
   "scheduler.dialog.title.edit": {
     "placeholders": {},
@@ -1675,7 +1675,7 @@
         164
       ]
     ],
-    "translation": "Edit Scheduled Job"
+    "translation": "scheduler.dialog.title.edit"
   },
   "scheduler.error.load_failed": {
     "placeholders": {
@@ -1690,7 +1690,7 @@
         211
       ]
     ],
-    "translation": "Failed to load scheduler jobs: {error}"
+    "translation": "scheduler.error.load_failed"
   },
   "scheduler.form.concurrency_policy": {
     "placeholders": {},
@@ -1701,7 +1701,7 @@
         317
       ]
     ],
-    "translation": "Concurrency Policy"
+    "translation": "scheduler.form.concurrency_policy"
   },
   "scheduler.form.concurrency_policy.run": {
     "placeholders": {},
@@ -1712,7 +1712,7 @@
         334
       ]
     ],
-    "translation": "Run even if already running"
+    "translation": "scheduler.form.concurrency_policy.run"
   },
   "scheduler.form.concurrency_policy.skip": {
     "placeholders": {},
@@ -1723,7 +1723,7 @@
         331
       ]
     ],
-    "translation": "Skip if already running"
+    "translation": "scheduler.form.concurrency_policy.skip"
   },
   "scheduler.form.enabled": {
     "placeholders": {},
@@ -1734,7 +1734,7 @@
         179
       ]
     ],
-    "translation": "Enable"
+    "translation": "scheduler.form.enabled"
   },
   "scheduler.form.enabled.description": {
     "placeholders": {},
@@ -1745,7 +1745,7 @@
         182
       ]
     ],
-    "translation": "Enable or disable this scheduled job"
+    "translation": "scheduler.form.enabled.description"
   },
   "scheduler.form.message": {
     "placeholders": {},
@@ -1756,7 +1756,7 @@
         263
       ]
     ],
-    "translation": "Message Content"
+    "translation": "scheduler.form.message"
   },
   "scheduler.form.message.aria_label": {
     "message": "Message input with completion support (/ for commands, @ for files)",
@@ -1779,7 +1779,7 @@
         309
       ]
     ],
-    "translation": "/ for command completion, @ for file completion"
+    "translation": "scheduler.form.message.hint"
   },
   "scheduler.form.message.placeholder": {
     "message": "Type message to send to Claude Code... (/ for commands, @ for files)",
@@ -1802,7 +1802,7 @@
         196
       ]
     ],
-    "translation": "Job Name"
+    "translation": "scheduler.form.name"
   },
   "scheduler.form.reserved_time": {
     "placeholders": {},
@@ -1813,7 +1813,7 @@
         245
       ]
     ],
-    "translation": "Scheduled Execution Time"
+    "translation": "scheduler.form.reserved_time"
   },
   "scheduler.form.reserved_time.hint": {
     "placeholders": {},
@@ -1824,7 +1824,7 @@
         255
       ]
     ],
-    "translation": "Will be executed once at the specified date and time, then automatically deleted"
+    "translation": "scheduler.form.reserved_time.hint"
   },
   "scheduler.form.schedule_type": {
     "placeholders": {},
@@ -1835,7 +1835,7 @@
         213
       ]
     ],
-    "translation": "Schedule Type"
+    "translation": "scheduler.form.schedule_type"
   },
   "scheduler.form.schedule_type.cron": {
     "placeholders": {},
@@ -1846,7 +1846,7 @@
         227
       ]
     ],
-    "translation": "Recurring (Cron)"
+    "translation": "scheduler.form.schedule_type.cron"
   },
   "scheduler.form.schedule_type.reserved": {
     "placeholders": {},
@@ -1857,7 +1857,7 @@
         230
       ]
     ],
-    "translation": "One-time Execution"
+    "translation": "scheduler.form.schedule_type.reserved"
   },
   "scheduler.job.create_failed": {
     "message": "Failed to create job",
@@ -1940,7 +1940,7 @@
         276
       ]
     ],
-    "translation": "Last Run"
+    "translation": "scheduler.last_run"
   },
   "scheduler.no_jobs": {
     "placeholders": {},
@@ -1951,7 +1951,7 @@
         220
       ]
     ],
-    "translation": "No scheduler jobs"
+    "translation": "scheduler.no_jobs"
   },
   "scheduler.status.disabled": {
     "placeholders": {},
@@ -1962,7 +1962,7 @@
         244
       ]
     ],
-    "translation": "Disabled"
+    "translation": "scheduler.status.disabled"
   },
   "scheduler.status.enabled": {
     "placeholders": {},
@@ -1973,7 +1973,7 @@
         242
       ]
     ],
-    "translation": "Enabled"
+    "translation": "scheduler.status.enabled"
   },
   "scheduler.title": {
     "placeholders": {},
@@ -1984,7 +1984,7 @@
         166
       ]
     ],
-    "translation": "Scheduler"
+    "translation": "scheduler.title"
   },
   "session.conversation.abort": {
     "placeholders": {},
@@ -1995,7 +1995,7 @@
         156
       ]
     ],
-    "translation": "Abort"
+    "translation": "session.conversation.abort"
   },
   "session.conversation.paused": {
     "placeholders": {},
@@ -2006,7 +2006,7 @@
         272
       ]
     ],
-    "translation": "Paused"
+    "translation": "session.conversation.paused"
   },
   "session.conversation.running": {
     "placeholders": {},
@@ -2017,7 +2017,7 @@
         263
       ]
     ],
-    "translation": "Running"
+    "translation": "session.conversation.running"
   },
   "session.cost.cache_creation": {
     "placeholders": {},
@@ -2028,7 +2028,7 @@
         405
       ]
     ],
-    "translation": "Cache creation"
+    "translation": "session.cost.cache_creation"
   },
   "session.cost.cache_read": {
     "placeholders": {},
@@ -2039,7 +2039,7 @@
         419
       ]
     ],
-    "translation": "Cache read"
+    "translation": "session.cost.cache_read"
   },
   "session.cost.input_tokens": {
     "placeholders": {},
@@ -2050,7 +2050,7 @@
         377
       ]
     ],
-    "translation": "Input tokens"
+    "translation": "session.cost.input_tokens"
   },
   "session.cost.label": {
     "placeholders": {},
@@ -2061,7 +2061,7 @@
         362
       ]
     ],
-    "translation": "Session Cost"
+    "translation": "session.cost.label"
   },
   "session.cost.output_tokens": {
     "placeholders": {},
@@ -2072,7 +2072,7 @@
         391
       ]
     ],
-    "translation": "Output tokens"
+    "translation": "session.cost.output_tokens"
   },
   "session.cost.total": {
     "placeholders": {},
@@ -2083,7 +2083,7 @@
         369
       ]
     ],
-    "translation": "Total"
+    "translation": "session.cost.total"
   },
   "session.empty_state.description": {
     "placeholders": {},
@@ -2105,7 +2105,7 @@
         479
       ]
     ],
-    "translation": "Claude Code is processing..."
+    "translation": "session.processing"
   },
   "session.status.paused": {
     "placeholders": {},
@@ -2116,7 +2116,7 @@
         149
       ]
     ],
-    "translation": "Paused"
+    "translation": "session.status.paused"
   },
   "session.status.running": {
     "placeholders": {},
@@ -2127,7 +2127,7 @@
         147
       ]
     ],
-    "translation": "Running"
+    "translation": "session.status.running"
   },
   "sessions.load.more": {
     "placeholders": {},
@@ -2138,7 +2138,7 @@
         192
       ]
     ],
-    "translation": "Load More"
+    "translation": "sessions.load.more"
   },
   "sessions.title": {
     "placeholders": {},
@@ -2149,7 +2149,7 @@
         77
       ]
     ],
-    "translation": "Sessions"
+    "translation": "sessions.title"
   },
   "sessions.total": {
     "placeholders": {},
@@ -2160,7 +2160,7 @@
         81
       ]
     ],
-    "translation": "Total"
+    "translation": "sessions.total"
   },
   "settings.description": {
     "placeholders": {},
@@ -2171,7 +2171,7 @@
         62
       ]
     ],
-    "translation": "Display and behavior settings"
+    "translation": "settings.description"
   },
   "settings.input.enter_key_behavior": {
     "placeholders": {},
@@ -2182,7 +2182,7 @@
         168
       ]
     ],
-    "translation": "Enter Key Behavior"
+    "translation": "settings.input.enter_key_behavior"
   },
   "settings.input.enter_key_behavior.command_enter": {
     "placeholders": {},
@@ -2193,7 +2193,7 @@
         186
       ]
     ],
-    "translation": "Send with Command+Enter"
+    "translation": "settings.input.enter_key_behavior.command_enter"
   },
   "settings.input.enter_key_behavior.description": {
     "placeholders": {},
@@ -2204,7 +2204,7 @@
         192
       ]
     ],
-    "translation": "Select Enter key behavior for message input"
+    "translation": "settings.input.enter_key_behavior.description"
   },
   "settings.input.enter_key_behavior.enter": {
     "placeholders": {},
@@ -2215,7 +2215,7 @@
         183
       ]
     ],
-    "translation": "Send with Enter"
+    "translation": "settings.input.enter_key_behavior.enter"
   },
   "settings.input.enter_key_behavior.shift_enter": {
     "placeholders": {},
@@ -2226,7 +2226,7 @@
         180
       ]
     ],
-    "translation": "Send with Shift+Enter (Default)"
+    "translation": "settings.input.enter_key_behavior.shift_enter"
   },
   "settings.loading": {
     "placeholders": {},
@@ -2241,7 +2241,7 @@
         70
       ]
     ],
-    "translation": "Loading settings..."
+    "translation": "settings.loading"
   },
   "settings.locale": {
     "placeholders": {},
@@ -2252,7 +2252,7 @@
         247
       ]
     ],
-    "translation": "Language"
+    "translation": "settings.locale"
   },
   "settings.locale.description": {
     "placeholders": {},
@@ -2263,7 +2263,7 @@
         271
       ]
     ],
-    "translation": "Select your preferred language"
+    "translation": "settings.locale.description"
   },
   "settings.locale.en": {
     "placeholders": {},
@@ -2274,7 +2274,7 @@
         262
       ]
     ],
-    "translation": "English"
+    "translation": "settings.locale.en"
   },
   "settings.locale.ja": {
     "placeholders": {},
@@ -2285,7 +2285,7 @@
         259
       ]
     ],
-    "translation": "Japanese"
+    "translation": "settings.locale.ja"
   },
   "settings.locale.zh_CN": {
     "placeholders": {},
@@ -2296,7 +2296,7 @@
         265
       ]
     ],
-    "translation": "Chinese (Simplified)"
+    "translation": "settings.locale.zh_CN"
   },
   "settings.notifications": {
     "placeholders": {},
@@ -2307,7 +2307,7 @@
         117
       ]
     ],
-    "translation": "Notifications"
+    "translation": "settings.notifications"
   },
   "settings.permission.mode": {
     "placeholders": {},
@@ -2318,7 +2318,7 @@
         203
       ]
     ],
-    "translation": "Permission Mode"
+    "translation": "settings.permission.mode"
   },
   "settings.permission.mode.accept_edits": {
     "placeholders": {},
@@ -2329,7 +2329,7 @@
         219
       ]
     ],
-    "translation": "Accept Edits (Auto-approve file edits)"
+    "translation": "settings.permission.mode.accept_edits"
   },
   "settings.permission.mode.bypass_permissions": {
     "placeholders": {},
@@ -2340,7 +2340,7 @@
         222
       ]
     ],
-    "translation": "Bypass Permissions (No prompts)"
+    "translation": "settings.permission.mode.bypass_permissions"
   },
   "settings.permission.mode.default": {
     "placeholders": {},
@@ -2351,7 +2351,7 @@
         216
       ]
     ],
-    "translation": "Default (Confirm Permissions)"
+    "translation": "settings.permission.mode.default"
   },
   "settings.permission.mode.description": {
     "placeholders": {},
@@ -2362,7 +2362,7 @@
         231
       ]
     ],
-    "translation": "Control how file operation permission requests are handled"
+    "translation": "settings.permission.mode.description"
   },
   "settings.permission.mode.plan": {
     "placeholders": {},
@@ -2373,7 +2373,7 @@
         225
       ]
     ],
-    "translation": "Plan Mode (Planning only)"
+    "translation": "settings.permission.mode.plan"
   },
   "settings.permission.mode.unavailable": {
     "placeholders": {},
@@ -2384,7 +2384,7 @@
         236
       ]
     ],
-    "translation": "This feature is not available in your Claude Code version. All tools are automatically approved."
+    "translation": "settings.permission.mode.unavailable"
   },
   "settings.section.notifications": {
     "placeholders": {},
@@ -2395,7 +2395,7 @@
         85
       ]
     ],
-    "translation": "Notifications"
+    "translation": "settings.section.notifications"
   },
   "settings.section.session_display": {
     "placeholders": {},
@@ -2406,7 +2406,7 @@
         78
       ]
     ],
-    "translation": "Session Display"
+    "translation": "settings.section.session_display"
   },
   "settings.section.system_info": {
     "placeholders": {},
@@ -2417,7 +2417,7 @@
         98
       ]
     ],
-    "translation": "System Information"
+    "translation": "settings.section.system_info"
   },
   "settings.session.display": {
     "placeholders": {},
@@ -2428,7 +2428,7 @@
         110
       ]
     ],
-    "translation": "Session Display"
+    "translation": "settings.session.display"
   },
   "settings.session.hide_no_user_message": {
     "placeholders": {},
@@ -2439,7 +2439,7 @@
         131
       ]
     ],
-    "translation": "Hide Sessions Without User Messages"
+    "translation": "settings.session.hide_no_user_message"
   },
   "settings.session.hide_no_user_message.description": {
     "placeholders": {},
@@ -2450,7 +2450,7 @@
         137
       ]
     ],
-    "translation": "Show only sessions that contain user commands or messages"
+    "translation": "settings.session.hide_no_user_message.description"
   },
   "settings.session.unify_same_title": {
     "placeholders": {},
@@ -2461,7 +2461,7 @@
         152
       ]
     ],
-    "translation": "Unify Sessions with Same Title"
+    "translation": "settings.session.unify_same_title"
   },
   "settings.session.unify_same_title.description": {
     "placeholders": {},
@@ -2472,7 +2472,7 @@
         158
       ]
     ],
-    "translation": "When multiple sessions have the same title, show only the latest session"
+    "translation": "settings.session.unify_same_title.description"
   },
   "settings.tab.title": {
     "placeholders": {},
@@ -2487,7 +2487,7 @@
         54
       ]
     ],
-    "translation": "Display and Notification Settings"
+    "translation": "settings.tab.title"
   },
   "settings.theme": {
     "placeholders": {},
@@ -2498,7 +2498,7 @@
         279
       ]
     ],
-    "translation": "Theme"
+    "translation": "settings.theme"
   },
   "settings.theme.dark": {
     "placeholders": {},
@@ -2509,7 +2509,7 @@
         291
       ]
     ],
-    "translation": "Dark"
+    "translation": "settings.theme.dark"
   },
   "settings.theme.description": {
     "placeholders": {},
@@ -2520,7 +2520,7 @@
         300
       ]
     ],
-    "translation": "Select your preferred color theme"
+    "translation": "settings.theme.description"
   },
   "settings.theme.light": {
     "placeholders": {},
@@ -2531,7 +2531,7 @@
         288
       ]
     ],
-    "translation": "Light"
+    "translation": "settings.theme.light"
   },
   "settings.theme.system": {
     "placeholders": {},
@@ -2542,7 +2542,7 @@
         294
       ]
     ],
-    "translation": "System"
+    "translation": "settings.theme.system"
   },
   "settings.title": {
     "placeholders": {},
@@ -2553,7 +2553,7 @@
         59
       ]
     ],
-    "translation": "Settings"
+    "translation": "settings.title"
   },
   "sidebar.back.to.projects": {
     "placeholders": {},
@@ -2565,10 +2565,10 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        96
+        108
       ]
     ],
-    "translation": "Back to Projects"
+    "translation": "sidebar.back.to.projects"
   },
   "sidebar.show.mcp.settings": {
     "placeholders": {},
@@ -2580,10 +2580,10 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        60
+        62
       ]
     ],
-    "translation": "Show MCP Server Settings"
+    "translation": "sidebar.show.mcp.settings"
   },
   "sidebar.show.scheduler.jobs": {
     "placeholders": {},
@@ -2591,10 +2591,10 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        66
+        68
       ]
     ],
-    "translation": "Show Scheduler Jobs"
+    "translation": "sidebar.show.scheduler.jobs"
   },
   "sidebar.show.session.list": {
     "placeholders": {},
@@ -2606,10 +2606,21 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        47
+        49
       ]
     ],
-    "translation": "Show Session List"
+    "translation": "sidebar.show.session.list"
+  },
+  "sidebar.show.tool.calls": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
+        76
+      ]
+    ],
+    "translation": "Show Tool Calls"
   },
   "system.info.tab.title": {
     "placeholders": {},
@@ -2620,7 +2631,7 @@
         271
       ]
     ],
-    "translation": "Show System Information"
+    "translation": "system.info.tab.title"
   },
   "system_info.available_features": {
     "placeholders": {},
@@ -2631,7 +2642,7 @@
         124
       ]
     ],
-    "translation": "Available Features"
+    "translation": "system_info.available_features"
   },
   "system_info.claude_code": {
     "placeholders": {},
@@ -2642,7 +2653,7 @@
         90
       ]
     ],
-    "translation": "Claude Code"
+    "translation": "system_info.claude_code"
   },
   "system_info.description": {
     "placeholders": {},
@@ -2653,7 +2664,7 @@
         67
       ]
     ],
-    "translation": "Version and feature information"
+    "translation": "system_info.description"
   },
   "system_info.executable_path": {
     "placeholders": {},
@@ -2664,7 +2675,7 @@
         95
       ]
     ],
-    "translation": "Executable Path"
+    "translation": "system_info.executable_path"
   },
   "system_info.feature.agent_sdk.description": {
     "placeholders": {},
@@ -2675,7 +2686,7 @@
         37
       ]
     ],
-    "translation": "Uses @anthropic-ai/claude-agent-sdk instead of @anthropic-ai/claude-code"
+    "translation": "system_info.feature.agent_sdk.description"
   },
   "system_info.feature.agent_sdk.title": {
     "placeholders": {},
@@ -2686,7 +2697,7 @@
         36
       ]
     ],
-    "translation": "Extended Agent Mode"
+    "translation": "system_info.feature.agent_sdk.title"
   },
   "system_info.feature.tool_approval.description": {
     "placeholders": {},
@@ -2697,7 +2708,7 @@
         31
       ]
     ],
-    "translation": "Approve or reject tool executions before Claude runs them, giving you full control over actions"
+    "translation": "system_info.feature.tool_approval.description"
   },
   "system_info.feature.tool_approval.title": {
     "placeholders": {},
@@ -2708,7 +2719,7 @@
         29
       ]
     ],
-    "translation": "Tool Approval"
+    "translation": "system_info.feature.tool_approval.title"
   },
   "system_info.feature.unknown.description": {
     "placeholders": {},
@@ -2719,7 +2730,7 @@
         42
       ]
     ],
-    "translation": "Feature information unavailable"
+    "translation": "system_info.feature.unknown.description"
   },
   "system_info.title": {
     "placeholders": {},
@@ -2730,7 +2741,7 @@
         64
       ]
     ],
-    "translation": "System Information"
+    "translation": "system_info.title"
   },
   "system_info.unknown": {
     "placeholders": {},
@@ -2745,7 +2756,7 @@
         112
       ]
     ],
-    "translation": "Unknown"
+    "translation": "system_info.unknown"
   },
   "system_info.version_label": {
     "placeholders": {},
@@ -2760,7 +2771,7 @@
         108
       ]
     ],
-    "translation": "Version"
+    "translation": "system_info.version_label"
   },
   "system_info.viewer_version": {
     "placeholders": {},
@@ -2771,7 +2782,51 @@
         75
       ]
     ],
-    "translation": "Claude Code Viewer"
+    "translation": "system_info.viewer_version"
+  },
+  "tool.calls.filters.clear": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/toolCallsTab/ToolCallFilters.tsx",
+        111
+      ]
+    ],
+    "translation": "Clear"
+  },
+  "tool.calls.filters.title": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/toolCallsTab/ToolCallFilters.tsx",
+        95
+      ]
+    ],
+    "translation": "Filters"
+  },
+  "tool.calls.filters.tool.types": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/toolCallsTab/ToolCallFilters.tsx",
+        123
+      ]
+    ],
+    "translation": "Tool Types"
+  },
+  "tool.calls.list.empty": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/toolCallsTab/ToolCallList.tsx",
+        21
+      ]
+    ],
+    "translation": "No tool calls found"
   },
   "user.content.document.pdf": {
     "placeholders": {},
@@ -2782,7 +2837,7 @@
         115
       ]
     ],
-    "translation": "PDF Document"
+    "translation": "user.content.document.pdf"
   },
   "user.content.document.text": {
     "placeholders": {},
@@ -2793,7 +2848,7 @@
         157
       ]
     ],
-    "translation": "Text Document"
+    "translation": "user.content.document.text"
   },
   "user.content.image": {
     "placeholders": {},
@@ -2804,7 +2859,7 @@
         49
       ]
     ],
-    "translation": "Attached Image"
+    "translation": "user.content.image"
   },
   "user.content.unsupported_document": {
     "placeholders": {},
@@ -2815,7 +2870,7 @@
         192
       ]
     ],
-    "translation": "Unsupported Document"
+    "translation": "user.content.unsupported_document"
   },
   "user.content.unsupported_document.description": {
     "placeholders": {},
@@ -2826,7 +2881,7 @@
         199
       ]
     ],
-    "translation": "Document type not supported for display"
+    "translation": "user.content.unsupported_document.description"
   },
   "user.content.unsupported_media": {
     "placeholders": {},
@@ -2837,7 +2892,7 @@
         86
       ]
     ],
-    "translation": "Unsupported Media"
+    "translation": "user.content.unsupported_media"
   },
   "user.content.unsupported_media.description": {
     "placeholders": {},
@@ -2848,6 +2903,6 @@
         93
       ]
     ],
-    "translation": "Media format not supported for display"
+    "translation": "user.content.unsupported_media.description"
   }
 }

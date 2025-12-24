@@ -11,6 +11,9 @@ import { ProtectedRoute } from "../../../components/ProtectedRoute";
 const sessionSearchSchema = z.object({
   sessionId: z.string().optional(),
   tab: tabSchema.optional().default("sessions"),
+  toolTypes: z.string().optional(),
+  pathQuery: z.string().optional(),
+  highlightIndex: z.number().optional(),
 });
 
 export const Route = createFileRoute("/projects/$projectId/session")({

@@ -24,7 +24,7 @@ export const useCreateSessionProcessMutation = (
         },
         {
           init: {
-            signal: AbortSignal.timeout(20 * 1000),
+            signal: AbortSignal.timeout(60 * 1000),
           },
         },
       );
@@ -73,7 +73,7 @@ export const useContinueSessionProcessMutation = (
         },
         {
           init: {
-            signal: AbortSignal.timeout(20 * 1000),
+            signal: AbortSignal.timeout(60 * 1000),
           },
         },
       );

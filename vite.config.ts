@@ -6,7 +6,7 @@ import viteReact from "@vitejs/plugin-react-swc";
 import dotenv from "dotenv";
 import { defineConfig } from "vite";
 
-dotenv.config({ path: "../../.env.local" });
+dotenv.config({ path: ".env.local" });
 
 export default defineConfig({
   plugins: [

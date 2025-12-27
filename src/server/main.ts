@@ -120,12 +120,16 @@ const port = isDevelopment
   : // biome-ignore lint/style/noProcessEnv: allow only here
     (process.env.PORT ?? "3000");
 
+// biome-ignore lint/style/noProcessEnv: allow only here
+const hostname = process.env.HOSTNAME ?? "localhost";
+
 serve(
   {
     fetch: honoApp.fetch,
     port: parseInt(port, 10),
+    hostname,
   },
   (info) => {
-    console.log(`Server is running on http://localhost:${info.port}`);
+    console.log(`Server is running on http://${info.address}:${info.port}`);
   },
 );

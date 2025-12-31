@@ -130,6 +130,6 @@ serve(
     hostname,
   },
   (info) => {
-    console.log(`Server is running on http://${info.address}:${info.port}`);
+    console.log(`Server is running on http://${hostname}:${info.port}`);
   },
 );

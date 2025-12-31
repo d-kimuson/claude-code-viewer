@@ -20,6 +20,7 @@ FROM base AS runner
 WORKDIR /app
 ENV NODE_ENV=production \
     PORT=3400 \
+    HOSTNAME=0.0.0.0 \
     PATH="/app/node_modules/.bin:${PATH}"
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist

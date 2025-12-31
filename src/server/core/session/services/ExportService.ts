@@ -227,11 +227,28 @@ const renderAssistantEntry = (
 };
 
 /**
+ * Gets the content to display for a system entry
+ */
+const getSystemEntryContent = (
+  entry: Extract<Conversation, { type: "system" }>,
+): string => {
+  if ("content" in entry && typeof entry.content === "string") {
+    return entry.content;
+  }
+  if ("subtype" in entry && entry.subtype === "stop_hook_summary") {
+    const hookNames = entry.hookInfos.map((h) => h.command).join(", ");
+    return `Stop hook executed: ${hookNames}`;
+  }
+  return "System message";
+};
+
+/**
  * Renders a system message entry
  */
 const renderSystemEntry = (
   entry: Extract<Conversation, { type: "system" }>,
 ): string => {
+  const content = getSystemEntryContent(entry);
   return `
     <div class="conversation-entry system-entry">
       <div class="entry-header">
@@ -239,7 +256,7 @@ const renderSystemEntry = (
         <span class="entry-timestamp">${formatTimestamp(entry.timestamp)}</span>
       </div>
       <div class="entry-content">
-        <div class="system-message">${escapeHtml(entry.content)}</div>
+        <div class="system-message">${escapeHtml(content)}</div>
       </div>
     </div>
   `;

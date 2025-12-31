@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.4.15
+
+### &nbsp;&nbsp;&nbsp;Features
+
+- Add HOSTNAME environment variable for remote access &nbsp;-&nbsp; by **Kyle Graehl** [<samp>(8d4ca)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/8d4cac4)
+
+### &nbsp;&nbsp;&nbsp;Bug Fixes
+
+- Handle query parameters in snapshot directory paths &nbsp;-&nbsp; by **d-kimsuon** and **Claude** [<samp>(d63eb)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/d63eb5b)
+- Extend MCP launch timeout from 20s to 60s &nbsp;-&nbsp; by **d-kimsuon** and **Claude** [<samp>(297d9)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/297d96f)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.4.14...0.4.15)
+
 ## 0.4.14
 
 ### &nbsp;&nbsp;&nbsp;Features

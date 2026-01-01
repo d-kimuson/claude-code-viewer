@@ -8,6 +8,7 @@
 - **Environment variable names changed**: To improve consistency and reduce verbosity, environment variable names have been updated:
   - `CLAUDE_CODE_VIEWER_AUTH_PASSWORD` → `CCV_PASSWORD`
   - `CLAUDE_CODE_VIEWER_CC_EXECUTABLE_PATH` → `CCV_CC_EXECUTABLE_PATH`
+  - New environment variable added: `CCV_GLOBAL_CLAUDE_DIR` (previously the Claude directory path was hardcoded to `~/.claude`)
   - Old environment variable names are no longer supported. Please update your configuration to use the new names.
 
 ### &nbsp;&nbsp;&nbsp;Features
@@ -27,13 +28,14 @@ CLAUDE_CODE_VIEWER_CC_EXECUTABLE_PATH=/path/to/claude
 # New
 CCV_PASSWORD=secret
 CCV_CC_EXECUTABLE_PATH=/path/to/claude
+CCV_GLOBAL_CLAUDE_DIR=~/.claude  # Optional: defaults to ~/.claude
 ```
 
 Alternatively, you can now use command-line options:
 
 ```bash
 # Using command-line options
-claude-code-viewer --password secret --executable /path/to/claude
+claude-code-viewer --password secret --executable /path/to/claude --claude-dir ~/.claude
 ```
 
 ##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.4.15...main)

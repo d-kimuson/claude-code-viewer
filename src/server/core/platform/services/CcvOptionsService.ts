@@ -42,9 +42,7 @@ const LayerImpl = Effect.gen(function* () {
             getOptionalEnv("CCV_CC_EXECUTABLE_PATH") ??
             undefined,
           claudeDir:
-            cliOptions.claudeDir ??
-            getOptionalEnv("CCV_GLOBAL_CLAUDE_DIR") ??
-            "~/.claude",
+            cliOptions.claudeDir ?? getOptionalEnv("CCV_GLOBAL_CLAUDE_DIR"),
         };
       });
     });

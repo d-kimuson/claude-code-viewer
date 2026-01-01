@@ -155,6 +155,7 @@ Claude Code Viewer can be configured using command-line options or environment v
 **Breaking Change**: Environment variable names have been changed. If you're using environment variables, update them as follows:
 - `CLAUDE_CODE_VIEWER_AUTH_PASSWORD` → `CCV_PASSWORD`
 - `CLAUDE_CODE_VIEWER_CC_EXECUTABLE_PATH` → `CCV_CC_EXECUTABLE_PATH`
+- New environment variable added: `CCV_GLOBAL_CLAUDE_DIR` (previously the Claude directory path was hardcoded to `~/.claude`)
 
 ### User Settings
 

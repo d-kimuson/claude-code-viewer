@@ -6,7 +6,7 @@ import { EventBus } from "../../server/core/events/services/EventBus";
 import type { EnvSchema } from "../../server/core/platform/schema";
 import {
   ApplicationContext,
-  type IApplicationContext,
+  type ClaudeCodePaths,
 } from "../../server/core/platform/services/ApplicationContext";
 import {
   type CcvOptions,
@@ -19,20 +19,18 @@ import type { UserConfig } from "../../server/lib/config/config";
 const claudeDirForTest = resolve(process.cwd(), "mock-global-claude-dir");
 
 export const testPlatformLayer = (overrides?: {
-  applicationContext?: Partial<IApplicationContext>;
+  claudeCodePaths?: Partial<ClaudeCodePaths>;
   env?: Partial<EnvSchema>;
   userConfig?: Partial<UserConfig>;
   ccvOptions?: Partial<CcvOptions>;
 }) => {
   const applicationContextLayer = Layer.mock(ApplicationContext, {
-    ...overrides?.applicationContext,
-
-    claudeCodePaths: {
+    claudeCodePaths: Effect.succeed({
       globalClaudeDirectoryPath: resolve(claudeDirForTest),
       claudeCommandsDirPath: resolve(claudeDirForTest, "commands"),
       claudeProjectsDirPath: resolve(claudeDirForTest, "projects"),
-      ...overrides?.applicationContext?.claudeCodePaths,
-    },
+      ...overrides?.claudeCodePaths,
+    }),
   });
 
   const ccvOptionsServiceLayer = Layer.mock(CcvOptionsService, {

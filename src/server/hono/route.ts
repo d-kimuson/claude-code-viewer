@@ -45,6 +45,16 @@ import { configMiddleware } from "./middleware/config.middleware";
 
 export const routes = (app: HonoAppType, options: CliOptions) =>
   Effect.gen(function* () {
+    const ccvOptionsService = yield* CcvOptionsService;
+    yield* ccvOptionsService.loadCliOptions(options);
+
+    // services
+    // const ccvOptionsService = yield* CcvOptionsService;
+    const envService = yield* EnvService;
+    const userConfigService = yield* UserConfigService;
+    const claudeCodeLifeCycleService = yield* ClaudeCodeLifeCycleService;
+    const initializeService = yield* InitializeService;
+
     // controllers
     const projectController = yield* ProjectController;
     const sessionController = yield* SessionController;
@@ -61,16 +71,10 @@ export const routes = (app: HonoAppType, options: CliOptions) =>
     const featureFlagController = yield* FeatureFlagController;
     const searchController = yield* SearchController;
 
-    // services
-    const ccvOptionsService = yield* CcvOptionsService;
-    const envService = yield* EnvService;
-    const userConfigService = yield* UserConfigService;
-    const claudeCodeLifeCycleService = yield* ClaudeCodeLifeCycleService;
-    const initializeService = yield* InitializeService;
-
     // middleware
+    const authMiddlewareService = yield* AuthMiddleware;
     const { authMiddleware, validSessionToken, authEnabled, anthPassword } =
-      yield* AuthMiddleware;
+      yield* authMiddlewareService;
 
     const runtime = yield* Effect.runtime<
       | CcvOptionsService
@@ -85,8 +89,6 @@ export const routes = (app: HonoAppType, options: CliOptions) =>
       | ProjectRepository
       | SchedulerConfigBaseDir
     >();
-
-    yield* ccvOptionsService.loadCliOptions(options);
 
     if ((yield* envService.getEnv("NEXT_PHASE")) !== "phase-production-build") {
       yield* initializeService.startInitialization();

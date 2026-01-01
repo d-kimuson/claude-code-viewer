@@ -60,7 +60,7 @@ const LayerImpl = Effect.gen(function* () {
 
   const buildIndex = () =>
     Effect.gen(function* () {
-      const { claudeProjectsDirPath } = context.claudeCodePaths;
+      const { claudeProjectsDirPath } = yield* context.claudeCodePaths;
 
       const dirExists = yield* fs.exists(claudeProjectsDirPath);
       if (!dirExists) {
@@ -182,7 +182,7 @@ const LayerImpl = Effect.gen(function* () {
 
   const search = (query: string, limit = 20, projectId?: string) =>
     Effect.gen(function* () {
-      const { claudeProjectsDirPath } = context.claudeCodePaths;
+      const { claudeProjectsDirPath } = yield* context.claudeCodePaths;
 
       const dirExists = yield* fs.exists(claudeProjectsDirPath);
       if (!dirExists) {

@@ -1,5 +1,43 @@
 # Changelog
 
+## Unreleased
+
+### &nbsp;&nbsp;&nbsp;Breaking Changes
+
+- **Command-line options support**: Claude Code Viewer now supports command-line options for configuration. Command-line options take precedence over environment variables &nbsp;-&nbsp; by **d-kimsuon** [<samp>(0e424)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/0e424fc)
+- **Environment variable names changed**: To improve consistency and reduce verbosity, environment variable names have been updated:
+  - `CLAUDE_CODE_VIEWER_AUTH_PASSWORD` → `CCV_PASSWORD`
+  - `CLAUDE_CODE_VIEWER_CC_EXECUTABLE_PATH` → `CCV_CC_EXECUTABLE_PATH`
+  - Old environment variable names are no longer supported. Please update your configuration to use the new names.
+
+### &nbsp;&nbsp;&nbsp;Features
+
+- Add command-line options: `--port`, `--hostname`, `--password`, `--executable`, `--claude-dir` &nbsp;-&nbsp; by **d-kimsuon** [<samp>(0e424)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/0e424fc)
+- Command-line options take precedence over environment variables, allowing flexible configuration &nbsp;-&nbsp; by **d-kimsuon** [<samp>(0e424)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/0e424fc)
+
+### &nbsp;&nbsp;&nbsp;Migration Guide
+
+If you're using environment variables in your deployment, update them as follows:
+
+```bash
+# Old (no longer supported)
+CLAUDE_CODE_VIEWER_AUTH_PASSWORD=secret
+CLAUDE_CODE_VIEWER_CC_EXECUTABLE_PATH=/path/to/claude
+
+# New
+CCV_PASSWORD=secret
+CCV_CC_EXECUTABLE_PATH=/path/to/claude
+```
+
+Alternatively, you can now use command-line options:
+
+```bash
+# Using command-line options
+claude-code-viewer --password secret --executable /path/to/claude
+```
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.4.15...main)
+
 ## 0.4.15
 
 ### &nbsp;&nbsp;&nbsp;Features

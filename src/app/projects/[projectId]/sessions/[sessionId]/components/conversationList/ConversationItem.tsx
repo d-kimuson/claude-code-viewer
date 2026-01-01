@@ -42,11 +42,13 @@ export const ConversationItem: FC<{
   }
 
   if (conversation.type === "system") {
-    return (
-      <SystemConversationContent>
-        {conversation.content}
-      </SystemConversationContent>
-    );
+    const content =
+      "content" in conversation && typeof conversation.content === "string"
+        ? conversation.content
+        : conversation.subtype === "stop_hook_summary"
+          ? `Stop hook executed: ${conversation.hookInfos.map((h) => h.command).join(", ")}`
+          : "System message";
+    return <SystemConversationContent>{content}</SystemConversationContent>;
   }
 
   if (conversation.type === "file-history-snapshot") {

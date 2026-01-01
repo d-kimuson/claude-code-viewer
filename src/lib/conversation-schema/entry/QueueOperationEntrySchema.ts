@@ -29,6 +29,12 @@ export const QueueOperationEntrySchema = z.union([
     sessionId: z.string(),
     timestamp: z.iso.datetime(),
   }),
+  z.object({
+    type: z.literal("queue-operation"),
+    operation: z.literal("remove"),
+    sessionId: z.string(),
+    timestamp: z.iso.datetime(),
+  }),
 ]);
 
 export type QueueOperationEntry = z.infer<typeof QueueOperationEntrySchema>;

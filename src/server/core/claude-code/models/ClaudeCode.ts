@@ -6,7 +6,7 @@ import {
 import { Command, Path } from "@effect/platform";
 import { Data, Effect } from "effect";
 import { uniq } from "es-toolkit";
-import { EnvService } from "../../platform/services/EnvService";
+import { CcvOptionsService } from "../../platform/services/CcvOptionsService";
 import * as ClaudeCodeVersion from "./ClaudeCodeVersion";
 
 type AgentSdkQuery = typeof agentSdkQuery;
@@ -40,12 +40,11 @@ class ClaudeCodePathNotFoundError extends Data.TaggedError(
 
 const resolveClaudeCodePath = Effect.gen(function* () {
   const path = yield* Path.Path;
-  const envService = yield* EnvService;
+  const ccvOptionsService = yield* CcvOptionsService;
 
   // Environment variable (highest priority)
-  const specifiedExecutablePath = yield* envService.getEnv(
-    "CLAUDE_CODE_VIEWER_CC_EXECUTABLE_PATH",
-  );
+  const specifiedExecutablePath =
+    yield* ccvOptionsService.getCcvOptions("executable");
   if (specifiedExecutablePath !== undefined) {
     return path.resolve(specifiedExecutablePath);
   }

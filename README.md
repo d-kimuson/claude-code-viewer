@@ -55,17 +55,30 @@ Note: Additional UI screenshots are available in [/e2e/snapshots/](./e2e/snapsho
 Run directly from npm without installation:
 
 ```bash
-PORT=3400 npx @kimuson/claude-code-viewer@latest
+npx @kimuson/claude-code-viewer@latest --port 3400
 ```
 
 Alternatively, install globally:
 
 ```bash
 npm install -g @kimuson/claude-code-viewer
-claude-code-viewer
+claude-code-viewer --port 3400
 ```
 
-The server will start on port 3400 (or your specified PORT). Open `http://localhost:3400` in your browser to access the interface.
+The server will start on port 3400 (or the default port 3000). Open `http://localhost:3400` in your browser to access the interface.
+
+**Available Options:**
+
+```bash
+claude-code-viewer [options]
+
+Options:
+  -p, --port <port>                Port to listen on (default: 3000)
+  -h, --hostname <hostname>        Hostname to listen on (default: localhost)
+  -P, --password <password>        Password for authentication
+  -e, --executable <executable>    Path to Claude Code executable
+  --claude-dir <claude-dir>        Path to Claude directory
+```
 
 ### Docker Deployment
 
@@ -79,7 +92,8 @@ Run the container directly:
 
 ```bash
 docker run --rm -p 3400:3400 \
-  -e CLAUDE_CODE_VIEWER_AUTH_PASSWORD=your-password \
+  -e PORT=3400 \
+  -e CCV_PASSWORD=your-password \
   -e ANTHROPIC_BASE_URL=... \
   -e ANTHROPIC_API_KEY=... \
   -e ANTHROPIC_AUTH_TOKEN=... \
@@ -126,15 +140,22 @@ The application reads Claude Code conversation logs from:
 
 ## Configuration
 
-### Environment Variables
+### Command-Line Options and Environment Variables
 
-Claude Code Viewer reads several reserved environment variables. All values are optional and only need to be set if you want to override the defaults.
+Claude Code Viewer can be configured using command-line options or environment variables. Command-line options take precedence over environment variables.
 
-| Key | Description |
-| --- | --- |
-| CLAUDE_CODE_VIEWER_CC_EXECUTABLE_PATH | Path to Claude Code installation. If not set, uses system PATH installation, or falls back to bundled version from dependencies |
-| CLAUDE_CODE_VIEWER_AUTH_PASSWORD | Password for authentication. When set, enables password-based authentication to protect access to Claude Code Viewer. All `/api` routes (except login, logout, check, config, and version endpoints) require authentication. If not set, authentication is disabled and the application is publicly accessible |
-| PORT | Port number for Claude Code Viewer to run on |
+| Command-Line Option | Environment Variable | Description | Default |
+| --- | --- | --- | --- |
+| `-p, --port <port>` | `PORT` | Port number for Claude Code Viewer to run on | `3000` |
+| `-h, --hostname <hostname>` | `HOSTNAME` | Hostname to listen on for remote access | `localhost` |
+| `-P, --password <password>` | `CCV_PASSWORD` | Password for authentication. When set, enables password-based authentication to protect access to Claude Code Viewer. All `/api` routes (except login, logout, check, config, and version endpoints) require authentication. If not set, authentication is disabled and the application is publicly accessible | (none) |
+| `-e, --executable <executable>` | `CCV_CC_EXECUTABLE_PATH` | Path to Claude Code installation. If not set, uses system PATH installation, or falls back to bundled version from dependencies | (auto-detect) |
+| `--claude-dir <claude-dir>` | `CCV_GLOBAL_CLAUDE_DIR` | Path to Claude directory where session logs are stored | `~/.claude` |
+
+**Breaking Change**: Environment variable names have been changed. If you're using environment variables, update them as follows:
+- `CLAUDE_CODE_VIEWER_AUTH_PASSWORD` → `CCV_PASSWORD`
+- `CLAUDE_CODE_VIEWER_CC_EXECUTABLE_PATH` → `CCV_CC_EXECUTABLE_PATH`
+- New environment variable added: `CCV_GLOBAL_CLAUDE_DIR` (previously the Claude directory path was hardcoded to `~/.claude`)
 
 ### User Settings
 
@@ -201,7 +222,7 @@ Claude Code Viewer is designed with remote hosting in mind. To support remote de
 - **Real-time Notifications**: Audio notifications for task completion to maintain workflow awareness
 - **System Monitoring**: Monitor Claude Code compatibility and feature availability across environments
 
-The application features a separated client-server architecture that enables remote hosting. **Basic password authentication is available** via the `CLAUDE_CODE_VIEWER_AUTH_PASSWORD` environment variable. When set, users must authenticate with the configured password before accessing the application. However, this is a simple single-password authentication mechanism without advanced features like multi-user support, role-based access control, or OAuth integration. If you require more sophisticated authentication, carefully evaluate your security requirements and implement appropriate access controls at the infrastructure level (e.g., reverse proxy with OAuth, VPN, IP whitelisting).
+The application features a separated client-server architecture that enables remote hosting. **Basic password authentication is available** via the `--password` command-line option or `CCV_PASSWORD` environment variable. When set, users must authenticate with the configured password before accessing the application. However, this is a simple single-password authentication mechanism without advanced features like multi-user support, role-based access control, or OAuth integration. If you require more sophisticated authentication, carefully evaluate your security requirements and implement appropriate access controls at the infrastructure level (e.g., reverse proxy with OAuth, VPN, IP whitelisting).
 
 ## License
 

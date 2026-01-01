@@ -6,8 +6,12 @@ import { EventBus } from "../../server/core/events/services/EventBus";
 import type { EnvSchema } from "../../server/core/platform/schema";
 import {
   ApplicationContext,
-  type IApplicationContext,
+  type ClaudeCodePaths,
 } from "../../server/core/platform/services/ApplicationContext";
+import {
+  type CcvOptions,
+  CcvOptionsService,
+} from "../../server/core/platform/services/CcvOptionsService";
 import { EnvService } from "../../server/core/platform/services/EnvService";
 import { UserConfigService } from "../../server/core/platform/services/UserConfigService";
 import type { UserConfig } from "../../server/lib/config/config";
@@ -15,19 +19,25 @@ import type { UserConfig } from "../../server/lib/config/config";
 const claudeDirForTest = resolve(process.cwd(), "mock-global-claude-dir");
 
 export const testPlatformLayer = (overrides?: {
-  applicationContext?: Partial<IApplicationContext>;
+  claudeCodePaths?: Partial<ClaudeCodePaths>;
   env?: Partial<EnvSchema>;
   userConfig?: Partial<UserConfig>;
+  ccvOptions?: Partial<CcvOptions>;
 }) => {
   const applicationContextLayer = Layer.mock(ApplicationContext, {
-    ...overrides?.applicationContext,
-
-    claudeCodePaths: {
+    claudeCodePaths: Effect.succeed({
       globalClaudeDirectoryPath: resolve(claudeDirForTest),
       claudeCommandsDirPath: resolve(claudeDirForTest, "commands"),
       claudeProjectsDirPath: resolve(claudeDirForTest, "projects"),
-      ...overrides?.applicationContext?.claudeCodePaths,
-    },
+      ...overrides?.claudeCodePaths,
+    }),
+  });
+
+  const ccvOptionsServiceLayer = Layer.mock(CcvOptionsService, {
+    getCcvOptions: <Key extends keyof CcvOptions>(key: Key) =>
+      Effect.sync((): CcvOptions[Key] => {
+        return overrides?.ccvOptions?.[key] as CcvOptions[Key];
+      }),
   });
 
   const envServiceLayer = Layer.mock(EnvService, {
@@ -38,13 +48,6 @@ export const testPlatformLayer = (overrides?: {
             return overrides?.env?.NODE_ENV ?? "development";
           case "NEXT_PHASE":
             return overrides?.env?.NEXT_PHASE ?? "phase-test";
-          case "CLAUDE_CODE_VIEWER_CC_EXECUTABLE_PATH":
-            return (
-              overrides?.env?.CLAUDE_CODE_VIEWER_CC_EXECUTABLE_PATH ??
-              resolve(process.cwd(), "node_modules", ".bin", "claude")
-            );
-          case "GLOBAL_CLAUDE_DIR":
-            return overrides?.env?.GLOBAL_CLAUDE_DIR ?? claudeDirForTest;
           default:
             return overrides?.env?.[key] ?? undefined;
         }
@@ -71,6 +74,7 @@ export const testPlatformLayer = (overrides?: {
     applicationContextLayer,
     userConfigServiceLayer,
     EventBus.Live,
+    ccvOptionsServiceLayer,
     envServiceLayer,
     Path.layer,
   );

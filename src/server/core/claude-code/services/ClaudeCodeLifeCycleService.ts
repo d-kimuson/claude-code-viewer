@@ -10,6 +10,7 @@ import { controllablePromise } from "../../../../lib/controllablePromise";
 import type { UserConfig } from "../../../lib/config/config";
 import type { InferEffect } from "../../../lib/effect/types";
 import { EventBus } from "../../events/services/EventBus";
+import type { CcvOptionsService } from "../../platform/services/CcvOptionsService";
 import type { EnvService } from "../../platform/services/EnvService";
 import { SessionRepository } from "../../session/infrastructure/SessionRepository";
 import { VirtualConversationDatabase } from "../../session/infrastructure/VirtualConversationDatabase";
@@ -45,6 +46,7 @@ const LayerImpl = Effect.gen(function* () {
     | SessionMetaService
     | ClaudeCodePermissionService
     | EnvService
+    | CcvOptionsService
   >();
 
   const continueTask = (options: {

@@ -1,12 +1,11 @@
 import { createRouter, RouterProvider } from "@tanstack/react-router";
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
-
+import { NotFound } from "./components/NotFound";
+import { QueryClientProviderWrapper } from "./lib/api/QueryClientProviderWrapper";
 import { routeTree } from "./routeTree.gen";
 
 import "./styles.css";
-import { NotFound } from "./components/NotFound";
-import { QueryClientProviderWrapper } from "./lib/api/QueryClientProviderWrapper";
 
 const router = createRouter({
   routeTree,

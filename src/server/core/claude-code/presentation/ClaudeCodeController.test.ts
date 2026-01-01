@@ -88,11 +88,11 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
     const appContextLayer = Layer.succeed(
       ApplicationContext,
       ApplicationContext.of({
-        claudeCodePaths: {
+        claudeCodePaths: Effect.succeed({
           globalClaudeDirectoryPath: testDir,
           claudeCommandsDirPath: globalCommandsDir,
           claudeProjectsDirPath: `${testDir}/projects`,
-        },
+        }),
       }),
     );
 
@@ -184,11 +184,11 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
     const appContextLayer = Layer.succeed(
       ApplicationContext,
       ApplicationContext.of({
-        claudeCodePaths: {
+        claudeCodePaths: Effect.succeed({
           globalClaudeDirectoryPath: testDir,
           claudeCommandsDirPath: globalCommandsDir,
           claudeProjectsDirPath: `${testDir}/projects`,
-        },
+        }),
       }),
     );
 
@@ -258,11 +258,11 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
     const appContextLayer = Layer.succeed(
       ApplicationContext,
       ApplicationContext.of({
-        claudeCodePaths: {
+        claudeCodePaths: Effect.succeed({
           globalClaudeDirectoryPath: testDir,
           claudeCommandsDirPath: globalCommandsDir,
           claudeProjectsDirPath: `${testDir}/projects`,
-        },
+        }),
       }),
     );
 
@@ -311,11 +311,11 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
     const appContextLayer = Layer.succeed(
       ApplicationContext,
       ApplicationContext.of({
-        claudeCodePaths: {
+        claudeCodePaths: Effect.succeed({
           globalClaudeDirectoryPath: testDir,
           claudeCommandsDirPath: `${testDir}/non-existent`,
           claudeProjectsDirPath: `${testDir}/projects`,
-        },
+        }),
       }),
     );
 
@@ -372,11 +372,11 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
     const appContextLayer = Layer.succeed(
       ApplicationContext,
       ApplicationContext.of({
-        claudeCodePaths: {
+        claudeCodePaths: Effect.succeed({
           globalClaudeDirectoryPath: testDir,
           claudeCommandsDirPath: globalCommandsDir,
           claudeProjectsDirPath: `${testDir}/projects`,
-        },
+        }),
       }),
     );
 
@@ -450,11 +450,11 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
     const appContextLayer = Layer.succeed(
       ApplicationContext,
       ApplicationContext.of({
-        claudeCodePaths: {
+        claudeCodePaths: Effect.succeed({
           globalClaudeDirectoryPath: testDir,
           claudeCommandsDirPath: globalCommandsDir,
           claudeProjectsDirPath: `${testDir}/projects`,
-        },
+        }),
       }),
     );
 

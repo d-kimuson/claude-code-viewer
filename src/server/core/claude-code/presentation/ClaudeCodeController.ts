@@ -23,7 +23,7 @@ const LayerImpl = Effect.gen(function* () {
       const { project } = yield* projectRepository.getProject(projectId);
 
       const globalCommands: string[] = yield* scanCommandFilesRecursively(
-        context.claudeCodePaths.claudeCommandsDirPath,
+        (yield* context.claudeCodePaths).claudeCommandsDirPath,
       );
 
       const projectCommands: string[] =

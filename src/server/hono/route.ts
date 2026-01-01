@@ -18,6 +18,10 @@ import { FeatureFlagController } from "../core/feature-flag/presentation/Feature
 import { FileSystemController } from "../core/file-system/presentation/FileSystemController";
 import { GitController } from "../core/git/presentation/GitController";
 import { CommitRequestSchema, PushRequestSchema } from "../core/git/schema";
+import {
+  CcvOptionsService,
+  type CliOptions,
+} from "../core/platform/services/CcvOptionsService";
 import { EnvService } from "../core/platform/services/EnvService";
 import { UserConfigService } from "../core/platform/services/UserConfigService";
 import type { ProjectRepository } from "../core/project/infrastructure/ProjectRepository";
@@ -39,8 +43,18 @@ import { InitializeService } from "./initialize";
 import { AuthMiddleware } from "./middleware/auth.middleware";
 import { configMiddleware } from "./middleware/config.middleware";
 
-export const routes = (app: HonoAppType) =>
+export const routes = (app: HonoAppType, options: CliOptions) =>
   Effect.gen(function* () {
+    const ccvOptionsService = yield* CcvOptionsService;
+    yield* ccvOptionsService.loadCliOptions(options);
+
+    // services
+    // const ccvOptionsService = yield* CcvOptionsService;
+    const envService = yield* EnvService;
+    const userConfigService = yield* UserConfigService;
+    const claudeCodeLifeCycleService = yield* ClaudeCodeLifeCycleService;
+    const initializeService = yield* InitializeService;
+
     // controllers
     const projectController = yield* ProjectController;
     const sessionController = yield* SessionController;
@@ -57,17 +71,13 @@ export const routes = (app: HonoAppType) =>
     const featureFlagController = yield* FeatureFlagController;
     const searchController = yield* SearchController;
 
-    // services
-    const envService = yield* EnvService;
-    const userConfigService = yield* UserConfigService;
-    const claudeCodeLifeCycleService = yield* ClaudeCodeLifeCycleService;
-    const initializeService = yield* InitializeService;
-
     // middleware
+    const authMiddlewareService = yield* AuthMiddleware;
     const { authMiddleware, validSessionToken, authEnabled, anthPassword } =
-      yield* AuthMiddleware;
+      yield* authMiddlewareService;
 
     const runtime = yield* Effect.runtime<
+      | CcvOptionsService
       | EnvService
       | SessionMetaService
       | VirtualConversationDatabase

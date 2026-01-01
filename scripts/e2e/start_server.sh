@@ -2,10 +2,9 @@
 
 set -euo pipefail
 
-export PORT=4000
-export GLOBAL_CLAUDE_DIR=$(git rev-parse --show-toplevel)/mock-global-claude-dir
+claude_dir="$(git rev-parse --show-toplevel)/mock-global-claude-dir"
 
-echo "Check directory structure in $GLOBAL_CLAUDE_DIR:"
-ls -l $GLOBAL_CLAUDE_DIR
+echo "Check directory structure in $claude_dir:"
+ls -l $claude_dir
 
-node ./dist/main.js
+node ./dist/main.js --port 4000 --claude-dir $claude_dir

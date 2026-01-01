@@ -1,7 +1,7 @@
-import { CommandExecutor, Path } from "@effect/platform";
+import { CommandExecutor } from "@effect/platform";
 import { NodeContext } from "@effect/platform-node";
 import { Effect, Layer } from "effect";
-import { EnvService } from "../../platform/services/EnvService";
+import { testPlatformLayer } from "../../../../testing/layers/testPlatformLayer";
 import * as ClaudeCode from "./ClaudeCode";
 
 describe("ClaudeCode.claudeCodePathPriority", () => {
@@ -123,8 +123,7 @@ describe("ClaudeCode.Config", () => {
 
       const config = await Effect.runPromise(
         ClaudeCode.Config.pipe(
-          Effect.provide(EnvService.Live),
-          Effect.provide(Path.layer),
+          Effect.provide(testPlatformLayer()),
           Effect.provide(CommandExecutorTest),
         ),
       );
@@ -157,8 +156,7 @@ describe("ClaudeCode.Config", () => {
 
       const config = await Effect.runPromise(
         ClaudeCode.Config.pipe(
-          Effect.provide(EnvService.Live),
-          Effect.provide(Path.layer),
+          Effect.provide(testPlatformLayer()),
           Effect.provide(CommandExecutorTest),
         ),
       );
@@ -191,8 +189,7 @@ describe("ClaudeCode.Config", () => {
 
       const config = await Effect.runPromise(
         ClaudeCode.Config.pipe(
-          Effect.provide(EnvService.Live),
-          Effect.provide(Path.layer),
+          Effect.provide(testPlatformLayer()),
           Effect.provide(CommandExecutorTest),
         ),
       );
@@ -227,8 +224,7 @@ describe("ClaudeCode.Config", () => {
 
       const config = await Effect.runPromise(
         ClaudeCode.Config.pipe(
-          Effect.provide(EnvService.Live),
-          Effect.provide(Path.layer),
+          Effect.provide(testPlatformLayer()),
           Effect.provide(CommandExecutorTest),
         ),
       );

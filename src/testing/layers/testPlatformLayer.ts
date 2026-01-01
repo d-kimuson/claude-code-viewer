@@ -8,6 +8,10 @@ import {
   ApplicationContext,
   type IApplicationContext,
 } from "../../server/core/platform/services/ApplicationContext";
+import {
+  type CcvOptions,
+  CcvOptionsService,
+} from "../../server/core/platform/services/CcvOptionsService";
 import { EnvService } from "../../server/core/platform/services/EnvService";
 import { UserConfigService } from "../../server/core/platform/services/UserConfigService";
 import type { UserConfig } from "../../server/lib/config/config";
@@ -18,6 +22,7 @@ export const testPlatformLayer = (overrides?: {
   applicationContext?: Partial<IApplicationContext>;
   env?: Partial<EnvSchema>;
   userConfig?: Partial<UserConfig>;
+  ccvOptions?: Partial<CcvOptions>;
 }) => {
   const applicationContextLayer = Layer.mock(ApplicationContext, {
     ...overrides?.applicationContext,
@@ -30,6 +35,13 @@ export const testPlatformLayer = (overrides?: {
     },
   });
 
+  const ccvOptionsServiceLayer = Layer.mock(CcvOptionsService, {
+    getCcvOptions: <Key extends keyof CcvOptions>(key: Key) =>
+      Effect.sync((): CcvOptions[Key] => {
+        return overrides?.ccvOptions?.[key] as CcvOptions[Key];
+      }),
+  });
+
   const envServiceLayer = Layer.mock(EnvService, {
     getEnv: <Key extends keyof EnvSchema>(key: Key) =>
       Effect.sync(() => {
@@ -38,13 +50,6 @@ export const testPlatformLayer = (overrides?: {
             return overrides?.env?.NODE_ENV ?? "development";
           case "NEXT_PHASE":
             return overrides?.env?.NEXT_PHASE ?? "phase-test";
-          case "CLAUDE_CODE_VIEWER_CC_EXECUTABLE_PATH":
-            return (
-              overrides?.env?.CLAUDE_CODE_VIEWER_CC_EXECUTABLE_PATH ??
-              resolve(process.cwd(), "node_modules", ".bin", "claude")
-            );
-          case "GLOBAL_CLAUDE_DIR":
-            return overrides?.env?.GLOBAL_CLAUDE_DIR ?? claudeDirForTest;
           default:
             return overrides?.env?.[key] ?? undefined;
         }
@@ -71,6 +76,7 @@ export const testPlatformLayer = (overrides?: {
     applicationContextLayer,
     userConfigServiceLayer,
     EventBus.Live,
+    ccvOptionsServiceLayer,
     envServiceLayer,
     Path.layer,
   );

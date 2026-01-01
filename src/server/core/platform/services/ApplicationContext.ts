@@ -2,14 +2,14 @@ import { homedir } from "node:os";
 import { Path } from "@effect/platform";
 import { Effect, Context as EffectContext, Layer } from "effect";
 import type { InferEffect } from "../../../lib/effect/types";
-import { EnvService } from "./EnvService";
+import { CcvOptionsService } from "./CcvOptionsService";
 
 const LayerImpl = Effect.gen(function* () {
   const path = yield* Path.Path;
-  const envService = yield* EnvService;
+  const ccvOptionsService = yield* CcvOptionsService;
 
-  const globalClaudeDirectoryPath = yield* envService
-    .getEnv("GLOBAL_CLAUDE_DIR")
+  const globalClaudeDirectoryPath = yield* ccvOptionsService
+    .getCcvOptions("claudeDir")
     .pipe(
       Effect.map((envVar) =>
         envVar === undefined

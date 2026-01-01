@@ -18,6 +18,10 @@ import { FeatureFlagController } from "../core/feature-flag/presentation/Feature
 import { FileSystemController } from "../core/file-system/presentation/FileSystemController";
 import { GitController } from "../core/git/presentation/GitController";
 import { CommitRequestSchema, PushRequestSchema } from "../core/git/schema";
+import {
+  CcvOptionsService,
+  type CliOptions,
+} from "../core/platform/services/CcvOptionsService";
 import { EnvService } from "../core/platform/services/EnvService";
 import { UserConfigService } from "../core/platform/services/UserConfigService";
 import type { ProjectRepository } from "../core/project/infrastructure/ProjectRepository";
@@ -39,7 +43,7 @@ import { InitializeService } from "./initialize";
 import { AuthMiddleware } from "./middleware/auth.middleware";
 import { configMiddleware } from "./middleware/config.middleware";
 
-export const routes = (app: HonoAppType) =>
+export const routes = (app: HonoAppType, options: CliOptions) =>
   Effect.gen(function* () {
     // controllers
     const projectController = yield* ProjectController;
@@ -58,6 +62,7 @@ export const routes = (app: HonoAppType) =>
     const searchController = yield* SearchController;
 
     // services
+    const ccvOptionsService = yield* CcvOptionsService;
     const envService = yield* EnvService;
     const userConfigService = yield* UserConfigService;
     const claudeCodeLifeCycleService = yield* ClaudeCodeLifeCycleService;
@@ -68,6 +73,7 @@ export const routes = (app: HonoAppType) =>
       yield* AuthMiddleware;
 
     const runtime = yield* Effect.runtime<
+      | CcvOptionsService
       | EnvService
       | SessionMetaService
       | VirtualConversationDatabase
@@ -79,6 +85,8 @@ export const routes = (app: HonoAppType) =>
       | ProjectRepository
       | SchedulerConfigBaseDir
     >();
+
+    yield* ccvOptionsService.loadCliOptions(options);
 
     if ((yield* envService.getEnv("NEXT_PHASE")) !== "phase-production-build") {
       yield* initializeService.startInitialization();

@@ -1,7 +1,7 @@
 import { Context, Effect, Layer } from "effect";
 import { getCookie } from "hono/cookie";
 import { createMiddleware } from "hono/factory";
-import { EnvService } from "../../core/platform/services/EnvService";
+import { CcvOptionsService } from "../../core/platform/services/CcvOptionsService";
 import type { InferEffect } from "../../lib/effect/types";
 import type { HonoContext } from "../app";
 
@@ -21,11 +21,9 @@ const PUBLIC_API_ROUTES = [
 ];
 
 const LayerImpl = Effect.gen(function* () {
-  const envService = yield* EnvService;
+  const ccvOptionsService = yield* CcvOptionsService;
 
-  const anthPassword = yield* envService.getEnv(
-    "CLAUDE_CODE_VIEWER_AUTH_PASSWORD",
-  ) ?? undefined;
+  const anthPassword = yield* ccvOptionsService.getCcvOptions("password");
   const authEnabled = anthPassword !== undefined;
 
   const validSessionToken = generateSessionToken(anthPassword);

@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/collapsible";
 import type { Conversation } from "@/lib/conversation-schema";
 import type { ToolResultContent } from "@/lib/conversation-schema/content/ToolResultContentSchema";
+import { calculateDuration } from "@/lib/date/formatDuration";
 import type { ErrorJsonl } from "../../../../../../../server/core/types";
 import { useSidechain } from "../../hooks/useSidechain";
 import { ConversationItem } from "./ConversationItem";
@@ -140,6 +141,93 @@ export const ConversationList: FC<ConversationListProps> = ({
     existsRelatedTaskCall,
   } = useSidechain(validConversations);
 
+  // Build a map of assistant UUID -> turn duration (ms)
+  // Turn duration = time from the starting user message to the last assistant message of the turn
+  // A turn starts with a real user message and ends when the next real user message arrives
+  // Only the LAST assistant message in each turn gets a duration
+  const turnDurationMap = useMemo(() => {
+    const map = new Map<string, number>();
+
+    // Helper to check if a user message is a real user input (not a tool result)
+    const isRealUserMessage = (conv: Conversation): boolean => {
+      if (conv.type !== "user" || conv.isSidechain) {
+        return false;
+      }
+      // Tool result messages have array content starting with tool_result
+      const content = conv.message.content;
+      if (Array.isArray(content)) {
+        const firstItem = content[0];
+        if (
+          typeof firstItem === "object" &&
+          firstItem !== null &&
+          "type" in firstItem &&
+          firstItem.type === "tool_result"
+        ) {
+          return false;
+        }
+      }
+      return true;
+    };
+
+    // First, identify turn boundaries (indices of real user messages)
+    const turnStartIndices: number[] = [];
+    for (let i = 0; i < validConversations.length; i++) {
+      const conv = validConversations[i];
+      if (conv !== undefined && isRealUserMessage(conv)) {
+        turnStartIndices.push(i);
+      }
+    }
+
+    // For each turn, find the last assistant message and calculate duration
+    for (let turnIdx = 0; turnIdx < turnStartIndices.length; turnIdx++) {
+      const turnStartIndex = turnStartIndices[turnIdx];
+      if (turnStartIndex === undefined) {
+        continue;
+      }
+      const turnEndIndex =
+        turnStartIndices[turnIdx + 1] ?? validConversations.length;
+      const turnStartConv = validConversations[turnStartIndex];
+
+      if (turnStartConv === undefined || turnStartConv.type !== "user") {
+        continue;
+      }
+
+      // Find the last non-sidechain assistant message in this turn
+      let lastAssistantInTurn: (typeof validConversations)[number] | null =
+        null;
+      for (let i = turnStartIndex + 1; i < turnEndIndex; i++) {
+        const conv = validConversations[i];
+        if (
+          conv !== undefined &&
+          conv.type === "assistant" &&
+          !conv.isSidechain
+        ) {
+          lastAssistantInTurn = conv;
+        }
+      }
+
+      // Calculate duration from turn start to last assistant message
+      if (lastAssistantInTurn !== null) {
+        const duration = calculateDuration(
+          turnStartConv.timestamp,
+          lastAssistantInTurn.timestamp,
+        );
+        if (duration !== null && duration >= 0) {
+          map.set(lastAssistantInTurn.uuid, duration);
+        }
+      }
+    }
+
+    return map;
+  }, [validConversations]);
+
+  const getTurnDuration = useCallback(
+    (uuid: string): number | undefined => {
+      return turnDurationMap.get(uuid);
+    },
+    [turnDurationMap],
+  );
+
   // Build a map of tool_use_id -> agentId from user entries with toolUseResult
   const toolUseIdToAgentIdMap = useMemo(() => {
     const map = new Map<string, string>();
@@ -187,6 +275,7 @@ export const ConversationList: FC<ConversationListProps> = ({
             conversation={conversation}
             getToolResult={getToolResult}
             getAgentIdForToolUse={getAgentIdForToolUse}
+            getTurnDuration={getTurnDuration}
             isRootSidechain={isRootSidechain}
             getSidechainConversations={getSidechainConversations}
             getSidechainConversationByPrompt={getSidechainConversationByPrompt}

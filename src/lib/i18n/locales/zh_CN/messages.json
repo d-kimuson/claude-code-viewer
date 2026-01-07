@@ -311,6 +311,17 @@
     ],
     "translation": "查看任务详情"
   },
+  "assistant.turn_duration": {
+    "translation": "响应时间",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TurnDuration.tsx",
+        15
+      ]
+    ]
+  },
   "chat.attach_file": {
     "placeholders": {},
     "comments": [],
@@ -834,7 +845,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        103
+        104
       ]
     ],
     "translation": "原始数据:"
@@ -845,7 +856,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        96
+        97
       ]
     ],
     "translation": "报告此问题"
@@ -856,7 +867,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        71
+        72
       ]
     ],
     "translation": "模式错误"
@@ -867,7 +878,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        86
+        87
       ]
     ],
     "translation": "模式验证错误"
@@ -878,7 +889,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        89
+        90
       ]
     ],
     "translation": "无法解析此对话条目。这可能是由于格式更改或解析问题。"

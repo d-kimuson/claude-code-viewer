@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.5.0
+
+### &nbsp;&nbsp;&nbsp;Breaking Changes
+
+- Support for command-line options. Renamed existing environment variable settin &nbsp;-&nbsp; by **d-kimsuon** [<samp>(0e424)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/0e424fc)
+
+### &nbsp;&nbsp;&nbsp;Features
+
+- Add migration guide message for deprecated or removed env vars &nbsp;-&nbsp; by **d-kimsuon** [<samp>(4f457)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/4f45775)
+
+### &nbsp;&nbsp;&nbsp;Bug Fixes
+
+- Display preview url missing &nbsp;-&nbsp; by **d-kimsuon** [<samp>(58d49)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/58d49bc)
+- Correct start script path from index.js to main.js &nbsp;-&nbsp; by **Martin Spasov** and **Claude Opus 4.5** [<samp>(13534)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/1353417)
+- Add schema support for Claude Code v2.0.76+ entry types &nbsp;-&nbsp; by **Martin Spasov** and **Claude Opus 4.5** [<samp>(5afdb)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/5afdbf1)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.4.15...0.5.0)
+
 ## Unreleased
 
 ### &nbsp;&nbsp;&nbsp;Breaking Changes

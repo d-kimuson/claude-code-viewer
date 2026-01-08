@@ -1,6 +1,5 @@
 import { Trans } from "@lingui/react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Helmet } from "react-helmet-async";
 import { z } from "zod";
 import { useProject } from "../../../app/projects/[projectId]/hooks/useProject";
 import { SessionPageContent } from "../../../app/projects/[projectId]/sessions/[sessionId]/components/SessionPageContent";
@@ -38,9 +37,7 @@ function RouteComponent() {
 
   return (
     <ProtectedRoute>
-      <Helmet>
-        <title>{title}</title>
-      </Helmet>
+      <title>{title}</title>
       <SessionPageContent
         projectId={params.projectId}
         sessionId={sessionId}

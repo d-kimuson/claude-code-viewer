@@ -40,6 +40,7 @@
     "e2e:capture-snapshots": "./scripts/e2e/capture_snapshots.sh",
     "lingui:extract": "lingui extract --clean && node ./scripts/lingui-sort.js",
     "lingui:compile": "lingui compile --typescript",
+    "prepack": "pnpm build",
     "prepare": "lefthook install"
   },
   "dependencies": {

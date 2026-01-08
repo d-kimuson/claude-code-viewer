@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.5.1
+
+### &nbsp;&nbsp;&nbsp;Bug Fixes
+
+- Restore shebang for entry script &nbsp;-&nbsp; by **d-kimsuon** [<samp>(8fce0)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/8fce0c8)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.5.0...0.5.1)
+
 ## 0.5.0
 
 ### &nbsp;&nbsp;&nbsp;Breaking Changes

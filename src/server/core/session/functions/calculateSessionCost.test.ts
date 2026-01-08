@@ -28,16 +28,28 @@ describe("normalizeModelName", () => {
     );
   });
 
-  it("should normalize claude-instant-1.2 to claude-instant-1.2", () => {
-    expect(normalizeModelName("claude-instant-1.2")).toBe("claude-instant-1.2");
+  it("should normalize claude-opus-4-1-20250101 to claude-opus-4.1", () => {
+    expect(normalizeModelName("claude-opus-4-1-20250101")).toBe(
+      "claude-opus-4.1",
+    );
   });
 
-  it("should normalize claude-2.1 to claude-2", () => {
-    expect(normalizeModelName("claude-2.1")).toBe("claude-2");
+  it("should normalize claude-opus-4-5-20251101 to claude-opus-4.5", () => {
+    expect(normalizeModelName("claude-opus-4-5-20251101")).toBe(
+      "claude-opus-4.5",
+    );
   });
 
-  it("should normalize claude-2.0 to claude-2", () => {
-    expect(normalizeModelName("claude-2.0")).toBe("claude-2");
+  it("should normalize claude-sonnet-4-5-20250929 to claude-sonnet-4.5", () => {
+    expect(normalizeModelName("claude-sonnet-4-5-20250929")).toBe(
+      "claude-sonnet-4.5",
+    );
+  });
+
+  it("should normalize claude-haiku-4-5-20251001 to claude-haiku-4.5", () => {
+    expect(normalizeModelName("claude-haiku-4-5-20251001")).toBe(
+      "claude-haiku-4.5",
+    );
   });
 
   it("should return claude-3.5-sonnet for unknown model", () => {
@@ -137,6 +149,94 @@ describe("calculateTokenCost", () => {
     expect(result.totalUsd).toBeCloseTo(0.0875, 4);
     expect(result.breakdown.inputTokensUsd).toBeCloseTo(0.025, 4);
     expect(result.breakdown.outputTokensUsd).toBeCloseTo(0.0625, 4);
+  });
+
+  it("should calculate cost for Claude Opus 4.1", () => {
+    const usage: TokenUsage = {
+      input_tokens: 1000,
+      output_tokens: 1000,
+      cache_creation_input_tokens: 500,
+      cache_read_input_tokens: 500,
+    };
+
+    const result = calculateTokenCost(usage, "claude-opus-4.1");
+
+    // input: 1000 / 1_000_000 * 15.0 = 0.015
+    // output: 1000 / 1_000_000 * 75.0 = 0.075
+    // cache_creation: 500 / 1_000_000 * 18.75 = 0.009375
+    // cache_read: 500 / 1_000_000 * 1.5 = 0.00075
+    // total: 0.015 + 0.075 + 0.009375 + 0.00075 = 0.100125
+    expect(result.totalUsd).toBeCloseTo(0.100125, 4);
+    expect(result.breakdown.inputTokensUsd).toBeCloseTo(0.015, 4);
+    expect(result.breakdown.outputTokensUsd).toBeCloseTo(0.075, 4);
+    expect(result.breakdown.cacheCreationUsd).toBeCloseTo(0.009375, 4);
+    expect(result.breakdown.cacheReadUsd).toBeCloseTo(0.00075, 4);
+  });
+
+  it("should calculate cost for Claude Opus 4.5", () => {
+    const usage: TokenUsage = {
+      input_tokens: 1000,
+      output_tokens: 1000,
+      cache_creation_input_tokens: 500,
+      cache_read_input_tokens: 500,
+    };
+
+    const result = calculateTokenCost(usage, "claude-opus-4.5");
+
+    // input: 1000 / 1_000_000 * 5.0 = 0.005
+    // output: 1000 / 1_000_000 * 25.0 = 0.025
+    // cache_creation: 500 / 1_000_000 * 6.25 = 0.003125
+    // cache_read: 500 / 1_000_000 * 0.5 = 0.00025
+    // total: 0.005 + 0.025 + 0.003125 + 0.00025 = 0.033375
+    expect(result.totalUsd).toBeCloseTo(0.033375, 4);
+    expect(result.breakdown.inputTokensUsd).toBeCloseTo(0.005, 4);
+    expect(result.breakdown.outputTokensUsd).toBeCloseTo(0.025, 4);
+    expect(result.breakdown.cacheCreationUsd).toBeCloseTo(0.003125, 4);
+    expect(result.breakdown.cacheReadUsd).toBeCloseTo(0.00025, 4);
+  });
+
+  it("should calculate cost for Claude Sonnet 4.5", () => {
+    const usage: TokenUsage = {
+      input_tokens: 1000,
+      output_tokens: 1000,
+      cache_creation_input_tokens: 500,
+      cache_read_input_tokens: 500,
+    };
+
+    const result = calculateTokenCost(usage, "claude-sonnet-4.5");
+
+    // input: 1000 / 1_000_000 * 3.0 = 0.003
+    // output: 1000 / 1_000_000 * 15.0 = 0.015
+    // cache_creation: 500 / 1_000_000 * 3.75 = 0.001875
+    // cache_read: 500 / 1_000_000 * 0.3 = 0.00015
+    // total: 0.003 + 0.015 + 0.001875 + 0.00015 = 0.020025
+    expect(result.totalUsd).toBeCloseTo(0.020025, 4);
+    expect(result.breakdown.inputTokensUsd).toBeCloseTo(0.003, 4);
+    expect(result.breakdown.outputTokensUsd).toBeCloseTo(0.015, 4);
+    expect(result.breakdown.cacheCreationUsd).toBeCloseTo(0.001875, 4);
+    expect(result.breakdown.cacheReadUsd).toBeCloseTo(0.00015, 4);
+  });
+
+  it("should calculate cost for Claude Haiku 4.5", () => {
+    const usage: TokenUsage = {
+      input_tokens: 100000,
+      output_tokens: 50000,
+      cache_creation_input_tokens: 10000,
+      cache_read_input_tokens: 5000,
+    };
+
+    const result = calculateTokenCost(usage, "claude-haiku-4.5");
+
+    // input: 100000 / 1_000_000 * 1.0 = 0.1
+    // output: 50000 / 1_000_000 * 5.0 = 0.25
+    // cache_creation: 10000 / 1_000_000 * 1.25 = 0.0125
+    // cache_read: 5000 / 1_000_000 * 0.1 = 0.0005
+    // total: 0.1 + 0.25 + 0.0125 + 0.0005 = 0.363
+    expect(result.totalUsd).toBeCloseTo(0.363, 4);
+    expect(result.breakdown.inputTokensUsd).toBeCloseTo(0.1, 4);
+    expect(result.breakdown.outputTokensUsd).toBeCloseTo(0.25, 4);
+    expect(result.breakdown.cacheCreationUsd).toBeCloseTo(0.0125, 4);
+    expect(result.breakdown.cacheReadUsd).toBeCloseTo(0.0005, 4);
   });
 
   it("should handle optional cache tokens (undefined)", () => {

@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { Command } from "commander";
 import { Effect } from "effect";
 import packageJson from "../../package.json" with { type: "json" };

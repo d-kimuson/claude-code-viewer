@@ -155,6 +155,19 @@ export const getAvailableFeatures = (
           patch: 28, // Sidechain conversations stored in agent-*.jsonl since v2.0.28
         })
       : false,
+  runSkillsDirectly:
+    claudeCodeVersion !== null
+      ? ClaudeCodeVersion.greaterThanOrEqual(claudeCodeVersion, {
+          major: 2,
+          minor: 1,
+          patch: 0,
+        }) ||
+        ClaudeCodeVersion.greaterThanOrEqual(claudeCodeVersion, {
+          major: 2,
+          minor: 0,
+          patch: 77,
+        })
+      : false,
 });
 
 export const query = (

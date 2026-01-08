@@ -7,6 +7,7 @@ import { CcvOptionsService } from "./CcvOptionsService";
 export type ClaudeCodePaths = {
   globalClaudeDirectoryPath: string;
   claudeCommandsDirPath: string;
+  claudeSkillsDirPath: string;
   claudeProjectsDirPath: string;
 };
 
@@ -31,6 +32,7 @@ const LayerImpl = Effect.gen(function* () {
         globalClaudeDirectoryPath,
         "commands",
       ),
+      claudeSkillsDirPath: path.resolve(globalClaudeDirectoryPath, "skills"),
       claudeProjectsDirPath: path.resolve(
         globalClaudeDirectoryPath,
         "projects",

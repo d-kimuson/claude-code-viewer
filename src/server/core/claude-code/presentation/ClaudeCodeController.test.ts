@@ -8,6 +8,27 @@ import { ApplicationContext } from "../../platform/services/ApplicationContext";
 import { ClaudeCodeService } from "../services/ClaudeCodeService";
 import { ClaudeCodeController } from "./ClaudeCodeController";
 
+// Mock ClaudeCodeService to avoid depending on ClaudeCode.Config
+const testClaudeCodeServiceLayer = Layer.succeed(
+  ClaudeCodeService,
+  ClaudeCodeService.of({
+    getClaudeCodeMeta: () =>
+      Effect.succeed({
+        claudeCodeExecutablePath: "/mock/claude",
+        claudeCodeVersion: null,
+      }),
+    getAvailableFeatures: () =>
+      Effect.succeed({
+        canUseTool: false,
+        uuidOnSDKMessage: false,
+        agentSdk: false,
+        sidechainSeparation: false,
+        runSkillsDirectly: false,
+      }),
+    getMcpList: () => Effect.succeed([]),
+  }),
+);
+
 describe("ClaudeCodeController.getClaudeCommands", () => {
   let testDir: string;
   let globalCommandsDir: string;
@@ -91,13 +112,14 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
         claudeCodePaths: Effect.succeed({
           globalClaudeDirectoryPath: testDir,
           claudeCommandsDirPath: globalCommandsDir,
+          claudeSkillsDirPath: `${testDir}/skills`,
           claudeProjectsDirPath: `${testDir}/projects`,
         }),
       }),
     );
 
     const testLayer = ClaudeCodeController.Live.pipe(
-      Layer.provide(ClaudeCodeService.Live),
+      Layer.provide(testClaudeCodeServiceLayer),
       Layer.provide(projectLayer),
       Layer.provide(appContextLayer),
       Layer.provide(NodeContext.layer),
@@ -111,7 +133,10 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
           .getClaudeCommands({
             projectId: "test-project",
           })
-          .pipe(Effect.provide(NodeContext.layer));
+          .pipe(
+            Effect.provide(NodeContext.layer),
+            Effect.provide(testPlatformLayer()),
+          );
       }).pipe(Effect.provide(testLayer)),
     );
 
@@ -121,6 +146,8 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
     expect(result.response.globalCommands).toContain("review");
     expect(result.response.projectCommands).toHaveLength(1);
     expect(result.response.projectCommands).toContain("deploy");
+    expect(result.response.globalSkills).toEqual([]);
+    expect(result.response.projectSkills).toEqual([]);
     expect(result.response.defaultCommands).toEqual([
       "init",
       "compact",
@@ -187,13 +214,14 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
         claudeCodePaths: Effect.succeed({
           globalClaudeDirectoryPath: testDir,
           claudeCommandsDirPath: globalCommandsDir,
+          claudeSkillsDirPath: `${testDir}/skills`,
           claudeProjectsDirPath: `${testDir}/projects`,
         }),
       }),
     );
 
     const testLayer = ClaudeCodeController.Live.pipe(
-      Layer.provide(ClaudeCodeService.Live),
+      Layer.provide(testClaudeCodeServiceLayer),
       Layer.provide(projectLayer),
       Layer.provide(appContextLayer),
       Layer.provide(NodeContext.layer),
@@ -207,7 +235,10 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
           .getClaudeCommands({
             projectId: "test-project",
           })
-          .pipe(Effect.provide(NodeContext.layer));
+          .pipe(
+            Effect.provide(NodeContext.layer),
+            Effect.provide(testPlatformLayer()),
+          );
       }).pipe(Effect.provide(testLayer)),
     );
 
@@ -218,6 +249,8 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
     expect(result.response.globalCommands).toContain("frontend:review");
     expect(result.response.projectCommands).toHaveLength(1);
     expect(result.response.projectCommands).toContain("api:create");
+    expect(result.response.globalSkills).toEqual([]);
+    expect(result.response.projectSkills).toEqual([]);
   });
 
   it("should return deeply nested commands with multiple colons", async () => {
@@ -261,13 +294,14 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
         claudeCodePaths: Effect.succeed({
           globalClaudeDirectoryPath: testDir,
           claudeCommandsDirPath: globalCommandsDir,
+          claudeSkillsDirPath: `${testDir}/skills`,
           claudeProjectsDirPath: `${testDir}/projects`,
         }),
       }),
     );
 
     const testLayer = ClaudeCodeController.Live.pipe(
-      Layer.provide(ClaudeCodeService.Live),
+      Layer.provide(testClaudeCodeServiceLayer),
       Layer.provide(projectLayer),
       Layer.provide(appContextLayer),
       Layer.provide(NodeContext.layer),
@@ -281,7 +315,10 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
           .getClaudeCommands({
             projectId: "test-project",
           })
-          .pipe(Effect.provide(NodeContext.layer));
+          .pipe(
+            Effect.provide(NodeContext.layer),
+            Effect.provide(testPlatformLayer()),
+          );
       }).pipe(Effect.provide(testLayer)),
     );
 
@@ -290,6 +327,8 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
     expect(result.response.globalCommands).toContain(
       "frontend:components:buttons:primary",
     );
+    expect(result.response.globalSkills).toEqual([]);
+    expect(result.response.projectSkills).toEqual([]);
   });
 
   it("should return empty arrays when command directories do not exist", async () => {
@@ -314,13 +353,14 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
         claudeCodePaths: Effect.succeed({
           globalClaudeDirectoryPath: testDir,
           claudeCommandsDirPath: `${testDir}/non-existent`,
+          claudeSkillsDirPath: `${testDir}/skills`,
           claudeProjectsDirPath: `${testDir}/projects`,
         }),
       }),
     );
 
     const testLayer = ClaudeCodeController.Live.pipe(
-      Layer.provide(ClaudeCodeService.Live),
+      Layer.provide(testClaudeCodeServiceLayer),
       Layer.provide(projectLayer),
       Layer.provide(appContextLayer),
       Layer.provide(NodeContext.layer),
@@ -334,13 +374,18 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
           .getClaudeCommands({
             projectId: "test-project",
           })
-          .pipe(Effect.provide(NodeContext.layer));
+          .pipe(
+            Effect.provide(NodeContext.layer),
+            Effect.provide(testPlatformLayer()),
+          );
       }).pipe(Effect.provide(testLayer)),
     );
 
     expect(result.status).toBe(200);
     expect(result.response.globalCommands).toEqual([]);
     expect(result.response.projectCommands).toEqual([]);
+    expect(result.response.globalSkills).toEqual([]);
+    expect(result.response.projectSkills).toEqual([]);
   });
 
   it("should return empty project commands when projectPath is null", async () => {
@@ -375,13 +420,14 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
         claudeCodePaths: Effect.succeed({
           globalClaudeDirectoryPath: testDir,
           claudeCommandsDirPath: globalCommandsDir,
+          claudeSkillsDirPath: `${testDir}/skills`,
           claudeProjectsDirPath: `${testDir}/projects`,
         }),
       }),
     );
 
     const testLayer = ClaudeCodeController.Live.pipe(
-      Layer.provide(ClaudeCodeService.Live),
+      Layer.provide(testClaudeCodeServiceLayer),
       Layer.provide(projectLayer),
       Layer.provide(appContextLayer),
       Layer.provide(NodeContext.layer),
@@ -395,7 +441,10 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
           .getClaudeCommands({
             projectId: "test-project",
           })
-          .pipe(Effect.provide(NodeContext.layer));
+          .pipe(
+            Effect.provide(NodeContext.layer),
+            Effect.provide(testPlatformLayer()),
+          );
       }).pipe(Effect.provide(testLayer)),
     );
 
@@ -403,6 +452,8 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
     expect(result.response.globalCommands).toHaveLength(1);
     expect(result.response.globalCommands).toContain("impl");
     expect(result.response.projectCommands).toEqual([]);
+    expect(result.response.globalSkills).toEqual([]);
+    expect(result.response.projectSkills).toEqual([]);
   });
 
   it("should exclude hidden files and directories from command list", async () => {
@@ -453,13 +504,14 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
         claudeCodePaths: Effect.succeed({
           globalClaudeDirectoryPath: testDir,
           claudeCommandsDirPath: globalCommandsDir,
+          claudeSkillsDirPath: `${testDir}/skills`,
           claudeProjectsDirPath: `${testDir}/projects`,
         }),
       }),
     );
 
     const testLayer = ClaudeCodeController.Live.pipe(
-      Layer.provide(ClaudeCodeService.Live),
+      Layer.provide(testClaudeCodeServiceLayer),
       Layer.provide(projectLayer),
       Layer.provide(appContextLayer),
       Layer.provide(NodeContext.layer),
@@ -473,7 +525,10 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
           .getClaudeCommands({
             projectId: "test-project",
           })
-          .pipe(Effect.provide(NodeContext.layer));
+          .pipe(
+            Effect.provide(NodeContext.layer),
+            Effect.provide(testPlatformLayer()),
+          );
       }).pipe(Effect.provide(testLayer)),
     );
 
@@ -482,5 +537,7 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
     expect(result.response.globalCommands).toContain("visible");
     expect(result.response.globalCommands).not.toContain(".hidden");
     expect(result.response.globalCommands).not.toContain(".hidden-dir:impl");
+    expect(result.response.globalSkills).toEqual([]);
+    expect(result.response.projectSkills).toEqual([]);
   });
 });

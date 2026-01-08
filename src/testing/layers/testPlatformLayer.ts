@@ -28,6 +28,7 @@ export const testPlatformLayer = (overrides?: {
     claudeCodePaths: Effect.succeed({
       globalClaudeDirectoryPath: resolve(claudeDirForTest),
       claudeCommandsDirPath: resolve(claudeDirForTest, "commands"),
+      claudeSkillsDirPath: resolve(claudeDirForTest, "skills"),
       claudeProjectsDirPath: resolve(claudeDirForTest, "projects"),
       ...overrides?.claudeCodePaths,
     }),

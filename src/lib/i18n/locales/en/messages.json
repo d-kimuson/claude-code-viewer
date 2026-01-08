@@ -1385,7 +1385,7 @@
     "origin": [
       [
         "src/routes/projects/$projectId/session.tsx",
-        22
+        21
       ]
     ],
     "translation": "The session you are looking for does not exist."
@@ -1396,7 +1396,7 @@
     "origin": [
       [
         "src/routes/projects/$projectId/session.tsx",
-        21
+        20
       ]
     ],
     "translation": "Session Not Found"

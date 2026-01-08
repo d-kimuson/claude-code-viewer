@@ -311,6 +311,17 @@
     ],
     "translation": "タスクを確認"
   },
+  "assistant.turn_duration": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TurnDuration.tsx",
+        15
+      ]
+    ],
+    "translation": "応答時間"
+  },
   "chat.attach_file": {
     "placeholders": {},
     "comments": [],
@@ -834,7 +845,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        103
+        104
       ]
     ],
     "translation": "生データ："
@@ -845,7 +856,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        96
+        97
       ]
     ],
     "translation": "この問題を報告"
@@ -856,7 +867,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        71
+        72
       ]
     ],
     "translation": "スキーマエラー"
@@ -867,7 +878,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        86
+        87
       ]
     ],
     "translation": "スキーマ検証エラー"
@@ -878,7 +889,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        89
+        90
       ]
     ],
     "translation": "この会話エントリの解析に失敗しました。フォーマットの変更または解析の問題が考えられます。"

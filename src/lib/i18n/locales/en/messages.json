@@ -311,6 +311,17 @@
     ],
     "translation": "View Task Details"
   },
+  "assistant.turn_duration": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TurnDuration.tsx",
+        15
+      ]
+    ],
+    "translation": "Turn duration"
+  },
   "chat.attach_file": {
     "placeholders": {},
     "comments": [],
@@ -834,7 +845,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        103
+        104
       ]
     ],
     "translation": "Raw Data: "
@@ -845,7 +856,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        96
+        97
       ]
     ],
     "translation": "Report This Issue"
@@ -856,7 +867,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        71
+        72
       ]
     ],
     "translation": "Schema Error"
@@ -867,7 +878,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        86
+        87
       ]
     ],
     "translation": "Schema Validation Error"
@@ -878,7 +889,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        89
+        90
       ]
     ],
     "translation": "Failed to parse this conversation entry. This may be due to format changes or parsing issues."

@@ -10,12 +10,14 @@ import { MetaConversationContent } from "./MetaConversationContent";
 import { QueueOperationConversationContent } from "./QueueOperationConversationContent";
 import { SummaryConversationContent } from "./SummaryConversationContent";
 import { SystemConversationContent } from "./SystemConversationContent";
+import { TurnDuration } from "./TurnDuration";
 import { UserConversationContent } from "./UserConversationContent";
 
 export const ConversationItem: FC<{
   conversation: Conversation;
   getToolResult: (toolUseId: string) => ToolResultContent | undefined;
   getAgentIdForToolUse: (toolUseId: string) => string | undefined;
+  getTurnDuration: (uuid: string) => number | undefined;
   isRootSidechain: (conversation: Conversation) => boolean;
   getSidechainConversationByPrompt: (
     prompt: string,
@@ -28,6 +30,7 @@ export const ConversationItem: FC<{
   conversation,
   getToolResult,
   getAgentIdForToolUse,
+  getTurnDuration,
   getSidechainConversationByPrompt,
   getSidechainConversations,
   projectId,
@@ -87,24 +90,30 @@ export const ConversationItem: FC<{
   }
 
   if (conversation.type === "assistant") {
+    const turnDuration = getTurnDuration(conversation.uuid);
     return (
-      <ul className="w-full">
-        {conversation.message.content.map((content) => (
-          <li key={content.toString()}>
-            <AssistantConversationContent
-              content={content}
-              getToolResult={getToolResult}
-              getAgentIdForToolUse={getAgentIdForToolUse}
-              getSidechainConversationByPrompt={
-                getSidechainConversationByPrompt
-              }
-              getSidechainConversations={getSidechainConversations}
-              projectId={projectId}
-              sessionId={sessionId}
-            />
-          </li>
-        ))}
-      </ul>
+      <div className="w-full">
+        <ul className="w-full">
+          {conversation.message.content.map((content) => (
+            <li key={content.toString()}>
+              <AssistantConversationContent
+                content={content}
+                getToolResult={getToolResult}
+                getAgentIdForToolUse={getAgentIdForToolUse}
+                getSidechainConversationByPrompt={
+                  getSidechainConversationByPrompt
+                }
+                getSidechainConversations={getSidechainConversations}
+                projectId={projectId}
+                sessionId={sessionId}
+              />
+            </li>
+          ))}
+        </ul>
+        {turnDuration !== undefined && (
+          <TurnDuration durationMs={turnDuration} />
+        )}
+      </div>
     );
   }
 

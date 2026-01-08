@@ -48,12 +48,14 @@ export type CostCalculationResult = {
  * Normalizes Claude API model names to standard model identifiers
  *
  * Examples:
+ * - "claude-opus-4-5-20251101" -> "claude-opus-4.5"
+ * - "claude-opus-4-1-20250101" -> "claude-opus-4.1"
+ * - "claude-sonnet-4-5-20250929" -> "claude-sonnet-4.5"
+ * - "claude-haiku-4-5-20251001" -> "claude-haiku-4.5"
  * - "claude-sonnet-4-20250514" -> "claude-3.5-sonnet"
  * - "claude-3-5-sonnet-20240620" -> "claude-3.5-sonnet"
  * - "claude-3-opus-20240229" -> "claude-3-opus"
  * - "claude-3-haiku-20240307" -> "claude-3-haiku"
- * - "claude-instant-1.2" -> "claude-instant-1.2"
- * - "claude-2.1" -> "claude-2"
  *
  * @param modelName Raw model name from API
  * @returns Normalized model name or default model name if unknown
@@ -61,7 +63,27 @@ export type CostCalculationResult = {
 export function normalizeModelName(modelName: string): ModelName {
   const normalized = modelName.toLowerCase();
 
-  // Claude 3.5 Sonnet patterns
+  // Claude Opus 4.5 patterns (more specific first)
+  if (normalized.includes("opus-4-5") || normalized.includes("opus-4.5")) {
+    return "claude-opus-4.5";
+  }
+
+  // Claude Opus 4.1 patterns
+  if (normalized.includes("opus-4-1") || normalized.includes("opus-4.1")) {
+    return "claude-opus-4.1";
+  }
+
+  // Claude Sonnet 4.5 patterns
+  if (normalized.includes("sonnet-4-5") || normalized.includes("sonnet-4.5")) {
+    return "claude-sonnet-4.5";
+  }
+
+  // Claude Haiku 4.5 patterns
+  if (normalized.includes("haiku-4-5") || normalized.includes("haiku-4.5")) {
+    return "claude-haiku-4.5";
+  }
+
+  // Claude 3.5 Sonnet patterns (Sonnet 4 without version suffix)
   if (
     normalized.includes("sonnet-4") ||
     normalized.includes("3-5-sonnet") ||
@@ -78,16 +100,6 @@ export function normalizeModelName(modelName: string): ModelName {
   // Claude 3 Haiku patterns
   if (normalized.includes("3-haiku") || normalized.includes("haiku-20")) {
     return "claude-3-haiku";
-  }
-
-  // Claude Instant 1.2
-  if (normalized.includes("instant-1.2") || normalized.includes("instant-1")) {
-    return "claude-instant-1.2";
-  }
-
-  // Claude 2 patterns
-  if (normalized.startsWith("claude-2")) {
-    return "claude-2";
   }
 
   // Unknown model - return default

@@ -312,7 +312,6 @@
     "translation": "タスクを確認"
   },
   "assistant.turn_duration": {
-    "translation": "応答時間",
     "placeholders": {},
     "comments": [],
     "origin": [
@@ -320,7 +319,8 @@
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TurnDuration.tsx",
         15
       ]
-    ]
+    ],
+    "translation": "応答時間"
   },
   "chat.attach_file": {
     "placeholders": {},

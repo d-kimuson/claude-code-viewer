@@ -312,7 +312,6 @@
     "translation": "View Task Details"
   },
   "assistant.turn_duration": {
-    "translation": "Turn duration",
     "placeholders": {},
     "comments": [],
     "origin": [
@@ -320,7 +319,8 @@
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TurnDuration.tsx",
         15
       ]
-    ]
+    ],
+    "translation": "Turn duration"
   },
   "chat.attach_file": {
     "placeholders": {},

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.2
+
+*No significant changes*
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.5.1...0.5.2)
+
 ## 0.5.1
 
 ### &nbsp;&nbsp;&nbsp;Bug Fixes

@@ -540,4 +540,150 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
     expect(result.response.globalSkills).toEqual([]);
     expect(result.response.projectSkills).toEqual([]);
   });
+
+  it("should return skills when runSkillsDirectly flag is enabled", async () => {
+    // Setup: Create skill directories with SKILL.md files
+    const globalSkillsDir = `${testDir}/global-skills`;
+    const projectSkillsDir = `${projectDir}/.claude/skills`;
+
+    await Effect.runPromise(
+      Effect.gen(function* () {
+        const fs = yield* FileSystem.FileSystem;
+
+        // Global skills
+        yield* fs.makeDirectory(`${globalSkillsDir}/typescript`, {
+          recursive: true,
+        });
+        yield* fs.writeFileString(
+          `${globalSkillsDir}/typescript/SKILL.md`,
+          "# TypeScript Skill",
+        );
+
+        yield* fs.makeDirectory(`${globalSkillsDir}/react`, {
+          recursive: true,
+        });
+        yield* fs.writeFileString(
+          `${globalSkillsDir}/react/SKILL.md`,
+          "# React Skill",
+        );
+
+        // Nested global skill
+        yield* fs.makeDirectory(`${globalSkillsDir}/frontend/design`, {
+          recursive: true,
+        });
+        yield* fs.writeFileString(
+          `${globalSkillsDir}/frontend/design/SKILL.md`,
+          "# Frontend Design Skill",
+        );
+
+        // Project skills
+        yield* fs.makeDirectory(`${projectSkillsDir}/custom-impl`, {
+          recursive: true,
+        });
+        yield* fs.writeFileString(
+          `${projectSkillsDir}/custom-impl/SKILL.md`,
+          "# Custom Implementation Skill",
+        );
+
+        // Nested project skill
+        yield* fs.makeDirectory(`${projectSkillsDir}/api/validation`, {
+          recursive: true,
+        });
+        yield* fs.writeFileString(
+          `${projectSkillsDir}/api/validation/SKILL.md`,
+          "# API Validation Skill",
+        );
+      }).pipe(
+        Effect.provide(NodeContext.layer),
+        Effect.provide(testPlatformLayer()),
+      ),
+    );
+
+    const projectLayer = testProjectRepositoryLayer({
+      projects: [
+        {
+          id: "test-project",
+          claudeProjectPath: "/path/to/project",
+          lastModifiedAt: new Date(),
+          meta: {
+            projectName: "Test Project",
+            projectPath: projectDir,
+            sessionCount: 0,
+          },
+        },
+      ],
+    });
+
+    const appContextLayer = Layer.succeed(
+      ApplicationContext,
+      ApplicationContext.of({
+        claudeCodePaths: Effect.succeed({
+          globalClaudeDirectoryPath: testDir,
+          claudeCommandsDirPath: globalCommandsDir,
+          claudeSkillsDirPath: globalSkillsDir,
+          claudeProjectsDirPath: `${testDir}/projects`,
+        }),
+      }),
+    );
+
+    // Mock ClaudeCodeService with runSkillsDirectly enabled
+    const testClaudeCodeServiceWithSkillsLayer = Layer.succeed(
+      ClaudeCodeService,
+      ClaudeCodeService.of({
+        getClaudeCodeMeta: () =>
+          Effect.succeed({
+            claudeCodeExecutablePath: "/mock/claude",
+            claudeCodeVersion: null,
+          }),
+        getAvailableFeatures: () =>
+          Effect.succeed({
+            canUseTool: false,
+            uuidOnSDKMessage: false,
+            agentSdk: false,
+            sidechainSeparation: false,
+            runSkillsDirectly: true, // Enable the flag
+          }),
+        getMcpList: () => Effect.succeed([]),
+      }),
+    );
+
+    const testLayer = ClaudeCodeController.Live.pipe(
+      Layer.provide(testClaudeCodeServiceWithSkillsLayer),
+      Layer.provide(projectLayer),
+      Layer.provide(appContextLayer),
+      Layer.provide(NodeContext.layer),
+      Layer.provide(testPlatformLayer()),
+    );
+
+    const result = await Effect.runPromise(
+      Effect.gen(function* () {
+        const controller = yield* ClaudeCodeController;
+        return yield* controller
+          .getClaudeCommands({
+            projectId: "test-project",
+          })
+          .pipe(
+            Effect.provide(NodeContext.layer),
+            Effect.provide(testPlatformLayer()),
+          );
+      }).pipe(Effect.provide(testLayer)),
+    );
+
+    expect(result.status).toBe(200);
+
+    // Verify global skills are detected
+    expect(result.response.globalSkills).toHaveLength(3);
+    expect(result.response.globalSkills).toContain("typescript");
+    expect(result.response.globalSkills).toContain("react");
+    expect(result.response.globalSkills).toContain("frontend:design");
+
+    // Verify project skills are detected
+    expect(result.response.projectSkills).toHaveLength(2);
+    expect(result.response.projectSkills).toContain("custom-impl");
+    expect(result.response.projectSkills).toContain("api:validation");
+
+    // Commands should still be empty in this test
+    expect(result.response.globalCommands).toEqual([]);
+    expect(result.response.projectCommands).toEqual([]);
+  });
 });

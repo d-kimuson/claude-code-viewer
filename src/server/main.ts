@@ -14,8 +14,8 @@ program
 
 // start server
 program
-  .option("-p, --port <port>", "port to listen on", "3000")
-  .option("-h, --hostname <hostname>", "hostname to listen on", "localhost")
+  .option("-p, --port <port>", "port to listen on")
+  .option("-h, --hostname <hostname>", "hostname to listen on")
   .option("-P, --password <password>", "password to authenticate")
   .option("-e, --executable <executable>", "path to claude code executable")
   .option("--claude-dir <claude-dir>", "path to claude directory")

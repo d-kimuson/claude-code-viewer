@@ -2135,7 +2135,6 @@
     "translation": "Claude Codeが処理中..."
   },
   "session.scheduled_messages.disabled": {
-    "translation": "無効",
     "placeholders": {},
     "comments": [],
     "origin": [
@@ -2143,10 +2142,10 @@
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ScheduledMessageNotice.tsx",
         61
       ]
-    ]
+    ],
+    "translation": "無効"
   },
   "session.scheduled_messages.message_label": {
-    "translation": "メッセージ",
     "placeholders": {},
     "comments": [],
     "origin": [
@@ -2154,10 +2153,10 @@
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ScheduledMessageNotice.tsx",
         66
       ]
-    ]
+    ],
+    "translation": "メッセージ"
   },
   "session.scheduled_messages.title": {
-    "translation": "予約投稿",
     "placeholders": {},
     "comments": [],
     "origin": [
@@ -2165,7 +2164,8 @@
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ScheduledMessageNotice.tsx",
         27
       ]
-    ]
+    ],
+    "translation": "予約投稿"
   },
   "session.status.paused": {
     "placeholders": {},

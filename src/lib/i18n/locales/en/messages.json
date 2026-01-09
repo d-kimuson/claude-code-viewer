@@ -2135,7 +2135,6 @@
     "translation": "Claude Code is processing..."
   },
   "session.scheduled_messages.disabled": {
-    "translation": "Disabled",
     "placeholders": {},
     "comments": [],
     "origin": [
@@ -2143,10 +2142,10 @@
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ScheduledMessageNotice.tsx",
         61
       ]
-    ]
+    ],
+    "translation": "Disabled"
   },
   "session.scheduled_messages.message_label": {
-    "translation": "Message",
     "placeholders": {},
     "comments": [],
     "origin": [
@@ -2154,10 +2153,10 @@
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ScheduledMessageNotice.tsx",
         66
       ]
-    ]
+    ],
+    "translation": "Message"
   },
   "session.scheduled_messages.title": {
-    "translation": "Scheduled Messages",
     "placeholders": {},
     "comments": [],
     "origin": [
@@ -2165,7 +2164,8 @@
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ScheduledMessageNotice.tsx",
         27
       ]
-    ]
+    ],
+    "translation": "Scheduled Messages"
   },
   "session.status.paused": {
     "placeholders": {},

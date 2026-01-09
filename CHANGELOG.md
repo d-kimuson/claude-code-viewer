@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.5.3
+
+### &nbsp;&nbsp;&nbsp;Features
+
+- Update Claude model pricing to latest versions &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.5** [<samp>(944ab)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/944ab42)
+- Display reserved message in conversation view &nbsp;-&nbsp; by **d-kimsuon** [<samp>(0e834)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/0e834db)
+
+### &nbsp;&nbsp;&nbsp;Bug Fixes
+
+- Problem that submit button not displayed for scheduled message in mobile &nbsp;-&nbsp; by **d-kimsuon** [<samp>(4c8cf)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/4c8cf03)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.5.2...0.5.3)
+
 ## 0.5.2
 
 *No significant changes*

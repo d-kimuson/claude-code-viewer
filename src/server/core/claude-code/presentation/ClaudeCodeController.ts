@@ -4,7 +4,10 @@ import type { ControllerResponse } from "../../../lib/effect/toEffectResponse";
 import type { InferEffect } from "../../../lib/effect/types";
 import { ApplicationContext } from "../../platform/services/ApplicationContext";
 import { ProjectRepository } from "../../project/infrastructure/ProjectRepository";
-import { scanCommandFilesRecursively } from "../functions/scanCommandFiles";
+import {
+  scanCommandFilesRecursively,
+  scanSkillFilesRecursively,
+} from "../functions/scanCommandFiles";
 import * as ClaudeCodeVersion from "../models/ClaudeCodeVersion";
 import { ClaudeCodeService } from "../services/ClaudeCodeService";
 
@@ -21,6 +24,7 @@ const LayerImpl = Effect.gen(function* () {
       const { projectId } = options;
 
       const { project } = yield* projectRepository.getProject(projectId);
+      const features = yield* claudeCodeService.getAvailableFeatures();
 
       const globalCommands: string[] = yield* scanCommandFilesRecursively(
         (yield* context.claudeCodePaths).claudeCommandsDirPath,
@@ -33,10 +37,25 @@ const LayerImpl = Effect.gen(function* () {
               path.resolve(project.meta.projectPath, ".claude", "commands"),
             );
 
+      const globalSkills: string[] = features.runSkillsDirectly
+        ? yield* scanSkillFilesRecursively(
+            (yield* context.claudeCodePaths).claudeSkillsDirPath,
+          )
+        : [];
+
+      const projectSkills: string[] =
+        features.runSkillsDirectly && project.meta.projectPath !== null
+          ? yield* scanSkillFilesRecursively(
+              path.resolve(project.meta.projectPath, ".claude", "skills"),
+            )
+          : [];
+
       return {
         response: {
           globalCommands: globalCommands,
           projectCommands: projectCommands,
+          globalSkills: globalSkills,
+          projectSkills: projectSkills,
           defaultCommands: ["init", "compact", "security-review", "review"],
         },
         status: 200,

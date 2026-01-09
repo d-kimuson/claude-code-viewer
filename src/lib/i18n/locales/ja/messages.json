@@ -5,7 +5,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/CommandCompletion.tsx",
-        193
+        195
       ]
     ],
     "translation": "利用可能なコマンド"

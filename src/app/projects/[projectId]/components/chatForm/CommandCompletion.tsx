@@ -53,6 +53,8 @@ export const CommandCompletion = forwardRef<
       ...(commandData?.defaultCommands || []),
       ...(commandData?.globalCommands || []),
       ...(commandData?.projectCommands || []),
+      ...(commandData?.globalSkills || []),
+      ...(commandData?.projectSkills || []),
     ];
 
     const shouldShow = inputValue.startsWith("/");

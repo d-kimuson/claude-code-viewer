@@ -2699,6 +2699,50 @@
     ],
     "translation": "扩展 Agent 模式"
   },
+  "system_info.feature.run_skills_directly.description": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/components/SystemInfoCard.tsx",
+        57
+      ]
+    ],
+    "translation": "启用直接执行技能功能"
+  },
+  "system_info.feature.run_skills_directly.title": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/components/SystemInfoCard.tsx",
+        55
+      ]
+    ],
+    "translation": "直接执行技能"
+  },
+  "system_info.feature.sidechain_separation.description": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/components/SystemInfoCard.tsx",
+        43
+      ]
+    ],
+    "translation": "侧链对话将单独存储在 agent-*.jsonl 文件中"
+  },
+  "system_info.feature.sidechain_separation.title": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/components/SystemInfoCard.tsx",
+        41
+      ]
+    ],
+    "translation": "侧链分离"
+  },
   "system_info.feature.tool_approval.description": {
     "placeholders": {},
     "comments": [],
@@ -2727,10 +2771,32 @@
     "origin": [
       [
         "src/components/SystemInfoCard.tsx",
-        42
+        63
       ]
     ],
     "translation": "功能信息不可用"
+  },
+  "system_info.feature.uuid_on_sdk_message.description": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/components/SystemInfoCard.tsx",
+        50
+      ]
+    ],
+    "translation": "SDK 消息包含 UUID 用于跟踪"
+  },
+  "system_info.feature.uuid_on_sdk_message.title": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/components/SystemInfoCard.tsx",
+        48
+      ]
+    ],
+    "translation": "SDK 消息 UUID"
   },
   "system_info.title": {
     "placeholders": {},

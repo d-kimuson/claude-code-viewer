@@ -2699,6 +2699,50 @@
     ],
     "translation": "Extended Agent Mode"
   },
+  "system_info.feature.run_skills_directly.description": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/components/SystemInfoCard.tsx",
+        57
+      ]
+    ],
+    "translation": "Enables direct skill execution functionality"
+  },
+  "system_info.feature.run_skills_directly.title": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/components/SystemInfoCard.tsx",
+        55
+      ]
+    ],
+    "translation": "Direct Skills Execution"
+  },
+  "system_info.feature.sidechain_separation.description": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/components/SystemInfoCard.tsx",
+        43
+      ]
+    ],
+    "translation": "Sidechain conversations are stored separately in agent-*.jsonl files"
+  },
+  "system_info.feature.sidechain_separation.title": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/components/SystemInfoCard.tsx",
+        41
+      ]
+    ],
+    "translation": "Sidechain Separation"
+  },
   "system_info.feature.tool_approval.description": {
     "placeholders": {},
     "comments": [],
@@ -2727,10 +2771,32 @@
     "origin": [
       [
         "src/components/SystemInfoCard.tsx",
-        42
+        63
       ]
     ],
     "translation": "Feature information unavailable"
+  },
+  "system_info.feature.uuid_on_sdk_message.description": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/components/SystemInfoCard.tsx",
+        50
+      ]
+    ],
+    "translation": "SDK messages include UUIDs for tracking"
+  },
+  "system_info.feature.uuid_on_sdk_message.title": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/components/SystemInfoCard.tsx",
+        48
+      ]
+    ],
+    "translation": "SDK Message UUID"
   },
   "system_info.title": {
     "placeholders": {},

@@ -350,4 +350,65 @@ describe("ClaudeCode.AvailableFeatures", () => {
       expect(features.sidechainSeparation).toBe(false);
     });
   });
+
+  describe("runSkillsDirectly feature flag", () => {
+    it("should be false when claudeCodeVersion is null", () => {
+      const features = ClaudeCode.getAvailableFeatures(null);
+      expect(features.runSkillsDirectly).toBe(false);
+    });
+
+    it("should be false when claudeCodeVersion is v2.0.76", () => {
+      const features = ClaudeCode.getAvailableFeatures({
+        major: 2,
+        minor: 0,
+        patch: 76,
+      });
+      expect(features.runSkillsDirectly).toBe(false);
+    });
+
+    it("should be true when claudeCodeVersion is v2.0.77", () => {
+      const features = ClaudeCode.getAvailableFeatures({
+        major: 2,
+        minor: 0,
+        patch: 77,
+      });
+      expect(features.runSkillsDirectly).toBe(true);
+    });
+
+    it("should be true when claudeCodeVersion is v2.0.80 (greater than v2.0.77)", () => {
+      const features = ClaudeCode.getAvailableFeatures({
+        major: 2,
+        minor: 0,
+        patch: 80,
+      });
+      expect(features.runSkillsDirectly).toBe(true);
+    });
+
+    it("should be true when claudeCodeVersion is v2.1.0", () => {
+      const features = ClaudeCode.getAvailableFeatures({
+        major: 2,
+        minor: 1,
+        patch: 0,
+      });
+      expect(features.runSkillsDirectly).toBe(true);
+    });
+
+    it("should be true when claudeCodeVersion is v2.1.5 (greater than v2.1.0)", () => {
+      const features = ClaudeCode.getAvailableFeatures({
+        major: 2,
+        minor: 1,
+        patch: 5,
+      });
+      expect(features.runSkillsDirectly).toBe(true);
+    });
+
+    it("should be false when claudeCodeVersion is v1.x.x (lower major version)", () => {
+      const features = ClaudeCode.getAvailableFeatures({
+        major: 1,
+        minor: 0,
+        patch: 200,
+      });
+      expect(features.runSkillsDirectly).toBe(false);
+    });
+  });
 });

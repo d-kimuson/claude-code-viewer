@@ -27,6 +27,14 @@ const LayerImpl = Effect.gen(function* () {
               name: "sidechain-separation",
               enabled: claudeCodeFeatures.sidechainSeparation,
             },
+            {
+              name: "uuid-on-sdk-message",
+              enabled: claudeCodeFeatures.uuidOnSDKMessage,
+            },
+            {
+              name: "run-skills-directly",
+              enabled: claudeCodeFeatures.runSkillsDirectly,
+            },
           ] satisfies Flag[],
         },
         status: 200,

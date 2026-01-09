@@ -2699,6 +2699,50 @@
     ],
     "translation": "拡張エージェントモード"
   },
+  "system_info.feature.run_skills_directly.description": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/components/SystemInfoCard.tsx",
+        57
+      ]
+    ],
+    "translation": "スキルを直接実行する機能が有効になっています"
+  },
+  "system_info.feature.run_skills_directly.title": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/components/SystemInfoCard.tsx",
+        55
+      ]
+    ],
+    "translation": "スキル直接実行"
+  },
+  "system_info.feature.sidechain_separation.description": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/components/SystemInfoCard.tsx",
+        43
+      ]
+    ],
+    "translation": "サイドチェーン会話が agent-*.jsonl に分離保存されます"
+  },
+  "system_info.feature.sidechain_separation.title": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/components/SystemInfoCard.tsx",
+        41
+      ]
+    ],
+    "translation": "サイドチェーン分離"
+  },
   "system_info.feature.tool_approval.description": {
     "placeholders": {},
     "comments": [],
@@ -2727,10 +2771,32 @@
     "origin": [
       [
         "src/components/SystemInfoCard.tsx",
-        42
+        63
       ]
     ],
     "translation": "機能情報は利用できません"
+  },
+  "system_info.feature.uuid_on_sdk_message.description": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/components/SystemInfoCard.tsx",
+        50
+      ]
+    ],
+    "translation": "SDK メッセージに UUID が含まれるようになります"
+  },
+  "system_info.feature.uuid_on_sdk_message.title": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/components/SystemInfoCard.tsx",
+        48
+      ]
+    ],
+    "translation": "SDK メッセージ UUID"
   },
   "system_info.title": {
     "placeholders": {},

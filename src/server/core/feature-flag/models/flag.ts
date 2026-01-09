@@ -10,6 +10,14 @@ export type Flag =
   | {
       name: "sidechain-separation";
       enabled: boolean;
+    }
+  | {
+      name: "uuid-on-sdk-message";
+      enabled: boolean;
+    }
+  | {
+      name: "run-skills-directly";
+      enabled: boolean;
     };
 
 export type FlagName = Flag["name"];

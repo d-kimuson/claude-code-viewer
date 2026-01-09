@@ -36,6 +36,27 @@ const getFeatureInfo = (featureName: string): FeatureInfo => {
         title: <Trans id="system_info.feature.agent_sdk.title" />,
         description: <Trans id="system_info.feature.agent_sdk.description" />,
       };
+    case "sidechain-separation":
+      return {
+        title: <Trans id="system_info.feature.sidechain_separation.title" />,
+        description: (
+          <Trans id="system_info.feature.sidechain_separation.description" />
+        ),
+      };
+    case "uuid-on-sdk-message":
+      return {
+        title: <Trans id="system_info.feature.uuid_on_sdk_message.title" />,
+        description: (
+          <Trans id="system_info.feature.uuid_on_sdk_message.description" />
+        ),
+      };
+    case "run-skills-directly":
+      return {
+        title: <Trans id="system_info.feature.run_skills_directly.title" />,
+        description: (
+          <Trans id="system_info.feature.run_skills_directly.description" />
+        ),
+      };
     default:
       return {
         title: featureName,

@@ -286,6 +286,11 @@ const LayerImpl = Effect.gen(function* () {
 
         try {
           for await (const message of messageIter) {
+            // Check abort signal before processing message
+            if (sessionProcess.def.abortController.signal.aborted) {
+              break;
+            }
+
             const fallbackMessage = fallbackSdkMessage(message);
 
             const result = await Runtime.runPromise(runtime)(

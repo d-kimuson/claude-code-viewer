@@ -438,116 +438,161 @@ export const ChatInput: FC<ChatInputProps> = ({
             </div>
           )}
 
-          <div className="flex items-center justify-between gap-3 px-5 py-1 bg-muted/30 border-t border-border/40">
-            <div className="flex items-center gap-2">
-              <input
-                ref={fileInputRef}
-                type="file"
-                multiple
-                onChange={handleFileSelect}
-                className="hidden"
-              />
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                onClick={() => fileInputRef.current?.click()}
-                disabled={isPending || disabled}
-                className="gap-1.5"
-              >
-                <PaperclipIcon className="w-4 h-4" />
-                <span className="text-xs">
-                  <Trans id="chat.attach_file" />
-                </span>
-              </Button>
-              <span
-                className="text-xs font-medium text-muted-foreground/80"
-                id={helpId}
-              >
-                {message.length}
-              </span>
-              {(message.startsWith("/") || message.includes("@")) && (
-                <span className="text-xs text-blue-600 dark:text-blue-400 font-medium flex items-center gap-1">
-                  <SparklesIcon className="w-3 h-3" />
-                  <Trans id="chat.autocomplete.active" />
-                </span>
-              )}
-            </div>
-
-            <div className="flex items-center gap-2">
-              {enableScheduledSend && (
-                <div className="flex items-center gap-2">
-                  <Label htmlFor="send-mode" className="text-xs sr-only">
-                    <Trans id="chat.send_mode.label" />
-                  </Label>
-                  <Select
-                    value={sendMode}
-                    onValueChange={(value: "immediate" | "scheduled") =>
-                      setSendMode(value)
-                    }
-                    disabled={isPending || disabled}
+          <div className="flex flex-col gap-2 px-5 py-1 bg-muted/30 border-t border-border/40">
+            {enableScheduledSend && sendMode === "scheduled" && (
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 pt-1">
+                <Label htmlFor="send-mode-mobile" className="text-xs sr-only">
+                  <Trans id="chat.send_mode.label" />
+                </Label>
+                <Select
+                  value={sendMode}
+                  onValueChange={(value: "immediate" | "scheduled") =>
+                    setSendMode(value)
+                  }
+                  disabled={isPending || disabled}
+                >
+                  <SelectTrigger
+                    id="send-mode-mobile"
+                    className="h-8 w-full sm:w-[140px] text-xs"
                   >
-                    <SelectTrigger
-                      id="send-mode"
-                      className="h-8 w-[140px] text-xs"
-                    >
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="immediate">
-                        <Trans id="chat.send_mode.immediate" />
-                      </SelectItem>
-                      <SelectItem value="scheduled">
-                        <Trans id="chat.send_mode.scheduled" />
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="immediate">
+                      <Trans id="chat.send_mode.immediate" />
+                    </SelectItem>
+                    <SelectItem value="scheduled">
+                      <Trans id="chat.send_mode.scheduled" />
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
 
-                  {sendMode === "scheduled" && (
-                    <div className="flex items-center gap-1.5">
-                      <Label
-                        htmlFor="scheduled-time"
-                        className="text-xs sr-only"
-                      >
-                        <Trans id="chat.send_mode.scheduled_time" />
-                      </Label>
-                      <Input
-                        id="scheduled-time"
-                        type="datetime-local"
-                        value={scheduledTime}
-                        onChange={(e) => setScheduledTime(e.target.value)}
-                        disabled={isPending || disabled}
-                        className="h-8 w-[180px] text-xs"
-                      />
-                    </div>
-                  )}
+                <div className="flex items-center gap-1.5 flex-1">
+                  <Label htmlFor="scheduled-time" className="text-xs sr-only">
+                    <Trans id="chat.send_mode.scheduled_time" />
+                  </Label>
+                  <Input
+                    id="scheduled-time"
+                    type="datetime-local"
+                    value={scheduledTime}
+                    onChange={(e) => setScheduledTime(e.target.value)}
+                    disabled={isPending || disabled}
+                    className="h-8 w-full sm:w-[180px] text-xs"
+                  />
                 </div>
-              )}
+              </div>
+            )}
 
-              <Button
-                onClick={handleSubmit}
-                disabled={
-                  (!message.trim() && attachedFiles.length === 0) ||
-                  isPending ||
-                  disabled
-                }
-                size={buttonSize}
-                className="gap-2 transition-all duration-200 hover:shadow-md hover:scale-105 active:scale-95 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 disabled:from-muted disabled:to-muted"
-              >
-                {isPending ? (
-                  <>
-                    <LoaderIcon className="w-4 h-4 animate-spin" />
-                    <span>
-                      <Trans id="chat.status.processing" />
-                    </span>
-                  </>
-                ) : (
-                  <>
-                    <SendIcon className="w-4 h-4" />
-                    {buttonText}
-                  </>
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  multiple
+                  onChange={handleFileSelect}
+                  className="hidden"
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={isPending || disabled}
+                  className="gap-1.5"
+                >
+                  <PaperclipIcon className="w-4 h-4" />
+                  <span className="text-xs hidden sm:inline">
+                    <Trans id="chat.attach_file" />
+                  </span>
+                </Button>
+                <span
+                  className="text-xs font-medium text-muted-foreground/80"
+                  id={helpId}
+                >
+                  {message.length}
+                </span>
+                {(message.startsWith("/") || message.includes("@")) && (
+                  <span className="text-xs text-blue-600 dark:text-blue-400 font-medium hidden sm:flex items-center gap-1">
+                    <SparklesIcon className="w-3 h-3" />
+                    <Trans id="chat.autocomplete.active" />
+                  </span>
                 )}
-              </Button>
+              </div>
+
+              <div className="flex items-center gap-2">
+                {enableScheduledSend && sendMode === "immediate" && (
+                  <div className="hidden sm:flex items-center gap-2">
+                    <Label
+                      htmlFor="send-mode-desktop"
+                      className="text-xs sr-only"
+                    >
+                      <Trans id="chat.send_mode.label" />
+                    </Label>
+                    <Select
+                      value={sendMode}
+                      onValueChange={(value: "immediate" | "scheduled") =>
+                        setSendMode(value)
+                      }
+                      disabled={isPending || disabled}
+                    >
+                      <SelectTrigger
+                        id="send-mode-desktop"
+                        className="h-8 w-[140px] text-xs"
+                      >
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="immediate">
+                          <Trans id="chat.send_mode.immediate" />
+                        </SelectItem>
+                        <SelectItem value="scheduled">
+                          <Trans id="chat.send_mode.scheduled" />
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+
+                {enableScheduledSend && sendMode === "immediate" && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setSendMode("scheduled")}
+                    disabled={isPending || disabled}
+                    className="sm:hidden gap-1.5"
+                  >
+                    <span className="text-xs">
+                      <Trans id="chat.send_mode.scheduled" />
+                    </span>
+                  </Button>
+                )}
+
+                <Button
+                  onClick={handleSubmit}
+                  disabled={
+                    (!message.trim() && attachedFiles.length === 0) ||
+                    isPending ||
+                    disabled
+                  }
+                  size={buttonSize}
+                  className="gap-2 transition-all duration-200 hover:shadow-md hover:scale-105 active:scale-95 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 disabled:from-muted disabled:to-muted"
+                >
+                  {isPending ? (
+                    <>
+                      <LoaderIcon className="w-4 h-4 animate-spin" />
+                      <span className="hidden sm:inline">
+                        <Trans id="chat.status.processing" />
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <SendIcon className="w-4 h-4" />
+                      <span className="hidden sm:inline">{buttonText}</span>
+                    </>
+                  )}
+                </Button>
+              </div>
             </div>
           </div>
         </div>

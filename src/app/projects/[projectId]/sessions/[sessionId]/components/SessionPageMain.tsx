@@ -31,6 +31,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { usePermissionRequests } from "@/hooks/usePermissionRequests";
+import { useSchedulerJobs } from "@/hooks/useScheduler";
 import { useTaskNotifications } from "@/hooks/useTaskNotifications";
 import { honoClient } from "@/lib/api/client";
 import { firstUserMessageToTitle } from "../../../services/firstCommandToTitle";
@@ -104,6 +105,7 @@ const SessionPageMainContent: FC<
   const { data: revisionsDataFallback } = useGitCurrentRevisionsHook(projectId);
   const revisionsData = revisionsDataProp ?? revisionsDataFallback;
   const exportSession = useExportSession();
+  const { data: allSchedulerJobs } = useSchedulerJobs();
 
   const sessionProcess = useSessionProcess();
   const relatedSessionProcess = useMemo(() => {
@@ -112,6 +114,18 @@ const SessionPageMainContent: FC<
   }, [sessionProcess, sessionId]);
 
   useTaskNotifications(relatedSessionProcess?.status === "running");
+
+  // Filter scheduler jobs related to this session
+  const sessionScheduledJobs = useMemo(() => {
+    if (!sessionId || !allSchedulerJobs) return [];
+    return allSchedulerJobs.filter(
+      (job) =>
+        job.message.baseSessionId === sessionId &&
+        job.message.projectId === projectId &&
+        job.schedule.type === "reserved" &&
+        job.lastRunStatus === null, // Only show jobs that haven't been executed yet
+    );
+  }, [allSchedulerJobs, sessionId, projectId]);
 
   const [previousConversationLength, setPreviousConversationLength] =
     useState(0);
@@ -451,6 +465,7 @@ const SessionPageMainContent: FC<
               getToolResult={getToolResult}
               projectId={projectId}
               sessionId={sessionId ?? ""}
+              scheduledJobs={sessionScheduledJobs}
             />
             {!isExistingSession && (
               <div className="rounded-2xl border border-dashed border-muted-foreground/40 bg-muted/30 p-8 text-center space-y-3">

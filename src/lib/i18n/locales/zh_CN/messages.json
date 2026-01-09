@@ -328,7 +328,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        460
+        505
       ]
     ],
     "translation": "附加"
@@ -339,7 +339,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        472
+        517
       ]
     ],
     "translation": "自动补全已激活"
@@ -372,11 +372,11 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        182
+        196
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        462
+        477
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
@@ -533,7 +533,11 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        498
+        462
+      ],
+      [
+        "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        546
       ]
     ],
     "translation": "立即发送"
@@ -544,7 +548,11 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        481
+        445
+      ],
+      [
+        "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        529
       ]
     ],
     "translation": "发送模式"
@@ -555,7 +563,15 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        501
+        465
+      ],
+      [
+        "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        549
+      ],
+      [
+        "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        566
       ]
     ],
     "translation": "定时发送"
@@ -566,7 +582,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        512
+        472
       ]
     ],
     "translation": "定时发送时间"
@@ -577,7 +593,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        541
+        585
       ]
     ],
     "translation": "处理中..."
@@ -711,11 +727,11 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        237
+        251
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        348
+        362
       ]
     ],
     "translation": "分支"
@@ -737,7 +753,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        311
+        325
       ]
     ],
     "translation": "元数据"
@@ -795,7 +811,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        317
+        331
       ]
     ],
     "translation": "项目路径"
@@ -830,11 +846,11 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        252
+        266
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        335
+        349
       ]
     ],
     "translation": "会话 ID"
@@ -845,7 +861,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        104
+        106
       ]
     ],
     "translation": "原始数据:"
@@ -856,7 +872,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        97
+        99
       ]
     ],
     "translation": "报告此问题"
@@ -867,7 +883,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        72
+        74
       ]
     ],
     "translation": "模式错误"
@@ -878,7 +894,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        87
+        89
       ]
     ],
     "translation": "模式验证错误"
@@ -889,7 +905,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        90
+        92
       ]
     ],
     "translation": "无法解析此对话条目。这可能是由于格式更改或解析问题。"
@@ -2014,7 +2030,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        272
+        286
       ]
     ],
     "translation": "已暂停"
@@ -2025,7 +2041,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        263
+        277
       ]
     ],
     "translation": "运行中"
@@ -2036,7 +2052,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        405
+        419
       ]
     ],
     "translation": "缓存创建"
@@ -2047,7 +2063,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        419
+        433
       ]
     ],
     "translation": "缓存读取"
@@ -2058,7 +2074,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        377
+        391
       ]
     ],
     "translation": "输入令牌"
@@ -2069,7 +2085,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        362
+        376
       ]
     ],
     "translation": "会话成本"
@@ -2080,7 +2096,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        391
+        405
       ]
     ],
     "translation": "输出令牌"
@@ -2091,7 +2107,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        369
+        383
       ]
     ],
     "translation": "总计"
@@ -2102,7 +2118,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        465
+        480
       ]
     ],
     "translation": "开始新对话以展开交流"
@@ -2113,10 +2129,43 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        479
+        494
       ]
     ],
     "translation": "Claude Code 正在处理..."
+  },
+  "session.scheduled_messages.disabled": {
+    "translation": "已禁用",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ScheduledMessageNotice.tsx",
+        61
+      ]
+    ]
+  },
+  "session.scheduled_messages.message_label": {
+    "translation": "消息",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ScheduledMessageNotice.tsx",
+        66
+      ]
+    ]
+  },
+  "session.scheduled_messages.title": {
+    "translation": "定时消息",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ScheduledMessageNotice.tsx",
+        27
+      ]
+    ]
   },
   "session.status.paused": {
     "placeholders": {},
@@ -2639,7 +2688,7 @@
     "origin": [
       [
         "src/components/SystemInfoCard.tsx",
-        124
+        145
       ]
     ],
     "translation": "可用功能"
@@ -2650,7 +2699,7 @@
     "origin": [
       [
         "src/components/SystemInfoCard.tsx",
-        90
+        111
       ]
     ],
     "translation": "Claude Code"
@@ -2661,7 +2710,7 @@
     "origin": [
       [
         "src/components/SystemInfoCard.tsx",
-        67
+        88
       ]
     ],
     "translation": "版本和功能信息"
@@ -2672,7 +2721,7 @@
     "origin": [
       [
         "src/components/SystemInfoCard.tsx",
-        95
+        116
       ]
     ],
     "translation": "可执行文件路径"
@@ -2804,7 +2853,7 @@
     "origin": [
       [
         "src/components/SystemInfoCard.tsx",
-        64
+        85
       ]
     ],
     "translation": "系统信息"
@@ -2815,11 +2864,11 @@
     "origin": [
       [
         "src/components/SystemInfoCard.tsx",
-        100
+        121
       ],
       [
         "src/components/SystemInfoCard.tsx",
-        112
+        133
       ]
     ],
     "translation": "未知"
@@ -2830,11 +2879,11 @@
     "origin": [
       [
         "src/components/SystemInfoCard.tsx",
-        79
+        100
       ],
       [
         "src/components/SystemInfoCard.tsx",
-        108
+        129
       ]
     ],
     "translation": "版本"
@@ -2845,7 +2894,7 @@
     "origin": [
       [
         "src/components/SystemInfoCard.tsx",
-        75
+        96
       ]
     ],
     "translation": "Claude Code Viewer"

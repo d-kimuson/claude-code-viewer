@@ -225,6 +225,7 @@ export const TaskModal: FC<TaskModalProps> = ({
               getToolResult={getToolResult}
               projectId={projectId}
               sessionId={sessionId}
+              scheduledJobs={[]}
             />
           )}
         </div>

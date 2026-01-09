@@ -1,15 +1,12 @@
-import { query as agentSdkQuery } from "@anthropic-ai/claude-agent-sdk";
-import {
-  type CanUseTool,
-  query as claudeCodeQuery,
-} from "@anthropic-ai/claude-code";
+import * as agentSdk from "@anthropic-ai/claude-agent-sdk";
+import * as claudeCodeSdk from "@anthropic-ai/claude-code";
 import { Command, Path } from "@effect/platform";
 import { Data, Effect } from "effect";
 import { uniq } from "es-toolkit";
 import { CcvOptionsService } from "../../platform/services/CcvOptionsService";
 import * as ClaudeCodeVersion from "./ClaudeCodeVersion";
 
-type AgentSdkQuery = typeof agentSdkQuery;
+type AgentSdkQuery = typeof agentSdk.query;
 type AgentSdkPrompt = Parameters<AgentSdkQuery>[0]["prompt"];
 type AgentSdkQueryOptions = NonNullable<
   Parameters<AgentSdkQuery>[0]["options"]
@@ -174,7 +171,7 @@ export const query = (
   prompt: AgentSdkPrompt,
   options: AgentSdkQueryOptions,
 ) => {
-  const { canUseTool, permissionMode, ...baseOptions } = options;
+  const { canUseTool, permissionMode, hooks, ...baseOptions } = options;
 
   return Effect.gen(function* () {
     const { claudeCodeExecutablePath, claudeCodeVersion } = yield* Config;
@@ -191,7 +188,7 @@ export const query = (
     };
 
     if (availableFeatures.agentSdk) {
-      return agentSdkQuery({
+      return agentSdk.query({
         prompt,
         options: {
           systemPrompt: { type: "preset", preset: "claude_code" },
@@ -207,7 +204,11 @@ export const query = (
         return undefined;
       }
 
-      const fn: CanUseTool = async (toolName, input, canUseToolOptions) => {
+      const fn: typeof canUseTool = async (
+        toolName,
+        input,
+        canUseToolOptions,
+      ) => {
         const response = await canUseTool(toolName, input, {
           signal: canUseToolOptions.signal,
           suggestions: canUseToolOptions.suggestions,
@@ -219,11 +220,19 @@ export const query = (
       return fn;
     })();
 
-    return claudeCodeQuery({
+    return claudeCodeSdk.query({
       prompt,
       options: {
-        ...options,
-        canUseTool: fallbackCanUseTool,
+        ...baseOptions,
+        permissionMode:
+          // fallback unsupported permission modes
+          permissionMode === "delegate" || permissionMode === "dontAsk"
+            ? "bypassPermissions"
+            : permissionMode,
+        hooks: hooks as Partial<
+          Record<claudeCodeSdk.HookEvent, claudeCodeSdk.HookCallbackMatcher[]>
+        >,
+        canUseTool: fallbackCanUseTool as claudeCodeSdk.CanUseTool,
       },
     });
   });

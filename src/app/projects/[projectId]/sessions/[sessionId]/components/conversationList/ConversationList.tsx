@@ -10,9 +10,11 @@ import {
 import type { Conversation } from "@/lib/conversation-schema";
 import type { ToolResultContent } from "@/lib/conversation-schema/content/ToolResultContentSchema";
 import { calculateDuration } from "@/lib/date/formatDuration";
+import type { SchedulerJob } from "@/server/core/scheduler/schema";
 import type { ErrorJsonl } from "../../../../../../../server/core/types";
 import { useSidechain } from "../../hooks/useSidechain";
 import { ConversationItem } from "./ConversationItem";
+import { ScheduledMessageNotice } from "./ScheduledMessageNotice";
 
 /**
  * Type guard to check if toolUseResult contains agentId.
@@ -121,6 +123,7 @@ type ConversationListProps = {
   getToolResult: (toolUseId: string) => ToolResultContent | undefined;
   projectId: string;
   sessionId: string;
+  scheduledJobs: SchedulerJob[];
 };
 
 export const ConversationList: FC<ConversationListProps> = ({
@@ -128,6 +131,7 @@ export const ConversationList: FC<ConversationListProps> = ({
   getToolResult,
   projectId,
   sessionId,
+  scheduledJobs,
 }) => {
   const validConversations = useMemo(
     () =>
@@ -258,61 +262,66 @@ export const ConversationList: FC<ConversationListProps> = ({
   );
 
   return (
-    <ul>
-      {conversations.flatMap((conversation) => {
-        if (conversation.type === "x-error") {
-          return (
-            <SchemaErrorDisplay
-              key={`error_${conversation.line}`}
-              errorLine={conversation.line}
+    <>
+      <ul>
+        {conversations.flatMap((conversation) => {
+          if (conversation.type === "x-error") {
+            return (
+              <SchemaErrorDisplay
+                key={`error_${conversation.line}`}
+                errorLine={conversation.line}
+              />
+            );
+          }
+
+          const elm = (
+            <ConversationItem
+              key={getConversationKey(conversation)}
+              conversation={conversation}
+              getToolResult={getToolResult}
+              getAgentIdForToolUse={getAgentIdForToolUse}
+              getTurnDuration={getTurnDuration}
+              isRootSidechain={isRootSidechain}
+              getSidechainConversations={getSidechainConversations}
+              getSidechainConversationByPrompt={
+                getSidechainConversationByPrompt
+              }
+              existsRelatedTaskCall={existsRelatedTaskCall}
+              projectId={projectId}
+              sessionId={sessionId}
             />
           );
-        }
 
-        const elm = (
-          <ConversationItem
-            key={getConversationKey(conversation)}
-            conversation={conversation}
-            getToolResult={getToolResult}
-            getAgentIdForToolUse={getAgentIdForToolUse}
-            getTurnDuration={getTurnDuration}
-            isRootSidechain={isRootSidechain}
-            getSidechainConversations={getSidechainConversations}
-            getSidechainConversationByPrompt={getSidechainConversationByPrompt}
-            existsRelatedTaskCall={existsRelatedTaskCall}
-            projectId={projectId}
-            sessionId={sessionId}
-          />
-        );
+          const isSidechain =
+            conversation.type !== "summary" &&
+            conversation.type !== "file-history-snapshot" &&
+            conversation.type !== "queue-operation" &&
+            conversation.isSidechain;
 
-        const isSidechain =
-          conversation.type !== "summary" &&
-          conversation.type !== "file-history-snapshot" &&
-          conversation.type !== "queue-operation" &&
-          conversation.isSidechain;
+          if (isSidechain) {
+            return [];
+          }
 
-        if (isSidechain) {
-          return [];
-        }
-
-        return [
-          <li
-            className={`w-full flex ${
-              isSidechain ||
-              conversation.type === "assistant" ||
-              conversation.type === "system" ||
-              conversation.type === "summary"
-                ? "justify-start"
-                : "justify-end"
-            } animate-in fade-in slide-in-from-bottom-2 duration-300`}
-            key={getConversationKey(conversation)}
-          >
-            <div className="w-full max-w-3xl lg:max-w-4xl sm:w-[90%] md:w-[85%]">
-              {elm}
-            </div>
-          </li>,
-        ];
-      })}
-    </ul>
+          return [
+            <li
+              className={`w-full flex ${
+                isSidechain ||
+                conversation.type === "assistant" ||
+                conversation.type === "system" ||
+                conversation.type === "summary"
+                  ? "justify-start"
+                  : "justify-end"
+              } animate-in fade-in slide-in-from-bottom-2 duration-300`}
+              key={getConversationKey(conversation)}
+            >
+              <div className="w-full max-w-3xl lg:max-w-4xl sm:w-[90%] md:w-[85%]">
+                {elm}
+              </div>
+            </li>,
+          ];
+        })}
+      </ul>
+      <ScheduledMessageNotice scheduledJobs={scheduledJobs} />
+    </>
   );
 };

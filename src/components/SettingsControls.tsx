@@ -26,6 +26,10 @@ interface SettingsControlsProps {
   className?: string;
 }
 
+function isSearchHotkey(value: string): value is "ctrl-k" | "command-k" {
+  return value === "ctrl-k" || value === "command-k";
+}
+
 export const SettingsControls: FC<SettingsControlsProps> = ({
   openingProjectId,
   showLabels = true,
@@ -89,9 +93,12 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
   };
 
   const handleSearchHotkeyChange = async (value: string) => {
+    if (!isSearchHotkey(value)) {
+      return;
+    }
     const newConfig = {
       ...config,
-      searchHotkey: value as "ctrl-k" | "command-k",
+      searchHotkey: value,
     };
     updateConfig(newConfig);
   };

@@ -37,8 +37,8 @@ export function SearchProvider({ children }: SearchProviderProps) {
       const searchHotkey = config?.searchHotkey || "command-k";
       const shouldOpenSearch =
         searchHotkey === "command-k"
-          ? e.metaKey && e.key === "k"
-          : e.ctrlKey && e.key === "k";
+          ? e.metaKey && !e.ctrlKey && e.key === "k"
+          : !e.metaKey && e.ctrlKey && e.key === "k";
 
       if (shouldOpenSearch) {
         e.preventDefault();

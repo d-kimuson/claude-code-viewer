@@ -170,6 +170,7 @@ Settings can be configured from the sidebar in Claude Code Viewer.
 | Hide sessions without user messages | true | Claude Code creates logs for operations like `/compact` that aren't tied to actual tasks, which can create noise. When enabled, sessions without user messages are hidden. |
 | Unify sessions with same title | false | When resuming, Claude Code creates a new session with regenerated conversation logs. When enabled, only the latest session with the same title is displayed. |
 | Enter Key Behavior | Shift+Enter | Specifies which key combination sends messages. Options include Enter, Shift+Enter, and Command+Enter. |
+| Search Hotkey | Command+K | Select the hotkey to open search dialog. Options include Ctrl+K and Command+K. |
 | Permission Mode | Ask permission | Controls the approval logic when Claude Code requests tool invocations. By default, users approve requests through the UI. This feature requires Claude Code v1.0.82 or later; earlier versions automatically approve regardless of this setting. |
 | Theme | System | Toggles between Dark Mode and Light Mode. Default follows system settings. |
 | Notifications | None | Enables sound notifications when running session processes complete. Choose from multiple notification sounds with test playback functionality. |

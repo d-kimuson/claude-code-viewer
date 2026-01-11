@@ -8,7 +8,9 @@ import {
   useRef,
   useState,
 } from "react";
+import { useConfig } from "../app/hooks/useConfig";
 import { searchQuery } from "../lib/api/queries";
+import { formatLocaleDate } from "../lib/date/formatLocaleDate";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Input } from "./ui/input";
 
@@ -23,6 +25,7 @@ export function SearchDialog({
   onOpenChange,
   projectId,
 }: SearchDialogProps) {
+  const { config } = useConfig();
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -173,7 +176,10 @@ export function SearchDialog({
                         {result.snippet}
                       </p>
                       <p className="text-xs text-muted-foreground mt-1">
-                        {new Date(result.timestamp).toLocaleDateString()}
+                        {formatLocaleDate(result.timestamp, {
+                          locale: config.locale,
+                          target: "time",
+                        })}
                       </p>
                     </div>
                   </div>

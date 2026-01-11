@@ -126,7 +126,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        185
+        192
       ]
     ],
     "translation": "选择回车键行为"
@@ -137,7 +137,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        296
+        303
       ]
     ],
     "translation": "选择语言"
@@ -148,21 +148,21 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        253
+        260
       ]
     ],
     "translation": "选择权限模式"
   },
   "Select search hotkey": {
-    "translation": "",
     "placeholders": {},
     "comments": [],
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        220
+        227
       ]
-    ]
+    ],
+    "translation": "选择搜索快捷键"
   },
   "Select theme": {
     "placeholders": {},
@@ -170,7 +170,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        325
+        332
       ]
     ],
     "translation": "选择主题"
@@ -2250,7 +2250,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        177
+        184
       ]
     ],
     "translation": "回车键行为"
@@ -2261,7 +2261,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        195
+        202
       ]
     ],
     "translation": "使用 Command+Enter 发送"
@@ -2272,7 +2272,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        201
+        208
       ]
     ],
     "translation": "选择消息输入的回车键行为"
@@ -2283,7 +2283,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        192
+        199
       ]
     ],
     "translation": "使用 Enter 发送"
@@ -2294,54 +2294,54 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        189
+        196
       ]
     ],
     "translation": "使用 Shift+Enter 发送(默认)"
   },
   "settings.input.search_hotkey": {
-    "translation": "搜索快捷键",
     "placeholders": {},
     "comments": [],
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        212
+        219
       ]
-    ]
+    ],
+    "translation": "搜索快捷键"
   },
   "settings.input.search_hotkey.command_k": {
-    "translation": "Command+K",
     "placeholders": {},
     "comments": [],
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        227
+        234
       ]
-    ]
+    ],
+    "translation": "Command+K"
   },
   "settings.input.search_hotkey.ctrl_k": {
-    "translation": "Ctrl+K",
     "placeholders": {},
     "comments": [],
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        224
+        231
       ]
-    ]
+    ],
+    "translation": "Ctrl+K"
   },
   "settings.input.search_hotkey.description": {
-    "translation": "选择打开搜索对话框的快捷键",
     "placeholders": {},
     "comments": [],
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        233
+        240
       ]
-    ]
+    ],
+    "translation": "选择打开搜索对话框的快捷键"
   },
   "settings.loading": {
     "placeholders": {},
@@ -2364,7 +2364,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        288
+        295
       ]
     ],
     "translation": "语言"
@@ -2375,7 +2375,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        312
+        319
       ]
     ],
     "translation": "选择您偏好的语言"
@@ -2386,7 +2386,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        303
+        310
       ]
     ],
     "translation": "英语"
@@ -2397,7 +2397,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        300
+        307
       ]
     ],
     "translation": "日语"
@@ -2408,7 +2408,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        306
+        313
       ]
     ],
     "translation": "简体中文"
@@ -2430,7 +2430,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        244
+        251
       ]
     ],
     "translation": "权限模式"
@@ -2441,7 +2441,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        260
+        267
       ]
     ],
     "translation": "接受编辑(自动批准文件编辑)"
@@ -2452,7 +2452,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        263
+        270
       ]
     ],
     "translation": "跳过权限(无提示)"
@@ -2463,7 +2463,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        257
+        264
       ]
     ],
     "translation": "默认(确认权限)"
@@ -2474,7 +2474,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        272
+        279
       ]
     ],
     "translation": "控制如何处理文件操作权限请求"
@@ -2485,7 +2485,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        266
+        273
       ]
     ],
     "translation": "计划模式(仅规划)"
@@ -2496,7 +2496,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        277
+        284
       ]
     ],
     "translation": "此功能在您的 Claude Code 版本中不可用。所有工具都会自动批准。"
@@ -2551,7 +2551,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        140
+        147
       ]
     ],
     "translation": "隐藏无用户消息的会话"
@@ -2562,7 +2562,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        146
+        153
       ]
     ],
     "translation": "仅显示包含用户命令或消息的会话"
@@ -2573,7 +2573,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        161
+        168
       ]
     ],
     "translation": "合并同名会话"
@@ -2584,7 +2584,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        167
+        174
       ]
     ],
     "translation": "当多个会话标题相同时,仅显示最新的会话"
@@ -2610,7 +2610,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        320
+        327
       ]
     ],
     "translation": "主题"
@@ -2621,7 +2621,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        332
+        339
       ]
     ],
     "translation": "深色"
@@ -2632,7 +2632,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        341
+        348
       ]
     ],
     "translation": "选择您偏好的颜色主题"
@@ -2643,7 +2643,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        329
+        336
       ]
     ],
     "translation": "浅色"
@@ -2654,7 +2654,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        335
+        342
       ]
     ],
     "translation": "跟随系统"

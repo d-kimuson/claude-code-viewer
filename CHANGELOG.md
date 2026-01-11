@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.5.4
+
+### &nbsp;&nbsp;&nbsp;Features
+
+- Display full timestamp in search results &nbsp;-&nbsp; by **Ryan Malia** [<samp>(fa33e)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/fa33e04)
+- Add search hotkey customization between Ctrl+K and Command+K &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.5** [<samp>(2fa75)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/2fa751b)
+
+### &nbsp;&nbsp;&nbsp;Bug Fixes
+
+- Resolve review issues in search hotkey customization &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.5** [<samp>(b667c)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/b667c4b)
+- Add missing translations for "Select search hotkey" &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.5** [<samp>(937b0)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/937b070)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.5.3...0.5.4)
+
 ## 0.5.3
 
 ### &nbsp;&nbsp;&nbsp;Features

@@ -1,5 +1,6 @@
 import { useRouterState } from "@tanstack/react-router";
 import { createContext, useContext, useEffect, useState } from "react";
+import { useConfig } from "@/app/hooks/useConfig";
 import { SearchDialog } from "./SearchDialog";
 
 type SearchContextValue = {
@@ -29,11 +30,17 @@ export function SearchProvider({ children }: SearchProviderProps) {
   const [isOpen, setIsOpen] = useState(false);
   const routerState = useRouterState();
   const projectId = getProjectIdFromPath(routerState.location.pathname);
+  const { config } = useConfig();
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Cmd+K (Mac) or Ctrl+K (Windows/Linux)
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+      const searchHotkey = config?.searchHotkey || "command-k";
+      const shouldOpenSearch =
+        searchHotkey === "command-k"
+          ? e.metaKey && !e.ctrlKey && e.key === "k"
+          : !e.metaKey && e.ctrlKey && e.key === "k";
+
+      if (shouldOpenSearch) {
         e.preventDefault();
         setIsOpen(true);
       }
@@ -41,7 +48,7 @@ export function SearchProvider({ children }: SearchProviderProps) {
 
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, [config?.searchHotkey]);
 
   const openSearch = () => setIsOpen(true);
 

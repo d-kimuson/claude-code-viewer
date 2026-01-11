@@ -11,6 +11,7 @@ const LayerImpl = Effect.gen(function* () {
     permissionMode: "default",
     locale: DEFAULT_LOCALE,
     theme: "system",
+    searchHotkey: "command-k",
   });
 
   const setUserConfig = (newConfig: UserConfig) =>

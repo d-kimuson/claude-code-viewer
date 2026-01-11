@@ -7,5 +7,8 @@
   },
   "control.open_browser": {
     "translation": "打开浏览器"
+  },
+  "Select search hotkey": {
+    "translation": "选择搜索快捷键"
   }
 }

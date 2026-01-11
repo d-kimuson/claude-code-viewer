@@ -34,6 +34,7 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
 }: SettingsControlsProps) => {
   const checkboxId = useId();
   const enterKeyBehaviorId = useId();
+  const searchHotkeyId = useId();
   const permissionModeId = useId();
   const localeId = useId();
   const themeId = useId();
@@ -83,6 +84,14 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
         | "shift-enter-send"
         | "enter-send"
         | "command-enter-send",
+    };
+    updateConfig(newConfig);
+  };
+
+  const handleSearchHotkeyChange = async (value: string) => {
+    const newConfig = {
+      ...config,
+      searchHotkey: value as "ctrl-k" | "command-k",
     };
     updateConfig(newConfig);
   };
@@ -190,6 +199,38 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
         {showDescriptions && (
           <p className="text-xs text-muted-foreground mt-1">
             <Trans id="settings.input.enter_key_behavior.description" />
+          </p>
+        )}
+      </div>
+
+      <div className="space-y-2">
+        {showLabels && (
+          <label
+            htmlFor={searchHotkeyId}
+            className="text-sm font-medium leading-none"
+          >
+            <Trans id="settings.input.search_hotkey" />
+          </label>
+        )}
+        <Select
+          value={config?.searchHotkey || "command-k"}
+          onValueChange={handleSearchHotkeyChange}
+        >
+          <SelectTrigger id={searchHotkeyId} className="w-full">
+            <SelectValue placeholder={i18n._("Select search hotkey")} />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="ctrl-k">
+              <Trans id="settings.input.search_hotkey.ctrl_k" />
+            </SelectItem>
+            <SelectItem value="command-k">
+              <Trans id="settings.input.search_hotkey.command_k" />
+            </SelectItem>
+          </SelectContent>
+        </Select>
+        {showDescriptions && (
+          <p className="text-xs text-muted-foreground mt-1">
+            <Trans id="settings.input.search_hotkey.description" />
           </p>
         )}
       </div>

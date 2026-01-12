@@ -125,4 +125,27 @@ describe("QueueOperationEntrySchema", () => {
       expect(result.success).toBe(false);
     });
   });
+
+  describe("popAll operation", () => {
+    test("accepts valid popAll operation with content", () => {
+      const result = QueueOperationEntrySchema.safeParse({
+        type: "queue-operation",
+        operation: "popAll",
+        timestamp: "2026-01-12T08:10:11.883Z",
+        sessionId: "e3e4a2ef-c6b5-4c39-a1f9-713a943be524",
+        content: "the session has total_ammount",
+      });
+      expect(result.success).toBe(true);
+    });
+
+    test("accepts popAll operation without content", () => {
+      const result = QueueOperationEntrySchema.safeParse({
+        type: "queue-operation",
+        operation: "popAll",
+        timestamp: "2026-01-12T08:10:11.883Z",
+        sessionId: "abc123",
+      });
+      expect(result.success).toBe(true);
+    });
+  });
 });

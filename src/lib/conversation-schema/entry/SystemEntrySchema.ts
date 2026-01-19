@@ -38,9 +38,17 @@ const LocalCommandEntrySchema = BaseEntrySchema.extend({
   level: z.enum(["info"]),
 });
 
+// Turn duration entry (Claude Code v2.1.12+)
+const TurnDurationEntrySchema = BaseEntrySchema.extend({
+  type: z.literal("system"),
+  subtype: z.literal("turn_duration"),
+  durationMs: z.number(),
+});
+
 export const SystemEntrySchema = z.union([
   StopHookSummaryEntrySchema,
   LocalCommandEntrySchema,
+  TurnDurationEntrySchema,
   SystemEntryWithContentSchema,
 ]);
 

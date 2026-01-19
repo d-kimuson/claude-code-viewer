@@ -6,6 +6,7 @@ import { streamSSE } from "hono/streaming";
 import prexit from "prexit";
 import { z } from "zod";
 import packageJson from "../../../package.json" with { type: "json" };
+import { ActivityController } from "../core/activity/presentation/ActivityController";
 import { AgentSessionController } from "../core/agent-session/presentation/AgentSessionController";
 import { ClaudeCodeController } from "../core/claude-code/presentation/ClaudeCodeController";
 import { ClaudeCodePermissionController } from "../core/claude-code/presentation/ClaudeCodePermissionController";
@@ -70,6 +71,7 @@ export const routes = (app: HonoAppType, options: CliOptions) =>
     const schedulerController = yield* SchedulerController;
     const featureFlagController = yield* FeatureFlagController;
     const searchController = yield* SearchController;
+    const activityController = yield* ActivityController;
 
     // middleware
     const authMiddlewareService = yield* AuthMiddleware;
@@ -684,6 +686,30 @@ export const routes = (app: HonoAppType, options: CliOptions) =>
 
           return response;
         })
+
+        /**
+         * ActivityController Routes
+         */
+        .get(
+          "/api/activity",
+          zValidator(
+            "query",
+            z.object({
+              limit: z
+                .string()
+                .optional()
+                .transform((val) => (val ? parseInt(val, 10) : 100)),
+            }),
+          ),
+          async (c) => {
+            const { limit } = c.req.valid("query");
+            const response = await effectToResponse(
+              c,
+              activityController.getRecentActivity(limit),
+            );
+            return response;
+          },
+        )
     );
   });
 

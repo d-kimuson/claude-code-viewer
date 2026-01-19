@@ -1,6 +1,7 @@
 import { type FSWatcher, watch } from "node:fs";
 import { Path } from "@effect/platform";
 import { Context, Effect, Layer, Ref } from "effect";
+import { ActivityFeedService } from "../../activity/services/ActivityFeedService";
 import { ApplicationContext } from "../../platform/services/ApplicationContext";
 import { encodeProjectIdFromSessionFilePath } from "../../project/functions/id";
 import { parseSessionFilePath } from "../functions/parseSessionFilePath";
@@ -21,6 +22,7 @@ export class FileWatcherService extends Context.Tag("FileWatcherService")<
       const path = yield* Path.Path;
       const eventBus = yield* EventBus;
       const context = yield* ApplicationContext;
+      const activityFeedService = yield* ActivityFeedService;
 
       const isWatchingRef = yield* Ref.make(false);
       const watcherRef = yield* Ref.make<FSWatcher | null>(null);
@@ -99,6 +101,22 @@ export class FileWatcherService extends Context.Tag("FileWatcherService")<
                           Effect.runFork(
                             eventBus.emit("sessionListChanged", {
                               projectId: encodedProjectId,
+                            }),
+                          );
+
+                          // Process activity feed entries
+                          Effect.runFork(
+                            Effect.gen(function* () {
+                              const newEntries =
+                                yield* activityFeedService.processFileChange(
+                                  fullPath,
+                                  fileMatch.sessionId,
+                                );
+                              for (const entry of newEntries) {
+                                yield* eventBus.emit("activityEntry", {
+                                  entry,
+                                });
+                              }
                             }),
                           );
                         }

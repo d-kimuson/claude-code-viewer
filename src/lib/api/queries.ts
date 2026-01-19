@@ -320,3 +320,19 @@ export const searchQuery = (
       return await response.json();
     },
   }) as const;
+
+export const activityQuery = (limit = 100) =>
+  ({
+    queryKey: ["activity", limit],
+    queryFn: async () => {
+      const response = await honoClient.api.activity.$get({
+        query: { limit: limit.toString() },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch activity: ${response.statusText}`);
+      }
+
+      return await response.json();
+    },
+  }) as const;

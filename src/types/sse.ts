@@ -1,6 +1,15 @@
 import type { PermissionRequest } from "./permissions";
 import type { PublicSessionProcess } from "./session-process";
 
+export type ActivityEntrySSE = {
+  id: string;
+  projectId: string;
+  sessionId: string;
+  entryType: "user" | "assistant" | "system" | "tool" | "unknown";
+  preview: string;
+  timestamp: string;
+};
+
 export type SSEEventDeclaration = {
   // biome-ignore lint/complexity/noBannedTypes: correct type
   connect: {};
@@ -28,6 +37,10 @@ export type SSEEventDeclaration = {
 
   permissionRequested: {
     permissionRequest: PermissionRequest;
+  };
+
+  activityEntry: {
+    entry: ActivityEntrySSE;
   };
 };
 

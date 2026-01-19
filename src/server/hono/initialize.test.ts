@@ -5,6 +5,7 @@ import { testProjectMetaServiceLayer } from "../../testing/layers/testProjectMet
 import { testProjectRepositoryLayer } from "../../testing/layers/testProjectRepositoryLayer";
 import { testSessionMetaServiceLayer } from "../../testing/layers/testSessionMetaServiceLayer";
 import { testSessionRepositoryLayer } from "../../testing/layers/testSessionRepositoryLayer";
+import { ActivityFeedService } from "../core/activity/services/ActivityFeedService";
 import { EventBus } from "../core/events/services/EventBus";
 import { FileWatcherService } from "../core/events/services/fileWatcher";
 import type { InternalEventDeclaration } from "../core/events/types/InternalEventDeclaration";
@@ -15,6 +16,7 @@ import { InitializeService } from "./initialize";
 
 const fileWatcherWithEventBus = FileWatcherService.Live.pipe(
   Layer.provide(EventBus.Live),
+  Layer.provide(ActivityFeedService.Live),
 );
 
 const allDependencies = Layer.mergeAll(

@@ -19,6 +19,9 @@ export const ConversationItem: FC<{
   getAgentIdForToolUse: (toolUseId: string) => string | undefined;
   getTurnDuration: (uuid: string) => number | undefined;
   isRootSidechain: (conversation: Conversation) => boolean;
+  getSidechainConversationByAgentId: (
+    agentId: string,
+  ) => SidechainConversation | undefined;
   getSidechainConversationByPrompt: (
     prompt: string,
   ) => SidechainConversation | undefined;
@@ -33,6 +36,7 @@ export const ConversationItem: FC<{
   getTurnDuration,
   getSidechainConversationByPrompt,
   getSidechainConversations,
+  getSidechainConversationByAgentId,
   projectId,
   sessionId,
 }) => {
@@ -73,8 +77,9 @@ export const ConversationItem: FC<{
         />
       ) : (
         <ul className="w-full" id={`message-${conversation.uuid}`}>
-          {conversation.message.content.map((content) => (
-            <li key={content.toString()}>
+          {conversation.message.content.map((content, index) => (
+            // biome-ignore lint/suspicious/noArrayIndexKey: Order is static
+            <li key={index}>
               <UserConversationContent content={content} />
             </li>
           ))}
@@ -94,12 +99,16 @@ export const ConversationItem: FC<{
     return (
       <div className="w-full">
         <ul className="w-full">
-          {conversation.message.content.map((content) => (
-            <li key={content.toString()}>
+          {conversation.message.content.map((content, index) => (
+            // biome-ignore lint/suspicious/noArrayIndexKey: Order is static
+            <li key={index}>
               <AssistantConversationContent
                 content={content}
                 getToolResult={getToolResult}
                 getAgentIdForToolUse={getAgentIdForToolUse}
+                getSidechainConversationByAgentId={
+                  getSidechainConversationByAgentId
+                }
                 getSidechainConversationByPrompt={
                   getSidechainConversationByPrompt
                 }

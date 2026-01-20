@@ -46,10 +46,27 @@ const TurnDurationEntrySchema = BaseEntrySchema.extend({
   slug: z.string().optional(),
 });
 
+// Compact boundary entry (new format from Claude Code)
+const CompactBoundaryEntrySchema = BaseEntrySchema.extend({
+  type: z.literal("system"),
+  subtype: z.literal("compact_boundary"),
+  content: z.string(),
+  level: z.enum(["info"]),
+  slug: z.string().optional(),
+  logicalParentUuid: z.string().optional(),
+  compactMetadata: z
+    .object({
+      trigger: z.string(),
+      preTokens: z.number(),
+    })
+    .optional(),
+});
+
 export const SystemEntrySchema = z.union([
   StopHookSummaryEntrySchema,
   LocalCommandEntrySchema,
   TurnDurationEntrySchema,
+  CompactBoundaryEntrySchema,
   SystemEntryWithContentSchema, // Must be last (catch-all for undefined subtype)
 ]);
 

@@ -3,7 +3,7 @@
 ## Critical Rules (Read First)
 
 **Communication**:
-- Always communicate with users in Japanese (日本語)
+- Always communicate with users in English
 - Code, comments, and commit messages should be in English
 - This document is in English for context efficiency
 

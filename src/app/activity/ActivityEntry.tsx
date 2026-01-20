@@ -1,5 +1,6 @@
 import { useNavigate } from "@tanstack/react-router";
 import {
+  AlertCircleIcon,
   BotIcon,
   ChevronDownIcon,
   ChevronRightIcon,
@@ -7,11 +8,14 @@ import {
   SettingsIcon,
   WrenchIcon,
 } from "lucide-react";
-import { type FC, type MouseEvent, useState } from "react";
+import { type FC, type MouseEvent, useMemo, useState } from "react";
 import { Button } from "../../components/ui/button";
 import { cn } from "../../lib/utils";
 import type { ActivityEntrySSE } from "../../types/sse";
 import { ActivityEntryContext } from "./ActivityEntryContext";
+import { EntityText } from "./EntityRenderer";
+import { isToolPreview, ToolResultDisplay } from "./ToolResultDisplay";
+import { hasErrorPatterns, parseToolPreview } from "./toolResultParser";
 
 interface ActivityEntryItemProps {
   entry: ActivityEntrySSE;
@@ -121,6 +125,16 @@ export const ActivityEntryItem: FC<ActivityEntryItemProps> = ({
   const [isThinkingExpanded, setIsThinkingExpanded] = useState(false);
 
   const isThinking = isThinkingEntry(entry.preview);
+  const isTool = isToolPreview(entry.preview);
+
+  // Check if this entry has an error
+  const hasError = useMemo(() => {
+    if (isTool) {
+      const parsed = parseToolPreview(entry.preview);
+      return parsed?.isError ?? false;
+    }
+    return hasErrorPatterns(entry.preview);
+  }, [entry.preview, isTool]);
 
   const handleProjectBadgeClick = (e: MouseEvent) => {
     e.preventDefault();
@@ -172,10 +186,16 @@ export const ActivityEntryItem: FC<ActivityEntryItemProps> = ({
           <div
             className={cn(
               "flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center",
-              getEntryTypeStyles(entry.entryType),
+              hasError
+                ? "bg-red-500/10 text-red-600 dark:text-red-400"
+                : getEntryTypeStyles(entry.entryType),
             )}
           >
-            {getEntryIcon(entry.entryType)}
+            {hasError ? (
+              <AlertCircleIcon className="h-4 w-4" />
+            ) : (
+              getEntryIcon(entry.entryType)
+            )}
           </div>
 
           {/* Content */}
@@ -196,8 +216,15 @@ export const ActivityEntryItem: FC<ActivityEntryItemProps> = ({
               </button>
 
               {/* Entry type label */}
-              <span className="text-xs text-muted-foreground capitalize">
-                {entry.entryType}
+              <span
+                className={cn(
+                  "text-xs capitalize",
+                  hasError
+                    ? "text-red-600 dark:text-red-400 font-medium"
+                    : "text-muted-foreground",
+                )}
+              >
+                {hasError ? "error" : entry.entryType}
               </span>
 
               {/* Timestamp */}
@@ -231,19 +258,26 @@ export const ActivityEntryItem: FC<ActivityEntryItemProps> = ({
                   </p>
                 )}
               </div>
+            ) : isTool ? (
+              <ToolResultDisplay
+                preview={entry.preview}
+                showFullPreview={isExpanded}
+              />
             ) : (
-              <p
-                className={cn(
-                  "text-sm text-foreground/80 break-words",
-                  isExpanded ? "line-clamp-none" : "line-clamp-2",
-                )}
+              <div
+                className={cn(isExpanded ? "line-clamp-none" : "line-clamp-2")}
               >
-                {entry.preview || (
-                  <span className="text-muted-foreground italic">
+                {entry.preview ? (
+                  <EntityText
+                    text={entry.preview}
+                    className="text-sm text-foreground/80"
+                  />
+                ) : (
+                  <span className="text-sm text-muted-foreground italic">
                     No content
                   </span>
                 )}
-              </p>
+              </div>
             )}
           </div>
         </div>

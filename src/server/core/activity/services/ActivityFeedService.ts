@@ -71,6 +71,116 @@ function getEntryType(
   }
 }
 
+// Extract file path from tool input
+function extractFilePath(input: Record<string, unknown>): string | null {
+  const path = input.file_path ?? input.path;
+  if (typeof path === "string") {
+    return path.split("/").pop() ?? path;
+  }
+  return null;
+}
+
+// Format tool use preview with structured information
+function formatToolUsePreview(
+  name: string,
+  input?: Record<string, unknown>,
+): string {
+  if (!input) return `[Tool: ${name}]`;
+
+  switch (name.toLowerCase()) {
+    case "read": {
+      const filePath = extractFilePath(input);
+      return filePath ? `[Tool: Read] ${filePath}` : `[Tool: Read]`;
+    }
+    case "write": {
+      const filePath = extractFilePath(input);
+      return filePath ? `[Tool: Write] ${filePath}` : `[Tool: Write]`;
+    }
+    case "edit": {
+      const filePath = extractFilePath(input);
+      return filePath ? `[Tool: Edit] ${filePath}` : `[Tool: Edit]`;
+    }
+    case "bash": {
+      const command = input.command;
+      if (typeof command === "string") {
+        const shortCmd =
+          command.length > 60 ? `${command.slice(0, 60)}...` : command;
+        return `[Tool: Bash] \`${shortCmd}\``;
+      }
+      return `[Tool: Bash]`;
+    }
+    case "grep": {
+      const pattern = input.pattern;
+      if (typeof pattern === "string") {
+        return `[Tool: Grep] "${pattern}"`;
+      }
+      return `[Tool: Grep]`;
+    }
+    case "glob": {
+      const pattern = input.pattern;
+      if (typeof pattern === "string") {
+        return `[Tool: Glob] ${pattern}`;
+      }
+      return `[Tool: Glob]`;
+    }
+    case "webfetch": {
+      const url = input.url;
+      if (typeof url === "string") {
+        try {
+          const domain = new URL(url).hostname;
+          return `[Tool: WebFetch] ${domain}`;
+        } catch {
+          return `[Tool: WebFetch]`;
+        }
+      }
+      return `[Tool: WebFetch]`;
+    }
+    default: {
+      // Handle MCP tools
+      if (name.startsWith("mcp__")) {
+        const parts = name.slice(5).split("__");
+        if (parts.length >= 2 && parts[0]) {
+          const server = parts[0].charAt(0).toUpperCase() + parts[0].slice(1);
+          const action = parts.slice(1).join("__");
+          return `[Tool: ${server}: ${action}]`;
+        }
+      }
+      return `[Tool: ${name}]`;
+    }
+  }
+}
+
+// Format tool result preview with error detection
+function formatToolResultPreview(
+  content: string | Array<unknown>,
+  _toolUseId?: string,
+  isError?: boolean,
+): string {
+  let textContent = "";
+
+  if (typeof content === "string") {
+    textContent = content;
+  } else if (Array.isArray(content)) {
+    for (const item of content) {
+      if (typeof item === "string") {
+        textContent += item;
+      } else if (typeof item === "object" && item !== null) {
+        const typed = item as { type?: string; text?: string };
+        if (typed.type === "text" && typed.text) {
+          textContent += typed.text;
+        }
+      }
+    }
+  }
+
+  // Check for errors
+  const hasError =
+    isError ?? /error|failed|exception|fatal|panic/i.test(textContent);
+  const prefix = hasError ? "[Tool Result Error]" : "[Tool Result]";
+
+  return `${prefix} ${textContent.slice(0, MAX_PREVIEW_LENGTH - prefix.length - 1)}`;
+}
+
 function extractPreview(entry: unknown): string {
   if (typeof entry !== "object" || entry === null) return "";
 
@@ -85,9 +195,11 @@ function extractPreview(entry: unknown): string {
                 type?: string;
                 text?: string;
                 thinking?: string;
-                content?: string;
+                content?: string | Array<unknown>;
                 name?: string;
                 input?: Record<string, unknown>;
+                tool_use_id?: string;
+                is_error?: boolean;
               }
           >;
     };
@@ -112,25 +224,26 @@ function extractPreview(entry: unknown): string {
         if (item.type === "text" && item.text) {
           return item.text.slice(0, MAX_PREVIEW_LENGTH);
         }
-        // Tool result with content
+        // Tool result with content - format with error detection
         if (item.type === "tool_result" && item.content) {
-          const preview =
-            typeof item.content === "string"
-              ? item.content
-              : JSON.stringify(item.content);
-          return `[Tool Result] ${preview.slice(0, MAX_PREVIEW_LENGTH - 14)}`;
+          return formatToolResultPreview(
+            item.content,
+            item.tool_use_id,
+            item.is_error,
+          );
         }
       }
     }
 
-    // Second pass: tool use
+    // Second pass: tool use - format with input details
     for (const item of content) {
       if (
         typeof item === "object" &&
         item !== null &&
-        item.type === "tool_use"
+        item.type === "tool_use" &&
+        item.name
       ) {
-        return `[Tool: ${item.name}]`;
+        return formatToolUsePreview(item.name, item.input);
       }
     }
 

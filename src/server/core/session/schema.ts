@@ -19,4 +19,5 @@ export const sessionMetaSchema = z.object({
       cacheReadTokens: z.number(),
     }),
   }),
+  modelName: z.string().nullable(),
 });

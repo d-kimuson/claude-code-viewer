@@ -343,6 +343,20 @@ const SessionPageMainContent: FC<
                           </Tooltip>
                         </div>
                       )}
+                      {currentBranch && (
+                        <div className="flex flex-col gap-1">
+                          <span className="text-xs text-muted-foreground">
+                            <Trans id="control.branch" />
+                          </span>
+                          <Badge
+                            variant="secondary"
+                            className="h-7 text-xs flex items-center gap-1 w-fit"
+                          >
+                            <GitBranchIcon className="w-3 h-3" />
+                            {currentBranch}
+                          </Badge>
+                        </div>
+                      )}
                       {sessionId && isExistingSession && (
                         <div className="flex flex-col gap-1">
                           <span className="text-xs text-muted-foreground">
@@ -356,17 +370,16 @@ const SessionPageMainContent: FC<
                           </Badge>
                         </div>
                       )}
-                      {currentBranch && (
+                      {isExistingSession && sessionData && (
                         <div className="flex flex-col gap-1">
                           <span className="text-xs text-muted-foreground">
-                            <Trans id="control.branch" />
+                            <Trans id="control.model" />
                           </span>
                           <Badge
                             variant="secondary"
-                            className="h-7 text-xs flex items-center gap-1 w-fit"
+                            className="h-7 text-xs flex items-center w-fit font-mono"
                           >
-                            <GitBranchIcon className="w-3 h-3" />
-                            {currentBranch}
+                            {sessionData.session.meta.modelName ?? "Unknown"}
                           </Badge>
                         </div>
                       )}

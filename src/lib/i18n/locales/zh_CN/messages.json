@@ -769,6 +769,17 @@
     ],
     "translation": "元数据"
   },
+  "control.model": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
+        377
+      ]
+    ],
+    "translation": "模型"
+  },
   "control.new": {
     "placeholders": {},
     "comments": [],

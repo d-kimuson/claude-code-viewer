@@ -769,6 +769,17 @@
     ],
     "translation": "メタデータ"
   },
+  "control.model": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
+        377
+      ]
+    ],
+    "translation": "モデル"
+  },
   "control.new": {
     "placeholders": {},
     "comments": [],

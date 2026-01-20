@@ -73,6 +73,7 @@
     "@tanstack/react-query": "5.90.5",
     "@tanstack/react-router": "1.133.32",
     "@tanstack/react-router-devtools": "1.133.32",
+    "@tanstack/react-virtual": "^3.13.18",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
     "commander": "^14.0.2",

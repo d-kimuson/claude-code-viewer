@@ -1,16 +1,19 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import {
   BotIcon,
+  ChevronDownIcon,
   MessageSquareIcon,
   SettingsIcon,
   WrenchIcon,
 } from "lucide-react";
-import type { FC } from "react";
+import { type FC, type MouseEvent, useState } from "react";
+import { Button } from "../../components/ui/button";
 import { cn } from "../../lib/utils";
 import type { ActivityEntrySSE } from "../../types/sse";
 
 interface ActivityEntryItemProps {
   entry: ActivityEntrySSE;
+  onProjectClick?: (projectId: string) => void;
 }
 
 // Generate a consistent color based on project ID
@@ -106,9 +109,40 @@ function extractProjectName(projectId: string): string {
   }
 }
 
-export const ActivityEntryItem: FC<ActivityEntryItemProps> = ({ entry }) => {
+function isThinkingEntry(preview: string): boolean {
+  return preview.startsWith("💭");
+}
+
+export const ActivityEntryItem: FC<ActivityEntryItemProps> = ({
+  entry,
+  onProjectClick,
+}) => {
+  const navigate = useNavigate();
   const projectName = extractProjectName(entry.projectId);
   const projectColor = getProjectColor(entry.projectId);
+  const [isThinkingExpanded, setIsThinkingExpanded] = useState(false);
+
+  const isThinking = isThinkingEntry(entry.preview);
+
+  const handleProjectBadgeClick = (e: MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (onProjectClick) {
+      onProjectClick(entry.projectId);
+    } else {
+      navigate({
+        to: "/projects/$projectId/session",
+        params: { projectId: entry.projectId },
+        search: { tab: "sessions" },
+      });
+    }
+  };
+
+  const handleThinkingToggle = (e: MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsThinkingExpanded(!isThinkingExpanded);
+  };
 
   return (
     <Link
@@ -131,16 +165,19 @@ export const ActivityEntryItem: FC<ActivityEntryItemProps> = ({ entry }) => {
         {/* Content */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            {/* Project badge */}
-            <span
+            {/* Project badge - clickable */}
+            <button
+              type="button"
+              onClick={handleProjectBadgeClick}
               className={cn(
                 "text-xs font-medium px-2 py-0.5 rounded-full truncate max-w-[150px]",
+                "hover:ring-2 hover:ring-offset-1 hover:ring-offset-background transition-all",
                 projectColor,
               )}
-              title={projectName}
+              title={`View ${projectName} sessions`}
             >
               {projectName}
-            </span>
+            </button>
 
             {/* Entry type label */}
             <span className="text-xs text-muted-foreground capitalize">
@@ -154,13 +191,112 @@ export const ActivityEntryItem: FC<ActivityEntryItemProps> = ({ entry }) => {
           </div>
 
           {/* Preview text */}
-          <p className="text-sm text-foreground/80 line-clamp-2 break-words">
-            {entry.preview || (
-              <span className="text-muted-foreground italic">No content</span>
-            )}
-          </p>
+          {isThinking ? (
+            <div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleThinkingToggle}
+                className="h-auto p-0 text-sm text-muted-foreground hover:text-foreground font-normal"
+              >
+                <span className="flex items-center gap-1">
+                  💭 Thinking
+                  <ChevronDownIcon
+                    className={cn(
+                      "h-3 w-3 transition-transform",
+                      isThinkingExpanded && "rotate-180",
+                    )}
+                  />
+                </span>
+              </Button>
+              {isThinkingExpanded && (
+                <p className="text-sm text-foreground/60 mt-1 break-words whitespace-pre-wrap">
+                  {entry.preview.slice(2).trim()}
+                </p>
+              )}
+            </div>
+          ) : (
+            <p className="text-sm text-foreground/80 line-clamp-2 break-words">
+              {entry.preview || (
+                <span className="text-muted-foreground italic">No content</span>
+              )}
+            </p>
+          )}
         </div>
       </div>
     </Link>
+  );
+};
+
+// Tool group component for collapsed consecutive tool calls
+interface ToolGroupProps {
+  entries: ActivityEntrySSE[];
+  onProjectClick?: (projectId: string) => void;
+}
+
+export const ToolGroup: FC<ToolGroupProps> = ({ entries, onProjectClick }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const firstEntry = entries[0];
+  if (!firstEntry) return null;
+
+  const projectName = extractProjectName(firstEntry.projectId);
+  const projectColor = getProjectColor(firstEntry.projectId);
+
+  const handleToggle = (e: MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsExpanded(!isExpanded);
+  };
+
+  return (
+    <div className="border-l-2 border-orange-500/30">
+      <button
+        type="button"
+        onClick={handleToggle}
+        className="w-full text-left hover:bg-accent/50 transition-colors"
+      >
+        <div className="px-4 py-2 flex items-center gap-3">
+          <div
+            className={cn(
+              "flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center",
+              getEntryTypeStyles("tool"),
+            )}
+          >
+            <WrenchIcon className="h-4 w-4" />
+          </div>
+          <div className="flex-1 min-w-0 flex items-center gap-2">
+            <span
+              className={cn(
+                "text-xs font-medium px-2 py-0.5 rounded-full",
+                projectColor,
+              )}
+            >
+              {projectName}
+            </span>
+            <span className="text-sm text-muted-foreground">
+              {entries.length} tool calls
+            </span>
+            <ChevronDownIcon
+              className={cn(
+                "h-4 w-4 ml-auto text-muted-foreground transition-transform",
+                isExpanded && "rotate-180",
+              )}
+            />
+          </div>
+        </div>
+      </button>
+      {isExpanded && (
+        <div className="pl-4 divide-y divide-border/50">
+          {entries.map((entry) => (
+            <ActivityEntryItem
+              key={entry.id}
+              entry={entry}
+              onProjectClick={onProjectClick}
+            />
+          ))}
+        </div>
+      )}
+    </div>
   );
 };

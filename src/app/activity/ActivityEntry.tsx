@@ -1,7 +1,8 @@
-import { Link, useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import {
   BotIcon,
   ChevronDownIcon,
+  ChevronRightIcon,
   MessageSquareIcon,
   SettingsIcon,
   WrenchIcon,
@@ -10,10 +11,13 @@ import { type FC, type MouseEvent, useState } from "react";
 import { Button } from "../../components/ui/button";
 import { cn } from "../../lib/utils";
 import type { ActivityEntrySSE } from "../../types/sse";
+import { ActivityEntryContext } from "./ActivityEntryContext";
 
 interface ActivityEntryItemProps {
   entry: ActivityEntrySSE;
   onProjectClick?: (projectId: string) => void;
+  isExpanded?: boolean;
+  onToggleExpand?: () => void;
 }
 
 // Generate a consistent color based on project ID
@@ -84,20 +88,12 @@ function formatRelativeTime(timestamp: string): string {
 }
 
 function extractProjectName(projectId: string): string {
-  // Project IDs are base64 encoded Claude project paths
-  // Format: /Users/davidmora/.claude/projects/-Users-davidmora-Projects-github-com-owner-repo
-  // We want to extract just the repo name (last hyphen-separated part)
   try {
     const decoded = atob(projectId);
-    // Get the last path segment (the Claude project folder name)
     const lastSegment = decoded.split("/").pop() || "";
-    // Claude project folders use hyphens as path separators
-    // Extract the last meaningful part (usually repo name)
     const parts = lastSegment.split("-").filter(Boolean);
-    // Return last part (repo name) or last two parts (owner-repo) if short
     if (parts.length >= 2) {
       const repoName = parts[parts.length - 1];
-      // If repo name is very short, include owner
       if (repoName && repoName.length <= 3 && parts.length >= 2) {
         return `${parts[parts.length - 2]}-${repoName}`;
       }
@@ -116,6 +112,8 @@ function isThinkingEntry(preview: string): boolean {
 export const ActivityEntryItem: FC<ActivityEntryItemProps> = ({
   entry,
   onProjectClick,
+  isExpanded = false,
+  onToggleExpand,
 }) => {
   const navigate = useNavigate();
   const projectName = extractProjectName(entry.projectId);
@@ -144,87 +142,122 @@ export const ActivityEntryItem: FC<ActivityEntryItemProps> = ({
     setIsThinkingExpanded(!isThinkingExpanded);
   };
 
+  const handleClick = () => {
+    onToggleExpand?.();
+  };
+
   return (
-    <Link
-      to="/projects/$projectId/session"
-      params={{ projectId: entry.projectId }}
-      search={{ sessionId: entry.sessionId }}
-      className="block hover:bg-accent/50 transition-colors"
+    <div
+      className={cn(
+        "transition-all",
+        isExpanded && "bg-accent/30 ring-1 ring-border",
+      )}
     >
-      <div className="px-4 py-3 flex gap-3">
-        {/* Entry type icon */}
-        <div
-          className={cn(
-            "flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center",
-            getEntryTypeStyles(entry.entryType),
-          )}
-        >
-          {getEntryIcon(entry.entryType)}
-        </div>
-
-        {/* Content */}
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
-            {/* Project badge - clickable */}
-            <button
-              type="button"
-              onClick={handleProjectBadgeClick}
-              className={cn(
-                "text-xs font-medium px-2 py-0.5 rounded-full truncate max-w-[150px]",
-                "hover:ring-2 hover:ring-offset-1 hover:ring-offset-background transition-all",
-                projectColor,
-              )}
-              title={`View ${projectName} sessions`}
-            >
-              {projectName}
-            </button>
-
-            {/* Entry type label */}
-            <span className="text-xs text-muted-foreground capitalize">
-              {entry.entryType}
-            </span>
-
-            {/* Timestamp */}
-            <span className="text-xs text-muted-foreground/70 ml-auto flex-shrink-0">
-              {formatRelativeTime(entry.timestamp)}
-            </span>
+      <button
+        type="button"
+        onClick={handleClick}
+        className="w-full text-left hover:bg-accent/50 transition-colors"
+      >
+        <div className="px-4 py-3 flex gap-3">
+          {/* Expand indicator */}
+          <div className="flex-shrink-0 w-4 flex items-center justify-center">
+            {isExpanded ? (
+              <ChevronDownIcon className="h-4 w-4 text-muted-foreground" />
+            ) : (
+              <ChevronRightIcon className="h-4 w-4 text-muted-foreground/50" />
+            )}
           </div>
 
-          {/* Preview text */}
-          {isThinking ? (
-            <div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleThinkingToggle}
-                className="h-auto p-0 text-sm text-muted-foreground hover:text-foreground font-normal"
+          {/* Entry type icon */}
+          <div
+            className={cn(
+              "flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center",
+              getEntryTypeStyles(entry.entryType),
+            )}
+          >
+            {getEntryIcon(entry.entryType)}
+          </div>
+
+          {/* Content */}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-1">
+              {/* Project badge - clickable */}
+              <button
+                type="button"
+                onClick={handleProjectBadgeClick}
+                className={cn(
+                  "text-xs font-medium px-2 py-0.5 rounded-full truncate max-w-[150px] cursor-pointer",
+                  "hover:ring-2 hover:ring-offset-1 hover:ring-offset-background transition-all",
+                  projectColor,
+                )}
+                title={`View ${projectName} sessions`}
               >
-                <span className="flex items-center gap-1">
-                  💭 Thinking
-                  <ChevronDownIcon
-                    className={cn(
-                      "h-3 w-3 transition-transform",
-                      isThinkingExpanded && "rotate-180",
-                    )}
-                  />
-                </span>
-              </Button>
-              {isThinkingExpanded && (
-                <p className="text-sm text-foreground/60 mt-1 break-words whitespace-pre-wrap">
-                  {entry.preview.slice(2).trim()}
-                </p>
-              )}
+                {projectName}
+              </button>
+
+              {/* Entry type label */}
+              <span className="text-xs text-muted-foreground capitalize">
+                {entry.entryType}
+              </span>
+
+              {/* Timestamp */}
+              <span className="text-xs text-muted-foreground/70 ml-auto flex-shrink-0">
+                {formatRelativeTime(entry.timestamp)}
+              </span>
             </div>
-          ) : (
-            <p className="text-sm text-foreground/80 line-clamp-2 break-words">
-              {entry.preview || (
-                <span className="text-muted-foreground italic">No content</span>
-              )}
-            </p>
-          )}
+
+            {/* Preview text */}
+            {isThinking ? (
+              <div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleThinkingToggle}
+                  className="h-auto p-0 text-sm text-muted-foreground hover:text-foreground font-normal"
+                >
+                  <span className="flex items-center gap-1">
+                    💭 Thinking
+                    <ChevronDownIcon
+                      className={cn(
+                        "h-3 w-3 transition-transform",
+                        isThinkingExpanded && "rotate-180",
+                      )}
+                    />
+                  </span>
+                </Button>
+                {isThinkingExpanded && (
+                  <p className="text-sm text-foreground/60 mt-1 break-words whitespace-pre-wrap">
+                    {entry.preview.slice(2).trim()}
+                  </p>
+                )}
+              </div>
+            ) : (
+              <p
+                className={cn(
+                  "text-sm text-foreground/80 break-words",
+                  isExpanded ? "line-clamp-none" : "line-clamp-2",
+                )}
+              >
+                {entry.preview || (
+                  <span className="text-muted-foreground italic">
+                    No content
+                  </span>
+                )}
+              </p>
+            )}
+          </div>
         </div>
-      </div>
-    </Link>
+      </button>
+
+      {/* Expanded context view */}
+      {isExpanded && (
+        <ActivityEntryContext
+          projectId={entry.projectId}
+          sessionId={entry.sessionId}
+          timestamp={entry.timestamp}
+        />
+      )}
+    </div>
   );
 };
 
@@ -232,10 +265,17 @@ export const ActivityEntryItem: FC<ActivityEntryItemProps> = ({
 interface ToolGroupProps {
   entries: ActivityEntrySSE[];
   onProjectClick?: (projectId: string) => void;
+  expandedEntryId?: string | null;
+  onToggleExpand?: (entryId: string) => void;
 }
 
-export const ToolGroup: FC<ToolGroupProps> = ({ entries, onProjectClick }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+export const ToolGroup: FC<ToolGroupProps> = ({
+  entries,
+  onProjectClick,
+  expandedEntryId,
+  onToggleExpand,
+}) => {
+  const [isGroupExpanded, setIsGroupExpanded] = useState(false);
 
   const firstEntry = entries[0];
   if (!firstEntry) return null;
@@ -246,7 +286,7 @@ export const ToolGroup: FC<ToolGroupProps> = ({ entries, onProjectClick }) => {
   const handleToggle = (e: MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setIsExpanded(!isExpanded);
+    setIsGroupExpanded(!isGroupExpanded);
   };
 
   return (
@@ -257,6 +297,13 @@ export const ToolGroup: FC<ToolGroupProps> = ({ entries, onProjectClick }) => {
         className="w-full text-left hover:bg-accent/50 transition-colors"
       >
         <div className="px-4 py-2 flex items-center gap-3">
+          <div className="flex-shrink-0 w-4 flex items-center justify-center">
+            {isGroupExpanded ? (
+              <ChevronDownIcon className="h-4 w-4 text-muted-foreground" />
+            ) : (
+              <ChevronRightIcon className="h-4 w-4 text-muted-foreground/50" />
+            )}
+          </div>
           <div
             className={cn(
               "flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center",
@@ -277,22 +324,18 @@ export const ToolGroup: FC<ToolGroupProps> = ({ entries, onProjectClick }) => {
             <span className="text-sm text-muted-foreground">
               {entries.length} tool calls
             </span>
-            <ChevronDownIcon
-              className={cn(
-                "h-4 w-4 ml-auto text-muted-foreground transition-transform",
-                isExpanded && "rotate-180",
-              )}
-            />
           </div>
         </div>
       </button>
-      {isExpanded && (
+      {isGroupExpanded && (
         <div className="pl-4 divide-y divide-border/50">
           {entries.map((entry) => (
             <ActivityEntryItem
               key={entry.id}
               entry={entry}
               onProjectClick={onProjectClick}
+              isExpanded={expandedEntryId === entry.id}
+              onToggleExpand={() => onToggleExpand?.(entry.id)}
             />
           ))}
         </div>

@@ -42,17 +42,26 @@ const TimeGroupHeader: FC<{ label: string }> = ({ label }) => (
 const GroupedEntryRenderer: FC<{
   groupedEntry: GroupedEntry;
   onProjectClick: (projectId: string) => void;
-}> = ({ groupedEntry, onProjectClick }) => {
+  expandedEntryId: string | null;
+  onToggleExpand: (entryId: string) => void;
+}> = ({ groupedEntry, onProjectClick, expandedEntryId, onToggleExpand }) => {
   if (groupedEntry.type === "single") {
     return (
       <ActivityEntryItem
         entry={groupedEntry.entry}
         onProjectClick={onProjectClick}
+        isExpanded={expandedEntryId === groupedEntry.entry.id}
+        onToggleExpand={() => onToggleExpand(groupedEntry.entry.id)}
       />
     );
   }
   return (
-    <ToolGroup entries={groupedEntry.entries} onProjectClick={onProjectClick} />
+    <ToolGroup
+      entries={groupedEntry.entries}
+      onProjectClick={onProjectClick}
+      expandedEntryId={expandedEntryId}
+      onToggleExpand={onToggleExpand}
+    />
   );
 };
 
@@ -60,6 +69,7 @@ export const ActivityFeed: FC = () => {
   const [isPaused, setIsPaused] = useState(false);
   const [localEntries, setLocalEntries] = useState<ActivityEntrySSE[]>([]);
   const [pausedEntryCount, setPausedEntryCount] = useState(0);
+  const [expandedEntryId, setExpandedEntryId] = useState<string | null>(null);
   const [sseState] = useAtom(sseAtom);
   const [filters, setFilters] = useAtom(activityFiltersAtom);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -141,6 +151,10 @@ export const ActivityFeed: FC = () => {
     },
     [setFilters],
   );
+
+  const handleToggleExpand = useCallback((entryId: string) => {
+    setExpandedEntryId((prev) => (prev === entryId ? null : entryId));
+  }, []);
 
   const scrollToTop = useCallback(() => {
     scrollContainerRef.current?.scrollTo({ top: 0, behavior: "smooth" });
@@ -270,6 +284,8 @@ export const ActivityFeed: FC = () => {
                       }
                       groupedEntry={groupedEntry}
                       onProjectClick={handleProjectClick}
+                      expandedEntryId={expandedEntryId}
+                      onToggleExpand={handleToggleExpand}
                     />
                   ))}
                 </div>

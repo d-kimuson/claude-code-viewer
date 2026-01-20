@@ -710,6 +710,36 @@ export const routes = (app: HonoAppType, options: CliOptions) =>
             return response;
           },
         )
+
+        .get(
+          "/api/activity/context",
+          zValidator(
+            "query",
+            z.object({
+              projectId: z.string(),
+              sessionId: z.string(),
+              timestamp: z.string(),
+              before: z
+                .string()
+                .optional()
+                .transform((val) => (val ? parseInt(val, 10) : 3)),
+              after: z
+                .string()
+                .optional()
+                .transform((val) => (val ? parseInt(val, 10) : 3)),
+            }),
+          ),
+          async (c) => {
+            const params = c.req.valid("query");
+            const response = await effectToResponse(
+              c,
+              activityController
+                .getEntryContext(params)
+                .pipe(Effect.provide(runtime)),
+            );
+            return response;
+          },
+        )
     );
   });
 

@@ -5,6 +5,7 @@ import { serve } from "@hono/node-server";
 import { serveStatic } from "@hono/node-server/serve-static";
 import { Effect } from "effect";
 import { ActivityController } from "./core/activity/presentation/ActivityController";
+import { ActivityContextService } from "./core/activity/services/ActivityContextService";
 import { ActivityFeedService } from "./core/activity/services/ActivityFeedService";
 import { AgentSessionLayer } from "./core/agent-session";
 import { AgentSessionController } from "./core/agent-session/presentation/AgentSessionController";
@@ -89,6 +90,7 @@ export const startServer = async (options: CliOptions) => {
       Effect.provide(FileWatcherService.Live),
       Effect.provide(AuthMiddleware.Live),
       Effect.provide(ActivityFeedService.Live),
+      Effect.provide(ActivityContextService.Live),
     )
     .pipe(
       /** Domain */
@@ -125,7 +127,7 @@ export const startServer = async (options: CliOptions) => {
       (options.port ?? process.env.PORT ?? "3000");
 
   // biome-ignore lint/style/noProcessEnv: allow only here
-  const hostname = options.hostname ?? process.env.HOSTNAME ?? "localhost";
+  const hostname = options.hostname ?? process.env.HOSTNAME ?? "0.0.0.0";
 
   serve(
     {

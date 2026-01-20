@@ -27,6 +27,7 @@ export default defineConfig({
     outDir: "dist/static",
   },
   server: {
+    host: "0.0.0.0",
     port: parseInt(process.env.DEV_FE_PORT ?? "3400", 10),
     proxy: {
       "/api": `http://localhost:${process.env.DEV_BE_PORT ?? "3401"}`,

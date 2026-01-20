@@ -34,7 +34,7 @@ const LayerImpl = Effect.gen(function* () {
             10,
           ),
           hostname:
-            cliOptions.hostname ?? getOptionalEnv("HOSTNAME") ?? "localhost",
+            cliOptions.hostname ?? getOptionalEnv("HOSTNAME") ?? "0.0.0.0",
           password:
             cliOptions.password ?? getOptionalEnv("CCV_PASSWORD") ?? undefined,
           executable:

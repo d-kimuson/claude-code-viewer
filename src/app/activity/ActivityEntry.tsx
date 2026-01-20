@@ -81,12 +81,26 @@ function formatRelativeTime(timestamp: string): string {
 }
 
 function extractProjectName(projectId: string): string {
-  // Project IDs are base64 encoded paths
-  // Try to decode and extract the last part
+  // Project IDs are base64 encoded Claude project paths
+  // Format: /Users/davidmora/.claude/projects/-Users-davidmora-Projects-github-com-owner-repo
+  // We want to extract just the repo name (last hyphen-separated part)
   try {
     const decoded = atob(projectId);
-    const parts = decoded.split("/");
-    return parts[parts.length - 1] || projectId.slice(0, 8);
+    // Get the last path segment (the Claude project folder name)
+    const lastSegment = decoded.split("/").pop() || "";
+    // Claude project folders use hyphens as path separators
+    // Extract the last meaningful part (usually repo name)
+    const parts = lastSegment.split("-").filter(Boolean);
+    // Return last part (repo name) or last two parts (owner-repo) if short
+    if (parts.length >= 2) {
+      const repoName = parts[parts.length - 1];
+      // If repo name is very short, include owner
+      if (repoName && repoName.length <= 3 && parts.length >= 2) {
+        return `${parts[parts.length - 2]}-${repoName}`;
+      }
+      return repoName || projectId.slice(0, 8);
+    }
+    return lastSegment.slice(0, 20) || projectId.slice(0, 8);
   } catch {
     return projectId.slice(0, 8);
   }

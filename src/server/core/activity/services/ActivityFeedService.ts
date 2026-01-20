@@ -21,7 +21,20 @@ function getEntryType(
   entry: unknown,
 ): "user" | "assistant" | "system" | "tool" | "unknown" {
   if (typeof entry !== "object" || entry === null) return "unknown";
-  const type = (entry as { type?: string }).type;
+  const typed = entry as {
+    type?: string;
+    message?: { content?: Array<{ type?: string }> };
+  };
+  const type = typed.type;
+
+  // Check if it's a tool result (user message with tool_result content)
+  if (type === "user" && Array.isArray(typed.message?.content)) {
+    const hasToolResult = typed.message.content.some(
+      (item) => typeof item === "object" && item?.type === "tool_result",
+    );
+    if (hasToolResult) return "tool";
+  }
+
   switch (type) {
     case "user":
       return "user";
@@ -40,7 +53,16 @@ function extractPreview(entry: unknown): string {
   const typed = entry as {
     type?: string;
     message?: {
-      content?: string | Array<{ type?: string; text?: string } | string>;
+      content?:
+        | string
+        | Array<{
+            type?: string;
+            text?: string;
+            thinking?: string;
+            content?: string;
+            name?: string;
+            input?: Record<string, unknown>;
+          }>;
     };
   };
 
@@ -53,17 +75,50 @@ function extractPreview(entry: unknown): string {
   }
 
   if (Array.isArray(content)) {
+    // First pass: look for text content (prioritize visible text)
     for (const item of content) {
       if (typeof item === "string") {
         return item.slice(0, MAX_PREVIEW_LENGTH);
       }
+      if (typeof item === "object" && item !== null) {
+        // Text block - highest priority
+        if (item.type === "text" && item.text) {
+          return item.text.slice(0, MAX_PREVIEW_LENGTH);
+        }
+        // Tool result with content
+        if (item.type === "tool_result" && item.content) {
+          const preview =
+            typeof item.content === "string"
+              ? item.content
+              : JSON.stringify(item.content);
+          return `[Tool Result] ${preview.slice(0, MAX_PREVIEW_LENGTH - 14)}`;
+        }
+      }
+    }
+
+    // Second pass: tool use
+    for (const item of content) {
       if (
         typeof item === "object" &&
         item !== null &&
-        item.type === "text" &&
-        item.text
+        item.type === "tool_use"
       ) {
-        return item.text.slice(0, MAX_PREVIEW_LENGTH);
+        return `[Tool: ${item.name}]`;
+      }
+    }
+
+    // Third pass: thinking blocks (internal reasoning)
+    for (const item of content) {
+      if (
+        typeof item === "object" &&
+        item !== null &&
+        item.type === "thinking"
+      ) {
+        if (item.thinking) {
+          // Show brief preview of thinking
+          return `💭 ${item.thinking.slice(0, MAX_PREVIEW_LENGTH - 3)}`;
+        }
+        return "💭 Thinking...";
       }
     }
   }

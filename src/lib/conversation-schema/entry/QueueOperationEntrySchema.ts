@@ -35,6 +35,13 @@ export const QueueOperationEntrySchema = z.union([
     sessionId: z.string(),
     timestamp: z.iso.datetime(),
   }),
+  z.object({
+    type: z.literal("queue-operation"),
+    operation: z.literal("popAll"),
+    sessionId: z.string(),
+    timestamp: z.iso.datetime(),
+    content: z.string().optional(),
+  }),
 ]);
 
 export type QueueOperationEntry = z.infer<typeof QueueOperationEntrySchema>;

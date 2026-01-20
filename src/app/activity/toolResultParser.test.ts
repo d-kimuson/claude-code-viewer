@@ -230,6 +230,25 @@ describe("hasErrorPatterns", () => {
     expect(hasErrorPatterns("All tests passed")).toBe(false);
     expect(hasErrorPatterns("Successfully compiled")).toBe(false);
   });
+
+  it("should not detect errors in JSON with error: null", () => {
+    const orchestratorResponse = `{"context": {"context_size": 200000}, "error": null, "status": "idle"}`;
+    expect(hasErrorPatterns(orchestratorResponse)).toBe(false);
+
+    const jsonWithQuotes = `{"error": null, "data": "success"}`;
+    expect(hasErrorPatterns(jsonWithQuotes)).toBe(false);
+
+    const jsonNoSpace = `{"error":null}`;
+    expect(hasErrorPatterns(jsonNoSpace)).toBe(false);
+  });
+
+  it("should still detect real errors in JSON", () => {
+    const jsonWithError = `{"error": "Connection failed", "status": "failed"}`;
+    expect(hasErrorPatterns(jsonWithError)).toBe(true);
+
+    const jsonWithErrorMessage = `{"error": {"message": "Something went wrong"}}`;
+    expect(hasErrorPatterns(jsonWithErrorMessage)).toBe(true);
+  });
 });
 
 describe("isStackTraceContent", () => {

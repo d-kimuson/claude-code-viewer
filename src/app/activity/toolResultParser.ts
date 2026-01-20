@@ -39,6 +39,9 @@ const ERROR_PATTERNS = [
   /exit status [1-9]/i,
 ];
 
+// Patterns that indicate "error": null (not a real error)
+const ERROR_NULL_PATTERN = /"error"\s*:\s*null/gi;
+
 // Stack trace patterns for formatting
 const STACK_TRACE_PATTERNS = [
   /at\s+[\w.]+\s*\([^)]+:\d+:\d+\)/g, // JavaScript/TypeScript
@@ -52,7 +55,11 @@ function isStackTrace(content: string): boolean {
 
 function detectError(content: string, exitCode?: number): boolean {
   if (exitCode !== undefined && exitCode !== 0) return true;
-  return ERROR_PATTERNS.some((pattern) => pattern.test(content));
+
+  // Remove "error": null patterns (not real errors) before checking
+  const cleanedContent = content.replace(ERROR_NULL_PATTERN, '"_no_err": null');
+
+  return ERROR_PATTERNS.some((pattern) => pattern.test(cleanedContent));
 }
 
 function extractFilePath(content: string): string | undefined {

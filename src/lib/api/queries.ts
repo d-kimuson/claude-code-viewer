@@ -320,3 +320,21 @@ export const searchQuery = (
       return await response.json();
     },
   }) as const;
+
+export const remoteSessionQuery = (url: string) =>
+  ({
+    queryKey: ["remote-session", url],
+    queryFn: async () => {
+      const response = await honoClient.api["remote-session"].$post({
+        json: { url },
+      });
+
+      if (!response.ok) {
+        throw new Error(
+          `Failed to fetch remote session: ${response.statusText}`,
+        );
+      }
+
+      return await response.json();
+    },
+  }) as const;

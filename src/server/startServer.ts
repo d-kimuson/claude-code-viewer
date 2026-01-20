@@ -1,6 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
-import { NodeContext } from "@effect/platform-node";
+import { NodeContext, NodeHttpClient } from "@effect/platform-node";
 import { serve } from "@hono/node-server";
 import { serveStatic } from "@hono/node-server/serve-static";
 import { Effect } from "effect";
@@ -23,6 +23,8 @@ import type { CliOptions } from "./core/platform/services/CcvOptionsService";
 import { ProjectRepository } from "./core/project/infrastructure/ProjectRepository";
 import { ProjectController } from "./core/project/presentation/ProjectController";
 import { ProjectMetaService } from "./core/project/services/ProjectMetaService";
+import { RemoteSessionController } from "./core/remote-session/presentation/RemoteSessionController";
+import { RemoteSessionService } from "./core/remote-session/services/RemoteSessionService";
 import { SchedulerConfigBaseDir } from "./core/scheduler/config";
 import { SchedulerService } from "./core/scheduler/domain/Scheduler";
 import { SchedulerController } from "./core/scheduler/presentation/SchedulerController";
@@ -79,6 +81,7 @@ export const startServer = async (options: CliOptions) => {
       Effect.provide(SchedulerController.Live),
       Effect.provide(FeatureFlagController.Live),
       Effect.provide(SearchController.Live),
+      Effect.provide(RemoteSessionController.Live),
     )
     .pipe(
       /** Application */
@@ -96,6 +99,7 @@ export const startServer = async (options: CliOptions) => {
       Effect.provide(SchedulerService.Live),
       Effect.provide(SchedulerConfigBaseDir.Live),
       Effect.provide(SearchService.Live),
+      Effect.provide(RemoteSessionService.Live),
     )
     .pipe(
       /** Infrastructure */
@@ -109,6 +113,7 @@ export const startServer = async (options: CliOptions) => {
     .pipe(
       /** Platform */
       Effect.provide(platformLayer),
+      Effect.provide(NodeHttpClient.layer),
       Effect.provide(NodeContext.layer),
     );
 

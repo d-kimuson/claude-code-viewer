@@ -9,11 +9,17 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as RemoteRouteImport } from './routes/remote'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProjectsIndexRouteImport } from './routes/projects/index'
 import { Route as ProjectsProjectIdSessionRouteImport } from './routes/projects/$projectId/session'
 
+const RemoteRoute = RemoteRouteImport.update({
+  id: '/remote',
+  path: '/remote',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -39,12 +45,14 @@ const ProjectsProjectIdSessionRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/remote': typeof RemoteRoute
   '/projects': typeof ProjectsIndexRoute
   '/projects/$projectId/session': typeof ProjectsProjectIdSessionRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/remote': typeof RemoteRoute
   '/projects': typeof ProjectsIndexRoute
   '/projects/$projectId/session': typeof ProjectsProjectIdSessionRoute
 }
@@ -52,18 +60,25 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/remote': typeof RemoteRoute
   '/projects/': typeof ProjectsIndexRoute
   '/projects/$projectId/session': typeof ProjectsProjectIdSessionRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/projects' | '/projects/$projectId/session'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/remote'
+    | '/projects'
+    | '/projects/$projectId/session'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/projects' | '/projects/$projectId/session'
+  to: '/' | '/login' | '/remote' | '/projects' | '/projects/$projectId/session'
   id:
     | '__root__'
     | '/'
     | '/login'
+    | '/remote'
     | '/projects/'
     | '/projects/$projectId/session'
   fileRoutesById: FileRoutesById
@@ -71,12 +86,20 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LoginRoute: typeof LoginRoute
+  RemoteRoute: typeof RemoteRoute
   ProjectsIndexRoute: typeof ProjectsIndexRoute
   ProjectsProjectIdSessionRoute: typeof ProjectsProjectIdSessionRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/remote': {
+      id: '/remote'
+      path: '/remote'
+      fullPath: '/remote'
+      preLoaderRoute: typeof RemoteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -111,6 +134,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LoginRoute: LoginRoute,
+  RemoteRoute: RemoteRoute,
   ProjectsIndexRoute: ProjectsIndexRoute,
   ProjectsProjectIdSessionRoute: ProjectsProjectIdSessionRoute,
 }

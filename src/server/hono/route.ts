@@ -26,6 +26,7 @@ import { EnvService } from "../core/platform/services/EnvService";
 import { UserConfigService } from "../core/platform/services/UserConfigService";
 import type { ProjectRepository } from "../core/project/infrastructure/ProjectRepository";
 import { ProjectController } from "../core/project/presentation/ProjectController";
+import { RemoteSessionController } from "../core/remote-session/presentation/RemoteSessionController";
 import type { SchedulerConfigBaseDir } from "../core/scheduler/config";
 import { SchedulerController } from "../core/scheduler/presentation/SchedulerController";
 import {
@@ -70,6 +71,7 @@ export const routes = (app: HonoAppType, options: CliOptions) =>
     const schedulerController = yield* SchedulerController;
     const featureFlagController = yield* FeatureFlagController;
     const searchController = yield* SearchController;
+    const remoteSessionController = yield* RemoteSessionController;
 
     // middleware
     const authMiddlewareService = yield* AuthMiddleware;
@@ -684,6 +686,23 @@ export const routes = (app: HonoAppType, options: CliOptions) =>
 
           return response;
         })
+
+        /**
+         * RemoteSessionController Routes
+         */
+        .post(
+          "/api/remote-session",
+          zValidator("json", z.object({ url: z.string().url() })),
+          async (c) => {
+            const response = await effectToResponse(
+              c,
+              remoteSessionController.getRemoteSession({
+                url: c.req.valid("json").url,
+              }),
+            );
+            return response;
+          },
+        )
     );
   });
 

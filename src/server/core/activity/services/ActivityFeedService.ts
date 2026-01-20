@@ -17,6 +17,30 @@ interface ActivityFeedServiceInterface {
   readonly getRecentEntries: (limit?: number) => Effect.Effect<ActivityEntry[]>;
 }
 
+// Entry types to skip entirely (internal/infrastructure noise)
+const SKIPPED_ENTRY_TYPES = new Set([
+  "progress",
+  "file-history-snapshot",
+  "summary",
+]);
+
+function shouldSkipEntry(entry: unknown): boolean {
+  if (typeof entry !== "object" || entry === null) return true;
+  const typed = entry as { type?: string; message?: unknown };
+
+  // Skip known internal entry types
+  if (typed.type && SKIPPED_ENTRY_TYPES.has(typed.type)) {
+    return true;
+  }
+
+  // Skip system entries with no message content
+  if (typed.type === "system" && !typed.message) {
+    return true;
+  }
+
+  return false;
+}
+
 function getEntryType(
   entry: unknown,
 ): "user" | "assistant" | "system" | "tool" | "unknown" {
@@ -55,14 +79,17 @@ function extractPreview(entry: unknown): string {
     message?: {
       content?:
         | string
-        | Array<{
-            type?: string;
-            text?: string;
-            thinking?: string;
-            content?: string;
-            name?: string;
-            input?: Record<string, unknown>;
-          }>;
+        | Array<
+            | string
+            | {
+                type?: string;
+                text?: string;
+                thinking?: string;
+                content?: string;
+                name?: string;
+                input?: Record<string, unknown>;
+              }
+          >;
     };
   };
 
@@ -229,12 +256,23 @@ const LayerImpl = Effect.gen(function* () {
           const validation = ConversationSchema.safeParse(parsed);
 
           if (validation.success) {
+            // Skip internal/infrastructure entries
+            if (shouldSkipEntry(validation.data)) {
+              continue;
+            }
+
+            const preview = extractPreview(validation.data);
+            // Skip entries with no meaningful content
+            if (!preview) {
+              continue;
+            }
+
             const entry: ActivityEntry = {
               id: ulid(),
               projectId,
               sessionId,
               entryType: getEntryType(validation.data),
-              preview: extractPreview(validation.data),
+              preview,
               timestamp:
                 (validation.data as { timestamp?: string }).timestamp ??
                 new Date().toISOString(),

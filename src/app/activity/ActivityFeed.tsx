@@ -1,16 +1,19 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
+import { useAtom } from "jotai";
 import { ActivityIcon, ArrowLeft, PauseIcon, PlayIcon } from "lucide-react";
 import { type FC, useCallback, useState } from "react";
 import { Button } from "../../components/ui/button";
 import { activityQuery } from "../../lib/api/queries";
 import { useServerEventListener } from "../../lib/sse/hook/useServerEventListener";
+import { sseAtom } from "../../lib/sse/store/sseAtom";
 import type { ActivityEntrySSE } from "../../types/sse";
 import { ActivityEntryItem } from "./ActivityEntry";
 
 export const ActivityFeed: FC = () => {
   const [isPaused, setIsPaused] = useState(false);
   const [localEntries, setLocalEntries] = useState<ActivityEntrySSE[]>([]);
+  const [sseState] = useAtom(sseAtom);
 
   const { data, isLoading } = useQuery(activityQuery(100));
 
@@ -58,6 +61,19 @@ export const ActivityFeed: FC = () => {
             <div className="flex items-center gap-2">
               <ActivityIcon className="h-5 w-5 text-muted-foreground" />
               <h1 className="text-lg font-semibold">Activity Feed</h1>
+              {/* Connection status indicator */}
+              <div className="flex items-center gap-1.5 ml-2">
+                <div
+                  className={`w-2 h-2 rounded-full ${
+                    sseState.isConnected
+                      ? "bg-green-500 animate-pulse"
+                      : "bg-red-500"
+                  }`}
+                />
+                <span className="text-xs text-muted-foreground">
+                  {sseState.isConnected ? "Live" : "Disconnected"}
+                </span>
+              </div>
             </div>
           </div>
           <Button

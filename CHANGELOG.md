@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.5.5
+
+### &nbsp;&nbsp;&nbsp;Features
+
+- Disable AskUserQuestion tool, because ccviewer currently not support this &nbsp;-&nbsp; by **d-kimsuon** [<samp>(6acca)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/6accaaa)
+
+### &nbsp;&nbsp;&nbsp;Bug Fixes
+
+- Add missing schema types for Claude Code v2.1.x &nbsp;-&nbsp; by **Martin Spasov** and **Claude Opus 4.5** [<samp>(e8356)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/e8356de)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.5.4...0.5.5)
+
 ## 0.5.4
 
 ### &nbsp;&nbsp;&nbsp;Features

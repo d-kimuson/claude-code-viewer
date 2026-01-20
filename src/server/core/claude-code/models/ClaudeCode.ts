@@ -180,6 +180,7 @@ export const query = (
     const options: AgentSdkQueryOptions = {
       pathToClaudeCodeExecutable: claudeCodeExecutablePath,
       ...baseOptions,
+      disallowedTools: ["AskUserQuestion"], // Cannot answer from web interface instead of CLI
       ...(availableFeatures.canUseTool
         ? { canUseTool, permissionMode }
         : {
@@ -224,6 +225,7 @@ export const query = (
       prompt,
       options: {
         ...baseOptions,
+        disallowedTools: ["AskUserQuestion"], // Cannot answer from web interface instead of CLI
         permissionMode:
           // fallback unsupported permission modes
           permissionMode === "delegate" || permissionMode === "dontAsk"

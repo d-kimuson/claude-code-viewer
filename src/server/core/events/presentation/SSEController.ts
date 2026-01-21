@@ -78,12 +78,30 @@ const LayerImpl = Effect.gen(function* () {
         );
       };
 
+      const onActivityEntry = (
+        event: InternalEventDeclaration["activityEntry"],
+      ) => {
+        Effect.runFork(
+          typeSafeSSE.writeSSE("activityEntry", {
+            entry: {
+              id: event.entry.id,
+              projectId: event.entry.projectId,
+              sessionId: event.entry.sessionId,
+              entryType: event.entry.entryType,
+              preview: event.entry.preview,
+              timestamp: event.entry.timestamp,
+            },
+          }),
+        );
+      };
+
       yield* eventBus.on("sessionListChanged", onSessionListChanged);
       yield* eventBus.on("sessionChanged", onSessionChanged);
       yield* eventBus.on("agentSessionChanged", onAgentSessionChanged);
       yield* eventBus.on("sessionProcessChanged", onSessionProcessChanged);
       yield* eventBus.on("heartbeat", onHeartbeat);
       yield* eventBus.on("permissionRequested", onPermissionRequested);
+      yield* eventBus.on("activityEntry", onActivityEntry);
 
       const { connectionPromise } = adaptInternalEventToSSE(rawStream, {
         timeout: 5 /* min */ * 60 /* sec */ * 1000,
@@ -99,6 +117,7 @@ const LayerImpl = Effect.gen(function* () {
               );
               yield* eventBus.off("heartbeat", onHeartbeat);
               yield* eventBus.off("permissionRequested", onPermissionRequested);
+              yield* eventBus.off("activityEntry", onActivityEntry);
             }),
           );
         },

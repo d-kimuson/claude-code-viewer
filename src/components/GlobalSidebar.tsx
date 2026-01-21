@@ -1,7 +1,13 @@
 import { Trans } from "@lingui/react";
-import { useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import type { LucideIcon } from "lucide-react";
-import { InfoIcon, LogOut, SearchIcon, SettingsIcon } from "lucide-react";
+import {
+  ActivityIcon,
+  InfoIcon,
+  LogOut,
+  SearchIcon,
+  SettingsIcon,
+} from "lucide-react";
 import { type FC, type ReactNode, Suspense, useState } from "react";
 import {
   Tooltip,
@@ -134,7 +140,7 @@ export const GlobalSidebar: FC<GlobalSidebarProps> = ({
           {headerButton && (
             <div className="border-b border-sidebar-border">{headerButton}</div>
           )}
-          <div className="p-2 border-b border-sidebar-border">
+          <div className="p-2 border-b border-sidebar-border space-y-1">
             <Tooltip>
               <TooltipTrigger asChild>
                 <button
@@ -154,6 +160,24 @@ export const GlobalSidebar: FC<GlobalSidebarProps> = ({
                 <p>
                   Search <kbd className="ml-1 text-xs opacity-60">⌘K</kbd>
                 </p>
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link
+                  to="/activity"
+                  className={cn(
+                    "w-8 h-8 flex items-center justify-center rounded-md transition-colors",
+                    "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                    "text-sidebar-foreground/70",
+                  )}
+                  data-testid="activity-button"
+                >
+                  <ActivityIcon className="w-4 h-4" />
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="right">
+                <p>Activity Feed</p>
               </TooltipContent>
             </Tooltip>
           </div>

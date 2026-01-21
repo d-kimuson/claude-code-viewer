@@ -320,3 +320,64 @@ export const searchQuery = (
       return await response.json();
     },
   }) as const;
+
+export const activityQuery = (limit = 100) =>
+  ({
+    queryKey: ["activity", limit],
+    queryFn: async () => {
+      const response = await honoClient.api.activity.$get({
+        query: { limit: limit.toString() },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch activity: ${response.statusText}`);
+      }
+
+      return await response.json();
+    },
+  }) as const;
+
+export const activityContextQuery = (options: {
+  projectId: string;
+  sessionId: string;
+  timestamp: string;
+  before?: number;
+  after?: number;
+}) =>
+  ({
+    queryKey: [
+      "activity",
+      "context",
+      options.projectId,
+      options.sessionId,
+      options.timestamp,
+      options.before,
+      options.after,
+    ],
+    queryFn: async () => {
+      const response = await honoClient.api.activity.context.$get({
+        query: {
+          projectId: options.projectId,
+          sessionId: options.sessionId,
+          timestamp: options.timestamp,
+          ...(options.before !== undefined
+            ? { before: options.before.toString() }
+            : {}),
+          ...(options.after !== undefined
+            ? { after: options.after.toString() }
+            : {}),
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(
+          `Failed to fetch activity context: ${response.statusText}`,
+        );
+      }
+
+      return await response.json();
+    },
+    enabled: Boolean(
+      options.projectId && options.sessionId && options.timestamp,
+    ),
+  }) as const;

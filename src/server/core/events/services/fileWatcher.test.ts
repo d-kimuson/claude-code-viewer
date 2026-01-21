@@ -2,6 +2,7 @@ import { Path } from "@effect/platform";
 import { Effect } from "effect";
 import { describe, expect, it } from "vitest";
 import { testPlatformLayer } from "../../../../testing/layers/testPlatformLayer";
+import { ActivityFeedService } from "../../activity/services/ActivityFeedService";
 import type { InternalEventDeclaration } from "../types/InternalEventDeclaration";
 import { EventBus } from "./EventBus";
 import { FileWatcherService } from "./fileWatcher";
@@ -22,6 +23,7 @@ describe("FileWatcherService", () => {
       const result = await Effect.runPromise(
         program.pipe(
           Effect.provide(FileWatcherService.Live),
+          Effect.provide(ActivityFeedService.Live),
           Effect.provide(testPlatformLayer()),
           Effect.provide(Path.layer),
         ),
@@ -46,6 +48,7 @@ describe("FileWatcherService", () => {
       const result = await Effect.runPromise(
         program.pipe(
           Effect.provide(FileWatcherService.Live),
+          Effect.provide(ActivityFeedService.Live),
           Effect.provide(testPlatformLayer()),
           Effect.provide(Path.layer),
         ),
@@ -70,6 +73,7 @@ describe("FileWatcherService", () => {
       const result = await Effect.runPromise(
         program.pipe(
           Effect.provide(FileWatcherService.Live),
+          Effect.provide(ActivityFeedService.Live),
           Effect.provide(testPlatformLayer()),
           Effect.provide(Path.layer),
         ),
@@ -100,6 +104,7 @@ describe("FileWatcherService", () => {
       const result = await Effect.runPromise(
         program.pipe(
           Effect.provide(FileWatcherService.Live),
+          Effect.provide(ActivityFeedService.Live),
           Effect.provide(testPlatformLayer()),
           Effect.provide(Path.layer),
         ),
@@ -147,6 +152,7 @@ describe("FileWatcherService", () => {
       const result = await Effect.runPromise(
         program.pipe(
           Effect.provide(FileWatcherService.Live),
+          Effect.provide(ActivityFeedService.Live),
           Effect.provide(testPlatformLayer()),
           Effect.provide(Path.layer),
         ),
@@ -173,6 +179,7 @@ describe("FileWatcherService", () => {
       const result = await Effect.runPromise(
         program.pipe(
           Effect.provide(FileWatcherService.Live),
+          Effect.provide(ActivityFeedService.Live),
           Effect.provide(testPlatformLayer()),
           Effect.provide(Path.layer),
         ),

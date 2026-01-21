@@ -1,5 +1,6 @@
 import type { PermissionRequest } from "../../../../types/permissions";
 import type { PublicSessionProcess } from "../../../../types/session-process";
+import type { ActivityEntry } from "../../activity/types/ActivityEntry";
 import type * as CCSessionProcess from "../../claude-code/models/CCSessionProcess";
 
 export type InternalEventDeclaration = {
@@ -27,5 +28,9 @@ export type InternalEventDeclaration = {
 
   permissionRequested: {
     permissionRequest: PermissionRequest;
+  };
+
+  activityEntry: {
+    entry: ActivityEntry;
   };
 };

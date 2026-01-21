@@ -38,7 +38,6 @@ const LocalCommandEntrySchema = BaseEntrySchema.extend({
   level: z.enum(["info"]),
 });
 
-// Turn duration entry (tracks duration of assistant turns, Claude Code v2.1+)
 const TurnDurationEntrySchema = BaseEntrySchema.extend({
   type: z.literal("system"),
   subtype: z.literal("turn_duration"),

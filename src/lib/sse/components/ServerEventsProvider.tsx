@@ -33,6 +33,18 @@ export const ServerEventsProvider: FC<PropsWithChildren> = ({ children }) => {
         await queryClient.invalidateQueries({
           queryKey: projectListQuery.queryKey,
         });
+        // Also invalidate session detail queries to ensure current session is refreshed
+        // Pattern: ["projects", projectId, "sessions", sessionId]
+        await queryClient.invalidateQueries({
+          predicate: (query) => {
+            const key = query.queryKey;
+            return (
+              Array.isArray(key) &&
+              key[0] === "projects" &&
+              key[2] === "sessions"
+            );
+          },
+        });
       },
     });
     sseRef.current = sse;

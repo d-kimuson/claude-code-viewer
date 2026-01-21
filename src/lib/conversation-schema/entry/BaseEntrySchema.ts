@@ -18,4 +18,5 @@ export const BaseEntrySchema = z.object({
   toolUseResult: z.unknown().optional(), // スキーマがツールごとに異なりすぎるし利用もしなそうなので unknown
   gitBranch: z.string().optional(),
   isCompactSummary: z.boolean().optional(),
+  agentId: z.string().optional(),
 });

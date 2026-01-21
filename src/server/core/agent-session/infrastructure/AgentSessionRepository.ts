@@ -10,15 +10,33 @@ const LayerImpl = Effect.gen(function* () {
 
   /**
    * Get agent session conversations by agentId.
-   * Directly reads agent-${agentId}.jsonl file from project directory.
-   * Returns null if file does not exist.
+   * Checks new path: {project}/{sessionId}/subagents/agent-{agentId}.jsonl
+   * Fallback to old path: {project}/agent-{agentId}.jsonl
    */
   const getAgentSessionByAgentId = (
     projectId: string,
     agentId: string,
+    sessionId?: string,
   ): Effect.Effect<ExtendedConversation[] | null, Error> =>
     Effect.gen(function* () {
       const projectPath = decodeProjectId(projectId);
+
+      // Try new path if sessionId is provided
+      if (sessionId) {
+        const newPath = path.resolve(
+          projectPath,
+          sessionId,
+          "subagents",
+          `agent-${agentId}.jsonl`,
+        );
+
+        if (yield* fs.exists(newPath)) {
+          const content = yield* fs.readFileString(newPath);
+          return parseJsonl(content);
+        }
+      }
+
+      // Fallback to old path
       const agentFilePath = path.resolve(projectPath, `agent-${agentId}.jsonl`);
 
       // Check if file exists
@@ -45,6 +63,7 @@ export class AgentSessionRepository extends Context.Tag(
     readonly getAgentSessionByAgentId: (
       projectId: string,
       agentId: string,
+      sessionId?: string,
     ) => Effect.Effect<ExtendedConversation[] | null, Error>;
   }
 >() {

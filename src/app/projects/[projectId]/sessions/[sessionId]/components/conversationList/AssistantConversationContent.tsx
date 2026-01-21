@@ -29,6 +29,9 @@ export const AssistantConversationContent: FC<{
   content: AssistantMessageContent;
   getToolResult: (toolUseId: string) => ToolResultContent | undefined;
   getAgentIdForToolUse: (toolUseId: string) => string | undefined;
+  getSidechainConversationByAgentId: (
+    agentId: string,
+  ) => SidechainConversation | undefined;
   getSidechainConversationByPrompt: (
     prompt: string,
   ) => SidechainConversation | undefined;
@@ -39,6 +42,7 @@ export const AssistantConversationContent: FC<{
   content,
   getToolResult,
   getAgentIdForToolUse,
+  getSidechainConversationByAgentId,
   getSidechainConversationByPrompt,
   getSidechainConversations,
   projectId,
@@ -85,6 +89,9 @@ export const AssistantConversationContent: FC<{
     const toolResult = getToolResult(content.id);
 
     const taskModal = (() => {
+      // NOTE: taskToolInputSchema は prompt 以外（description, subagent_type等）が含まれていると parse 失敗する可能性がある？
+      // z.object({ prompt: z.string() }) は unknown keys を strip するので成功するはず。
+      // ただし念の為 safeParse の結果を確認する。
       const taskInput =
         content.name === "Task"
           ? taskToolInputSchema.safeParse(content.input)
@@ -103,6 +110,7 @@ export const AssistantConversationContent: FC<{
           projectId={projectId}
           sessionId={sessionId}
           agentId={agentId}
+          getSidechainConversationByAgentId={getSidechainConversationByAgentId}
           getSidechainConversationByPrompt={getSidechainConversationByPrompt}
           getSidechainConversations={getSidechainConversations}
           getToolResult={getToolResult}

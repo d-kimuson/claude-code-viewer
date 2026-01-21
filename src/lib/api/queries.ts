@@ -276,14 +276,19 @@ export const featureFlagsQuery = {
   },
 } as const;
 
-export const agentSessionQuery = (projectId: string, agentId: string) =>
+export const agentSessionQuery = (
+  projectId: string,
+  agentId: string,
+  sessionId?: string,
+) =>
   ({
-    queryKey: ["projects", projectId, "agent-sessions", agentId],
+    queryKey: ["projects", projectId, "agent-sessions", agentId, sessionId],
     queryFn: async () => {
       const response = await honoClient.api.projects[":projectId"][
         "agent-sessions"
       ][":agentId"].$get({
         param: { projectId, agentId },
+        query: { sessionId },
       });
 
       if (!response.ok) {

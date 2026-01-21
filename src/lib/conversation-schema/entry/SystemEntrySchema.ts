@@ -46,10 +46,55 @@ const TurnDurationEntrySchema = BaseEntrySchema.extend({
   slug: z.string().optional(),
 });
 
+// Compact boundary entry (new format from Claude Code)
+const CompactBoundaryEntrySchema = BaseEntrySchema.extend({
+  type: z.literal("system"),
+  subtype: z.literal("compact_boundary"),
+  content: z.string(),
+  level: z.enum(["info"]),
+  slug: z.string().optional(),
+  logicalParentUuid: z.string().optional(),
+  compactMetadata: z
+    .object({
+      trigger: z.string(),
+      preTokens: z.number(),
+    })
+    .optional(),
+});
+
+// API error entry (tracks API errors and retries)
+const ApiErrorEntrySchema = BaseEntrySchema.extend({
+  type: z.literal("system"),
+  subtype: z.literal("api_error"),
+  level: z.enum(["error", "warning", "info"]),
+  error: z.object({
+    status: z.number().optional(),
+    headers: z.record(z.string(), z.unknown()).optional(),
+    requestID: z.string().nullable().optional(),
+    error: z
+      .object({
+        type: z.string(),
+        error: z
+          .object({
+            type: z.string(),
+            message: z.string(),
+          })
+          .optional(),
+        message: z.string().optional(),
+      })
+      .optional(),
+  }),
+  retryInMs: z.number().optional(),
+  retryAttempt: z.number().optional(),
+  maxRetries: z.number().optional(),
+});
+
 export const SystemEntrySchema = z.union([
   StopHookSummaryEntrySchema,
   LocalCommandEntrySchema,
   TurnDurationEntrySchema,
+  CompactBoundaryEntrySchema,
+  ApiErrorEntrySchema,
   SystemEntryWithContentSchema, // Must be last (catch-all for undefined subtype)
 ]);
 

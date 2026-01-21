@@ -57,6 +57,10 @@ const getConversationKey = (conversation: Conversation) => {
     return `queue-operation_${conversation.operation}_${conversation.sessionId}_${conversation.timestamp}`;
   }
 
+  if (conversation.type === "progress") {
+    return `progress_${conversation.uuid}`;
+  }
+
   conversation satisfies never;
   throw new Error(`Unknown conversation type: ${conversation}`);
 };
@@ -142,6 +146,7 @@ export const ConversationList: FC<ConversationListProps> = ({
     isRootSidechain,
     getSidechainConversations,
     getSidechainConversationByPrompt,
+    getSidechainConversationByAgentId,
     existsRelatedTaskCall,
   } = useSidechain(validConversations);
 
@@ -283,6 +288,9 @@ export const ConversationList: FC<ConversationListProps> = ({
               getTurnDuration={getTurnDuration}
               isRootSidechain={isRootSidechain}
               getSidechainConversations={getSidechainConversations}
+              getSidechainConversationByAgentId={
+                getSidechainConversationByAgentId
+              }
               getSidechainConversationByPrompt={
                 getSidechainConversationByPrompt
               }
@@ -296,7 +304,12 @@ export const ConversationList: FC<ConversationListProps> = ({
             conversation.type !== "summary" &&
             conversation.type !== "file-history-snapshot" &&
             conversation.type !== "queue-operation" &&
+            conversation.type !== "progress" &&
             conversation.isSidechain;
+
+          if (conversation.type === "progress") {
+            return [];
+          }
 
           if (isSidechain) {
             return [];

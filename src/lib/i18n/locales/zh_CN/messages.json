@@ -192,7 +192,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        66
+        70
       ]
     ],
     "translation": "思考中"
@@ -203,7 +203,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        177
+        189
       ]
     ],
     "translation": "加载任务失败"
@@ -214,7 +214,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        153
+        161
       ]
     ],
     "translation": "输入参数"
@@ -225,7 +225,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        169
+        181
       ]
     ],
     "translation": "正在加载任务..."
@@ -240,7 +240,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        155
+        167
       ]
     ],
     "translation": "{count} 条消息"
@@ -251,7 +251,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        187
+        199
       ]
     ],
     "translation": "无任务数据"
@@ -262,7 +262,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        190
+        202
       ]
     ],
     "translation": "此任务的数据不可用"
@@ -273,7 +273,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        167
+        175
       ]
     ],
     "translation": "工具结果"
@@ -284,7 +284,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        180
+        192
       ]
     ],
     "translation": "重试"
@@ -295,7 +295,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        146
+        158
       ]
     ],
     "translation": "任务 ID"
@@ -306,7 +306,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        145
+        153
       ]
     ],
     "translation": "工具 ID"
@@ -317,7 +317,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        124
+        136
       ]
     ],
     "translation": "查看任务详情"
@@ -883,7 +883,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        106
+        110
       ]
     ],
     "translation": "原始数据:"
@@ -894,7 +894,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        99
+        103
       ]
     ],
     "translation": "报告此问题"
@@ -905,7 +905,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        74
+        78
       ]
     ],
     "translation": "模式错误"
@@ -916,7 +916,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        89
+        93
       ]
     ],
     "translation": "模式验证错误"
@@ -927,7 +927,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        92
+        96
       ]
     ],
     "translation": "无法解析此对话条目。这可能是由于格式更改或解析问题。"

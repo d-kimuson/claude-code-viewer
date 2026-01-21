@@ -111,7 +111,7 @@ export class FileWatcherService extends Context.Tag("FileWatcherService")<
                             yield* Ref.set(debounceTimersRef, currentTimers);
                           }),
                         );
-                      }, 300);
+                      }, 100); // Reduced from 300ms to improve message latency
 
                       timers.set(debounceKey, newTimer);
                       yield* Ref.set(debounceTimersRef, timers);

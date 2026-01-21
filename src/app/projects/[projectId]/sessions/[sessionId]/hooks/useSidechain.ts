@@ -11,7 +11,8 @@ export const useSidechain = (conversations: Conversation[]) => {
       (conv) =>
         conv.type !== "summary" &&
         conv.type !== "file-history-snapshot" &&
-        conv.type !== "queue-operation",
+        conv.type !== "queue-operation" &&
+        conv.type !== "progress",
     )
     .filter((conv) => conv.isSidechain === true);
 
@@ -119,6 +120,29 @@ export const useSidechain = (conversations: Conversation[]) => {
     [conversationPromptMap],
   );
 
+  const conversationAgentIdMap = useMemo(() => {
+    return new Map<string, SidechainConversation>(
+      sidechainConversations
+        .filter(
+          (conv) =>
+            conv.type === "user" ||
+            conv.type === "system" ||
+            conv.type === "assistant",
+        )
+        .filter(
+          (conv) => conv.parentUuid === null && conv.agentId !== undefined,
+        )
+        .map((conv) => [conv.agentId as string, conv] as const),
+    );
+  }, [sidechainConversations]);
+
+  const getSidechainConversationByAgentId = useCallback(
+    (agentId: string) => {
+      return conversationAgentIdMap.get(agentId);
+    },
+    [conversationAgentIdMap],
+  );
+
   const existsRelatedTaskCall = (prompt: string) => {
     return taskToolCallPromptSet.has(prompt);
   };
@@ -127,6 +151,7 @@ export const useSidechain = (conversations: Conversation[]) => {
     isRootSidechain,
     getSidechainConversations,
     getSidechainConversationByPrompt,
+    getSidechainConversationByAgentId,
     existsRelatedTaskCall,
   };
 };

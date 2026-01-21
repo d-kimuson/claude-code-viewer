@@ -28,6 +28,9 @@ type TaskModalProps = {
    * Used to directly fetch agent-${agentId}.jsonl file.
    */
   agentId: string | undefined;
+  getSidechainConversationByAgentId: (
+    agentId: string,
+  ) => SidechainConversation | undefined;
   getSidechainConversationByPrompt: (
     prompt: string,
   ) => SidechainConversation | undefined;
@@ -40,9 +43,9 @@ type TaskModalProps = {
  * Always shows the "View Task" button for Task tools.
  *
  * Fallback strategy:
- * 1. First check legacy sidechain data (embedded in same session file)
- * 2. If legacy data exists (length > 0), display it without API request
- * 3. If legacy data is empty and agentId exists, fetch from agent session API endpoint
+ * 1. Check sidechain data by agentId (new Claude Code versions)
+ * 2. Check legacy sidechain data by prompt (embedded in same session file)
+ * 3. If local data is empty and agentId exists, fetch from agent session API endpoint
  *
  * This approach supports both old Claude Code versions (embedded sidechain)
  * and new versions (separate agent-*.jsonl files) without version detection.
@@ -52,42 +55,51 @@ export const TaskModal: FC<TaskModalProps> = ({
   projectId,
   sessionId,
   agentId,
+  getSidechainConversationByAgentId,
   getSidechainConversationByPrompt,
   getSidechainConversations,
   getToolResult,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  // Check legacy sidechain data first
-  const legacyConversation = getSidechainConversationByPrompt(prompt);
-  const legacySidechainConversations =
+  // Check local sidechain data (loaded from agent-*.jsonl files or embedded)
+  const localConversation =
+    agentId !== undefined
+      ? getSidechainConversationByAgentId(agentId)
+      : undefined;
+
+  // Fallback to prompt matching if agentId lookup failed
+  const legacyConversation =
+    localConversation ?? getSidechainConversationByPrompt(prompt);
+
+  const localSidechainConversations =
     legacyConversation !== undefined
       ? getSidechainConversations(legacyConversation.uuid)
       : [];
-  const hasLegacyData = legacySidechainConversations.length > 0;
+  const hasLocalData = localSidechainConversations.length > 0;
 
   // Only fetch from API if:
-  // 1. Legacy data is not available
+  // 1. Local data is not available
   // 2. agentId exists (new Claude Code version)
   // 3. Modal is open
-  const shouldFetchFromApi = isOpen && !hasLegacyData && agentId !== undefined;
+  const shouldFetchFromApi = isOpen && !hasLocalData && agentId !== undefined;
 
   const { data, isLoading, error, refetch } = useQuery({
-    ...agentSessionQuery(projectId, agentId ?? ""),
+    ...agentSessionQuery(projectId, agentId ?? "", sessionId),
     enabled: shouldFetchFromApi,
     staleTime: 0,
   });
 
   // Determine which data source to use
-  const conversations = hasLegacyData
-    ? legacySidechainConversations.map((original) => ({
+  const conversations = hasLocalData
+    ? localSidechainConversations.map((original) => ({
         ...original,
         isSidechain: false,
       }))
     : (data?.conversations ?? []);
 
-  const agentSessionId = hasLegacyData ? undefined : data?.agentSessionId;
-  const taskId = hasLegacyData ? legacyConversation?.uuid : agentSessionId;
+  const agentSessionId = hasLocalData ? undefined : data?.agentSessionId;
+  const taskId = hasLocalData ? legacyConversation?.uuid : agentSessionId;
 
   const title = (() => {
     const firstConversation = conversations.at(0);
@@ -194,7 +206,7 @@ export const TaskModal: FC<TaskModalProps> = ({
           {showConversations && (
             <ConversationList
               conversations={[
-                ...(hasLegacyData
+                ...(hasLocalData
                   ? []
                   : [
                       {

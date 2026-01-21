@@ -192,7 +192,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        66
+        70
       ]
     ],
     "translation": "思考中"
@@ -203,7 +203,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        177
+        189
       ]
     ],
     "translation": "タスクの読み込みに失敗しました"
@@ -214,7 +214,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        153
+        161
       ]
     ],
     "translation": "入力パラメータ"
@@ -225,7 +225,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        169
+        181
       ]
     ],
     "translation": "タスクを読み込み中..."
@@ -240,7 +240,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        155
+        167
       ]
     ],
     "translation": "{count}件のメッセージ"
@@ -251,7 +251,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        187
+        199
       ]
     ],
     "translation": "タスクデータがありません"
@@ -262,7 +262,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        190
+        202
       ]
     ],
     "translation": "このタスクのデータは利用できません"
@@ -273,7 +273,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        167
+        175
       ]
     ],
     "translation": "ツール実行結果"
@@ -284,7 +284,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        180
+        192
       ]
     ],
     "translation": "再試行"
@@ -295,7 +295,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        146
+        158
       ]
     ],
     "translation": "タスクID"
@@ -306,7 +306,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        145
+        153
       ]
     ],
     "translation": "ツールID"
@@ -317,7 +317,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        124
+        136
       ]
     ],
     "translation": "タスクを確認"
@@ -883,7 +883,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        106
+        110
       ]
     ],
     "translation": "生データ："
@@ -894,7 +894,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        99
+        103
       ]
     ],
     "translation": "この問題を報告"
@@ -905,7 +905,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        74
+        78
       ]
     ],
     "translation": "スキーマエラー"
@@ -916,7 +916,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        89
+        93
       ]
     ],
     "translation": "スキーマ検証エラー"
@@ -927,7 +927,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        92
+        96
       ]
     ],
     "translation": "この会話エントリの解析に失敗しました。フォーマットの変更または解析の問題が考えられます。"

@@ -80,6 +80,13 @@ const LayerImpl = Effect.gen(function* () {
         [virtualConversation],
       );
 
+      // Notify frontend that user message was added to virtual conversation
+      // This allows immediate display of the user's message before Claude responds
+      yield* eventBusService.emit("virtualConversationUpdated", {
+        projectId: sessionProcess.def.projectId,
+        sessionId: baseSessionId,
+      });
+
       sessionProcess.def.setNextMessage(input);
       return {
         sessionProcess,
@@ -158,8 +165,8 @@ const LayerImpl = Effect.gen(function* () {
           }
 
           if (processState.type === "paused") {
-            // rule: paused は not_initialized に更新されてからくる想定
-            yield* Effect.die(
+            // rule: paused 假定更新为 not_initialized
+            return yield* Effect.die(
               new Error("Illegal state: paused is not expected"),
             );
           }
@@ -235,6 +242,13 @@ const LayerImpl = Effect.gen(function* () {
             });
 
             sessionFileCreatedPromise.resolve({
+              sessionId: message.session_id,
+            });
+
+            // Notify frontend that new assistant message is available
+            // This triggers before file watcher debounce, reducing perceived latency
+            yield* eventBusService.emit("virtualConversationUpdated", {
+              projectId: processState.def.projectId,
               sessionId: message.session_id,
             });
 

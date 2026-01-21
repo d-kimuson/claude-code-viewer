@@ -93,7 +93,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        411
+        412
       ]
     ],
     "translation": "補完機能付きメッセージ入力"
@@ -339,7 +339,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        505
+        506
       ]
     ],
     "translation": "添付"
@@ -350,7 +350,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        517
+        518
       ]
     ],
     "translation": "オートコンプリート有効"
@@ -372,7 +372,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        375
+        376
       ]
     ],
     "translation": "メッセージの送信に失敗しました。もう一度お試しください。"
@@ -498,7 +498,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        221
+        222
       ]
     ],
     "translation": "メッセージの予約に失敗しました"
@@ -510,7 +510,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        205
+        206
       ]
     ],
     "translation": "メッセージを予約しました"
@@ -522,7 +522,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        210
+        211
       ]
     ],
     "translation": "スケジューラタブで確認・管理できます"
@@ -544,11 +544,11 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        462
+        463
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        546
+        547
       ]
     ],
     "translation": "今すぐ送信"
@@ -559,11 +559,11 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        445
+        446
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        529
+        530
       ]
     ],
     "translation": "送信モード"
@@ -574,15 +574,15 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        465
+        466
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        549
+        550
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        566
+        567
       ]
     ],
     "translation": "予約送信"
@@ -593,7 +593,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        472
+        473
       ]
     ],
     "translation": "送信予定時刻"
@@ -604,7 +604,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        585
+        586
       ]
     ],
     "translation": "処理中..."

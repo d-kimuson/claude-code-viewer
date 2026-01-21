@@ -34,6 +34,7 @@ import type {
 } from "../../../../../server/core/claude-code/schema";
 import { useConfig } from "../../../../hooks/useConfig";
 import type { CommandCompletionRef } from "./CommandCompletion";
+import { isInCompletionContext } from "./completionUtils";
 import type { FileCompletionRef } from "./FileCompletion";
 import { processFile } from "./fileUtils";
 import { InlineCompletion } from "./InlineCompletion";
@@ -410,7 +411,7 @@ export const ChatInput: FC<ChatInputProps> = ({
               disabled={isPending || disabled}
               aria-label={i18n._("Message input with completion support")}
               aria-describedby={helpId}
-              aria-expanded={message.startsWith("/") || message.includes("@")}
+              aria-expanded={isInCompletionContext(message)}
               aria-haspopup="listbox"
               role="combobox"
               aria-autocomplete="list"
@@ -511,7 +512,7 @@ export const ChatInput: FC<ChatInputProps> = ({
                 >
                   {message.length}
                 </span>
-                {(message.startsWith("/") || message.includes("@")) && (
+                {isInCompletionContext(message) && (
                   <span className="text-xs text-blue-600 dark:text-blue-400 font-medium hidden sm:flex items-center gap-1">
                     <SparklesIcon className="w-3 h-3" />
                     <Trans id="chat.autocomplete.active" />

@@ -118,6 +118,7 @@ const LayerImpl = Effect.gen(function* () {
                     cacheReadTokens: 0,
                   },
                 },
+                modelName: null,
               },
               conversations: virtualConversation.conversations,
               lastModifiedAt:
@@ -293,6 +294,7 @@ const LayerImpl = Effect.gen(function* () {
                   cacheReadTokens: 0,
                 },
               },
+              modelName: null,
             },
           };
         })

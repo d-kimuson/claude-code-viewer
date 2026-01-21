@@ -387,7 +387,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        477
+        490
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
@@ -742,7 +742,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        362
+        349
       ]
     ],
     "translation": "Branch"
@@ -768,6 +768,17 @@
       ]
     ],
     "translation": "Metadata"
+  },
+  "control.model": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
+        376
+      ]
+    ],
+    "translation": "Model"
   },
   "control.new": {
     "placeholders": {},
@@ -861,7 +872,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        349
+        363
       ]
     ],
     "translation": "Session ID"
@@ -2063,7 +2074,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        419
+        432
       ]
     ],
     "translation": "Cache creation"
@@ -2074,7 +2085,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        433
+        446
       ]
     ],
     "translation": "Cache read"
@@ -2085,7 +2096,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        391
+        404
       ]
     ],
     "translation": "Input tokens"
@@ -2096,7 +2107,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        376
+        389
       ]
     ],
     "translation": "Session Cost"
@@ -2107,7 +2118,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        405
+        418
       ]
     ],
     "translation": "Output tokens"
@@ -2118,7 +2129,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        383
+        396
       ]
     ],
     "translation": "Total"
@@ -2129,7 +2140,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        480
+        493
       ]
     ],
     "translation": "session.empty_state.description"
@@ -2140,7 +2151,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        494
+        507
       ]
     ],
     "translation": "Claude Code is processing..."

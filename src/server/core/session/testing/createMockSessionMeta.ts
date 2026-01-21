@@ -24,6 +24,7 @@ export function createMockSessionMeta(
         cacheReadTokens: 0,
       },
     },
+    modelName: null,
     ...overrides,
   };
 }

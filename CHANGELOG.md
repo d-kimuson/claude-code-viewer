@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.5.6
+
+### &nbsp;&nbsp;&nbsp;Features
+
+- Add Claude model name to session metadata popover &nbsp;-&nbsp; by **Ryan Malia** [<samp>(060b5)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/060b538)
+- Support new subagent log structure and fix task data issues &nbsp;-&nbsp; by **zhube** [<samp>(5df48)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/5df48fa)
+- Introduce virtual conversation update events to reduce perceived latency, enhance system message display for more detailed information, and add polling fallback for session queries &nbsp;-&nbsp; by **zhube** [<samp>(4d9e6)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/4d9e6e8)
+
+### &nbsp;&nbsp;&nbsp;Bug Fixes
+
+- Improve autocomplete indicator visibility logic &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.5** [<samp>(b8388)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/b8388bd)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.5.5...0.5.6)
+
 ## 0.5.5
 
 ### &nbsp;&nbsp;&nbsp;Features

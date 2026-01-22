@@ -67,12 +67,12 @@ export const DeleteSessionDialog: FC<DeleteSessionDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="max-w-2xl max-h-[80vh] overflow-auto">
         <DialogHeader>
           <DialogTitle>
             <Trans id="session.delete_dialog.title" />
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="break-words line-clamp-10">
             <Trans
               id="session.delete_dialog.description"
               values={{ title: sessionTitle }}

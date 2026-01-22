@@ -629,6 +629,10 @@
         348
       ],
       [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/DeleteSessionDialog.tsx",
+        88
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SchedulerTab.tsx",
         334
       ]
@@ -651,6 +655,10 @@
     "comments": [],
     "origin": [
       [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/DeleteSessionDialog.tsx",
+        98
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SchedulerTab.tsx",
         344
       ]
@@ -661,6 +669,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/DeleteSessionDialog.tsx",
+        96
+      ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SchedulerTab.tsx",
         342
@@ -2133,6 +2145,56 @@
       ]
     ],
     "translation": "总计"
+  },
+  "session.delete.failed": {
+    "translation": "删除会话失败",
+    "message": "Failed to delete session",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/DeleteSessionDialog.tsx",
+        51
+      ]
+    ]
+  },
+  "session.delete.success": {
+    "translation": "会话已删除",
+    "message": "Session deleted successfully",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/DeleteSessionDialog.tsx",
+        41
+      ]
+    ]
+  },
+  "session.delete_dialog.description": {
+    "translation": "确定要删除会话「{title}」吗？此操作无法撤销。",
+    "placeholders": {
+      "title": [
+        "sessionTitle"
+      ]
+    },
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/DeleteSessionDialog.tsx",
+        76
+      ]
+    ]
+  },
+  "session.delete_dialog.title": {
+    "translation": "删除会话",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/DeleteSessionDialog.tsx",
+        73
+      ]
+    ]
   },
   "session.empty_state.description": {
     "placeholders": {},

@@ -629,6 +629,10 @@
         348
       ],
       [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/DeleteSessionDialog.tsx",
+        88
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SchedulerTab.tsx",
         334
       ]
@@ -651,6 +655,10 @@
     "comments": [],
     "origin": [
       [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/DeleteSessionDialog.tsx",
+        98
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SchedulerTab.tsx",
         344
       ]
@@ -661,6 +669,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/DeleteSessionDialog.tsx",
+        96
+      ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SchedulerTab.tsx",
         342
@@ -2133,6 +2145,56 @@
       ]
     ],
     "translation": "Total"
+  },
+  "session.delete.failed": {
+    "translation": "Failed to delete session",
+    "message": "Failed to delete session",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/DeleteSessionDialog.tsx",
+        51
+      ]
+    ]
+  },
+  "session.delete.success": {
+    "translation": "Session deleted successfully",
+    "message": "Session deleted successfully",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/DeleteSessionDialog.tsx",
+        41
+      ]
+    ]
+  },
+  "session.delete_dialog.description": {
+    "translation": "Are you sure you want to delete the session \"{title}\"? This action cannot be undone.",
+    "placeholders": {
+      "title": [
+        "sessionTitle"
+      ]
+    },
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/DeleteSessionDialog.tsx",
+        76
+      ]
+    ]
+  },
+  "session.delete_dialog.title": {
+    "translation": "Delete Session",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/DeleteSessionDialog.tsx",
+        73
+      ]
+    ]
   },
   "session.empty_state.description": {
     "placeholders": {},

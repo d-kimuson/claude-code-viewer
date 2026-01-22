@@ -1,11 +1,16 @@
+import { FileSystem } from "@effect/platform";
 import { Context, Effect, Layer } from "effect";
 import type { ControllerResponse } from "../../../lib/effect/toEffectResponse";
 import type { InferEffect } from "../../../lib/effect/types";
+import { EventBus } from "../../events/services/EventBus";
 import { SessionRepository } from "../../session/infrastructure/SessionRepository";
+import { decodeSessionId } from "../functions/id";
 import { generateSessionHtml } from "../services/ExportService";
 
 const LayerImpl = Effect.gen(function* () {
   const sessionRepository = yield* SessionRepository;
+  const fs = yield* FileSystem.FileSystem;
+  const eventBus = yield* EventBus;
 
   const getSession = (options: { projectId: string; sessionId: string }) =>
     Effect.gen(function* () {
@@ -49,9 +54,51 @@ const LayerImpl = Effect.gen(function* () {
       } as const satisfies ControllerResponse;
     });
 
+  const deleteSession = (options: { projectId: string; sessionId: string }) =>
+    Effect.gen(function* () {
+      const { projectId, sessionId } = options;
+      const sessionPath = decodeSessionId(projectId, sessionId);
+
+      // Check if session file exists
+      const exists = yield* fs.exists(sessionPath);
+      if (!exists) {
+        return {
+          status: 404,
+          response: { error: "Session not found" },
+        } as const satisfies ControllerResponse;
+      }
+
+      // Delete the session file
+      const deleteResult = yield* fs.remove(sessionPath).pipe(
+        Effect.map(() => ({ success: true, error: null }) as const),
+        Effect.catchAll((error) =>
+          Effect.succeed({
+            success: false,
+            error: `Failed to delete session: ${error.message}`,
+          } as const),
+        ),
+      );
+
+      if (!deleteResult.success) {
+        return {
+          status: 500,
+          response: { error: deleteResult.error },
+        } as const satisfies ControllerResponse;
+      }
+
+      // Emit sessionListChanged event to notify clients
+      yield* eventBus.emit("sessionListChanged", { projectId });
+
+      return {
+        status: 200,
+        response: { success: true },
+      } as const satisfies ControllerResponse;
+    });
+
   return {
     getSession,
     exportSessionHtml,
+    deleteSession,
   };
 });
 

@@ -391,7 +391,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        102
+        141
       ]
     ],
     "translation": "新しいチャットを開始"
@@ -705,7 +705,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        190
+        238
       ]
     ],
     "translation": "読み込み中..."
@@ -2147,7 +2147,6 @@
     "translation": "合計"
   },
   "session.delete.failed": {
-    "translation": "セッションの削除に失敗しました",
     "message": "Failed to delete session",
     "placeholders": {},
     "comments": [],
@@ -2156,10 +2155,10 @@
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/DeleteSessionDialog.tsx",
         51
       ]
-    ]
+    ],
+    "translation": "セッションの削除に失敗しました"
   },
   "session.delete.success": {
-    "translation": "セッションを削除しました",
     "message": "Session deleted successfully",
     "placeholders": {},
     "comments": [],
@@ -2168,10 +2167,10 @@
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/DeleteSessionDialog.tsx",
         41
       ]
-    ]
+    ],
+    "translation": "セッションを削除しました"
   },
   "session.delete_dialog.description": {
-    "translation": "セッション「{title}」を削除してもよろしいですか？この操作は取り消せません。",
     "placeholders": {
       "title": [
         "sessionTitle"
@@ -2183,10 +2182,10 @@
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/DeleteSessionDialog.tsx",
         76
       ]
-    ]
+    ],
+    "translation": "セッション「{title}」を削除してもよろしいですか？この操作は取り消せません。"
   },
   "session.delete_dialog.title": {
-    "translation": "セッションを削除",
     "placeholders": {},
     "comments": [],
     "origin": [
@@ -2194,7 +2193,8 @@
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/DeleteSessionDialog.tsx",
         73
       ]
-    ]
+    ],
+    "translation": "セッションを削除"
   },
   "session.empty_state.description": {
     "placeholders": {},
@@ -2257,7 +2257,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        149
+        197
       ]
     ],
     "translation": "一時停止"
@@ -2268,7 +2268,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        147
+        195
       ]
     ],
     "translation": "実行中"
@@ -2279,7 +2279,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        192
+        240
       ]
     ],
     "translation": "さらに読み込む"
@@ -2290,7 +2290,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        77
+        116
       ]
     ],
     "translation": "セッション"
@@ -2301,7 +2301,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        81
+        120
       ]
     ],
     "translation": "合計"

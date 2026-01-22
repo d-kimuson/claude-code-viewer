@@ -391,7 +391,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        102
+        141
       ]
     ],
     "translation": "开始新对话"
@@ -705,7 +705,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        190
+        238
       ]
     ],
     "translation": "加载中..."
@@ -2147,7 +2147,6 @@
     "translation": "总计"
   },
   "session.delete.failed": {
-    "translation": "删除会话失败",
     "message": "Failed to delete session",
     "placeholders": {},
     "comments": [],
@@ -2156,10 +2155,10 @@
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/DeleteSessionDialog.tsx",
         51
       ]
-    ]
+    ],
+    "translation": "删除会话失败"
   },
   "session.delete.success": {
-    "translation": "会话已删除",
     "message": "Session deleted successfully",
     "placeholders": {},
     "comments": [],
@@ -2168,10 +2167,10 @@
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/DeleteSessionDialog.tsx",
         41
       ]
-    ]
+    ],
+    "translation": "会话已删除"
   },
   "session.delete_dialog.description": {
-    "translation": "确定要删除会话「{title}」吗？此操作无法撤销。",
     "placeholders": {
       "title": [
         "sessionTitle"
@@ -2183,10 +2182,10 @@
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/DeleteSessionDialog.tsx",
         76
       ]
-    ]
+    ],
+    "translation": "确定要删除会话「{title}」吗？此操作无法撤销。"
   },
   "session.delete_dialog.title": {
-    "translation": "删除会话",
     "placeholders": {},
     "comments": [],
     "origin": [
@@ -2194,7 +2193,8 @@
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/DeleteSessionDialog.tsx",
         73
       ]
-    ]
+    ],
+    "translation": "删除会话"
   },
   "session.empty_state.description": {
     "placeholders": {},
@@ -2257,7 +2257,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        149
+        197
       ]
     ],
     "translation": "已暂停"
@@ -2268,7 +2268,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        147
+        195
       ]
     ],
     "translation": "运行中"
@@ -2279,7 +2279,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        192
+        240
       ]
     ],
     "translation": "加载更多"
@@ -2290,7 +2290,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        77
+        116
       ]
     ],
     "translation": "会话"
@@ -2301,7 +2301,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        81
+        120
       ]
     ],
     "translation": "总计"

@@ -391,7 +391,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        102
+        141
       ]
     ],
     "translation": "Start New Chat"
@@ -705,7 +705,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        190
+        238
       ]
     ],
     "translation": "Loading..."
@@ -2147,7 +2147,6 @@
     "translation": "Total"
   },
   "session.delete.failed": {
-    "translation": "Failed to delete session",
     "message": "Failed to delete session",
     "placeholders": {},
     "comments": [],
@@ -2156,10 +2155,10 @@
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/DeleteSessionDialog.tsx",
         51
       ]
-    ]
+    ],
+    "translation": "Failed to delete session"
   },
   "session.delete.success": {
-    "translation": "Session deleted successfully",
     "message": "Session deleted successfully",
     "placeholders": {},
     "comments": [],
@@ -2168,10 +2167,10 @@
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/DeleteSessionDialog.tsx",
         41
       ]
-    ]
+    ],
+    "translation": "Session deleted successfully"
   },
   "session.delete_dialog.description": {
-    "translation": "Are you sure you want to delete the session \"{title}\"? This action cannot be undone.",
     "placeholders": {
       "title": [
         "sessionTitle"
@@ -2183,10 +2182,10 @@
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/DeleteSessionDialog.tsx",
         76
       ]
-    ]
+    ],
+    "translation": "Are you sure you want to delete the session \"{title}\"? This action cannot be undone."
   },
   "session.delete_dialog.title": {
-    "translation": "Delete Session",
     "placeholders": {},
     "comments": [],
     "origin": [
@@ -2194,7 +2193,8 @@
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/DeleteSessionDialog.tsx",
         73
       ]
-    ]
+    ],
+    "translation": "Delete Session"
   },
   "session.empty_state.description": {
     "placeholders": {},
@@ -2257,7 +2257,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        149
+        197
       ]
     ],
     "translation": "Paused"
@@ -2268,7 +2268,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        147
+        195
       ]
     ],
     "translation": "Running"
@@ -2279,7 +2279,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        192
+        240
       ]
     ],
     "translation": "Load More"
@@ -2290,7 +2290,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        77
+        116
       ]
     ],
     "translation": "Sessions"
@@ -2301,7 +2301,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        81
+        120
       ]
     ],
     "translation": "Total"

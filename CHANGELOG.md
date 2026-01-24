@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.5.7
+
+### &nbsp;&nbsp;&nbsp;Features
+
+- Add session delete API endpoint &nbsp;-&nbsp; by **d-kimsuon** and **Claude Opus 4.5** [<samp>(9c7fd)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/9c7fdb3)
+- Add delete session confirmation dialog &nbsp;-&nbsp; by **d-kimsuon** and **Claude Opus 4.5** [<samp>(590d6)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/590d609)
+- Integrate session delete into sidebar &nbsp;-&nbsp; by **d-kimsuon** and **Claude Opus 4.5** [<samp>(663eb)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/663ebc0)
+- Add delete button to session info popover &nbsp;-&nbsp; by **d-kimsuon** and **Claude Opus 4.5** [<samp>(9c4f4)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/9c4f494)
+
+### &nbsp;&nbsp;&nbsp;Bug Fixes
+
+- Update lingui compilation output &nbsp;-&nbsp; by **d-kimsuon** and **Claude Opus 4.5** [<samp>(4dc73)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/4dc7342)
+- Enhance styling for DeleteSessionDialog component, this can avoid title too long that exceed the size of DeleteSessionDialog component &nbsp;-&nbsp; by **70akaline** [<samp>(db39b)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/db39b24)
+- Fixed the problem that the card title text on the project list page exceeds the &nbsp;-&nbsp; by **zhube** [<samp>(cc20d)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/cc20dc7)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.5.6...0.5.7)
+
 ## 0.5.6
 
 ### &nbsp;&nbsp;&nbsp;Features

@@ -1,5 +1,6 @@
 import { Trans } from "@lingui/react";
 import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import {
   DownloadIcon,
   GitBranchIcon,
@@ -8,6 +9,7 @@ import {
   MenuIcon,
   MessageSquareIcon,
   PauseIcon,
+  TrashIcon,
 } from "lucide-react";
 import {
   type FC,
@@ -46,6 +48,7 @@ import { ChatActionMenu } from "./resumeChat/ChatActionMenu";
 import { ContinueChat } from "./resumeChat/ContinueChat";
 import { ResumeChat } from "./resumeChat/ResumeChat";
 import { StartNewChat } from "./resumeChat/StartNewChat";
+import { DeleteSessionDialog } from "./sessionSidebar/DeleteSessionDialog";
 
 type SessionPageMainProps = {
   projectId: string;
@@ -95,6 +98,7 @@ const SessionPageMainContent: FC<
   projectName,
   sessionData,
 }) => {
+  const navigate = useNavigate();
   const conversations = sessionData?.conversations ?? [];
   const emptyToolResult: SessionData["getToolResult"] = () => undefined;
   const getToolResult = sessionData?.getToolResult ?? emptyToolResult;
@@ -130,6 +134,7 @@ const SessionPageMainContent: FC<
   const [previousConversationLength, setPreviousConversationLength] =
     useState(0);
   const [isDiffModalOpen, setIsDiffModalOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
   const abortTask = useMutation({
@@ -191,14 +196,16 @@ const SessionPageMainContent: FC<
     }
   };
 
+  const sessionTitle =
+    sessionData?.session.meta.firstUserMessage != null
+      ? firstUserMessageToTitle(sessionData.session.meta.firstUserMessage)
+      : (sessionId ?? "");
+
   let headerTitle: ReactNode = projectName ?? projectId;
   if (!isExistingSession) {
     headerTitle = <Trans id="chat.modal.title" />;
   } else if (sessionData && sessionId) {
-    headerTitle =
-      sessionData.session.meta.firstUserMessage !== null
-        ? firstUserMessageToTitle(sessionData.session.meta.firstUserMessage)
-        : sessionId;
+    headerTitle = sessionTitle;
   }
 
   return (
@@ -461,6 +468,19 @@ const SessionPageMainContent: FC<
                       )}
                     </div>
                   </div>
+                  {isExistingSession && sessionId && (
+                    <div className="pt-4 border-t">
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        className="w-full"
+                        onClick={() => setIsDeleteDialogOpen(true)}
+                      >
+                        <TrashIcon className="w-4 h-4 mr-2" />
+                        <Trans id="session.delete_dialog.title" />
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </PopoverContent>
             </Popover>
@@ -548,6 +568,23 @@ const SessionPageMainContent: FC<
           isOpen={isDiffModalOpen}
           onOpenChange={setIsDiffModalOpen}
           revisionsData={revisionsData}
+        />
+      )}
+
+      {isExistingSession && sessionId && (
+        <DeleteSessionDialog
+          open={isDeleteDialogOpen}
+          onOpenChange={setIsDeleteDialogOpen}
+          projectId={projectId}
+          sessionId={sessionId}
+          sessionTitle={sessionTitle}
+          onSuccess={() => {
+            navigate({
+              to: "/projects/$projectId/session",
+              params: { projectId },
+              search: { sessionId: undefined, tab: "sessions" },
+            });
+          }}
         />
       )}
 

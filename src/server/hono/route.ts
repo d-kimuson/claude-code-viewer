@@ -272,6 +272,16 @@ export const routes = (app: HonoAppType, options: CliOptions) =>
           },
         )
 
+        .delete("/api/projects/:projectId/sessions/:sessionId", async (c) => {
+          const response = await effectToResponse(
+            c,
+            sessionController
+              .deleteSession({ ...c.req.param() })
+              .pipe(Effect.provide(runtime)),
+          );
+          return response;
+        })
+
         .get(
           "/api/projects/:projectId/agent-sessions/:agentId",
           zValidator("query", z.object({ sessionId: z.string().optional() })),

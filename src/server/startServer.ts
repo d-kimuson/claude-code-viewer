@@ -23,6 +23,7 @@ import type { CliOptions } from "./core/platform/services/CcvOptionsService";
 import { ProjectRepository } from "./core/project/infrastructure/ProjectRepository";
 import { ProjectController } from "./core/project/presentation/ProjectController";
 import { ProjectMetaService } from "./core/project/services/ProjectMetaService";
+import { RateLimitAutoScheduleService } from "./core/rate-limit/services/RateLimitAutoScheduleService";
 import { SchedulerConfigBaseDir } from "./core/scheduler/config";
 import { SchedulerService } from "./core/scheduler/domain/Scheduler";
 import { SchedulerController } from "./core/scheduler/presentation/SchedulerController";
@@ -84,6 +85,7 @@ export const startServer = async (options: CliOptions) => {
       /** Application */
       Effect.provide(InitializeService.Live),
       Effect.provide(FileWatcherService.Live),
+      Effect.provide(RateLimitAutoScheduleService.Live),
       Effect.provide(AuthMiddleware.Live),
     )
     .pipe(

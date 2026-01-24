@@ -9,6 +9,7 @@ import { EventBus } from "../core/events/services/EventBus";
 import { FileWatcherService } from "../core/events/services/fileWatcher";
 import type { InternalEventDeclaration } from "../core/events/types/InternalEventDeclaration";
 import { ProjectRepository } from "../core/project/infrastructure/ProjectRepository";
+import { RateLimitAutoScheduleService } from "../core/rate-limit/services/RateLimitAutoScheduleService";
 import { VirtualConversationDatabase } from "../core/session/infrastructure/VirtualConversationDatabase";
 import { createMockSessionMeta } from "../core/session/testing/createMockSessionMeta";
 import { InitializeService } from "./initialize";
@@ -17,9 +18,19 @@ const fileWatcherWithEventBus = FileWatcherService.Live.pipe(
   Layer.provide(EventBus.Live),
 );
 
+// Mock RateLimitAutoScheduleService for testing
+const mockRateLimitAutoScheduleService = Layer.succeed(
+  RateLimitAutoScheduleService,
+  {
+    start: () => Effect.void,
+    stop: () => Effect.void,
+  },
+);
+
 const allDependencies = Layer.mergeAll(
   fileWatcherWithEventBus,
   VirtualConversationDatabase.Live,
+  mockRateLimitAutoScheduleService,
   testProjectMetaServiceLayer({
     meta: {
       projectName: "Test Project",

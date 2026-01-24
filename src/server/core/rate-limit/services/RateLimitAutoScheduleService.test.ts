@@ -203,7 +203,8 @@ describe("RateLimitAutoScheduleService", () => {
       );
 
       expect(result).toBeDefined();
-      expect(result.initialize).toBeDefined();
+      expect(result.start).toBeDefined();
+      expect(result.stop).toBeDefined();
     });
   });
 
@@ -213,7 +214,7 @@ describe("RateLimitAutoScheduleService", () => {
         const service = yield* RateLimitAutoScheduleService;
         const eventBus = yield* EventBus;
 
-        yield* service.initialize();
+        yield* service.start();
 
         // Emit session changed event
         yield* eventBus.emit("sessionChanged", {
@@ -255,7 +256,7 @@ describe("RateLimitAutoScheduleService", () => {
         const service = yield* RateLimitAutoScheduleService;
         const eventBus = yield* EventBus;
 
-        yield* service.initialize();
+        yield* service.start();
 
         // Emit session changed event for a session without a live process
         yield* eventBus.emit("sessionChanged", {
@@ -290,7 +291,7 @@ describe("RateLimitAutoScheduleService", () => {
         const service = yield* RateLimitAutoScheduleService;
         const eventBus = yield* EventBus;
 
-        yield* service.initialize();
+        yield* service.start();
 
         yield* eventBus.emit("sessionChanged", {
           projectId: "test-project",
@@ -332,7 +333,7 @@ describe("RateLimitAutoScheduleService", () => {
         const service = yield* RateLimitAutoScheduleService;
         const eventBus = yield* EventBus;
 
-        yield* service.initialize();
+        yield* service.start();
 
         yield* eventBus.emit("sessionChanged", {
           projectId: "test-project",
@@ -391,7 +392,7 @@ describe("RateLimitAutoScheduleService", () => {
         const service = yield* RateLimitAutoScheduleService;
         const eventBus = yield* EventBus;
 
-        yield* service.initialize();
+        yield* service.start();
 
         // Emit first event
         yield* eventBus.emit("sessionChanged", {

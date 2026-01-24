@@ -1,5 +1,5 @@
 import { FileSystem, Path } from "@effect/platform";
-import { Context, Effect, Layer } from "effect";
+import { Context, Effect, Layer, Ref } from "effect";
 import type { InferEffect } from "../../../lib/effect/types";
 import { ClaudeCodeLifeCycleService } from "../../claude-code/services/ClaudeCodeLifeCycleService";
 import { ClaudeCodeSessionProcessService } from "../../claude-code/services/ClaudeCodeSessionProcessService";
@@ -13,6 +13,10 @@ import { SchedulerService } from "../../scheduler/domain/Scheduler";
 import { detectRateLimitFromLastLine } from "../functions/detectRateLimitFromLastLine";
 import { parseRateLimitResetTime } from "../functions/parseRateLimitResetTime";
 import { readLastLine } from "../functions/readLastLine";
+
+type SessionChangedListener = (
+  event: InternalEventDeclaration["sessionChanged"],
+) => void;
 
 /**
  * Service that monitors session changes and automatically schedules
@@ -38,6 +42,9 @@ const LayerImpl = Effect.gen(function* () {
   const schedulerConfigBaseDir = yield* SchedulerConfigBaseDir;
   const projectRepository = yield* ProjectRepository;
   const lifeCycleService = yield* ClaudeCodeLifeCycleService;
+
+  // Store listener reference for cleanup
+  const listenerRef = yield* Ref.make<SessionChangedListener | null>(null);
 
   /**
    * Checks if a session has a live process.
@@ -169,21 +176,44 @@ const LayerImpl = Effect.gen(function* () {
   );
 
   /**
-   * Initializes the service by subscribing to sessionChanged events.
+   * Starts the service by subscribing to sessionChanged events.
    */
-  const initialize = (): Effect.Effect<void> =>
+  const start = (): Effect.Effect<void> =>
     Effect.gen(function* () {
-      yield* eventBus.on("sessionChanged", (event) => {
+      // Check if already started
+      const existingListener = yield* Ref.get(listenerRef);
+      if (existingListener !== null) {
+        return;
+      }
+
+      const listener: SessionChangedListener = (event) => {
         Effect.runFork(
           handleSessionChanged(event).pipe(Effect.provide(runtimeLayer)),
         );
-      });
+      };
 
-      console.log("[RateLimitAutoScheduleService] Initialized");
+      yield* Ref.set(listenerRef, listener);
+      yield* eventBus.on("sessionChanged", listener);
+
+      console.log("[RateLimitAutoScheduleService] Started");
+    });
+
+  /**
+   * Stops the service by unsubscribing from sessionChanged events.
+   */
+  const stop = (): Effect.Effect<void> =>
+    Effect.gen(function* () {
+      const listener = yield* Ref.get(listenerRef);
+      if (listener !== null) {
+        yield* eventBus.off("sessionChanged", listener);
+        yield* Ref.set(listenerRef, null);
+      }
+      console.log("[RateLimitAutoScheduleService] Stopped");
     });
 
   return {
-    initialize,
+    start,
+    stop,
   };
 });
 

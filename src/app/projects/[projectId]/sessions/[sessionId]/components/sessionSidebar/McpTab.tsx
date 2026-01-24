@@ -1,6 +1,11 @@
 import { Trans, useLingui } from "@lingui/react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { RefreshCwIcon } from "lucide-react";
+import {
+  CheckCircle2Icon,
+  CircleHelpIcon,
+  RefreshCwIcon,
+  XCircleIcon,
+} from "lucide-react";
 import type { FC } from "react";
 import { Button } from "@/components/ui/button";
 import { Loading } from "../../../../../../../components/Loading";
@@ -81,14 +86,29 @@ export const McpTab: FC<{ projectId: string }> = ({ projectId }) => {
             {mcpData.servers.map((server) => (
               <div
                 key={server.name}
-                className="p-3 bg-sidebar-accent/50 rounded-md border border-sidebar-border"
+                className={`p-3 bg-sidebar-accent/50 rounded-md border ${
+                  server.status === "failed"
+                    ? "border-red-500/50 bg-red-500/10"
+                    : "border-sidebar-border"
+                }`}
               >
                 <div className="flex items-start justify-between">
                   <div className="min-w-0 flex-1">
-                    <h3 className="text-sm font-medium text-sidebar-foreground truncate">
-                      {server.name}
-                    </h3>
-                    <p className="text-xs text-muted-foreground mt-1 font-mono break-all">
+                    <div className="flex items-center gap-2">
+                      {server.status === "connected" && (
+                        <CheckCircle2Icon className="w-4 h-4 text-green-500 flex-shrink-0" />
+                      )}
+                      {server.status === "failed" && (
+                        <XCircleIcon className="w-4 h-4 text-red-500 flex-shrink-0" />
+                      )}
+                      {server.status === "unknown" && (
+                        <CircleHelpIcon className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                      )}
+                      <h3 className="text-sm font-medium text-sidebar-foreground truncate">
+                        {server.name}
+                      </h3>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1 font-mono break-all pl-6">
                       {server.command}
                     </p>
                   </div>

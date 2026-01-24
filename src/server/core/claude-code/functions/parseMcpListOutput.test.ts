@@ -15,6 +15,7 @@ context7: npx -y @upstash/context7-mcp@latest - ✓ Connected
       {
         name: "context7",
         command: "npx -y @upstash/context7-mcp@latest",
+        status: "connected",
       },
     ]);
   });
@@ -34,14 +35,17 @@ database: docker run db-mcp - ✗ Failed
       {
         name: "context7",
         command: "npx -y @upstash/context7-mcp@latest",
+        status: "connected",
       },
       {
         name: "filesystem",
         command: "/usr/local/bin/mcp-server-fs",
+        status: "connected",
       },
       {
         name: "database",
         command: "docker run db-mcp",
+        status: "failed",
       },
     ]);
   });
@@ -73,6 +77,7 @@ name without command:
       {
         name: "context7",
         command: "npx -y @upstash/context7-mcp@latest",
+        status: "connected",
       },
     ]);
   });

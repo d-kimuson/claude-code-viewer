@@ -116,7 +116,10 @@ const LayerImpl = Effect.gen(function* () {
 
       // 4. Read the last line of the session file
       const projectPath = decodeProjectId(projectId);
-      const sessionFilePath = `${projectPath}/${sessionId}.jsonl`;
+      const sessionFilePath = pathService.join(
+        projectPath,
+        `${sessionId}.jsonl`,
+      );
 
       const lastLine = yield* readLastLine(sessionFilePath).pipe(
         Effect.catchAll(() => Effect.succeed("")),

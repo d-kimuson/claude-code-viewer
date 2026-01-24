@@ -15,6 +15,7 @@ export const userConfigSchema = z.object({
   locale: localeSchema.optional().default("en"),
   theme: z.enum(["light", "dark", "system"]).optional().default("system"),
   searchHotkey: z.enum(["ctrl-k", "command-k"]).optional().default("command-k"),
+  autoScheduleContinueOnRateLimit: z.boolean().optional().default(false),
 });
 
 export const defaultUserConfig = userConfigSchema.parse({});

@@ -214,7 +214,7 @@ export const CommandCompletion = forwardRef<
                     role="presentation"
                   >
                     <TerminalIcon className="w-3.5 h-3.5" />
-                    Available Commands ({filteredCommands.length})
+                    Available Commands / Skills ({filteredCommands.length})
                   </div>
                   {filteredCommands.map((command, index) => (
                     <Button

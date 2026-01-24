@@ -379,11 +379,11 @@ export const ChatInput: FC<ChatInputProps> = ({
 
       <div className="relative group">
         <div
-          className="absolute -inset-0.5 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+          className="absolute -inset-0.5 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 rounded-2xl blur opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-500 will-change-opacity"
           aria-hidden="true"
         />
 
-        <div className="relative bg-background border border-border/40 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
+        <div className="relative bg-background border border-border/40 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden ring-0 group-focus-within:ring-1 group-focus-within:ring-primary/20 group-focus-within:border-primary/20">
           <div className="relative" ref={containerRef}>
             <Textarea
               ref={textareaRef}
@@ -403,7 +403,7 @@ export const ChatInput: FC<ChatInputProps> = ({
               }}
               onKeyDown={handleKeyDown}
               placeholder={placeholder}
-              className="resize-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent px-5 py-2 text-base transition-all duration-200 placeholder:text-muted-foreground/60 overflow-y-auto leading-6"
+              className="resize-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent px-5 py-4 text-base transition-all duration-200 placeholder:text-muted-foreground/50 overflow-y-auto leading-relaxed antialiased font-normal"
               style={{
                 minHeight: `${minHeightValue}px`,
               }}
@@ -418,17 +418,19 @@ export const ChatInput: FC<ChatInputProps> = ({
           </div>
 
           {attachedFiles.length > 0 && (
-            <div className="px-5 py-3 flex flex-wrap gap-2 border-t border-border/40">
+            <div className="px-5 py-3 flex flex-wrap gap-2 border-t border-border/40 bg-muted/10 animate-in fade-in slide-in-from-top-1 duration-200">
               {attachedFiles.map(({ file, id }) => (
                 <div
                   key={id}
-                  className="flex items-center gap-2 px-3 py-1.5 bg-muted rounded-lg text-sm"
+                  className="flex items-center gap-2 px-3 py-1.5 bg-background border border-border/50 shadow-sm rounded-lg text-sm text-foreground/80 hover:text-foreground hover:border-foreground/20 transition-all duration-200"
                 >
-                  <span className="truncate max-w-[200px]">{file.name}</span>
+                  <span className="truncate max-w-[200px] font-medium">
+                    {file.name}
+                  </span>
                   <button
                     type="button"
                     onClick={() => handleRemoveFile(id)}
-                    className="text-muted-foreground hover:text-foreground transition-colors"
+                    className="text-muted-foreground hover:text-red-500 transition-colors bg-transparent rounded-full p-0.5 hover:bg-muted"
                     disabled={isPending}
                   >
                     <XIcon className="w-3.5 h-3.5" />
@@ -438,9 +440,9 @@ export const ChatInput: FC<ChatInputProps> = ({
             </div>
           )}
 
-          <div className="flex flex-col gap-2 px-5 py-1 bg-muted/30 border-t border-border/40">
+          <div className="flex flex-col gap-2 px-5 py-2.5 bg-muted/10 border-t border-border/30 backdrop-blur-sm">
             {enableScheduledSend && sendMode === "scheduled" && (
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 pt-1">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 pt-1 animate-in fade-in duration-200">
                 <Label htmlFor="send-mode-mobile" className="text-xs sr-only">
                   <Trans id="chat.send_mode.label" />
                 </Label>
@@ -453,7 +455,7 @@ export const ChatInput: FC<ChatInputProps> = ({
                 >
                   <SelectTrigger
                     id="send-mode-mobile"
-                    className="h-8 w-full sm:w-[140px] text-xs"
+                    className="h-8 w-full sm:w-[140px] text-xs bg-background/50 border-border/50 shadow-sm focus:ring-primary/20"
                   >
                     <SelectValue />
                   </SelectTrigger>
@@ -477,14 +479,14 @@ export const ChatInput: FC<ChatInputProps> = ({
                     value={scheduledTime}
                     onChange={(e) => setScheduledTime(e.target.value)}
                     disabled={isPending || disabled}
-                    className="h-8 w-full sm:w-[180px] text-xs"
+                    className="h-8 w-full sm:w-[180px] text-xs bg-background/50 border-border/50 shadow-sm focus:ring-primary/20"
                   />
                 </div>
               </div>
             )}
 
             <div className="flex items-center justify-between gap-3">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3 text-muted-foreground/70">
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -498,19 +500,21 @@ export const ChatInput: FC<ChatInputProps> = ({
                   size="sm"
                   onClick={() => fileInputRef.current?.click()}
                   disabled={isPending || disabled}
-                  className="gap-1.5"
+                  className="gap-2 px-2 hover:bg-background/80 hover:text-foreground text-muted-foreground transition-all duration-200 h-8 rounded-lg"
                 >
                   <PaperclipIcon className="w-4 h-4" />
-                  <span className="text-xs hidden sm:inline">
+                  <span className="text-xs font-medium hidden sm:inline">
                     <Trans id="chat.attach_file" />
                   </span>
                 </Button>
-                <span
-                  className="text-xs font-medium text-muted-foreground/80"
-                  id={helpId}
-                >
-                  {message.length}
-                </span>
+                {message.length > 0 && (
+                  <span
+                    className="text-[10px] font-medium bg-muted/50 px-2 py-0.5 rounded-full border border-border/30 transition-all duration-200"
+                    id={helpId}
+                  >
+                    {message.length}
+                  </span>
+                )}
               </div>
 
               <div className="flex items-center gap-2">
@@ -531,7 +535,7 @@ export const ChatInput: FC<ChatInputProps> = ({
                     >
                       <SelectTrigger
                         id="send-mode-desktop"
-                        className="h-8 w-[140px] text-xs"
+                        className="h-9 w-[140px] text-xs font-medium bg-background/50 border-transparent hover:bg-background hover:border-border/50 shadow-none hover:shadow-sm focus:ring-1 focus:ring-primary/20 transition-all duration-200"
                       >
                         <SelectValue />
                       </SelectTrigger>
@@ -554,9 +558,9 @@ export const ChatInput: FC<ChatInputProps> = ({
                     size="sm"
                     onClick={() => setSendMode("scheduled")}
                     disabled={isPending || disabled}
-                    className="sm:hidden gap-1.5"
+                    className="sm:hidden gap-1.5 h-9"
                   >
-                    <span className="text-xs">
+                    <span className="text-xs font-medium">
                       <Trans id="chat.send_mode.scheduled" />
                     </span>
                   </Button>
@@ -570,19 +574,21 @@ export const ChatInput: FC<ChatInputProps> = ({
                     disabled
                   }
                   size={buttonSize}
-                  className="gap-2 transition-all duration-200 hover:shadow-md hover:scale-105 active:scale-95 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 disabled:from-muted disabled:to-muted"
+                  className="gap-2 px-6 h-9 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:via-indigo-500 hover:to-purple-500 disabled:from-muted disabled:to-muted disabled:shadow-none bg-[length:200%_auto] hover:bg-[position:right_center]"
                 >
                   {isPending ? (
                     <>
                       <LoaderIcon className="w-4 h-4 animate-spin" />
-                      <span className="hidden sm:inline">
+                      <span className="hidden sm:inline font-medium">
                         <Trans id="chat.status.processing" />
                       </span>
                     </>
                   ) : (
                     <>
                       <SendIcon className="w-4 h-4" />
-                      <span className="hidden sm:inline">{buttonText}</span>
+                      <span className="hidden sm:inline font-medium">
+                        {buttonText}
+                      </span>
                     </>
                   )}
                 </Button>

@@ -39,9 +39,9 @@ export const ProjectList: FC = () => {
       {projects.map((project) => (
         <Card key={project.id} className="hover:shadow-md transition-shadow">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <FolderIcon className="w-5 h-5" />
-              <span className="truncate">
+            <CardTitle className="flex items-center gap-2 justify-start items-start">
+              <FolderIcon className="w-5 h-5 flex-shrink-0" />
+              <span className="text-wrap flex-1">
                 {project.meta.projectName ?? project.claudeProjectPath}
               </span>
             </CardTitle>

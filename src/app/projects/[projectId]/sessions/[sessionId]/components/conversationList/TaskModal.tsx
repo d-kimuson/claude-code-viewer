@@ -148,7 +148,7 @@ export const TaskModal: FC<TaskModalProps> = ({
               </div>
             </div>
             <div className="flex-1 min-w-0">
-              <DialogTitle className="text-lg font-semibold leading-tight mb-1">
+              <DialogTitle className="text-lg font-semibold leading-tight mb-1 pr-2">
                 {title.length > 120 ? `${title.slice(0, 120)}...` : title}
               </DialogTitle>
               <DialogDescription className="text-xs flex items-center gap-2 flex-wrap">

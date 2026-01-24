@@ -4,7 +4,6 @@ import {
   LoaderIcon,
   PaperclipIcon,
   SendIcon,
-  SparklesIcon,
   XIcon,
 } from "lucide-react";
 import {
@@ -512,12 +511,6 @@ export const ChatInput: FC<ChatInputProps> = ({
                 >
                   {message.length}
                 </span>
-                {isInCompletionContext(message) && (
-                  <span className="text-xs text-blue-600 dark:text-blue-400 font-medium hidden sm:flex items-center gap-1">
-                    <SparklesIcon className="w-3 h-3" />
-                    <Trans id="chat.autocomplete.active" />
-                  </span>
-                )}
               </div>
 
               <div className="flex items-center gap-2">

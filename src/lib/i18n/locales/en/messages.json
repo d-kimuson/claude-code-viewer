@@ -344,17 +344,6 @@
     ],
     "translation": "Attach"
   },
-  "chat.autocomplete.active": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        518
-      ]
-    ],
-    "translation": "Autocomplete Active"
-  },
   "chat.button.start": {
     "placeholders": {},
     "comments": [],
@@ -548,7 +537,7 @@
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        547
+        541
       ]
     ],
     "translation": "Send Now"
@@ -563,7 +552,7 @@
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        530
+        524
       ]
     ],
     "translation": "Send Mode"
@@ -578,11 +567,11 @@
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        550
+        544
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        567
+        561
       ]
     ],
     "translation": "Schedule Send"
@@ -604,7 +593,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        586
+        580
       ]
     ],
     "translation": "Processing..."

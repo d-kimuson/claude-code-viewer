@@ -229,16 +229,9 @@ Claude Code Viewer is designed with remote hosting in mind. To support remote de
 
 The application features a separated client-server architecture that enables remote hosting. **Basic password authentication is available** via the `--password` command-line option or `CCV_PASSWORD` environment variable. When set, users must authenticate with the configured password before accessing the application. However, this is a simple single-password authentication mechanism without advanced features like multi-user support, role-based access control, or OAuth integration. If you require more sophisticated authentication, carefully evaluate your security requirements and implement appropriate access controls at the infrastructure level (e.g., reverse proxy with OAuth, VPN, IP whitelisting).
 
-## Privacy and Network Communication
+## Privacy
 
-Claude Code Viewer is designed with privacy in mind:
-
-- **Localhost-Only Communication**: The application runs a web client and API server on localhost, communicating exclusively between your browser and the local server
-- **Anthropic API Access**: Claude Code is invoked via the Claude Agent SDK, which handles communication to the Anthropic API. No other external services are contacted
-- **No Tracking or Telemetry**: The application does not collect crash reports, usage statistics, or any other telemetry. Tracking for Claude Code itself follows the settings configured in Claude Code's own configuration
-- **Network Isolation**: The application functions correctly even if network access is restricted to only the Anthropic API and the localhost port. There are no plans to add external network dependencies in the future
-
-If you have concerns about network access, you can verify that the application only communicates with the Anthropic API and localhost by monitoring network traffic.
+For information about privacy and network communication, see [PRIVACY.md](./PRIVACY.md).
 
 ## License
 

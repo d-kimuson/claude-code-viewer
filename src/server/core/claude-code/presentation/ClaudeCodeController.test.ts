@@ -141,14 +141,14 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
     );
 
     expect(result.status).toBe(200);
-    expect(result.response.globalCommands).toHaveLength(2);
-    expect(result.response.globalCommands).toContain("impl");
-    expect(result.response.globalCommands).toContain("review");
-    expect(result.response.projectCommands).toHaveLength(1);
-    expect(result.response.projectCommands).toContain("deploy");
-    expect(result.response.globalSkills).toEqual([]);
-    expect(result.response.projectSkills).toEqual([]);
-    expect(result.response.defaultCommands).toEqual([
+    expect(result.response.globalCommandsLegacy).toHaveLength(2);
+    expect(result.response.globalCommandsLegacy).toContain("impl");
+    expect(result.response.globalCommandsLegacy).toContain("review");
+    expect(result.response.projectCommandsLegacy).toHaveLength(1);
+    expect(result.response.projectCommandsLegacy).toContain("deploy");
+    expect(result.response.globalSkillsLegacy).toEqual([]);
+    expect(result.response.projectSkillsLegacy).toEqual([]);
+    expect(result.response.defaultCommandsLegacy).toEqual([
       "init",
       "compact",
       "security-review",
@@ -243,14 +243,14 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
     );
 
     expect(result.status).toBe(200);
-    expect(result.response.globalCommands).toHaveLength(3);
-    expect(result.response.globalCommands).toContain("backend");
-    expect(result.response.globalCommands).toContain("frontend:impl");
-    expect(result.response.globalCommands).toContain("frontend:review");
-    expect(result.response.projectCommands).toHaveLength(1);
-    expect(result.response.projectCommands).toContain("api:create");
-    expect(result.response.globalSkills).toEqual([]);
-    expect(result.response.projectSkills).toEqual([]);
+    expect(result.response.globalCommandsLegacy).toHaveLength(3);
+    expect(result.response.globalCommandsLegacy).toContain("backend");
+    expect(result.response.globalCommandsLegacy).toContain("frontend:impl");
+    expect(result.response.globalCommandsLegacy).toContain("frontend:review");
+    expect(result.response.projectCommandsLegacy).toHaveLength(1);
+    expect(result.response.projectCommandsLegacy).toContain("api:create");
+    expect(result.response.globalSkillsLegacy).toEqual([]);
+    expect(result.response.projectSkillsLegacy).toEqual([]);
   });
 
   it("should return deeply nested commands with multiple colons", async () => {
@@ -323,12 +323,12 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
     );
 
     expect(result.status).toBe(200);
-    expect(result.response.globalCommands).toHaveLength(1);
-    expect(result.response.globalCommands).toContain(
+    expect(result.response.globalCommandsLegacy).toHaveLength(1);
+    expect(result.response.globalCommandsLegacy).toContain(
       "frontend:components:buttons:primary",
     );
-    expect(result.response.globalSkills).toEqual([]);
-    expect(result.response.projectSkills).toEqual([]);
+    expect(result.response.globalSkillsLegacy).toEqual([]);
+    expect(result.response.projectSkillsLegacy).toEqual([]);
   });
 
   it("should return empty arrays when command directories do not exist", async () => {
@@ -382,10 +382,10 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
     );
 
     expect(result.status).toBe(200);
-    expect(result.response.globalCommands).toEqual([]);
-    expect(result.response.projectCommands).toEqual([]);
-    expect(result.response.globalSkills).toEqual([]);
-    expect(result.response.projectSkills).toEqual([]);
+    expect(result.response.globalCommandsLegacy).toEqual([]);
+    expect(result.response.projectCommandsLegacy).toEqual([]);
+    expect(result.response.globalSkillsLegacy).toEqual([]);
+    expect(result.response.projectSkillsLegacy).toEqual([]);
   });
 
   it("should return empty project commands when projectPath is null", async () => {
@@ -449,11 +449,11 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
     );
 
     expect(result.status).toBe(200);
-    expect(result.response.globalCommands).toHaveLength(1);
-    expect(result.response.globalCommands).toContain("impl");
-    expect(result.response.projectCommands).toEqual([]);
-    expect(result.response.globalSkills).toEqual([]);
-    expect(result.response.projectSkills).toEqual([]);
+    expect(result.response.globalCommandsLegacy).toHaveLength(1);
+    expect(result.response.globalCommandsLegacy).toContain("impl");
+    expect(result.response.projectCommandsLegacy).toEqual([]);
+    expect(result.response.globalSkillsLegacy).toEqual([]);
+    expect(result.response.projectSkillsLegacy).toEqual([]);
   });
 
   it("should exclude hidden files and directories from command list", async () => {
@@ -533,12 +533,14 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
     );
 
     expect(result.status).toBe(200);
-    expect(result.response.globalCommands).toHaveLength(1);
-    expect(result.response.globalCommands).toContain("visible");
-    expect(result.response.globalCommands).not.toContain(".hidden");
-    expect(result.response.globalCommands).not.toContain(".hidden-dir:impl");
-    expect(result.response.globalSkills).toEqual([]);
-    expect(result.response.projectSkills).toEqual([]);
+    expect(result.response.globalCommandsLegacy).toHaveLength(1);
+    expect(result.response.globalCommandsLegacy).toContain("visible");
+    expect(result.response.globalCommandsLegacy).not.toContain(".hidden");
+    expect(result.response.globalCommandsLegacy).not.toContain(
+      ".hidden-dir:impl",
+    );
+    expect(result.response.globalSkillsLegacy).toEqual([]);
+    expect(result.response.projectSkillsLegacy).toEqual([]);
   });
 
   it("should return skills when runSkillsDirectly flag is enabled", async () => {
@@ -672,18 +674,18 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
     expect(result.status).toBe(200);
 
     // Verify global skills are detected
-    expect(result.response.globalSkills).toHaveLength(3);
-    expect(result.response.globalSkills).toContain("typescript");
-    expect(result.response.globalSkills).toContain("react");
-    expect(result.response.globalSkills).toContain("frontend:design");
+    expect(result.response.globalSkillsLegacy).toHaveLength(3);
+    expect(result.response.globalSkillsLegacy).toContain("typescript");
+    expect(result.response.globalSkillsLegacy).toContain("react");
+    expect(result.response.globalSkillsLegacy).toContain("frontend:design");
 
     // Verify project skills are detected
-    expect(result.response.projectSkills).toHaveLength(2);
-    expect(result.response.projectSkills).toContain("custom-impl");
-    expect(result.response.projectSkills).toContain("api:validation");
+    expect(result.response.projectSkillsLegacy).toHaveLength(2);
+    expect(result.response.projectSkillsLegacy).toContain("custom-impl");
+    expect(result.response.projectSkillsLegacy).toContain("api:validation");
 
     // Commands should still be empty in this test
-    expect(result.response.globalCommands).toEqual([]);
-    expect(result.response.projectCommands).toEqual([]);
+    expect(result.response.globalCommandsLegacy).toEqual([]);
+    expect(result.response.projectCommandsLegacy).toEqual([]);
   });
 });

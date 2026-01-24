@@ -19,6 +19,12 @@ import {
 import { claudeCommandsQuery } from "../../../../../lib/api/queries";
 import { cn } from "../../../../../lib/utils";
 
+type CommandInfo = {
+  name: string;
+  description: string | null;
+  argumentHint: string | null;
+};
+
 type CommandCompletionProps = {
   projectId: string;
   inputValue: string;
@@ -49,7 +55,7 @@ export const CommandCompletion = forwardRef<
 
   // メモ化されたコマンドフィルタリング
   const { shouldShowCompletion, filteredCommands } = useMemo(() => {
-    const allCommands = [
+    const allCommands: CommandInfo[] = [
       ...(commandData?.defaultCommands || []),
       ...(commandData?.globalCommands || []),
       ...(commandData?.projectCommands || []),
@@ -61,7 +67,11 @@ export const CommandCompletion = forwardRef<
     const searchTerm = shouldShow ? inputValue.slice(1).toLowerCase() : "";
 
     const filtered = shouldShow
-      ? allCommands.filter((cmd) => cmd.toLowerCase().includes(searchTerm))
+      ? allCommands.filter(
+          (cmd) =>
+            cmd.name.toLowerCase().includes(searchTerm) ||
+            cmd.description?.toLowerCase().includes(searchTerm),
+        )
       : [];
 
     return { shouldShowCompletion: shouldShow, filteredCommands: filtered };
@@ -78,8 +88,10 @@ export const CommandCompletion = forwardRef<
 
   // メモ化されたコマンド選択処理
   const handleCommandSelect = useCallback(
-    (command: string) => {
-      onCommandSelect(`/${command} `);
+    (command: CommandInfo) => {
+      // Append argumentHint as placeholder if exists
+      const hint = command.argumentHint ? ` ${command.argumentHint}` : "";
+      onCommandSelect(`/${command.name}${hint} `);
       setIsOpen(false);
       setSelectedIndex(-1);
     },
@@ -206,11 +218,11 @@ export const CommandCompletion = forwardRef<
                   </div>
                   {filteredCommands.map((command, index) => (
                     <Button
-                      key={command}
+                      key={command.name}
                       variant="ghost"
                       size="sm"
                       className={cn(
-                        "w-full justify-start text-left font-mono text-sm h-9 px-3 min-w-0 transition-colors duration-150",
+                        "w-full justify-start text-left font-mono text-sm h-auto min-h-9 px-3 py-2 min-w-0 transition-colors duration-150",
                         index === selectedIndex
                           ? "bg-gradient-to-r from-blue-500/10 to-purple-500/10 text-foreground border border-blue-500/20"
                           : "hover:bg-accent/50",
@@ -219,15 +231,29 @@ export const CommandCompletion = forwardRef<
                       onMouseEnter={() => setSelectedIndex(index)}
                       role="option"
                       aria-selected={index === selectedIndex}
-                      aria-label={`Command: /${command}`}
-                      title={`/${command}`}
+                      aria-label={`Command: /${command.name}`}
+                      title={command.description || `/${command.name}`}
                     >
-                      <span className="text-muted-foreground mr-1.5 flex-shrink-0">
-                        /
-                      </span>
-                      <span className="font-medium truncate min-w-0">
-                        {command}
-                      </span>
+                      <div className="flex flex-col items-start gap-0.5 min-w-0 flex-1">
+                        <div className="flex items-center gap-1.5 w-full">
+                          <span className="text-muted-foreground flex-shrink-0">
+                            /
+                          </span>
+                          <span className="font-medium truncate">
+                            {command.name}
+                          </span>
+                          {command.argumentHint && (
+                            <span className="text-muted-foreground/60 text-xs truncate">
+                              {command.argumentHint}
+                            </span>
+                          )}
+                        </div>
+                        {command.description && (
+                          <span className="text-muted-foreground/70 text-xs pl-0 truncate w-full">
+                            {command.description}
+                          </span>
+                        )}
+                      </div>
                       {index === selectedIndex && (
                         <CheckIcon className="w-3.5 h-3.5 ml-auto text-blue-600 dark:text-blue-400 flex-shrink-0" />
                       )}

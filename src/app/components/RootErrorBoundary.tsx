@@ -13,6 +13,13 @@ import {
 } from "@/components/ui/card";
 import { HttpError } from "../../lib/api/client";
 
+const errorToString = (error: unknown): string => {
+  if (error instanceof Error) {
+    return error.message;
+  }
+  return String(error);
+};
+
 export const RootErrorBoundary: FC<PropsWithChildren> = ({ children }) => {
   return (
     <ErrorBoundary
@@ -41,7 +48,7 @@ export const RootErrorBoundary: FC<PropsWithChildren> = ({ children }) => {
                   <AlertCircle />
                   <AlertTitle>Error Details</AlertTitle>
                   <AlertDescription>
-                    <code className="text-xs">{error.message}</code>
+                    <code className="text-xs">{errorToString(error)}</code>
                   </AlertDescription>
                 </Alert>
 

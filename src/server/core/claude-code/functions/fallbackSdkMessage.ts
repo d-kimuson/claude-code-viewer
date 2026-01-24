@@ -1,4 +1,8 @@
-import type { SDKMessage as AgentSDKMessage } from "@anthropic-ai/claude-agent-sdk";
+import type {
+  SDKMessage as AgentSDKMessage,
+  ModelUsage,
+  SDKHookResponseMessage,
+} from "@anthropic-ai/claude-agent-sdk";
 import type { SDKMessage as ClaudeCodeSDKMessage } from "@anthropic-ai/claude-code";
 
 export const fallbackSdkMessage = (
@@ -12,6 +16,12 @@ export const fallbackSdkMessage = (
       };
     }
 
+    if (message.subtype === "hook_response") {
+      return {
+        ...message,
+      } as SDKHookResponseMessage;
+    }
+
     return message;
   }
 
@@ -19,12 +29,18 @@ export const fallbackSdkMessage = (
     if (message.subtype === "success") {
       return {
         ...message,
+        modelUsage: {
+          ...message.modelUsage,
+        } as Record<string, ModelUsage>,
       };
     }
 
     return {
       ...message,
       errors: [],
+      modelUsage: {
+        ...message.modelUsage,
+      } as Record<string, ModelUsage>,
     };
   }
 

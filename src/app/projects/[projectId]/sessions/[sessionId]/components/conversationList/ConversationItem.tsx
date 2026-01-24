@@ -1,9 +1,12 @@
+import { useLingui } from "@lingui/react";
 import type { FC } from "react";
 import type {
   Conversation,
   SidechainConversation,
 } from "@/lib/conversation-schema";
 import type { ToolResultContent } from "@/lib/conversation-schema/content/ToolResultContentSchema";
+import { formatLocaleDate } from "@/lib/date/formatLocaleDate";
+import type { SupportedLocale } from "@/lib/i18n/schema";
 import { AssistantConversationContent } from "./AssistantConversationContent";
 import { FileHistorySnapshotConversationContent } from "./FileHistorySnapshotConversationContent";
 import { MetaConversationContent } from "./MetaConversationContent";
@@ -29,6 +32,7 @@ export const ConversationItem: FC<{
   existsRelatedTaskCall: (prompt: string) => boolean;
   projectId: string;
   sessionId: string;
+  showTimestamp?: boolean;
 }> = ({
   conversation,
   getToolResult,
@@ -39,7 +43,11 @@ export const ConversationItem: FC<{
   getSidechainConversationByAgentId,
   projectId,
   sessionId,
+  showTimestamp = true,
 }) => {
+  const { i18n } = useLingui();
+  const locale = (i18n.locale as SupportedLocale) || "en";
+
   if (conversation.type === "summary") {
     return (
       <SummaryConversationContent>
@@ -183,11 +191,29 @@ export const ConversationItem: FC<{
         </ul>
       );
 
+    const timestamp =
+      showTimestamp && conversation.timestamp ? (
+        <div className="text-xs text-muted-foreground mb-1 px-1 select-none text-right">
+          {formatLocaleDate(conversation.timestamp, {
+            locale,
+            target: "datetime",
+          })}
+        </div>
+      ) : null;
+
     return conversation.isMeta === true ? (
       // 展開可能にしてデフォで非展開
-      <MetaConversationContent>{userConversationJsx}</MetaConversationContent>
+      <MetaConversationContent>
+        <div className="flex flex-col w-full">
+          {timestamp}
+          {userConversationJsx}
+        </div>
+      </MetaConversationContent>
     ) : (
-      userConversationJsx
+      <div className="flex flex-col w-full">
+        {timestamp}
+        {userConversationJsx}
+      </div>
     );
   }
 
@@ -195,6 +221,14 @@ export const ConversationItem: FC<{
     const turnDuration = getTurnDuration(conversation.uuid);
     return (
       <div className="w-full">
+        {showTimestamp && conversation.timestamp && (
+          <div className="text-xs text-muted-foreground mb-1 px-1 select-none text-left">
+            {formatLocaleDate(conversation.timestamp, {
+              locale,
+              target: "datetime",
+            })}
+          </div>
+        )}
         <ul className="w-full">
           {conversation.message.content.map((content, index) => (
             // biome-ignore lint/suspicious/noArrayIndexKey: Order is static

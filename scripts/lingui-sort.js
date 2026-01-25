@@ -28,7 +28,20 @@ for (const locale of locales) {
     const sortedData = {};
 
     for (const key of sortedKeys) {
-      sortedData[key] = data[key];
+      const message = data[key];
+      // originの配列もソートする (ファイルパスと行番号で比較)
+      if (message.origin && Array.isArray(message.origin)) {
+        message.origin.sort((a, b) => {
+          // 要素がタプルの場合 [file, line]
+          if (Array.isArray(a) && Array.isArray(b)) {
+            const fileCheck = String(a[0]).localeCompare(String(b[0]));
+            if (fileCheck !== 0) return fileCheck;
+            return (Number(a[1]) || 0) - (Number(b[1]) || 0);
+          }
+          return 0;
+        });
+      }
+      sortedData[key] = message;
     }
 
     writeFileSync(

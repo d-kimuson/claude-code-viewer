@@ -2655,6 +2655,28 @@
     ],
     "translation": "同じタイトルの複数のセッションがある場合、最新のセッションのみを表示"
   },
+  "settings.session.auto_schedule_continue_on_rate_limit": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/components/SettingsControls.tsx",
+        189
+      ]
+    ],
+    "translation": "レート制限時に自動的に継続をスケジュール"
+  },
+  "settings.session.auto_schedule_continue_on_rate_limit.description": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/components/SettingsControls.tsx",
+        195
+      ]
+    ],
+    "translation": "Claude がレート制限に達した際に、自動的に継続メッセージをスケジュール実行します"
+  },
   "settings.tab.title": {
     "placeholders": {},
     "comments": [],

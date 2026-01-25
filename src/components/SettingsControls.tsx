@@ -81,6 +81,14 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
     });
   };
 
+  const handleAutoScheduleContinueOnRateLimitChange = async () => {
+    const newConfig = {
+      ...config,
+      autoScheduleContinueOnRateLimit: !config?.autoScheduleContinueOnRateLimit,
+    };
+    updateConfig(newConfig);
+  };
+
   const handleEnterKeyBehaviorChange = async (value: string) => {
     const newConfig = {
       ...config,
@@ -172,6 +180,27 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
       {showDescriptions && (
         <p className="text-xs text-muted-foreground mt-1 ml-6">
           <Trans id="settings.session.unify_same_title.description" />
+        </p>
+      )}
+
+      <div className="flex items-center space-x-2">
+        <Checkbox
+          id={`${checkboxId}-auto-schedule-continue`}
+          checked={config?.autoScheduleContinueOnRateLimit}
+          onCheckedChange={handleAutoScheduleContinueOnRateLimitChange}
+        />
+        {showLabels && (
+          <label
+            htmlFor={`${checkboxId}-auto-schedule-continue`}
+            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+          >
+            <Trans id="settings.session.auto_schedule_continue_on_rate_limit" />
+          </label>
+        )}
+      </div>
+      {showDescriptions && (
+        <p className="text-xs text-muted-foreground mt-1 ml-6">
+          <Trans id="settings.session.auto_schedule_continue_on_rate_limit.description" />
         </p>
       )}
 

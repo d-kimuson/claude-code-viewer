@@ -2655,6 +2655,28 @@
     ],
     "translation": "当多个会话标题相同时,仅显示最新的会话"
   },
+  "settings.session.auto_schedule_continue_on_rate_limit": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/components/SettingsControls.tsx",
+        189
+      ]
+    ],
+    "translation": "达到速率限制时自动调度继续"
+  },
+  "settings.session.auto_schedule_continue_on_rate_limit.description": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/components/SettingsControls.tsx",
+        195
+      ]
+    ],
+    "translation": "当 Claude 达到速率限制时,自动调度继续消息"
+  },
   "settings.tab.title": {
     "placeholders": {},
     "comments": [],

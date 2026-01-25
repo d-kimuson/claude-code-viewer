@@ -50,6 +50,9 @@ export const parseRateLimitResetTime = (resetTimeText: string): string => {
     return getFallbackTime();
   }
 
+  // Add 1 minute to the reset time to avoid scheduling exactly at the limit reset
+  resetDate.setMinutes(resetDate.getMinutes() + 1);
+
   return resetDate.toISOString();
 };
 

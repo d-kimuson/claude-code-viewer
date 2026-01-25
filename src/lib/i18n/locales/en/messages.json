@@ -2655,6 +2655,28 @@
     ],
     "translation": "When multiple sessions have the same title, show only the latest session"
   },
+  "settings.session.auto_schedule_continue_on_rate_limit": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/components/SettingsControls.tsx",
+        189
+      ]
+    ],
+    "translation": "Auto-schedule Continue on Rate Limit"
+  },
+  "settings.session.auto_schedule_continue_on_rate_limit.description": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/components/SettingsControls.tsx",
+        195
+      ]
+    ],
+    "translation": "Automatically schedule a continue message when Claude hits rate limits"
+  },
   "settings.tab.title": {
     "placeholders": {},
     "comments": [],

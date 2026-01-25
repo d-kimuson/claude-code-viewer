@@ -2768,7 +2768,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        96
+        104
       ]
     ],
     "translation": "プロジェクト一覧に戻る"
@@ -2783,7 +2783,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        60
+        62
       ]
     ],
     "translation": "MCPサーバー設定を表示"
@@ -2794,7 +2794,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        66
+        74
       ]
     ],
     "translation": "スケジューラジョブを表示"
@@ -2809,7 +2809,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        47
+        49
       ]
     ],
     "translation": "セッション一覧を表示"

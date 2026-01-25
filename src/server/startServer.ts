@@ -3,7 +3,7 @@ import { resolve } from "node:path";
 import { NodeContext } from "@effect/platform-node";
 import { serve } from "@hono/node-server";
 import { serveStatic } from "@hono/node-server/serve-static";
-import { Effect } from "effect";
+import { Effect, Layer } from "effect";
 import { AgentSessionLayer } from "./core/agent-session";
 import { AgentSessionController } from "./core/agent-session/presentation/AgentSessionController";
 import { ClaudeCodeController } from "./core/claude-code/presentation/ClaudeCodeController";
@@ -33,6 +33,8 @@ import { SessionRepository } from "./core/session/infrastructure/SessionReposito
 import { VirtualConversationDatabase } from "./core/session/infrastructure/VirtualConversationDatabase";
 import { SessionController } from "./core/session/presentation/SessionController";
 import { SessionMetaService } from "./core/session/services/SessionMetaService";
+import { TasksController } from "./core/tasks/presentation/TasksController";
+import { TasksService } from "./core/tasks/services/TasksService";
 import { honoApp } from "./hono/app";
 import { InitializeService } from "./hono/initialize";
 import { AuthMiddleware } from "./hono/middleware/auth.middleware";
@@ -66,53 +68,7 @@ export const startServer = async (options: CliOptions) => {
 
   const program = routes(honoApp, options)
     // 依存の浅い順にコンテナに pipe する必要がある
-    .pipe(
-      /** Presentation */
-      Effect.provide(ProjectController.Live),
-      Effect.provide(SessionController.Live),
-      Effect.provide(AgentSessionController.Live),
-      Effect.provide(GitController.Live),
-      Effect.provide(ClaudeCodeController.Live),
-      Effect.provide(ClaudeCodeSessionProcessController.Live),
-      Effect.provide(ClaudeCodePermissionController.Live),
-      Effect.provide(FileSystemController.Live),
-      Effect.provide(SSEController.Live),
-      Effect.provide(SchedulerController.Live),
-      Effect.provide(FeatureFlagController.Live),
-      Effect.provide(SearchController.Live),
-    )
-    .pipe(
-      /** Application */
-      Effect.provide(InitializeService.Live),
-      Effect.provide(FileWatcherService.Live),
-      Effect.provide(RateLimitAutoScheduleService.Live),
-      Effect.provide(AuthMiddleware.Live),
-    )
-    .pipe(
-      /** Domain */
-      Effect.provide(ClaudeCodeLifeCycleService.Live),
-      Effect.provide(ClaudeCodePermissionService.Live),
-      Effect.provide(ClaudeCodeSessionProcessService.Live),
-      Effect.provide(ClaudeCodeService.Live),
-      Effect.provide(GitService.Live),
-      Effect.provide(SchedulerService.Live),
-      Effect.provide(SchedulerConfigBaseDir.Live),
-      Effect.provide(SearchService.Live),
-    )
-    .pipe(
-      /** Infrastructure */
-      Effect.provide(ProjectRepository.Live),
-      Effect.provide(SessionRepository.Live),
-      Effect.provide(ProjectMetaService.Live),
-      Effect.provide(SessionMetaService.Live),
-      Effect.provide(VirtualConversationDatabase.Live),
-      Effect.provide(AgentSessionLayer),
-    )
-    .pipe(
-      /** Platform */
-      Effect.provide(platformLayer),
-      Effect.provide(NodeContext.layer),
-    );
+    .pipe(Effect.provide(MainLayer));
 
   await Effect.runPromise(program);
 
@@ -136,3 +92,66 @@ export const startServer = async (options: CliOptions) => {
     },
   );
 };
+
+const PlatformLayer = Layer.mergeAll(platformLayer, NodeContext.layer);
+
+const InfraBasics = Layer.mergeAll(
+  VirtualConversationDatabase.Live,
+  ProjectMetaService.Live,
+  SessionMetaService.Live,
+);
+
+const InfraRepos = Layer.mergeAll(
+  ProjectRepository.Live,
+  SessionRepository.Live,
+).pipe(Layer.provideMerge(InfraBasics));
+
+const InfraLayer = AgentSessionLayer.pipe(Layer.provideMerge(InfraRepos));
+
+const DomainBase = Layer.mergeAll(
+  ClaudeCodePermissionService.Live,
+  ClaudeCodeSessionProcessService.Live,
+  ClaudeCodeService.Live,
+  GitService.Live,
+  SchedulerService.Live,
+  SchedulerConfigBaseDir.Live,
+  SearchService.Live,
+  TasksService.Live,
+);
+
+const DomainLayer = ClaudeCodeLifeCycleService.Live.pipe(
+  Layer.provideMerge(DomainBase),
+);
+
+const AppServices = Layer.mergeAll(
+  FileWatcherService.Live,
+  RateLimitAutoScheduleService.Live,
+  AuthMiddleware.Live,
+);
+
+const ApplicationLayer = InitializeService.Live.pipe(
+  Layer.provideMerge(AppServices),
+);
+
+const PresentationLayer = Layer.mergeAll(
+  ProjectController.Live,
+  SessionController.Live,
+  AgentSessionController.Live,
+  GitController.Live,
+  ClaudeCodeController.Live,
+  ClaudeCodeSessionProcessController.Live,
+  ClaudeCodePermissionController.Live,
+  FileSystemController.Live,
+  SSEController.Live,
+  SchedulerController.Live,
+  FeatureFlagController.Live,
+  SearchController.Live,
+  TasksController.Live,
+);
+
+const MainLayer = PresentationLayer.pipe(
+  Layer.provideMerge(ApplicationLayer),
+  Layer.provideMerge(DomainLayer),
+  Layer.provideMerge(InfraLayer),
+  Layer.provideMerge(PlatformLayer),
+);

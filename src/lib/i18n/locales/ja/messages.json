@@ -5,7 +5,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/CommandCompletion.tsx",
-        195
+        207
       ]
     ],
     "translation": "利用可能なコマンド"
@@ -104,7 +104,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/McpTab.tsx",
-        46
+        51
       ]
     ],
     "translation": "MCPサーバーを再読み込み"
@@ -339,7 +339,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        505
+        507
       ]
     ],
     "translation": "添付"
@@ -533,11 +533,11 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        462
+        464
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        540
+        544
       ]
     ],
     "translation": "今すぐ送信"
@@ -548,11 +548,11 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        445
+        447
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        523
+        527
       ]
     ],
     "translation": "送信モード"
@@ -563,15 +563,15 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        465
+        467
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        543
+        547
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        560
+        564
       ]
     ],
     "translation": "予約送信"
@@ -582,7 +582,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        472
+        474
       ]
     ],
     "translation": "送信予定時刻"
@@ -593,7 +593,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        579
+        583
       ]
     ],
     "translation": "処理中..."
@@ -1358,7 +1358,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/McpTab.tsx",
-        66
+        71
       ]
     ],
     "translation": "MCPサーバーの読み込みに失敗しました: {error}"
@@ -1369,7 +1369,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/McpTab.tsx",
-        75
+        80
       ]
     ],
     "translation": "MCPサーバーが見つかりません"
@@ -1380,7 +1380,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/McpTab.tsx",
-        38
+        43
       ]
     ],
     "translation": "MCPサーバー"

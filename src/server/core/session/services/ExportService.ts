@@ -1,5 +1,7 @@
 import { Effect } from "effect";
 import type { Conversation } from "../../../../lib/conversation-schema";
+import type { ToolResultContent } from "../../../../lib/conversation-schema/content/ToolResultContentSchema";
+import type { IAgentSessionRepository } from "../../agent-session/infrastructure/AgentSessionRepository";
 import type { SessionDetail } from "../../types";
 
 /**
@@ -46,59 +48,246 @@ const formatTimestamp = (timestamp: number | string): string => {
 };
 
 /**
- * Renders markdown content to HTML (simplified version)
+ * Renders markdown content to HTML (enhanced version)
+ * Supports: code blocks, tables, blockquotes, lists (ul/ol/task), hr, strikethrough,
+ * inline code, bold, italic, headers, links, paragraphs
  */
 const renderMarkdown = (content: string): string => {
-  let html = escapeHtml(content);
-
-  // Code blocks
-  html = html.replace(
+  // First, extract code blocks to protect them from other processing
+  const codeBlocks: string[] = [];
+  let processedContent = content.replace(
     /```(\w+)?\n([\s\S]*?)```/g,
-    (_match, lang, code) => `
+    (_match, lang, code) => {
+      const placeholder = `__CODE_BLOCK_${codeBlocks.length}__`;
+      codeBlocks.push(`
     <div class="code-block">
       ${lang ? `<div class="code-header"><span class="code-lang">${escapeHtml(lang.toUpperCase())}</span></div>` : ""}
-      <pre><code class="language-${escapeHtml(lang || "text")}">${code.trim()}</code></pre>
+      <pre><code class="language-${escapeHtml(lang || "text")}">${escapeHtml(code.trim())}</code></pre>
     </div>
-  `,
+  `);
+      return placeholder;
+    },
+  );
+
+  // Process tables (before escaping HTML)
+  processedContent = processedContent.replace(
+    /(?:^\|.+\|$\n?)+/gm,
+    (tableBlock) => {
+      const rows = tableBlock.trim().split("\n");
+      if (rows.length < 2) return escapeHtml(tableBlock);
+
+      const headerRow = rows[0];
+      const separatorRow = rows[1];
+
+      // Check if second row is a separator (contains only |, -, :, and spaces)
+      if (
+        !headerRow ||
+        !separatorRow ||
+        !/^\|[\s\-:|]+\|$/.test(separatorRow)
+      ) {
+        return escapeHtml(tableBlock);
+      }
+
+      const parseRow = (row: string): string[] =>
+        row
+          .split("|")
+          .slice(1, -1)
+          .map((cell) => cell.trim());
+
+      const headerCells = parseRow(headerRow);
+      const dataRows = rows.slice(2);
+
+      let tableHtml = '<table class="markdown-table"><thead><tr>';
+      for (const cell of headerCells) {
+        tableHtml += `<th>${escapeHtml(cell)}</th>`;
+      }
+      tableHtml += "</tr></thead><tbody>";
+
+      for (const row of dataRows) {
+        const cells = parseRow(row);
+        tableHtml += "<tr>";
+        for (const cell of cells) {
+          tableHtml += `<td>${escapeHtml(cell)}</td>`;
+        }
+        tableHtml += "</tr>";
+      }
+      tableHtml += "</tbody></table>";
+
+      return tableHtml;
+    },
+  );
+
+  // Escape HTML for remaining content (except already processed tables)
+  // We need to escape only non-processed parts
+  processedContent = processedContent
+    .split(
+      /(<table class="markdown-table">[\s\S]*?<\/table>|__CODE_BLOCK_\d+__)/,
+    )
+    .map((part) => {
+      if (
+        part.startsWith('<table class="markdown-table">') ||
+        /^__CODE_BLOCK_\d+__$/.test(part)
+      ) {
+        return part;
+      }
+      return escapeHtml(part);
+    })
+    .join("");
+
+  // Blockquotes (multi-line support)
+  processedContent = processedContent.replace(
+    /(?:^&gt; .+$\n?)+/gm,
+    (quoteBlock) => {
+      const lines = quoteBlock
+        .split("\n")
+        .filter((l) => l.trim())
+        .map((l) => l.replace(/^&gt; /, ""))
+        .join("<br>");
+      return `<blockquote class="markdown-blockquote">${lines}</blockquote>`;
+    },
+  );
+
+  // Horizontal rule
+  processedContent = processedContent.replace(
+    /^(\*{3,}|-{3,}|_{3,})$/gm,
+    '<hr class="markdown-hr">',
+  );
+
+  // Task lists (must be before regular lists)
+  processedContent = processedContent.replace(
+    /(?:^- \[([ xX])\] .+$\n?)+/gm,
+    (listBlock) => {
+      const items = listBlock
+        .trim()
+        .split("\n")
+        .map((line) => {
+          const match = line.match(/^- \[([ xX])\] (.+)$/);
+          if (match?.[1] !== undefined && match[2] !== undefined) {
+            const checked = match[1].toLowerCase() === "x";
+            return `<li class="task-item"><input type="checkbox" class="task-checkbox" ${checked ? "checked" : ""} disabled>${match[2]}</li>`;
+          }
+          return "";
+        })
+        .join("");
+      return `<ul class="markdown-task-list">${items}</ul>`;
+    },
+  );
+
+  // Unordered lists
+  processedContent = processedContent.replace(
+    /(?:^[-*+] .+$\n?)+/gm,
+    (listBlock) => {
+      const items = listBlock
+        .trim()
+        .split("\n")
+        .map((line) => {
+          const match = line.match(/^[-*+] (.+)$/);
+          return match ? `<li>${match[1]}</li>` : "";
+        })
+        .join("");
+      return `<ul class="markdown-ul">${items}</ul>`;
+    },
+  );
+
+  // Ordered lists
+  processedContent = processedContent.replace(
+    /(?:^\d+\. .+$\n?)+/gm,
+    (listBlock) => {
+      const items = listBlock
+        .trim()
+        .split("\n")
+        .map((line) => {
+          const match = line.match(/^\d+\. (.+)$/);
+          return match ? `<li>${match[1]}</li>` : "";
+        })
+        .join("");
+      return `<ol class="markdown-ol">${items}</ol>`;
+    },
+  );
+
+  // Strikethrough
+  processedContent = processedContent.replace(
+    /~~(.+?)~~/g,
+    '<del class="markdown-del">$1</del>',
   );
 
   // Inline code
-  html = html.replace(/`([^`]+)`/g, '<code class="inline-code">$1</code>');
+  processedContent = processedContent.replace(
+    /`([^`]+)`/g,
+    '<code class="inline-code">$1</code>',
+  );
 
   // Bold
-  html = html.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+  processedContent = processedContent.replace(
+    /\*\*(.+?)\*\*/g,
+    "<strong>$1</strong>",
+  );
 
-  // Italic
-  html = html.replace(/\*(.+?)\*/g, "<em>$1</em>");
+  // Italic (avoiding conflict with bold)
+  processedContent = processedContent.replace(
+    /(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g,
+    "<em>$1</em>",
+  );
 
   // Headers
-  html = html.replace(/^### (.+)$/gm, '<h3 class="markdown-h3">$1</h3>');
-  html = html.replace(/^## (.+)$/gm, '<h2 class="markdown-h2">$1</h2>');
-  html = html.replace(/^# (.+)$/gm, '<h1 class="markdown-h1">$1</h1>');
+  processedContent = processedContent.replace(
+    /^### (.+)$/gm,
+    '<h3 class="markdown-h3">$1</h3>',
+  );
+  processedContent = processedContent.replace(
+    /^## (.+)$/gm,
+    '<h2 class="markdown-h2">$1</h2>',
+  );
+  processedContent = processedContent.replace(
+    /^# (.+)$/gm,
+    '<h1 class="markdown-h1">$1</h1>',
+  );
 
-  // Links
-  html = html.replace(
+  // Links (already escaped, so we look for escaped version)
+  processedContent = processedContent.replace(
     /\[([^\]]+)\]\(([^)]+)\)/g,
     '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>',
   );
 
-  // Paragraphs
-  html = html
+  // Paragraphs - process remaining text blocks
+  const blockElements = [
+    "<h1",
+    "<h2",
+    "<h3",
+    "<div",
+    "<pre",
+    "<table",
+    "<ul",
+    "<ol",
+    "<blockquote",
+    "<hr",
+    "__CODE_BLOCK_",
+  ];
+  processedContent = processedContent
     .split("\n\n")
     .map((para) => {
-      if (
-        para.startsWith("<h") ||
-        para.startsWith("<div") ||
-        para.startsWith("<pre") ||
-        para.trim() === ""
-      ) {
+      const trimmed = para.trim();
+      if (trimmed === "") return "";
+      if (blockElements.some((tag) => trimmed.startsWith(tag))) {
         return para;
       }
       return `<p class="markdown-p">${para.replace(/\n/g, "<br>")}</p>`;
     })
+    .filter((p) => p !== "")
     .join("\n");
 
-  return html;
+  // Restore code blocks
+  for (let i = 0; i < codeBlocks.length; i++) {
+    const codeBlock = codeBlocks[i];
+    if (codeBlock !== undefined) {
+      processedContent = processedContent.replace(
+        `__CODE_BLOCK_${i}__`,
+        codeBlock,
+      );
+    }
+  }
+
+  return processedContent;
 };
 
 /**
@@ -152,10 +341,449 @@ const renderUserEntry = (
 };
 
 /**
+ * Type for tool result map
+ */
+type ToolResultMap = Map<string, ToolResultContent>;
+
+/**
+ * Renders tool result content
+ */
+const renderToolResultContent = (result: ToolResultContent): string => {
+  const isError = result.is_error === true;
+  const errorClass = isError ? " tool-result-error" : "";
+
+  let contentHtml: string;
+  if (typeof result.content === "string") {
+    contentHtml = `<pre class="tool-result-text">${escapeHtml(result.content)}</pre>`;
+  } else {
+    contentHtml = result.content
+      .map((item) => {
+        if (item.type === "text") {
+          return `<pre class="tool-result-text">${escapeHtml(item.text)}</pre>`;
+        }
+        if (item.type === "image") {
+          return `<img src="data:${item.source.media_type};base64,${item.source.data}" alt="Tool result image" class="tool-result-image" />`;
+        }
+        return "";
+      })
+      .join("");
+  }
+
+  return `
+    <div class="tool-result-block${errorClass}">
+      <div class="tool-result-header">
+        <svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          ${isError ? '<path d="M18 6L6 18M6 6l12 12"/>' : '<path d="M20 6L9 17l-5-5"/>'}
+        </svg>
+        <span class="tool-result-label">${isError ? "Error" : "Result"}</span>
+      </div>
+      <div class="tool-result-content">
+        ${contentHtml}
+      </div>
+    </div>
+  `;
+};
+
+/**
+ * Sidechain data structure - matches frontend useSidechain logic
+ */
+type SidechainData = {
+  // Map from root uuid to all conversations in that sidechain
+  groupsByRootUuid: Map<
+    string,
+    Array<Extract<Conversation, { type: "user" | "assistant" | "system" }>>
+  >;
+  // Map from prompt string to root conversation
+  promptToRoot: Map<
+    string,
+    Extract<Conversation, { type: "user" | "assistant" | "system" }>
+  >;
+  // Map from agentId to root conversation
+  agentIdToRoot: Map<
+    string,
+    Extract<Conversation, { type: "user" | "assistant" | "system" }>
+  >;
+  // Map from tool_use_id to agentId (extracted from toolUseResult)
+  toolUseIdToAgentId: Map<string, string>;
+};
+
+/**
+ * Type guard to check if toolUseResult contains agentId
+ */
+const hasAgentId = (
+  toolUseResult: unknown,
+): toolUseResult is { agentId: string } => {
+  return (
+    typeof toolUseResult === "object" &&
+    toolUseResult !== null &&
+    "agentId" in toolUseResult &&
+    typeof (toolUseResult as { agentId: unknown }).agentId === "string"
+  );
+};
+
+/**
+ * Builds sidechain data structures matching frontend useSidechain logic
+ */
+const buildSidechainData = (
+  conversations: Array<Conversation>,
+): SidechainData => {
+  // Filter sidechain conversations
+  const sidechainConversations = conversations.filter(
+    (conv) =>
+      conv.type !== "summary" &&
+      conv.type !== "file-history-snapshot" &&
+      conv.type !== "queue-operation" &&
+      conv.type !== "progress" &&
+      conv.isSidechain === true,
+  ) as Array<Extract<Conversation, { type: "user" | "assistant" | "system" }>>;
+
+  // Build uuid -> conversation map for parent lookup
+  const uuidMap = new Map(
+    sidechainConversations.map((conv) => [conv.uuid, conv] as const),
+  );
+
+  // Find root conversation for each sidechain conversation
+  const getRootConversation = (
+    conv: Extract<Conversation, { type: "user" | "assistant" | "system" }>,
+  ): Extract<Conversation, { type: "user" | "assistant" | "system" }> => {
+    if (conv.parentUuid === null) {
+      return conv;
+    }
+    const parent = uuidMap.get(conv.parentUuid);
+    if (parent === undefined) {
+      return conv;
+    }
+    return getRootConversation(parent);
+  };
+
+  // Group by root conversation's uuid (matching frontend logic)
+  const groupsByRootUuid = new Map<
+    string,
+    Array<Extract<Conversation, { type: "user" | "assistant" | "system" }>>
+  >();
+  for (const conv of sidechainConversations) {
+    const root = getRootConversation(conv);
+    const existing = groupsByRootUuid.get(root.uuid);
+    if (existing) {
+      existing.push(conv);
+    } else {
+      groupsByRootUuid.set(root.uuid, [conv]);
+    }
+  }
+
+  // Sort each group by timestamp to ensure correct order
+  for (const [, convs] of groupsByRootUuid) {
+    convs.sort(
+      (a, b) =>
+        new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
+    );
+  }
+
+  // Build prompt -> root mapping (for root user messages with string content)
+  const promptToRoot = new Map<
+    string,
+    Extract<Conversation, { type: "user" | "assistant" | "system" }>
+  >();
+  for (const conv of sidechainConversations) {
+    if (
+      conv.type === "user" &&
+      conv.parentUuid === null &&
+      typeof conv.message.content === "string"
+    ) {
+      promptToRoot.set(conv.message.content, conv);
+    }
+  }
+
+  // Build agentId -> root mapping
+  const agentIdToRoot = new Map<
+    string,
+    Extract<Conversation, { type: "user" | "assistant" | "system" }>
+  >();
+  for (const conv of sidechainConversations) {
+    if (conv.parentUuid === null && conv.agentId !== undefined) {
+      agentIdToRoot.set(conv.agentId, conv);
+    }
+  }
+
+  // Build tool_use_id -> agentId mapping from ALL user messages (not just sidechain)
+  // This is the critical mapping that links Task tool calls to their subagent sessions
+  const toolUseIdToAgentId = new Map<string, string>();
+  for (const conv of conversations) {
+    if (
+      conv.type === "summary" ||
+      conv.type === "file-history-snapshot" ||
+      conv.type === "queue-operation" ||
+      conv.type === "progress"
+    ) {
+      continue;
+    }
+    if (conv.type !== "user") continue;
+    const messageContent = conv.message.content;
+    if (typeof messageContent === "string") continue;
+
+    for (const content of messageContent) {
+      if (typeof content === "string") continue;
+      if (content.type === "tool_result") {
+        const toolUseResult = conv.toolUseResult;
+        if (hasAgentId(toolUseResult)) {
+          toolUseIdToAgentId.set(content.tool_use_id, toolUseResult.agentId);
+        }
+      }
+    }
+  }
+
+  return { groupsByRootUuid, promptToRoot, agentIdToRoot, toolUseIdToAgentId };
+};
+
+/**
+ * Renders a single sidechain conversation entry (for nested display)
+ */
+const renderSidechainEntry = (
+  entry: Extract<Conversation, { type: "user" | "assistant" | "system" }>,
+  toolResultMap: ToolResultMap,
+  sidechainData: SidechainData,
+): string => {
+  if (entry.type === "user") {
+    const contentArray = Array.isArray(entry.message.content)
+      ? entry.message.content
+      : [entry.message.content];
+
+    const contentHtml = contentArray
+      .map((msg) => {
+        if (typeof msg === "string") {
+          return `<div class="markdown-content">${renderMarkdown(msg)}</div>`;
+        }
+        if (msg.type === "text") {
+          return `<div class="markdown-content">${renderMarkdown(msg.text)}</div>`;
+        }
+        if (msg.type === "tool_result") {
+          return ""; // Skip tool results in user messages
+        }
+        return "";
+      })
+      .join("");
+
+    if (!contentHtml.trim()) return "";
+
+    return `
+      <div class="sidechain-entry sidechain-user-entry">
+        <div class="sidechain-entry-header">
+          <span class="sidechain-role">User</span>
+          <span class="sidechain-timestamp">${formatTimestamp(entry.timestamp)}</span>
+        </div>
+        <div class="sidechain-entry-content">${contentHtml}</div>
+      </div>
+    `;
+  }
+
+  if (entry.type === "assistant") {
+    const contentHtml = entry.message.content
+      .map((msg) => {
+        if (msg.type === "text") {
+          return `<div class="markdown-content">${renderMarkdown(msg.text)}</div>`;
+        }
+
+        if (msg.type === "thinking") {
+          const charCount = msg.thinking.length;
+          return `
+            <div class="thinking-block collapsible collapsed">
+              <div class="thinking-header collapsible-trigger">
+                <svg class="icon-lightbulb" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2v1m0 18v1m9-10h1M2 12H1m17.66-7.66l.71.71M3.63 20.37l.71.71m0-14.14l-.71.71m17.02 12.73l-.71.71M12 7a5 5 0 0 1 5 5 5 5 0 0 1-1.47 3.53c-.6.6-.94 1.42-.94 2.27V18a1 1 0 0 1-1 1h-3a1 1 0 0 1-1-1v-.2c0-.85-.34-1.67-.94-2.27A5 5 0 0 1 7 12a5 5 0 0 1 5-5Z"/>
+                </svg>
+                <span class="thinking-title">Thinking</span>
+                <span class="expand-hint">(${charCount} chars)</span>
+                <svg class="icon-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </div>
+              <div class="thinking-content collapsible-content">
+                <pre class="thinking-text">${escapeHtml(msg.thinking)}</pre>
+              </div>
+            </div>
+          `;
+        }
+
+        if (msg.type === "tool_use") {
+          const toolResult = toolResultMap.get(msg.id);
+
+          // Check if this is a nested Task tool (recursive subagent)
+          if (msg.name === "Task") {
+            return renderTaskTool(
+              msg.id,
+              msg.input,
+              toolResult,
+              sidechainData,
+              toolResultMap,
+            );
+          }
+
+          const inputKeys = Object.keys(msg.input).length;
+          const toolResultHtml = toolResult
+            ? renderToolResultContent(toolResult)
+            : "";
+
+          return `
+            <div class="tool-use-block collapsible collapsed">
+              <div class="tool-use-header collapsible-trigger">
+                <svg class="icon-wrench" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+                </svg>
+                <span class="tool-name">${escapeHtml(msg.name)}</span>
+                <span class="expand-hint">(${inputKeys} params)</span>
+                <svg class="icon-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </div>
+              <div class="tool-use-content collapsible-content">
+                <div class="tool-id"><strong>Tool ID:</strong> <code>${escapeHtml(msg.id)}</code></div>
+                <div class="tool-input">
+                  <strong>Input:</strong>
+                  <pre class="json-input">${escapeHtml(formatJsonWithNewlines(msg.input))}</pre>
+                </div>
+                ${toolResultHtml}
+              </div>
+            </div>
+          `;
+        }
+
+        return "";
+      })
+      .join("");
+
+    return `
+      <div class="sidechain-entry sidechain-assistant-entry">
+        <div class="sidechain-entry-header">
+          <span class="sidechain-role">Subagent</span>
+          <span class="sidechain-timestamp">${formatTimestamp(entry.timestamp)}</span>
+        </div>
+        <div class="sidechain-entry-content">${contentHtml}</div>
+      </div>
+    `;
+  }
+
+  if (entry.type === "system") {
+    const content =
+      "content" in entry && typeof entry.content === "string"
+        ? entry.content
+        : "System message";
+    return `
+      <div class="sidechain-entry sidechain-system-entry">
+        <div class="sidechain-entry-header">
+          <span class="sidechain-role">System</span>
+          <span class="sidechain-timestamp">${formatTimestamp(entry.timestamp)}</span>
+        </div>
+        <div class="sidechain-entry-content">
+          <div class="system-message">${escapeHtml(content)}</div>
+        </div>
+      </div>
+    `;
+  }
+
+  return "";
+};
+/**
+ * Renders a Task tool specially with prompt display and subagent conversations
+ */
+const renderTaskTool = (
+  toolId: string,
+  input: Record<string, unknown>,
+  toolResult: ToolResultContent | undefined,
+  sidechainData: SidechainData,
+  toolResultMap: ToolResultMap,
+): string => {
+  const prompt = typeof input.prompt === "string" ? input.prompt : "";
+  const truncatedPrompt =
+    prompt.length > 200 ? `${prompt.slice(0, 200)}...` : prompt;
+
+  // Find sidechain conversations using the new data structure
+  let sidechainConversations: Array<
+    Extract<Conversation, { type: "user" | "assistant" | "system" }>
+  > = [];
+
+  // 1. Try to find by agentId (from tool use result)
+  const agentId = sidechainData.toolUseIdToAgentId.get(toolId);
+  if (agentId) {
+    const rootByAgentId = sidechainData.agentIdToRoot.get(agentId);
+    if (rootByAgentId) {
+      const convs = sidechainData.groupsByRootUuid.get(rootByAgentId.uuid);
+      if (convs) {
+        sidechainConversations = convs;
+      }
+    }
+  }
+
+  // 2. Fallback: Try to find by prompt
+  if (sidechainConversations.length === 0) {
+    const rootConversation = sidechainData.promptToRoot.get(prompt);
+    if (rootConversation) {
+      const convs = sidechainData.groupsByRootUuid.get(rootConversation.uuid);
+      if (convs) {
+        sidechainConversations = convs;
+      }
+    }
+  }
+
+  const hasSidechain = sidechainConversations.length > 0;
+  const sidechainHtml = hasSidechain
+    ? `
+      <div class="sidechain-container collapsible">
+        <div class="sidechain-header collapsible-trigger">
+          <svg class="icon-layers" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+            <polyline points="2 17 12 22 22 17"/>
+            <polyline points="2 12 12 17 22 12"/>
+          </svg>
+          <span>Subagent Work Log (${sidechainConversations.length} entries)</span>
+          <svg class="icon-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </div>
+        <div class="sidechain-content collapsible-content">
+          ${sidechainConversations
+            .map((conv) =>
+              renderSidechainEntry(conv, toolResultMap, sidechainData),
+            )
+            .filter((html) => html !== "")
+            .join("\n")}
+        </div>
+      </div>
+    `
+    : "";
+
+  return `
+    <div class="task-tool-block collapsible">
+      <div class="task-tool-header collapsible-trigger">
+        <svg class="icon-task" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+          <path d="M9 12l2 2 4-4"/>
+        </svg>
+        <span class="task-tool-name">Task${hasSidechain ? ` (${sidechainConversations.length} steps)` : ""}</span>
+        <span class="task-prompt-preview">${escapeHtml(truncatedPrompt)}</span>
+        <svg class="icon-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </div>
+      <div class="task-tool-content collapsible-content">
+        <div class="task-tool-id"><strong>Task ID:</strong> <code>${escapeHtml(toolId)}</code></div>
+        <div class="task-prompt">
+          <strong>Prompt:</strong>
+          <div class="task-prompt-text">${renderMarkdown(prompt)}</div>
+        </div>
+        ${toolResult ? renderToolResultContent(toolResult) : ""}
+        ${sidechainHtml}
+      </div>
+    </div>
+  `;
+};
+
+/**
  * Renders an assistant message entry
  */
 const renderAssistantEntry = (
   entry: Extract<Conversation, { type: "assistant" }>,
+  toolResultMap: ToolResultMap,
+  sidechainData: SidechainData,
 ): string => {
   const contentHtml = entry.message.content
     .map((msg) => {
@@ -185,7 +813,24 @@ const renderAssistantEntry = (
       }
 
       if (msg.type === "tool_use") {
+        const toolResult = toolResultMap.get(msg.id);
+
+        // Special rendering for Task tool
+        if (msg.name === "Task") {
+          return renderTaskTool(
+            msg.id,
+            msg.input,
+            toolResult,
+            sidechainData,
+            toolResultMap,
+          );
+        }
+
         const inputKeys = Object.keys(msg.input).length;
+        const toolResultHtml = toolResult
+          ? renderToolResultContent(toolResult)
+          : "";
+
         return `
           <div class="tool-use-block collapsible">
             <div class="tool-use-header collapsible-trigger">
@@ -204,6 +849,7 @@ const renderAssistantEntry = (
                 <strong>Input Parameters:</strong>
                 <pre class="json-input">${escapeHtml(formatJsonWithNewlines(msg.input))}</pre>
               </div>
+              ${toolResultHtml}
             </div>
           </div>
         `;
@@ -315,6 +961,8 @@ const groupConsecutiveAssistantMessages = (
  */
 const renderGroupedAssistantEntries = (
   entries: Array<Extract<Conversation, { type: "assistant" }>>,
+  toolResultMap: ToolResultMap,
+  sidechainData: SidechainData,
 ): string => {
   const allContent = entries.flatMap((entry) => entry.message.content);
   const firstEntry = entries[0];
@@ -351,7 +999,24 @@ const renderGroupedAssistantEntries = (
       }
 
       if (msg.type === "tool_use") {
+        const toolResult = toolResultMap.get(msg.id);
+
+        // Special rendering for Task tool
+        if (msg.name === "Task") {
+          return renderTaskTool(
+            msg.id,
+            msg.input,
+            toolResult,
+            sidechainData,
+            toolResultMap,
+          );
+        }
+
         const inputKeys = Object.keys(msg.input).length;
+        const toolResultHtml = toolResult
+          ? renderToolResultContent(toolResult)
+          : "";
+
         return `
           <div class="tool-use-block collapsible">
             <div class="tool-use-header collapsible-trigger">
@@ -370,6 +1035,7 @@ const renderGroupedAssistantEntries = (
                 <strong>Input Parameters:</strong>
                 <pre class="json-input">${escapeHtml(formatJsonWithNewlines(msg.input))}</pre>
               </div>
+              ${toolResultHtml}
             </div>
           </div>
         `;
@@ -398,8 +1064,118 @@ const renderGroupedAssistantEntries = (
 export const generateSessionHtml = (
   session: SessionDetail,
   projectId: string,
-): Effect.Effect<string> =>
+  agentSessionRepo: IAgentSessionRepository,
+): Effect.Effect<string, Error> =>
   Effect.gen(function* () {
+    // Identify all agentIds from tool usage in the main session
+    const agentIds = new Set<string>();
+
+    for (const conv of session.conversations) {
+      if (conv.type !== "user" || typeof conv.message.content === "string") {
+        continue;
+      }
+
+      for (const content of conv.message.content) {
+        if (typeof content === "string") continue;
+        if (content.type === "tool_result") {
+          const toolUseResult = conv.toolUseResult;
+          if (hasAgentId(toolUseResult)) {
+            agentIds.add(toolUseResult.agentId);
+          }
+        }
+      }
+    }
+
+    // Check which agentIds are already present in the session (legacy format)
+    const existingAgentIds = new Set<string>();
+    for (const conv of session.conversations) {
+      if (conv.type === "x-error") continue;
+      if (
+        conv.type !== "summary" &&
+        conv.type !== "file-history-snapshot" &&
+        conv.type !== "queue-operation" &&
+        conv.type !== "progress" &&
+        conv.isSidechain === true &&
+        conv.agentId !== undefined
+      ) {
+        existingAgentIds.add(conv.agentId);
+      }
+    }
+
+    // Determine missing agentIds
+    const missingAgentIds = Array.from(agentIds).filter(
+      (id) => !existingAgentIds.has(id),
+    );
+
+    // Load missing agent sessions
+    const loadedConversations: Conversation[] = [];
+
+    if (missingAgentIds.length > 0) {
+      // Load concurrently
+      const loadedSessions = yield* Effect.all(
+        missingAgentIds.map((agentId) =>
+          agentSessionRepo.getAgentSessionByAgentId(
+            projectId,
+            agentId,
+            session.id,
+          ),
+        ),
+        { concurrency: 5 },
+      );
+
+      for (const sess of loadedSessions) {
+        if (sess) {
+          // Verify items are valid conversations (filter out unknowns if any)
+          const validConvs = sess.filter(
+            (c): c is Conversation =>
+              c.type === "user" ||
+              c.type === "assistant" ||
+              c.type === "system",
+          );
+          loadedConversations.push(
+            ...validConvs.map((c) => ({
+              ...c,
+              isSidechain: true, // Ensure they are marked as sidechain
+            })),
+          );
+        }
+      }
+    }
+
+    // Combine all conversations for data building
+    const allConversations = [
+      ...session.conversations.filter(
+        (conv): conv is Conversation => conv.type !== "x-error",
+      ),
+      ...loadedConversations,
+    ];
+
+    // Build sidechain data using ALL conversations
+    const sidechainData = buildSidechainData(allConversations);
+
+    // Build tool result map from user messages (including loaded sidechain ones)
+    const toolResultMap: ToolResultMap = new Map();
+    for (const conv of allConversations) {
+      // Skip non-conversation types
+      if (
+        conv.type === "summary" ||
+        conv.type === "file-history-snapshot" ||
+        conv.type === "queue-operation" ||
+        conv.type === "progress"
+      ) {
+        continue;
+      }
+      if (conv.type !== "user") continue;
+      const content = conv.message.content;
+      if (typeof content === "string") continue;
+      for (const msg of content) {
+        if (typeof msg === "string") continue;
+        if (msg.type === "tool_result") {
+          toolResultMap.set(msg.tool_use_id, msg);
+        }
+      }
+    }
+
     const grouped = groupConsecutiveAssistantMessages(session.conversations);
 
     const conversationsHtml = grouped
@@ -409,6 +1185,8 @@ export const generateSessionHtml = (
             group.entries as Array<
               Extract<Conversation, { type: "assistant" }>
             >,
+            toolResultMap,
+            sidechainData,
           );
         }
 
@@ -421,7 +1199,7 @@ export const generateSessionHtml = (
           return renderUserEntry(conv);
         }
         if (conv.type === "assistant") {
-          return renderAssistantEntry(conv);
+          return renderAssistantEntry(conv, toolResultMap, sidechainData);
         }
         if (conv.type === "system") {
           return renderSystemEntry(conv);
@@ -587,7 +1365,7 @@ export const generateSessionHtml = (
     .markdown-p {
       margin-bottom: 1rem;
       line-height: 1.75;
-      word-break: break-all;
+      word-break: break-word;
     }
 
     .inline-code {
@@ -701,7 +1479,6 @@ export const generateSessionHtml = (
     }
 
     .collapsible-content {
-      max-height: 1000px;
       overflow: hidden;
       transition: max-height 0.3s ease-out, opacity 0.2s ease-out;
     }
@@ -856,6 +1633,325 @@ export const generateSessionHtml = (
       text-align: center;
       color: hsl(var(--muted-foreground));
       font-size: 0.875rem;
+    }
+
+    /* Enhanced Markdown Styles */
+    .markdown-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 0.875rem;
+    }
+
+    .markdown-table th,
+    .markdown-table td {
+      border: 1px solid hsl(var(--border));
+      padding: 0.5rem 0.75rem;
+      text-align: left;
+    }
+
+    .markdown-table th {
+      background: hsl(var(--muted) / 0.5);
+      font-weight: 600;
+    }
+
+    .markdown-table tr:nth-child(even) {
+      background: hsl(var(--muted) / 0.2);
+    }
+
+    .markdown-blockquote {
+      border-left: 4px solid hsl(var(--blue-600));
+      padding: 0.75rem 1rem;
+      margin: 1rem 0;
+      background: hsl(var(--muted) / 0.3);
+      color: hsl(var(--muted-foreground));
+      font-style: italic;
+    }
+
+    .markdown-ul,
+    .markdown-ol {
+      margin: 1rem 0;
+      padding-left: 1.5rem;
+    }
+
+    .markdown-ul li,
+    .markdown-ol li {
+      margin-bottom: 0.25rem;
+      line-height: 1.6;
+    }
+
+    .markdown-task-list {
+      list-style: none;
+      padding-left: 0;
+      margin: 1rem 0;
+    }
+
+    .task-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .task-checkbox {
+      margin-top: 0.25rem;
+      width: 1rem;
+      height: 1rem;
+      accent-color: hsl(var(--blue-600));
+    }
+
+    .markdown-hr {
+      border: none;
+      border-top: 2px solid hsl(var(--border));
+      margin: 2rem 0;
+    }
+
+    .markdown-del {
+      text-decoration: line-through;
+      color: hsl(var(--muted-foreground));
+    }
+
+    /* Tool Result Styles */
+    .tool-result-block {
+      margin-top: 0.75rem;
+      border: 1px solid hsl(var(--border));
+      border-radius: 0.375rem;
+      overflow: scroll;
+    }
+
+    .tool-result-error {
+      border-color: hsl(0 84% 60%);
+    }
+
+    .tool-result-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.375rem 0.75rem;
+      background: hsl(var(--muted) / 0.3);
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .tool-result-error .tool-result-header {
+      background: hsl(0 84% 60% / 0.1);
+      color: hsl(0 84% 40%);
+    }
+
+    .icon-check {
+      flex-shrink: 0;
+      color: hsl(142 76% 36%);
+    }
+
+    .tool-result-error .icon-check {
+      color: hsl(0 84% 60%);
+    }
+
+    .tool-result-label {
+      font-weight: 500;
+    }
+
+    .tool-result-content {
+      padding: 0.75rem;
+      background: hsl(var(--background));
+    }
+
+    .tool-result-text {
+      font-family: monospace;
+      font-size: 0.75rem;
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow-wrap: break-word;
+      margin: 0;
+    }
+
+    .tool-result-image {
+      max-width: 100%;
+      height: auto;
+      border-radius: 0.25rem;
+    }
+
+    /* Task Tool Styles */
+    .task-tool-block {
+      border: 1px solid hsl(142 76% 36% / 0.3);
+      background: hsl(142 76% 36% / 0.05);
+      border-radius: 0.5rem;
+      margin-bottom: 0.5rem;
+      overflow: hidden;
+    }
+
+    .task-tool-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      cursor: pointer;
+      background: hsl(142 76% 36% / 0.1);
+      transition: background 0.2s;
+    }
+
+    .task-tool-header:hover {
+      background: hsl(142 76% 36% / 0.15);
+    }
+
+    .icon-task {
+      color: hsl(142 76% 36%);
+      flex-shrink: 0;
+    }
+
+    .task-tool-name {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: hsl(142 76% 30%);
+    }
+
+    .task-prompt-preview {
+      flex: 1;
+      font-size: 0.75rem;
+      color: hsl(var(--muted-foreground));
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .task-tool-content {
+      padding: 0.75rem 1rem;
+      border-top: 1px solid hsl(142 76% 36% / 0.2);
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .task-tool-id {
+      font-size: 0.75rem;
+    }
+
+    .task-tool-id code {
+      background: hsl(var(--background) / 0.5);
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      border: 1px solid hsl(142 76% 36% / 0.2);
+      font-family: monospace;
+      font-size: 0.75rem;
+    }
+
+    .task-prompt {
+      font-size: 0.875rem;
+    }
+
+    .task-prompt-text {
+      background: hsl(var(--background));
+      border: 1px solid hsl(var(--border));
+      border-radius: 0.375rem;
+      padding: 0.75rem;
+      margin-top: 0.5rem;
+    }
+
+    /* Sidechain / Subagent Styles */
+    .sidechain-container {
+      margin-top: 1rem;
+      border: 1px solid hsl(217 91% 60% / 0.3);
+      border-radius: 0.5rem;
+      overflow: hidden;
+    }
+
+    .sidechain-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      background: hsl(217 91% 60% / 0.1);
+      color: hsl(217 91% 40%);
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .sidechain-header:hover {
+      background: hsl(217 91% 60% / 0.15);
+    }
+
+    .icon-layers {
+      flex-shrink: 0;
+    }
+
+    .sidechain-content {
+      padding: 0.75rem;
+      background: hsl(217 91% 60% / 0.02);
+      border-top: 1px solid hsl(217 91% 60% / 0.2);
+    }
+
+    .sidechain-entry {
+      margin-left: 1rem;
+      padding: 0.5rem 0.75rem;
+      border-left: 2px solid hsl(217 91% 60% / 0.3);
+      margin-bottom: 0.5rem;
+    }
+
+    .sidechain-entry:last-child {
+      margin-bottom: 0;
+    }
+
+    .sidechain-entry-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.25rem;
+      font-size: 0.75rem;
+    }
+
+    .sidechain-role {
+      font-weight: 600;
+      padding: 0.125rem 0.375rem;
+      border-radius: 0.25rem;
+    }
+
+    .sidechain-user-entry .sidechain-role {
+      background: hsl(var(--muted));
+      color: hsl(var(--foreground));
+    }
+
+    .sidechain-assistant-entry .sidechain-role {
+      background: hsl(217 91% 60% / 0.1);
+      color: hsl(217 91% 40%);
+    }
+
+    .sidechain-system-entry .sidechain-role {
+      background: hsl(var(--muted) / 0.5);
+      color: hsl(var(--muted-foreground));
+    }
+
+    .sidechain-timestamp {
+      color: hsl(var(--muted-foreground));
+    }
+
+    .sidechain-entry-content {
+      font-size: 0.875rem;
+    }
+
+    .sidechain-entry .thinking-block,
+    .sidechain-entry .tool-use-block {
+      margin: 0.5rem 0;
+      font-size: 0.8rem;
+    }
+
+    .sidechain-entry .thinking-header,
+    .sidechain-entry .tool-use-header {
+      padding: 0.375rem 0.5rem;
+    }
+
+    .sidechain-entry .thinking-content,
+    .sidechain-entry .tool-use-content {
+      padding: 0.5rem;
+    }
+
+    /* Optimize content display */
+    .entry-content > *:first-child {
+      margin-top: 0;
+    }
+
+    .entry-content > *:last-child {
+      margin-bottom: 0;
     }
   </style>
 </head>

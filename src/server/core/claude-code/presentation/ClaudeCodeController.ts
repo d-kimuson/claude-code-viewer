@@ -5,8 +5,9 @@ import type { InferEffect } from "../../../lib/effect/types";
 import { ApplicationContext } from "../../platform/services/ApplicationContext";
 import { ProjectRepository } from "../../project/infrastructure/ProjectRepository";
 import {
-  scanCommandFilesRecursively,
-  scanSkillFilesRecursively,
+  type CommandInfo,
+  scanCommandFilesWithMetadata,
+  scanSkillFilesWithMetadata,
 } from "../functions/scanCommandFiles";
 import * as ClaudeCodeVersion from "../models/ClaudeCodeVersion";
 import { ClaudeCodeService } from "../services/ClaudeCodeService";
@@ -26,37 +27,70 @@ const LayerImpl = Effect.gen(function* () {
       const { project } = yield* projectRepository.getProject(projectId);
       const features = yield* claudeCodeService.getAvailableFeatures();
 
-      const globalCommands: string[] = yield* scanCommandFilesRecursively(
+      const globalCommands: CommandInfo[] = yield* scanCommandFilesWithMetadata(
         (yield* context.claudeCodePaths).claudeCommandsDirPath,
       );
 
-      const projectCommands: string[] =
+      const projectCommands: CommandInfo[] =
         project.meta.projectPath === null
           ? []
-          : yield* scanCommandFilesRecursively(
+          : yield* scanCommandFilesWithMetadata(
               path.resolve(project.meta.projectPath, ".claude", "commands"),
             );
 
-      const globalSkills: string[] = features.runSkillsDirectly
-        ? yield* scanSkillFilesRecursively(
+      const globalSkills: CommandInfo[] = features.runSkillsDirectly
+        ? yield* scanSkillFilesWithMetadata(
             (yield* context.claudeCodePaths).claudeSkillsDirPath,
           )
         : [];
 
-      const projectSkills: string[] =
+      const projectSkills: CommandInfo[] =
         features.runSkillsDirectly && project.meta.projectPath !== null
-          ? yield* scanSkillFilesRecursively(
+          ? yield* scanSkillFilesWithMetadata(
               path.resolve(project.meta.projectPath, ".claude", "skills"),
             )
           : [];
 
+      const defaultCommands: CommandInfo[] = [
+        {
+          name: "init",
+          description: "Initialize Claude Code in current project",
+          argumentHint: null,
+        },
+        {
+          name: "compact",
+          description: "Compact conversation history",
+          argumentHint: null,
+        },
+        {
+          name: "security-review",
+          description: "Review code for security issues",
+          argumentHint: null,
+        },
+        {
+          name: "review",
+          description: "Review code changes",
+          argumentHint: null,
+        },
+      ];
+
+      // Helper to extract command names for backward compatibility
+      const toNames = (commands: CommandInfo[]) => commands.map((c) => c.name);
+
       return {
         response: {
-          globalCommands: globalCommands,
-          projectCommands: projectCommands,
-          globalSkills: globalSkills,
-          projectSkills: projectSkills,
-          defaultCommands: ["init", "compact", "security-review", "review"],
+          // New format: CommandInfo[] with metadata
+          globalCommands,
+          projectCommands,
+          globalSkills,
+          projectSkills,
+          defaultCommands,
+          // Legacy format: string[] for backward compatibility
+          globalCommandsLegacy: toNames(globalCommands),
+          projectCommandsLegacy: toNames(projectCommands),
+          globalSkillsLegacy: toNames(globalSkills),
+          projectSkillsLegacy: toNames(projectSkills),
+          defaultCommandsLegacy: toNames(defaultCommands),
         },
         status: 200,
       } as const satisfies ControllerResponse;

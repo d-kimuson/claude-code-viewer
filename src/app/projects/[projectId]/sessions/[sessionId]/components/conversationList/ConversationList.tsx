@@ -266,73 +266,146 @@ export const ConversationList: FC<ConversationListProps> = ({
     [toolUseIdToAgentIdMap],
   );
 
+  // Helper to check if a conversation is a user message containing only tool results
+  const isOnlyToolResult = useCallback((conv: Conversation): boolean => {
+    if (conv.type !== "user") return false;
+    const content = conv.message.content;
+    if (typeof content === "string") return false;
+
+    // Check if every item in the content array is a tool_result
+    return content.every(
+      (item) => typeof item !== "string" && item.type === "tool_result",
+    );
+  }, []);
+
+  // Helper to check if a conversation should be rendered
+  const shouldRenderConversation = useCallback(
+    (conv: Conversation | ErrorJsonl): boolean => {
+      if (conv.type === "x-error") return true;
+
+      // Existing checks
+      if (conv.type === "progress") return false;
+
+      const isSidechain =
+        conv.type !== "summary" &&
+        conv.type !== "file-history-snapshot" &&
+        conv.type !== "queue-operation" &&
+        conv.isSidechain;
+
+      if (isSidechain) return false;
+
+      // specific check for ghost tool results
+      if (conv.type === "user" && isOnlyToolResult(conv)) {
+        return false;
+      }
+
+      return true;
+    },
+    [isOnlyToolResult],
+  );
+
+  // Calculate timestamp visibility
+  const conversationsWithTimestamp = useMemo(() => {
+    return conversations.map((conv) => {
+      if (conv.type === "x-error") {
+        return { conversation: conv, showTimestamp: false };
+      }
+
+      if (!shouldRenderConversation(conv)) {
+        return { conversation: conv, showTimestamp: false };
+      }
+
+      if (
+        conv.type === "summary" ||
+        conv.type === "progress" ||
+        conv.type === "queue-operation" ||
+        conv.type === "file-history-snapshot"
+      ) {
+        // These types might not have timestamp or are invisible
+        return { conversation: conv, showTimestamp: false };
+      }
+
+      // Always show timestamp for every message as per new requirement
+      const showTimestamp = true;
+
+      return { conversation: conv, showTimestamp };
+    });
+  }, [conversations, shouldRenderConversation]);
+
   return (
     <>
       <ul>
-        {conversations.flatMap((conversation) => {
-          if (conversation.type === "x-error") {
-            return (
-              <SchemaErrorDisplay
-                key={`error_${conversation.line}`}
-                errorLine={conversation.line}
+        {conversationsWithTimestamp.flatMap(
+          ({ conversation, showTimestamp }) => {
+            if (!shouldRenderConversation(conversation)) {
+              if (conversation.type === "x-error") {
+                return (
+                  <SchemaErrorDisplay
+                    key={`error_${conversation.line}`}
+                    errorLine={conversation.line}
+                  />
+                );
+              }
+              return [];
+            }
+
+            if (conversation.type === "x-error") {
+              return (
+                <SchemaErrorDisplay
+                  key={`error_${conversation.line}`}
+                  errorLine={conversation.line}
+                />
+              );
+            }
+
+            const elm = (
+              <ConversationItem
+                key={getConversationKey(conversation)}
+                conversation={conversation}
+                getToolResult={getToolResult}
+                getAgentIdForToolUse={getAgentIdForToolUse}
+                getTurnDuration={getTurnDuration}
+                isRootSidechain={isRootSidechain}
+                getSidechainConversations={getSidechainConversations}
+                getSidechainConversationByAgentId={
+                  getSidechainConversationByAgentId
+                }
+                getSidechainConversationByPrompt={
+                  getSidechainConversationByPrompt
+                }
+                existsRelatedTaskCall={existsRelatedTaskCall}
+                projectId={projectId}
+                sessionId={sessionId}
+                showTimestamp={showTimestamp}
               />
             );
-          }
 
-          const elm = (
-            <ConversationItem
-              key={getConversationKey(conversation)}
-              conversation={conversation}
-              getToolResult={getToolResult}
-              getAgentIdForToolUse={getAgentIdForToolUse}
-              getTurnDuration={getTurnDuration}
-              isRootSidechain={isRootSidechain}
-              getSidechainConversations={getSidechainConversations}
-              getSidechainConversationByAgentId={
-                getSidechainConversationByAgentId
-              }
-              getSidechainConversationByPrompt={
-                getSidechainConversationByPrompt
-              }
-              existsRelatedTaskCall={existsRelatedTaskCall}
-              projectId={projectId}
-              sessionId={sessionId}
-            />
-          );
+            const isSidechain =
+              conversation.type !== "summary" &&
+              conversation.type !== "file-history-snapshot" &&
+              conversation.type !== "queue-operation" &&
+              conversation.type !== "progress" &&
+              conversation.isSidechain;
 
-          const isSidechain =
-            conversation.type !== "summary" &&
-            conversation.type !== "file-history-snapshot" &&
-            conversation.type !== "queue-operation" &&
-            conversation.type !== "progress" &&
-            conversation.isSidechain;
-
-          if (conversation.type === "progress") {
-            return [];
-          }
-
-          if (isSidechain) {
-            return [];
-          }
-
-          return [
-            <li
-              className={`w-full flex ${
-                isSidechain ||
-                conversation.type === "assistant" ||
-                conversation.type === "system" ||
-                conversation.type === "summary"
-                  ? "justify-start"
-                  : "justify-end"
-              } animate-in fade-in slide-in-from-bottom-2 duration-300`}
-              key={getConversationKey(conversation)}
-            >
-              <div className="w-full max-w-3xl lg:max-w-4xl sm:w-[90%] md:w-[85%]">
-                {elm}
-              </div>
-            </li>,
-          ];
-        })}
+            return [
+              <li
+                className={`w-full flex ${
+                  isSidechain ||
+                  conversation.type === "assistant" ||
+                  conversation.type === "system" ||
+                  conversation.type === "summary"
+                    ? "justify-start"
+                    : "justify-end"
+                } animate-in fade-in slide-in-from-bottom-2 duration-300`}
+                key={getConversationKey(conversation)}
+              >
+                <div className="w-full max-w-3xl lg:max-w-4xl sm:w-[90%] md:w-[85%]">
+                  {elm}
+                </div>
+              </li>,
+            ];
+          },
+        )}
       </ul>
       <ScheduledMessageNotice scheduledJobs={scheduledJobs} />
     </>

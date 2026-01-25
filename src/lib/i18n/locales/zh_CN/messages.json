@@ -5,7 +5,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/CommandCompletion.tsx",
-        195
+        207
       ]
     ],
     "translation": "可用命令"
@@ -104,7 +104,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/McpTab.tsx",
-        46
+        51
       ]
     ],
     "translation": "重新加载 MCP 服务器"
@@ -339,7 +339,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        505
+        507
       ]
     ],
     "translation": "附加"
@@ -533,11 +533,11 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        462
+        464
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        540
+        544
       ]
     ],
     "translation": "立即发送"
@@ -548,11 +548,11 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        445
+        447
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        523
+        527
       ]
     ],
     "translation": "发送模式"
@@ -563,15 +563,15 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        465
+        467
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        543
+        547
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        560
+        564
       ]
     ],
     "translation": "定时发送"
@@ -582,7 +582,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        472
+        474
       ]
     ],
     "translation": "定时发送时间"
@@ -593,7 +593,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        579
+        583
       ]
     ],
     "translation": "处理中..."
@@ -1358,7 +1358,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/McpTab.tsx",
-        66
+        71
       ]
     ],
     "translation": "加载 MCP 服务器失败:{error}"
@@ -1369,7 +1369,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/McpTab.tsx",
-        75
+        80
       ]
     ],
     "translation": "未找到 MCP 服务器"
@@ -1380,7 +1380,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/McpTab.tsx",
-        38
+        43
       ]
     ],
     "translation": "MCP 服务器"

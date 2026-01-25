@@ -2,6 +2,7 @@ import { SystemError } from "@effect/platform/Error";
 import { Effect, Layer } from "effect";
 import { testFileSystemLayer } from "../../../../testing/layers/testFileSystemLayer";
 import { testPlatformLayer } from "../../../../testing/layers/testPlatformLayer";
+import { AgentSessionRepository } from "../../agent-session/infrastructure/AgentSessionRepository";
 import { EventBus, type IEventBus } from "../../events/services/EventBus";
 import type { InternalEventDeclaration } from "../../events/types/InternalEventDeclaration";
 import { SessionRepository } from "../infrastructure/SessionRepository";
@@ -55,6 +56,13 @@ describe("SessionController", () => {
         getSession: () => Effect.succeed({ session: null }),
         getSessions: () => Effect.succeed({ sessions: [] }),
       });
+
+      const agentSessionRepositoryLayer = Layer.succeed(
+        AgentSessionRepository,
+        {
+          getAgentSessionByAgentId: () => Effect.succeed(null),
+        },
+      );
 
       const sessionMetaServiceLayer = Layer.succeed(SessionMetaService, {
         getSessionMeta: () =>
@@ -113,6 +121,7 @@ describe("SessionController", () => {
           sessionMetaServiceLayer,
           virtualConversationDatabaseLayer,
           eventBusLayer,
+          agentSessionRepositoryLayer,
         ),
       };
     };

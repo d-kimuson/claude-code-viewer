@@ -126,7 +126,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        192
+        221
       ]
     ],
     "translation": "Select enter key behavior"
@@ -137,7 +137,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        303
+        332
       ]
     ],
     "translation": "Select language"
@@ -148,7 +148,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        260
+        289
       ]
     ],
     "translation": "Select permission mode"
@@ -159,7 +159,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        227
+        256
       ]
     ],
     "translation": "Select search hotkey"
@@ -170,7 +170,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        332
+        361
       ]
     ],
     "translation": "Select theme"
@@ -2316,7 +2316,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        184
+        213
       ]
     ],
     "translation": "Enter Key Behavior"
@@ -2327,7 +2327,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        202
+        231
       ]
     ],
     "translation": "Send with Command+Enter"
@@ -2338,7 +2338,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        208
+        237
       ]
     ],
     "translation": "Select Enter key behavior for message input"
@@ -2349,7 +2349,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        199
+        228
       ]
     ],
     "translation": "Send with Enter"
@@ -2360,7 +2360,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        196
+        225
       ]
     ],
     "translation": "Send with Shift+Enter (Default)"
@@ -2371,7 +2371,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        219
+        248
       ]
     ],
     "translation": "Search Hotkey"
@@ -2382,7 +2382,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        234
+        263
       ]
     ],
     "translation": "Command+K"
@@ -2393,7 +2393,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        231
+        260
       ]
     ],
     "translation": "Ctrl+K"
@@ -2404,7 +2404,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        240
+        269
       ]
     ],
     "translation": "Select the hotkey to open search dialog"
@@ -2430,7 +2430,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        295
+        324
       ]
     ],
     "translation": "Language"
@@ -2441,7 +2441,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        319
+        348
       ]
     ],
     "translation": "Select your preferred language"
@@ -2452,7 +2452,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        310
+        339
       ]
     ],
     "translation": "English"
@@ -2463,7 +2463,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        307
+        336
       ]
     ],
     "translation": "Japanese"
@@ -2474,7 +2474,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        313
+        342
       ]
     ],
     "translation": "Chinese (Simplified)"
@@ -2496,7 +2496,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        251
+        280
       ]
     ],
     "translation": "Permission Mode"
@@ -2507,7 +2507,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        267
+        296
       ]
     ],
     "translation": "Accept Edits (Auto-approve file edits)"
@@ -2518,7 +2518,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        270
+        299
       ]
     ],
     "translation": "Bypass Permissions (No prompts)"
@@ -2529,7 +2529,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        264
+        293
       ]
     ],
     "translation": "Default (Confirm Permissions)"
@@ -2540,7 +2540,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        279
+        308
       ]
     ],
     "translation": "Control how file operation permission requests are handled"
@@ -2551,7 +2551,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        273
+        302
       ]
     ],
     "translation": "Plan Mode (Planning only)"
@@ -2562,7 +2562,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        284
+        313
       ]
     ],
     "translation": "This feature is not available in your Claude Code version. All tools are automatically approved."
@@ -2600,6 +2600,28 @@
     ],
     "translation": "System Information"
   },
+  "settings.session.auto_schedule_continue_on_rate_limit": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/components/SettingsControls.tsx",
+        197
+      ]
+    ],
+    "translation": "Auto-schedule Continue on Rate Limit"
+  },
+  "settings.session.auto_schedule_continue_on_rate_limit.description": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/components/SettingsControls.tsx",
+        203
+      ]
+    ],
+    "translation": "Automatically schedule a continue message when Claude hits rate limits"
+  },
   "settings.session.display": {
     "placeholders": {},
     "comments": [],
@@ -2617,7 +2639,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        147
+        155
       ]
     ],
     "translation": "Hide Sessions Without User Messages"
@@ -2628,7 +2650,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        153
+        161
       ]
     ],
     "translation": "Show only sessions that contain user commands or messages"
@@ -2639,7 +2661,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        168
+        176
       ]
     ],
     "translation": "Unify Sessions with Same Title"
@@ -2650,7 +2672,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        174
+        182
       ]
     ],
     "translation": "When multiple sessions have the same title, show only the latest session"
@@ -2676,7 +2698,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        327
+        356
       ]
     ],
     "translation": "Theme"
@@ -2687,7 +2709,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        339
+        368
       ]
     ],
     "translation": "Dark"
@@ -2698,7 +2720,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        348
+        377
       ]
     ],
     "translation": "Select your preferred color theme"
@@ -2709,7 +2731,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        336
+        365
       ]
     ],
     "translation": "Light"
@@ -2720,7 +2742,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        342
+        371
       ]
     ],
     "translation": "System"

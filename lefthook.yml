@@ -12,4 +12,4 @@ pre-commit:
 
     lingui-extract:
       glob: "**/*.{ts,tsx}"
-      run: pnpm lingui:extract && git add src/lib/i18n/locales/*/messages.json
+      run: pnpm lingui:extract && pnpm lingui:compile && git add src/lib/i18n/locales

@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.5.8
+
+### &nbsp;&nbsp;&nbsp;Features
+
+- Add auto-schedule continue on rate limit setting - sessions can automatically resume when Claude Code encounters rate limits &nbsp;-&nbsp; by **d-kimsuon** [<samp>(4f4d1)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/4f4d1fb)
+- Display MCP server health status in addition to availability &nbsp;-&nbsp; by **zhube** [<samp>(7eff6)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/7eff6fc)
+- Enhanced Markdown rendering in exported conversations with improved syntax support and tool result content &nbsp;-&nbsp; by **zhube** [<samp>(d053d)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/d053d6c)
+- Display message timestamps in conversation view &nbsp;-&nbsp; by **zhube** [<samp>(7def2)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/7def2b3)
+
+### &nbsp;&nbsp;&nbsp;Bug Fixes
+
+- Use Path service for cross-platform file path construction &nbsp;-&nbsp; by **d-kimsuon** and **Claude Opus 4.5** [<samp>(d1aaf)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/d1aaf57)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.5.7...0.5.8)
+
 ## 0.5.7
 
 ### &nbsp;&nbsp;&nbsp;Features

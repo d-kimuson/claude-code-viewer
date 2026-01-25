@@ -9,3 +9,7 @@ pre-commit:
       glob: "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}"
       run: pnpm exec biome format --write --no-errors-on-unmatched --files-ignore-unknown=true --colors=off {staged_files}
       stage_fixed: true
+
+    lingui-extract:
+      glob: "**/*.{ts,tsx}"
+      run: pnpm lingui:extract && git add src/lib/i18n/locales/*/messages.json

@@ -18,8 +18,8 @@ describe("parseRateLimitResetTime", () => {
 
       const result = parseRateLimitResetTime(text);
 
-      // 8pm in Asia/Tokyo is 11:00 UTC (JST = UTC+9)
-      expect(result).toBe("2026-01-24T11:00:00.000Z");
+      // 8pm in Asia/Tokyo is 11:00 UTC (JST = UTC+9), +1 minute adjustment
+      expect(result).toBe("2026-01-24T11:01:00.000Z");
     });
 
     it("parses time with Asia/Tokyo timezone in 12-hour format (AM)", () => {
@@ -28,9 +28,9 @@ describe("parseRateLimitResetTime", () => {
       const result = parseRateLimitResetTime(text);
 
       // Current: 10:00 UTC (19:00 JST)
-      // Target: 3am JST = 18:00 UTC
+      // Target: 3am JST = 18:00 UTC, +1 minute adjustment
       // Since 18:00 UTC > 10:00 UTC, it should be today
-      expect(result).toBe("2026-01-24T18:00:00.000Z");
+      expect(result).toBe("2026-01-24T18:01:00.000Z");
     });
 
     it("parses time with colon format (3:00 AM)", () => {
@@ -39,9 +39,9 @@ describe("parseRateLimitResetTime", () => {
       const result = parseRateLimitResetTime(text);
 
       // Current: 10:00 UTC (19:00 JST)
-      // Target: 3:00 AM JST = 18:00 UTC
+      // Target: 3:00 AM JST = 18:00 UTC, +1 minute adjustment
       // Since 18:00 UTC > 10:00 UTC, it should be today
-      expect(result).toBe("2026-01-24T18:00:00.000Z");
+      expect(result).toBe("2026-01-24T18:01:00.000Z");
     });
 
     it("parses time with minutes (8:30pm)", () => {
@@ -49,8 +49,8 @@ describe("parseRateLimitResetTime", () => {
 
       const result = parseRateLimitResetTime(text);
 
-      // 8:30pm in Asia/Tokyo is 11:30 UTC
-      expect(result).toBe("2026-01-24T11:30:00.000Z");
+      // 8:30pm in Asia/Tokyo is 11:30 UTC, +1 minute adjustment
+      expect(result).toBe("2026-01-24T11:31:00.000Z");
     });
 
     it("parses 12pm (noon) correctly", () => {
@@ -59,9 +59,9 @@ describe("parseRateLimitResetTime", () => {
       const result = parseRateLimitResetTime(text);
 
       // Current: 10:00 UTC (19:00 JST)
-      // Target: 12pm (noon) JST = 03:00 UTC
+      // Target: 12pm (noon) JST = 03:00 UTC, +1 minute adjustment
       // Since 03:00 UTC < 10:00 UTC, it should be next day
-      expect(result).toBe("2026-01-25T03:00:00.000Z");
+      expect(result).toBe("2026-01-25T03:01:00.000Z");
     });
 
     it("parses 12am (midnight) correctly", () => {
@@ -70,9 +70,9 @@ describe("parseRateLimitResetTime", () => {
       const result = parseRateLimitResetTime(text);
 
       // Current: 10:00 UTC (19:00 JST)
-      // Target: 12am (midnight) JST = 15:00 UTC
+      // Target: 12am (midnight) JST = 15:00 UTC, +1 minute adjustment
       // Since 15:00 UTC > 10:00 UTC, it should be today
-      expect(result).toBe("2026-01-24T15:00:00.000Z");
+      expect(result).toBe("2026-01-24T15:01:00.000Z");
     });
 
     it("parses time with UTC timezone", () => {
@@ -80,7 +80,8 @@ describe("parseRateLimitResetTime", () => {
 
       const result = parseRateLimitResetTime(text);
 
-      expect(result).toBe("2026-01-24T15:00:00.000Z");
+      // +1 minute adjustment
+      expect(result).toBe("2026-01-24T15:01:00.000Z");
     });
 
     it("parses time with America/New_York timezone", () => {
@@ -88,8 +89,8 @@ describe("parseRateLimitResetTime", () => {
 
       const result = parseRateLimitResetTime(text);
 
-      // 5pm EST is 22:00 UTC (EST = UTC-5)
-      expect(result).toBe("2026-01-24T22:00:00.000Z");
+      // 5pm EST is 22:00 UTC (EST = UTC-5), +1 minute adjustment
+      expect(result).toBe("2026-01-24T22:01:00.000Z");
     });
 
     it("parses time with Europe/London timezone", () => {
@@ -97,8 +98,8 @@ describe("parseRateLimitResetTime", () => {
 
       const result = parseRateLimitResetTime(text);
 
-      // 3pm GMT is 15:00 UTC in winter
-      expect(result).toBe("2026-01-24T15:00:00.000Z");
+      // 3pm GMT is 15:00 UTC in winter, +1 minute adjustment
+      expect(result).toBe("2026-01-24T15:01:00.000Z");
     });
 
     it("handles next day rollover when reset time is earlier than current time", () => {
@@ -109,7 +110,8 @@ describe("parseRateLimitResetTime", () => {
       const result = parseRateLimitResetTime(text);
 
       // 9am JST = 00:00 UTC, but since 00:00 UTC < 10:00 UTC (current), it should be next day
-      expect(result).toBe("2026-01-25T00:00:00.000Z");
+      // +1 minute adjustment
+      expect(result).toBe("2026-01-25T00:01:00.000Z");
     });
   });
 
@@ -160,15 +162,17 @@ describe("parseRateLimitResetTime", () => {
 
       const result = parseRateLimitResetTime(text);
 
-      expect(result).toBe("2026-01-24T11:00:00.000Z");
+      // +1 minute adjustment
+      expect(result).toBe("2026-01-24T11:01:00.000Z");
     });
 
     it("handles case variations in AM/PM", () => {
       const text1 = "You've hit your limit · resets 8PM (Asia/Tokyo)";
       const text2 = "You've hit your limit · resets 8Pm (Asia/Tokyo)";
 
-      expect(parseRateLimitResetTime(text1)).toBe("2026-01-24T11:00:00.000Z");
-      expect(parseRateLimitResetTime(text2)).toBe("2026-01-24T11:00:00.000Z");
+      // +1 minute adjustment
+      expect(parseRateLimitResetTime(text1)).toBe("2026-01-24T11:01:00.000Z");
+      expect(parseRateLimitResetTime(text2)).toBe("2026-01-24T11:01:00.000Z");
     });
 
     it("handles lowercase am/pm", () => {
@@ -176,7 +180,8 @@ describe("parseRateLimitResetTime", () => {
 
       const result = parseRateLimitResetTime(text);
 
-      expect(result).toBe("2026-01-24T11:00:00.000Z");
+      // +1 minute adjustment
+      expect(result).toBe("2026-01-24T11:01:00.000Z");
     });
 
     it("handles uppercase AM/PM", () => {
@@ -184,7 +189,8 @@ describe("parseRateLimitResetTime", () => {
 
       const result = parseRateLimitResetTime(text);
 
-      expect(result).toBe("2026-01-24T11:00:00.000Z");
+      // +1 minute adjustment
+      expect(result).toBe("2026-01-24T11:01:00.000Z");
     });
   });
 });

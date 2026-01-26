@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import {
   ArrowLeftIcon,
   CalendarClockIcon,
+  ListTodoIcon,
   MessageSquareIcon,
   PlugIcon,
 } from "lucide-react";
@@ -22,6 +23,7 @@ import { MobileSidebar } from "./MobileSidebar";
 import { SchedulerTab } from "./SchedulerTab";
 import { SessionsTab } from "./SessionsTab";
 import type { Tab } from "./schema";
+import { TasksTab } from "./TasksTab";
 
 export const SessionSidebar: FC<{
   currentSessionId?: string;
@@ -59,6 +61,12 @@ export const SessionSidebar: FC<{
         icon: PlugIcon,
         title: <Trans id="sidebar.show.mcp.settings" />,
         content: <McpTab projectId={projectId} />,
+      },
+      {
+        id: "tasks",
+        icon: ListTodoIcon,
+        title: "Tasks",
+        content: <TasksTab projectId={projectId} sessionId={activeSessionId} />,
       },
       {
         id: "scheduler",

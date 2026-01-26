@@ -24,6 +24,7 @@ import {
 } from "../core/platform/services/CcvOptionsService";
 import { EnvService } from "../core/platform/services/EnvService";
 import { UserConfigService } from "../core/platform/services/UserConfigService";
+import { decodeProjectId } from "../core/project/functions/id";
 import type { ProjectRepository } from "../core/project/infrastructure/ProjectRepository";
 import { ProjectController } from "../core/project/presentation/ProjectController";
 import type { SchedulerConfigBaseDir } from "../core/scheduler/config";
@@ -36,6 +37,8 @@ import { SearchController } from "../core/search/presentation/SearchController";
 import type { VirtualConversationDatabase } from "../core/session/infrastructure/VirtualConversationDatabase";
 import { SessionController } from "../core/session/presentation/SessionController";
 import type { SessionMetaService } from "../core/session/services/SessionMetaService";
+import { TasksController } from "../core/tasks/presentation/TasksController";
+import { TaskCreateSchema, TaskUpdateSchema } from "../core/tasks/schema";
 import { userConfigSchema } from "../lib/config/config";
 import { effectToResponse } from "../lib/effect/toEffectResponse";
 import type { HonoAppType } from "./app";
@@ -70,6 +73,7 @@ export const routes = (app: HonoAppType, options: CliOptions) =>
     const schedulerController = yield* SchedulerController;
     const featureFlagController = yield* FeatureFlagController;
     const searchController = yield* SearchController;
+    const tasksController = yield* TasksController;
 
     // middleware
     const authMiddlewareService = yield* AuthMiddleware;
@@ -700,6 +704,95 @@ export const routes = (app: HonoAppType, options: CliOptions) =>
 
           return response;
         })
+
+        /**
+         * TasksController Routes
+         */
+        .get(
+          "/api/tasks",
+          zValidator(
+            "query",
+            z.object({
+              projectId: z.string(),
+              sessionId: z.string().optional(),
+            }),
+          ),
+          async (c) => {
+            const { projectId, sessionId } = c.req.valid("query");
+            const projectPath = decodeProjectId(projectId);
+
+            const response = await effectToResponse(
+              c,
+              tasksController.listTasks(projectPath, sessionId).pipe(
+                Effect.map((tasks) => ({
+                  status: 200 as const,
+                  response: tasks,
+                })),
+                Effect.provide(runtime),
+              ),
+            );
+            return response;
+          },
+        )
+        .post(
+          "/api/tasks",
+          zValidator(
+            "query",
+            z.object({
+              projectId: z.string(),
+              sessionId: z.string().optional(),
+            }),
+          ),
+          zValidator("json", TaskCreateSchema),
+          async (c) => {
+            const { projectId, sessionId } = c.req.valid("query");
+            const body = c.req.valid("json");
+            const projectPath = decodeProjectId(projectId);
+
+            const response = await effectToResponse(
+              c,
+              tasksController.createTask(projectPath, body, sessionId).pipe(
+                Effect.map((task) => ({
+                  status: 200 as const,
+                  response: task,
+                })),
+                Effect.provide(runtime),
+              ),
+            );
+            return response;
+          },
+        )
+        .patch(
+          "/api/tasks/:id",
+          zValidator(
+            "query",
+            z.object({
+              projectId: z.string(),
+              sessionId: z.string().optional(),
+            }),
+          ),
+          zValidator("json", TaskUpdateSchema.omit({ taskId: true })),
+          async (c) => {
+            const { id } = c.req.param();
+            const { projectId, sessionId } = c.req.valid("query");
+            const body = c.req.valid("json");
+            const projectPath = decodeProjectId(projectId);
+
+            const response = await effectToResponse(
+              c,
+              tasksController
+                .updateTask(projectPath, { ...body, taskId: id }, sessionId)
+                .pipe(
+                  Effect.map((task) => ({
+                    status: 200 as const,
+                    response: task,
+                  })),
+                  Effect.provide(runtime),
+                ),
+            );
+            return response;
+          },
+        )
     );
   });
 

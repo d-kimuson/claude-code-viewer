@@ -4,6 +4,7 @@ export const tabSchema = z.enum([
   "sessions",
   "mcp",
   "scheduler",
+  "tasks",
   "settings",
   "system-info",
 ]);

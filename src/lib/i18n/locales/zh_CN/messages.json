@@ -2768,7 +2768,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        96
+        104
       ]
     ],
     "translation": "返回项目列表"
@@ -2783,7 +2783,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        60
+        62
       ]
     ],
     "translation": "显示 MCP 服务器设置"
@@ -2794,7 +2794,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        66
+        74
       ]
     ],
     "translation": "显示定时任务"
@@ -2809,7 +2809,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        47
+        49
       ]
     ],
     "translation": "显示会话列表"

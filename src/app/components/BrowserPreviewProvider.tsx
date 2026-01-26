@@ -1,10 +1,33 @@
 import type { FC, ReactNode } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 import { BrowserPreviewContext } from "../../hooks/useBrowserPreview";
 
 interface BrowserPreviewProviderProps {
   children: ReactNode;
 }
+
+const isBlockedDomain = (url: string) => {
+  try {
+    const hostname = new URL(url).hostname;
+    // Common domains that block iframing
+    const blockedDomains = [
+      "github.com",
+      "www.github.com",
+      "gitlab.com",
+      "www.gitlab.com",
+      "twitter.com",
+      "x.com",
+      "facebook.com",
+      "linkedin.com",
+      "google.com",
+      "www.google.com",
+    ];
+    return blockedDomains.some((domain) => hostname.endsWith(domain));
+  } catch {
+    return false;
+  }
+};
 
 export const BrowserPreviewProvider: FC<BrowserPreviewProviderProps> = ({
   children,
@@ -19,6 +42,17 @@ export const BrowserPreviewProvider: FC<BrowserPreviewProviderProps> = ({
   const isResizingRef = useRef(false);
 
   const openPreview = useCallback((url: string) => {
+    if (isBlockedDomain(url)) {
+      toast.warning("This website cannot be previewed instantly.", {
+        description: "It blocks embedded views. Click to open in a new tab.",
+        action: {
+          label: "Open Link",
+          onClick: () => window.open(url, "_blank"),
+        },
+        duration: 5000,
+      });
+      return;
+    }
     setPreviewUrl(url);
     setCurrentUrl(url);
     setInputUrl(url);
@@ -61,6 +95,17 @@ export const BrowserPreviewProvider: FC<BrowserPreviewProviderProps> = ({
 
   const handleUrlSubmit = useCallback(() => {
     if (inputUrl) {
+      if (isBlockedDomain(inputUrl)) {
+        toast.warning("This website cannot be previewed instantly.", {
+          description: "It blocks embedded views. Click to open in a new tab.",
+          action: {
+            label: "Open Link",
+            onClick: () => window.open(inputUrl, "_blank"),
+          },
+          duration: 5000,
+        });
+        return;
+      }
       setPreviewUrl(inputUrl);
       setCurrentUrl(inputUrl);
     }

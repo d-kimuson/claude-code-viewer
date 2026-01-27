@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.5.9
+
+### &nbsp;&nbsp;&nbsp;Features
+
+- Add lingui-extract hook and update reference line numbers in i18n message source files &nbsp;-&nbsp; by **zhube** [<samp>(ad9d8)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/ad9d8e7)
+- Update the lefthook configuration, add a compilation step and temporarily store the entire i18n locales directory after lingui extraction. &nbsp;-&nbsp; by **zhube** [<samp>(f1ce7)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/f1ce7be)
+- Added task management functionality to the session sidebar and refactored the server dependency injection layer. &nbsp;-&nbsp; by **ZHUBoer** [<samp>(2bda6)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/2bda682)
+- Added detection of websites that block embedded previews &nbsp;-&nbsp; by **ZHUBoer** [<samp>(efeae)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/efeae43)
+
+### &nbsp;&nbsp;&nbsp;Bug Fixes
+
+- Handle missing task directories gracefully and improve task sidebar UI &nbsp;-&nbsp; by **d-kimsuon** and **Claude Opus 4.5** [<samp>(58a25)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/58a25e6)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.5.8...0.5.9)
+
 ## 0.5.8
 
 ### &nbsp;&nbsp;&nbsp;Features

@@ -2,7 +2,7 @@
 import { homedir } from "node:os";
 import { join } from "node:path";
 import { FileSystem, Path } from "@effect/platform";
-import { Context, Effect, Option as EffectOption, Layer } from "effect";
+import { Context, Effect, Layer, Option } from "effect";
 import {
   type Task,
   type TaskCreate,
@@ -55,10 +55,18 @@ export class TasksService extends Context.Tag("TasksService")<
         return normalized.startsWith("-") ? normalized : `-${normalized}`;
       };
 
+      /**
+       * Resolves the project UUID for a given project path.
+       * Returns Option.none() when:
+       * - Project metadata directory doesn't exist
+       * - No UUID file found in project metadata directory
+       * - Specific sessionId is provided but its tasks directory doesn't exist
+       * Returns Option.some(uuid) when resolution succeeds.
+       */
       const resolveProjectUuid = (
         projectPath: string,
         specificSessionId?: string,
-      ) =>
+      ): Effect.Effect<Option.Option<string>, Error> =>
         Effect.gen(function* () {
           const claudeDir = yield* getClaudeDir();
 
@@ -70,24 +78,19 @@ export class TasksService extends Context.Tag("TasksService")<
               specificSessionId,
             );
             if (yield* fs.exists(sessionTasksDir)) {
-              return specificSessionId;
+              return Option.some(specificSessionId);
             }
-            // Fallback or fail? Fail seems appropriate if user requested a specific ID
-            return yield* Effect.fail(
-              new Error(
-                `Requested session ${specificSessionId} has no tasks directory`,
-              ),
-            );
+            // Return none when requested session has no tasks directory
+            return Option.none<string>();
           }
-
-          let projectMetaDir: string;
-          // ... rest of auto-resolution logic ...
 
           // Check if the projectPath is already pointing to a metadata directory in .claude/projects
           // Path structure: .../.claude/projects/<normalized-id>
           const isMetadataPath =
             projectPath.includes(join(CLAUDE_DIR_NAME, PROJECTS_DIR_NAME)) &&
             projectPath.split(path.sep).pop()?.startsWith("-");
+
+          let projectMetaDir: string;
 
           if (isMetadataPath && (yield* fs.exists(projectPath))) {
             projectMetaDir = projectPath;
@@ -100,98 +103,154 @@ export class TasksService extends Context.Tag("TasksService")<
             );
           }
 
-          return yield* Effect.gen(function* () {
-            // Check if directory exists
-            const exists = yield* fs.exists(projectMetaDir);
-            if (!exists) {
-              return yield* Effect.fail(
-                new Error(
-                  `Project metadata directory not found: ${projectMetaDir}`,
-                ),
-              );
-            }
+          // Check if directory exists
+          const exists = yield* fs.exists(projectMetaDir);
+          if (!exists) {
+            return Option.none<string>();
+          }
 
-            // Read directory to find all UUID-like files (json, jsonl, or no extension)
-            const files = yield* fs.readDirectory(projectMetaDir);
+          // Read directory to find all UUID-like files (json, jsonl, or no extension)
+          const files = yield* fs.readDirectory(projectMetaDir);
 
-            const uuidPattern =
-              /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i;
+          const uuidPattern =
+            /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i;
 
-            const candidates = files.filter((f) => uuidPattern.test(f));
+          const candidates = files.filter((f) => uuidPattern.test(f));
 
-            if (candidates.length === 0) {
-              return yield* Effect.fail(
-                new Error(`No UUID file found in: ${projectMetaDir}`),
-              );
-            }
+          if (candidates.length === 0) {
+            return Option.none<string>();
+          }
 
-            // Analyze candidates: valid UUID, mtime, and whether they have a tasks directory
-            const candidateInfo = yield* Effect.all(
-              candidates.map((file) =>
-                Effect.gen(function* () {
-                  const fullPath = path.join(projectMetaDir, file);
-                  const stat = yield* fs.stat(fullPath);
-                  const match = file.match(uuidPattern);
-                  const uuid = match ? match[0] : file;
+          // Analyze candidates: valid UUID, mtime, and whether they have a tasks directory
+          const candidateInfo = yield* Effect.all(
+            candidates.map((file) =>
+              Effect.gen(function* () {
+                const fullPath = path.join(projectMetaDir, file);
+                const stat = yield* fs.stat(fullPath);
+                const match = file.match(uuidPattern);
+                const uuid = match ? match[0] : file;
 
-                  const tasksPath = path.join(claudeDir, TASKS_DIR_NAME, uuid);
-                  const hasTasks = yield* fs.exists(tasksPath);
+                const tasksPath = path.join(claudeDir, TASKS_DIR_NAME, uuid);
+                const hasTasks = yield* fs.exists(tasksPath);
 
-                  return {
-                    file,
-                    uuid,
-                    mtime: EffectOption.getOrElse(
-                      stat.mtime,
-                      () => new Date(0),
-                    ),
-                    hasTasks,
-                  };
-                }),
-              ),
-              { concurrency: "unbounded" },
-            );
+                return {
+                  file,
+                  uuid,
+                  mtime: Option.getOrElse(stat.mtime, () => new Date(0)),
+                  hasTasks,
+                };
+              }),
+            ),
+            { concurrency: "unbounded" },
+          );
 
-            // Sort logic:
-            // 1. Has tasks directory (Priority #1)
-            // 2. Newer mtime (Priority #2)
-            const sorted = candidateInfo.sort((a, b) => {
-              if (a.hasTasks && !b.hasTasks) return -1;
-              if (!a.hasTasks && b.hasTasks) return 1;
-              return b.mtime.getTime() - a.mtime.getTime();
-            });
-
-            const best = sorted[0];
-
-            if (!best) {
-              return yield* Effect.fail(
-                new Error(
-                  "Unexpected error: No project candidate available after filtering",
-                ),
-              );
-            }
-
-            return best.uuid;
+          // Sort logic:
+          // 1. Has tasks directory (Priority #1)
+          // 2. Newer mtime (Priority #2)
+          const sorted = candidateInfo.sort((a, b) => {
+            if (a.hasTasks && !b.hasTasks) return -1;
+            if (!a.hasTasks && b.hasTasks) return 1;
+            return b.mtime.getTime() - a.mtime.getTime();
           });
+
+          const best = sorted[0];
+
+          if (!best) {
+            return Option.none<string>();
+          }
+
+          return Option.some(best.uuid);
         });
 
-      const getTasksDir = (projectPath: string, specificSessionId?: string) =>
+      /**
+       * Resolves the project UUID, but fails with an error when resolution fails.
+       * Used by operations that require a valid project (getTask, createTask, updateTask).
+       */
+      const resolveProjectUuidOrFail = (
+        projectPath: string,
+        specificSessionId?: string,
+      ): Effect.Effect<string, Error> =>
         Effect.gen(function* () {
-          const claudeDir = yield* getClaudeDir();
-          const uuid = yield* resolveProjectUuid(
+          const uuidOption = yield* resolveProjectUuid(
             projectPath,
             specificSessionId,
           );
-          const tasksDir = path.join(claudeDir, TASKS_DIR_NAME, uuid);
-          return tasksDir;
+
+          if (Option.isNone(uuidOption)) {
+            if (specificSessionId) {
+              return yield* Effect.fail(
+                new Error(
+                  `Requested session ${specificSessionId} has no tasks directory`,
+                ),
+              );
+            }
+            const claudeDir = yield* getClaudeDir();
+            const identifier = normalizeProjectPath(projectPath);
+            const projectMetaDir = path.join(
+              claudeDir,
+              PROJECTS_DIR_NAME,
+              identifier,
+            );
+            return yield* Effect.fail(
+              new Error(
+                `Project metadata directory not found or no UUID: ${projectMetaDir}`,
+              ),
+            );
+          }
+
+          return uuidOption.value;
+        });
+
+      /**
+       * Gets the tasks directory path for a given project.
+       * Returns Option.none() when resolution fails.
+       * Used by listTasks for graceful handling of missing directories.
+       */
+      const getTasksDir = (
+        projectPath: string,
+        specificSessionId?: string,
+      ): Effect.Effect<Option.Option<string>, Error> =>
+        Effect.gen(function* () {
+          const claudeDir = yield* getClaudeDir();
+          const uuidOption = yield* resolveProjectUuid(
+            projectPath,
+            specificSessionId,
+          );
+
+          return Option.map(uuidOption, (uuid) =>
+            path.join(claudeDir, TASKS_DIR_NAME, uuid),
+          );
+        });
+
+      /**
+       * Gets the tasks directory path, but fails with an error when resolution fails.
+       * Used by operations that require a valid directory (getTask, createTask, updateTask).
+       */
+      const getTasksDirOrFail = (
+        projectPath: string,
+        specificSessionId?: string,
+      ): Effect.Effect<string, Error> =>
+        Effect.gen(function* () {
+          const claudeDir = yield* getClaudeDir();
+          const uuid = yield* resolveProjectUuidOrFail(
+            projectPath,
+            specificSessionId,
+          );
+          return path.join(claudeDir, TASKS_DIR_NAME, uuid);
         });
 
       const listTasks = (projectPath: string, specificSessionId?: string) =>
         Effect.gen(function* () {
-          const tasksDir = yield* getTasksDir(projectPath, specificSessionId);
+          const tasksDirOption = yield* getTasksDir(
+            projectPath,
+            specificSessionId,
+          );
 
-          if (!tasksDir) {
+          if (Option.isNone(tasksDirOption)) {
             return [];
           }
+
+          const tasksDir = tasksDirOption.value;
 
           const exists = yield* fs.exists(tasksDir);
           if (!exists) {
@@ -206,32 +265,61 @@ export class TasksService extends Context.Tag("TasksService")<
             const content = yield* fs.readFileString(path.join(tasksDir, file));
             try {
               const task = JSON.parse(content);
-              // Validate with schema optionally, or just cast
+              // Validate with schema optionally
               const parsed = TaskSchema.safeParse(task);
               if (parsed.success) {
                 tasks.push(parsed.data);
               } else {
                 console.warn(`Invalid task file ${file}:`, parsed.error);
-                // Debugging: Push invalid tasks so we can see them
-                tasks.push({
-                  id: task.id || file.replace(".json", ""),
-                  subject: task.subject || task.title || "Invalid Task Schema",
+                // Create a fallback task for invalid schema
+                const fallbackTask: Task = {
+                  id:
+                    typeof task === "object" &&
+                    task !== null &&
+                    "id" in task &&
+                    typeof task.id === "string"
+                      ? task.id
+                      : file.replace(".json", ""),
+                  subject:
+                    typeof task === "object" &&
+                    task !== null &&
+                    "subject" in task &&
+                    typeof task.subject === "string"
+                      ? task.subject
+                      : typeof task === "object" &&
+                          task !== null &&
+                          "title" in task &&
+                          typeof task.title === "string"
+                        ? task.title
+                        : "Invalid Task Schema",
                   description: `Validation Error: ${JSON.stringify(parsed.error.format())}. Raw: ${JSON.stringify(task)}`,
-                  status: task.status || "failed",
+                  status:
+                    typeof task === "object" &&
+                    task !== null &&
+                    "status" in task &&
+                    typeof task.status === "string" &&
+                    (task.status === "pending" ||
+                      task.status === "in_progress" ||
+                      task.status === "completed" ||
+                      task.status === "failed")
+                      ? task.status
+                      : "failed",
                   blocks: [],
                   blockedBy: [],
-                } as unknown as Task);
+                };
+                tasks.push(fallbackTask);
               }
             } catch (e) {
               console.error(`Failed to parse task file ${file}`, e);
-              tasks.push({
+              const fallbackTask: Task = {
                 id: file.replace(".json", ""),
                 subject: "Corrupted Task File",
                 description: String(e),
                 status: "failed",
                 blocks: [],
                 blockedBy: [],
-              } as unknown as Task);
+              };
+              tasks.push(fallbackTask);
             }
           }
 
@@ -244,7 +332,10 @@ export class TasksService extends Context.Tag("TasksService")<
         specificSessionId?: string,
       ) =>
         Effect.gen(function* () {
-          const tasksDir = yield* getTasksDir(projectPath, specificSessionId);
+          const tasksDir = yield* getTasksDirOrFail(
+            projectPath,
+            specificSessionId,
+          );
           const taskFile = path.join(tasksDir, `${taskId}.json`);
 
           const exists = yield* fs.exists(taskFile);
@@ -263,7 +354,10 @@ export class TasksService extends Context.Tag("TasksService")<
         specificSessionId?: string,
       ) =>
         Effect.gen(function* () {
-          const tasksDir = yield* getTasksDir(projectPath, specificSessionId);
+          const tasksDir = yield* getTasksDirOrFail(
+            projectPath,
+            specificSessionId,
+          );
           // Ensure directory exists
           const dirExists = yield* fs.exists(tasksDir);
           if (!dirExists) {
@@ -304,7 +398,10 @@ export class TasksService extends Context.Tag("TasksService")<
         specificSessionId?: string,
       ) =>
         Effect.gen(function* () {
-          const tasksDir = yield* getTasksDir(projectPath, specificSessionId);
+          const tasksDir = yield* getTasksDirOrFail(
+            projectPath,
+            specificSessionId,
+          );
           const filePath = path.join(tasksDir, `${update.taskId}.json`);
 
           const exists = yield* fs.exists(filePath);

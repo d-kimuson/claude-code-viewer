@@ -3,21 +3,15 @@ import type {
   TaskCreate,
   TaskUpdate,
 } from "../../server/core/tasks/schema";
-
-const getBaseUrl = () => "/api/tasks";
+import { honoClient } from "./client";
 
 export const listTasks = async (
   projectId: string,
   sessionId?: string,
 ): Promise<Task[]> => {
-  const url = new URL(getBaseUrl(), window.location.origin);
-  url.searchParams.set("projectId", projectId);
-  if (sessionId) url.searchParams.set("sessionId", sessionId);
-
-  const response = await fetch(url.toString());
-  if (!response.ok) {
-    throw new Error("Failed to list tasks");
-  }
+  const response = await honoClient.api.tasks.$get({
+    query: { projectId, sessionId },
+  });
   return response.json();
 };
 
@@ -26,42 +20,23 @@ export const createTask = async (
   task: TaskCreate,
   sessionId?: string,
 ): Promise<Task> => {
-  const url = new URL(getBaseUrl(), window.location.origin);
-  url.searchParams.set("projectId", projectId);
-  if (sessionId) url.searchParams.set("sessionId", sessionId);
-
-  const response = await fetch(url.toString(), {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(task),
+  const response = await honoClient.api.tasks.$post({
+    query: { projectId, sessionId },
+    json: task,
   });
-  if (!response.ok) {
-    throw new Error("Failed to create task");
-  }
   return response.json();
 };
 
 export const updateTask = async (
   projectId: string,
   taskId: string,
-  update: Partial<TaskUpdate>,
+  update: Omit<TaskUpdate, "taskId">,
   sessionId?: string,
 ): Promise<Task> => {
-  const url = new URL(`${getBaseUrl()}/${taskId}`, window.location.origin);
-  url.searchParams.set("projectId", projectId);
-  if (sessionId) url.searchParams.set("sessionId", sessionId);
-
-  const response = await fetch(url.toString(), {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(update),
+  const response = await honoClient.api.tasks[":id"].$patch({
+    param: { id: taskId },
+    query: { projectId, sessionId },
+    json: update,
   });
-  if (!response.ok) {
-    throw new Error("Failed to update task");
-  }
   return response.json();
 };

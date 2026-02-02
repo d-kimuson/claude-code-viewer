@@ -52,24 +52,6 @@ pnpm test
 
 **TDD Workflow**: Write tests → Run tests → Implement → Verify → Quality checks
 
-### Commit Messages
-
-Use Conventional Commits format (`type: description`). Messages appear in release notes, so write them user-facing.
-
-**Type selection** (for release note relevance):
-- `feat`: New user-facing feature (appears in "Features" section)
-- `fix`: Bug fix affecting users (appears in "Bug Fixes" section)
-- `chore`, `ci`, `build`, `refactor`: Internal changes (excluded from release notes)
-
-**Critical**: `fix` is for user-facing bugs only. Internal fixes (linter errors, type errors, build scripts) use `chore`.
-
-**Message quality**: Write as if it appears in release notes.
-- ❌ `fix: fix lingui error` (internal issue, not user-facing)
-- ❌ `feat: add button` (too vague for release notes)
-- ✅ `feat: add dark mode toggle to settings` (specific, user-facing)
-- ✅ `fix: session list not updating after deletion` (describes user impact)
-- ✅ `chore: update lingui compiled messages` (clearly internal)
-
 ## Key Directory Patterns
 
 - `src/server/hono/route.ts` - Hono API routes definition (all routes defined here)

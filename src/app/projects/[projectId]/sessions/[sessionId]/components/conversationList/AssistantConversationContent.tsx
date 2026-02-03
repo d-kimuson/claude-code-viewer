@@ -60,7 +60,7 @@ export const AssistantConversationContent: FC<{
 
   if (content.type === "thinking") {
     return (
-      <Card className="bg-muted/50 border-dashed gap-2 py-3 mb-2 hover:shadow-sm transition-all duration-200">
+      <Card className="bg-muted/50 border-dashed gap-2 py-1 mb-2 hover:shadow-sm transition-all duration-200">
         <Collapsible>
           <CollapsibleTrigger asChild>
             <CardHeader className="cursor-pointer hover:bg-muted/80 rounded-t-lg transition-all duration-200 py-0 px-4 group">

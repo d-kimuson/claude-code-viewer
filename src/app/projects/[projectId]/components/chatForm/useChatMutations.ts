@@ -14,12 +14,24 @@ export const useCreateSessionProcessMutation = (
       input: MessageInput;
       baseSessionId?: string;
     }) => {
+      const { ccOptions, forkSession, ...input } = options.input;
+
+      const getBaseSession = ():
+        | undefined
+        | { type: "fork"; sessionId: string }
+        | { type: "resume"; sessionId: string } => {
+        if (!options.baseSessionId) return undefined;
+        const sessionType = forkSession !== false ? "fork" : "resume";
+        return { type: sessionType, sessionId: options.baseSessionId };
+      };
+
       const response = await honoClient.api.cc["session-processes"].$post(
         {
           json: {
             projectId,
-            baseSessionId: options.baseSessionId,
-            input: options.input,
+            baseSession: getBaseSession(),
+            input,
+            ccOptions,
           },
         },
         {

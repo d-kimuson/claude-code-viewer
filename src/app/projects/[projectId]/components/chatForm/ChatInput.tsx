@@ -28,10 +28,12 @@ import {
 import { Textarea } from "../../../../../components/ui/textarea";
 import { useCreateSchedulerJob } from "../../../../../hooks/useScheduler";
 import type {
+  CCOptionsSchema,
   DocumentBlockParam,
   ImageBlockParam,
 } from "../../../../../server/core/claude-code/schema";
 import { useConfig } from "../../../../hooks/useConfig";
+import { ClaudeCodeSettingsPopover } from "./ClaudeCodeSettingsForm";
 import type { CommandCompletionRef } from "./CommandCompletion";
 import { isInCompletionContext } from "./completionUtils";
 import type { FileCompletionRef } from "./FileCompletion";
@@ -42,6 +44,8 @@ export interface MessageInput {
   text: string;
   images?: ImageBlockParam[];
   documents?: DocumentBlockParam[];
+  ccOptions?: CCOptionsSchema;
+  forkSession?: boolean;
 }
 
 export interface ChatInputProps {
@@ -57,6 +61,7 @@ export interface ChatInputProps {
   buttonSize?: "sm" | "default" | "lg";
   enableScheduledSend?: boolean;
   baseSessionId?: string | null;
+  enableCCOptions?: boolean;
 }
 
 export const ChatInput: FC<ChatInputProps> = ({
@@ -72,6 +77,7 @@ export const ChatInput: FC<ChatInputProps> = ({
   buttonSize = "lg",
   enableScheduledSend = false,
   baseSessionId = null,
+  enableCCOptions = false,
 }) => {
   // Parse minHeight prop to get pixel value (default to 48px for 1.5 lines)
   // Supports both "200px" and Tailwind format like "min-h-[200px]"
@@ -110,6 +116,10 @@ export const ChatInput: FC<ChatInputProps> = ({
     const minutes = String(now.getMinutes()).padStart(2, "0");
     return `${year}-${month}-${day}T${hours}:${minutes}`;
   });
+  const [ccOptions, setCCOptions] = useState<CCOptionsSchema | undefined>(
+    undefined,
+  );
+  const [forkSession, setForkSession] = useState(true);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -196,7 +206,9 @@ export const ChatInput: FC<ChatInputProps> = ({
           message: {
             content: message,
             projectId,
-            baseSessionId,
+            baseSession: baseSessionId
+              ? { type: "resume", sessionId: baseSessionId }
+              : null,
           },
           enabled: true,
         });
@@ -233,6 +245,8 @@ export const ChatInput: FC<ChatInputProps> = ({
         text: message,
         images: images.length > 0 ? images : undefined,
         documents: documents.length > 0 ? documents : undefined,
+        ccOptions: ccOptions,
+        forkSession: baseSessionId ? forkSession : undefined,
       });
 
       setMessage("");
@@ -440,7 +454,7 @@ export const ChatInput: FC<ChatInputProps> = ({
             </div>
           )}
 
-          <div className="flex flex-col gap-2 px-5 py-2.5 bg-muted/10 border-t border-border/30 backdrop-blur-sm">
+          <div className="flex flex-col gap-2 px-5 py-1 bg-muted/10 border-t border-border/30 backdrop-blur-sm">
             {enableScheduledSend && sendMode === "scheduled" && (
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 pt-1 animate-in fade-in duration-200">
                 <Label htmlFor="send-mode-mobile" className="text-xs sr-only">
@@ -514,6 +528,16 @@ export const ChatInput: FC<ChatInputProps> = ({
                   >
                     {message.length}
                   </span>
+                )}
+                {enableCCOptions && (
+                  <ClaudeCodeSettingsPopover
+                    value={ccOptions}
+                    onChange={setCCOptions}
+                    disabled={isPending || disabled}
+                    showForkOption={Boolean(baseSessionId)}
+                    forkSession={forkSession}
+                    onForkSessionChange={setForkSession}
+                  />
                 )}
               </div>
 

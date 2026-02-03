@@ -139,12 +139,10 @@ const LayerImpl = Effect.gen(function* () {
       const claudeMdPath = path.join(projectPath, "CLAUDE.md");
       const claudeMdExists = yield* fileSystem.exists(claudeMdPath);
 
-      const result = yield* claudeCodeLifeCycleService.startTask({
-        baseSession: {
-          cwd: projectPath,
-          projectId,
-          sessionId: undefined,
-        },
+      const result = yield* claudeCodeLifeCycleService.startSessionProcess({
+        projectId,
+        cwd: projectPath,
+        baseSession: undefined,
         userConfig,
         input: {
           text: claudeMdExists ? "describe this project" : "/init",

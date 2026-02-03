@@ -35,7 +35,7 @@ describe("SchedulerService", () => {
       getSessionProcesses: () => Effect.succeed([]),
       getSessionProcess: () => Effect.succeed({} as never),
       getTask: () => Effect.succeed({} as never),
-      changeTaskState: () => Effect.succeed({} as never),
+      changeTurnState: () => Effect.succeed({} as never),
     },
   );
 
@@ -121,7 +121,7 @@ describe("SchedulerService", () => {
       message: {
         content: "test message",
         projectId: "project-1",
-        baseSessionId: null,
+        baseSession: null,
       },
       enabled: false,
     };
@@ -152,7 +152,7 @@ describe("SchedulerService", () => {
       message: {
         content: "test message",
         projectId: "project-1",
-        baseSessionId: null,
+        baseSession: null,
       },
       enabled: false,
     };
@@ -180,7 +180,7 @@ describe("SchedulerService", () => {
       message: {
         content: "test message",
         projectId: "project-1",
-        baseSessionId: null,
+        baseSession: null,
       },
       enabled: false,
     };
@@ -210,7 +210,7 @@ describe("SchedulerService", () => {
       message: {
         content: "test message",
         projectId: "project-1",
-        baseSessionId: null,
+        baseSession: null,
       },
       enabled: false,
     };

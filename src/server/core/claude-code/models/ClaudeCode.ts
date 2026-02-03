@@ -176,7 +176,14 @@ export const query = (
   prompt: AgentSdkPrompt,
   options: AgentSdkQueryOptions,
 ) => {
-  const { canUseTool, permissionMode, hooks, ...baseOptions } = options;
+  const {
+    canUseTool,
+    permissionMode,
+    hooks,
+    systemPrompt,
+    settingSources,
+    ...baseOptions
+  } = options;
 
   return Effect.gen(function* () {
     const { claudeCodeExecutablePath, claudeCodeVersion } = yield* Config;
@@ -184,6 +191,8 @@ export const query = (
 
     const options: AgentSdkQueryOptions = {
       ...baseOptions,
+      systemPrompt,
+      settingSources,
       pathToClaudeCodeExecutable: claudeCodeExecutablePath,
       disallowedTools: [
         "AskUserQuestion",
@@ -197,17 +206,14 @@ export const query = (
     };
 
     if (!availableFeatures.agentSdk) {
-      return yield* Effect.fail(
-        new ClaudeCodeAgentSdkNotSupportedError({
-          message: "Agent SDK is not supported in this version of Claude Code",
-        }),
-      );
+      return yield* new ClaudeCodeAgentSdkNotSupportedError({
+        message: "Agent SDK is not supported in this version of Claude Code",
+      });
     }
 
     return agentSdk.query({
       prompt,
       options: {
-        systemPrompt: { type: "preset", preset: "claude_code" },
         settingSources: ["user", "project", "local"],
         ...options,
       },

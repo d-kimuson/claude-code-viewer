@@ -54,3 +54,56 @@ export const userMessageInputSchema = z.object({
 });
 
 export type UserMessageInputSchema = z.infer<typeof userMessageInputSchema>;
+
+/**
+ * Schema for sandbox network configuration
+ */
+export const sandboxNetworkConfigSchema = z.object({
+  allowedDomains: z.array(z.string()).optional(),
+  allowUnixSockets: z.array(z.string()).optional(),
+  allowAllUnixSockets: z.boolean().optional(),
+  allowLocalBinding: z.boolean().optional(),
+  httpProxyPort: z.number().optional(),
+  socksProxyPort: z.number().optional(),
+});
+
+export type SandboxNetworkConfig = z.infer<typeof sandboxNetworkConfigSchema>;
+
+/**
+ * Schema for sandbox settings
+ */
+export const sandboxSettingsSchema = z.object({
+  enabled: z.boolean().optional(),
+  autoAllowBashIfSandboxed: z.boolean().optional(),
+  allowUnsandboxedCommands: z.boolean().optional(),
+  network: sandboxNetworkConfigSchema.optional(),
+});
+
+export type SandboxSettings = z.infer<typeof sandboxSettingsSchema>;
+
+/**
+ * Schema for Claude Code options (CCOptions)
+ * Based on @anthropic-ai/claude-agent-sdk Options type
+ */
+export const ccOptionsSchema = z.object({
+  disallowedTools: z.array(z.string()).optional(),
+  settingSources: z.array(z.enum(["user", "project", "local"])).optional(),
+  systemPrompt: z
+    .union([
+      z.string(),
+      z.object({
+        type: z.literal("preset"),
+        preset: z.literal("claude_code"),
+        append: z.string().optional(),
+      }),
+    ])
+    .optional(),
+  model: z.string().optional(),
+  sandbox: sandboxSettingsSchema.optional(),
+  maxTurns: z.number().optional(),
+  maxThinkingTokens: z.number().optional(),
+  env: z.record(z.string(), z.string().optional()).optional(),
+  maxBudgetUsd: z.number().optional(),
+});
+
+export type CCOptionsSchema = z.infer<typeof ccOptionsSchema>;

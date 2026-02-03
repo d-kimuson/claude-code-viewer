@@ -24,7 +24,7 @@
     "translation": "Disallowed Tools"
   },
   "settings.systemPrompt.usePreset": {
-    "translation": "Include Claude Code standard system preset"
+    "translation": "Use Claude Code standard system prompt"
   },
   "settings.systemPrompt.additional": {
     "translation": "Additional System Prompt"

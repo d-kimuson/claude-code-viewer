@@ -163,7 +163,7 @@ describe("EventBus", () => {
             status: "running",
             def: {
               type: "new",
-              taskId: "task-1",
+              turnId: "task-1",
             },
           },
           rawUserMessage: "test message",
@@ -219,7 +219,7 @@ describe("EventBus", () => {
 
         const mockPermissionRequest: PermissionRequest = {
           id: "permission-1",
-          taskId: "task-1",
+          turnId: "task-1",
           toolName: "read",
           toolInput: {},
           timestamp: Date.now(),

@@ -5,6 +5,7 @@ import type { InferEffect } from "../../../lib/effect/types";
 import { UserConfigService } from "../../platform/services/UserConfigService";
 import { ProjectRepository } from "../../project/infrastructure/ProjectRepository";
 import type { UserMessageInput } from "../functions/createMessageGenerator";
+import type * as CCTurn from "../models/ClaudeCodeTurn";
 import { ClaudeCodeLifeCycleService } from "../services/ClaudeCodeLifeCycleService";
 
 const LayerImpl = Effect.gen(function* () {
@@ -35,10 +36,20 @@ const LayerImpl = Effect.gen(function* () {
   const createSessionProcess = (options: {
     projectId: string;
     input: UserMessageInput;
-    baseSessionId?: string | undefined;
+    baseSession:
+      | undefined
+      | {
+          type: "fork";
+          sessionId: string;
+        }
+      | {
+          type: "resume";
+          sessionId: string;
+        };
+    ccOptions?: CCTurn.CCOptions;
   }) =>
     Effect.gen(function* () {
-      const { projectId, input, baseSessionId } = options;
+      const { projectId, input, baseSession, ccOptions } = options;
 
       const { project } = yield* projectRepository.getProject(projectId);
       const userConfig = yield* userConfigService.getUserConfig();
@@ -50,14 +61,13 @@ const LayerImpl = Effect.gen(function* () {
         } as const satisfies ControllerResponse;
       }
 
-      const result = yield* claudeCodeLifeCycleService.startTask({
-        baseSession: {
-          cwd: project.meta.projectPath,
-          projectId,
-          sessionId: baseSessionId,
-        },
+      const result = yield* claudeCodeLifeCycleService.startSessionProcess({
+        projectId,
+        cwd: project.meta.projectPath,
+        baseSession,
         userConfig,
         input,
+        ccOptions,
       });
 
       const { sessionId } = yield* result.yieldSessionInitialized();
@@ -92,7 +102,7 @@ const LayerImpl = Effect.gen(function* () {
         } as const satisfies ControllerResponse;
       }
 
-      const result = yield* claudeCodeLifeCycleService.continueTask({
+      const result = yield* claudeCodeLifeCycleService.continueSessionProcess({
         sessionProcessId,
         input,
         baseSessionId,

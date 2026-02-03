@@ -50,11 +50,11 @@ const LayerImpl = Effect.gen(function* () {
     });
 
   const createCanUseToolRelatedOptions = (options: {
-    taskId: string;
+    turnId: string;
     userConfig: UserConfig;
     sessionId?: string;
   }) => {
-    const { taskId, userConfig, sessionId } = options;
+    const { turnId, userConfig, sessionId } = options;
 
     return Effect.gen(function* () {
       const claudeCodeConfig = yield* ClaudeCode.Config;
@@ -90,7 +90,7 @@ const LayerImpl = Effect.gen(function* () {
 
         const permissionRequest: PermissionRequest = {
           id: ulid(),
-          taskId,
+          turnId,
           sessionId,
           toolName,
           toolInput,

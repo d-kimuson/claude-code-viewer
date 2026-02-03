@@ -27,7 +27,7 @@
     "translation": "無効化ツール"
   },
   "settings.systemPrompt.usePreset": {
-    "translation": "Claude Code 標準のシステムプリセットを含める"
+    "translation": "Claude Code 標準のシステムプロンプトを使用"
   },
   "settings.systemPrompt.additional": {
     "translation": "追加システムプロンプト"

@@ -20,12 +20,10 @@ export const executeJob = (job: SchedulerJob) =>
       );
     }
 
-    yield* lifeCycleService.startTask({
-      baseSession: {
-        cwd: project.meta.projectPath,
-        projectId: message.projectId,
-        sessionId: message.baseSessionId ?? undefined,
-      },
+    yield* lifeCycleService.startSessionProcess({
+      projectId: message.projectId,
+      cwd: project.meta.projectPath,
+      baseSession: message.baseSession ?? undefined,
       userConfig,
       input: {
         text: message.content,

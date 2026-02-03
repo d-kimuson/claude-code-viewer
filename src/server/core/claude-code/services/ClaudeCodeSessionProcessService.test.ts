@@ -6,7 +6,7 @@ import { Effect } from "effect";
 import { describe, expect, it } from "vitest";
 import { testPlatformLayer } from "../../../../testing/layers/testPlatformLayer";
 import type * as CCSessionProcess from "../models/CCSessionProcess";
-import type * as CCTask from "../models/ClaudeCodeTask";
+import type * as CCTurn from "../models/ClaudeCodeTurn";
 import type { InitMessageContext } from "../types";
 import { ClaudeCodeSessionProcessService } from "./ClaudeCodeSessionProcessService";
 
@@ -23,19 +23,19 @@ const createMockSessionProcessDef = (
 });
 
 // Helper function to create mock new task definition
-const createMockNewTaskDef = (taskId: string): CCTask.NewClaudeCodeTaskDef => ({
+const createMockNewTaskDef = (turnId: string): CCTurn.NewClaudeCodeTurnDef => ({
   type: "new",
-  taskId,
+  turnId,
 });
 
 // Helper function to create mock continue task definition
 const createMockContinueTaskDef = (
-  taskId: string,
+  turnId: string,
   sessionId: string,
   baseSessionId: string,
-): CCTask.ContinueClaudeCodeTaskDef => ({
+): CCTurn.ContinueClaudeCodeTurnDef => ({
   type: "continue",
-  taskId,
+  turnId,
   sessionId,
   baseSessionId,
 });
@@ -63,11 +63,11 @@ describe("ClaudeCodeSessionProcessService", () => {
         const service = yield* ClaudeCodeSessionProcessService;
 
         const sessionDef = createMockSessionProcessDef("process-1");
-        const taskDef = createMockNewTaskDef("task-1");
+        const turnDef = createMockNewTaskDef("task-1");
 
         const result = yield* service.startSessionProcess({
           sessionDef,
-          taskDef,
+          turnDef,
         });
 
         return result;
@@ -83,7 +83,7 @@ describe("ClaudeCodeSessionProcessService", () => {
       expect(result.sessionProcess.type).toBe("pending");
       expect(result.sessionProcess.def.sessionProcessId).toBe("process-1");
       expect(result.task.status).toBe("pending");
-      expect(result.task.def.taskId).toBe("task-1");
+      expect(result.task.def.turnId).toBe("task-1");
     });
 
     it("creates session process with correct task structure", async () => {
@@ -91,17 +91,17 @@ describe("ClaudeCodeSessionProcessService", () => {
         const service = yield* ClaudeCodeSessionProcessService;
 
         const sessionDef = createMockSessionProcessDef("process-1");
-        const taskDef = createMockNewTaskDef("task-1");
+        const turnDef = createMockNewTaskDef("task-1");
 
         const result = yield* service.startSessionProcess({
           sessionDef,
-          taskDef,
+          turnDef,
         });
 
-        return { result, taskDef };
+        return { result, turnDef };
       });
 
-      const { result, taskDef } = await Effect.runPromise(
+      const { result, turnDef } = await Effect.runPromise(
         program.pipe(
           Effect.provide(ClaudeCodeSessionProcessService.Live),
           Effect.provide(testPlatformLayer()),
@@ -110,7 +110,7 @@ describe("ClaudeCodeSessionProcessService", () => {
 
       expect(result.sessionProcess.tasks).toHaveLength(1);
       expect(result.sessionProcess.currentTask).toBe(result.task);
-      expect(result.sessionProcess.currentTask.def).toBe(taskDef);
+      expect(result.sessionProcess.currentTask.def).toBe(turnDef);
     });
   });
 
@@ -120,11 +120,11 @@ describe("ClaudeCodeSessionProcessService", () => {
         const service = yield* ClaudeCodeSessionProcessService;
 
         const sessionDef = createMockSessionProcessDef("process-1");
-        const taskDef = createMockNewTaskDef("task-1");
+        const turnDef = createMockNewTaskDef("task-1");
 
         yield* service.startSessionProcess({
           sessionDef,
-          taskDef,
+          turnDef,
         });
 
         const process = yield* service.getSessionProcess("process-1");
@@ -193,18 +193,18 @@ describe("ClaudeCodeSessionProcessService", () => {
         const service = yield* ClaudeCodeSessionProcessService;
 
         const sessionDef1 = createMockSessionProcessDef("process-1");
-        const taskDef1 = createMockNewTaskDef("task-1");
+        const turnDef1 = createMockNewTaskDef("task-1");
 
         const sessionDef2 = createMockSessionProcessDef("process-2");
-        const taskDef2 = createMockNewTaskDef("task-2");
+        const turnDef2 = createMockNewTaskDef("task-2");
 
         yield* service.startSessionProcess({
           sessionDef: sessionDef1,
-          taskDef: taskDef1,
+          turnDef: turnDef1,
         });
         yield* service.startSessionProcess({
           sessionDef: sessionDef2,
-          taskDef: taskDef2,
+          turnDef: turnDef2,
         });
 
         const processes = yield* service.getSessionProcesses();
@@ -233,11 +233,11 @@ describe("ClaudeCodeSessionProcessService", () => {
 
         // Start and progress to paused state
         const sessionDef = createMockSessionProcessDef("process-1");
-        const taskDef = createMockNewTaskDef("task-1");
+        const turnDef = createMockNewTaskDef("task-1");
 
         yield* service.startSessionProcess({
           sessionDef,
-          taskDef,
+          turnDef,
         });
 
         yield* service.toNotInitializedState({
@@ -268,7 +268,7 @@ describe("ClaudeCodeSessionProcessService", () => {
 
         const result = yield* service.continueSessionProcess({
           sessionProcessId: "process-1",
-          taskDef: continueTaskDef,
+          turnDef: continueTaskDef,
         });
 
         return result;
@@ -282,7 +282,7 @@ describe("ClaudeCodeSessionProcessService", () => {
       );
 
       expect(result.sessionProcess.type).toBe("pending");
-      expect(result.task.def.taskId).toBe("task-2");
+      expect(result.task.def.turnId).toBe("task-2");
       expect(result.sessionProcess.tasks).toHaveLength(2);
     });
 
@@ -291,11 +291,11 @@ describe("ClaudeCodeSessionProcessService", () => {
         const service = yield* ClaudeCodeSessionProcessService;
 
         const sessionDef = createMockSessionProcessDef("process-1");
-        const taskDef = createMockNewTaskDef("task-1");
+        const turnDef = createMockNewTaskDef("task-1");
 
         yield* service.startSessionProcess({
           sessionDef,
-          taskDef,
+          turnDef,
         });
 
         const continueTaskDef = createMockContinueTaskDef(
@@ -307,7 +307,7 @@ describe("ClaudeCodeSessionProcessService", () => {
         const result = yield* Effect.flip(
           service.continueSessionProcess({
             sessionProcessId: "process-1",
-            taskDef: continueTaskDef,
+            turnDef: continueTaskDef,
           }),
         );
 
@@ -340,7 +340,7 @@ describe("ClaudeCodeSessionProcessService", () => {
         const result = yield* Effect.flip(
           service.continueSessionProcess({
             sessionProcessId: "non-existent",
-            taskDef: continueTaskDef,
+            turnDef: continueTaskDef,
           }),
         );
 
@@ -367,11 +367,11 @@ describe("ClaudeCodeSessionProcessService", () => {
         const service = yield* ClaudeCodeSessionProcessService;
 
         const sessionDef = createMockSessionProcessDef("process-1");
-        const taskDef = createMockNewTaskDef("task-1");
+        const turnDef = createMockNewTaskDef("task-1");
 
         yield* service.startSessionProcess({
           sessionDef,
-          taskDef,
+          turnDef,
         });
 
         const result = yield* service.toNotInitializedState({
@@ -399,11 +399,11 @@ describe("ClaudeCodeSessionProcessService", () => {
         const service = yield* ClaudeCodeSessionProcessService;
 
         const sessionDef = createMockSessionProcessDef("process-1");
-        const taskDef = createMockNewTaskDef("task-1");
+        const turnDef = createMockNewTaskDef("task-1");
 
         yield* service.startSessionProcess({
           sessionDef,
-          taskDef,
+          turnDef,
         });
 
         yield* service.toNotInitializedState({
@@ -443,11 +443,11 @@ describe("ClaudeCodeSessionProcessService", () => {
         const service = yield* ClaudeCodeSessionProcessService;
 
         const sessionDef = createMockSessionProcessDef("process-1");
-        const taskDef = createMockNewTaskDef("task-1");
+        const turnDef = createMockNewTaskDef("task-1");
 
         yield* service.startSessionProcess({
           sessionDef,
-          taskDef,
+          turnDef,
         });
 
         yield* service.toNotInitializedState({
@@ -482,11 +482,11 @@ describe("ClaudeCodeSessionProcessService", () => {
         const service = yield* ClaudeCodeSessionProcessService;
 
         const sessionDef = createMockSessionProcessDef("process-1");
-        const taskDef = createMockNewTaskDef("task-1");
+        const turnDef = createMockNewTaskDef("task-1");
 
         yield* service.startSessionProcess({
           sessionDef,
-          taskDef,
+          turnDef,
         });
 
         const initContext = createMockInitContext("session-1");
@@ -522,11 +522,11 @@ describe("ClaudeCodeSessionProcessService", () => {
         const service = yield* ClaudeCodeSessionProcessService;
 
         const sessionDef = createMockSessionProcessDef("process-1");
-        const taskDef = createMockNewTaskDef("task-1");
+        const turnDef = createMockNewTaskDef("task-1");
 
         yield* service.startSessionProcess({
           sessionDef,
-          taskDef,
+          turnDef,
         });
 
         yield* service.toNotInitializedState({
@@ -569,11 +569,11 @@ describe("ClaudeCodeSessionProcessService", () => {
         const service = yield* ClaudeCodeSessionProcessService;
 
         const sessionDef = createMockSessionProcessDef("process-1");
-        const taskDef = createMockNewTaskDef("task-1");
+        const turnDef = createMockNewTaskDef("task-1");
 
         yield* service.startSessionProcess({
           sessionDef,
-          taskDef,
+          turnDef,
         });
 
         yield* service.toNotInitializedState({
@@ -608,7 +608,7 @@ describe("ClaudeCodeSessionProcessService", () => {
       );
 
       const completedTask = process.tasks.find(
-        (t) => t.def.taskId === "task-1",
+        (t) => t.def.turnId === "task-1",
       );
       expect(completedTask?.status).toBe("completed");
       if (completedTask?.status === "completed") {
@@ -621,11 +621,11 @@ describe("ClaudeCodeSessionProcessService", () => {
         const service = yield* ClaudeCodeSessionProcessService;
 
         const sessionDef = createMockSessionProcessDef("process-1");
-        const taskDef = createMockNewTaskDef("task-1");
+        const turnDef = createMockNewTaskDef("task-1");
 
         yield* service.startSessionProcess({
           sessionDef,
-          taskDef,
+          turnDef,
         });
 
         const result = yield* Effect.flip(
@@ -659,11 +659,11 @@ describe("ClaudeCodeSessionProcessService", () => {
         const service = yield* ClaudeCodeSessionProcessService;
 
         const sessionDef = createMockSessionProcessDef("process-1");
-        const taskDef = createMockNewTaskDef("task-1");
+        const turnDef = createMockNewTaskDef("task-1");
 
         yield* service.startSessionProcess({
           sessionDef,
-          taskDef,
+          turnDef,
         });
 
         yield* service.toNotInitializedState({
@@ -693,11 +693,11 @@ describe("ClaudeCodeSessionProcessService", () => {
         const service = yield* ClaudeCodeSessionProcessService;
 
         const sessionDef = createMockSessionProcessDef("process-1");
-        const taskDef = createMockNewTaskDef("task-1");
+        const turnDef = createMockNewTaskDef("task-1");
 
         yield* service.startSessionProcess({
           sessionDef,
-          taskDef,
+          turnDef,
         });
 
         yield* service.toNotInitializedState({
@@ -732,11 +732,11 @@ describe("ClaudeCodeSessionProcessService", () => {
         const service = yield* ClaudeCodeSessionProcessService;
 
         const sessionDef = createMockSessionProcessDef("process-1");
-        const taskDef = createMockNewTaskDef("task-1");
+        const turnDef = createMockNewTaskDef("task-1");
 
         yield* service.startSessionProcess({
           sessionDef,
-          taskDef,
+          turnDef,
         });
 
         yield* service.toNotInitializedState({
@@ -769,16 +769,16 @@ describe("ClaudeCodeSessionProcessService", () => {
   });
 
   describe("getTask", () => {
-    it("can retrieve task by taskId", async () => {
+    it("can retrieve task by turnId", async () => {
       const program = Effect.gen(function* () {
         const service = yield* ClaudeCodeSessionProcessService;
 
         const sessionDef = createMockSessionProcessDef("process-1");
-        const taskDef = createMockNewTaskDef("task-1");
+        const turnDef = createMockNewTaskDef("task-1");
 
         yield* service.startSessionProcess({
           sessionDef,
-          taskDef,
+          turnDef,
         });
 
         const result = yield* service.getTask("task-1");
@@ -793,7 +793,7 @@ describe("ClaudeCodeSessionProcessService", () => {
         ),
       );
 
-      expect(result.task.def.taskId).toBe("task-1");
+      expect(result.task.def.turnId).toBe("task-1");
       expect(result.sessionProcess.def.sessionProcessId).toBe("process-1");
     });
 
@@ -815,7 +815,7 @@ describe("ClaudeCodeSessionProcessService", () => {
 
       expect(error).toMatchObject({
         _tag: "TaskNotFoundError",
-        taskId: "non-existent-task",
+        turnId: "non-existent-task",
       });
     });
   });
@@ -826,11 +826,11 @@ describe("ClaudeCodeSessionProcessService", () => {
         const service = yield* ClaudeCodeSessionProcessService;
 
         const sessionDef = createMockSessionProcessDef("process-1");
-        const taskDef = createMockNewTaskDef("task-1");
+        const turnDef = createMockNewTaskDef("task-1");
 
         const startResult = yield* service.startSessionProcess({
           sessionDef,
-          taskDef,
+          turnDef,
         });
         expect(startResult.sessionProcess.type).toBe("pending");
 
@@ -877,11 +877,11 @@ describe("ClaudeCodeSessionProcessService", () => {
 
         // First task lifecycle
         const sessionDef = createMockSessionProcessDef("process-1");
-        const taskDef1 = createMockNewTaskDef("task-1");
+        const turnDef1 = createMockNewTaskDef("task-1");
 
         yield* service.startSessionProcess({
           sessionDef,
-          taskDef: taskDef1,
+          turnDef: turnDef1,
         });
 
         yield* service.toNotInitializedState({
@@ -904,7 +904,7 @@ describe("ClaudeCodeSessionProcessService", () => {
         });
 
         // Continue with second task
-        const taskDef2 = createMockContinueTaskDef(
+        const turnDef2 = createMockContinueTaskDef(
           "task-2",
           "session-1",
           "session-1",
@@ -912,7 +912,7 @@ describe("ClaudeCodeSessionProcessService", () => {
 
         const continueResult = yield* service.continueSessionProcess({
           sessionProcessId: "process-1",
-          taskDef: taskDef2,
+          turnDef: turnDef2,
         });
         expect(continueResult.sessionProcess.type).toBe("pending");
 

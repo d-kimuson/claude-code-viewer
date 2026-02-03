@@ -10,7 +10,10 @@ import { AgentSessionController } from "../core/agent-session/presentation/Agent
 import { ClaudeCodeController } from "../core/claude-code/presentation/ClaudeCodeController";
 import { ClaudeCodePermissionController } from "../core/claude-code/presentation/ClaudeCodePermissionController";
 import { ClaudeCodeSessionProcessController } from "../core/claude-code/presentation/ClaudeCodeSessionProcessController";
-import { userMessageInputSchema } from "../core/claude-code/schema";
+import {
+  ccOptionsSchema,
+  userMessageInputSchema,
+} from "../core/claude-code/schema";
 import { ClaudeCodeLifeCycleService } from "../core/claude-code/services/ClaudeCodeLifeCycleService";
 import { TypeSafeSSE } from "../core/events/functions/typeSafeSSE";
 import { SSEController } from "../core/events/presentation/SSEController";
@@ -465,7 +468,18 @@ export const routes = (app: HonoAppType, options: CliOptions) =>
             z.object({
               projectId: z.string(),
               input: userMessageInputSchema,
-              baseSessionId: z.string().optional(),
+              baseSession: z.union([
+                z.undefined(),
+                z.object({
+                  type: z.literal("fork"),
+                  sessionId: z.string(),
+                }),
+                z.object({
+                  type: z.literal("resume"),
+                  sessionId: z.string(),
+                }),
+              ]),
+              ccOptions: ccOptionsSchema.optional(),
             }),
           ),
           async (c) => {
@@ -771,7 +785,7 @@ export const routes = (app: HonoAppType, options: CliOptions) =>
               sessionId: z.string().optional(),
             }),
           ),
-          zValidator("json", TaskUpdateSchema.omit({ taskId: true })),
+          zValidator("json", TaskUpdateSchema.omit({ turnId: true })),
           async (c) => {
             const { id } = c.req.param();
             const { projectId, sessionId } = c.req.valid("query");
@@ -781,7 +795,7 @@ export const routes = (app: HonoAppType, options: CliOptions) =>
             const response = await effectToResponse(
               c,
               tasksController
-                .updateTask(projectPath, { ...body, taskId: id }, sessionId)
+                .updateTask(projectPath, { ...body, turnId: id }, sessionId)
                 .pipe(
                   Effect.map((task) => ({
                     status: 200 as const,

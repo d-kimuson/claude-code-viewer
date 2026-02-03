@@ -144,7 +144,7 @@ describe("typeSafeSSE", () => {
       const mockPermissionRequest: PermissionRequest = {
         id: "permission-1",
         sessionId: "session-1",
-        taskId: "task-1",
+        turnId: "task-1",
         toolName: "read",
         toolInput: {},
         timestamp: Date.now(),

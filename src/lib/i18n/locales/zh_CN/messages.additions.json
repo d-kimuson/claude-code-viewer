@@ -27,7 +27,7 @@
     "translation": "禁用工具"
   },
   "settings.systemPrompt.usePreset": {
-    "translation": "包含 Claude Code 标准系统预设"
+    "translation": "使用 Claude Code 标准系统提示"
   },
   "settings.systemPrompt.additional": {
     "translation": "附加系统提示"

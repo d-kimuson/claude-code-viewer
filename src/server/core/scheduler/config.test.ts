@@ -61,7 +61,7 @@ describe("scheduler config", () => {
           message: {
             content: "test message",
             projectId: "project-1",
-            baseSessionId: null,
+            baseSession: null,
           },
           enabled: true,
           createdAt: "2025-10-25T00:00:00Z",

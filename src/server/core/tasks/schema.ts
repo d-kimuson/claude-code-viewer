@@ -32,7 +32,7 @@ export const TaskCreateSchema = z.object({
 export type TaskCreate = z.infer<typeof TaskCreateSchema>;
 
 export const TaskUpdateSchema = z.object({
-  taskId: z.string(),
+  turnId: z.string(),
   status: TaskStatusSchema.optional(),
   subject: z.string().optional(),
   description: z.string().optional(),

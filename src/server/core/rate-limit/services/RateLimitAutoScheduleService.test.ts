@@ -136,7 +136,7 @@ describe("RateLimitAutoScheduleService", () => {
         ),
       getSessionProcess: () => Effect.succeed({} as never),
       getTask: () => Effect.succeed({} as never),
-      changeTaskState: () => Effect.succeed({} as never),
+      changeTurnState: () => Effect.succeed({} as never),
     });
   };
 
@@ -376,7 +376,10 @@ describe("RateLimitAutoScheduleService", () => {
         message: {
           content: "continue",
           projectId: "test-project",
-          baseSessionId: "9112408c-3585-4a39-a13f-11045828d870",
+          baseSession: {
+            type: "resume",
+            sessionId: "9112408c-3585-4a39-a13f-11045828d870",
+          },
         },
         enabled: true,
       });

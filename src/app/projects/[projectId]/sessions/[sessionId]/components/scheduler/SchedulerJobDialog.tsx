@@ -145,7 +145,7 @@ export const SchedulerJobDialog: FC<SchedulerJobDialogProps> = ({
       message: {
         content: messageContent,
         projectId,
-        baseSessionId: null,
+        baseSession: null,
       },
       enabled,
     };

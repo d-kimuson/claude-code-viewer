@@ -23,7 +23,7 @@ export class TasksService extends Context.Tag("TasksService")<
     ) => Effect.Effect<Task[], Error>;
     getTask: (
       projectPath: string,
-      taskId: string,
+      turnId: string,
       specificSessionId?: string,
     ) => Effect.Effect<Task, Error>;
     createTask: (
@@ -328,7 +328,7 @@ export class TasksService extends Context.Tag("TasksService")<
 
       const getTask = (
         projectPath: string,
-        taskId: string,
+        turnId: string,
         specificSessionId?: string,
       ) =>
         Effect.gen(function* () {
@@ -336,11 +336,11 @@ export class TasksService extends Context.Tag("TasksService")<
             projectPath,
             specificSessionId,
           );
-          const taskFile = path.join(tasksDir, `${taskId}.json`);
+          const taskFile = path.join(tasksDir, `${turnId}.json`);
 
           const exists = yield* fs.exists(taskFile);
           if (!exists) {
-            return yield* Effect.fail(new Error(`Task ${taskId} not found`));
+            return yield* Effect.fail(new Error(`Task ${turnId} not found`));
           }
 
           const content = yield* fs.readFileString(taskFile);
@@ -350,7 +350,7 @@ export class TasksService extends Context.Tag("TasksService")<
 
       const createTask = (
         projectPath: string,
-        taskDef: TaskCreate,
+        turnDef: TaskCreate,
         specificSessionId?: string,
       ) =>
         Effect.gen(function* () {
@@ -383,7 +383,7 @@ export class TasksService extends Context.Tag("TasksService")<
             status: "pending",
             blocks: [],
             blockedBy: [],
-            ...taskDef,
+            ...turnDef,
           };
 
           const filePath = path.join(tasksDir, `${newId}.json`);
@@ -402,12 +402,12 @@ export class TasksService extends Context.Tag("TasksService")<
             projectPath,
             specificSessionId,
           );
-          const filePath = path.join(tasksDir, `${update.taskId}.json`);
+          const filePath = path.join(tasksDir, `${update.turnId}.json`);
 
           const exists = yield* fs.exists(filePath);
           if (!exists) {
             return yield* Effect.fail(
-              new Error(`Task ${update.taskId} not found`),
+              new Error(`Task ${update.turnId} not found`),
             );
           }
 

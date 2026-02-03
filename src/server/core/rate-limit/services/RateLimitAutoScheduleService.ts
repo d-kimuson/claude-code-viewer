@@ -81,7 +81,7 @@ const LayerImpl = Effect.gen(function* () {
       return jobs.some(
         (job) =>
           job.schedule.type === "reserved" &&
-          job.message.baseSessionId === sessionId &&
+          job.message.baseSession?.sessionId === sessionId &&
           job.lastRunStatus === null, // Not yet executed
       );
     });
@@ -149,7 +149,10 @@ const LayerImpl = Effect.gen(function* () {
           message: {
             content: "continue",
             projectId: processProjectId,
-            baseSessionId: sessionId,
+            baseSession: {
+              type: "resume",
+              sessionId,
+            },
           },
           enabled: true,
         })

@@ -3,7 +3,7 @@ import { Context, Data, Effect, Layer, Ref } from "effect";
 import type { InferEffect } from "../../../lib/effect/types";
 import { EventBus } from "../../events/services/EventBus";
 import * as CCSessionProcess from "../models/CCSessionProcess";
-import type * as CCTask from "../models/ClaudeCodeTask";
+import type * as CCTurn from "../models/ClaudeCodeTurn";
 import type { InitMessageContext } from "../types";
 
 class SessionProcessNotFoundError extends Data.TaggedError(
@@ -34,7 +34,7 @@ class IllegalStateChangeError extends Data.TaggedError(
 }> {}
 
 class TaskNotFoundError extends Data.TaggedError("TaskNotFoundError")<{
-  taskId: string;
+  turnId: string;
 }> {}
 
 const LayerImpl = Effect.gen(function* () {
@@ -45,13 +45,16 @@ const LayerImpl = Effect.gen(function* () {
 
   const startSessionProcess = (options: {
     sessionDef: CCSessionProcess.CCSessionProcessDef;
-    taskDef: CCTask.NewClaudeCodeTaskDef | CCTask.ResumeClaudeCodeTaskDef;
+    turnDef:
+      | CCTurn.NewClaudeCodeTurnDef
+      | CCTurn.ResumeClaudeCodeTurnDef
+      | CCTurn.ForkClaudeCodeTurnDef;
   }) => {
-    const { sessionDef, taskDef } = options;
+    const { sessionDef, turnDef } = options;
 
     return Effect.gen(function* () {
-      const task: CCTask.PendingClaudeCodeTaskState = {
-        def: taskDef,
+      const task: CCTurn.PendingClaudeCodeTurnState = {
+        def: turnDef,
         status: "pending",
       };
 
@@ -75,7 +78,7 @@ const LayerImpl = Effect.gen(function* () {
 
   const continueSessionProcess = (options: {
     sessionProcessId: string;
-    taskDef: CCTask.ContinueClaudeCodeTaskDef;
+    turnDef: CCTurn.ContinueClaudeCodeTurnDef;
   }) => {
     const { sessionProcessId } = options;
 
@@ -95,15 +98,15 @@ const LayerImpl = Effect.gen(function* () {
         return yield* Effect.fail(
           new SessionProcessAlreadyAliveError({
             sessionProcessId,
-            aliveTaskId: firstAliveTask.def.taskId,
+            aliveTaskId: firstAliveTask.def.turnId,
             aliveTaskSessionId:
               firstAliveTask.def.sessionId ?? firstAliveTask.sessionId,
           }),
         );
       }
 
-      const newTask: CCTask.PendingClaudeCodeTaskState = {
-        def: options.taskDef,
+      const newTask: CCTurn.PendingClaudeCodeTurnState = {
+        def: options.turnDef,
         status: "pending",
       };
 
@@ -149,12 +152,12 @@ const LayerImpl = Effect.gen(function* () {
     });
   };
 
-  const getTask = (taskId: string) => {
+  const getTask = (turnId: string) => {
     return Effect.gen(function* () {
       const processes = yield* Ref.get(processesRef);
       const result = processes
         .flatMap((p) => {
-          const found = p.tasks.find((t) => t.def.taskId === taskId);
+          const found = p.tasks.find((t) => t.def.turnId === turnId);
           if (found === undefined) {
             return [];
           }
@@ -169,7 +172,7 @@ const LayerImpl = Effect.gen(function* () {
         .at(0);
 
       if (result === undefined) {
-        return yield* Effect.fail(new TaskNotFoundError({ taskId }));
+        return yield* Effect.fail(new TaskNotFoundError({ turnId }));
       }
 
       return result;
@@ -219,15 +222,15 @@ const LayerImpl = Effect.gen(function* () {
     });
   };
 
-  const changeTaskState = <T extends CCTask.ClaudeCodeTaskState>(options: {
+  const changeTurnState = <T extends CCTurn.ClaudeCodeTurnState>(options: {
     sessionProcessId: string;
-    taskId: string;
+    turnId: string;
     nextTask: T;
   }) => {
-    const { sessionProcessId, taskId, nextTask } = options;
+    const { sessionProcessId, turnId, nextTask } = options;
 
     return Effect.gen(function* () {
-      const { task } = yield* getTask(taskId);
+      const { task } = yield* getTask(turnId);
 
       yield* Ref.update(processesRef, (processes) => {
         return processes.map((p) =>
@@ -235,14 +238,14 @@ const LayerImpl = Effect.gen(function* () {
             ? {
                 ...p,
                 tasks: p.tasks.map((t) =>
-                  t.def.taskId === task.def.taskId ? { ...nextTask } : t,
+                  t.def.turnId === task.def.turnId ? { ...nextTask } : t,
                 ),
               }
             : p,
         );
       });
 
-      const updated = yield* getTask(taskId);
+      const updated = yield* getTask(turnId);
       if (updated === undefined) {
         throw new Error("Unreachable: updatedProcess is undefined");
       }
@@ -269,9 +272,9 @@ const LayerImpl = Effect.gen(function* () {
         );
       }
 
-      const newTask = yield* changeTaskState({
+      const newTask = yield* changeTurnState({
         sessionProcessId,
-        taskId: currentProcess.currentTask.def.taskId,
+        turnId: currentProcess.currentTask.def.turnId,
         nextTask: {
           status: "running",
           def: currentProcess.currentTask.def,
@@ -383,9 +386,9 @@ const LayerImpl = Effect.gen(function* () {
         );
       }
 
-      const newTask = yield* changeTaskState({
+      const newTask = yield* changeTurnState({
         sessionProcessId,
-        taskId: currentProcess.currentTask.def.taskId,
+        turnId: currentProcess.currentTask.def.turnId,
         nextTask: {
           status: "completed",
           def: currentProcess.currentTask.def,
@@ -399,7 +402,7 @@ const LayerImpl = Effect.gen(function* () {
           type: "paused",
           def: currentProcess.def,
           tasks: currentProcess.tasks.map((t) =>
-            t.def.taskId === newTask.def.taskId ? newTask : t,
+            t.def.turnId === newTask.def.turnId ? newTask : t,
           ),
           sessionId: currentProcess.sessionId,
         },
@@ -443,9 +446,9 @@ const LayerImpl = Effect.gen(function* () {
           : undefined;
 
       if (newTask !== undefined) {
-        yield* changeTaskState({
+        yield* changeTurnState({
           sessionProcessId,
-          taskId: newTask.def.taskId,
+          turnId: newTask.def.turnId,
           nextTask: newTask,
         });
       }
@@ -458,7 +461,7 @@ const LayerImpl = Effect.gen(function* () {
           tasks:
             newTask !== undefined
               ? currentProcess.tasks.map((t) =>
-                  t.def.taskId === newTask.def.taskId ? newTask : t,
+                  t.def.turnId === newTask.def.turnId ? newTask : t,
                 )
               : currentProcess.tasks,
           sessionId: currentProcess.sessionId,
@@ -487,7 +490,7 @@ const LayerImpl = Effect.gen(function* () {
 
     // task
     getTask,
-    changeTaskState,
+    changeTurnState,
   };
 });
 

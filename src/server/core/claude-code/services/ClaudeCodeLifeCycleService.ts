@@ -21,6 +21,7 @@ import {
 } from "../functions/createMessageGenerator";
 import * as CCSessionProcess from "../models/CCSessionProcess";
 import * as ClaudeCode from "../models/ClaudeCode";
+import type * as CCTurn from "../models/ClaudeCodeTurn";
 import { ClaudeCodePermissionService } from "./ClaudeCodePermissionService";
 import { ClaudeCodeSessionProcessService } from "./ClaudeCodeSessionProcessService";
 
@@ -48,7 +49,7 @@ const LayerImpl = Effect.gen(function* () {
     | CcvOptionsService
   >();
 
-  const continueTask = (options: {
+  const continueSessionProcess = (options: {
     sessionProcessId: string;
     baseSessionId: string;
     input: UserMessageInput;
@@ -59,11 +60,11 @@ const LayerImpl = Effect.gen(function* () {
       const { sessionProcess, task } =
         yield* sessionProcessService.continueSessionProcess({
           sessionProcessId,
-          taskDef: {
+          turnDef: {
             type: "continue",
             sessionId: baseSessionId,
             baseSessionId: baseSessionId,
-            taskId: ulid(),
+            turnId: ulid(),
           },
         });
 
@@ -94,16 +95,25 @@ const LayerImpl = Effect.gen(function* () {
     });
   };
 
-  const startTask = (options: {
-    userConfig: UserConfig;
-    baseSession: {
-      cwd: string;
-      projectId: string;
-      sessionId?: string;
-    };
+  const startSessionProcess = (options: {
+    projectId: string;
+    cwd: string;
     input: UserMessageInput;
+    userConfig: UserConfig;
+    baseSession:
+      | undefined
+      | {
+          type: "fork";
+          sessionId: string;
+        }
+      | {
+          type: "resume";
+          sessionId: string;
+        };
+    ccOptions?: CCTurn.CCOptions;
   }) => {
-    const { baseSession, input, userConfig } = options;
+    const { projectId, cwd, input, userConfig, baseSession, ccOptions } =
+      options;
 
     return Effect.gen(function* () {
       const {
@@ -115,24 +125,34 @@ const LayerImpl = Effect.gen(function* () {
       const { sessionProcess, task } =
         yield* sessionProcessService.startSessionProcess({
           sessionDef: {
-            projectId: baseSession.projectId,
-            cwd: baseSession.cwd,
+            projectId,
+            cwd,
             abortController: new AbortController(),
             setNextMessage,
             sessionProcessId: ulid(),
           },
-          taskDef:
-            baseSession.sessionId === undefined
+          turnDef:
+            baseSession === undefined
               ? {
                   type: "new",
-                  taskId: ulid(),
+                  turnId: ulid(),
+                  ccOptions,
                 }
-              : {
-                  type: "resume",
-                  taskId: ulid(),
-                  sessionId: undefined,
-                  baseSessionId: baseSession.sessionId,
-                },
+              : baseSession.type === "fork"
+                ? {
+                    type: "fork",
+                    turnId: ulid(),
+                    sessionId: baseSession.sessionId,
+                    baseSessionId: baseSession.sessionId,
+                    ccOptions,
+                  }
+                : {
+                    type: "resume",
+                    turnId: ulid(),
+                    sessionId: undefined,
+                    baseSessionId: baseSession.sessionId,
+                    ccOptions,
+                  },
         });
 
       const sessionInitializedPromise = controllablePromise<{
@@ -192,7 +212,7 @@ const LayerImpl = Effect.gen(function* () {
             if (processState.currentTask.def.type === "new") {
               // 末尾に追加するだけで OK
               yield* virtualConversationDatabase.createVirtualConversation(
-                baseSession.projectId,
+                projectId,
                 message.session_id,
                 [virtualConversation],
               );
@@ -281,16 +301,17 @@ const LayerImpl = Effect.gen(function* () {
           Effect.gen(function* () {
             const permissionOptions =
               yield* permissionService.createCanUseToolRelatedOptions({
-                taskId: task.def.taskId,
+                turnId: task.def.turnId,
                 userConfig,
                 sessionId: task.def.baseSessionId,
               });
 
             return yield* ClaudeCode.query(generateMessages(), {
+              ...(task.def.type === "continue" ? {} : task.def.ccOptions),
+              ...permissionOptions,
               resume: task.def.baseSessionId,
               cwd: sessionProcess.def.cwd,
               abortController: sessionProcess.def.abortController,
-              ...permissionOptions,
             });
           }),
         );
@@ -309,9 +330,9 @@ const LayerImpl = Effect.gen(function* () {
             ).catch((error) => {
               // iter 自体が落ちてなければ継続したいので握りつぶす
               Effect.runFork(
-                sessionProcessService.changeTaskState({
+                sessionProcessService.changeTurnState({
                   sessionProcessId: sessionProcess.def.sessionProcessId,
-                  taskId: task.def.taskId,
+                  turnId: task.def.turnId,
                   nextTask: {
                     status: "failed",
                     def: task.def,
@@ -346,9 +367,9 @@ const LayerImpl = Effect.gen(function* () {
           }
 
           await Effect.runPromise(
-            sessionProcessService.changeTaskState({
+            sessionProcessService.changeTurnState({
               sessionProcessId: sessionProcess.def.sessionProcessId,
-              taskId: task.def.taskId,
+              turnId: task.def.turnId,
               nextTask: {
                 status: "failed",
                 def: task.def,
@@ -433,8 +454,8 @@ const LayerImpl = Effect.gen(function* () {
     });
 
   return {
-    continueTask,
-    startTask,
+    continueSessionProcess,
+    startSessionProcess,
     abortTask,
     abortAllTasks,
     getPublicSessionProcesses,

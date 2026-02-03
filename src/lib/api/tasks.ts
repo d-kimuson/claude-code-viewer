@@ -29,12 +29,12 @@ export const createTask = async (
 
 export const updateTask = async (
   projectId: string,
-  taskId: string,
-  update: Omit<TaskUpdate, "taskId">,
+  turnId: string,
+  update: Omit<TaskUpdate, "turnId">,
   sessionId?: string,
 ): Promise<Task> => {
   const response = await honoClient.api.tasks[":id"].$patch({
-    param: { id: taskId },
+    param: { id: turnId },
     query: { projectId, sessionId },
     json: update,
   });

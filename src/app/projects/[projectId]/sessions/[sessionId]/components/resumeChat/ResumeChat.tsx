@@ -60,6 +60,7 @@ export const ResumeChat: FC<{
         buttonSize="default"
         enableScheduledSend={true}
         baseSessionId={sessionId}
+        enableCCOptions={true}
       />
     </div>
   );

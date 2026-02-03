@@ -99,7 +99,7 @@ export const TaskModal: FC<TaskModalProps> = ({
     : (data?.conversations ?? []);
 
   const agentSessionId = hasLocalData ? undefined : data?.agentSessionId;
-  const taskId = hasLocalData ? legacyConversation?.uuid : agentSessionId;
+  const turnId = hasLocalData ? legacyConversation?.uuid : agentSessionId;
 
   const title = (() => {
     const firstConversation = conversations.at(0);
@@ -152,12 +152,12 @@ export const TaskModal: FC<TaskModalProps> = ({
                 {title.length > 120 ? `${title.slice(0, 120)}...` : title}
               </DialogTitle>
               <DialogDescription className="text-xs flex items-center gap-2 flex-wrap">
-                {taskId !== undefined && taskId !== null && (
+                {turnId !== undefined && turnId !== null && (
                   <>
                     <span className="flex items-center gap-1">
                       <Trans id="assistant.tool.task_id" />:{" "}
                       <code className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">
-                        {taskId.slice(0, 8)}
+                        {turnId.slice(0, 8)}
                       </code>
                     </span>
                     <span className="text-muted-foreground">|</span>

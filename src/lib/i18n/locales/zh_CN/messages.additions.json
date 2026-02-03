@@ -10,5 +10,68 @@
   },
   "Select search hotkey": {
     "translation": "选择搜索快捷键"
+  },
+  "chat.settings": {
+    "translation": "设置"
+  },
+  "settings.title": {
+    "translation": "Claude Code 设置"
+  },
+  "settings.forkSession": {
+    "translation": "分叉会话（基于当前会话创建新会话）"
+  },
+  "settings.model.label": {
+    "translation": "模型"
+  },
+  "settings.disallowedTools.label": {
+    "translation": "禁用工具"
+  },
+  "settings.systemPrompt.usePreset": {
+    "translation": "包含 Claude Code 标准系统预设"
+  },
+  "settings.systemPrompt.additional": {
+    "translation": "附加系统提示"
+  },
+  "settings.systemPrompt.custom": {
+    "translation": "自定义系统提示"
+  },
+  "settings.env.label": {
+    "translation": "环境变量"
+  },
+  "settings.env.add": {
+    "translation": "添加变量"
+  },
+  "settings.sandbox.label": {
+    "translation": "沙盒"
+  },
+  "settings.sandbox.autoAllowBash": {
+    "translation": "沙盒模式时自动允许 Bash"
+  },
+  "settings.sandbox.allowUnsandboxedCommands": {
+    "translation": "允许非沙盒命令"
+  },
+  "settings.sandbox.network.label": {
+    "translation": "网络设置"
+  },
+  "settings.sandbox.network.allowLocalBinding": {
+    "translation": "允许本地绑定"
+  },
+  "settings.sandbox.network.allowedDomains": {
+    "translation": "允许的域名（逗号分隔）"
+  },
+  "settings.advanced": {
+    "translation": "高级设置"
+  },
+  "settings.settingSources.label": {
+    "translation": "设置来源"
+  },
+  "settings.maxTurns.label": {
+    "translation": "最大轮数"
+  },
+  "settings.maxThinkingTokens.label": {
+    "translation": "最大思考令牌数"
+  },
+  "settings.maxBudgetUsd.label": {
+    "translation": "最大预算 (USD)"
   }
 }

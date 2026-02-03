@@ -1,5 +1,4 @@
 import * as agentSdk from "@anthropic-ai/claude-agent-sdk";
-import * as claudeCodeSdk from "@anthropic-ai/claude-code";
 import { Command, Path } from "@effect/platform";
 import { Data, Effect } from "effect";
 import { uniq } from "es-toolkit";
@@ -31,6 +30,12 @@ export const claudeCodePathPriority = (path: string): number => {
 
 class ClaudeCodePathNotFoundError extends Data.TaggedError(
   "ClaudeCodePathNotFoundError",
+)<{
+  message: string;
+}> {}
+
+class ClaudeCodeAgentSdkNotSupportedError extends Data.TaggedError(
+  "ClaudeCodeAgentSdkNotSupportedError",
 )<{
   message: string;
 }> {}
@@ -178,9 +183,12 @@ export const query = (
     const availableFeatures = getAvailableFeatures(claudeCodeVersion);
 
     const options: AgentSdkQueryOptions = {
-      pathToClaudeCodeExecutable: claudeCodeExecutablePath,
       ...baseOptions,
-      disallowedTools: ["AskUserQuestion"], // Cannot answer from web interface instead of CLI
+      pathToClaudeCodeExecutable: claudeCodeExecutablePath,
+      disallowedTools: [
+        "AskUserQuestion",
+        ...(baseOptions.disallowedTools ?? []),
+      ], // Cannot answer from web interface instead of CLI
       ...(availableFeatures.canUseTool
         ? { canUseTool, permissionMode }
         : {
@@ -188,53 +196,20 @@ export const query = (
           }),
     };
 
-    if (availableFeatures.agentSdk) {
-      return agentSdk.query({
-        prompt,
-        options: {
-          systemPrompt: { type: "preset", preset: "claude_code" },
-          settingSources: ["user", "project", "local"],
-          ...options,
-        },
-      });
+    if (!availableFeatures.agentSdk) {
+      return yield* Effect.fail(
+        new ClaudeCodeAgentSdkNotSupportedError({
+          message: "Agent SDK is not supported in this version of Claude Code",
+        }),
+      );
     }
 
-    const fallbackCanUseTool = (() => {
-      const canUseTool = options.canUseTool;
-      if (canUseTool === undefined) {
-        return undefined;
-      }
-
-      const fn: typeof canUseTool = async (
-        toolName,
-        input,
-        canUseToolOptions,
-      ) => {
-        const response = await canUseTool(toolName, input, {
-          signal: canUseToolOptions.signal,
-          suggestions: canUseToolOptions.suggestions,
-          toolUseID: undefined as unknown as string,
-        });
-        return response;
-      };
-
-      return fn;
-    })();
-
-    return claudeCodeSdk.query({
+    return agentSdk.query({
       prompt,
       options: {
-        ...baseOptions,
-        disallowedTools: ["AskUserQuestion"], // Cannot answer from web interface instead of CLI
-        permissionMode:
-          // fallback unsupported permission modes
-          permissionMode === "delegate" || permissionMode === "dontAsk"
-            ? "bypassPermissions"
-            : permissionMode,
-        hooks: hooks as Partial<
-          Record<claudeCodeSdk.HookEvent, claudeCodeSdk.HookCallbackMatcher[]>
-        >,
-        canUseTool: fallbackCanUseTool as claudeCodeSdk.CanUseTool,
+        systemPrompt: { type: "preset", preset: "claude_code" },
+        settingSources: ["user", "project", "local"],
+        ...options,
       },
     });
   });

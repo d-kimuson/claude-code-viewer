@@ -7,5 +7,68 @@
   },
   "control.open_browser": {
     "translation": "Open Browser"
+  },
+  "chat.settings": {
+    "translation": "Settings"
+  },
+  "settings.title": {
+    "translation": "Claude Code Settings"
+  },
+  "settings.forkSession": {
+    "translation": "Fork session (create new session based on current)"
+  },
+  "settings.model.label": {
+    "translation": "Model"
+  },
+  "settings.disallowedTools.label": {
+    "translation": "Disallowed Tools"
+  },
+  "settings.systemPrompt.usePreset": {
+    "translation": "Include Claude Code standard system preset"
+  },
+  "settings.systemPrompt.additional": {
+    "translation": "Additional System Prompt"
+  },
+  "settings.systemPrompt.custom": {
+    "translation": "Custom System Prompt"
+  },
+  "settings.env.label": {
+    "translation": "Environment Variables"
+  },
+  "settings.env.add": {
+    "translation": "Add Variable"
+  },
+  "settings.sandbox.label": {
+    "translation": "Sandbox"
+  },
+  "settings.sandbox.autoAllowBash": {
+    "translation": "Auto-allow Bash if sandboxed"
+  },
+  "settings.sandbox.allowUnsandboxedCommands": {
+    "translation": "Allow unsandboxed commands"
+  },
+  "settings.sandbox.network.label": {
+    "translation": "Network Settings"
+  },
+  "settings.sandbox.network.allowLocalBinding": {
+    "translation": "Allow local binding"
+  },
+  "settings.sandbox.network.allowedDomains": {
+    "translation": "Allowed Domains (comma-separated)"
+  },
+  "settings.advanced": {
+    "translation": "Advanced Settings"
+  },
+  "settings.settingSources.label": {
+    "translation": "Setting Sources"
+  },
+  "settings.maxTurns.label": {
+    "translation": "Max Turns"
+  },
+  "settings.maxThinkingTokens.label": {
+    "translation": "Max Thinking Tokens"
+  },
+  "settings.maxBudgetUsd.label": {
+    "translation": "Max Budget (USD)"
   }
 }

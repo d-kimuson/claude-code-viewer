@@ -10,5 +10,68 @@
   },
   "Select search hotkey": {
     "translation": "検索ホットキーを選択"
+  },
+  "chat.settings": {
+    "translation": "設定"
+  },
+  "settings.title": {
+    "translation": "Claude Code 設定"
+  },
+  "settings.forkSession": {
+    "translation": "セッションをフォーク（現在のセッションを元に新規作成）"
+  },
+  "settings.model.label": {
+    "translation": "モデル"
+  },
+  "settings.disallowedTools.label": {
+    "translation": "無効化ツール"
+  },
+  "settings.systemPrompt.usePreset": {
+    "translation": "Claude Code 標準のシステムプリセットを含める"
+  },
+  "settings.systemPrompt.additional": {
+    "translation": "追加システムプロンプト"
+  },
+  "settings.systemPrompt.custom": {
+    "translation": "カスタムシステムプロンプト"
+  },
+  "settings.env.label": {
+    "translation": "環境変数"
+  },
+  "settings.env.add": {
+    "translation": "変数を追加"
+  },
+  "settings.sandbox.label": {
+    "translation": "サンドボックス"
+  },
+  "settings.sandbox.autoAllowBash": {
+    "translation": "サンドボックス時にBashを自動許可"
+  },
+  "settings.sandbox.allowUnsandboxedCommands": {
+    "translation": "サンドボックス外コマンドを許可"
+  },
+  "settings.sandbox.network.label": {
+    "translation": "ネットワーク設定"
+  },
+  "settings.sandbox.network.allowLocalBinding": {
+    "translation": "ローカルバインディングを許可"
+  },
+  "settings.sandbox.network.allowedDomains": {
+    "translation": "許可ドメイン（カンマ区切り）"
+  },
+  "settings.advanced": {
+    "translation": "詳細設定"
+  },
+  "settings.settingSources.label": {
+    "translation": "設定ソース"
+  },
+  "settings.maxTurns.label": {
+    "translation": "最大ターン数"
+  },
+  "settings.maxThinkingTokens.label": {
+    "translation": "最大思考トークン数"
+  },
+  "settings.maxBudgetUsd.label": {
+    "translation": "最大予算 (USD)"
   }
 }

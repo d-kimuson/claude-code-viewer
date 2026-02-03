@@ -19,7 +19,6 @@ import {
   createMessageGenerator,
   type UserMessageInput,
 } from "../functions/createMessageGenerator";
-import { fallbackSdkMessage } from "../functions/fallbackSdkMessage";
 import * as CCSessionProcess from "../models/CCSessionProcess";
 import * as ClaudeCode from "../models/ClaudeCode";
 import { ClaudeCodePermissionService } from "./ClaudeCodePermissionService";
@@ -305,10 +304,8 @@ const LayerImpl = Effect.gen(function* () {
               break;
             }
 
-            const fallbackMessage = fallbackSdkMessage(message);
-
             const result = await Runtime.runPromise(runtime)(
-              handleMessage(fallbackMessage),
+              handleMessage(message),
             ).catch((error) => {
               // iter 自体が落ちてなければ継続したいので握りつぶす
               Effect.runFork(

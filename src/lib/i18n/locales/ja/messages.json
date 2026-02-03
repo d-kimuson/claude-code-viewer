@@ -1,4 +1,15 @@
 {
+  "Additional instructions to append...": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        410
+      ]
+    ],
+    "translation": ""
+  },
   "Available commands": {
     "placeholders": {},
     "comments": [],
@@ -54,6 +65,28 @@
     ],
     "translation": "比較先"
   },
+  "Custom tool name...": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        222
+      ]
+    ],
+    "translation": ""
+  },
+  "Enter custom system prompt...": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        411
+      ]
+    ],
+    "translation": ""
+  },
   "Failed to commit": {
     "placeholders": {},
     "comments": [],
@@ -87,13 +120,24 @@
     ],
     "translation": "プッシュに失敗しました"
   },
+  "Key": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        114
+      ]
+    ],
+    "translation": ""
+  },
   "Message input with completion support": {
     "placeholders": {},
     "comments": [],
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        411
+        434
       ]
     ],
     "translation": "補完機能付きメッセージ入力"
@@ -185,6 +229,17 @@
       ]
     ],
     "translation": "未コミットの変更"
+  },
+  "Value": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        122
+      ]
+    ],
+    "translation": ""
   },
   "assistant.thinking": {
     "placeholders": {},
@@ -339,7 +394,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        507
+        530
       ]
     ],
     "translation": "添付"
@@ -361,7 +416,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        375
+        398
       ]
     ],
     "translation": "メッセージの送信に失敗しました。もう一度お試しください。"
@@ -487,7 +542,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        221
+        233
       ]
     ],
     "translation": "メッセージの予約に失敗しました"
@@ -499,7 +554,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        205
+        217
       ]
     ],
     "translation": "メッセージを予約しました"
@@ -511,7 +566,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        210
+        222
       ]
     ],
     "translation": "スケジューラタブで確認・管理できます"
@@ -533,11 +588,11 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        464
+        487
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        544
+        577
       ]
     ],
     "translation": "今すぐ送信"
@@ -548,11 +603,11 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        447
+        470
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        527
+        560
       ]
     ],
     "translation": "送信モード"
@@ -563,15 +618,15 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        467
+        490
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        547
+        580
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        564
+        597
       ]
     ],
     "translation": "予約送信"
@@ -582,10 +637,22 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        474
+        497
       ]
     ],
     "translation": "送信予定時刻"
+  },
+  "chat.settings": {
+    "message": "Settings",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        712
+      ]
+    ],
+    "translation": ""
   },
   "chat.status.processing": {
     "placeholders": {},
@@ -593,7 +660,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        583
+        616
       ]
     ],
     "translation": "処理中..."
@@ -1347,6 +1414,61 @@
       ]
     ],
     "translation": "隠しファイルを表示"
+  },
+  "e.g., 1.00": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        664
+      ]
+    ],
+    "translation": ""
+  },
+  "e.g., 10": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        613
+      ]
+    ],
+    "translation": ""
+  },
+  "e.g., 10000": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        638
+      ]
+    ],
+    "translation": ""
+  },
+  "e.g., api.example.com, cdn.example.com": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        535
+      ]
+    ],
+    "translation": ""
+  },
+  "e.g., claude-sonnet-4-5-20250929": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        356
+      ]
+    ],
+    "translation": ""
   },
   "mcp.error.load_failed": {
     "placeholders": {
@@ -2299,6 +2421,18 @@
     ],
     "translation": "合計"
   },
+  "settings.advanced": {
+    "message": "Advanced Settings",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        548
+      ]
+    ],
+    "translation": ""
+  },
   "settings.description": {
     "placeholders": {},
     "comments": [],
@@ -2309,6 +2443,51 @@
       ]
     ],
     "translation": "表示と動作の設定"
+  },
+  "settings.disallowedTools.label": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        365
+      ]
+    ],
+    "translation": ""
+  },
+  "settings.env.add": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        147
+      ]
+    ],
+    "translation": ""
+  },
+  "settings.env.label": {
+    "message": "Environment Variables",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        422
+      ]
+    ],
+    "translation": ""
+  },
+  "settings.forkSession": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        341
+      ]
+    ],
+    "translation": ""
   },
   "settings.input.enter_key_behavior": {
     "placeholders": {},
@@ -2479,6 +2658,53 @@
     ],
     "translation": "中国語（簡体字）"
   },
+  "settings.maxBudgetUsd.label": {
+    "message": "Max Budget (USD)",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        647
+      ]
+    ],
+    "translation": ""
+  },
+  "settings.maxThinkingTokens.label": {
+    "message": "Max Thinking Tokens",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        622
+      ]
+    ],
+    "translation": ""
+  },
+  "settings.maxTurns.label": {
+    "message": "Max Turns",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        600
+      ]
+    ],
+    "translation": ""
+  },
+  "settings.model.label": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        350
+      ]
+    ],
+    "translation": ""
+  },
   "settings.notifications": {
     "placeholders": {},
     "comments": [],
@@ -2566,6 +2792,78 @@
       ]
     ],
     "translation": "お使いのClaude Codeバージョンではこの機能は利用できません。すべてのツールは自動で承認されます。"
+  },
+  "settings.sandbox.allowUnsandboxedCommands": {
+    "message": "Allow unsandboxed commands",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        481
+      ]
+    ],
+    "translation": ""
+  },
+  "settings.sandbox.autoAllowBash": {
+    "message": "Auto-allow Bash if sandboxed",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        461
+      ]
+    ],
+    "translation": ""
+  },
+  "settings.sandbox.label": {
+    "message": "Sandbox",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        435
+      ]
+    ],
+    "translation": ""
+  },
+  "settings.sandbox.network.allowLocalBinding": {
+    "message": "Allow local binding",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        507
+      ]
+    ],
+    "translation": ""
+  },
+  "settings.sandbox.network.allowedDomains": {
+    "message": "Allowed Domains (comma-separated)",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        516
+      ]
+    ],
+    "translation": ""
+  },
+  "settings.sandbox.network.label": {
+    "message": "Network Settings",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        491
+      ]
+    ],
+    "translation": ""
   },
   "settings.section.notifications": {
     "placeholders": {},
@@ -2677,6 +2975,53 @@
     ],
     "translation": "同じタイトルの複数のセッションがある場合、最新のセッションのみを表示"
   },
+  "settings.settingSources.label": {
+    "message": "Setting Sources",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        554
+      ]
+    ],
+    "translation": ""
+  },
+  "settings.systemPrompt.additional": {
+    "message": "Additional System Prompt",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        393
+      ]
+    ],
+    "translation": ""
+  },
+  "settings.systemPrompt.custom": {
+    "message": "Custom System Prompt",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        398
+      ]
+    ],
+    "translation": ""
+  },
+  "settings.systemPrompt.usePreset": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        386
+      ]
+    ],
+    "translation": ""
+  },
   "settings.tab.title": {
     "placeholders": {},
     "comments": [],
@@ -2748,9 +3093,14 @@
     "translation": "システム"
   },
   "settings.title": {
+    "message": "Claude Code Settings",
     "placeholders": {},
     "comments": [],
     "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        727
+      ],
       [
         "src/components/GlobalSidebar.tsx",
         59

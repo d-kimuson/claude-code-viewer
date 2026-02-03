@@ -1,4 +1,15 @@
 {
+  "Additional instructions to append...": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        410
+      ]
+    ],
+    "translation": "Additional instructions to append..."
+  },
   "Available commands": {
     "placeholders": {},
     "comments": [],
@@ -54,6 +65,28 @@
     ],
     "translation": "Compare to"
   },
+  "Custom tool name...": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        222
+      ]
+    ],
+    "translation": "Custom tool name..."
+  },
+  "Enter custom system prompt...": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        411
+      ]
+    ],
+    "translation": "Enter custom system prompt..."
+  },
   "Failed to commit": {
     "placeholders": {},
     "comments": [],
@@ -87,13 +120,24 @@
     ],
     "translation": "Failed to push"
   },
+  "Key": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        114
+      ]
+    ],
+    "translation": "Key"
+  },
   "Message input with completion support": {
     "placeholders": {},
     "comments": [],
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        411
+        434
       ]
     ],
     "translation": "Message input with completion support"
@@ -185,6 +229,17 @@
       ]
     ],
     "translation": "Uncommitted changes"
+  },
+  "Value": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        122
+      ]
+    ],
+    "translation": "Value"
   },
   "assistant.thinking": {
     "placeholders": {},
@@ -339,7 +394,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        507
+        530
       ]
     ],
     "translation": "Attach"
@@ -361,7 +416,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        375
+        398
       ]
     ],
     "translation": "Failed to send message. Please try again."
@@ -487,7 +542,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        221
+        233
       ]
     ],
     "translation": "Failed to schedule message"
@@ -499,7 +554,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        205
+        217
       ]
     ],
     "translation": "Message scheduled successfully"
@@ -511,7 +566,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        210
+        222
       ]
     ],
     "translation": "You can view and manage it in the Scheduler tab"
@@ -533,11 +588,11 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        464
+        487
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        544
+        577
       ]
     ],
     "translation": "Send Now"
@@ -548,11 +603,11 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        447
+        470
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        527
+        560
       ]
     ],
     "translation": "Send Mode"
@@ -563,15 +618,15 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        467
+        490
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        547
+        580
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        564
+        597
       ]
     ],
     "translation": "Schedule Send"
@@ -582,10 +637,22 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        474
+        497
       ]
     ],
     "translation": "Scheduled Send Time"
+  },
+  "chat.settings": {
+    "message": "Settings",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        712
+      ]
+    ],
+    "translation": "Settings"
   },
   "chat.status.processing": {
     "placeholders": {},
@@ -593,7 +660,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        583
+        616
       ]
     ],
     "translation": "Processing..."
@@ -1347,6 +1414,61 @@
       ]
     ],
     "translation": "Show Hidden Files"
+  },
+  "e.g., 1.00": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        664
+      ]
+    ],
+    "translation": "e.g., 1.00"
+  },
+  "e.g., 10": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        613
+      ]
+    ],
+    "translation": "e.g., 10"
+  },
+  "e.g., 10000": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        638
+      ]
+    ],
+    "translation": "e.g., 10000"
+  },
+  "e.g., api.example.com, cdn.example.com": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        535
+      ]
+    ],
+    "translation": "e.g., api.example.com, cdn.example.com"
+  },
+  "e.g., claude-sonnet-4-5-20250929": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        356
+      ]
+    ],
+    "translation": "e.g., claude-sonnet-4-5-20250929"
   },
   "mcp.error.load_failed": {
     "placeholders": {
@@ -2299,6 +2421,18 @@
     ],
     "translation": "Total"
   },
+  "settings.advanced": {
+    "message": "Advanced Settings",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        548
+      ]
+    ],
+    "translation": "Advanced Settings"
+  },
   "settings.description": {
     "placeholders": {},
     "comments": [],
@@ -2309,6 +2443,51 @@
       ]
     ],
     "translation": "Display and behavior settings"
+  },
+  "settings.disallowedTools.label": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        365
+      ]
+    ],
+    "translation": "settings.disallowedTools.label"
+  },
+  "settings.env.add": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        147
+      ]
+    ],
+    "translation": "settings.env.add"
+  },
+  "settings.env.label": {
+    "message": "Environment Variables",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        422
+      ]
+    ],
+    "translation": "Environment Variables"
+  },
+  "settings.forkSession": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        341
+      ]
+    ],
+    "translation": "settings.forkSession"
   },
   "settings.input.enter_key_behavior": {
     "placeholders": {},
@@ -2479,6 +2658,53 @@
     ],
     "translation": "Chinese (Simplified)"
   },
+  "settings.maxBudgetUsd.label": {
+    "message": "Max Budget (USD)",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        647
+      ]
+    ],
+    "translation": "Max Budget (USD)"
+  },
+  "settings.maxThinkingTokens.label": {
+    "message": "Max Thinking Tokens",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        622
+      ]
+    ],
+    "translation": "Max Thinking Tokens"
+  },
+  "settings.maxTurns.label": {
+    "message": "Max Turns",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        600
+      ]
+    ],
+    "translation": "Max Turns"
+  },
+  "settings.model.label": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        350
+      ]
+    ],
+    "translation": "settings.model.label"
+  },
   "settings.notifications": {
     "placeholders": {},
     "comments": [],
@@ -2566,6 +2792,78 @@
       ]
     ],
     "translation": "This feature is not available in your Claude Code version. All tools are automatically approved."
+  },
+  "settings.sandbox.allowUnsandboxedCommands": {
+    "message": "Allow unsandboxed commands",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        481
+      ]
+    ],
+    "translation": "Allow unsandboxed commands"
+  },
+  "settings.sandbox.autoAllowBash": {
+    "message": "Auto-allow Bash if sandboxed",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        461
+      ]
+    ],
+    "translation": "Auto-allow Bash if sandboxed"
+  },
+  "settings.sandbox.label": {
+    "message": "Sandbox",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        435
+      ]
+    ],
+    "translation": "Sandbox"
+  },
+  "settings.sandbox.network.allowLocalBinding": {
+    "message": "Allow local binding",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        507
+      ]
+    ],
+    "translation": "Allow local binding"
+  },
+  "settings.sandbox.network.allowedDomains": {
+    "message": "Allowed Domains (comma-separated)",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        516
+      ]
+    ],
+    "translation": "Allowed Domains (comma-separated)"
+  },
+  "settings.sandbox.network.label": {
+    "message": "Network Settings",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        491
+      ]
+    ],
+    "translation": "Network Settings"
   },
   "settings.section.notifications": {
     "placeholders": {},
@@ -2677,6 +2975,53 @@
     ],
     "translation": "When multiple sessions have the same title, show only the latest session"
   },
+  "settings.settingSources.label": {
+    "message": "Setting Sources",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        554
+      ]
+    ],
+    "translation": "Setting Sources"
+  },
+  "settings.systemPrompt.additional": {
+    "message": "Additional System Prompt",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        393
+      ]
+    ],
+    "translation": "Additional System Prompt"
+  },
+  "settings.systemPrompt.custom": {
+    "message": "Custom System Prompt",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        398
+      ]
+    ],
+    "translation": "Custom System Prompt"
+  },
+  "settings.systemPrompt.usePreset": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        386
+      ]
+    ],
+    "translation": "settings.systemPrompt.usePreset"
+  },
   "settings.tab.title": {
     "placeholders": {},
     "comments": [],
@@ -2748,9 +3093,14 @@
     "translation": "System"
   },
   "settings.title": {
+    "message": "Claude Code Settings",
     "placeholders": {},
     "comments": [],
     "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        727
+      ],
       [
         "src/components/GlobalSidebar.tsx",
         59

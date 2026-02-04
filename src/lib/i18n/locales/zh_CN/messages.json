@@ -250,7 +250,7 @@
         180
       ]
     ],
-    "translation": ""
+    "translation": "无法显示二进制文件"
   },
   "assistant.tool.error_loading_file": {
     "placeholders": {},
@@ -261,7 +261,7 @@
         165
       ]
     ],
-    "translation": ""
+    "translation": "加载文件失败"
   },
   "assistant.tool.error_loading_task": {
     "placeholders": {},
@@ -283,7 +283,7 @@
         177
       ]
     ],
-    "translation": ""
+    "translation": "文件未找到"
   },
   "assistant.tool.file_truncated": {
     "placeholders": {},
@@ -294,7 +294,7 @@
         144
       ]
     ],
-    "translation": ""
+    "translation": "已截断"
   },
   "assistant.tool.input_parameters": {
     "placeholders": {},
@@ -316,7 +316,7 @@
         183
       ]
     ],
-    "translation": ""
+    "translation": "无效的文件路径"
   },
   "assistant.tool.loading_file": {
     "placeholders": {},
@@ -327,7 +327,7 @@
         157
       ]
     ],
-    "translation": ""
+    "translation": "正在加载文件..."
   },
   "assistant.tool.loading_task": {
     "placeholders": {},
@@ -386,7 +386,7 @@
         186
       ]
     ],
-    "translation": ""
+    "translation": "读取文件错误"
   },
   "assistant.tool.result": {
     "placeholders": {},
@@ -445,7 +445,7 @@
         91
       ]
     ],
-    "translation": ""
+    "translation": "查看文件"
   },
   "assistant.tool.view_task_details": {
     "placeholders": {},

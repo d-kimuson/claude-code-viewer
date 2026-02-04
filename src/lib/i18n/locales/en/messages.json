@@ -250,7 +250,7 @@
         180
       ]
     ],
-    "translation": "assistant.tool.binary_file"
+    "translation": "Binary file cannot be displayed"
   },
   "assistant.tool.error_loading_file": {
     "placeholders": {},
@@ -261,7 +261,7 @@
         165
       ]
     ],
-    "translation": "assistant.tool.error_loading_file"
+    "translation": "Failed to load file"
   },
   "assistant.tool.error_loading_task": {
     "placeholders": {},
@@ -283,7 +283,7 @@
         177
       ]
     ],
-    "translation": "assistant.tool.file_not_found"
+    "translation": "File not found"
   },
   "assistant.tool.file_truncated": {
     "placeholders": {},
@@ -294,7 +294,7 @@
         144
       ]
     ],
-    "translation": "assistant.tool.file_truncated"
+    "translation": "Truncated"
   },
   "assistant.tool.input_parameters": {
     "placeholders": {},
@@ -316,7 +316,7 @@
         183
       ]
     ],
-    "translation": "assistant.tool.invalid_path"
+    "translation": "Invalid file path"
   },
   "assistant.tool.loading_file": {
     "placeholders": {},
@@ -327,7 +327,7 @@
         157
       ]
     ],
-    "translation": "assistant.tool.loading_file"
+    "translation": "Loading file..."
   },
   "assistant.tool.loading_task": {
     "placeholders": {},
@@ -386,7 +386,7 @@
         186
       ]
     ],
-    "translation": "assistant.tool.read_error"
+    "translation": "Error reading file"
   },
   "assistant.tool.result": {
     "placeholders": {},

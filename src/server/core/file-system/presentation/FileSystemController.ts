@@ -5,6 +5,7 @@ import type { InferEffect } from "../../../lib/effect/types";
 import { ProjectRepository } from "../../project/infrastructure/ProjectRepository";
 import { getDirectoryListing } from "../functions/getDirectoryListing";
 import { getFileCompletion } from "../functions/getFileCompletion";
+import { getFileContent } from "../functions/getFileContent";
 
 const LayerImpl = Effect.gen(function* () {
   const projectRepository = yield* ProjectRepository;
@@ -79,9 +80,52 @@ const LayerImpl = Effect.gen(function* () {
       }
     });
 
+  const getFileContentRoute = (options: {
+    projectId: string;
+    filePath: string;
+  }) =>
+    Effect.gen(function* () {
+      const { projectId, filePath } = options;
+
+      const { project } = yield* projectRepository.getProject(projectId);
+
+      if (project.meta.projectPath === null) {
+        return {
+          response: {
+            success: false,
+            error: "PROJECT_PATH_NOT_SET",
+            message:
+              "Project path is not configured. Cannot read files without a project root.",
+            filePath,
+          },
+          status: 400,
+        } as const satisfies ControllerResponse;
+      }
+
+      const projectPath = project.meta.projectPath;
+
+      const result = yield* Effect.promise(() =>
+        getFileContent(projectPath, filePath),
+      );
+
+      if (!result.success) {
+        const statusCode = result.error === "NOT_FOUND" ? 404 : 400;
+        return {
+          response: result,
+          status: statusCode,
+        } as const satisfies ControllerResponse;
+      }
+
+      return {
+        response: result,
+        status: 200,
+      } as const satisfies ControllerResponse;
+    });
+
   return {
     getFileCompletionRoute,
     getDirectoryListingRoute,
+    getFileContentRoute,
   };
 });
 

@@ -252,6 +252,30 @@ export const routes = (app: HonoAppType, options: CliOptions) =>
           return response;
         })
 
+        .get(
+          "/api/projects/:projectId/files",
+          zValidator(
+            "query",
+            z.object({
+              filePath: z.string().min(1, "filePath is required"),
+            }),
+          ),
+          async (c) => {
+            const { projectId } = c.req.param();
+            const { filePath } = c.req.valid("query");
+            const response = await effectToResponse(
+              c,
+              fileSystemController
+                .getFileContentRoute({
+                  projectId,
+                  filePath,
+                })
+                .pipe(Effect.provide(runtime)),
+            );
+            return response;
+          },
+        )
+
         /**
          * SessionController Routes
          */

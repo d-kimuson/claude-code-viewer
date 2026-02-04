@@ -17,44 +17,69 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { fileContentQuery } from "@/lib/api/queries";
 import { detectLanguage } from "@/lib/file-viewer";
 import { useTheme } from "../../../../../../../hooks/useTheme";
 
 type FileContentDialogProps = {
   projectId: string;
-  filePath: string;
+  filePaths: readonly string[];
 };
 
 /**
  * Dialog component for viewing file content with syntax highlighting.
+ * Supports multiple files with a dropdown selector when more than one file is provided.
  * Fetches file content from API when opened and displays it with appropriate
  * syntax highlighting based on file extension.
  */
 export const FileContentDialog: FC<FileContentDialogProps> = ({
   projectId,
-  filePath,
+  filePaths,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(0);
   const { resolvedTheme } = useTheme();
   const syntaxTheme = resolvedTheme === "dark" ? oneDark : oneLight;
 
+  // Get the currently selected file path
+  const selectedFilePath = filePaths[selectedIndex] ?? filePaths[0];
+
+  // Reset selection when dialog closes or file list changes
+  const handleOpenChange = (open: boolean) => {
+    setIsOpen(open);
+    if (!open) {
+      setSelectedIndex(0);
+    }
+  };
+
   // Only fetch when dialog is open
   const { data, isLoading, error, refetch } = useQuery({
-    ...fileContentQuery(projectId, filePath),
-    enabled: isOpen,
+    ...fileContentQuery(projectId, selectedFilePath ?? ""),
+    enabled: isOpen && selectedFilePath !== undefined,
   });
 
   // Extract filename from path for display
-  const fileName = filePath.split("/").pop() ?? filePath;
+  const fileName = selectedFilePath?.split("/").pop() ?? selectedFilePath ?? "";
 
   // Determine language for syntax highlighting
   // Use API-provided language if available, otherwise detect from path
   const language =
-    data?.success === true ? data.language : detectLanguage(filePath);
+    data?.success === true
+      ? data.language
+      : detectLanguage(selectedFilePath ?? "");
+
+  // Check if there are multiple files
+  const hasMultipleFiles = filePaths.length > 1;
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button
           variant="ghost"
@@ -81,15 +106,45 @@ export const FileContentDialog: FC<FileContentDialogProps> = ({
               <DialogTitle className="text-lg font-semibold leading-tight mb-1 pr-8 break-all">
                 {fileName}
               </DialogTitle>
-              <DialogDescription className="text-xs flex items-center gap-2 flex-wrap">
-                <code className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono break-all">
-                  {filePath}
-                </code>
-                {data?.success === true && data.truncated && (
-                  <Badge variant="secondary" className="text-[10px]">
-                    <Trans id="assistant.tool.file_truncated" />
-                  </Badge>
-                )}
+              <DialogDescription
+                className="text-xs flex items-center gap-2 flex-wrap"
+                asChild
+              >
+                <div>
+                  {hasMultipleFiles ? (
+                    <Select
+                      value={String(selectedIndex)}
+                      onValueChange={(value) => setSelectedIndex(Number(value))}
+                    >
+                      <SelectTrigger
+                        className="h-7 text-[10px] font-mono max-w-[400px]"
+                        data-testid="file-selector"
+                      >
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {filePaths.map((path, index) => (
+                          <SelectItem
+                            key={path}
+                            value={String(index)}
+                            className="text-[10px] font-mono"
+                          >
+                            {path}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <code className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono break-all">
+                      {selectedFilePath}
+                    </code>
+                  )}
+                  {data?.success === true && data.truncated && (
+                    <Badge variant="secondary" className="text-[10px]">
+                      <Trans id="assistant.tool.file_truncated" />
+                    </Badge>
+                  )}
+                </div>
               </DialogDescription>
             </div>
           </div>

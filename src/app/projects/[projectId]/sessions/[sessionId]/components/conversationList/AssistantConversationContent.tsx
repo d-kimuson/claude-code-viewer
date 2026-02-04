@@ -122,13 +122,9 @@ export const AssistantConversationContent: FC<{
 
     // Extract file paths from Write/Edit/MultiEdit tools
     const editedFilePaths = extractEditedFilePaths(content);
-    const firstEditedFilePath = editedFilePaths[0];
     const fileContentDialog =
-      firstEditedFilePath !== undefined ? (
-        <FileContentDialog
-          projectId={projectId}
-          filePath={firstEditedFilePath}
-        />
+      editedFilePaths.length > 0 ? (
+        <FileContentDialog projectId={projectId} filePaths={editedFilePaths} />
       ) : undefined;
 
     return (

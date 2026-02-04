@@ -247,7 +247,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
-        125
+        180
       ]
     ],
     "translation": ""
@@ -258,7 +258,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
-        110
+        165
       ]
     ],
     "translation": ""
@@ -280,7 +280,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
-        122
+        177
       ]
     ],
     "translation": ""
@@ -291,7 +291,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
-        90
+        144
       ]
     ],
     "translation": ""
@@ -302,7 +302,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        175
+        171
       ]
     ],
     "translation": "输入参数"
@@ -313,7 +313,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
-        128
+        183
       ]
     ],
     "translation": ""
@@ -324,7 +324,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
-        102
+        157
       ]
     ],
     "translation": ""
@@ -383,7 +383,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
-        131
+        186
       ]
     ],
     "translation": ""
@@ -394,7 +394,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        189
+        185
       ]
     ],
     "translation": "工具结果"
@@ -405,7 +405,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
-        113
+        168
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
@@ -431,7 +431,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        167
+        163
       ]
     ],
     "translation": "工具 ID"
@@ -442,7 +442,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
-        66
+        91
       ]
     ],
     "translation": ""

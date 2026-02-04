@@ -236,10 +236,32 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        70
+        72
       ]
     ],
     "translation": "思考中"
+  },
+  "assistant.tool.binary_file": {
+    "translation": "",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
+        125
+      ]
+    ]
+  },
+  "assistant.tool.error_loading_file": {
+    "translation": "",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
+        110
+      ]
+    ]
   },
   "assistant.tool.error_loading_task": {
     "placeholders": {},
@@ -252,16 +274,60 @@
     ],
     "translation": "加载任务失败"
   },
+  "assistant.tool.file_not_found": {
+    "translation": "",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
+        122
+      ]
+    ]
+  },
+  "assistant.tool.file_truncated": {
+    "translation": "",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
+        90
+      ]
+    ]
+  },
   "assistant.tool.input_parameters": {
     "placeholders": {},
     "comments": [],
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        161
+        175
       ]
     ],
     "translation": "输入参数"
+  },
+  "assistant.tool.invalid_path": {
+    "translation": "",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
+        128
+      ]
+    ]
+  },
+  "assistant.tool.loading_file": {
+    "translation": "",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
+        102
+      ]
+    ]
   },
   "assistant.tool.loading_task": {
     "placeholders": {},
@@ -311,13 +377,24 @@
     ],
     "translation": "此任务的数据不可用"
   },
+  "assistant.tool.read_error": {
+    "translation": "",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
+        131
+      ]
+    ]
+  },
   "assistant.tool.result": {
     "placeholders": {},
     "comments": [],
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        175
+        189
       ]
     ],
     "translation": "工具结果"
@@ -326,6 +403,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
+        113
+      ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
         192
@@ -350,10 +431,21 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        153
+        167
       ]
     ],
     "translation": "工具 ID"
+  },
+  "assistant.tool.view_file": {
+    "translation": "",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
+        66
+      ]
+    ]
   },
   "assistant.tool.view_task_details": {
     "placeholders": {},

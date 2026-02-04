@@ -1,5 +1,6 @@
 import type { DirectoryListingResult } from "../../server/core/file-system/functions/getDirectoryListing";
 import type { FileCompletionResult } from "../../server/core/file-system/functions/getFileCompletion";
+import type { FileContentResult } from "../../server/core/file-system/functions/getFileContent";
 import { honoClient } from "./client";
 
 export const authCheckQuery = {
@@ -320,6 +321,23 @@ export const searchQuery = (
 
       if (!response.ok) {
         throw new Error(`Failed to search: ${response.statusText}`);
+      }
+
+      return await response.json();
+    },
+  }) as const;
+
+export const fileContentQuery = (projectId: string, filePath: string) =>
+  ({
+    queryKey: ["projects", projectId, "files", filePath],
+    queryFn: async (): Promise<FileContentResult> => {
+      const response = await honoClient.api.projects[":projectId"].files.$get({
+        param: { projectId },
+        query: { filePath },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch file content");
       }
 
       return await response.json();

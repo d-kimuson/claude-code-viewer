@@ -15,9 +15,11 @@ import {
 } from "@/components/ui/collapsible";
 import type { ToolResultContent } from "@/lib/conversation-schema/content/ToolResultContentSchema";
 import type { AssistantMessageContent } from "@/lib/conversation-schema/message/AssistantMessageSchema";
+import { extractEditedFilePaths } from "@/lib/file-viewer/extractEditedFilePaths";
 import { useTheme } from "../../../../../../../hooks/useTheme";
 import type { SidechainConversation } from "../../../../../../../lib/conversation-schema";
 import { MarkdownContent } from "../../../../../../components/MarkdownContent";
+import { FileContentDialog } from "./FileContentDialog";
 import { TaskModal } from "./TaskModal";
 import { ToolInputOneLine } from "./ToolInputOneLine";
 
@@ -118,6 +120,17 @@ export const AssistantConversationContent: FC<{
       );
     })();
 
+    // Extract file paths from Write/Edit/MultiEdit tools
+    const editedFilePaths = extractEditedFilePaths(content);
+    const firstEditedFilePath = editedFilePaths[0];
+    const fileContentDialog =
+      firstEditedFilePath !== undefined ? (
+        <FileContentDialog
+          projectId={projectId}
+          filePath={firstEditedFilePath}
+        />
+      ) : undefined;
+
     return (
       <Card className="border-blue-200 bg-blue-50/50 dark:border-blue-800 dark:bg-blue-950/20 mb-2 p-0 overflow-hidden">
         <Collapsible>
@@ -140,9 +153,10 @@ export const AssistantConversationContent: FC<{
                 </div>
               </div>
             </CollapsibleTrigger>
-            {taskModal && (
+            {(taskModal || fileContentDialog) && (
               <div className="flex-shrink-0 border-l border-blue-200 dark:border-blue-800 flex items-center">
                 {taskModal}
+                {fileContentDialog}
               </div>
             )}
           </div>

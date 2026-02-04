@@ -236,10 +236,32 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        70
+        72
       ]
     ],
     "translation": "Thinking"
+  },
+  "assistant.tool.binary_file": {
+    "translation": "assistant.tool.binary_file",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
+        125
+      ]
+    ]
+  },
+  "assistant.tool.error_loading_file": {
+    "translation": "assistant.tool.error_loading_file",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
+        110
+      ]
+    ]
   },
   "assistant.tool.error_loading_task": {
     "placeholders": {},
@@ -252,16 +274,60 @@
     ],
     "translation": "assistant.tool.error_loading_task"
   },
+  "assistant.tool.file_not_found": {
+    "translation": "assistant.tool.file_not_found",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
+        122
+      ]
+    ]
+  },
+  "assistant.tool.file_truncated": {
+    "translation": "assistant.tool.file_truncated",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
+        90
+      ]
+    ]
+  },
   "assistant.tool.input_parameters": {
     "placeholders": {},
     "comments": [],
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        161
+        175
       ]
     ],
     "translation": "Input Parameters"
+  },
+  "assistant.tool.invalid_path": {
+    "translation": "assistant.tool.invalid_path",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
+        128
+      ]
+    ]
+  },
+  "assistant.tool.loading_file": {
+    "translation": "assistant.tool.loading_file",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
+        102
+      ]
+    ]
   },
   "assistant.tool.loading_task": {
     "placeholders": {},
@@ -311,13 +377,24 @@
     ],
     "translation": "assistant.tool.no_task_data_description"
   },
+  "assistant.tool.read_error": {
+    "translation": "assistant.tool.read_error",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
+        131
+      ]
+    ]
+  },
   "assistant.tool.result": {
     "placeholders": {},
     "comments": [],
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        175
+        189
       ]
     ],
     "translation": "Tool Result"
@@ -326,6 +403,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
+        113
+      ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
         192
@@ -350,10 +431,21 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        153
+        167
       ]
     ],
     "translation": "Tool ID"
+  },
+  "assistant.tool.view_file": {
+    "translation": "assistant.tool.view_file",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
+        66
+      ]
+    ]
   },
   "assistant.tool.view_task_details": {
     "placeholders": {},

@@ -1,14 +1,14 @@
 {
-  "name": "@kimuson/claude-code-viewer",
-  "version": "0.5.9",
-  "description": "A full-featured web-based Claude Code client that provides complete interactive functionality for managing Claude Code projects.",
+  "name": "clu-mission-control",
+  "version": "0.1.0",
+  "description": "Unified dashboard to manage Claude Code sessions and Clu autonomous agent work.",
   "type": "module",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/d-kimuson/claude-code-viewer.git"
+    "url": "https://github.com/ehoyos007/clu-mission-control.git"
   },
-  "homepage": "https://github.com/d-kimuson/claude-code-viewer",
+  "homepage": "https://github.com/ehoyos007/clu-mission-control",
   "files": [
     "dist"
   ],

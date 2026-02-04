@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/collapsible";
 import type { ToolResultContent } from "@/lib/conversation-schema/content/ToolResultContentSchema";
 import type { AssistantMessageContent } from "@/lib/conversation-schema/message/AssistantMessageSchema";
-import { extractEditedFilePaths } from "@/lib/file-viewer/extractEditedFilePaths";
+import { extractEditedFilePaths } from "@/lib/file-viewer";
 import { useTheme } from "../../../../../../../hooks/useTheme";
 import type { SidechainConversation } from "../../../../../../../lib/conversation-schema";
 import { MarkdownContent } from "../../../../../../components/MarkdownContent";

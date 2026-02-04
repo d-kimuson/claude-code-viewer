@@ -18,7 +18,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { fileContentQuery } from "@/lib/api/queries";
-import { detectLanguage } from "@/lib/file-viewer/detectLanguage";
+import { detectLanguage } from "@/lib/file-viewer";
 import { useTheme } from "../../../../../../../hooks/useTheme";
 
 type FileContentDialogProps = {

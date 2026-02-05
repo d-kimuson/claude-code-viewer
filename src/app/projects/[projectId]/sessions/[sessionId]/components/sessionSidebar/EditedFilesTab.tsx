@@ -1,130 +1,99 @@
 import { Trans } from "@lingui/react";
-import { ChevronRight, FileIcon, FolderIcon } from "lucide-react";
-import { type FC, useMemo, useState } from "react";
+import { ExternalLinkIcon, FileIcon } from "lucide-react";
+import { type FC, useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
 import { extractAllEditedFiles } from "@/lib/file-viewer";
-import { cn } from "@/lib/utils";
 import { useSession } from "../../hooks/useSession";
 import { FileContentDialog } from "../conversationList/FileContentDialog";
 
-type FileTreeNode = {
-  name: string;
-  path: string;
-  isFile: boolean;
-  children: Map<string, FileTreeNode>;
-  toolName?: string;
+type GroupedFiles = {
+  internal: readonly {
+    filePath: string;
+    displayPath: string;
+    toolName: string;
+  }[];
+  external: readonly {
+    filePath: string;
+    displayPath: string;
+    toolName: string;
+  }[];
 };
 
-const buildFileTree = (
+const groupFilesByProject = (
   files: readonly { filePath: string; toolName: string }[],
-): FileTreeNode => {
-  const root: FileTreeNode = {
-    name: "",
-    path: "",
-    isFile: false,
-    children: new Map(),
-  };
+  cwd: string | undefined,
+): GroupedFiles => {
+  if (!cwd) {
+    return {
+      internal: [],
+      external: files.map((f) => ({
+        ...f,
+        displayPath: f.filePath,
+      })),
+    };
+  }
+
+  const cwdWithSlash = cwd.endsWith("/") ? cwd : `${cwd}/`;
+  const internal: {
+    filePath: string;
+    displayPath: string;
+    toolName: string;
+  }[] = [];
+  const external: {
+    filePath: string;
+    displayPath: string;
+    toolName: string;
+  }[] = [];
 
   for (const file of files) {
-    const parts = file.filePath.split("/").filter(Boolean);
-    let current = root;
-    let currentPath = "";
-
-    for (let i = 0; i < parts.length; i++) {
-      const part = parts[i];
-      if (part === undefined) continue;
-
-      currentPath = currentPath ? `${currentPath}/${part}` : `/${part}`;
-      const isLastPart = i === parts.length - 1;
-
-      if (!current.children.has(part)) {
-        current.children.set(part, {
-          name: part,
-          path: currentPath,
-          isFile: isLastPart,
-          children: new Map(),
-          toolName: isLastPart ? file.toolName : undefined,
-        });
-      }
-
-      const child = current.children.get(part);
-      if (child) {
-        current = child;
-      }
+    if (file.filePath.startsWith(cwdWithSlash)) {
+      internal.push({
+        ...file,
+        displayPath: file.filePath.slice(cwdWithSlash.length),
+      });
+    } else if (file.filePath === cwd) {
+      internal.push({
+        ...file,
+        displayPath: ".",
+      });
+    } else {
+      external.push({
+        ...file,
+        displayPath: file.filePath,
+      });
     }
   }
 
-  return root;
+  return { internal, external };
 };
 
-const FileTreeItem: FC<{
-  node: FileTreeNode;
+const FileListItem: FC<{
+  filePath: string;
+  displayPath: string;
+  toolName: string;
   projectId: string;
-  depth: number;
-}> = ({ node, projectId, depth }) => {
-  const [isOpen, setIsOpen] = useState(depth < 2);
-
-  if (node.isFile) {
-    return (
-      <FileContentDialog projectId={projectId} filePaths={[node.path]}>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="w-full justify-start h-7 px-2 text-xs font-normal hover:bg-accent"
-          style={{ paddingLeft: `${depth * 12 + 8}px` }}
-        >
-          <FileIcon className="h-3.5 w-3.5 mr-1.5 flex-shrink-0 text-muted-foreground" />
-          <span className="truncate">{node.name}</span>
-          {node.toolName && (
-            <span className="ml-auto text-[10px] text-muted-foreground">
-              {node.toolName}
-            </span>
-          )}
-        </Button>
-      </FileContentDialog>
-    );
-  }
-
-  const children = Array.from(node.children.values()).sort((a, b) => {
-    if (a.isFile !== b.isFile) return a.isFile ? 1 : -1;
-    return a.name.localeCompare(b.name);
-  });
-
+  isExternal?: boolean;
+}> = ({ filePath, displayPath, toolName, projectId, isExternal }) => {
   return (
-    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-      <CollapsibleTrigger asChild>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="w-full justify-start h-7 px-2 text-xs font-normal hover:bg-accent"
-          style={{ paddingLeft: `${depth * 12 + 8}px` }}
-        >
-          <ChevronRight
-            className={cn(
-              "h-3.5 w-3.5 mr-1 flex-shrink-0 transition-transform",
-              isOpen && "rotate-90",
-            )}
-          />
-          <FolderIcon className="h-3.5 w-3.5 mr-1.5 flex-shrink-0 text-muted-foreground" />
-          <span className="truncate">{node.name}</span>
-        </Button>
-      </CollapsibleTrigger>
-      <CollapsibleContent>
-        {children.map((child) => (
-          <FileTreeItem
-            key={child.path}
-            node={child}
-            projectId={projectId}
-            depth={depth + 1}
-          />
-        ))}
-      </CollapsibleContent>
-    </Collapsible>
+    <FileContentDialog projectId={projectId} filePaths={[filePath]}>
+      <Button
+        variant="ghost"
+        size="sm"
+        className="w-full justify-start h-auto py-1.5 px-3 text-xs font-normal hover:bg-accent gap-2"
+      >
+        {isExternal ? (
+          <ExternalLinkIcon className="h-3.5 w-3.5 flex-shrink-0 text-muted-foreground" />
+        ) : (
+          <FileIcon className="h-3.5 w-3.5 flex-shrink-0 text-muted-foreground" />
+        )}
+        <span className="truncate text-left flex-1 font-mono">
+          {displayPath}
+        </span>
+        <span className="text-[10px] text-muted-foreground flex-shrink-0">
+          {toolName}
+        </span>
+      </Button>
+    </FileContentDialog>
   );
 };
 
@@ -139,7 +108,20 @@ export const EditedFilesTab: FC<{
     [conversations],
   );
 
-  const fileTree = useMemo(() => buildFileTree(editedFiles), [editedFiles]);
+  // Get cwd from the first conversation entry that has it
+  const cwd = useMemo(() => {
+    for (const conv of conversations) {
+      if ("cwd" in conv && typeof conv.cwd === "string") {
+        return conv.cwd;
+      }
+    }
+    return undefined;
+  }, [conversations]);
+
+  const groupedFiles = useMemo(
+    () => groupFilesByProject(editedFiles, cwd),
+    [editedFiles, cwd],
+  );
 
   if (editedFiles.length === 0) {
     return (
@@ -148,11 +130,6 @@ export const EditedFilesTab: FC<{
       </div>
     );
   }
-
-  const rootChildren = Array.from(fileTree.children.values()).sort((a, b) => {
-    if (a.isFile !== b.isFile) return a.isFile ? 1 : -1;
-    return a.name.localeCompare(b.name);
-  });
 
   return (
     <div className="flex flex-col h-full">
@@ -167,15 +144,42 @@ export const EditedFilesTab: FC<{
           />
         </p>
       </div>
-      <div className="flex-1 overflow-auto py-1">
-        {rootChildren.map((node) => (
-          <FileTreeItem
-            key={node.path}
-            node={node}
-            projectId={projectId}
-            depth={0}
-          />
-        ))}
+      <div className="flex-1 overflow-auto">
+        {groupedFiles.internal.length > 0 && (
+          <div className="py-1">
+            {groupedFiles.external.length > 0 && (
+              <div className="px-3 py-1.5 text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
+                <Trans id="sidebar.edited_files.internal" />
+              </div>
+            )}
+            {groupedFiles.internal.map((file) => (
+              <FileListItem
+                key={file.filePath}
+                filePath={file.filePath}
+                displayPath={file.displayPath}
+                toolName={file.toolName}
+                projectId={projectId}
+              />
+            ))}
+          </div>
+        )}
+        {groupedFiles.external.length > 0 && (
+          <div className="py-1 border-t">
+            <div className="px-3 py-1.5 text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
+              <Trans id="sidebar.edited_files.external" />
+            </div>
+            {groupedFiles.external.map((file) => (
+              <FileListItem
+                key={file.filePath}
+                filePath={file.filePath}
+                displayPath={file.displayPath}
+                toolName={file.toolName}
+                projectId={projectId}
+                isExternal
+              />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

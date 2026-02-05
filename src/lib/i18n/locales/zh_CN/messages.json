@@ -3202,7 +3202,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/EditedFilesTab.tsx",
-        164
+        141
       ]
     ],
     "translation": "{count} 个文件"
@@ -3213,10 +3213,32 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/EditedFilesTab.tsx",
-        147
+        129
       ]
     ],
     "translation": "没有编辑的文件"
+  },
+  "sidebar.edited_files.external": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/EditedFilesTab.tsx",
+        169
+      ]
+    ],
+    "translation": "项目外"
+  },
+  "sidebar.edited_files.internal": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/EditedFilesTab.tsx",
+        152
+      ]
+    ],
+    "translation": "项目内"
   },
   "sidebar.edited_files.no_session": {
     "placeholders": {},
@@ -3235,7 +3257,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/EditedFilesTab.tsx",
-        161
+        138
       ]
     ],
     "translation": "编辑的文件"

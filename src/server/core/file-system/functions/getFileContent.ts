@@ -217,6 +217,7 @@ export const isBinaryContent = (buffer: Buffer): boolean => {
 
 /**
  * Validates that the file path is safe and within the project root
+ * Accepts both absolute paths (must be within project root) and relative paths
  */
 export const validateFilePath = (
   projectRoot: string,
@@ -234,20 +235,22 @@ export const validateFilePath = (
     return { valid: false, message: "File path contains invalid characters" };
   }
 
-  // Check for absolute path
-  if (filePath.startsWith("/")) {
-    return { valid: false, message: "Absolute path is not allowed" };
-  }
-
   // Check for path traversal attempts
   if (filePath.includes("..")) {
     return { valid: false, message: "Path traversal (..) is not allowed" };
   }
 
-  // Normalize and resolve the path
-  const normalizedPath = normalize(filePath);
-  const resolvedPath = resolve(projectRoot, normalizedPath);
   const resolvedRoot = resolve(projectRoot);
+  let resolvedPath: string;
+
+  // Handle absolute paths
+  if (filePath.startsWith("/")) {
+    resolvedPath = normalize(filePath);
+  } else {
+    // Handle relative paths
+    const normalizedPath = normalize(filePath);
+    resolvedPath = resolve(projectRoot, normalizedPath);
+  }
 
   // Ensure the resolved path is within the project root
   if (

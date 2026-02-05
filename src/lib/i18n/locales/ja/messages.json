@@ -247,7 +247,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
-        180
+        185
       ]
     ],
     "translation": "バイナリファイルは表示できません"
@@ -258,7 +258,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
-        165
+        170
       ]
     ],
     "translation": "ファイルの読み込みに失敗しました"
@@ -280,7 +280,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
-        177
+        182
       ]
     ],
     "translation": "ファイルが見つかりません"
@@ -291,7 +291,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
-        144
+        149
       ]
     ],
     "translation": "一部省略"
@@ -313,7 +313,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
-        183
+        188
       ]
     ],
     "translation": "無効なファイルパスです"
@@ -324,7 +324,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
-        157
+        162
       ]
     ],
     "translation": "ファイルを読み込み中..."
@@ -383,7 +383,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
-        186
+        191
       ]
     ],
     "translation": "ファイルの読み取りエラー"
@@ -405,7 +405,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
-        168
+        173
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
@@ -442,7 +442,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
-        91
+        92
       ]
     ],
     "translation": "ファイルを表示"
@@ -3187,10 +3187,69 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        104
+        120
       ]
     ],
     "translation": "プロジェクト一覧に戻る"
+  },
+  "sidebar.edited_files.count": {
+    "placeholders": {
+      "count": [
+        "editedFiles.length"
+      ]
+    },
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/EditedFilesTab.tsx",
+        164
+      ]
+    ],
+    "translation": "{count} ファイル"
+  },
+  "sidebar.edited_files.empty": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/EditedFilesTab.tsx",
+        147
+      ]
+    ],
+    "translation": "編集されたファイルはありません"
+  },
+  "sidebar.edited_files.no_session": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
+        83
+      ]
+    ],
+    "translation": "セッションを選択してください"
+  },
+  "sidebar.edited_files.title": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/EditedFilesTab.tsx",
+        161
+      ]
+    ],
+    "translation": "編集されたファイル"
+  },
+  "sidebar.show.edited.files": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
+        76
+      ]
+    ],
+    "translation": "編集ファイル一覧を表示"
   },
   "sidebar.show.mcp.settings": {
     "placeholders": {},
@@ -3202,7 +3261,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        62
+        64
       ]
     ],
     "translation": "MCPサーバー設定を表示"
@@ -3213,7 +3272,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        74
+        90
       ]
     ],
     "translation": "スケジューラジョブを表示"
@@ -3228,7 +3287,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        49
+        51
       ]
     ],
     "translation": "セッション一覧を表示"

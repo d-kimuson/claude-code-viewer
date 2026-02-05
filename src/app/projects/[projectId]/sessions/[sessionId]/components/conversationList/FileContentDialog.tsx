@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/react";
 import { useQuery } from "@tanstack/react-query";
 import { AlertCircle, Eye, FileCode, Loader2 } from "lucide-react";
-import { type FC, useState } from "react";
+import { type FC, type ReactNode, useState } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import {
   oneDark,
@@ -28,9 +28,10 @@ import { fileContentQuery } from "@/lib/api/queries";
 import { detectLanguage } from "@/lib/file-viewer";
 import { useTheme } from "../../../../../../../hooks/useTheme";
 
-type FileContentDialogProps = {
+export type FileContentDialogProps = {
   projectId: string;
   filePaths: readonly string[];
+  children?: ReactNode;
 };
 
 /**
@@ -42,6 +43,7 @@ type FileContentDialogProps = {
 export const FileContentDialog: FC<FileContentDialogProps> = ({
   projectId,
   filePaths,
+  children,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -78,19 +80,22 @@ export const FileContentDialog: FC<FileContentDialogProps> = ({
   // Check if there are multiple files
   const hasMultipleFiles = filePaths.length > 1;
 
+  // Default trigger button if no children provided
+  const defaultTrigger = (
+    <Button
+      variant="ghost"
+      size="sm"
+      className="h-auto py-1.5 px-3 text-xs hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-none flex items-center gap-1"
+      data-testid="file-content-button"
+    >
+      <Eye className="h-3 w-3" />
+      <Trans id="assistant.tool.view_file" />
+    </Button>
+  );
+
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogTrigger asChild>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-auto py-1.5 px-3 text-xs hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-none flex items-center gap-1"
-          data-testid="file-content-button"
-        >
-          <Eye className="h-3 w-3" />
-          <Trans id="assistant.tool.view_file" />
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger asChild>{children ?? defaultTrigger}</DialogTrigger>
       <DialogContent
         className="w-[95vw] md:w-[90vw] lg:w-[85vw] max-w-[1200px] h-[85vh] max-h-[85vh] flex flex-col p-0"
         data-testid="file-content-dialog"

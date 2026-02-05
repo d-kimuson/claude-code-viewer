@@ -101,13 +101,39 @@ describe("getFileContent", () => {
       }
     });
 
-    test("should reject absolute path", async () => {
+    test("should reject absolute path outside project root", async () => {
       const result = await getFileContent(testDir, "/etc/passwd");
 
       expect(result.success).toBe(false);
       if (!result.success) {
         expect(result.error).toBe("INVALID_PATH");
-        expect(result.message).toContain("Absolute path");
+        expect(result.message).toContain("outside the project root");
+      }
+    });
+
+    test("should accept absolute path within project root", async () => {
+      const absolutePath = join(testDir, "absolute-test.txt");
+      await writeFile(absolutePath, "absolute path content");
+
+      const result = await getFileContent(testDir, absolutePath);
+
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.content).toBe("absolute path content");
+      }
+    });
+
+    test("should accept absolute path with special characters like brackets", async () => {
+      const specialDir = join(testDir, "[special]");
+      await mkdir(specialDir, { recursive: true });
+      const specialFile = join(specialDir, "file.txt");
+      await writeFile(specialFile, "special content");
+
+      const result = await getFileContent(testDir, specialFile);
+
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.content).toBe("special content");
       }
     });
 

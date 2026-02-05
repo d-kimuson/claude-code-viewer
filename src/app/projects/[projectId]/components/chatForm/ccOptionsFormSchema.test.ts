@@ -2,11 +2,29 @@ import { describe, expect, test } from "vitest";
 import type { CCOptionsSchema } from "@/server/core/claude-code/schema";
 import {
   type CCOptionsForm,
+  getDefaultCCOptions,
+  hasNonDefaultCCOptions,
   transformFormToSchema,
   transformSchemaToForm,
 } from "./ccOptionsFormSchema";
 
 describe("ccOptionsFormSchema", () => {
+  describe("getDefaultCCOptions", () => {
+    test("should return default CCOptionsSchema with settingSources", () => {
+      const result = getDefaultCCOptions();
+      expect(result).toEqual({
+        settingSources: ["user", "project", "local"],
+      });
+    });
+
+    test("should return a new array instance each time", () => {
+      const result1 = getDefaultCCOptions();
+      const result2 = getDefaultCCOptions();
+      expect(result1).not.toBe(result2);
+      expect(result1.settingSources).not.toBe(result2.settingSources);
+    });
+  });
+
   describe("transformSchemaToForm", () => {
     test("should handle undefined schema", () => {
       const result = transformSchemaToForm(undefined);
@@ -166,6 +184,32 @@ describe("ccOptionsFormSchema", () => {
         maxBudgetUsd: 1.5,
       });
     });
+
+    test("should include empty settingSources when explicitly set to empty array", () => {
+      // This is important: when user explicitly unchecks all settingSources,
+      // the empty array should be sent (not omitted)
+      const form: CCOptionsForm = {
+        settingSources: [],
+        model: "claude-sonnet-4",
+      };
+      const result = transformFormToSchema(form);
+      expect(result).toEqual({
+        model: "claude-sonnet-4",
+        settingSources: [],
+      });
+    });
+
+    test("should omit settingSources when undefined", () => {
+      const form: CCOptionsForm = {
+        settingSources: undefined,
+        model: "claude-sonnet-4",
+      };
+      const result = transformFormToSchema(form);
+      expect(result).toEqual({
+        model: "claude-sonnet-4",
+      });
+      expect(result?.settingSources).toBeUndefined();
+    });
   });
 
   describe("round-trip transformation", () => {
@@ -183,6 +227,129 @@ describe("ccOptionsFormSchema", () => {
       const form = transformSchemaToForm(original);
       const result = transformFormToSchema(form);
       expect(result).toEqual(original);
+    });
+  });
+
+  describe("hasNonDefaultCCOptions", () => {
+    test("should return false for undefined", () => {
+      expect(hasNonDefaultCCOptions(undefined)).toBe(false);
+    });
+
+    test("should return false for default options", () => {
+      const defaultOptions = getDefaultCCOptions();
+      expect(hasNonDefaultCCOptions(defaultOptions)).toBe(false);
+    });
+
+    test("should return false for options with only default settingSources", () => {
+      const options: CCOptionsSchema = {
+        settingSources: ["user", "project", "local"],
+      };
+      expect(hasNonDefaultCCOptions(options)).toBe(false);
+    });
+
+    test("should return true when settingSources differs from default", () => {
+      const options: CCOptionsSchema = {
+        settingSources: ["user", "project"],
+      };
+      expect(hasNonDefaultCCOptions(options)).toBe(true);
+    });
+
+    test("should return true when settingSources is empty", () => {
+      const options: CCOptionsSchema = {
+        settingSources: [],
+      };
+      expect(hasNonDefaultCCOptions(options)).toBe(true);
+    });
+
+    test("should return true when settingSources order differs", () => {
+      const options: CCOptionsSchema = {
+        settingSources: ["local", "project", "user"],
+      };
+      expect(hasNonDefaultCCOptions(options)).toBe(true);
+    });
+
+    test("should return true when model is set", () => {
+      const options: CCOptionsSchema = {
+        model: "claude-sonnet-4",
+        settingSources: ["user", "project", "local"],
+      };
+      expect(hasNonDefaultCCOptions(options)).toBe(true);
+    });
+
+    test("should return true when disallowedTools is set", () => {
+      const options: CCOptionsSchema = {
+        disallowedTools: ["Bash"],
+        settingSources: ["user", "project", "local"],
+      };
+      expect(hasNonDefaultCCOptions(options)).toBe(true);
+    });
+
+    test("should return false when disallowedTools is empty array", () => {
+      const options: CCOptionsSchema = {
+        disallowedTools: [],
+        settingSources: ["user", "project", "local"],
+      };
+      expect(hasNonDefaultCCOptions(options)).toBe(false);
+    });
+
+    test("should return true when systemPrompt is set", () => {
+      const options: CCOptionsSchema = {
+        systemPrompt: {
+          type: "preset",
+          preset: "claude_code",
+          append: "Additional",
+        },
+        settingSources: ["user", "project", "local"],
+      };
+      expect(hasNonDefaultCCOptions(options)).toBe(true);
+    });
+
+    test("should return true when env is set with values", () => {
+      const options: CCOptionsSchema = {
+        env: { NODE_ENV: "production" },
+        settingSources: ["user", "project", "local"],
+      };
+      expect(hasNonDefaultCCOptions(options)).toBe(true);
+    });
+
+    test("should return false when env is empty object", () => {
+      const options: CCOptionsSchema = {
+        env: {},
+        settingSources: ["user", "project", "local"],
+      };
+      expect(hasNonDefaultCCOptions(options)).toBe(false);
+    });
+
+    test("should return true when sandbox is set", () => {
+      const options: CCOptionsSchema = {
+        sandbox: { enabled: true },
+        settingSources: ["user", "project", "local"],
+      };
+      expect(hasNonDefaultCCOptions(options)).toBe(true);
+    });
+
+    test("should return true when maxTurns is set", () => {
+      const options: CCOptionsSchema = {
+        maxTurns: 10,
+        settingSources: ["user", "project", "local"],
+      };
+      expect(hasNonDefaultCCOptions(options)).toBe(true);
+    });
+
+    test("should return true when maxThinkingTokens is set", () => {
+      const options: CCOptionsSchema = {
+        maxThinkingTokens: 5000,
+        settingSources: ["user", "project", "local"],
+      };
+      expect(hasNonDefaultCCOptions(options)).toBe(true);
+    });
+
+    test("should return true when maxBudgetUsd is set", () => {
+      const options: CCOptionsSchema = {
+        maxBudgetUsd: 1.5,
+        settingSources: ["user", "project", "local"],
+      };
+      expect(hasNonDefaultCCOptions(options)).toBe(true);
     });
   });
 });

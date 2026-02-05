@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import {
   ArrowLeftIcon,
   CalendarClockIcon,
+  FileEditIcon,
   ListTodoIcon,
   MessageSquareIcon,
   PlugIcon,
@@ -18,6 +19,7 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { Loading } from "../../../../../../../components/Loading";
+import { EditedFilesTab } from "./EditedFilesTab";
 import { McpTab } from "./McpTab";
 import { MobileSidebar } from "./MobileSidebar";
 import { SchedulerTab } from "./SchedulerTab";
@@ -67,6 +69,20 @@ export const SessionSidebar: FC<{
         icon: ListTodoIcon,
         title: "Tasks",
         content: <TasksTab projectId={projectId} sessionId={activeSessionId} />,
+      },
+      {
+        id: "edited-files",
+        icon: FileEditIcon,
+        title: <Trans id="sidebar.show.edited.files" />,
+        content: activeSessionId ? (
+          <Suspense fallback={<Loading />}>
+            <EditedFilesTab projectId={projectId} sessionId={activeSessionId} />
+          </Suspense>
+        ) : (
+          <div className="p-4 text-sm text-muted-foreground text-center">
+            <Trans id="sidebar.edited_files.no_session" />
+          </div>
+        ),
       },
       {
         id: "scheduler",

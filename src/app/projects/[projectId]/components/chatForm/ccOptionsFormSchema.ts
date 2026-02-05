@@ -54,6 +54,50 @@ const defaultSettingSources: Array<"user" | "project" | "local"> = [
 ];
 
 /**
+ * Get default CC options for initial state
+ * This ensures that settingSources has proper defaults even when Popover is not opened
+ */
+export function getDefaultCCOptions(): CCOptionsSchema {
+  return {
+    settingSources: [...defaultSettingSources],
+  };
+}
+
+/**
+ * Check if the given CC options differ from the default values
+ * Used to determine whether to show the settings indicator
+ */
+export function hasNonDefaultCCOptions(
+  options: CCOptionsSchema | undefined,
+): boolean {
+  if (options === undefined) return false;
+
+  const defaultOptions = getDefaultCCOptions();
+
+  // Check if settingSources differs from default
+  const settingSourcesChanged =
+    options.settingSources !== undefined &&
+    (options.settingSources.length !== defaultOptions.settingSources?.length ||
+      !options.settingSources.every(
+        (s, i) => defaultOptions.settingSources?.[i] === s,
+      ));
+
+  // Check if any other field is set (non-default)
+  const hasOtherSettings =
+    options.model !== undefined ||
+    (options.disallowedTools !== undefined &&
+      options.disallowedTools.length > 0) ||
+    options.systemPrompt !== undefined ||
+    (options.env !== undefined && Object.keys(options.env).length > 0) ||
+    options.sandbox !== undefined ||
+    options.maxTurns !== undefined ||
+    options.maxThinkingTokens !== undefined ||
+    options.maxBudgetUsd !== undefined;
+
+  return settingSourcesChanged || hasOtherSettings;
+}
+
+/**
  * Transform frontend form data to backend schema
  */
 export function transformFormToSchema(
@@ -141,7 +185,8 @@ export function transformFormToSchema(
     ...(systemPrompt ? { systemPrompt } : {}),
     ...(env ? { env } : {}),
     ...(sandbox ? { sandbox } : {}),
-    ...(form.settingSources?.length
+    // Always include settingSources if defined (even empty array means explicit user choice)
+    ...(form.settingSources !== undefined
       ? { settingSources: form.settingSources }
       : {}),
     ...(form.maxTurns !== undefined ? { maxTurns: form.maxTurns } : {}),

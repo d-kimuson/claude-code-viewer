@@ -35,6 +35,7 @@ import type {
 import { useConfig } from "../../../../hooks/useConfig";
 import { ClaudeCodeSettingsPopover } from "./ClaudeCodeSettingsForm";
 import type { CommandCompletionRef } from "./CommandCompletion";
+import { getDefaultCCOptions } from "./ccOptionsFormSchema";
 import { isInCompletionContext } from "./completionUtils";
 import type { FileCompletionRef } from "./FileCompletion";
 import { processFile } from "./fileUtils";
@@ -116,8 +117,10 @@ export const ChatInput: FC<ChatInputProps> = ({
     const minutes = String(now.getMinutes()).padStart(2, "0");
     return `${year}-${month}-${day}T${hours}:${minutes}`;
   });
+  // Initialize with default values so settingSources is always sent correctly
+  // even when the user doesn't open the settings popover
   const [ccOptions, setCCOptions] = useState<CCOptionsSchema | undefined>(
-    undefined,
+    getDefaultCCOptions,
   );
   const [forkSession, setForkSession] = useState(true);
 

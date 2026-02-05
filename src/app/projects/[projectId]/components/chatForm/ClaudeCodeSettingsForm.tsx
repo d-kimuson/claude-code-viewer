@@ -18,6 +18,7 @@ import type { CCOptionsSchema } from "@/server/core/claude-code/schema";
 import {
   type CCOptionsForm,
   ccOptionsFormSchema,
+  hasNonDefaultCCOptions,
   transformFormToSchema,
   transformSchemaToForm,
 } from "./ccOptionsFormSchema";
@@ -675,7 +676,7 @@ export const ClaudeCodeSettingsPopover: FC<{
   onForkSessionChange,
 }) => {
   const [open, setOpen] = useState(false);
-  const hasSettings = value !== undefined;
+  const hasSettings = hasNonDefaultCCOptions(value);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>

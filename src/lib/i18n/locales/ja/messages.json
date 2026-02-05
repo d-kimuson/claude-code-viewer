@@ -5,7 +5,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        373
+        374
       ]
     ],
     "translation": "追加の指示を入力..."
@@ -71,7 +71,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        213
+        214
       ]
     ],
     "translation": "カスタムツール名..."
@@ -115,7 +115,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        105
+        106
       ]
     ],
     "translation": "キー"
@@ -126,7 +126,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        425
+        428
       ]
     ],
     "translation": "補完機能付きメッセージ入力"
@@ -225,7 +225,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        113
+        114
       ]
     ],
     "translation": "値"
@@ -236,10 +236,32 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        70
+        72
       ]
     ],
     "translation": "思考中"
+  },
+  "assistant.tool.binary_file": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
+        185
+      ]
+    ],
+    "translation": "バイナリファイルは表示できません"
+  },
+  "assistant.tool.error_loading_file": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
+        170
+      ]
+    ],
+    "translation": "ファイルの読み込みに失敗しました"
   },
   "assistant.tool.error_loading_task": {
     "placeholders": {},
@@ -252,16 +274,60 @@
     ],
     "translation": "タスクの読み込みに失敗しました"
   },
+  "assistant.tool.file_not_found": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
+        182
+      ]
+    ],
+    "translation": "ファイルが見つかりません"
+  },
+  "assistant.tool.file_truncated": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
+        149
+      ]
+    ],
+    "translation": "一部省略"
+  },
   "assistant.tool.input_parameters": {
     "placeholders": {},
     "comments": [],
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        161
+        171
       ]
     ],
     "translation": "入力パラメータ"
+  },
+  "assistant.tool.invalid_path": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
+        188
+      ]
+    ],
+    "translation": "無効なファイルパスです"
+  },
+  "assistant.tool.loading_file": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
+        162
+      ]
+    ],
+    "translation": "ファイルを読み込み中..."
   },
   "assistant.tool.loading_task": {
     "placeholders": {},
@@ -311,13 +377,24 @@
     ],
     "translation": "このタスクのデータは利用できません"
   },
+  "assistant.tool.read_error": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
+        191
+      ]
+    ],
+    "translation": "ファイルの読み取りエラー"
+  },
   "assistant.tool.result": {
     "placeholders": {},
     "comments": [],
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        175
+        185
       ]
     ],
     "translation": "ツール実行結果"
@@ -326,6 +403,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
+        173
+      ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
         192
@@ -350,10 +431,21 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        153
+        163
       ]
     ],
     "translation": "ツールID"
+  },
+  "assistant.tool.view_file": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
+        92
+      ]
+    ],
+    "translation": "ファイルを表示"
   },
   "assistant.tool.view_task_details": {
     "placeholders": {},
@@ -383,7 +475,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        521
+        524
       ]
     ],
     "translation": "添付"
@@ -405,7 +497,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        389
+        392
       ]
     ],
     "translation": "メッセージの送信に失敗しました。もう一度お試しください。"
@@ -531,7 +623,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        233
+        236
       ]
     ],
     "translation": "メッセージの予約に失敗しました"
@@ -543,7 +635,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        217
+        220
       ]
     ],
     "translation": "メッセージを予約しました"
@@ -555,7 +647,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        222
+        225
       ]
     ],
     "translation": "スケジューラタブで確認・管理できます"
@@ -577,11 +669,11 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        478
+        481
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        568
+        571
       ]
     ],
     "translation": "今すぐ送信"
@@ -592,11 +684,11 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        461
+        464
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        551
+        554
       ]
     ],
     "translation": "送信モード"
@@ -607,15 +699,15 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        481
+        484
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        571
+        574
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        588
+        591
       ]
     ],
     "translation": "予約送信"
@@ -626,7 +718,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        488
+        491
       ]
     ],
     "translation": "送信予定時刻"
@@ -638,7 +730,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        692
+        693
       ]
     ],
     "translation": "設定"
@@ -649,7 +741,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        607
+        610
       ]
     ],
     "translation": "処理中..."
@@ -1410,7 +1502,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        646
+        647
       ]
     ],
     "translation": "例: 1.00"
@@ -1421,7 +1513,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        595
+        596
       ]
     ],
     "translation": "例: 10"
@@ -1432,7 +1524,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        619
+        620
       ]
     ],
     "translation": "例: 10000"
@@ -1443,7 +1535,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        513
+        514
       ]
     ],
     "translation": "例: api.example.com, cdn.example.com"
@@ -1454,7 +1546,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        300
+        301
       ]
     ],
     "translation": "例: claude-sonnet-4-5-20250929"
@@ -2417,7 +2509,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        529
+        530
       ]
     ],
     "translation": "詳細設定"
@@ -2439,7 +2531,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        312
+        313
       ]
     ],
     "translation": "無効化するツール"
@@ -2450,7 +2542,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        138
+        139
       ]
     ],
     "translation": "環境変数を追加"
@@ -2462,7 +2554,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        389
+        390
       ]
     ],
     "translation": "環境変数"
@@ -2473,7 +2565,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        286
+        287
       ]
     ],
     "translation": "セッションをフォーク"
@@ -2654,7 +2746,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        633
+        634
       ]
     ],
     "translation": "最大予算 (USD)"
@@ -2666,7 +2758,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        607
+        608
       ]
     ],
     "translation": "最大思考トークン数"
@@ -2678,7 +2770,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        586
+        587
       ]
     ],
     "translation": "最大ターン数"
@@ -2689,7 +2781,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        295
+        296
       ]
     ],
     "translation": "モデル"
@@ -2789,7 +2881,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        454
+        455
       ]
     ],
     "translation": "サンドボックス外のコマンドを許可"
@@ -2801,7 +2893,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        434
+        435
       ]
     ],
     "translation": "サンドボックス化されている場合Bashを自動許可"
@@ -2813,7 +2905,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        405
+        406
       ]
     ],
     "translation": "サンドボックス"
@@ -2825,7 +2917,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        488
+        489
       ]
     ],
     "translation": "ローカルバインディングを許可"
@@ -2837,7 +2929,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        497
+        498
       ]
     ],
     "translation": "許可するドメイン (カンマ区切り)"
@@ -2849,7 +2941,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        464
+        465
       ]
     ],
     "translation": "ネットワーク設定"
@@ -2971,7 +3063,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        535
+        536
       ]
     ],
     "translation": "設定ソース"
@@ -2983,7 +3075,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        355
+        356
       ]
     ],
     "translation": "追加システムプロンプト"
@@ -2994,7 +3086,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        348
+        349
       ]
     ],
     "translation": "Claude Code 標準のシステムプロンプトを使用"
@@ -3076,7 +3168,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        707
+        708
       ],
       [
         "src/components/GlobalSidebar.tsx",
@@ -3095,10 +3187,91 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        104
+        120
       ]
     ],
     "translation": "プロジェクト一覧に戻る"
+  },
+  "sidebar.edited_files.count": {
+    "placeholders": {
+      "count": [
+        "editedFiles.length"
+      ]
+    },
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/EditedFilesTab.tsx",
+        141
+      ]
+    ],
+    "translation": "{count} ファイル"
+  },
+  "sidebar.edited_files.empty": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/EditedFilesTab.tsx",
+        129
+      ]
+    ],
+    "translation": "編集されたファイルはありません"
+  },
+  "sidebar.edited_files.external": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/EditedFilesTab.tsx",
+        169
+      ]
+    ],
+    "translation": "プロジェクト外"
+  },
+  "sidebar.edited_files.internal": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/EditedFilesTab.tsx",
+        152
+      ]
+    ],
+    "translation": "プロジェクト内"
+  },
+  "sidebar.edited_files.no_session": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
+        83
+      ]
+    ],
+    "translation": "セッションを選択してください"
+  },
+  "sidebar.edited_files.title": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/EditedFilesTab.tsx",
+        138
+      ]
+    ],
+    "translation": "編集されたファイル"
+  },
+  "sidebar.show.edited.files": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
+        76
+      ]
+    ],
+    "translation": "編集ファイル一覧を表示"
   },
   "sidebar.show.mcp.settings": {
     "placeholders": {},
@@ -3110,7 +3283,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        62
+        64
       ]
     ],
     "translation": "MCPサーバー設定を表示"
@@ -3121,7 +3294,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        74
+        90
       ]
     ],
     "translation": "スケジューラジョブを表示"
@@ -3136,7 +3309,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        49
+        51
       ]
     ],
     "translation": "セッション一覧を表示"

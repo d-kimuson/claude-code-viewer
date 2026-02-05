@@ -5,7 +5,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        373
+        374
       ]
     ],
     "translation": "Additional instructions to append..."
@@ -71,7 +71,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        213
+        214
       ]
     ],
     "translation": "Custom tool name..."
@@ -115,7 +115,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        105
+        106
       ]
     ],
     "translation": "Key"
@@ -126,7 +126,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        425
+        428
       ]
     ],
     "translation": "Message input with completion support"
@@ -225,7 +225,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        113
+        114
       ]
     ],
     "translation": "Value"
@@ -236,10 +236,32 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        70
+        72
       ]
     ],
     "translation": "Thinking"
+  },
+  "assistant.tool.binary_file": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
+        185
+      ]
+    ],
+    "translation": "Binary file cannot be displayed"
+  },
+  "assistant.tool.error_loading_file": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
+        170
+      ]
+    ],
+    "translation": "Failed to load file"
   },
   "assistant.tool.error_loading_task": {
     "placeholders": {},
@@ -252,16 +274,60 @@
     ],
     "translation": "assistant.tool.error_loading_task"
   },
+  "assistant.tool.file_not_found": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
+        182
+      ]
+    ],
+    "translation": "File not found"
+  },
+  "assistant.tool.file_truncated": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
+        149
+      ]
+    ],
+    "translation": "Truncated"
+  },
   "assistant.tool.input_parameters": {
     "placeholders": {},
     "comments": [],
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        161
+        171
       ]
     ],
     "translation": "Input Parameters"
+  },
+  "assistant.tool.invalid_path": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
+        188
+      ]
+    ],
+    "translation": "Invalid file path"
+  },
+  "assistant.tool.loading_file": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
+        162
+      ]
+    ],
+    "translation": "Loading file..."
   },
   "assistant.tool.loading_task": {
     "placeholders": {},
@@ -311,13 +377,24 @@
     ],
     "translation": "assistant.tool.no_task_data_description"
   },
+  "assistant.tool.read_error": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
+        191
+      ]
+    ],
+    "translation": "Error reading file"
+  },
   "assistant.tool.result": {
     "placeholders": {},
     "comments": [],
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        175
+        185
       ]
     ],
     "translation": "Tool Result"
@@ -326,6 +403,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
+        173
+      ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
         192
@@ -350,10 +431,21 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        153
+        163
       ]
     ],
     "translation": "Tool ID"
+  },
+  "assistant.tool.view_file": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
+        92
+      ]
+    ],
+    "translation": "View File"
   },
   "assistant.tool.view_task_details": {
     "placeholders": {},
@@ -383,7 +475,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        521
+        524
       ]
     ],
     "translation": "Attach"
@@ -405,7 +497,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        389
+        392
       ]
     ],
     "translation": "Failed to send message. Please try again."
@@ -531,7 +623,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        233
+        236
       ]
     ],
     "translation": "Failed to schedule message"
@@ -543,7 +635,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        217
+        220
       ]
     ],
     "translation": "Message scheduled successfully"
@@ -555,7 +647,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        222
+        225
       ]
     ],
     "translation": "You can view and manage it in the Scheduler tab"
@@ -577,11 +669,11 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        478
+        481
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        568
+        571
       ]
     ],
     "translation": "Send Now"
@@ -592,11 +684,11 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        461
+        464
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        551
+        554
       ]
     ],
     "translation": "Send Mode"
@@ -607,15 +699,15 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        481
+        484
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        571
+        574
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        588
+        591
       ]
     ],
     "translation": "Schedule Send"
@@ -626,7 +718,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        488
+        491
       ]
     ],
     "translation": "Scheduled Send Time"
@@ -638,7 +730,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        692
+        693
       ]
     ],
     "translation": "Settings"
@@ -649,7 +741,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        607
+        610
       ]
     ],
     "translation": "Processing..."
@@ -1410,7 +1502,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        646
+        647
       ]
     ],
     "translation": "e.g., 1.00"
@@ -1421,7 +1513,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        595
+        596
       ]
     ],
     "translation": "e.g., 10"
@@ -1432,7 +1524,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        619
+        620
       ]
     ],
     "translation": "e.g., 10000"
@@ -1443,7 +1535,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        513
+        514
       ]
     ],
     "translation": "e.g., api.example.com, cdn.example.com"
@@ -1454,7 +1546,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        300
+        301
       ]
     ],
     "translation": "e.g., claude-sonnet-4-5-20250929"
@@ -2417,7 +2509,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        529
+        530
       ]
     ],
     "translation": "Advanced Settings"
@@ -2439,7 +2531,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        312
+        313
       ]
     ],
     "translation": "settings.disallowedTools.label"
@@ -2450,7 +2542,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        138
+        139
       ]
     ],
     "translation": "settings.env.add"
@@ -2462,7 +2554,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        389
+        390
       ]
     ],
     "translation": "Environment Variables"
@@ -2473,7 +2565,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        286
+        287
       ]
     ],
     "translation": "settings.forkSession"
@@ -2654,7 +2746,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        633
+        634
       ]
     ],
     "translation": "Max Budget (USD)"
@@ -2666,7 +2758,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        607
+        608
       ]
     ],
     "translation": "Max Thinking Tokens"
@@ -2678,7 +2770,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        586
+        587
       ]
     ],
     "translation": "Max Turns"
@@ -2689,7 +2781,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        295
+        296
       ]
     ],
     "translation": "settings.model.label"
@@ -2789,7 +2881,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        454
+        455
       ]
     ],
     "translation": "Allow unsandboxed commands"
@@ -2801,7 +2893,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        434
+        435
       ]
     ],
     "translation": "Auto-allow Bash if sandboxed"
@@ -2813,7 +2905,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        405
+        406
       ]
     ],
     "translation": "Sandbox"
@@ -2825,7 +2917,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        488
+        489
       ]
     ],
     "translation": "Allow local binding"
@@ -2837,7 +2929,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        497
+        498
       ]
     ],
     "translation": "Allowed Domains (comma-separated)"
@@ -2849,7 +2941,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        464
+        465
       ]
     ],
     "translation": "Network Settings"
@@ -2971,7 +3063,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        535
+        536
       ]
     ],
     "translation": "Setting Sources"
@@ -2983,7 +3075,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        355
+        356
       ]
     ],
     "translation": "Additional System Prompt"
@@ -2994,7 +3086,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        348
+        349
       ]
     ],
     "translation": "Use Claude Code standard system prompt"
@@ -3076,7 +3168,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        707
+        708
       ],
       [
         "src/components/GlobalSidebar.tsx",
@@ -3095,10 +3187,91 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        104
+        120
       ]
     ],
     "translation": "Back to Projects"
+  },
+  "sidebar.edited_files.count": {
+    "placeholders": {
+      "count": [
+        "editedFiles.length"
+      ]
+    },
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/EditedFilesTab.tsx",
+        141
+      ]
+    ],
+    "translation": "{count} files"
+  },
+  "sidebar.edited_files.empty": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/EditedFilesTab.tsx",
+        129
+      ]
+    ],
+    "translation": "No edited files"
+  },
+  "sidebar.edited_files.external": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/EditedFilesTab.tsx",
+        169
+      ]
+    ],
+    "translation": "External"
+  },
+  "sidebar.edited_files.internal": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/EditedFilesTab.tsx",
+        152
+      ]
+    ],
+    "translation": "In Project"
+  },
+  "sidebar.edited_files.no_session": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
+        83
+      ]
+    ],
+    "translation": "Please select a session"
+  },
+  "sidebar.edited_files.title": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/EditedFilesTab.tsx",
+        138
+      ]
+    ],
+    "translation": "Edited Files"
+  },
+  "sidebar.show.edited.files": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
+        76
+      ]
+    ],
+    "translation": "Show Edited Files"
   },
   "sidebar.show.mcp.settings": {
     "placeholders": {},
@@ -3110,7 +3283,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        62
+        64
       ]
     ],
     "translation": "Show MCP Server Settings"
@@ -3121,7 +3294,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        74
+        90
       ]
     ],
     "translation": "Show Scheduler Jobs"
@@ -3136,7 +3309,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        49
+        51
       ]
     ],
     "translation": "Show Session List"

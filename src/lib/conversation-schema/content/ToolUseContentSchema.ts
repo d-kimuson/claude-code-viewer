@@ -6,3 +6,5 @@ export const ToolUseContentSchema = z.object({
   name: z.string(),
   input: z.record(z.string(), z.unknown()),
 });
+
+export type ToolUseContent = z.infer<typeof ToolUseContentSchema>;

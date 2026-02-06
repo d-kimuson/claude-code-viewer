@@ -69,7 +69,7 @@ function LoginPage() {
           </div>
           <div className="space-y-2">
             <CardTitle className="text-2xl font-bold tracking-tight">
-              Claude Code Viewer
+              Clu Mission Control
             </CardTitle>
             <CardDescription className="text-muted-foreground">
               Enter your password to continue

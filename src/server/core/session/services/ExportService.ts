@@ -1974,7 +1974,7 @@ export const generateSessionHtml = (
   </div>
 
   <div class="footer">
-    <p>Exported from Claude Code Viewer</p>
+    <p>Exported from Clu Mission Control</p>
   </div>
 
   <script>

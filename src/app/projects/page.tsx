@@ -14,7 +14,7 @@ export const ProjectsPage: FC = () => {
           <header className="mb-8">
             <h1 className="text-3xl font-bold mb-2 flex items-center gap-2">
               <HistoryIcon className="w-8 h-8" />
-              Claude Code Viewer
+              Clu Mission Control
             </h1>
             <p className="text-muted-foreground">
               <Trans id="projects.page.description" />

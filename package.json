@@ -16,7 +16,7 @@
     "node": ">=20.19.0"
   },
   "bin": {
-    "claude-code-viewer": "./dist/main.js"
+    "clu-mission-control": "./dist/main.js"
   },
   "scripts": {
     "dev": "run-p 'dev:*'",

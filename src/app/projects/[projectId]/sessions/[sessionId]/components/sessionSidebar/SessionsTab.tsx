@@ -1,13 +1,8 @@
 import { Trans } from "@lingui/react";
-import { Link, useNavigate, useSearch } from "@tanstack/react-router";
+import { Link, useSearch } from "@tanstack/react-router";
 import { useAtomValue } from "jotai";
-import {
-  CoinsIcon,
-  MessageSquareIcon,
-  PlusIcon,
-  TrashIcon,
-} from "lucide-react";
-import { type FC, useState } from "react";
+import { CoinsIcon, MessageSquareIcon, PlusIcon } from "lucide-react";
+import type { FC } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -16,7 +11,6 @@ import { useConfig } from "../../../../../../hooks/useConfig";
 import { useProject } from "../../../../hooks/useProject";
 import { firstUserMessageToTitle } from "../../../../services/firstCommandToTitle";
 import { sessionProcessesAtom } from "../../store/sessionProcessesAtom";
-import { DeleteSessionDialog } from "./DeleteSessionDialog";
 
 export const SessionsTab: FC<{
   currentSessionId: string;
@@ -36,15 +30,6 @@ export const SessionsTab: FC<{
   const search = useSearch({
     from: "/projects/$projectId/session",
   });
-  const navigate = useNavigate();
-
-  // Delete dialog state
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [deletingSession, setDeletingSession] = useState<{
-    id: string;
-    title: string;
-  } | null>(null);
-
   // Preserve current tab state or default to "sessions"
   const currentTab = search.tab ?? "sessions";
 
@@ -82,31 +67,6 @@ export const SessionsTab: FC<{
     const bTime = b.lastModifiedAt ? new Date(b.lastModifiedAt).getTime() : 0;
     return bTime - aTime;
   });
-
-  const handleDeleteClick = (
-    e: React.MouseEvent,
-    sessionId: string,
-    sessionTitle: string,
-  ) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDeletingSession({ id: sessionId, title: sessionTitle });
-    setDeleteDialogOpen(true);
-  };
-
-  const handleDeleteSuccess = () => {
-    const deletedSessionId = deletingSession?.id;
-    setDeletingSession(null);
-
-    // If the deleted session was the current one, navigate to the new chat page
-    if (deletedSessionId === currentSessionId) {
-      void navigate({
-        to: "/projects/$projectId/session",
-        params: { projectId },
-        search: { tab: currentTab },
-      });
-    }
-  };
 
   return (
     <div className="h-full flex flex-col">
@@ -168,15 +128,6 @@ export const SessionsTab: FC<{
                   "bg-blue-100 dark:bg-blue-900/50 border-blue-400 dark:border-blue-600 shadow-md ring-1 ring-blue-200/50 dark:ring-blue-700/50 hover:bg-blue-100 dark:hover:bg-blue-900/50 hover:border-blue-400 dark:hover:border-blue-600",
               )}
             >
-              {/* Delete button - shown on hover */}
-              <Button
-                variant="ghost"
-                size="sm"
-                className="absolute right-1 top-1 h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity text-destructive hover:text-destructive hover:bg-destructive/10"
-                onClick={(e) => handleDeleteClick(e, session.id, title)}
-              >
-                <TrashIcon className="w-3 h-3" />
-              </Button>
               <div className="space-y-1.5">
                 <div className="flex items-start justify-between gap-2 pr-6">
                   <h3 className="text-sm font-medium line-clamp-2 leading-tight text-sidebar-foreground flex-1">
@@ -243,18 +194,6 @@ export const SessionsTab: FC<{
           </div>
         )}
       </div>
-
-      {/* Delete Session Dialog */}
-      {deletingSession !== null && (
-        <DeleteSessionDialog
-          open={deleteDialogOpen}
-          onOpenChange={setDeleteDialogOpen}
-          projectId={projectId}
-          sessionId={deletingSession.id}
-          sessionTitle={deletingSession.title}
-          onSuccess={handleDeleteSuccess}
-        />
-      )}
     </div>
   );
 };

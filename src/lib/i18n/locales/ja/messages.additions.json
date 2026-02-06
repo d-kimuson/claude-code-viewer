@@ -2,11 +2,80 @@
   "session.empty_state.description": {
     "translation": "サイドバーから既存のセッションを選ぶか、下の入力欄から新しい会話を開始してください。"
   },
+  "layout.toggle_left_panel": {
+    "translation": "左パネルを切り替え"
+  },
+  "layout.toggle_right_panel": {
+    "translation": "右パネルを切り替え"
+  },
+  "layout.toggle_bottom_panel": {
+    "translation": "下パネルを切り替え"
+  },
+  "layout.status.ready": {
+    "translation": "準備完了"
+  },
+  "layout.bottom_panel.title": {
+    "translation": "ターミナル"
+  },
+  "layout.bottom_panel.coming_soon.title": {
+    "translation": "ターミナルパネル"
+  },
+  "layout.bottom_panel.coming_soon.description": {
+    "translation": "アプリ内でコマンドを実行し出力を直接確認"
+  },
+  "chat.history.button": {
+    "translation": "セッション履歴"
+  },
+  "chat.history.title": {
+    "translation": "最近のセッション"
+  },
   "control.browser": {
     "translation": "ブラウザ"
   },
   "control.open_browser": {
     "translation": "ブラウザを開く"
+  },
+  "panel.tab.browser": {
+    "translation": "ブラウザ"
+  },
+  "panel.tab.files": {
+    "translation": "ファイル"
+  },
+  "panel.tab.explorer": {
+    "translation": "エクスプローラー"
+  },
+  "panel.tab.tasks": {
+    "translation": "タスク"
+  },
+  "panel.tab.todo": {
+    "translation": "Todo"
+  },
+  "panel.tab.coming_soon": {
+    "translation": "近日公開"
+  },
+  "panel.close": {
+    "translation": "パネルを閉じる"
+  },
+  "panel.browser.empty.title": {
+    "translation": "ページが読み込まれていません"
+  },
+  "panel.browser.empty.description": {
+    "translation": "上のURLバーにURLを入力するか、会話中のリンクをクリックしてください"
+  },
+  "panel.todo.coming_soon.title": {
+    "translation": "Todoリスト"
+  },
+  "panel.todo.coming_soon.description": {
+    "translation": "タスクと進捗を一箇所で管理"
+  },
+  "panel.files.git_section": {
+    "translation": "Git変更"
+  },
+  "panel.files.edited_section": {
+    "translation": "編集されたファイル"
+  },
+  "panel.todo.section_title": {
+    "translation": "タスク進捗"
   },
   "Select search hotkey": {
     "translation": "検索ホットキーを選択"
@@ -73,5 +142,41 @@
   },
   "settings.maxBudgetUsd.label": {
     "translation": "最大予算 (USD)"
+  },
+  "panel.tab.git": {
+    "translation": "Git"
+  },
+  "panel.tab.files_tools": {
+    "translation": "ファイル & ツール"
+  },
+  "panel.tab.review": {
+    "translation": "レビュー"
+  },
+  "panel.files.tool_calls_section": {
+    "translation": "ツール呼び出し"
+  },
+  "panel.files.filter_tools": {
+    "translation": "ツールでフィルタ"
+  },
+  "panel.todo.collapsed_title": {
+    "translation": "Todo"
+  },
+  "panel.git.empty": {
+    "translation": "コミットされていない変更はありません"
+  },
+  "panel.git.view_content": {
+    "translation": "内容"
+  },
+  "panel.git.view_diff": {
+    "translation": "差分"
+  },
+  "panel.files.no_tool_calls": {
+    "translation": "ツール呼び出しはまだありません"
+  },
+  "panel.review.empty": {
+    "translation": "比較するリファレンスを選択してください"
+  },
+  "sidebar.show.task.list": {
+    "translation": "タスク一覧を表示"
   }
 }

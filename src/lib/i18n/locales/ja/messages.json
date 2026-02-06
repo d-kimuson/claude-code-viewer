@@ -48,6 +48,10 @@
     "comments": [],
     "origin": [
       [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        382
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         397
       ]
@@ -58,6 +62,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
+      [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        390
+      ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         403
@@ -81,6 +89,10 @@
     "comments": [],
     "origin": [
       [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        292
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         312
       ]
@@ -92,6 +104,10 @@
     "comments": [],
     "origin": [
       [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        347
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         378
       ]
@@ -102,6 +118,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
+      [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        307
+      ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         330
@@ -146,6 +166,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
+      [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        336
+      ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         365
@@ -213,6 +237,10 @@
     "comments": [],
     "origin": [
       [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        182
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         181
       ]
@@ -246,6 +274,10 @@
     "comments": [],
     "origin": [
       [
+        "src/app/components/rightPanel/GitTabContent.tsx",
+        322
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
         185
       ]
@@ -256,6 +288,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
+      [
+        "src/app/components/rightPanel/GitTabContent.tsx",
+        307
+      ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
         170
@@ -278,6 +314,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
+      [
+        "src/app/components/rightPanel/GitTabContent.tsx",
+        319
+      ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
         182
@@ -312,6 +352,10 @@
     "comments": [],
     "origin": [
       [
+        "src/app/components/rightPanel/GitTabContent.tsx",
+        325
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
         188
       ]
@@ -322,6 +366,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
+      [
+        "src/app/components/rightPanel/GitTabContent.tsx",
+        299
+      ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
         162
@@ -382,6 +430,10 @@
     "comments": [],
     "origin": [
       [
+        "src/app/components/rightPanel/GitTabContent.tsx",
+        328
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
         191
       ]
@@ -403,6 +455,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
+      [
+        "src/app/components/rightPanel/GitTabContent.tsx",
+        310
+      ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
         173
@@ -502,21 +558,55 @@
     ],
     "translation": "メッセージの送信に失敗しました。もう一度お試しください。"
   },
+  "chat.history.button": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/SessionHistoryPopover.tsx",
+        97
+      ],
+      [
+        "src/app/components/SessionHistoryPopover.tsx",
+        116
+      ]
+    ],
+    "translation": "セッション履歴"
+  },
+  "chat.history.title": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/SessionHistoryPopover.tsx",
+        134
+      ],
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
+        581
+      ]
+    ],
+    "translation": "最近のセッション"
+  },
   "chat.modal.title": {
     "placeholders": {},
     "comments": [],
     "origin": [
       [
-        "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        206
+        "src/app/components/SessionHistoryPopover.tsx",
+        159
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        510
+        292
+      ],
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
+        569
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        141
+        101
       ]
     ],
     "translation": "新しいチャットを開始"
@@ -837,12 +927,16 @@
     "comments": [],
     "origin": [
       [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        406
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         419
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        238
+        189
       ]
     ],
     "translation": "読み込み中..."
@@ -887,25 +981,10 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        258
-      ],
-      [
-        "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        356
+        399
       ]
     ],
     "translation": "ブランチ"
-  },
-  "control.git": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        72
-      ]
-    ],
-    "translation": "Git"
   },
   "control.metadata": {
     "placeholders": {},
@@ -913,7 +992,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        332
+        380
       ]
     ],
     "translation": "メタデータ"
@@ -924,7 +1003,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        383
+        426
       ]
     ],
     "translation": "モデル"
@@ -935,7 +1014,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        104
+        73
       ]
     ],
     "translation": "新規"
@@ -947,34 +1026,10 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        97
+        66
       ]
     ],
     "translation": "新しいチャット"
-  },
-  "control.open_browser": {
-    "message": "Open Browser",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        83
-      ]
-    ],
-    "translation": "ブラウザで開く"
-  },
-  "control.open_git_dialog": {
-    "message": "Open Git Dialog",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        65
-      ]
-    ],
-    "translation": "Gitダイアログを開く"
   },
   "control.project_path": {
     "placeholders": {},
@@ -982,7 +1037,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        338
+        386
       ]
     ],
     "translation": "プロジェクトパス"
@@ -994,7 +1049,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        131
+        100
       ]
     ],
     "translation": "ボトムにスクロール"
@@ -1006,7 +1061,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        115
+        84
       ]
     ],
     "translation": "トップにスクロール"
@@ -1017,11 +1072,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        273
-      ],
-      [
-        "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        370
+        413
       ]
     ],
     "translation": "セッションID"
@@ -1292,6 +1343,10 @@
     "comments": [],
     "origin": [
       [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        558
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         564
       ]
@@ -1302,6 +1357,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
+      [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        463
+      ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         469
@@ -1314,6 +1373,10 @@
     "comments": [],
     "origin": [
       [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        531
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         538
       ]
@@ -1324,6 +1387,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
+      [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        592
+      ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         596
@@ -1336,6 +1403,10 @@
     "comments": [],
     "origin": [
       [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        555
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         561
       ]
@@ -1347,6 +1418,10 @@
     "comments": [],
     "origin": [
       [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        589
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         593
       ]
@@ -1357,6 +1432,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
+      [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        492
+      ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         498
@@ -1391,6 +1470,10 @@
     "comments": [],
     "origin": [
       [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        63
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         53
       ]
@@ -1401,6 +1484,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
+      [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        628
+      ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         642
@@ -1413,6 +1500,10 @@
     "comments": [],
     "origin": [
       [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        574
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         579
       ]
@@ -1424,6 +1515,10 @@
     "comments": [],
     "origin": [
       [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        571
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         576
       ]
@@ -1434,6 +1529,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
+      [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        483
+      ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         490
@@ -1550,6 +1649,72 @@
       ]
     ],
     "translation": "例: claude-sonnet-4-5-20250929"
+  },
+  "layout.bottom_panel.coming_soon.description": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/BottomPanel.tsx",
+        131
+      ]
+    ],
+    "translation": "アプリ内でコマンドを実行し出力を直接確認"
+  },
+  "layout.bottom_panel.coming_soon.title": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/BottomPanel.tsx",
+        128
+      ]
+    ],
+    "translation": "ターミナルパネル"
+  },
+  "layout.bottom_panel.title": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/BottomPanel.tsx",
+        102
+      ]
+    ],
+    "translation": "ターミナル"
+  },
+  "layout.toggle_bottom_panel": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/AppLayout.tsx",
+        124
+      ]
+    ],
+    "translation": "下パネルを切り替え"
+  },
+  "layout.toggle_left_panel": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/AppLayout.tsx",
+        103
+      ]
+    ],
+    "translation": "左パネルを切り替え"
+  },
+  "layout.toggle_right_panel": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/AppLayout.tsx",
+        145
+      ]
+    ],
+    "translation": "右パネルを切り替え"
   },
   "mcp.error.load_failed": {
     "placeholders": {
@@ -1720,6 +1885,160 @@
     ],
     "translation": "テスト"
   },
+  "panel.browser.empty.description": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/RightPanel.tsx",
+        294
+      ]
+    ],
+    "translation": "上のURLバーにURLを入力するか、会話中のリンクをクリックしてください"
+  },
+  "panel.browser.empty.title": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/RightPanel.tsx",
+        291
+      ]
+    ],
+    "translation": "ページが読み込まれていません"
+  },
+  "panel.files.edited_section": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/rightPanel/FilesToolsTabContent.tsx",
+        315
+      ]
+    ],
+    "translation": "編集されたファイル"
+  },
+  "panel.files.filter_tools": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/rightPanel/FilesToolsTabContent.tsx",
+        374
+      ]
+    ],
+    "translation": "ツールでフィルター"
+  },
+  "panel.files.tool_calls_section": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/rightPanel/FilesToolsTabContent.tsx",
+        356
+      ]
+    ],
+    "translation": "ツール呼び出し"
+  },
+  "panel.git.empty": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/rightPanel/GitTabContent.tsx",
+        436
+      ]
+    ],
+    "translation": "Git変更がありません"
+  },
+  "panel.git.view_content": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/rightPanel/GitTabContent.tsx",
+        269
+      ]
+    ],
+    "translation": "コンテンツ"
+  },
+  "panel.git.view_diff": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/rightPanel/GitTabContent.tsx",
+        265
+      ]
+    ],
+    "translation": "差分"
+  },
+  "panel.review.empty": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        435
+      ]
+    ],
+    "translation": "レビュー対象がありません"
+  },
+  "panel.tab.browser": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/RightPanel.tsx",
+        50
+      ]
+    ],
+    "translation": "ブラウザ"
+  },
+  "panel.tab.files_tools": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/RightPanel.tsx",
+        43
+      ]
+    ],
+    "translation": "ファイル/ツール"
+  },
+  "panel.tab.git": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/RightPanel.tsx",
+        38
+      ]
+    ],
+    "translation": "Git"
+  },
+  "panel.tab.review": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/RightPanel.tsx",
+        48
+      ]
+    ],
+    "translation": "レビュー"
+  },
+  "panel.todo.collapsed_title": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/rightPanel/common/CollapsibleTodoSection.tsx",
+        84
+      ]
+    ],
+    "translation": "Todo"
+  },
   "project.new": {
     "placeholders": {},
     "comments": [],
@@ -1836,7 +2155,7 @@
     "origin": [
       [
         "src/app/projects/page.tsx",
-        20
+        18
       ]
     ],
     "translation": "Claude Codeの会話履歴とプロジェクトの操作を閲覧"
@@ -1847,7 +2166,7 @@
     "origin": [
       [
         "src/app/projects/page.tsx",
-        36
+        34
       ]
     ],
     "translation": "プロジェクトを読み込み中..."
@@ -1858,7 +2177,7 @@
     "origin": [
       [
         "src/app/projects/page.tsx",
-        28
+        26
       ]
     ],
     "translation": "プロジェクト"
@@ -2245,7 +2564,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        156
+        125
       ]
     ],
     "translation": "中止"
@@ -2256,7 +2575,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        293
+        541
       ]
     ],
     "translation": "一時停止"
@@ -2267,7 +2586,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        284
+        532
       ]
     ],
     "translation": "実行中"
@@ -2278,7 +2597,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        439
+        483
       ]
     ],
     "translation": "キャッシュ作成"
@@ -2289,7 +2608,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        453
+        498
       ]
     ],
     "translation": "キャッシュ読込"
@@ -2300,7 +2619,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        411
+        455
       ]
     ],
     "translation": "入力トークン"
@@ -2311,7 +2630,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        396
+        440
       ]
     ],
     "translation": "セッションコスト"
@@ -2322,7 +2641,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        425
+        469
       ]
     ],
     "translation": "出力トークン"
@@ -2333,7 +2652,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        403
+        447
       ]
     ],
     "translation": "合計"
@@ -2383,7 +2702,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        480
+        373
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/DeleteSessionDialog.tsx",
@@ -2398,10 +2717,43 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        513
+        572
       ]
     ],
     "translation": "新しいチャットを開始して会話を始めましょう"
+  },
+  "session.menu.copy_session_path": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
+        363
+      ]
+    ],
+    "translation": "セッションファイルのパスをコピー"
+  },
+  "session.menu.export_html": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
+        344
+      ]
+    ],
+    "translation": "HTML をエクスポート"
+  },
+  "session.menu.export_jsonl": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
+        353
+      ]
+    ],
+    "translation": "JSONL をエクスポート"
   },
   "session.processing": {
     "placeholders": {},
@@ -2409,7 +2761,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        527
+        669
       ]
     ],
     "translation": "Claude Codeが処理中..."
@@ -2452,8 +2804,16 @@
     "comments": [],
     "origin": [
       [
+        "src/app/components/SessionHistoryPopover.tsx",
+        208
+      ],
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
+        627
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        197
+        148
       ]
     ],
     "translation": "一時停止"
@@ -2463,8 +2823,16 @@
     "comments": [],
     "origin": [
       [
+        "src/app/components/SessionHistoryPopover.tsx",
+        206
+      ],
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
+        625
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        195
+        146
       ]
     ],
     "translation": "実行中"
@@ -2474,8 +2842,12 @@
     "comments": [],
     "origin": [
       [
+        "src/app/components/SessionHistoryPopover.tsx",
+        243
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        240
+        191
       ]
     ],
     "translation": "さらに読み込む"
@@ -2486,7 +2858,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        116
+        76
       ]
     ],
     "translation": "セッション"
@@ -2496,8 +2868,12 @@
     "comments": [],
     "origin": [
       [
+        "src/app/components/SessionHistoryPopover.tsx",
+        137
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        120
+        80
       ]
     ],
     "translation": "合計"
@@ -2520,7 +2896,7 @@
     "origin": [
       [
         "src/components/GlobalSidebar.tsx",
-        62
+        71
       ]
     ],
     "translation": "表示と動作の設定"
@@ -2679,7 +3055,7 @@
       ],
       [
         "src/components/GlobalSidebar.tsx",
-        70
+        79
       ]
     ],
     "translation": "設定を読み込み中..."
@@ -2952,7 +3328,7 @@
     "origin": [
       [
         "src/components/GlobalSidebar.tsx",
-        85
+        94
       ]
     ],
     "translation": "通知"
@@ -2963,7 +3339,7 @@
     "origin": [
       [
         "src/components/GlobalSidebar.tsx",
-        78
+        87
       ]
     ],
     "translation": "セッション表示"
@@ -2974,7 +3350,7 @@
     "origin": [
       [
         "src/components/GlobalSidebar.tsx",
-        98
+        107
       ]
     ],
     "translation": "システム情報"
@@ -3101,7 +3477,7 @@
       ],
       [
         "src/components/GlobalSidebar.tsx",
-        54
+        63
       ]
     ],
     "translation": "表示と通知の設定"
@@ -3172,7 +3548,7 @@
       ],
       [
         "src/components/GlobalSidebar.tsx",
-        59
+        68
       ]
     ],
     "translation": "設定"
@@ -3187,7 +3563,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        120
+        106
       ]
     ],
     "translation": "プロジェクト一覧に戻る"
@@ -3212,6 +3588,10 @@
     "comments": [],
     "origin": [
       [
+        "src/app/components/rightPanel/FilesToolsTabContent.tsx",
+        295
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/EditedFilesTab.tsx",
         129
       ]
@@ -3222,6 +3602,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
+      [
+        "src/app/components/rightPanel/FilesToolsTabContent.tsx",
+        336
+      ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/EditedFilesTab.tsx",
         169
@@ -3240,17 +3624,6 @@
     ],
     "translation": "プロジェクト内"
   },
-  "sidebar.edited_files.no_session": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        83
-      ]
-    ],
-    "translation": "セッションを選択してください"
-  },
   "sidebar.edited_files.title": {
     "placeholders": {},
     "comments": [],
@@ -3261,17 +3634,6 @@
       ]
     ],
     "translation": "編集されたファイル"
-  },
-  "sidebar.show.edited.files": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        76
-      ]
-    ],
-    "translation": "編集ファイル一覧を表示"
   },
   "sidebar.show.mcp.settings": {
     "placeholders": {},
@@ -3294,7 +3656,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        90
+        76
       ]
     ],
     "translation": "スケジューラジョブを表示"
@@ -3313,6 +3675,17 @@
       ]
     ],
     "translation": "セッション一覧を表示"
+  },
+  "sidebar.show.task.list": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
+        70
+      ]
+    ],
+    "translation": "タスク一覧を表示"
   },
   "system.info.tab.title": {
     "placeholders": {},

@@ -30,6 +30,12 @@ interface GlobalSidebarProps {
   additionalTabs?: SidebarTab[];
   defaultActiveTab?: string;
   headerButton?: ReactNode;
+  /** When true, expands to fill parent container width instead of fixed width */
+  fillWidth?: boolean;
+  /** When true, hides the content area but keeps the icon menu visible */
+  isContentHidden?: boolean;
+  /** Callback when panel should be toggled (called when same tab is clicked while open) */
+  onToggle?: () => void;
 }
 
 export const GlobalSidebar: FC<GlobalSidebarProps> = ({
@@ -38,6 +44,9 @@ export const GlobalSidebar: FC<GlobalSidebarProps> = ({
   additionalTabs = [],
   defaultActiveTab,
   headerButton,
+  fillWidth = false,
+  isContentHidden = false,
+  onToggle,
 }) => {
   const { openSearch } = useSearch();
   const { authEnabled, logout } = useAuth();
@@ -105,26 +114,37 @@ export const GlobalSidebar: FC<GlobalSidebarProps> = ({
 
   const allTabs = [...additionalTabs, settingsTab, systemInfoTab];
   const [activeTab, setActiveTab] = useState<string>(
-    defaultActiveTab ?? allTabs[allTabs.length - 1]?.id ?? "settings",
+    defaultActiveTab ?? allTabs[0]?.id ?? "settings",
   );
-  const [isExpanded, setIsExpanded] = useState(!!defaultActiveTab);
 
+  // Tab click behavior:
+  // - If panel is closed: open panel and switch to clicked tab
+  // - If panel is open and different tab: switch to clicked tab
+  // - If panel is open and same tab: close panel (toggle)
   const handleTabClick = (tabId: string) => {
-    if (activeTab === tabId && isExpanded) {
-      setIsExpanded(false);
-    } else {
+    if (isContentHidden) {
+      // Panel is closed - open it and switch to this tab
       setActiveTab(tabId);
-      setIsExpanded(true);
+      onToggle?.();
+    } else if (activeTab === tabId) {
+      // Same tab clicked while open - close panel
+      onToggle?.();
+    } else {
+      // Different tab clicked while open - just switch tabs
+      setActiveTab(tabId);
     }
   };
 
   const activeTabContent = allTabs.find((tab) => tab.id === activeTab)?.content;
 
+  // Content is shown when not hidden by external control
+  const showContent = !isContentHidden;
+
   return (
     <div
       className={cn(
         "h-full border-r border-sidebar-border transition-all duration-300 ease-in-out flex bg-sidebar text-sidebar-foreground",
-        isExpanded ? "w-80 lg:w-80" : "w-12",
+        showContent ? (fillWidth ? "w-full" : "w-80 lg:w-80") : "w-12",
         className,
       )}
     >
@@ -169,7 +189,7 @@ export const GlobalSidebar: FC<GlobalSidebarProps> = ({
                       className={cn(
                         "w-8 h-8 flex items-center justify-center rounded-md transition-colors",
                         "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-                        activeTab === tab.id && isExpanded
+                        activeTab === tab.id && showContent
                           ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-sm"
                           : "text-sidebar-foreground/70",
                       )}
@@ -212,8 +232,8 @@ export const GlobalSidebar: FC<GlobalSidebarProps> = ({
         </TooltipProvider>
       </div>
 
-      {/* Content Area - Only shown when expanded */}
-      {isExpanded && (
+      {/* Content Area - Only shown when expanded and not hidden by external control */}
+      {showContent && (
         <div className="flex-1 flex flex-col overflow-hidden">
           <Suspense fallback={<Loading />}>{activeTabContent}</Suspense>
         </div>

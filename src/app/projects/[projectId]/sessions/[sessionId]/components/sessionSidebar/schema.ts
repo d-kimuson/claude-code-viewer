@@ -3,9 +3,8 @@ import { z } from "zod";
 export const tabSchema = z.enum([
   "sessions",
   "mcp",
-  "scheduler",
   "tasks",
-  "edited-files",
+  "scheduler",
   "settings",
   "system-info",
 ]);

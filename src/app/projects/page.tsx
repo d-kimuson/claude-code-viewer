@@ -1,14 +1,12 @@
 import { Trans } from "@lingui/react";
 import { HistoryIcon } from "lucide-react";
 import { type FC, Suspense } from "react";
-import { GlobalSidebar } from "@/components/GlobalSidebar";
 import { ProjectList } from "./components/ProjectList";
 import { SetupProjectDialog } from "./components/SetupProjectDialog";
 
 export const ProjectsPage: FC = () => {
   return (
     <div className="flex h-screen max-h-screen overflow-hidden">
-      <GlobalSidebar />
       <div className="flex-1 overflow-auto">
         <div className="container mx-auto px-4 py-8">
           <header className="mb-8">

@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { honoClient } from "@/lib/api/client";
 import { gitCurrentRevisionsQuery } from "../../../../../../lib/api/queries";
 
@@ -7,6 +7,55 @@ export const useGitCurrentRevisions = (projectId: string) => {
     queryKey: gitCurrentRevisionsQuery(projectId).queryKey,
     queryFn: gitCurrentRevisionsQuery(projectId).queryFn,
     staleTime: 30000, // 30 seconds
+  });
+};
+
+export const useGitBranches = (projectId: string) => {
+  return useQuery({
+    queryKey: ["git", "branches", projectId],
+    queryFn: async () => {
+      const response = await honoClient.api.projects[
+        ":projectId"
+      ].git.branches.$get({
+        param: { projectId },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to get branches: ${response.statusText}`);
+      }
+
+      return response.json();
+    },
+    staleTime: 30000,
+  });
+};
+
+export const useGitCheckout = (projectId: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (branchName: string) => {
+      const response = await honoClient.api.projects[
+        ":projectId"
+      ].git.checkout.$post({
+        param: { projectId },
+        json: { branchName },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to checkout: ${response.statusText}`);
+      }
+
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["git", "branches", projectId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: gitCurrentRevisionsQuery(projectId).queryKey,
+      });
+    },
   });
 };
 

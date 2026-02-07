@@ -35,6 +35,14 @@ const ensureRightPanelOpen = async (page: Page) => {
   });
 };
 
+const waitForLoadingDone = async (page: Page) => {
+  const loadingIndicator = page.locator('[data-testid="loading-indicator"]');
+  await loadingIndicator.waitFor({
+    state: "hidden",
+    timeout: 10000,
+  });
+};
+
 export const sessionDetailCapture = defineCapture({
   href: `projects/${projectIds.sampleProject}/session?sessionId=fe5e1c67-53e7-4862-81ae-d0e013e3270b`,
   cases: [
@@ -70,11 +78,13 @@ export const sessionDetailCapture = defineCapture({
         }
 
         await ensureLeftPanelOpen(page);
+        await waitForLoadingDone(page);
         const settingsTabButtonMobile = page.locator(
           '[data-testid="settings-tab-button-mobile"]',
         );
         if (await settingsTabButtonMobile.isVisible()) {
           await settingsTabButtonMobile.click();
+          await waitForLoadingDone(page);
           await page.waitForTimeout(2000);
           return;
         }
@@ -84,6 +94,7 @@ export const sessionDetailCapture = defineCapture({
         );
         if (await settingsTabButton.isVisible()) {
           await settingsTabButton.click();
+          await waitForLoadingDone(page);
           await page.waitForTimeout(2000);
         }
       },

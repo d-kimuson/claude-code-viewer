@@ -35,13 +35,24 @@ export const defineCapture = (options: {
           await page.goto(href);
 
           await page.waitForLoadState("domcontentloaded");
-          await page.waitForTimeout(2000);
+          const loadingIndicator = page.locator(
+            '[data-testid="loading-indicator"]',
+          );
+          await loadingIndicator.waitFor({
+            state: "hidden",
+            timeout: 10000,
+          });
+          await page.waitForTimeout(3000);
 
           if (testCase) {
             await testCase.setup(page);
           }
 
-          await page.waitForTimeout(2000);
+          await loadingIndicator.waitFor({
+            state: "hidden",
+            timeout: 10000,
+          });
+          await page.waitForTimeout(3000);
 
           const picturePath = testCase
             ? resolve(

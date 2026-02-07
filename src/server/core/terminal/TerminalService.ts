@@ -1,6 +1,5 @@
 import { Context, Effect, Layer } from "effect";
 import type { IPty } from "node-pty";
-import { spawn } from "node-pty";
 import { ulid } from "ulid";
 import type WebSocket from "ws";
 import type { InferEffect } from "../../lib/effect/types";
@@ -47,9 +46,52 @@ const selectShell = (
   return { command, args };
 };
 
+type NodePtyModule = typeof import("node-pty");
+
 const LayerImpl = Effect.gen(function* () {
   const envService = yield* EnvService;
   const sessions = new Map<string, TerminalSession>();
+
+  const terminalDisabledEnv = yield* envService.getEnv("CCV_TERMINAL_DISABLED");
+  const terminalDisabled =
+    terminalDisabledEnv === "1" ||
+    terminalDisabledEnv?.toLowerCase() === "true";
+
+  const disabledService = (reason: string) => {
+    const getOrCreateSession = () =>
+      Effect.fail(new Error(`Terminal support is unavailable (${reason}).`));
+    return {
+      getOrCreateSession,
+      registerClient: () => Effect.void,
+      unregisterClient: () => Effect.void,
+      writeInput: () => Effect.void,
+      resize: () => Effect.void,
+      signal: () => Effect.void,
+      snapshotSince: () => Effect.succeed(undefined),
+    };
+  };
+
+  if (terminalDisabled) {
+    return disabledService("CCV_TERMINAL_DISABLED is enabled");
+  }
+
+  const nodePty: NodePtyModule | null = yield* Effect.tryPromise({
+    try: () => import("node-pty"),
+    catch: (error) => new Error(`Failed to load node-pty: ${String(error)}`),
+  }).pipe(
+    Effect.catchAll((error) =>
+      Effect.sync(() => {
+        console.warn(error.message);
+        return null;
+      }),
+    ),
+  );
+
+  if (!nodePty) {
+    return disabledService("node-pty failed to load");
+  }
+
+  const { spawn } = nodePty;
 
   const trimBuffer = (session: TerminalSession) => {
     while (

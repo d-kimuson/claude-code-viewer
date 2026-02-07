@@ -206,7 +206,10 @@ const GitFileDialog: FC<GitFileDialogProps> = ({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="w-[95vw] md:w-[90vw] lg:w-[90vw] max-w-[1600px] h-[85vh] max-h-[85vh] flex flex-col p-0">
+      <DialogContent
+        className="w-[95vw] md:w-[90vw] lg:w-[90vw] max-w-[1600px] h-[85vh] max-h-[85vh] flex flex-col p-0"
+        data-testid="git-file-dialog"
+      >
         <DialogHeader className="px-6 py-4 border-b bg-muted/30">
           <div className="flex items-start gap-3">
             <div className="flex-shrink-0 mt-1">
@@ -472,6 +475,7 @@ export const GitTabContent: FC<GitTabContentProps> = ({
                     <button
                       type="button"
                       className="w-full flex items-center gap-2 px-2 py-1.5 text-xs hover:bg-muted/30 rounded-md transition-colors text-left"
+                      data-testid="git-file-button"
                     >
                       <span
                         className={cn(

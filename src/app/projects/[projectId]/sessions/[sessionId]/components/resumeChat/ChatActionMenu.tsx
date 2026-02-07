@@ -62,6 +62,7 @@ export const ChatActionMenu: FC<ChatActionMenuProps> = ({
           size="sm"
           disabled={isPending || isNewChat}
           className="h-7 px-2 gap-1.5 text-xs bg-muted/20 rounded-lg border border-border/40"
+          data-testid="start-new-chat-button"
           onClick={handleStartNewChat}
           title={i18n._({
             id: "control.new_chat",

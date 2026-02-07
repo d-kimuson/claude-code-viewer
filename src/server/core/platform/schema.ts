@@ -12,6 +12,7 @@ export const envSchema = z.object({
   CCV_TERMINAL_SHELL: z.string().optional(),
   CCV_TERMINAL_CWD: z.string().optional(),
   CCV_TERMINAL_UNRESTRICTED: z.string().optional(),
+  CCV_TERMINAL_DISABLED: z.string().optional(),
 });
 
 export type EnvSchema = z.infer<typeof envSchema>;

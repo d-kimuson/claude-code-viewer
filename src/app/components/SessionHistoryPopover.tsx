@@ -145,6 +145,7 @@ export const SessionHistoryPopover: FC<SessionHistoryPopoverProps> = ({
               to="/projects/$projectId/session"
               params={{ projectId }}
               search={{ tab: currentTab }}
+              data-testid="start-new-chat-link"
               className={cn(
                 "flex items-center gap-3 p-2 rounded-md transition-colors border border-dashed",
                 isNewChatActive

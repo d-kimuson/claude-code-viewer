@@ -275,7 +275,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        322
+        325
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
@@ -290,7 +290,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        307
+        310
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
@@ -316,7 +316,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        319
+        322
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
@@ -353,7 +353,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        325
+        328
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
@@ -368,7 +368,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        299
+        302
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
@@ -431,7 +431,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        328
+        331
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
@@ -457,7 +457,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        310
+        313
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
@@ -594,7 +594,7 @@
     "origin": [
       [
         "src/app/components/SessionHistoryPopover.tsx",
-        159
+        160
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
@@ -1014,7 +1014,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        73
+        74
       ]
     ],
     "translation": "新規"
@@ -1026,7 +1026,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        66
+        67
       ]
     ],
     "translation": "新しいチャット"
@@ -1049,7 +1049,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        100
+        101
       ]
     ],
     "translation": "ボトムにスクロール"
@@ -1061,7 +1061,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        84
+        85
       ]
     ],
     "translation": "トップにスクロール"
@@ -1869,7 +1869,7 @@
     "origin": [
       [
         "src/app/components/RightPanel.tsx",
-        335
+        336
       ]
     ],
     "translation": "上のURLバーにURLを入力するか、会話中のリンクをクリックしてください"
@@ -1880,7 +1880,7 @@
     "origin": [
       [
         "src/app/components/RightPanel.tsx",
-        332
+        333
       ]
     ],
     "translation": "ページが読み込まれていません"
@@ -1924,7 +1924,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        436
+        439
       ]
     ],
     "translation": "Git変更がありません"
@@ -1935,7 +1935,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        269
+        272
       ]
     ],
     "translation": "コンテンツ"
@@ -1946,7 +1946,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        265
+        268
       ]
     ],
     "translation": "差分"
@@ -2542,7 +2542,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        125
+        126
       ]
     ],
     "translation": "中止"
@@ -2761,7 +2761,7 @@
     "origin": [
       [
         "src/app/components/SessionHistoryPopover.tsx",
-        208
+        209
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
@@ -2780,7 +2780,7 @@
     "origin": [
       [
         "src/app/components/SessionHistoryPopover.tsx",
-        206
+        207
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
@@ -2799,7 +2799,7 @@
     "origin": [
       [
         "src/app/components/SessionHistoryPopover.tsx",
-        243
+        244
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",

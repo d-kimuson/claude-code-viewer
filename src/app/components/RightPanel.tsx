@@ -222,6 +222,7 @@ export const RightPanel: FC<RightPanelProps> = ({
                       ? "bg-background text-foreground shadow-sm border border-border/40"
                       : "text-muted-foreground hover:text-foreground hover:bg-muted/50",
                   )}
+                  data-testid={`right-panel-tab-${tab.id}`}
                 >
                   <Icon className={cn(isMobile ? "w-4 h-4" : "w-3.5 h-3.5")} />
                   {isMobile && (

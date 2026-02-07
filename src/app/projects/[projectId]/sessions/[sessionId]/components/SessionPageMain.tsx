@@ -50,6 +50,7 @@ import { ContinueChat } from "./resumeChat/ContinueChat";
 import { ResumeChat } from "./resumeChat/ResumeChat";
 import { StartNewChat } from "./resumeChat/StartNewChat";
 import { DeleteSessionDialog } from "./sessionSidebar/DeleteSessionDialog";
+import { getSessionStatusBadgeProps } from "./sessionStatusBadge";
 
 type SessionPageMainProps = {
   projectId: string;
@@ -172,6 +173,7 @@ const SessionPageMainContent: FC<
     relatedSessionProcess?.status === "running" && hasLocalCommandOutput
       ? "paused"
       : relatedSessionProcess?.status;
+  const statusBadge = getSessionStatusBadgeProps(effectiveSessionStatus);
 
   useTaskNotifications(effectiveSessionStatus === "running");
 
@@ -523,30 +525,25 @@ const SessionPageMainContent: FC<
                   </PopoverContent>
                 </Popover>
               )}
+              {statusBadge && (
+                <Badge
+                  variant="secondary"
+                  className={cn(
+                    "h-5 text-[10px] px-1.5 flex-shrink-0",
+                    statusBadge.className,
+                  )}
+                >
+                  {statusBadge.icon === "running" ? (
+                    <LoaderIcon className="w-2.5 h-2.5 mr-0.5 animate-spin" />
+                  ) : (
+                    <PauseIcon className="w-2.5 h-2.5 mr-0.5" />
+                  )}
+                  <Trans id={statusBadge.labelId} />
+                </Badge>
+              )}
               <h1 className="text-sm sm:text-base font-semibold break-all overflow-ellipsis line-clamp-1 min-w-0 text-foreground/90">
                 {headerTitle}
               </h1>
-            </div>
-
-            <div className="flex items-center gap-1 shrink-0">
-              {effectiveSessionStatus === "running" && (
-                <Badge
-                  variant="secondary"
-                  className="bg-green-500/10 text-green-700 dark:text-green-300 border-green-500/20 h-5 text-[10px] px-1.5"
-                >
-                  <LoaderIcon className="w-2.5 h-2.5 mr-0.5 animate-spin" />
-                  <Trans id="session.conversation.running" />
-                </Badge>
-              )}
-              {effectiveSessionStatus === "paused" && (
-                <Badge
-                  variant="secondary"
-                  className="bg-orange-500/10 text-orange-700 dark:text-orange-300 border-orange-500/20 h-5 text-[10px] px-1.5"
-                >
-                  <PauseIcon className="w-2.5 h-2.5 mr-0.5" />
-                  <Trans id="session.conversation.paused" />
-                </Badge>
-              )}
             </div>
           </div>
         </header>

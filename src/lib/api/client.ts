@@ -1,5 +1,5 @@
 import { hc } from "hono/client";
-import type { RouteType } from "../../server/hono/route";
+import type { RouteType } from "../../server/hono/routes";
 
 type Fetch = typeof fetch;
 

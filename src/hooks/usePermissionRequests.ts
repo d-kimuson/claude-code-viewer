@@ -23,7 +23,7 @@ export const usePermissionRequests = () => {
   const handlePermissionResponse = useCallback(
     async (response: PermissionResponse) => {
       try {
-        const apiResponse = await honoClient.api.cc[
+        const apiResponse = await honoClient.api["claude-code"][
           "permission-response"
         ].$post({
           json: response,

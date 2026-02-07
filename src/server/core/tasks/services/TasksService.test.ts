@@ -304,7 +304,7 @@ describe("TasksService", () => {
       const program = Effect.gen(function* () {
         const tasksService = yield* TasksService;
         return yield* tasksService.updateTask("/non/existent/project", {
-          turnId: "1",
+          taskId: "1",
           subject: "Updated",
         });
       });

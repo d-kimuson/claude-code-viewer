@@ -14,8 +14,7 @@ const createTestApp = (password?: string) =>
       password,
     });
 
-    const authMiddlewareService = yield* AuthMiddleware;
-    const authState = yield* authMiddlewareService;
+    const authState = yield* AuthMiddleware;
     const app = new Hono<HonoContext>();
 
     app.use(authState.authMiddleware);

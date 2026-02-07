@@ -40,7 +40,7 @@ import { TerminalService } from "./core/terminal/TerminalService";
 import { honoApp } from "./hono/app";
 import { InitializeService } from "./hono/initialize";
 import { AuthMiddleware } from "./hono/middleware/auth.middleware";
-import { routes } from "./hono/route";
+import { routes } from "./hono/routes";
 import { platformLayer } from "./lib/effect/layers";
 import { setupTerminalWebSocket } from "./terminal/terminalWebSocket";
 

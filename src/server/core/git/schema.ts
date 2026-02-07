@@ -3,13 +3,8 @@ import { z } from "zod";
 // Request Schemas
 
 export const CommitRequestSchema = z.object({
-  projectId: z.string().min(1),
   files: z.array(z.string().min(1)).min(1),
   message: z.string().trim().min(1),
-});
-
-export const PushRequestSchema = z.object({
-  projectId: z.string().min(1),
 });
 
 export const CommitAndPushRequestSchema = CommitRequestSchema;
@@ -112,7 +107,6 @@ export const CommitAndPushResultSchema = z.discriminatedUnion("success", [
 // Type Exports
 
 export type CommitRequest = z.infer<typeof CommitRequestSchema>;
-export type PushRequest = z.infer<typeof PushRequestSchema>;
 export type CommitAndPushRequest = z.infer<typeof CommitAndPushRequestSchema>;
 
 export type CommitResultSuccess = z.infer<typeof CommitResultSuccessSchema>;

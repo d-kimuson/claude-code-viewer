@@ -211,8 +211,8 @@ export const TasksTab: FC<TasksTabProps> = ({ projectId, sessionId }) => {
   });
 
   const updateMutation = useMutation({
-    mutationFn: (data: { turnId: string; update: Partial<TaskUpdate> }) =>
-      updateTask(projectId, data.turnId, data.update, sessionId),
+    mutationFn: (data: { taskId: string; update: Partial<TaskUpdate> }) =>
+      updateTask(projectId, data.taskId, data.update, sessionId),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["tasks", projectId, sessionId],
@@ -231,7 +231,7 @@ export const TasksTab: FC<TasksTabProps> = ({ projectId, sessionId }) => {
       newStatus = "pending";
 
     updateMutation.mutate({
-      turnId: task.id,
+      taskId: task.id,
       update: { status: newStatus },
     });
   };

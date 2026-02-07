@@ -1,9 +1,5 @@
 import { describe, expect, test } from "vitest";
-import {
-  CommitAndPushRequestSchema,
-  CommitRequestSchema,
-  PushRequestSchema,
-} from "./schema";
+import { CommitAndPushRequestSchema, CommitRequestSchema } from "./schema";
 
 describe("CommitRequestSchema", () => {
   test("accepts valid request", () => {
@@ -48,27 +44,6 @@ describe("CommitRequestSchema", () => {
       files: [""],
       message: "test",
     });
-    expect(result.success).toBe(false);
-  });
-});
-
-describe("PushRequestSchema", () => {
-  test("accepts valid request", () => {
-    const result = PushRequestSchema.safeParse({
-      projectId: "abc",
-    });
-    expect(result.success).toBe(true);
-  });
-
-  test("rejects empty projectId", () => {
-    const result = PushRequestSchema.safeParse({
-      projectId: "",
-    });
-    expect(result.success).toBe(false);
-  });
-
-  test("rejects missing projectId", () => {
-    const result = PushRequestSchema.safeParse({});
     expect(result.success).toBe(false);
   });
 });

@@ -25,7 +25,9 @@ export const useCreateSessionProcessMutation = (
         return { type: sessionType, sessionId: options.baseSessionId };
       };
 
-      const response = await honoClient.api.cc["session-processes"].$post(
+      const response = await honoClient.api["claude-code"][
+        "session-processes"
+      ].$post(
         {
           json: {
             projectId,
@@ -72,7 +74,7 @@ export const useContinueSessionProcessMutation = (
       input: MessageInput;
       sessionProcessId: string;
     }) => {
-      const response = await honoClient.api.cc["session-processes"][
+      const response = await honoClient.api["claude-code"]["session-processes"][
         ":sessionProcessId"
       ].continue.$post(
         {

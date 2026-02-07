@@ -33,7 +33,9 @@ export const directoryListingQuery = (
   ({
     queryKey: ["directory-listing", currentPath, showHidden],
     queryFn: async (): Promise<DirectoryListingResult> => {
-      const response = await honoClient.api.fs["directory-browser"].$get({
+      const response = await honoClient.api["file-system"][
+        "directory-browser"
+      ].$get({
         query: {
           ...(currentPath ? { currentPath } : {}),
           ...(showHidden !== undefined
@@ -131,7 +133,9 @@ export const claudeCommandsQuery = (projectId: string) =>
 export const sessionProcessesQuery = {
   queryKey: ["sessionProcesses"],
   queryFn: async () => {
-    const response = await honoClient.api.cc["session-processes"].$get({});
+    const response = await honoClient.api["claude-code"][
+      "session-processes"
+    ].$get({});
 
     if (!response.ok) {
       throw new Error(`Failed to fetch alive tasks: ${response.statusText}`);
@@ -183,7 +187,9 @@ export const fileCompletionQuery = (projectId: string, basePath: string) =>
   ({
     queryKey: ["file-completion", projectId, basePath],
     queryFn: async (): Promise<FileCompletionResult> => {
-      const response = await honoClient.api.fs["file-completion"].$get({
+      const response = await honoClient.api["file-system"][
+        "file-completion"
+      ].$get({
         query: { basePath, projectId },
       });
 
@@ -224,7 +230,7 @@ export const systemVersionQuery = {
 export const claudeCodeMetaQuery = {
   queryKey: ["cc", "meta"],
   queryFn: async () => {
-    const response = await honoClient.api.cc.meta.$get();
+    const response = await honoClient.api["claude-code"].meta.$get();
 
     if (!response.ok) {
       throw new Error(
@@ -239,7 +245,7 @@ export const claudeCodeMetaQuery = {
 export const claudeCodeFeaturesQuery = {
   queryKey: ["cc", "features"],
   queryFn: async () => {
-    const response = await honoClient.api.cc.features.$get();
+    const response = await honoClient.api["claude-code"].features.$get();
 
     if (!response.ok) {
       throw new Error(
@@ -267,7 +273,7 @@ export const schedulerJobsQuery = {
 export const featureFlagsQuery = {
   queryKey: ["flags"],
   queryFn: async () => {
-    const response = await honoClient.api.flags.$get();
+    const response = await honoClient.api["feature-flags"].$get();
 
     if (!response.ok) {
       throw new Error(`Failed to fetch feature flags: ${response.statusText}`);
@@ -289,7 +295,6 @@ export const agentSessionQuery = (
         "agent-sessions"
       ][":agentId"].$get({
         param: { projectId, agentId },
-        query: { sessionId },
       });
 
       if (!response.ok) {

@@ -99,7 +99,7 @@ export const useCommitFiles = (projectId: string) => {
         ":projectId"
       ].git.commit.$post({
         param: { projectId },
-        json: { projectId, files, message },
+        json: { files, message },
       });
 
       if (!response.ok) {
@@ -118,7 +118,6 @@ export const usePushCommits = (projectId: string) => {
         ":projectId"
       ].git.push.$post({
         param: { projectId },
-        json: { projectId },
       });
 
       if (!response.ok) {
@@ -143,7 +142,7 @@ export const useCommitAndPush = (projectId: string) => {
         "commit-and-push"
       ].$post({
         param: { projectId },
-        json: { projectId, files, message },
+        json: { files, message },
       });
 
       if (!response.ok) {

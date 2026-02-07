@@ -402,12 +402,12 @@ export class TasksService extends Context.Tag("TasksService")<
             projectPath,
             specificSessionId,
           );
-          const filePath = path.join(tasksDir, `${update.turnId}.json`);
+          const filePath = path.join(tasksDir, `${update.taskId}.json`);
 
           const exists = yield* fs.exists(filePath);
           if (!exists) {
             return yield* Effect.fail(
-              new Error(`Task ${update.turnId} not found`),
+              new Error(`Task ${update.taskId} not found`),
             );
           }
 

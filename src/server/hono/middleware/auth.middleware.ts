@@ -33,7 +33,7 @@ const isPublicApiRoute = (path: string, method: string) =>
 const LayerImpl = Effect.gen(function* () {
   const ccvOptionsService = yield* CcvOptionsService;
 
-  return Effect.gen(function* () {
+  return yield* Effect.gen(function* () {
     const authPassword = yield* ccvOptionsService.getCcvOptions("password");
     const authEnabled = authPassword !== undefined;
     const validSessionToken = generateSessionToken(authPassword);

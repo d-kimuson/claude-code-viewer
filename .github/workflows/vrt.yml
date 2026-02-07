@@ -51,6 +51,7 @@ jobs:
           fi
           pnpm e2e
         env:
+          CCV_TERMINAL_DISABLED: "1"
           MAX_CONCURRENCY: 10
 
       - name: Commit screenshots

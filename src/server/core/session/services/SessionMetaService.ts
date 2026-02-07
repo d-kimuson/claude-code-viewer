@@ -14,7 +14,10 @@ import type { SessionMeta } from "../../types";
 import { aggregateTokenUsageAndCost } from "../functions/aggregateTokenUsageAndCost";
 import { getAgentSessionFilesForSession } from "../functions/getAgentSessionFilesForSession";
 import { decodeSessionId } from "../functions/id";
-import { extractFirstUserMessage } from "../functions/isValidFirstMessage";
+import {
+  extractFirstUserMessage,
+  isLocalCommandCaveat,
+} from "../functions/isValidFirstMessage";
 
 const parsedUserMessageOrNullSchema = parsedUserMessageSchema.nullable();
 
@@ -49,7 +52,15 @@ export class SessionMetaService extends Context.Tag("SessionMetaService")<
         Effect.gen(function* () {
           const cached = yield* firstUserMessageCache.get(jsonlFilePath);
           if (cached !== undefined) {
-            return cached;
+            if (
+              cached !== null &&
+              cached.kind === "text" &&
+              isLocalCommandCaveat(cached.content)
+            ) {
+              // Ignore stale cache entries that only contain the caveat.
+            } else {
+              return cached;
+            }
           }
 
           let firstUserMessage: ParsedUserMessage | null = null;

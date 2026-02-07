@@ -3,7 +3,6 @@ import { Link } from "@tanstack/react-router";
 import {
   ArrowLeftIcon,
   CalendarClockIcon,
-  FileEditIcon,
   ListTodoIcon,
   MessageSquareIcon,
   PlugIcon,
@@ -17,9 +16,12 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  useLeftPanelActions,
+  useLeftPanelState,
+} from "@/hooks/useLayoutPanels";
 import { cn } from "@/lib/utils";
 import { Loading } from "../../../../../../../components/Loading";
-import { EditedFilesTab } from "./EditedFilesTab";
 import { McpTab } from "./McpTab";
 import { MobileSidebar } from "./MobileSidebar";
 import { SchedulerTab } from "./SchedulerTab";
@@ -42,6 +44,8 @@ export const SessionSidebar: FC<{
   onMobileOpenChange,
   initialTab,
 }) => {
+  const { isLeftPanelOpen } = useLeftPanelState();
+  const { toggleLeftPanel } = useLeftPanelActions();
   const activeSessionId = currentSessionId ?? "";
   const additionalTabs: SidebarTab[] = useMemo(
     () => [
@@ -67,22 +71,8 @@ export const SessionSidebar: FC<{
       {
         id: "tasks",
         icon: ListTodoIcon,
-        title: "Tasks",
+        title: <Trans id="sidebar.show.task.list" />,
         content: <TasksTab projectId={projectId} sessionId={activeSessionId} />,
-      },
-      {
-        id: "edited-files",
-        icon: FileEditIcon,
-        title: <Trans id="sidebar.show.edited.files" />,
-        content: activeSessionId ? (
-          <Suspense fallback={<Loading />}>
-            <EditedFilesTab projectId={projectId} sessionId={activeSessionId} />
-          </Suspense>
-        ) : (
-          <div className="p-4 text-sm text-muted-foreground text-center">
-            <Trans id="sidebar.edited_files.no_session" />
-          </div>
-        ),
       },
       {
         id: "scheduler",
@@ -98,8 +88,8 @@ export const SessionSidebar: FC<{
 
   return (
     <>
-      {/* Desktop sidebar */}
-      <div className={cn("hidden md:flex h-full", className)}>
+      {/* Desktop sidebar - takes full width of parent container */}
+      <div className={cn("flex h-full w-full", className)}>
         <GlobalSidebar
           projectId={projectId}
           additionalTabs={additionalTabs}
@@ -123,6 +113,9 @@ export const SessionSidebar: FC<{
               </Tooltip>
             </TooltipProvider>
           }
+          fillWidth
+          isContentHidden={!isLeftPanelOpen}
+          onToggle={toggleLeftPanel}
         />
       </div>
 

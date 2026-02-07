@@ -388,6 +388,12 @@ const LayerImpl = Effect.gen(function* () {
       return parseGitCommitsOutput(result);
     });
 
+  const checkout = (cwd: string, branchName: string) =>
+    Effect.gen(function* () {
+      yield* execGitCommand(["checkout", branchName], cwd);
+      return { success: true, branch: branchName };
+    });
+
   return {
     getBranches,
     getCurrentBranch,
@@ -402,6 +408,7 @@ const LayerImpl = Effect.gen(function* () {
     getCommitsWithParent,
     findBaseBranch,
     getCommitsBetweenBranches,
+    checkout,
   };
 });
 

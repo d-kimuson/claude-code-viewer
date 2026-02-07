@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { NodeContext } from "@effect/platform-node";
-import { serve } from "@hono/node-server";
+import { createAdaptorServer } from "@hono/node-server";
 import { serveStatic } from "@hono/node-server/serve-static";
 import { Effect, Layer } from "effect";
 import { AgentSessionLayer } from "./core/agent-session";
@@ -35,11 +35,13 @@ import { SessionController } from "./core/session/presentation/SessionController
 import { SessionMetaService } from "./core/session/services/SessionMetaService";
 import { TasksController } from "./core/tasks/presentation/TasksController";
 import { TasksService } from "./core/tasks/services/TasksService";
+import { TerminalService } from "./core/terminal/TerminalService";
 import { honoApp } from "./hono/app";
 import { InitializeService } from "./hono/initialize";
 import { AuthMiddleware } from "./hono/middleware/auth.middleware";
 import { routes } from "./hono/route";
 import { platformLayer } from "./lib/effect/layers";
+import { setupTerminalWebSocket } from "./terminal/terminalWebSocket";
 
 export const startServer = async (options: CliOptions) => {
   // biome-ignore lint/style/noProcessEnv: allow only here
@@ -66,9 +68,16 @@ export const startServer = async (options: CliOptions) => {
     });
   }
 
-  const program = routes(honoApp, options)
+  const server = createAdaptorServer({
+    fetch: honoApp.fetch,
+  });
+
+  const program = Effect.gen(function* () {
+    yield* routes(honoApp, options);
+    yield* setupTerminalWebSocket(server);
+  })
     // 依存の浅い順にコンテナに pipe する必要がある
-    .pipe(Effect.provide(MainLayer));
+    .pipe(Effect.provide(MainLayer), Effect.scoped);
 
   await Effect.runPromise(program);
 
@@ -81,16 +90,12 @@ export const startServer = async (options: CliOptions) => {
   // biome-ignore lint/style/noProcessEnv: allow only here
   const hostname = options.hostname ?? process.env.HOSTNAME ?? "localhost";
 
-  serve(
-    {
-      fetch: honoApp.fetch,
-      port: parseInt(port, 10),
-      hostname,
-    },
-    (info) => {
-      console.log(`Server is running on http://${hostname}:${info.port}`);
-    },
-  );
+  server.listen(parseInt(port, 10), hostname, () => {
+    const info = server.address();
+    const serverPort =
+      typeof info === "object" && info !== null ? info.port : port;
+    console.log(`Server is running on http://${hostname}:${serverPort}`);
+  });
 };
 
 const PlatformLayer = Layer.mergeAll(platformLayer, NodeContext.layer);
@@ -127,6 +132,7 @@ const AppServices = Layer.mergeAll(
   FileWatcherService.Live,
   RateLimitAutoScheduleService.Live,
   AuthMiddleware.Live,
+  TerminalService.Live,
 );
 
 const ApplicationLayer = InitializeService.Live.pipe(

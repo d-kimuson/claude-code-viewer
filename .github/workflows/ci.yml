@@ -36,6 +36,9 @@ jobs:
       - name: Check lingui translations
         run: ./scripts/lingui-check.sh
 
+      - name: Check key-equals-translation entries
+        run: ./scripts/i18n-check-key-equals-translation.sh
+
       - name: Compile lingui and check for changes
         run: |
           pnpm lingui:compile

@@ -8,6 +8,75 @@
   "control.open_browser": {
     "translation": "打开浏览器"
   },
+  "layout.toggle_left_panel": {
+    "translation": "切换左侧面板"
+  },
+  "layout.toggle_right_panel": {
+    "translation": "切换右侧面板"
+  },
+  "layout.toggle_bottom_panel": {
+    "translation": "切换底部面板"
+  },
+  "layout.status.ready": {
+    "translation": "就绪"
+  },
+  "layout.bottom_panel.title": {
+    "translation": "终端"
+  },
+  "layout.bottom_panel.coming_soon.title": {
+    "translation": "终端面板"
+  },
+  "layout.bottom_panel.coming_soon.description": {
+    "translation": "在应用内运行命令并查看输出"
+  },
+  "chat.history.button": {
+    "translation": "会话历史"
+  },
+  "chat.history.title": {
+    "translation": "最近会话"
+  },
+  "panel.tab.browser": {
+    "translation": "浏览器"
+  },
+  "panel.tab.files": {
+    "translation": "文件"
+  },
+  "panel.tab.explorer": {
+    "translation": "资源管理器"
+  },
+  "panel.tab.tasks": {
+    "translation": "任务"
+  },
+  "panel.tab.todo": {
+    "translation": "待办"
+  },
+  "panel.tab.coming_soon": {
+    "translation": "即将推出"
+  },
+  "panel.close": {
+    "translation": "关闭面板"
+  },
+  "panel.browser.empty.title": {
+    "translation": "未加载页面"
+  },
+  "panel.browser.empty.description": {
+    "translation": "在上方输入URL或点击会话中的链接"
+  },
+  "panel.todo.coming_soon.title": {
+    "translation": "待办列表"
+  },
+  "panel.todo.coming_soon.description": {
+    "translation": "在一个地方跟踪您的任务和进度"
+  },
+  "panel.files.git_section": {
+    "translation": "Git 更改"
+  },
+  "panel.files.edited_section": {
+    "translation": "已编辑的文件"
+  },
+  "panel.todo.section_title": {
+    "translation": "任务进度"
+  },
   "Select search hotkey": {
     "translation": "选择搜索快捷键"
   },
@@ -73,5 +142,41 @@
   },
   "settings.maxBudgetUsd.label": {
     "translation": "最大预算 (USD)"
+  },
+  "panel.tab.git": {
+    "translation": "Git"
+  },
+  "panel.tab.files_tools": {
+    "translation": "文件 & 工具"
+  },
+  "panel.tab.review": {
+    "translation": "审查"
+  },
+  "panel.files.tool_calls_section": {
+    "translation": "工具调用"
+  },
+  "panel.files.filter_tools": {
+    "translation": "按工具筛选"
+  },
+  "panel.todo.collapsed_title": {
+    "translation": "Todo"
+  },
+  "panel.git.empty": {
+    "translation": "没有未提交的更改"
+  },
+  "panel.git.view_content": {
+    "translation": "内容"
+  },
+  "panel.git.view_diff": {
+    "translation": "差异"
+  },
+  "panel.files.no_tool_calls": {
+    "translation": "暂无工具调用"
+  },
+  "panel.review.empty": {
+    "translation": "选择要比较的引用"
+  },
+  "sidebar.show.task.list": {
+    "translation": "显示任务列表"
   }
 }

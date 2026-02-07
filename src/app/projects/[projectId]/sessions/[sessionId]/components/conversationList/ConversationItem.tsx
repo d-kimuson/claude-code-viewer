@@ -5,8 +5,10 @@ import type {
   SidechainConversation,
 } from "@/lib/conversation-schema";
 import type { ToolResultContent } from "@/lib/conversation-schema/content/ToolResultContentSchema";
+import type { AssistantMessageContent } from "@/lib/conversation-schema/message/AssistantMessageSchema";
 import { formatLocaleDate } from "@/lib/date/formatLocaleDate";
 import type { SupportedLocale } from "@/lib/i18n/schema";
+import { parseUserMessage } from "@/server/core/claude-code/functions/parseUserMessage";
 import { AssistantConversationContent } from "./AssistantConversationContent";
 import { FileHistorySnapshotConversationContent } from "./FileHistorySnapshotConversationContent";
 import { MetaConversationContent } from "./MetaConversationContent";
@@ -174,6 +176,48 @@ export const ConversationItem: FC<{
   }
 
   if (conversation.type === "user") {
+    if (typeof conversation.message.content === "string") {
+      const parsed = parseUserMessage(conversation.message.content);
+
+      if (parsed.kind === "local-command") {
+        const assistantContent: AssistantMessageContent = {
+          type: "text",
+          text: parsed.stdout,
+        };
+
+        return (
+          <div className="w-full">
+            {showTimestamp && conversation.timestamp && (
+              <div className="text-xs text-muted-foreground mb-1 px-1 select-none text-left">
+                {formatLocaleDate(conversation.timestamp, {
+                  locale,
+                  target: "datetime",
+                })}
+              </div>
+            )}
+            <ul className="w-full">
+              <li>
+                <AssistantConversationContent
+                  content={assistantContent}
+                  getToolResult={getToolResult}
+                  getAgentIdForToolUse={getAgentIdForToolUse}
+                  getSidechainConversationByAgentId={
+                    getSidechainConversationByAgentId
+                  }
+                  getSidechainConversationByPrompt={
+                    getSidechainConversationByPrompt
+                  }
+                  getSidechainConversations={getSidechainConversations}
+                  projectId={projectId}
+                  sessionId={sessionId}
+                />
+              </li>
+            </ul>
+          </div>
+        );
+      }
+    }
+
     const userConversationJsx =
       typeof conversation.message.content === "string" ? (
         <UserConversationContent

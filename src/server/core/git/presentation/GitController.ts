@@ -372,12 +372,95 @@ const LayerImpl = Effect.gen(function* () {
       } as const satisfies ControllerResponse;
     });
 
+  const getBranches = (options: { projectId: string }) =>
+    Effect.gen(function* () {
+      const { projectId } = options;
+
+      const { project } = yield* projectRepository.getProject(projectId);
+
+      if (project.meta.projectPath === null) {
+        return {
+          response: { success: false, error: "Project path not found" },
+          status: 400,
+        } as const satisfies ControllerResponse;
+      }
+
+      const projectPath = project.meta.projectPath;
+
+      const branchesResult = yield* Effect.either(
+        gitService.getBranches(projectPath),
+      );
+
+      if (Either.isLeft(branchesResult)) {
+        return {
+          response: { success: false, error: "Failed to get branches" },
+          status: 500,
+        } as const satisfies ControllerResponse;
+      }
+
+      const currentBranchResult = yield* Effect.either(
+        gitService.getCurrentBranch(projectPath),
+      );
+
+      const currentBranch = Either.isRight(currentBranchResult)
+        ? currentBranchResult.right
+        : null;
+
+      return {
+        response: {
+          success: true,
+          data: {
+            branches: branchesResult.right.data,
+            currentBranch,
+          },
+        },
+        status: 200,
+      } as const satisfies ControllerResponse;
+    });
+
+  const checkoutBranch = (options: { projectId: string; branchName: string }) =>
+    Effect.gen(function* () {
+      const { projectId, branchName } = options;
+
+      const { project } = yield* projectRepository.getProject(projectId);
+
+      if (project.meta.projectPath === null) {
+        return {
+          response: { success: false, error: "Project path not found" },
+          status: 400,
+        } as const satisfies ControllerResponse;
+      }
+
+      const projectPath = project.meta.projectPath;
+
+      const checkoutResult = yield* Effect.either(
+        gitService.checkout(projectPath, branchName),
+      );
+
+      if (Either.isLeft(checkoutResult)) {
+        return {
+          response: { success: false, error: "Failed to checkout branch" },
+          status: 500,
+        } as const satisfies ControllerResponse;
+      }
+
+      return {
+        response: {
+          success: true,
+          branch: checkoutResult.right.branch,
+        },
+        status: 200,
+      } as const satisfies ControllerResponse;
+    });
+
   return {
     getGitDiff,
     commitFiles,
     pushCommits,
     commitAndPush,
     getCurrentRevisions,
+    getBranches,
+    checkoutBranch,
   };
 });
 

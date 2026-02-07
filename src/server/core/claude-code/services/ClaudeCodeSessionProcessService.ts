@@ -377,7 +377,10 @@ const LayerImpl = Effect.gen(function* () {
 
     return Effect.gen(function* () {
       const currentProcess = yield* getSessionProcess(sessionProcessId);
-      if (currentProcess.type !== "file_created") {
+      if (
+        currentProcess.type !== "file_created" &&
+        currentProcess.type !== "initialized"
+      ) {
         return yield* Effect.fail(
           new IllegalStateChangeError({
             from: currentProcess.type,

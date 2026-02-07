@@ -2,11 +2,80 @@
   "session.empty_state.description": {
     "translation": "Select an existing session from the sidebar or start a new conversation below."
   },
+  "layout.toggle_left_panel": {
+    "translation": "Toggle left panel"
+  },
+  "layout.toggle_right_panel": {
+    "translation": "Toggle right panel"
+  },
+  "layout.toggle_bottom_panel": {
+    "translation": "Toggle bottom panel"
+  },
+  "layout.status.ready": {
+    "translation": "Ready"
+  },
+  "layout.bottom_panel.title": {
+    "translation": "Terminal"
+  },
+  "layout.bottom_panel.coming_soon.title": {
+    "translation": "Terminal Panel"
+  },
+  "layout.bottom_panel.coming_soon.description": {
+    "translation": "Run commands and view output directly in the app"
+  },
+  "chat.history.button": {
+    "translation": "Session History"
+  },
+  "chat.history.title": {
+    "translation": "Recent Sessions"
+  },
   "control.browser": {
     "translation": "Browser"
   },
   "control.open_browser": {
     "translation": "Open Browser"
+  },
+  "panel.tab.browser": {
+    "translation": "Browser"
+  },
+  "panel.tab.files": {
+    "translation": "Files"
+  },
+  "panel.tab.explorer": {
+    "translation": "Explorer"
+  },
+  "panel.tab.tasks": {
+    "translation": "Tasks"
+  },
+  "panel.tab.todo": {
+    "translation": "Todo"
+  },
+  "panel.tab.coming_soon": {
+    "translation": "Coming Soon"
+  },
+  "panel.close": {
+    "translation": "Close Panel"
+  },
+  "panel.browser.empty.title": {
+    "translation": "No page loaded"
+  },
+  "panel.browser.empty.description": {
+    "translation": "Enter a URL above or click a link in the conversation"
+  },
+  "panel.todo.coming_soon.title": {
+    "translation": "Todo List"
+  },
+  "panel.todo.coming_soon.description": {
+    "translation": "Track your tasks and progress in one place"
+  },
+  "panel.files.git_section": {
+    "translation": "Git Changes"
+  },
+  "panel.files.edited_section": {
+    "translation": "Edited Files"
+  },
+  "panel.todo.section_title": {
+    "translation": "Task Progress"
   },
   "chat.settings": {
     "translation": "Settings"
@@ -70,5 +139,41 @@
   },
   "settings.maxBudgetUsd.label": {
     "translation": "Max Budget (USD)"
+  },
+  "panel.tab.git": {
+    "translation": "Git"
+  },
+  "panel.tab.files_tools": {
+    "translation": "Files & Tools"
+  },
+  "panel.tab.review": {
+    "translation": "Review"
+  },
+  "panel.files.tool_calls_section": {
+    "translation": "Tool Calls"
+  },
+  "panel.files.filter_tools": {
+    "translation": "Filter by tool"
+  },
+  "panel.todo.collapsed_title": {
+    "translation": "Todo"
+  },
+  "panel.git.empty": {
+    "translation": "No uncommitted changes"
+  },
+  "panel.git.view_content": {
+    "translation": "Content"
+  },
+  "panel.git.view_diff": {
+    "translation": "Diff"
+  },
+  "panel.files.no_tool_calls": {
+    "translation": "No tool calls yet"
+  },
+  "panel.review.empty": {
+    "translation": "Select references to compare"
+  },
+  "sidebar.show.task.list": {
+    "translation": "Show Task List"
   }
 }

@@ -45,6 +45,7 @@ export const Loading: FC<LoadingProps> = ({
         "flex flex-col items-center justify-center gap-3",
         className,
       )}
+      data-testid="loading-indicator"
     >
       <Loader2 className={cn(sizeMap[size], "animate-spin text-primary")} />
       {message && (

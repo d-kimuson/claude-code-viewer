@@ -4,3 +4,4 @@ export {
   extractAllEditedFiles,
 } from "./extractAllEditedFiles";
 export { extractEditedFilePaths } from "./extractEditedFilePaths";
+export { extractToolCalls, type ToolCallInfo } from "./extractToolCalls";

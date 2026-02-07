@@ -8,7 +8,7 @@
         374
       ]
     ],
-    "translation": "Additional instructions to append..."
+    "translation": "Additional instructions to append"
   },
   "Available commands": {
     "placeholders": {},
@@ -19,7 +19,7 @@
         207
       ]
     ],
-    "translation": "Available commands"
+    "translation": "Available Commands"
   },
   "Available files and directories": {
     "placeholders": {},
@@ -30,7 +30,7 @@
         267
       ]
     ],
-    "translation": "Available files and directories"
+    "translation": "Available Files and Directories"
   },
   "Close sidebar": {
     "placeholders": {},
@@ -48,22 +48,30 @@
     "comments": [],
     "origin": [
       [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        382
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         397
       ]
     ],
-    "translation": "Compare from"
+    "translation": "Compare From"
   },
   "Compare to": {
     "placeholders": {},
     "comments": [],
     "origin": [
       [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        390
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         403
       ]
     ],
-    "translation": "Compare to"
+    "translation": "Compare To"
   },
   "Custom tool name...": {
     "placeholders": {},
@@ -74,40 +82,52 @@
         214
       ]
     ],
-    "translation": "Custom tool name..."
+    "translation": "Custom tool name"
   },
   "Failed to commit": {
     "placeholders": {},
     "comments": [],
     "origin": [
       [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        292
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         312
       ]
     ],
-    "translation": "Failed to commit"
+    "translation": "Commit failed"
   },
   "Failed to commit and push": {
     "placeholders": {},
     "comments": [],
     "origin": [
       [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        347
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         378
       ]
     ],
-    "translation": "Failed to commit and push"
+    "translation": "Commit and push failed"
   },
   "Failed to push": {
     "placeholders": {},
     "comments": [],
     "origin": [
       [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        307
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         330
       ]
     ],
-    "translation": "Failed to push"
+    "translation": "Push failed"
   },
   "Key": {
     "placeholders": {},
@@ -118,7 +138,7 @@
         106
       ]
     ],
-    "translation": "Key"
+    "translation": "Key name"
   },
   "Message input with completion support": {
     "placeholders": {},
@@ -129,7 +149,7 @@
         428
       ]
     ],
-    "translation": "Message input with completion support"
+    "translation": "Message input with autocomplete support"
   },
   "Reload MCP servers": {
     "placeholders": {},
@@ -140,18 +160,22 @@
         51
       ]
     ],
-    "translation": "Reload MCP servers"
+    "translation": "Reload MCP Servers"
   },
   "Retry Push": {
     "placeholders": {},
     "comments": [],
     "origin": [
       [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        336
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         365
       ]
     ],
-    "translation": "Retry Push"
+    "translation": "Retry push"
   },
   "Select enter key behavior": {
     "placeholders": {},
@@ -162,7 +186,7 @@
         221
       ]
     ],
-    "translation": "Select enter key behavior"
+    "translation": "Select Enter key behavior"
   },
   "Select language": {
     "placeholders": {},
@@ -173,7 +197,7 @@
         332
       ]
     ],
-    "translation": "Select language"
+    "translation": "Select Language"
   },
   "Select permission mode": {
     "placeholders": {},
@@ -184,7 +208,7 @@
         289
       ]
     ],
-    "translation": "Select permission mode"
+    "translation": "Select Permission Mode"
   },
   "Select search hotkey": {
     "placeholders": {},
@@ -195,7 +219,7 @@
         256
       ]
     ],
-    "translation": "Select search hotkey"
+    "translation": "Select Search Hotkey"
   },
   "Select theme": {
     "placeholders": {},
@@ -206,18 +230,22 @@
         361
       ]
     ],
-    "translation": "Select theme"
+    "translation": "Select Theme"
   },
   "Uncommitted changes": {
     "placeholders": {},
     "comments": [],
     "origin": [
       [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        182
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         181
       ]
     ],
-    "translation": "Uncommitted changes"
+    "translation": "Uncommitted Changes"
   },
   "Value": {
     "placeholders": {},
@@ -228,7 +256,7 @@
         114
       ]
     ],
-    "translation": "Value"
+    "translation": "Value field"
   },
   "assistant.thinking": {
     "placeholders": {},
@@ -246,6 +274,10 @@
     "comments": [],
     "origin": [
       [
+        "src/app/components/rightPanel/GitTabContent.tsx",
+        325
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
         185
       ]
@@ -256,6 +288,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
+      [
+        "src/app/components/rightPanel/GitTabContent.tsx",
+        310
+      ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
         170
@@ -272,12 +308,16 @@
         189
       ]
     ],
-    "translation": "assistant.tool.error_loading_task"
+    "translation": "Failed to load task"
   },
   "assistant.tool.file_not_found": {
     "placeholders": {},
     "comments": [],
     "origin": [
+      [
+        "src/app/components/rightPanel/GitTabContent.tsx",
+        322
+      ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
         182
@@ -312,6 +352,10 @@
     "comments": [],
     "origin": [
       [
+        "src/app/components/rightPanel/GitTabContent.tsx",
+        328
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
         188
       ]
@@ -322,6 +366,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
+      [
+        "src/app/components/rightPanel/GitTabContent.tsx",
+        302
+      ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
         162
@@ -338,7 +386,7 @@
         181
       ]
     ],
-    "translation": "assistant.tool.loading_task"
+    "translation": "Loading task..."
   },
   "assistant.tool.message_count": {
     "placeholders": {
@@ -364,7 +412,7 @@
         199
       ]
     ],
-    "translation": "assistant.tool.no_task_data"
+    "translation": "No task data"
   },
   "assistant.tool.no_task_data_description": {
     "placeholders": {},
@@ -375,12 +423,16 @@
         202
       ]
     ],
-    "translation": "assistant.tool.no_task_data_description"
+    "translation": "No data is available for this task"
   },
   "assistant.tool.read_error": {
     "placeholders": {},
     "comments": [],
     "origin": [
+      [
+        "src/app/components/rightPanel/GitTabContent.tsx",
+        331
+      ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
         191
@@ -404,6 +456,10 @@
     "comments": [],
     "origin": [
       [
+        "src/app/components/rightPanel/GitTabContent.tsx",
+        313
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
         173
       ],
@@ -412,7 +468,7 @@
         192
       ]
     ],
-    "translation": "assistant.tool.retry"
+    "translation": "Retry"
   },
   "assistant.tool.task_id": {
     "placeholders": {},
@@ -502,21 +558,55 @@
     ],
     "translation": "Failed to send message. Please try again."
   },
+  "chat.history.button": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/SessionHistoryPopover.tsx",
+        97
+      ],
+      [
+        "src/app/components/SessionHistoryPopover.tsx",
+        116
+      ]
+    ],
+    "translation": "history"
+  },
+  "chat.history.title": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/SessionHistoryPopover.tsx",
+        134
+      ],
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
+        584
+      ]
+    ],
+    "translation": "Recent sessions"
+  },
   "chat.modal.title": {
     "placeholders": {},
     "comments": [],
     "origin": [
       [
-        "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        206
+        "src/app/components/SessionHistoryPopover.tsx",
+        160
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        510
+        309
+      ],
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
+        572
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        141
+        101
       ]
     ],
     "translation": "Start New Chat"
@@ -837,12 +927,16 @@
     "comments": [],
     "origin": [
       [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        406
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         419
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        238
+        185
       ]
     ],
     "translation": "Loading..."
@@ -887,25 +981,10 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        258
-      ],
-      [
-        "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        356
+        407
       ]
     ],
     "translation": "Branch"
-  },
-  "control.git": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        72
-      ]
-    ],
-    "translation": "Git"
   },
   "control.metadata": {
     "placeholders": {},
@@ -913,7 +992,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        332
+        388
       ]
     ],
     "translation": "Metadata"
@@ -924,7 +1003,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        383
+        434
       ]
     ],
     "translation": "Model"
@@ -935,7 +1014,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        104
+        74
       ]
     ],
     "translation": "New"
@@ -947,34 +1026,10 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        97
+        67
       ]
     ],
     "translation": "New Chat"
-  },
-  "control.open_browser": {
-    "message": "Open Browser",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        83
-      ]
-    ],
-    "translation": "Open Browser"
-  },
-  "control.open_git_dialog": {
-    "message": "Open Git Dialog",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        65
-      ]
-    ],
-    "translation": "Open Git Dialog"
   },
   "control.project_path": {
     "placeholders": {},
@@ -982,7 +1037,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        338
+        394
       ]
     ],
     "translation": "Project Path"
@@ -994,7 +1049,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        131
+        101
       ]
     ],
     "translation": "Scroll to Bottom"
@@ -1006,7 +1061,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        115
+        85
       ]
     ],
     "translation": "Scroll to Top"
@@ -1017,11 +1072,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        273
-      ],
-      [
-        "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        370
+        421
       ]
     ],
     "translation": "Session ID"
@@ -1032,7 +1083,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        110
+        111
       ]
     ],
     "translation": "Raw Data: "
@@ -1043,7 +1094,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        103
+        104
       ]
     ],
     "translation": "Report This Issue"
@@ -1054,7 +1105,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        78
+        79
       ]
     ],
     "translation": "Schema Error"
@@ -1065,7 +1116,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        93
+        94
       ]
     ],
     "translation": "Schema Validation Error"
@@ -1076,7 +1127,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        96
+        97
       ]
     ],
     "translation": "Failed to parse this conversation entry. This may be due to format changes or parsing issues."
@@ -1292,6 +1343,10 @@
     "comments": [],
     "origin": [
       [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        558
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         564
       ]
@@ -1302,6 +1357,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
+      [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        463
+      ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         469
@@ -1314,6 +1373,10 @@
     "comments": [],
     "origin": [
       [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        531
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         538
       ]
@@ -1324,6 +1387,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
+      [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        592
+      ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         596
@@ -1336,6 +1403,10 @@
     "comments": [],
     "origin": [
       [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        555
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         561
       ]
@@ -1347,6 +1418,10 @@
     "comments": [],
     "origin": [
       [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        589
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         593
       ]
@@ -1357,6 +1432,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
+      [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        492
+      ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         498
@@ -1391,6 +1470,10 @@
     "comments": [],
     "origin": [
       [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        63
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         53
       ]
@@ -1401,6 +1484,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
+      [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        628
+      ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         642
@@ -1413,6 +1500,10 @@
     "comments": [],
     "origin": [
       [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        574
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         579
       ]
@@ -1424,6 +1515,10 @@
     "comments": [],
     "origin": [
       [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        571
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         576
       ]
@@ -1434,6 +1529,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
+      [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        483
+      ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         490
@@ -1505,7 +1604,7 @@
         647
       ]
     ],
-    "translation": "e.g., 1.00"
+    "translation": "Example: 1.00"
   },
   "e.g., 10": {
     "placeholders": {},
@@ -1516,7 +1615,7 @@
         596
       ]
     ],
-    "translation": "e.g., 10"
+    "translation": "Example: 10"
   },
   "e.g., 10000": {
     "placeholders": {},
@@ -1527,7 +1626,7 @@
         620
       ]
     ],
-    "translation": "e.g., 10000"
+    "translation": "Example: 10000"
   },
   "e.g., api.example.com, cdn.example.com": {
     "placeholders": {},
@@ -1538,7 +1637,7 @@
         514
       ]
     ],
-    "translation": "e.g., api.example.com, cdn.example.com"
+    "translation": "Example: api.example.com, cdn.example.com"
   },
   "e.g., claude-sonnet-4-5-20250929": {
     "placeholders": {},
@@ -1549,7 +1648,51 @@
         301
       ]
     ],
-    "translation": "e.g., claude-sonnet-4-5-20250929"
+    "translation": "Example: claude-sonnet-4-5-20250929"
+  },
+  "layout.bottom_panel.title": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/BottomPanel.tsx",
+        72
+      ]
+    ],
+    "translation": "Terminal"
+  },
+  "layout.toggle_bottom_panel": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/AppLayout.tsx",
+        137
+      ]
+    ],
+    "translation": "Toggle bottom panel"
+  },
+  "layout.toggle_left_panel": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/AppLayout.tsx",
+        116
+      ]
+    ],
+    "translation": "Toggle left panel"
+  },
+  "layout.toggle_right_panel": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/AppLayout.tsx",
+        158
+      ]
+    ],
+    "translation": "Toggle right panel"
   },
   "mcp.error.load_failed": {
     "placeholders": {
@@ -1720,6 +1863,160 @@
     ],
     "translation": "Test"
   },
+  "panel.browser.empty.description": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/RightPanel.tsx",
+        336
+      ]
+    ],
+    "translation": "Enter a URL in the bar above or click a link in the conversation"
+  },
+  "panel.browser.empty.title": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/RightPanel.tsx",
+        333
+      ]
+    ],
+    "translation": "No page loaded"
+  },
+  "panel.files.edited_section": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/rightPanel/FilesToolsTabContent.tsx",
+        315
+      ]
+    ],
+    "translation": "Edited files"
+  },
+  "panel.files.filter_tools": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/rightPanel/FilesToolsTabContent.tsx",
+        374
+      ]
+    ],
+    "translation": "Filter by tool"
+  },
+  "panel.files.tool_calls_section": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/rightPanel/FilesToolsTabContent.tsx",
+        356
+      ]
+    ],
+    "translation": "Tool calls"
+  },
+  "panel.git.empty": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/rightPanel/GitTabContent.tsx",
+        439
+      ]
+    ],
+    "translation": "No Git changes"
+  },
+  "panel.git.view_content": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/rightPanel/GitTabContent.tsx",
+        272
+      ]
+    ],
+    "translation": "Content"
+  },
+  "panel.git.view_diff": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/rightPanel/GitTabContent.tsx",
+        268
+      ]
+    ],
+    "translation": "Diff"
+  },
+  "panel.review.empty": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        435
+      ]
+    ],
+    "translation": "No items to review"
+  },
+  "panel.tab.browser": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/RightPanel.tsx",
+        59
+      ]
+    ],
+    "translation": "Browser"
+  },
+  "panel.tab.files_tools": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/RightPanel.tsx",
+        52
+      ]
+    ],
+    "translation": "Files / Tools"
+  },
+  "panel.tab.git": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/RightPanel.tsx",
+        47
+      ]
+    ],
+    "translation": "Git"
+  },
+  "panel.tab.review": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/RightPanel.tsx",
+        57
+      ]
+    ],
+    "translation": "Review"
+  },
+  "panel.todo.collapsed_title": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/rightPanel/common/CollapsibleTodoSection.tsx",
+        87
+      ]
+    ],
+    "translation": "Todo"
+  },
   "project.new": {
     "placeholders": {},
     "comments": [],
@@ -1836,7 +2133,7 @@
     "origin": [
       [
         "src/app/projects/page.tsx",
-        20
+        13
       ]
     ],
     "translation": "View Claude Code conversation history and project operations"
@@ -1847,7 +2144,7 @@
     "origin": [
       [
         "src/app/projects/page.tsx",
-        36
+        29
       ]
     ],
     "translation": "Loading projects..."
@@ -1858,7 +2155,7 @@
     "origin": [
       [
         "src/app/projects/page.tsx",
-        28
+        21
       ]
     ],
     "translation": "Projects"
@@ -2245,32 +2542,10 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        156
+        126
       ]
     ],
     "translation": "Abort"
-  },
-  "session.conversation.paused": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        293
-      ]
-    ],
-    "translation": "Paused"
-  },
-  "session.conversation.running": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        284
-      ]
-    ],
-    "translation": "Running"
   },
   "session.cost.cache_creation": {
     "placeholders": {},
@@ -2278,7 +2553,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        439
+        491
       ]
     ],
     "translation": "Cache creation"
@@ -2289,7 +2564,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        453
+        506
       ]
     ],
     "translation": "Cache read"
@@ -2300,7 +2575,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        411
+        463
       ]
     ],
     "translation": "Input tokens"
@@ -2311,7 +2586,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        396
+        448
       ]
     ],
     "translation": "Session Cost"
@@ -2322,7 +2597,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        425
+        477
       ]
     ],
     "translation": "Output tokens"
@@ -2333,7 +2608,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        403
+        455
       ]
     ],
     "translation": "Total"
@@ -2383,7 +2658,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        480
+        381
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/DeleteSessionDialog.tsx",
@@ -2398,10 +2673,43 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        513
+        575
       ]
     ],
-    "translation": "session.empty_state.description"
+    "translation": "Start a new chat to begin the conversation"
+  },
+  "session.menu.copy_session_path": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
+        371
+      ]
+    ],
+    "translation": "Copy session file path"
+  },
+  "session.menu.export_html": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
+        352
+      ]
+    ],
+    "translation": "Export to HTML"
+  },
+  "session.menu.export_jsonl": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
+        361
+      ]
+    ],
+    "translation": "Export to JSONL"
   },
   "session.processing": {
     "placeholders": {},
@@ -2409,7 +2717,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        527
+        665
       ]
     ],
     "translation": "Claude Code is processing..."
@@ -2452,8 +2760,16 @@
     "comments": [],
     "origin": [
       [
+        "src/app/components/SessionHistoryPopover.tsx",
+        209
+      ],
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
+        630
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        197
+        148
       ]
     ],
     "translation": "Paused"
@@ -2463,8 +2779,16 @@
     "comments": [],
     "origin": [
       [
+        "src/app/components/SessionHistoryPopover.tsx",
+        207
+      ],
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
+        628
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        195
+        146
       ]
     ],
     "translation": "Running"
@@ -2474,8 +2798,12 @@
     "comments": [],
     "origin": [
       [
+        "src/app/components/SessionHistoryPopover.tsx",
+        244
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        240
+        187
       ]
     ],
     "translation": "Load More"
@@ -2486,7 +2814,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        116
+        76
       ]
     ],
     "translation": "Sessions"
@@ -2496,8 +2824,12 @@
     "comments": [],
     "origin": [
       [
+        "src/app/components/SessionHistoryPopover.tsx",
+        137
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        120
+        80
       ]
     ],
     "translation": "Total"
@@ -2520,7 +2852,7 @@
     "origin": [
       [
         "src/components/GlobalSidebar.tsx",
-        62
+        71
       ]
     ],
     "translation": "Display and behavior settings"
@@ -2534,7 +2866,7 @@
         313
       ]
     ],
-    "translation": "settings.disallowedTools.label"
+    "translation": "Disabled tools"
   },
   "settings.env.add": {
     "placeholders": {},
@@ -2545,7 +2877,7 @@
         139
       ]
     ],
-    "translation": "settings.env.add"
+    "translation": "Add environment variable"
   },
   "settings.env.label": {
     "message": "Environment Variables",
@@ -2568,7 +2900,7 @@
         287
       ]
     ],
-    "translation": "settings.forkSession"
+    "translation": "Fork session"
   },
   "settings.input.enter_key_behavior": {
     "placeholders": {},
@@ -2679,7 +3011,7 @@
       ],
       [
         "src/components/GlobalSidebar.tsx",
-        70
+        79
       ]
     ],
     "translation": "Loading settings..."
@@ -2784,7 +3116,7 @@
         296
       ]
     ],
-    "translation": "settings.model.label"
+    "translation": "Model"
   },
   "settings.notifications": {
     "placeholders": {},
@@ -2952,7 +3284,7 @@
     "origin": [
       [
         "src/components/GlobalSidebar.tsx",
-        85
+        94
       ]
     ],
     "translation": "Notifications"
@@ -2963,7 +3295,7 @@
     "origin": [
       [
         "src/components/GlobalSidebar.tsx",
-        78
+        87
       ]
     ],
     "translation": "Session Display"
@@ -2974,7 +3306,7 @@
     "origin": [
       [
         "src/components/GlobalSidebar.tsx",
-        98
+        107
       ]
     ],
     "translation": "System Information"
@@ -3101,7 +3433,7 @@
       ],
       [
         "src/components/GlobalSidebar.tsx",
-        54
+        63
       ]
     ],
     "translation": "Display and Notification Settings"
@@ -3172,7 +3504,7 @@
       ],
       [
         "src/components/GlobalSidebar.tsx",
-        59
+        68
       ]
     ],
     "translation": "Settings"
@@ -3187,7 +3519,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        120
+        110
       ]
     ],
     "translation": "Back to Projects"
@@ -3212,6 +3544,10 @@
     "comments": [],
     "origin": [
       [
+        "src/app/components/rightPanel/FilesToolsTabContent.tsx",
+        295
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/EditedFilesTab.tsx",
         129
       ]
@@ -3222,6 +3558,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
+      [
+        "src/app/components/rightPanel/FilesToolsTabContent.tsx",
+        336
+      ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/EditedFilesTab.tsx",
         169
@@ -3240,17 +3580,6 @@
     ],
     "translation": "In Project"
   },
-  "sidebar.edited_files.no_session": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        83
-      ]
-    ],
-    "translation": "Please select a session"
-  },
   "sidebar.edited_files.title": {
     "placeholders": {},
     "comments": [],
@@ -3262,17 +3591,6 @@
     ],
     "translation": "Edited Files"
   },
-  "sidebar.show.edited.files": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        76
-      ]
-    ],
-    "translation": "Show Edited Files"
-  },
   "sidebar.show.mcp.settings": {
     "placeholders": {},
     "comments": [],
@@ -3283,7 +3601,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        64
+        68
       ]
     ],
     "translation": "Show MCP Server Settings"
@@ -3294,7 +3612,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        90
+        80
       ]
     ],
     "translation": "Show Scheduler Jobs"
@@ -3309,10 +3627,21 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        51
+        55
       ]
     ],
     "translation": "Show Session List"
+  },
+  "sidebar.show.task.list": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
+        74
+      ]
+    ],
+    "translation": "Show task list"
   },
   "system.info.tab.title": {
     "placeholders": {},

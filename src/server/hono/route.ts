@@ -424,6 +424,40 @@ export const routes = (app: HonoAppType, options: CliOptions) =>
           },
         )
 
+        .get("/api/projects/:projectId/git/branches", async (c) => {
+          const response = await effectToResponse(
+            c,
+            gitController
+              .getBranches({
+                ...c.req.param(),
+              })
+              .pipe(Effect.provide(runtime)),
+          );
+          return response;
+        })
+
+        .post(
+          "/api/projects/:projectId/git/checkout",
+          zValidator(
+            "json",
+            z.object({
+              branchName: z.string().min(1, "branchName is required"),
+            }),
+          ),
+          async (c) => {
+            const response = await effectToResponse(
+              c,
+              gitController
+                .checkoutBranch({
+                  ...c.req.param(),
+                  ...c.req.valid("json"),
+                })
+                .pipe(Effect.provide(runtime)),
+            );
+            return response;
+          },
+        )
+
         /**
          * ClaudeCodeController Routes
          */

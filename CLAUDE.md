@@ -2,10 +2,8 @@
 
 ## Critical Rules (Read First)
 
-**Communication**:
-- Always communicate with users in English
+**Language**:
 - Code, comments, and commit messages should be in English
-- This document is in English for context efficiency
 
 **NEVER**:
 - Use `as` type casting in ANY context including test code (explain the problem to the user instead)
@@ -18,6 +16,29 @@
 - Use Hono RPC + TanStack Query for all API calls
 - Follow TDD: write tests first, then implement
 - Run `pnpm typecheck` and `pnpm fix` before committing
+
+## Commit Message Rules
+
+Conventional Commits format: `type: description`
+
+**Release Note Awareness**:
+- Commit messages are included in release notes; write for users.
+
+**Type Selection**:
+| Type | Release Note | Purpose |
+|------|--------------|---------|
+| `feat` | Features | User-facing new feature |
+| `fix` | Bug Fixes | User-impacting bug fix |
+| `chore`, `ci`, `build`, `refactor` | Excluded | Internal changes |
+
+**Critical**: Use `fix` only for user-facing bugs. Internal fixes (linter errors, type errors, build scripts) must use `chore`.
+
+**Message Quality Examples**:
+- Bad: `fix: fix lingui error` (internal issue)
+- Bad: `feat: add button` (too vague)
+- Good: `feat: add dark mode toggle to settings`
+- Good: `fix: session list not updating after deletion`
+- Good: `chore: update lingui compiled messages`
 
 ## Project Overview
 

@@ -2,10 +2,8 @@
 
 ## Critical Rules (Read First)
 
-**Communication**:
-- Always communicate with users in English
+**Language**:
 - Code, comments, and commit messages should be in English
-- This document is in English for context efficiency
 
 **NEVER**:
 - Use `as` type casting in ANY context including test code (explain the problem to the user instead)

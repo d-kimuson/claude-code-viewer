@@ -1656,7 +1656,7 @@
     "origin": [
       [
         "src/app/components/BottomPanel.tsx",
-        103
+        72
       ]
     ],
     "translation": "ターミナル"
@@ -1667,7 +1667,7 @@
     "origin": [
       [
         "src/app/components/AppLayout.tsx",
-        134
+        137
       ]
     ],
     "translation": "下パネルを切り替え"
@@ -1678,7 +1678,7 @@
     "origin": [
       [
         "src/app/components/AppLayout.tsx",
-        113
+        116
       ]
     ],
     "translation": "左パネルを切り替え"
@@ -1689,7 +1689,7 @@
     "origin": [
       [
         "src/app/components/AppLayout.tsx",
-        155
+        158
       ]
     ],
     "translation": "右パネルを切り替え"
@@ -1869,7 +1869,7 @@
     "origin": [
       [
         "src/app/components/RightPanel.tsx",
-        343
+        335
       ]
     ],
     "translation": "上のURLバーにURLを入力するか、会話中のリンクをクリックしてください"
@@ -1880,7 +1880,7 @@
     "origin": [
       [
         "src/app/components/RightPanel.tsx",
-        340
+        332
       ]
     ],
     "translation": "ページが読み込まれていません"
@@ -1968,7 +1968,7 @@
     "origin": [
       [
         "src/app/components/RightPanel.tsx",
-        52
+        59
       ]
     ],
     "translation": "ブラウザ"
@@ -1979,7 +1979,7 @@
     "origin": [
       [
         "src/app/components/RightPanel.tsx",
-        45
+        52
       ]
     ],
     "translation": "ファイル/ツール"
@@ -1990,7 +1990,7 @@
     "origin": [
       [
         "src/app/components/RightPanel.tsx",
-        40
+        47
       ]
     ],
     "translation": "Git"
@@ -2001,7 +2001,7 @@
     "origin": [
       [
         "src/app/components/RightPanel.tsx",
-        50
+        57
       ]
     ],
     "translation": "レビュー"
@@ -2012,7 +2012,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/common/CollapsibleTodoSection.tsx",
-        84
+        87
       ]
     ],
     "translation": "Todo"
@@ -3541,7 +3541,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        106
+        110
       ]
     ],
     "translation": "プロジェクト一覧に戻る"
@@ -3623,7 +3623,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        64
+        68
       ]
     ],
     "translation": "MCPサーバー設定を表示"
@@ -3634,7 +3634,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        76
+        80
       ]
     ],
     "translation": "スケジューラジョブを表示"
@@ -3649,7 +3649,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        51
+        55
       ]
     ],
     "translation": "セッション一覧を表示"
@@ -3660,7 +3660,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        70
+        74
       ]
     ],
     "translation": "タスク一覧を表示"

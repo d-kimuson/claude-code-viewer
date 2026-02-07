@@ -1656,7 +1656,7 @@
     "origin": [
       [
         "src/app/components/BottomPanel.tsx",
-        103
+        72
       ]
     ],
     "translation": "终端"
@@ -1667,7 +1667,7 @@
     "origin": [
       [
         "src/app/components/AppLayout.tsx",
-        134
+        137
       ]
     ],
     "translation": "切换底部面板"
@@ -1678,7 +1678,7 @@
     "origin": [
       [
         "src/app/components/AppLayout.tsx",
-        113
+        116
       ]
     ],
     "translation": "切换左侧面板"
@@ -1689,7 +1689,7 @@
     "origin": [
       [
         "src/app/components/AppLayout.tsx",
-        155
+        158
       ]
     ],
     "translation": "切换右侧面板"
@@ -1869,7 +1869,7 @@
     "origin": [
       [
         "src/app/components/RightPanel.tsx",
-        343
+        335
       ]
     ],
     "translation": "在上方输入URL或点击对话中的链接"
@@ -1880,7 +1880,7 @@
     "origin": [
       [
         "src/app/components/RightPanel.tsx",
-        340
+        332
       ]
     ],
     "translation": "未加载页面"
@@ -1968,7 +1968,7 @@
     "origin": [
       [
         "src/app/components/RightPanel.tsx",
-        52
+        59
       ]
     ],
     "translation": "浏览器"
@@ -1979,7 +1979,7 @@
     "origin": [
       [
         "src/app/components/RightPanel.tsx",
-        45
+        52
       ]
     ],
     "translation": "文件/工具"
@@ -1990,7 +1990,7 @@
     "origin": [
       [
         "src/app/components/RightPanel.tsx",
-        40
+        47
       ]
     ],
     "translation": "Git"
@@ -2001,7 +2001,7 @@
     "origin": [
       [
         "src/app/components/RightPanel.tsx",
-        50
+        57
       ]
     ],
     "translation": "审查"
@@ -2012,7 +2012,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/common/CollapsibleTodoSection.tsx",
-        84
+        87
       ]
     ],
     "translation": "Todo"
@@ -3541,7 +3541,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        106
+        110
       ]
     ],
     "translation": "返回项目列表"
@@ -3623,7 +3623,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        64
+        68
       ]
     ],
     "translation": "显示 MCP 服务器设置"
@@ -3634,7 +3634,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        76
+        80
       ]
     ],
     "translation": "显示定时任务"
@@ -3649,7 +3649,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        51
+        55
       ]
     ],
     "translation": "显示会话列表"
@@ -3660,7 +3660,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        70
+        74
       ]
     ],
     "translation": "显示任务列表"

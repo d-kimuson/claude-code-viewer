@@ -1,6 +1,6 @@
 import type { FC } from "react";
 import { useState } from "react";
-import { useBrowserPreview } from "../../hooks/useBrowserPreview";
+import { useRightPanelActions } from "@/hooks/useRightPanel";
 
 interface MarkdownLinkProps {
   href?: string;
@@ -22,7 +22,7 @@ function isValidUrl(url: string | undefined): boolean {
 
 export const MarkdownLink: FC<MarkdownLinkProps> = ({ href, children }) => {
   const [isHovered, setIsHovered] = useState(false);
-  const { openPreview } = useBrowserPreview();
+  const { openBrowser } = useRightPanelActions();
 
   const showPreviewButton = isValidUrl(href);
 
@@ -30,7 +30,7 @@ export const MarkdownLink: FC<MarkdownLinkProps> = ({ href, children }) => {
     e.preventDefault();
     e.stopPropagation();
     if (href) {
-      openPreview(href);
+      openBrowser(href);
     }
   };
 

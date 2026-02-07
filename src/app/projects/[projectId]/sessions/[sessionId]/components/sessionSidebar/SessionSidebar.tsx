@@ -16,7 +16,10 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useLayoutPanels } from "@/hooks/useLayoutPanels";
+import {
+  useLeftPanelActions,
+  useLeftPanelState,
+} from "@/hooks/useLayoutPanels";
 import { cn } from "@/lib/utils";
 import { Loading } from "../../../../../../../components/Loading";
 import { McpTab } from "./McpTab";
@@ -41,7 +44,8 @@ export const SessionSidebar: FC<{
   onMobileOpenChange,
   initialTab,
 }) => {
-  const { isLeftPanelOpen, toggleLeftPanel } = useLayoutPanels();
+  const { isLeftPanelOpen } = useLeftPanelState();
+  const { toggleLeftPanel } = useLeftPanelActions();
   const activeSessionId = currentSessionId ?? "";
   const additionalTabs: SidebarTab[] = useMemo(
     () => [

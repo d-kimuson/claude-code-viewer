@@ -14,8 +14,13 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useIsMobile } from "@/hooks/useIsMobile";
-import { useLayoutPanels } from "@/hooks/useLayoutPanels";
-import { useRightPanel } from "@/hooks/useRightPanel";
+import {
+  useBottomPanelActions,
+  useBottomPanelState,
+  useLeftPanelActions,
+  useLeftPanelState,
+} from "@/hooks/useLayoutPanels";
+import { useRightPanelActions, useRightPanelOpen } from "@/hooks/useRightPanel";
 import { cn } from "@/lib/utils";
 
 interface AppLayoutProps {
@@ -37,14 +42,12 @@ export const AppLayout: FC<AppLayoutProps> = ({
   onMobileLeftPanelOpen,
 }) => {
   const isMobile = useIsMobile();
-  const {
-    isLeftPanelOpen,
-    setIsLeftPanelOpen,
-    isBottomPanelOpen,
-    setIsBottomPanelOpen,
-  } = useLayoutPanels();
-  const { isOpen: isRightPanelOpen, togglePanel: toggleRightPanel } =
-    useRightPanel();
+  const { isLeftPanelOpen } = useLeftPanelState();
+  const { setIsLeftPanelOpen } = useLeftPanelActions();
+  const { isBottomPanelOpen } = useBottomPanelState();
+  const { setIsBottomPanelOpen } = useBottomPanelActions();
+  const isRightPanelOpen = useRightPanelOpen();
+  const { togglePanel: toggleRightPanel } = useRightPanelActions();
 
   return (
     <div className="flex flex-col h-screen w-screen overflow-hidden bg-background">

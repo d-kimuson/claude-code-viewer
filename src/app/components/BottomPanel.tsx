@@ -1,64 +1,33 @@
 import { Trans } from "@lingui/react";
 import { RocketIcon, RotateCcwIcon, XIcon } from "lucide-react";
 import type { FC } from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useLayoutPanels } from "@/hooks/useLayoutPanels";
+import { useCallback, useEffect, useState } from "react";
+import { useDragResize } from "@/hooks/useDragResize";
+import {
+  useBottomPanelActions,
+  useBottomPanelState,
+} from "@/hooks/useLayoutPanels";
 import { TerminalPanel } from "./TerminalPanel";
 
 export const BottomPanel: FC = () => {
-  const {
-    isBottomPanelOpen,
-    bottomPanelHeight,
-    setIsBottomPanelOpen,
-    setBottomPanelHeight,
-  } = useLayoutPanels();
+  const { isBottomPanelOpen, bottomPanelHeight } = useBottomPanelState();
+  const { setIsBottomPanelOpen, setBottomPanelHeight } =
+    useBottomPanelActions();
 
-  const [isResizing, setIsResizing] = useState(false);
-  const isResizingRef = useRef(false);
   const [terminalResetToken, setTerminalResetToken] = useState(0);
 
-  const stopResizing = useCallback(() => {
-    isResizingRef.current = false;
-    setIsResizing(false);
-  }, []);
-
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    isResizingRef.current = true;
-    setIsResizing(true);
-  }, []);
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!isResizingRef.current) return;
-      e.preventDefault();
-
-      // Calculate height from bottom of viewport
+  const handleResize = useCallback(
+    (event: MouseEvent) => {
       const newHeight =
-        ((window.innerHeight - e.clientY) / window.innerHeight) * 100;
+        ((window.innerHeight - event.clientY) / window.innerHeight) * 100;
       setBottomPanelHeight(newHeight);
-    };
+    },
+    [setBottomPanelHeight],
+  );
 
-    const handleMouseUp = (e: MouseEvent) => {
-      e.preventDefault();
-      stopResizing();
-    };
-
-    const handleMouseLeave = () => {
-      stopResizing();
-    };
-
-    document.addEventListener("mousemove", handleMouseMove, { passive: false });
-    document.addEventListener("mouseup", handleMouseUp, { passive: false });
-    document.addEventListener("mouseleave", handleMouseLeave);
-
-    return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-      document.removeEventListener("mouseleave", handleMouseLeave);
-    };
-  }, [stopResizing, setBottomPanelHeight]);
+  const { isResizing, handleMouseDown } = useDragResize({
+    onResize: handleResize,
+  });
 
   useEffect(() => {
     if (isResizing) {

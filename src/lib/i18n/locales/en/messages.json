@@ -1656,7 +1656,7 @@
     "origin": [
       [
         "src/app/components/BottomPanel.tsx",
-        103
+        72
       ]
     ],
     "translation": "layout.bottom_panel.title"
@@ -1667,7 +1667,7 @@
     "origin": [
       [
         "src/app/components/AppLayout.tsx",
-        134
+        137
       ]
     ],
     "translation": "layout.toggle_bottom_panel"
@@ -1678,7 +1678,7 @@
     "origin": [
       [
         "src/app/components/AppLayout.tsx",
-        113
+        116
       ]
     ],
     "translation": "layout.toggle_left_panel"
@@ -1689,7 +1689,7 @@
     "origin": [
       [
         "src/app/components/AppLayout.tsx",
-        155
+        158
       ]
     ],
     "translation": "layout.toggle_right_panel"
@@ -1869,7 +1869,7 @@
     "origin": [
       [
         "src/app/components/RightPanel.tsx",
-        343
+        335
       ]
     ],
     "translation": "panel.browser.empty.description"
@@ -1880,7 +1880,7 @@
     "origin": [
       [
         "src/app/components/RightPanel.tsx",
-        340
+        332
       ]
     ],
     "translation": "panel.browser.empty.title"
@@ -1968,7 +1968,7 @@
     "origin": [
       [
         "src/app/components/RightPanel.tsx",
-        52
+        59
       ]
     ],
     "translation": "panel.tab.browser"
@@ -1979,7 +1979,7 @@
     "origin": [
       [
         "src/app/components/RightPanel.tsx",
-        45
+        52
       ]
     ],
     "translation": "panel.tab.files_tools"
@@ -1990,7 +1990,7 @@
     "origin": [
       [
         "src/app/components/RightPanel.tsx",
-        40
+        47
       ]
     ],
     "translation": "panel.tab.git"
@@ -2001,7 +2001,7 @@
     "origin": [
       [
         "src/app/components/RightPanel.tsx",
-        50
+        57
       ]
     ],
     "translation": "panel.tab.review"
@@ -2012,7 +2012,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/common/CollapsibleTodoSection.tsx",
-        84
+        87
       ]
     ],
     "translation": "Todo"
@@ -3541,7 +3541,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        106
+        110
       ]
     ],
     "translation": "Back to Projects"
@@ -3623,7 +3623,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        64
+        68
       ]
     ],
     "translation": "Show MCP Server Settings"
@@ -3634,7 +3634,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        76
+        80
       ]
     ],
     "translation": "Show Scheduler Jobs"
@@ -3649,7 +3649,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        51
+        55
       ]
     ],
     "translation": "Show Session List"
@@ -3660,7 +3660,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        70
+        74
       ]
     ],
     "translation": "sidebar.show.task.list"

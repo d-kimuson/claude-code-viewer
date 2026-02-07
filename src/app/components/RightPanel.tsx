@@ -1,4 +1,5 @@
 import { Trans } from "@lingui/react";
+import { useSetAtom } from "jotai";
 import {
   ClipboardCheckIcon,
   FileTextIcon,
@@ -8,16 +9,22 @@ import {
   XIcon,
 } from "lucide-react";
 import type { FC, ReactNode } from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useDragResize } from "@/hooks/useDragResize";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import { rightPanelIframeRefAtom } from "@/lib/atoms/rightPanel";
 import { cn } from "@/lib/utils";
-import { type RightPanelTab, useRightPanel } from "../../hooks/useRightPanel";
+import {
+  type RightPanelTab,
+  useRightPanelActions,
+  useRightPanelState,
+} from "../../hooks/useRightPanel";
 
 interface RightPanelProps {
   projectId: string;
@@ -57,80 +64,65 @@ export const RightPanel: FC<RightPanelProps> = ({
   filesToolsTabContent,
   reviewTabContent,
 }) => {
+  const { isOpen, activeTab, width, browserUrl, inputUrl } =
+    useRightPanelState();
   const {
-    isOpen,
-    activeTab,
-    width,
     closePanel,
     setActiveTab,
     setWidth,
-    browserUrl,
-    inputUrl,
     setInputUrl,
+    setCurrentUrl,
     reloadBrowser,
     handleUrlSubmit,
-    iframeRef,
-  } = useRightPanel();
+  } = useRightPanelActions();
   const isMobile = useIsMobile();
-
-  const [isResizing, setIsResizing] = useState(false);
-  const isResizingRef = useRef(false);
-
-  const stopResizing = useCallback(() => {
-    isResizingRef.current = false;
-    setIsResizing(false);
-  }, []);
-
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    isResizingRef.current = true;
-    setIsResizing(true);
-  }, []);
+  const iframeRef = useRef<HTMLIFrameElement | null>(null);
+  const setIframeRef = useSetAtom(rightPanelIframeRefAtom);
+  const lastTrackedUrlRef = useRef<string | null>(null);
 
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!isResizingRef.current) return;
-      e.preventDefault();
+    setIframeRef(iframeRef);
+  }, [setIframeRef]);
 
-      const newWidth =
-        ((window.innerWidth - e.clientX) / window.innerWidth) * 100;
-      setWidth(Math.max(20, Math.min(80, newWidth)));
-    };
+  useEffect(() => {
+    if (!browserUrl || !isOpen) {
+      lastTrackedUrlRef.current = null;
+      return;
+    }
 
-    const handleMouseUp = (e: MouseEvent) => {
-      e.preventDefault();
-      stopResizing();
-    };
-
-    const handleMouseLeave = () => {
-      stopResizing();
-    };
-
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        stopResizing();
+    const interval = window.setInterval(() => {
+      try {
+        const iframe = iframeRef.current;
+        const href = iframe?.contentWindow?.location.href;
+        if (!href || href === "about:blank") {
+          return;
+        }
+        if (href !== lastTrackedUrlRef.current) {
+          lastTrackedUrlRef.current = href;
+          setCurrentUrl(href);
+          setInputUrl(href);
+        }
+      } catch {
+        // Cross-origin restriction - ignore
       }
-    };
+    }, 500);
 
-    const handleBlur = () => {
-      stopResizing();
-    };
+    return () => window.clearInterval(interval);
+  }, [browserUrl, isOpen, setCurrentUrl, setInputUrl]);
 
-    document.addEventListener("mousemove", handleMouseMove, { passive: false });
-    document.addEventListener("mouseup", handleMouseUp, { passive: false });
-    document.addEventListener("mouseleave", handleMouseLeave);
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-    window.addEventListener("blur", handleBlur);
+  const handleResize = useCallback(
+    (event: MouseEvent) => {
+      const newWidth =
+        ((window.innerWidth - event.clientX) / window.innerWidth) * 100;
+      setWidth(newWidth);
+    },
+    [setWidth],
+  );
 
-    return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-      document.removeEventListener("mouseleave", handleMouseLeave);
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-      window.removeEventListener("blur", handleBlur);
-    };
-  }, [stopResizing, setWidth]);
+  const { isResizing, handleMouseDown } = useDragResize({
+    onResize: handleResize,
+    enabled: isOpen && !isMobile,
+  });
 
   useEffect(() => {
     if (isResizing) {

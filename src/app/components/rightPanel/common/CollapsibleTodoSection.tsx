@@ -8,7 +8,10 @@ import {
   ListTodoIcon,
 } from "lucide-react";
 import type { FC } from "react";
-import { useRightPanel } from "@/hooks/useRightPanel";
+import {
+  useRightPanelTodoActions,
+  useRightPanelTodoState,
+} from "@/hooks/useRightPanel";
 import type { TodoItem } from "@/lib/todo-viewer";
 import { cn } from "@/lib/utils";
 
@@ -36,8 +39,8 @@ const TodoStatusIcon: FC<{ status: TodoItem["status"] }> = ({ status }) => {
 export const CollapsibleTodoSection: FC<CollapsibleTodoSectionProps> = ({
   todos,
 }) => {
-  const { isTodoSectionOpen: isOpen, setIsTodoSectionOpen: setIsOpen } =
-    useRightPanel();
+  const isOpen = useRightPanelTodoState();
+  const { setIsTodoSectionOpen: setIsOpen } = useRightPanelTodoActions();
 
   // Don't render if no todos
   if (!todos || todos.length === 0) {

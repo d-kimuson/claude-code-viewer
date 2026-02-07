@@ -8,8 +8,8 @@ import { ReviewTabContent } from "@/app/components/rightPanel/ReviewTabContent";
 import { Loading } from "@/components/Loading";
 import { ResizableSidebar } from "@/components/ResizableSidebar";
 import { useIsMobile } from "@/hooks/useIsMobile";
-import { useLayoutPanels } from "@/hooks/useLayoutPanels";
-import { useRightPanel } from "@/hooks/useRightPanel";
+import { useBottomPanelState } from "@/hooks/useLayoutPanels";
+import { useRightPanelOpen, useRightPanelWidth } from "@/hooks/useRightPanel";
 import { useProject } from "../../../hooks/useProject";
 import { SessionPageMain } from "./SessionPageMain";
 import { SessionSidebar } from "./sessionSidebar/SessionSidebar";
@@ -22,8 +22,9 @@ export const SessionPageContent: FC<{
 }> = ({ projectId, sessionId, tab }) => {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const isMobile = useIsMobile();
-  const { isOpen: isRightPanelOpen, width: rightPanelWidth } = useRightPanel();
-  const { isBottomPanelOpen, bottomPanelHeight } = useLayoutPanels();
+  const isRightPanelOpen = useRightPanelOpen();
+  const rightPanelWidth = useRightPanelWidth();
+  const { isBottomPanelOpen, bottomPanelHeight } = useBottomPanelState();
   const { data: projectData } = useProject(projectId);
 
   const firstPage = projectData.pages[0];

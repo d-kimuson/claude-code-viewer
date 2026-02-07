@@ -1,6 +1,10 @@
 import type { FC, ReactNode } from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useLayoutPanels } from "@/hooks/useLayoutPanels";
+import { useCallback, useEffect } from "react";
+import { useDragResize } from "@/hooks/useDragResize";
+import {
+  useLeftPanelActions,
+  useLeftPanelState,
+} from "@/hooks/useLayoutPanels";
 import { cn } from "@/lib/utils";
 
 // Icon menu width (w-12 = 3rem = 48px)
@@ -17,66 +21,20 @@ export const ResizableSidebar: FC<ResizableSidebarProps> = ({
   children,
   className,
 }) => {
-  const { isLeftPanelOpen, leftPanelWidth, setLeftPanelWidth } =
-    useLayoutPanels();
+  const { isLeftPanelOpen, leftPanelWidth } = useLeftPanelState();
+  const { setLeftPanelWidth } = useLeftPanelActions();
 
-  const [isResizing, setIsResizing] = useState(false);
-  const isResizingRef = useRef(false);
-
-  const stopResizing = useCallback(() => {
-    isResizingRef.current = false;
-    setIsResizing(false);
-  }, []);
-
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    isResizingRef.current = true;
-    setIsResizing(true);
-  }, []);
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!isResizingRef.current) return;
-      e.preventDefault();
-
-      const newWidth = (e.clientX / window.innerWidth) * 100;
+  const handleResize = useCallback(
+    (event: MouseEvent) => {
+      const newWidth = (event.clientX / window.innerWidth) * 100;
       setLeftPanelWidth(newWidth);
-    };
+    },
+    [setLeftPanelWidth],
+  );
 
-    const handleMouseUp = (e: MouseEvent) => {
-      e.preventDefault();
-      stopResizing();
-    };
-
-    const handleMouseLeave = () => {
-      stopResizing();
-    };
-
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        stopResizing();
-      }
-    };
-
-    const handleBlur = () => {
-      stopResizing();
-    };
-
-    document.addEventListener("mousemove", handleMouseMove, { passive: false });
-    document.addEventListener("mouseup", handleMouseUp, { passive: false });
-    document.addEventListener("mouseleave", handleMouseLeave);
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-    window.addEventListener("blur", handleBlur);
-
-    return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-      document.removeEventListener("mouseleave", handleMouseLeave);
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-      window.removeEventListener("blur", handleBlur);
-    };
-  }, [stopResizing, setLeftPanelWidth]);
+  const { isResizing, handleMouseDown } = useDragResize({
+    onResize: handleResize,
+  });
 
   useEffect(() => {
     if (isResizing) {

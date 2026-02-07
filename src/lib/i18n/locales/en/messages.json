@@ -8,7 +8,7 @@
         374
       ]
     ],
-    "translation": "Additional instructions to append..."
+    "translation": "Additional instructions to append"
   },
   "Available commands": {
     "placeholders": {},
@@ -19,7 +19,7 @@
         207
       ]
     ],
-    "translation": "Available commands"
+    "translation": "Available Commands"
   },
   "Available files and directories": {
     "placeholders": {},
@@ -30,7 +30,7 @@
         267
       ]
     ],
-    "translation": "Available files and directories"
+    "translation": "Available Files and Directories"
   },
   "Close sidebar": {
     "placeholders": {},
@@ -56,7 +56,7 @@
         397
       ]
     ],
-    "translation": "Compare from"
+    "translation": "Compare From"
   },
   "Compare to": {
     "placeholders": {},
@@ -71,7 +71,7 @@
         403
       ]
     ],
-    "translation": "Compare to"
+    "translation": "Compare To"
   },
   "Custom tool name...": {
     "placeholders": {},
@@ -82,7 +82,7 @@
         214
       ]
     ],
-    "translation": "Custom tool name..."
+    "translation": "Custom tool name"
   },
   "Failed to commit": {
     "placeholders": {},
@@ -97,7 +97,7 @@
         312
       ]
     ],
-    "translation": "Failed to commit"
+    "translation": "Commit failed"
   },
   "Failed to commit and push": {
     "placeholders": {},
@@ -112,7 +112,7 @@
         378
       ]
     ],
-    "translation": "Failed to commit and push"
+    "translation": "Commit and push failed"
   },
   "Failed to push": {
     "placeholders": {},
@@ -127,7 +127,7 @@
         330
       ]
     ],
-    "translation": "Failed to push"
+    "translation": "Push failed"
   },
   "Key": {
     "placeholders": {},
@@ -138,7 +138,7 @@
         106
       ]
     ],
-    "translation": "Key"
+    "translation": "Key name"
   },
   "Message input with completion support": {
     "placeholders": {},
@@ -149,7 +149,7 @@
         428
       ]
     ],
-    "translation": "Message input with completion support"
+    "translation": "Message input with autocomplete support"
   },
   "Reload MCP servers": {
     "placeholders": {},
@@ -160,7 +160,7 @@
         51
       ]
     ],
-    "translation": "Reload MCP servers"
+    "translation": "Reload MCP Servers"
   },
   "Retry Push": {
     "placeholders": {},
@@ -175,7 +175,7 @@
         365
       ]
     ],
-    "translation": "Retry Push"
+    "translation": "Retry push"
   },
   "Select enter key behavior": {
     "placeholders": {},
@@ -186,7 +186,7 @@
         221
       ]
     ],
-    "translation": "Select enter key behavior"
+    "translation": "Select Enter key behavior"
   },
   "Select language": {
     "placeholders": {},
@@ -197,7 +197,7 @@
         332
       ]
     ],
-    "translation": "Select language"
+    "translation": "Select Language"
   },
   "Select permission mode": {
     "placeholders": {},
@@ -208,7 +208,7 @@
         289
       ]
     ],
-    "translation": "Select permission mode"
+    "translation": "Select Permission Mode"
   },
   "Select search hotkey": {
     "placeholders": {},
@@ -219,7 +219,7 @@
         256
       ]
     ],
-    "translation": "Select search hotkey"
+    "translation": "Select Search Hotkey"
   },
   "Select theme": {
     "placeholders": {},
@@ -230,7 +230,7 @@
         361
       ]
     ],
-    "translation": "Select theme"
+    "translation": "Select Theme"
   },
   "Uncommitted changes": {
     "placeholders": {},
@@ -245,7 +245,7 @@
         181
       ]
     ],
-    "translation": "Uncommitted changes"
+    "translation": "Uncommitted Changes"
   },
   "Value": {
     "placeholders": {},
@@ -256,7 +256,7 @@
         114
       ]
     ],
-    "translation": "Value"
+    "translation": "Value field"
   },
   "assistant.thinking": {
     "placeholders": {},
@@ -308,7 +308,7 @@
         189
       ]
     ],
-    "translation": "assistant.tool.error_loading_task"
+    "translation": "Failed to load task"
   },
   "assistant.tool.file_not_found": {
     "placeholders": {},
@@ -386,7 +386,7 @@
         181
       ]
     ],
-    "translation": "assistant.tool.loading_task"
+    "translation": "Loading task..."
   },
   "assistant.tool.message_count": {
     "placeholders": {
@@ -412,7 +412,7 @@
         199
       ]
     ],
-    "translation": "assistant.tool.no_task_data"
+    "translation": "No task data"
   },
   "assistant.tool.no_task_data_description": {
     "placeholders": {},
@@ -423,7 +423,7 @@
         202
       ]
     ],
-    "translation": "assistant.tool.no_task_data_description"
+    "translation": "No data is available for this task"
   },
   "assistant.tool.read_error": {
     "placeholders": {},
@@ -468,7 +468,7 @@
         192
       ]
     ],
-    "translation": "assistant.tool.retry"
+    "translation": "Retry"
   },
   "assistant.tool.task_id": {
     "placeholders": {},
@@ -571,7 +571,7 @@
         116
       ]
     ],
-    "translation": "chat.history.button"
+    "translation": "Session history"
   },
   "chat.history.title": {
     "placeholders": {},
@@ -586,7 +586,7 @@
         563
       ]
     ],
-    "translation": "chat.history.title"
+    "translation": "Recent sessions"
   },
   "chat.modal.title": {
     "placeholders": {},
@@ -1604,7 +1604,7 @@
         647
       ]
     ],
-    "translation": "e.g., 1.00"
+    "translation": "Example: 1.00"
   },
   "e.g., 10": {
     "placeholders": {},
@@ -1615,7 +1615,7 @@
         596
       ]
     ],
-    "translation": "e.g., 10"
+    "translation": "Example: 10"
   },
   "e.g., 10000": {
     "placeholders": {},
@@ -1626,7 +1626,7 @@
         620
       ]
     ],
-    "translation": "e.g., 10000"
+    "translation": "Example: 10000"
   },
   "e.g., api.example.com, cdn.example.com": {
     "placeholders": {},
@@ -1637,7 +1637,7 @@
         514
       ]
     ],
-    "translation": "e.g., api.example.com, cdn.example.com"
+    "translation": "Example: api.example.com, cdn.example.com"
   },
   "e.g., claude-sonnet-4-5-20250929": {
     "placeholders": {},
@@ -1648,7 +1648,7 @@
         301
       ]
     ],
-    "translation": "e.g., claude-sonnet-4-5-20250929"
+    "translation": "Example: claude-sonnet-4-5-20250929"
   },
   "layout.bottom_panel.title": {
     "placeholders": {},
@@ -1659,7 +1659,7 @@
         72
       ]
     ],
-    "translation": "layout.bottom_panel.title"
+    "translation": "Terminal"
   },
   "layout.toggle_bottom_panel": {
     "placeholders": {},
@@ -1670,7 +1670,7 @@
         137
       ]
     ],
-    "translation": "layout.toggle_bottom_panel"
+    "translation": "Toggle bottom panel"
   },
   "layout.toggle_left_panel": {
     "placeholders": {},
@@ -1681,7 +1681,7 @@
         116
       ]
     ],
-    "translation": "layout.toggle_left_panel"
+    "translation": "Toggle left panel"
   },
   "layout.toggle_right_panel": {
     "placeholders": {},
@@ -1692,7 +1692,7 @@
         158
       ]
     ],
-    "translation": "layout.toggle_right_panel"
+    "translation": "Toggle right panel"
   },
   "mcp.error.load_failed": {
     "placeholders": {
@@ -1872,7 +1872,7 @@
         335
       ]
     ],
-    "translation": "panel.browser.empty.description"
+    "translation": "Enter a URL in the bar above or click a link in the conversation"
   },
   "panel.browser.empty.title": {
     "placeholders": {},
@@ -1883,7 +1883,7 @@
         332
       ]
     ],
-    "translation": "panel.browser.empty.title"
+    "translation": "No page loaded"
   },
   "panel.files.edited_section": {
     "placeholders": {},
@@ -1894,7 +1894,7 @@
         315
       ]
     ],
-    "translation": "panel.files.edited_section"
+    "translation": "Edited files"
   },
   "panel.files.filter_tools": {
     "placeholders": {},
@@ -1905,7 +1905,7 @@
         374
       ]
     ],
-    "translation": "panel.files.filter_tools"
+    "translation": "Filter by tool"
   },
   "panel.files.tool_calls_section": {
     "placeholders": {},
@@ -1916,7 +1916,7 @@
         356
       ]
     ],
-    "translation": "panel.files.tool_calls_section"
+    "translation": "Tool calls"
   },
   "panel.git.empty": {
     "placeholders": {},
@@ -1927,7 +1927,7 @@
         436
       ]
     ],
-    "translation": "panel.git.empty"
+    "translation": "No Git changes"
   },
   "panel.git.view_content": {
     "placeholders": {},
@@ -1938,7 +1938,7 @@
         269
       ]
     ],
-    "translation": "panel.git.view_content"
+    "translation": "Content"
   },
   "panel.git.view_diff": {
     "placeholders": {},
@@ -1949,7 +1949,7 @@
         265
       ]
     ],
-    "translation": "panel.git.view_diff"
+    "translation": "Diff"
   },
   "panel.review.empty": {
     "placeholders": {},
@@ -1960,7 +1960,7 @@
         435
       ]
     ],
-    "translation": "panel.review.empty"
+    "translation": "No items to review"
   },
   "panel.tab.browser": {
     "placeholders": {},
@@ -1971,7 +1971,7 @@
         59
       ]
     ],
-    "translation": "panel.tab.browser"
+    "translation": "Browser"
   },
   "panel.tab.files_tools": {
     "placeholders": {},
@@ -1982,7 +1982,7 @@
         52
       ]
     ],
-    "translation": "panel.tab.files_tools"
+    "translation": "Files / Tools"
   },
   "panel.tab.git": {
     "placeholders": {},
@@ -1993,7 +1993,7 @@
         47
       ]
     ],
-    "translation": "panel.tab.git"
+    "translation": "Git"
   },
   "panel.tab.review": {
     "placeholders": {},
@@ -2004,7 +2004,7 @@
         57
       ]
     ],
-    "translation": "panel.tab.review"
+    "translation": "Review"
   },
   "panel.todo.collapsed_title": {
     "placeholders": {},
@@ -2698,7 +2698,7 @@
         554
       ]
     ],
-    "translation": "session.empty_state.description"
+    "translation": "Start a new chat to begin the conversation"
   },
   "session.menu.copy_session_path": {
     "placeholders": {},
@@ -2888,7 +2888,7 @@
         313
       ]
     ],
-    "translation": "settings.disallowedTools.label"
+    "translation": "Disabled tools"
   },
   "settings.env.add": {
     "placeholders": {},
@@ -2899,7 +2899,7 @@
         139
       ]
     ],
-    "translation": "settings.env.add"
+    "translation": "Add environment variable"
   },
   "settings.env.label": {
     "message": "Environment Variables",
@@ -2922,7 +2922,7 @@
         287
       ]
     ],
-    "translation": "settings.forkSession"
+    "translation": "Fork session"
   },
   "settings.input.enter_key_behavior": {
     "placeholders": {},
@@ -3138,7 +3138,7 @@
         296
       ]
     ],
-    "translation": "settings.model.label"
+    "translation": "Model"
   },
   "settings.notifications": {
     "placeholders": {},
@@ -3663,7 +3663,7 @@
         74
       ]
     ],
-    "translation": "sidebar.show.task.list"
+    "translation": "Show task list"
   },
   "system.info.tab.title": {
     "placeholders": {},

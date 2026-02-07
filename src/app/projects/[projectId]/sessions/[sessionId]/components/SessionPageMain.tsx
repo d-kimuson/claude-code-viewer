@@ -3,7 +3,6 @@ import { useMutation } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useAtomValue } from "jotai";
 import {
-  CoinsIcon,
   CopyIcon,
   DownloadIcon,
   EllipsisVertical as EllipsisVerticalIcon,
@@ -611,16 +610,10 @@ const SessionPageMainContent: FC<
                                 </Badge>
                               )}
                             </div>
-                            <div className="flex items-center gap-3 text-[10px] text-muted-foreground">
+                            <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
                               <div className="flex items-center gap-1">
                                 <MessageSquareIcon className="w-2.5 h-2.5" />
                                 <span>{session.meta.messageCount}</span>
-                              </div>
-                              <div className="flex items-center gap-1">
-                                <CoinsIcon className="w-2.5 h-2.5" />
-                                <span>
-                                  ${session.meta.cost.totalUsd.toFixed(2)}
-                                </span>
                               </div>
                               {session.lastModifiedAt && (
                                 <span>

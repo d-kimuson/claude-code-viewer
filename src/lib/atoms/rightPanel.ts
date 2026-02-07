@@ -4,8 +4,8 @@ import type { RightPanelTab } from "@/lib/types/rightPanel";
 
 export const rightPanelOpenAtom = atom(false);
 export const rightPanelActiveTabAtom = atom<RightPanelTab>("git");
-export const rightPanelWidthAtom = atom(50);
-export const rightPanelTodoOpenAtom = atom(false);
+export const rightPanelWidthAtom = atom(28);
+export const rightPanelTodoOpenAtom = atom(true);
 
 export const rightPanelBrowserUrlAtom = atom<string | null>(null);
 export const rightPanelCurrentUrlAtom = atom<string | null>(null);

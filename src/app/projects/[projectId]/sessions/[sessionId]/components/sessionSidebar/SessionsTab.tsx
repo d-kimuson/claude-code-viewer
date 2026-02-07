@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/react";
 import { Link, useSearch } from "@tanstack/react-router";
 import { useAtomValue } from "jotai";
-import { CoinsIcon, MessageSquareIcon, PlusIcon } from "lucide-react";
+import { MessageSquareIcon, PlusIcon } from "lucide-react";
 import type { FC } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -150,19 +150,15 @@ export const SessionsTab: FC<{
                     </Badge>
                   )}
                 </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3 text-xs text-sidebar-foreground/70">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2 text-xs text-sidebar-foreground/70 min-w-0">
                     <div className="flex items-center gap-1">
                       <MessageSquareIcon className="w-3 h-3" />
                       <span>{session.meta.messageCount}</span>
                     </div>
-                    <div className="flex items-center gap-1">
-                      <CoinsIcon className="w-3 h-3" />
-                      <span>${session.meta.cost.totalUsd.toFixed(2)}</span>
-                    </div>
                   </div>
                   {session.lastModifiedAt && (
-                    <span className="text-xs text-sidebar-foreground/60">
+                    <span className="text-xs text-sidebar-foreground/60 shrink-0">
                       {formatLocaleDate(session.lastModifiedAt, {
                         locale: config.locale,
                         target: "time",

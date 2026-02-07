@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.6.0-beta.1
+
+### &nbsp;&nbsp;&nbsp;Release Notes
+
+- New terminal panel for running shell commands within the UI.
+- Files & tools inspector: edited file list (with content preview) plus tool call history.
+- Message sending now supports explicit Claude Code options (model, prompt, etc.).
+- Session list clarity improvements: running/paused status and cleaner titles.
+
+### &nbsp;&nbsp;&nbsp;Fixes & Improvements
+
+- Stable multi-file viewing in the file content dialog.
+- Better handling of result-only sessions and local command outputs.
+- UI rendering and resize performance improvements.
+
 ## 0.5.9
 
 ### &nbsp;&nbsp;&nbsp;Features

@@ -17,3 +17,20 @@ test("disables terminal when CCV_TERMINAL_DISABLED is enabled", async () => {
 
   expect(Either.isLeft(result)).toBe(true);
 });
+
+test("disables terminal when --terminal-disabled is enabled", async () => {
+  const program = Effect.gen(function* () {
+    const terminalService = yield* TerminalService;
+    return yield* Effect.either(terminalService.getOrCreateSession(undefined));
+  }).pipe(
+    Effect.provide(TerminalService.Live),
+    Effect.provide(
+      testPlatformLayer({ ccvOptions: { terminalDisabled: true } }),
+    ),
+    Effect.scoped,
+  );
+
+  const result = await Effect.runPromise(program);
+
+  expect(Either.isLeft(result)).toBe(true);
+});

@@ -10,7 +10,6 @@ export const envSchema = z.object({
   PATH: z.string().optional(),
   SHELL: z.string().optional(),
   CCV_TERMINAL_SHELL: z.string().optional(),
-  CCV_TERMINAL_CWD: z.string().optional(),
   CCV_TERMINAL_UNRESTRICTED: z.string().optional(),
   CCV_TERMINAL_DISABLED: z.string().optional(),
 });

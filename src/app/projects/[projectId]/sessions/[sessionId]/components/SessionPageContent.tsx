@@ -110,7 +110,7 @@ export const SessionPageContent: FC<{
         </div>
 
         {/* Bottom Panel */}
-        <BottomPanel />
+        <BottomPanel cwd={projectPath} />
       </div>
     </AppLayout>
   );

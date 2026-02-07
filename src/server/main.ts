@@ -20,6 +20,15 @@ program
   .option("-P, --password <password>", "password to authenticate")
   .option("-e, --executable <executable>", "path to claude code executable")
   .option("--claude-dir <claude-dir>", "path to claude directory")
+  .option(
+    "--terminal-disabled",
+    "disable the in-app terminal panel when enabled",
+  )
+  .option("--terminal-shell <path>", "shell executable for terminal sessions")
+  .option(
+    "--terminal-unrestricted",
+    "disable restricted shell flags for bash sessions",
+  )
   .action(async (options: CliOptions) => {
     // Check for deprecated environment variables and show migration guide
     await Effect.runPromise(checkDeprecatedEnvs);

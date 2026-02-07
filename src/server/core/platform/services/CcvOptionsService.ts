@@ -7,6 +7,9 @@ export type CliOptions = {
   password?: string | undefined;
   executable?: string | undefined;
   claudeDir?: string | undefined;
+  terminalDisabled?: boolean | undefined;
+  terminalShell?: string | undefined;
+  terminalUnrestricted?: boolean | undefined;
 };
 
 export type CcvOptions = {
@@ -15,11 +18,19 @@ export type CcvOptions = {
   password?: string | undefined;
   executable?: string | undefined;
   claudeDir?: string | undefined;
+  terminalDisabled?: boolean | undefined;
+  terminalShell?: string | undefined;
+  terminalUnrestricted?: boolean | undefined;
 };
 
 const getOptionalEnv = (key: string): string | undefined => {
   // biome-ignore lint/style/noProcessEnv: allow only here
   return process.env[key] ?? undefined;
+};
+
+const isFlagEnabled = (value: string | undefined) => {
+  if (!value) return false;
+  return value === "1" || value.toLowerCase() === "true";
 };
 
 const LayerImpl = Effect.gen(function* () {
@@ -43,6 +54,20 @@ const LayerImpl = Effect.gen(function* () {
             undefined,
           claudeDir:
             cliOptions.claudeDir ?? getOptionalEnv("CCV_GLOBAL_CLAUDE_DIR"),
+          terminalDisabled:
+            cliOptions.terminalDisabled ??
+            (isFlagEnabled(getOptionalEnv("CCV_TERMINAL_DISABLED"))
+              ? true
+              : undefined),
+          terminalShell:
+            cliOptions.terminalShell ??
+            getOptionalEnv("CCV_TERMINAL_SHELL") ??
+            undefined,
+          terminalUnrestricted:
+            cliOptions.terminalUnrestricted ??
+            (isFlagEnabled(getOptionalEnv("CCV_TERMINAL_UNRESTRICTED"))
+              ? true
+              : undefined),
         };
       });
     });

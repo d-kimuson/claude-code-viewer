@@ -9,7 +9,11 @@ import {
 } from "@/hooks/useLayoutPanels";
 import { TerminalPanel } from "./TerminalPanel";
 
-export const BottomPanel: FC = () => {
+type BottomPanelProps = {
+  cwd?: string;
+};
+
+export const BottomPanel: FC<BottomPanelProps> = ({ cwd }) => {
   const { isBottomPanelOpen, bottomPanelHeight } = useBottomPanelState();
   const { setIsBottomPanelOpen, setBottomPanelHeight } =
     useBottomPanelActions();
@@ -95,7 +99,7 @@ export const BottomPanel: FC = () => {
 
       {/* Content */}
       <div className="flex-1 min-h-0 bg-muted/5">
-        <TerminalPanel resetToken={terminalResetToken} />
+        <TerminalPanel resetToken={terminalResetToken} cwd={cwd} />
       </div>
     </div>
   );

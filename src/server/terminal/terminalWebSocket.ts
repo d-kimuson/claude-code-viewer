@@ -105,8 +105,10 @@ export const setupTerminalWebSocket = (server: ServerType) =>
         sessionIdParam && sessionIdParam.length > 0
           ? sessionIdParam
           : undefined;
+      const cwdParam = url.searchParams.get("cwd");
+      const cwd = cwdParam && cwdParam.length > 0 ? cwdParam : undefined;
 
-      runPromise(terminalService.getOrCreateSession(requestedSessionId))
+      runPromise(terminalService.getOrCreateSession(requestedSessionId, cwd))
         .then((session) => {
           sendJson(ws, {
             type: "hello",

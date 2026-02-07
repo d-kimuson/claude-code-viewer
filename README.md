@@ -32,6 +32,10 @@ Claude Code Viewer is a web-based Claude Code client focused on **comprehensive 
 | Review Changes | Built-in Git Diff Viewer lets you review all changes directly within Claude Code Viewer |
 | Commit Changes | Execute Git commits directly from the web interface within the Git Diff Viewer |
 | Push Changes | Push committed changes directly from the Git Diff Viewer. Supports both separate push operations and combined commit-and-push workflows for streamlined deployment |
+| Branch Switcher | Switch local Git branches directly from the Git tab (with search and status indicators) |
+| Files & Tools Inspector | Right panel tab that summarizes edited files, groups them by project, and lists tool invocations with filters and quick file preview |
+| Todo Viewer | Extracts the latest `TodoWrite` items from sessions and displays them in collapsible checklists |
+| Terminal Panel | Bottom panel terminal over WebSocket for running shell commands without leaving the UI |
 | MCP Server Viewer | View MCP server configurations directly in the session sidebar. Lists all configured servers with their names and commands, with real-time reload capability |
 | System Information | Monitor Claude Code and Claude Code Viewer versions, feature compatibility, and system status |
 | Multi-language Support | Full internationalization support with English, Japanese, and Simplified Chinese language options |
@@ -155,6 +159,9 @@ Claude Code Viewer can be configured using command-line options or environment v
 | `-P, --password <password>` | `CCV_PASSWORD` | Password for authentication. When set, enables password-based authentication to protect access to Claude Code Viewer. All `/api` routes (except login, logout, check, config, and version endpoints) require authentication. If not set, authentication is disabled and the application is publicly accessible | (none) |
 | `-e, --executable <executable>` | `CCV_CC_EXECUTABLE_PATH` | Path to Claude Code installation. If not set, uses system PATH installation, or falls back to bundled version from dependencies | (auto-detect) |
 | `--claude-dir <claude-dir>` | `CCV_GLOBAL_CLAUDE_DIR` | Path to Claude directory where session logs are stored | `~/.claude` |
+| `--terminal-disabled` | `CCV_TERMINAL_DISABLED` | Disable the in-app terminal panel when set to `1`/`true` (env) or when the flag is present (CLI) | (unset) |
+| `--terminal-shell <path>` | `CCV_TERMINAL_SHELL` | Shell executable for terminal sessions (e.g. `/bin/zsh`) | (auto-detect) |
+| `--terminal-unrestricted` | `CCV_TERMINAL_UNRESTRICTED` | When set to `1` (env) or when the flag is present (CLI), disables the restricted shell flags for bash | (unset) |
 
 **Breaking Change**: Environment variable names have been changed. If you're using environment variables, update them as follows:
 - `CLAUDE_CODE_VIEWER_AUTH_PASSWORD` → `CCV_PASSWORD`

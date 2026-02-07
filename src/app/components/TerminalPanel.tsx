@@ -43,8 +43,13 @@ const parseServerMessage = (payload: string): ServerMessage | undefined => {
   return undefined;
 };
 
-const getStoredSessionId = () => {
-  const value = localStorage.getItem(SESSION_ID_KEY);
+const getSessionIdStorageKey = (cwd: string | undefined) => {
+  if (!cwd) return SESSION_ID_KEY;
+  return `${SESSION_ID_KEY}:${cwd}`;
+};
+
+const getStoredSessionId = (cwd: string | undefined) => {
+  const value = localStorage.getItem(getSessionIdStorageKey(cwd));
   return value && value.length > 0 ? value : undefined;
 };
 
@@ -60,26 +65,37 @@ const storeLastSeq = (sessionId: string, seq: number) => {
   localStorage.setItem(`${LAST_SEQ_PREFIX}:${sessionId}`, String(seq));
 };
 
-const buildWebSocketUrl = (sessionId: string | undefined) => {
+const buildWebSocketUrl = (
+  sessionId: string | undefined,
+  cwd: string | undefined,
+) => {
   const protocol = window.location.protocol === "https:" ? "wss" : "ws";
   const host = window.location.host;
-  const encoded = sessionId ? encodeURIComponent(sessionId) : "";
-  return `${protocol}://${host}/ws/terminal?sessionId=${encoded}`;
+  const searchParams = new URLSearchParams();
+  if (sessionId) {
+    searchParams.set("sessionId", sessionId);
+  }
+  if (cwd) {
+    searchParams.set("cwd", cwd);
+  }
+  const query = searchParams.toString();
+  return `${protocol}://${host}/ws/terminal${query ? `?${query}` : ""}`;
 };
 
 type TerminalPanelProps = {
   resetToken?: number;
+  cwd?: string;
 };
 
-const clearStoredSession = () => {
-  const storedSessionId = localStorage.getItem(SESSION_ID_KEY);
+const clearStoredSession = (cwd: string | undefined) => {
+  const storedSessionId = localStorage.getItem(getSessionIdStorageKey(cwd));
   if (storedSessionId) {
     localStorage.removeItem(`${LAST_SEQ_PREFIX}:${storedSessionId}`);
   }
-  localStorage.removeItem(SESSION_ID_KEY);
+  localStorage.removeItem(getSessionIdStorageKey(cwd));
 };
 
-export const TerminalPanel = ({ resetToken = 0 }: TerminalPanelProps) => {
+export const TerminalPanel = ({ resetToken = 0, cwd }: TerminalPanelProps) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const terminalRef = useRef<Terminal | null>(null);
   const fitRef = useRef<FitAddon | null>(null);
@@ -92,7 +108,7 @@ export const TerminalPanel = ({ resetToken = 0 }: TerminalPanelProps) => {
     if (!container) return;
 
     if (resetToken > 0) {
-      clearStoredSession();
+      clearStoredSession(cwd);
     }
 
     const term = new Terminal({
@@ -108,12 +124,12 @@ export const TerminalPanel = ({ resetToken = 0 }: TerminalPanelProps) => {
     terminalRef.current = term;
     fitRef.current = fit;
 
-    const storedSessionId = getStoredSessionId();
+    const storedSessionId = getStoredSessionId(cwd);
     const storedLastSeq = getStoredLastSeq(storedSessionId);
     sessionIdRef.current = storedSessionId;
     lastSeqRef.current = storedLastSeq;
 
-    const socket = new WebSocket(buildWebSocketUrl(storedSessionId));
+    const socket = new WebSocket(buildWebSocketUrl(storedSessionId, cwd));
     socketRef.current = socket;
 
     const sendJson = (payload: object) => {
@@ -136,7 +152,7 @@ export const TerminalPanel = ({ resetToken = 0 }: TerminalPanelProps) => {
       if (!message) return;
       if (message.type === "hello") {
         sessionIdRef.current = message.sessionId;
-        localStorage.setItem(SESSION_ID_KEY, message.sessionId);
+        localStorage.setItem(getSessionIdStorageKey(cwd), message.sessionId);
         return;
       }
       if (message.type === "output" || message.type === "snapshot") {
@@ -186,7 +202,7 @@ export const TerminalPanel = ({ resetToken = 0 }: TerminalPanelProps) => {
       socket.close();
       term.dispose();
     };
-  }, [resetToken]);
+  }, [resetToken, cwd]);
 
   return <div ref={containerRef} className="h-full w-full" />;
 };

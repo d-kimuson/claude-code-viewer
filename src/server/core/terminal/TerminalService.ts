@@ -3,6 +3,7 @@ import type { IPty } from "node-pty";
 import { ulid } from "ulid";
 import type WebSocket from "ws";
 import type { InferEffect } from "../../lib/effect/types";
+import { CcvOptionsService } from "../platform/services/CcvOptionsService";
 import { EnvService } from "../platform/services/EnvService";
 
 type PtyProcess = IPty;
@@ -33,14 +34,14 @@ const MAX_SESSIONS = 10;
 const selectShell = (
   shellEnv: string | undefined,
   fallbackShell: string | undefined,
-  unrestrictedFlag: string | undefined,
+  unrestrictedFlag: boolean | undefined,
 ) => {
   if (process.platform === "win32") {
     return { command: "powershell.exe", args: ["-NoLogo"] };
   }
   const command = shellEnv ?? fallbackShell ?? "bash";
   const args: string[] = [];
-  if (unrestrictedFlag !== "1" && command.toLowerCase().includes("bash")) {
+  if (!unrestrictedFlag && command.toLowerCase().includes("bash")) {
     args.push("--noprofile", "--norc", "--restricted");
   }
   return { command, args };
@@ -48,17 +49,18 @@ const selectShell = (
 
 type NodePtyModule = typeof import("node-pty");
 
+const isFlagEnabled = (value: string | undefined) => {
+  if (!value) return false;
+  return value === "1" || value.toLowerCase() === "true";
+};
+
 const LayerImpl = Effect.gen(function* () {
   const envService = yield* EnvService;
+  const ccvOptionsService = yield* CcvOptionsService;
   const sessions = new Map<string, TerminalSession>();
 
-  const terminalDisabledEnv = yield* envService.getEnv("CCV_TERMINAL_DISABLED");
-  const terminalDisabled =
-    terminalDisabledEnv === "1" ||
-    terminalDisabledEnv?.toLowerCase() === "true";
-
   const disabledService = (reason: string) => {
-    const getOrCreateSession = () =>
+    const getOrCreateSession = (_sessionId?: string, _cwdOverride?: string) =>
       Effect.fail(new Error(`Terminal support is unavailable (${reason}).`));
     return {
       getOrCreateSession,
@@ -70,10 +72,6 @@ const LayerImpl = Effect.gen(function* () {
       snapshotSince: () => Effect.succeed(undefined),
     };
   };
-
-  if (terminalDisabled) {
-    return disabledService("CCV_TERMINAL_DISABLED is enabled");
-  }
 
   const nodePty: NodePtyModule | null = yield* Effect.tryPromise({
     try: () => import("node-pty"),
@@ -155,7 +153,7 @@ const LayerImpl = Effect.gen(function* () {
       cwd: string;
       shell: string | undefined;
       fallbackShell: string | undefined;
-      unrestrictedFlag: string | undefined;
+      unrestrictedFlag: boolean | undefined;
       env: Record<string, string>;
     },
   ) => {
@@ -213,15 +211,39 @@ const LayerImpl = Effect.gen(function* () {
     return sessions.get(sessionId);
   };
 
-  const getOrCreateSession = (sessionId: string | undefined) =>
+  const getOrCreateSession = (
+    sessionId: string | undefined,
+    cwdOverride?: string,
+  ) =>
     Effect.gen(function* () {
-      const cwd =
-        (yield* envService.getEnv("CCV_TERMINAL_CWD")) ?? process.cwd();
-      const shell = yield* envService.getEnv("CCV_TERMINAL_SHELL");
+      const terminalDisabledEnv = yield* envService.getEnv(
+        "CCV_TERMINAL_DISABLED",
+      );
+      const terminalDisabledOption =
+        yield* ccvOptionsService.getCcvOptions("terminalDisabled");
+      const terminalDisabled =
+        terminalDisabledOption ?? isFlagEnabled(terminalDisabledEnv);
+      if (terminalDisabled) {
+        return yield* Effect.fail(
+          new Error(
+            "Terminal support is unavailable (CCV_TERMINAL_DISABLED is enabled).",
+          ),
+        );
+      }
+      const cwd = cwdOverride ?? process.cwd();
+      const terminalShellOption =
+        yield* ccvOptionsService.getCcvOptions("terminalShell");
+      const shell =
+        terminalShellOption ?? (yield* envService.getEnv("CCV_TERMINAL_SHELL"));
       const fallbackShell = yield* envService.getEnv("SHELL");
-      const unrestrictedFlag = yield* envService.getEnv(
+      const terminalUnrestrictedOption = yield* ccvOptionsService.getCcvOptions(
+        "terminalUnrestricted",
+      );
+      const terminalUnrestrictedEnv = yield* envService.getEnv(
         "CCV_TERMINAL_UNRESTRICTED",
       );
+      const unrestrictedFlag =
+        terminalUnrestrictedOption ?? isFlagEnabled(terminalUnrestrictedEnv);
       const env = yield* envService.getAllEnv();
       const existing = getSession(sessionId);
       if (existing) {

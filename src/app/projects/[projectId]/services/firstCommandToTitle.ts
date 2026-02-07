@@ -14,9 +14,9 @@ export const firstUserMessageToTitle = (firstCommand: ParsedUserMessage) => {
       }
       return `${firstCommand.commandName} ${firstCommand.commandArgs}`;
     case "local-command":
-      return stripLocalCommandCaveat(firstCommand.stdout) || "Local Command";
+      return stripLocalCommandCaveat(firstCommand.stdout);
     case "text":
-      return stripLocalCommandCaveat(firstCommand.content) || "Local Command";
+      return stripLocalCommandCaveat(firstCommand.content);
     default:
       firstCommand satisfies never;
       throw new Error("Invalid first command");

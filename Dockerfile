@@ -18,7 +18,7 @@ RUN --mount=type=cache,id=pnpm-store,target=/root/.pnpm-store \
 
 FROM base AS runner
 WORKDIR /app
-ENV NODE_ENV=production \
+ENV CCV_ENV=production \
     PORT=3400 \
     HOSTNAME=0.0.0.0 \
     PATH="/app/node_modules/.bin:${PATH}"

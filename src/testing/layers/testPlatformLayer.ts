@@ -45,8 +45,8 @@ export const testPlatformLayer = (overrides?: {
     getEnv: <Key extends keyof EnvSchema>(key: Key) =>
       Effect.sync(() => {
         switch (key) {
-          case "NODE_ENV":
-            return overrides?.env?.NODE_ENV ?? "development";
+          case "CCV_ENV":
+            return overrides?.env?.CCV_ENV ?? "development";
           case "NEXT_PHASE":
             return overrides?.env?.NEXT_PHASE ?? "phase-test";
           default:

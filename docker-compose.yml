@@ -2,7 +2,7 @@ services:
   app:
     build: .
     environment:
-      NODE_ENV: production
+      CCV_ENV: production
       PORT: 3400
       CCV_PASSWORD: "${CCV_PASSWORD}"
       ANTHROPIC_BASE_URL: "${ANTHROPIC_BASE_URL}"

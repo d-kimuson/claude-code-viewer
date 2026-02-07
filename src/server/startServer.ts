@@ -19,6 +19,7 @@ import { FeatureFlagController } from "./core/feature-flag/presentation/FeatureF
 import { FileSystemController } from "./core/file-system/presentation/FileSystemController";
 import { GitController } from "./core/git/presentation/GitController";
 import { GitService } from "./core/git/services/GitService";
+import { isDevelopmentEnv } from "./core/platform/ccvEnv";
 import type { CliOptions } from "./core/platform/services/CcvOptionsService";
 import { ProjectRepository } from "./core/project/infrastructure/ProjectRepository";
 import { ProjectController } from "./core/project/presentation/ProjectController";
@@ -45,7 +46,7 @@ import { setupTerminalWebSocket } from "./terminal/terminalWebSocket";
 
 export const startServer = async (options: CliOptions) => {
   // biome-ignore lint/style/noProcessEnv: allow only here
-  const isDevelopment = process.env.NODE_ENV === "development";
+  const isDevelopment = isDevelopmentEnv(process.env.CCV_ENV);
 
   if (!isDevelopment) {
     const staticPath = resolve(import.meta.dirname, "static");

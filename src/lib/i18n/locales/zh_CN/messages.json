@@ -1650,35 +1650,13 @@
     ],
     "translation": "例如: claude-sonnet-4-5-20250929"
   },
-  "layout.bottom_panel.coming_soon.description": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/app/components/BottomPanel.tsx",
-        131
-      ]
-    ],
-    "translation": "在应用内执行命令并直接查看输出"
-  },
-  "layout.bottom_panel.coming_soon.title": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/app/components/BottomPanel.tsx",
-        128
-      ]
-    ],
-    "translation": "终端面板"
-  },
   "layout.bottom_panel.title": {
     "placeholders": {},
     "comments": [],
     "origin": [
       [
         "src/app/components/BottomPanel.tsx",
-        102
+        103
       ]
     ],
     "translation": "终端"

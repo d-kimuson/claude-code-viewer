@@ -43,7 +43,6 @@ export const SessionPageMainWrapper: FC<{
         <SessionPageMain
           projectId={projectId}
           sessionId={sessionId}
-          setIsMobileSidebarOpen={setIsMobileSidebarOpen}
           projectPath={projectPath}
           projectName={project.meta.projectName ?? "Untitled Project"}
         />

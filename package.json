@@ -74,6 +74,8 @@
     "@tanstack/react-query": "5.90.20",
     "@tanstack/react-router": "1.156.0",
     "@tanstack/react-router-devtools": "1.156.0",
+    "@xterm/addon-fit": "0.10.0",
+    "@xterm/xterm": "5.5.0",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
     "cmdk": "^1.1.1",
@@ -98,6 +100,8 @@
     "sonner": "2.0.7",
     "tailwind-merge": "3.4.0",
     "ulid": "3.0.2",
+    "node-pty": "1.1.0-beta34",
+    "ws": "8.18.3",
     "zod": "4.3.6"
   },
   "devDependencies": {
@@ -115,6 +119,7 @@
     "@types/react": "19.2.9",
     "@types/react-dom": "19.2.3",
     "@types/react-syntax-highlighter": "15.5.13",
+    "@types/ws": "8.18.0",
     "@vitejs/plugin-react-swc": "4.2.2",
     "dotenv": "17.2.3",
     "esbuild": "0.27.2",

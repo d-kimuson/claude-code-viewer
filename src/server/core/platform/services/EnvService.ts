@@ -38,8 +38,22 @@ const LayerImpl = Effect.gen(function* () {
     });
   };
 
+  const getAllEnv = (): Effect.Effect<Record<string, string>> => {
+    return Effect.sync(() => {
+      const entries: Array<[string, string]> = [];
+      // biome-ignore lint/style/noProcessEnv: centralized env access
+      for (const [key, value] of Object.entries(process.env)) {
+        if (typeof value === "string") {
+          entries.push([key, value]);
+        }
+      }
+      return Object.fromEntries(entries);
+    });
+  };
+
   return {
     getEnv,
+    getAllEnv,
   };
 });
 

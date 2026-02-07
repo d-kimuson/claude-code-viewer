@@ -1,9 +1,9 @@
 import { Trans } from "@lingui/react";
-import { RocketIcon, XIcon } from "lucide-react";
+import { RocketIcon, RotateCcwIcon, XIcon } from "lucide-react";
 import type { FC } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLayoutPanels } from "@/hooks/useLayoutPanels";
-import { cn } from "@/lib/utils";
+import { TerminalPanel } from "./TerminalPanel";
 
 export const BottomPanel: FC = () => {
   const {
@@ -15,6 +15,7 @@ export const BottomPanel: FC = () => {
 
   const [isResizing, setIsResizing] = useState(false);
   const isResizingRef = useRef(false);
+  const [terminalResetToken, setTerminalResetToken] = useState(0);
 
   const stopResizing = useCallback(() => {
     isResizingRef.current = false;
@@ -102,40 +103,30 @@ export const BottomPanel: FC = () => {
             <Trans id="layout.bottom_panel.title" />
           </span>
         </div>
-        <button
-          type="button"
-          onClick={() => setIsBottomPanelOpen(false)}
-          className="w-5 h-5 flex items-center justify-center rounded hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
-          aria-label="Close bottom panel"
-        >
-          <XIcon className="w-3 h-3" />
-        </button>
+        <div className="flex items-center gap-1.5">
+          <button
+            type="button"
+            onClick={() => setTerminalResetToken((value) => value + 1)}
+            className="h-6 px-2 text-[11px] rounded border border-border/60 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors flex items-center gap-1"
+            aria-label="Start a new terminal session"
+          >
+            <RotateCcwIcon className="w-3 h-3" />
+            New session
+          </button>
+          <button
+            type="button"
+            onClick={() => setIsBottomPanelOpen(false)}
+            className="w-5 h-5 flex items-center justify-center rounded hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
+            aria-label="Close bottom panel"
+          >
+            <XIcon className="w-3 h-3" />
+          </button>
+        </div>
       </div>
 
-      {/* Content - Coming Soon placeholder */}
-      <div className="flex-1 flex items-center justify-center min-h-0 overflow-auto bg-muted/5">
-        <div className="text-center space-y-3 px-8">
-          <div
-            className={cn(
-              "w-16 h-16 mx-auto rounded-2xl flex items-center justify-center",
-              "bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/30 dark:to-purple-900/30",
-            )}
-          >
-            <RocketIcon className="w-8 h-8 text-indigo-600 dark:text-indigo-400" />
-          </div>
-          <div className="space-y-1">
-            <p className="text-sm font-medium text-foreground">
-              <Trans id="layout.bottom_panel.coming_soon.title" />
-            </p>
-            <p className="text-xs text-muted-foreground">
-              <Trans id="layout.bottom_panel.coming_soon.description" />
-            </p>
-          </div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 text-xs font-medium">
-            <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
-            Coming Soon
-          </div>
-        </div>
+      {/* Content */}
+      <div className="flex-1 min-h-0 bg-muted/5">
+        <TerminalPanel resetToken={terminalResetToken} />
       </div>
     </div>
   );

@@ -48,6 +48,29 @@ describe("auth required middleware", () => {
     expect(authorized.status).toBe(200);
   });
 
+  it("accepts bearer token authorization when password is configured", async () => {
+    const { app } = await Effect.runPromise(
+      createTestApp("secret").pipe(
+        Effect.provide(AuthMiddleware.Live),
+        Effect.provide(CcvOptionsService.Live),
+      ),
+    );
+
+    const authorized = await app.request("/api/projects", {
+      headers: {
+        Authorization: "Bearer secret",
+      },
+    });
+    expect(authorized.status).toBe(200);
+
+    const unauthorized = await app.request("/api/projects", {
+      headers: {
+        Authorization: "Bearer wrong",
+      },
+    });
+    expect(unauthorized.status).toBe(401);
+  });
+
   it("allows access to routes defined before authRequired", async () => {
     const { app } = await Effect.runPromise(
       createTestApp("secret").pipe(

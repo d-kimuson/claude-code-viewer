@@ -11,9 +11,19 @@ const generateSessionToken = (password: string | undefined): string => {
   return Buffer.from(`ccv-session:${password}`).toString("base64");
 };
 
+const getBearerToken = (authorization: string | undefined) => {
+  if (!authorization) return undefined;
+  const [scheme, token] = authorization.split(" ");
+  if (!scheme || !token) return undefined;
+  if (scheme.toLowerCase() !== "bearer") return undefined;
+  const trimmedToken = token.trim();
+  return trimmedToken.length > 0 ? trimmedToken : undefined;
+};
+
 const createAuthRequiredMiddleware = (
   authEnabled: boolean,
   validSessionToken: string,
+  authPassword: string | undefined,
 ) => {
   return createMiddleware<HonoContext>(async (c, next) => {
     // Skip auth for non-API routes (let frontend handle auth state)
@@ -27,8 +37,12 @@ const createAuthRequiredMiddleware = (
     }
 
     const sessionToken = getCookie(c, "ccv-session");
+    const bearerToken = getBearerToken(c.req.header("Authorization"));
+    const cookieAuthorized = sessionToken === validSessionToken;
+    const bearerAuthorized =
+      authPassword !== undefined && bearerToken === authPassword;
 
-    if (!sessionToken || sessionToken !== validSessionToken) {
+    if (!cookieAuthorized && !bearerAuthorized) {
       return c.json({ error: "Unauthorized" }, 401);
     }
 
@@ -55,13 +69,14 @@ const LayerImpl = Effect.gen(function* () {
           return next();
         }
 
-        const { authEnabled, validSessionToken } =
+        const { authEnabled, validSessionToken, authPassword } =
           await runPromise(getAuthState);
 
-        return createAuthRequiredMiddleware(authEnabled, validSessionToken)(
-          c,
-          next,
-        );
+        return createAuthRequiredMiddleware(
+          authEnabled,
+          validSessionToken,
+          authPassword,
+        )(c, next);
       },
     );
 

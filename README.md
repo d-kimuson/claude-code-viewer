@@ -168,6 +168,15 @@ Claude Code Viewer can be configured using command-line options or environment v
 - `CLAUDE_CODE_VIEWER_CC_EXECUTABLE_PATH` → `CCV_CC_EXECUTABLE_PATH`
 - New environment variable added: `CCV_GLOBAL_CLAUDE_DIR` (previously the Claude directory path was hardcoded to `~/.claude`)
 
+### API Authentication
+
+When `--password` / `CCV_PASSWORD` is set, all `/api` routes (except auth-related endpoints) require authentication. You can authenticate in two ways:
+
+1. **Session cookie**: Use the `/api/auth/login` endpoint to set the `ccv-session` cookie, then include it in subsequent requests.
+2. **Authorization header**: Send `Authorization: Bearer <password>` on each request.
+
+If no password is configured, API authentication is disabled.
+
 ### User Settings
 
 Settings can be configured from the sidebar in Claude Code Viewer.

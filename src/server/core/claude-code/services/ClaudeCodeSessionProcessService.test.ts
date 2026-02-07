@@ -517,6 +517,49 @@ describe("ClaudeCodeSessionProcessService", () => {
   });
 
   describe("toPausedState", () => {
+    it("can transition from initialized to paused", async () => {
+      const program = Effect.gen(function* () {
+        const service = yield* ClaudeCodeSessionProcessService;
+
+        const sessionDef = createMockSessionProcessDef("process-1");
+        const turnDef = createMockNewTaskDef("task-1");
+
+        yield* service.startSessionProcess({
+          sessionDef,
+          turnDef,
+        });
+
+        yield* service.toNotInitializedState({
+          sessionProcessId: "process-1",
+          rawUserMessage: "test message",
+        });
+
+        yield* service.toInitializedState({
+          sessionProcessId: "process-1",
+          initContext: createMockInitContext("session-1"),
+        });
+
+        const resultMessage = createMockResultMessage("session-1");
+
+        const result = yield* service.toPausedState({
+          sessionProcessId: "process-1",
+          resultMessage,
+        });
+
+        return result;
+      });
+
+      const result = await Effect.runPromise(
+        program.pipe(
+          Effect.provide(ClaudeCodeSessionProcessService.Live),
+          Effect.provide(testPlatformLayer()),
+        ),
+      );
+
+      expect(result.sessionProcess.type).toBe("paused");
+      expect(result.sessionProcess.sessionId).toBe("session-1");
+    });
+
     it("can transition from file_created to paused", async () => {
       const program = Effect.gen(function* () {
         const service = yield* ClaudeCodeSessionProcessService;
@@ -616,7 +659,7 @@ describe("ClaudeCodeSessionProcessService", () => {
       }
     });
 
-    it("fails with IllegalStateChangeError when not in file_created state", async () => {
+    it("fails with IllegalStateChangeError when not in initialized or file_created state", async () => {
       const program = Effect.gen(function* () {
         const service = yield* ClaudeCodeSessionProcessService;
 

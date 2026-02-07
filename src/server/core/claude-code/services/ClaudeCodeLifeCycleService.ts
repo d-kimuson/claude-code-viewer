@@ -281,19 +281,21 @@ const LayerImpl = Effect.gen(function* () {
             );
           }
 
-          if (
-            message.type === "result" &&
-            processState.type === "file_created"
-          ) {
-            yield* sessionProcessService.toPausedState({
-              sessionProcessId: processState.def.sessionProcessId,
-              resultMessage: message,
-            });
+          if (message.type === "result") {
+            if (
+              processState.type === "file_created" ||
+              processState.type === "initialized"
+            ) {
+              yield* sessionProcessService.toPausedState({
+                sessionProcessId: processState.def.sessionProcessId,
+                resultMessage: message,
+              });
 
-            yield* eventBusService.emit("sessionChanged", {
-              projectId: processState.def.projectId,
-              sessionId: message.session_id,
-            });
+              yield* eventBusService.emit("sessionChanged", {
+                projectId: processState.def.projectId,
+                sessionId: message.session_id,
+              });
+            }
 
             return "continue" as const;
           }

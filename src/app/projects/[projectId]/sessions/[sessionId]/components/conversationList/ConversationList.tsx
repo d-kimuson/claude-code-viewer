@@ -10,6 +10,7 @@ import {
 import type { Conversation } from "@/lib/conversation-schema";
 import type { ToolResultContent } from "@/lib/conversation-schema/content/ToolResultContentSchema";
 import { calculateDuration } from "@/lib/date/formatDuration";
+import { parseUserMessage } from "@/server/core/claude-code/functions/parseUserMessage";
 import type { SchedulerJob } from "@/server/core/scheduler/schema";
 import type { ErrorJsonl } from "../../../../../../../server/core/types";
 import { useSidechain } from "../../hooks/useSidechain";
@@ -380,6 +381,12 @@ export const ConversationList: FC<ConversationListProps> = ({
               />
             );
 
+            const isLocalCommandOutput =
+              conversation.type === "user" &&
+              typeof conversation.message.content === "string" &&
+              parseUserMessage(conversation.message.content).kind ===
+                "local-command";
+
             const isSidechain =
               conversation.type !== "summary" &&
               conversation.type !== "file-history-snapshot" &&
@@ -391,6 +398,7 @@ export const ConversationList: FC<ConversationListProps> = ({
               <li
                 className={`w-full flex ${
                   isSidechain ||
+                  isLocalCommandOutput ||
                   conversation.type === "assistant" ||
                   conversation.type === "system" ||
                   conversation.type === "summary"

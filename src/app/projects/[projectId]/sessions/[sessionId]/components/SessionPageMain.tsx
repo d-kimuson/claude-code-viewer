@@ -36,6 +36,7 @@ import { useTaskNotifications } from "@/hooks/useTaskNotifications";
 import { honoClient } from "@/lib/api/client";
 import { formatLocaleDate } from "@/lib/date/formatLocaleDate";
 import { cn } from "@/lib/utils";
+import { parseUserMessage } from "@/server/core/claude-code/functions/parseUserMessage";
 import { useProject } from "../../../hooks/useProject";
 import { firstUserMessageToTitle } from "../../../services/firstCommandToTitle";
 import { useExportSession } from "../hooks/useExportSession";
@@ -105,6 +106,25 @@ const SessionPageMainContent: FC<
   const { config } = useConfig();
   const sessions = projectData.pages.flatMap((page) => page.sessions);
 
+  const hasLocalCommandOutput = useMemo(
+    () =>
+      conversations.some((conversation) => {
+        if (conversation.type !== "user") {
+          return false;
+        }
+
+        if (typeof conversation.message.content !== "string") {
+          return false;
+        }
+
+        return (
+          parseUserMessage(conversation.message.content).kind ===
+          "local-command"
+        );
+      }),
+    [conversations],
+  );
+
   const sortedSessions = useMemo(
     () =>
       [...sessions].sort((a, b) => {
@@ -148,7 +168,12 @@ const SessionPageMainContent: FC<
     return sessionProcess.getSessionProcess(sessionId);
   }, [sessionProcess, sessionId]);
 
-  useTaskNotifications(relatedSessionProcess?.status === "running");
+  const effectiveSessionStatus =
+    relatedSessionProcess?.status === "running" && hasLocalCommandOutput
+      ? "paused"
+      : relatedSessionProcess?.status;
+
+  useTaskNotifications(effectiveSessionStatus === "running");
 
   // Filter scheduler jobs related to this session
   const sessionScheduledJobs = useMemo(() => {
@@ -187,7 +212,7 @@ const SessionPageMainContent: FC<
   useEffect(() => {
     if (!isExistingSession) return;
     if (
-      relatedSessionProcess?.status === "running" &&
+      effectiveSessionStatus === "running" &&
       conversations.length !== previousConversationLength
     ) {
       setPreviousConversationLength(conversations.length);
@@ -202,7 +227,7 @@ const SessionPageMainContent: FC<
   }, [
     conversations,
     isExistingSession,
-    relatedSessionProcess?.status,
+    effectiveSessionStatus,
     previousConversationLength,
   ]);
 
@@ -504,7 +529,7 @@ const SessionPageMainContent: FC<
             </div>
 
             <div className="flex items-center gap-1 shrink-0">
-              {relatedSessionProcess?.status === "running" && (
+              {effectiveSessionStatus === "running" && (
                 <Badge
                   variant="secondary"
                   className="bg-green-500/10 text-green-700 dark:text-green-300 border-green-500/20 h-5 text-[10px] px-1.5"
@@ -513,7 +538,7 @@ const SessionPageMainContent: FC<
                   <Trans id="session.conversation.running" />
                 </Badge>
               )}
-              {relatedSessionProcess?.status === "paused" && (
+              {effectiveSessionStatus === "paused" && (
                 <Badge
                   variant="secondary"
                   className="bg-orange-500/10 text-orange-700 dark:text-orange-300 border-orange-500/20 h-5 text-[10px] px-1.5"
@@ -632,20 +657,19 @@ const SessionPageMainContent: FC<
                 )}
               </div>
             )}
-            {isExistingSession &&
-              relatedSessionProcess?.status === "running" && (
-                <div className="flex justify-start items-center py-8 animate-in fade-in duration-500">
-                  <div className="flex flex-col items-center gap-4">
-                    <div className="relative">
-                      <LoaderIcon className="w-8 h-8 animate-spin text-primary" />
-                      <div className="absolute inset-0 rounded-full bg-primary/20 animate-ping" />
-                    </div>
-                    <p className="text-sm text-muted-foreground font-medium animate-pulse">
-                      <Trans id="session.processing" />
-                    </p>
+            {isExistingSession && effectiveSessionStatus === "running" && (
+              <div className="flex justify-start items-center py-8 animate-in fade-in duration-500">
+                <div className="flex flex-col items-center gap-4">
+                  <div className="relative">
+                    <LoaderIcon className="w-8 h-8 animate-spin text-primary" />
+                    <div className="absolute inset-0 rounded-full bg-primary/20 animate-ping" />
                   </div>
+                  <p className="text-sm text-muted-foreground font-medium animate-pulse">
+                    <Trans id="session.processing" />
+                  </p>
                 </div>
-              )}
+              </div>
+            )}
           </main>
         </div>
 
@@ -667,7 +691,7 @@ const SessionPageMainContent: FC<
               projectId={projectId}
               sessionId={sessionId}
               sessionProcessId={relatedSessionProcess.id}
-              sessionProcessStatus={relatedSessionProcess.status}
+              sessionProcessStatus={effectiveSessionStatus}
             />
           ) : isExistingSession && sessionId ? (
             <ResumeChat projectId={projectId} sessionId={sessionId} />

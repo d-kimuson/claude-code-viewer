@@ -15,21 +15,20 @@ const createTestApp = (password?: string) =>
     });
 
     const authState = yield* AuthMiddleware;
+    const { validSessionToken } = yield* authState.getAuthState;
     const app = new Hono<HonoContext>();
 
-    app.use(authState.authMiddleware);
-
+    app.get("/api/auth/check", (c) => c.json({ ok: true }));
+    app.use(authState.authRequiredMiddleware);
     app.get("/api/projects", (c) => c.json({ ok: true }));
-    app.get("/api/config", (c) => c.json({ ok: true }));
-    app.put("/api/config", (c) => c.json({ ok: true }));
 
     return {
       app,
-      validSessionToken: authState.validSessionToken,
+      validSessionToken,
     };
   });
 
-describe("auth middleware", () => {
+describe("auth required middleware", () => {
   it("blocks protected APIs when password is configured", async () => {
     const { app, validSessionToken } = await Effect.runPromise(
       createTestApp("secret").pipe(
@@ -49,7 +48,7 @@ describe("auth middleware", () => {
     expect(authorized.status).toBe(200);
   });
 
-  it("allows public config GET but blocks config updates without auth", async () => {
+  it("allows access to routes defined before authRequired", async () => {
     const { app } = await Effect.runPromise(
       createTestApp("secret").pipe(
         Effect.provide(AuthMiddleware.Live),
@@ -57,11 +56,8 @@ describe("auth middleware", () => {
       ),
     );
 
-    const configGet = await app.request("/api/config");
-    expect(configGet.status).toBe(200);
-
-    const configUpdate = await app.request("/api/config", { method: "PUT" });
-    expect(configUpdate.status).toBe(401);
+    const response = await app.request("/api/auth/check");
+    expect(response.status).toBe(200);
   });
 
   it("allows API access when password is not configured", async () => {

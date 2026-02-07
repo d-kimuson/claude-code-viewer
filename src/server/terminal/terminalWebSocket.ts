@@ -73,7 +73,8 @@ const baseUrlForRequest = (req: IncomingMessage) => {
 export const setupTerminalWebSocket = (server: ServerType) =>
   Effect.gen(function* () {
     const terminalService = yield* TerminalService;
-    const { authEnabled, validSessionToken } = yield* AuthMiddleware;
+    const { getAuthState } = yield* AuthMiddleware;
+    const { authEnabled, validSessionToken } = yield* getAuthState;
     const runtime = yield* Effect.runtime<TerminalService>();
     const runPromise = Runtime.runPromise(runtime);
 

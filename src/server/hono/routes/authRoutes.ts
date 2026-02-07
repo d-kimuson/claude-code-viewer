@@ -7,8 +7,8 @@ import type { HonoContext } from "../app";
 import { AuthMiddleware } from "../middleware/auth.middleware";
 
 const authRoutes = Effect.gen(function* () {
-  const { validSessionToken, authEnabled, authPassword } =
-    yield* AuthMiddleware;
+  const { getAuthState } = yield* AuthMiddleware;
+  const { validSessionToken, authEnabled, authPassword } = yield* getAuthState;
 
   return new Hono<HonoContext>()
     .post(

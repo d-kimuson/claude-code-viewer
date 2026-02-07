@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const regExp = /<(?<tag>[^>]+)>(?<content>\s*[^<]*?\s*)<\/\k<tag>>/g;
+const regExp = /<(?<tag>[^>]+)>(?<content>[\s\S]*?)<\/\k<tag>>/g;
 
 const matchSchema = z.object({
   tag: z.string(),

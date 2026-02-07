@@ -52,6 +52,19 @@ pnpm test
 
 **TDD Workflow**: Write tests → Run tests → Implement → Verify → Quality checks
 
+### Default Verification Expectations
+
+When changes are made, run the following by default without asking:
+
+```bash
+pnpm typecheck
+pnpm fix
+pnpm vitest run --changed origin/main
+./scripts/lingui-check.sh
+```
+
+If any command fails, fix the issues proactively and report the outcome after resolving them.
+
 ## Key Directory Patterns
 
 - `src/server/hono/route.ts` - Hono API routes definition (all routes defined here)

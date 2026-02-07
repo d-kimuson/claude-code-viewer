@@ -140,7 +140,7 @@ The application reads Claude Code conversation logs from:
 
 ### Environment Variables
 
-**NODE_ENV Consideration**: If you have `NODE_ENV=development` set in your environment (from other projects or system configuration), the application may not work correctly. Either set `NODE_ENV=production` or leave it unset when running Claude Code Viewer.
+**CCV_ENV Consideration**: If you have `CCV_ENV=development` set in your environment, the application will start in development mode. For production use, set `CCV_ENV=production` or leave it unset.
 
 ## Configuration
 

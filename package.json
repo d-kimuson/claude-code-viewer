@@ -21,7 +21,7 @@
   "scripts": {
     "dev": "run-p 'dev:*'",
     "dev:frontend": "vite",
-    "dev:backend": "NODE_ENV=development tsx watch --env-file-if-exists=.env.local src/server/main.ts",
+    "dev:backend": "CCV_ENV=development tsx watch --env-file-if-exists=.env.local src/server/main.ts",
     "start": "node dist/main.js",
     "build": "./scripts/build.sh",
     "build:frontend": "vite build",

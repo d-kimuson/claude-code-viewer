@@ -22,6 +22,7 @@ export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
     setAuthState({
       authEnabled: authState.authEnabled,
       authenticated: authState.authenticated,
+      checked: true,
     });
   }, [authState, setAuthState]);
 

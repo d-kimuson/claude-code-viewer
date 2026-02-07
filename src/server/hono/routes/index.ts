@@ -34,7 +34,7 @@ export const routes = (app: HonoAppType, options: CliOptions) =>
     const userConfigService = yield* UserConfigService;
     const initializeService = yield* InitializeService;
 
-    const { authMiddleware } = yield* AuthMiddleware;
+    const { authRequiredMiddleware } = yield* AuthMiddleware;
 
     const runtime = yield* getHonoRuntime;
 
@@ -50,7 +50,6 @@ export const routes = (app: HonoAppType, options: CliOptions) =>
       app
         // middleware
         .use(configMiddleware)
-        .use(authMiddleware)
         .use(async (c, next) => {
           await Runtime.runPromise(
             runtime,
@@ -73,7 +72,7 @@ export const routes = (app: HonoAppType, options: CliOptions) =>
 
         .route("/api/auth", yield* authRoutes)
 
-        // TODO: ここに authRequired 的な middleware を追加する
+        .use(authRequiredMiddleware)
 
         /**
          * Private Routes
@@ -83,7 +82,6 @@ export const routes = (app: HonoAppType, options: CliOptions) =>
             config: c.get("userConfig"),
           });
         })
-
         .put("/api/config", zValidator("json", userConfigSchema), async (c) => {
           const { ...config } = c.req.valid("json");
 

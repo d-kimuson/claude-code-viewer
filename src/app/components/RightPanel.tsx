@@ -1,10 +1,11 @@
 import { Trans } from "@lingui/react";
 import {
+  ClipboardCheckIcon,
   FileTextIcon,
   GitCompareIcon,
-  GitPullRequestIcon,
   GlobeIcon,
   RefreshCwIcon,
+  XIcon,
 } from "lucide-react";
 import type { FC, ReactNode } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -14,6 +15,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import { cn } from "@/lib/utils";
 import { type RightPanelTab, useRightPanel } from "../../hooks/useRightPanel";
 
@@ -44,7 +46,7 @@ const tabs: TabConfig[] = [
   },
   {
     id: "review",
-    icon: GitPullRequestIcon,
+    icon: ClipboardCheckIcon,
     label: <Trans id="panel.tab.review" />,
   },
   { id: "browser", icon: GlobeIcon, label: <Trans id="panel.tab.browser" /> },
@@ -59,6 +61,7 @@ export const RightPanel: FC<RightPanelProps> = ({
     isOpen,
     activeTab,
     width,
+    closePanel,
     setActiveTab,
     setWidth,
     browserUrl,
@@ -68,6 +71,7 @@ export const RightPanel: FC<RightPanelProps> = ({
     handleUrlSubmit,
     iframeRef,
   } = useRightPanel();
+  const isMobile = useIsMobile();
 
   const [isResizing, setIsResizing] = useState(false);
   const isResizingRef = useRef(false);
@@ -157,47 +161,92 @@ export const RightPanel: FC<RightPanelProps> = ({
 
   if (!isOpen) return null;
 
+  const activeTabLabel = tabs.find((tab) => tab.id === activeTab)?.label;
+
   return (
     <div
-      className="fixed right-0 bg-background border-l border-border/60 shadow-2xl z-40 flex flex-col"
+      className={cn(
+        "fixed bg-background border-border/60 shadow-2xl z-40 flex flex-col",
+        isMobile ? "left-0 right-0" : "right-0 border-l",
+      )}
       style={{
         top: "28px", // AppLayout header height (h-7 = 1.75rem = 28px)
         bottom: "0px",
-        width: `${width}%`,
+        width: isMobile ? "100%" : `${width}%`,
         userSelect: isResizing ? "none" : "auto",
       }}
     >
+      {/* Mobile header */}
+      {isMobile && (
+        <div className="flex items-center justify-between px-3 py-2 border-b border-border/60 bg-muted/10">
+          <div className="text-xs font-medium text-muted-foreground">
+            {activeTabLabel}
+          </div>
+          <button
+            type="button"
+            onClick={closePanel}
+            className="w-7 h-7 flex items-center justify-center rounded-md hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
+            aria-label="Close right panel"
+          >
+            <XIcon className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
+
       {/* Resize handle */}
-      <div
-        className="absolute left-0 top-0 bottom-0 w-1.5 cursor-ew-resize hover:bg-primary/40 active:bg-primary transition-colors z-10"
-        style={{ pointerEvents: "auto" }}
-        onMouseDown={handleMouseDown}
-      />
+      {!isMobile && (
+        <div
+          className="absolute left-0 top-0 bottom-0 w-1.5 cursor-ew-resize hover:bg-primary/40 active:bg-primary transition-colors z-10"
+          style={{ pointerEvents: "auto" }}
+          onMouseDown={handleMouseDown}
+        />
+      )}
 
       {/* Tab bar - icons only with hover for names */}
-      <div className="flex items-center border-b border-border/60 bg-muted/20 px-1.5 py-1">
+      <div
+        className={cn(
+          "flex items-center border-b border-border/60 bg-muted/20",
+          isMobile ? "px-2 py-2" : "px-1.5 py-1",
+        )}
+      >
         <TooltipProvider>
-          <div className="flex items-center gap-0.5">
+          <div
+            className={cn(
+              "flex items-center",
+              isMobile ? "gap-1 w-full justify-between" : "gap-0.5",
+            )}
+          >
             {tabs.map((tab) => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
+              const button = (
+                <button
+                  type="button"
+                  onClick={() => setActiveTab(tab.id)}
+                  className={cn(
+                    "flex items-center justify-center rounded-md transition-all",
+                    isMobile ? "w-16 h-10 flex-col gap-0.5" : "w-7 h-7",
+                    isActive
+                      ? "bg-background text-foreground shadow-sm border border-border/40"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted/50",
+                  )}
+                >
+                  <Icon className={cn(isMobile ? "w-4 h-4" : "w-3.5 h-3.5")} />
+                  {isMobile && (
+                    <span className="text-[10px] leading-none">
+                      {tab.label}
+                    </span>
+                  )}
+                </button>
+              );
+
+              if (isMobile) {
+                return <div key={tab.id}>{button}</div>;
+              }
 
               return (
                 <Tooltip key={tab.id}>
-                  <TooltipTrigger asChild>
-                    <button
-                      type="button"
-                      onClick={() => setActiveTab(tab.id)}
-                      className={cn(
-                        "w-7 h-7 flex items-center justify-center rounded-md transition-all",
-                        isActive
-                          ? "bg-background text-foreground shadow-sm border border-border/40"
-                          : "text-muted-foreground hover:text-foreground hover:bg-muted/50",
-                      )}
-                    >
-                      <Icon className="w-3.5 h-3.5" />
-                    </button>
-                  </TooltipTrigger>
+                  <TooltipTrigger asChild>{button}</TooltipTrigger>
                   <TooltipContent side="bottom">{tab.label}</TooltipContent>
                 </Tooltip>
               );

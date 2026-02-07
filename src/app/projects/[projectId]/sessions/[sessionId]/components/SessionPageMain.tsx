@@ -9,7 +9,6 @@ import {
   EllipsisVertical as EllipsisVerticalIcon,
   GitBranchIcon,
   LoaderIcon,
-  MenuIcon,
   MessageSquareIcon,
   PauseIcon,
   TrashIcon,
@@ -55,7 +54,6 @@ import { DeleteSessionDialog } from "./sessionSidebar/DeleteSessionDialog";
 type SessionPageMainProps = {
   projectId: string;
   sessionId?: string;
-  setIsMobileSidebarOpen: (open: boolean) => void;
   projectPath?: string;
   projectName: string;
 };
@@ -88,14 +86,7 @@ const SessionPageMainContent: FC<
     sessionId?: string;
     sessionData: SessionData | null;
   }
-> = ({
-  projectId,
-  sessionId,
-  setIsMobileSidebarOpen,
-  projectPath,
-  projectName,
-  sessionData,
-}) => {
+> = ({ projectId, sessionId, projectPath, projectName, sessionData }) => {
   const navigate = useNavigate();
   const conversations = sessionData?.conversations ?? [];
   const emptyToolResult: SessionData["getToolResult"] = () => undefined;
@@ -301,15 +292,6 @@ const SessionPageMainContent: FC<
         <header className="px-2 sm:px-3 py-1.5 sm:py-2 sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 w-full flex-shrink-0 min-w-0 border-b border-border/40">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2 min-w-0 flex-1">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="md:hidden flex-shrink-0 h-7 w-7 p-0"
-                onClick={() => setIsMobileSidebarOpen(true)}
-                data-testid="mobile-sidebar-toggle-button"
-              >
-                <MenuIcon className="w-4 h-4" />
-              </Button>
               {isExistingSession && sessionId && (
                 <Popover>
                   <PopoverTrigger asChild>

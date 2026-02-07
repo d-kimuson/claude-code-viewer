@@ -179,6 +179,11 @@ const LayerImpl = Effect.gen(function* () {
             sessionProcess.def.sessionProcessId,
           );
 
+          // Check abort signal before processing message
+          if (sessionProcess.def.abortController.signal.aborted) {
+            return "break" as const;
+          }
+
           if (processState.type === "completed") {
             return "break" as const;
           }
@@ -320,11 +325,6 @@ const LayerImpl = Effect.gen(function* () {
 
         try {
           for await (const message of messageIter) {
-            // Check abort signal before processing message
-            if (sessionProcess.def.abortController.signal.aborted) {
-              break;
-            }
-
             const result = await Runtime.runPromise(runtime)(
               handleMessage(message),
             ).catch((error) => {

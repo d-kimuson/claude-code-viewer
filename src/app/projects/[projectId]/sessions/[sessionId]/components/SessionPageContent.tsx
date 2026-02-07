@@ -7,6 +7,7 @@ import { GitTabContent } from "@/app/components/rightPanel/GitTabContent";
 import { ReviewTabContent } from "@/app/components/rightPanel/ReviewTabContent";
 import { Loading } from "@/components/Loading";
 import { ResizableSidebar } from "@/components/ResizableSidebar";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import { useLayoutPanels } from "@/hooks/useLayoutPanels";
 import { useRightPanel } from "@/hooks/useRightPanel";
 import { useProject } from "../../../hooks/useProject";
@@ -20,6 +21,7 @@ export const SessionPageContent: FC<{
   tab: Tab;
 }> = ({ projectId, sessionId, tab }) => {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const isMobile = useIsMobile();
   const { isOpen: isRightPanelOpen, width: rightPanelWidth } = useRightPanel();
   const { isBottomPanelOpen, bottomPanelHeight } = useLayoutPanels();
   const { data: projectData } = useProject(projectId);
@@ -33,13 +35,15 @@ export const SessionPageContent: FC<{
   const mainContentHeight = isBottomPanelOpen ? 100 - bottomPanelHeight : 100;
 
   // Right panel margin (when open, reserve space for fixed right panel)
-  const rightPanelMargin = isRightPanelOpen ? `${rightPanelWidth}%` : "0";
+  const rightPanelMargin =
+    isRightPanelOpen && !isMobile ? `${rightPanelWidth}%` : "0";
 
   return (
     <AppLayout
       projectPath={projectPath}
       sessionId={sessionId}
       projectName={projectName}
+      onMobileLeftPanelOpen={() => setIsMobileSidebarOpen(true)}
     >
       <div className="flex flex-col h-full">
         {/* Main content area with sidebar */}
@@ -69,7 +73,6 @@ export const SessionPageContent: FC<{
               <SessionPageMain
                 projectId={projectId}
                 sessionId={sessionId}
-                setIsMobileSidebarOpen={setIsMobileSidebarOpen}
                 projectPath={projectPath}
                 projectName={projectName}
               />

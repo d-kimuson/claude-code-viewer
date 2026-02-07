@@ -583,7 +583,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        581
+        563
       ]
     ],
     "translation": "chat.history.title"
@@ -598,11 +598,11 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        292
+        283
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        569
+        551
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
@@ -981,7 +981,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        399
+        381
       ]
     ],
     "translation": "Branch"
@@ -992,7 +992,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        380
+        362
       ]
     ],
     "translation": "Metadata"
@@ -1003,7 +1003,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        426
+        408
       ]
     ],
     "translation": "Model"
@@ -1037,7 +1037,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        386
+        368
       ]
     ],
     "translation": "Project Path"
@@ -1072,7 +1072,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        413
+        395
       ]
     ],
     "translation": "Session ID"
@@ -1689,7 +1689,7 @@
     "origin": [
       [
         "src/app/components/AppLayout.tsx",
-        124
+        134
       ]
     ],
     "translation": "layout.toggle_bottom_panel"
@@ -1700,7 +1700,7 @@
     "origin": [
       [
         "src/app/components/AppLayout.tsx",
-        103
+        113
       ]
     ],
     "translation": "layout.toggle_left_panel"
@@ -1711,7 +1711,7 @@
     "origin": [
       [
         "src/app/components/AppLayout.tsx",
-        145
+        155
       ]
     ],
     "translation": "layout.toggle_right_panel"
@@ -1891,7 +1891,7 @@
     "origin": [
       [
         "src/app/components/RightPanel.tsx",
-        294
+        343
       ]
     ],
     "translation": "panel.browser.empty.description"
@@ -1902,7 +1902,7 @@
     "origin": [
       [
         "src/app/components/RightPanel.tsx",
-        291
+        340
       ]
     ],
     "translation": "panel.browser.empty.title"
@@ -1990,7 +1990,7 @@
     "origin": [
       [
         "src/app/components/RightPanel.tsx",
-        50
+        52
       ]
     ],
     "translation": "panel.tab.browser"
@@ -2001,7 +2001,7 @@
     "origin": [
       [
         "src/app/components/RightPanel.tsx",
-        43
+        45
       ]
     ],
     "translation": "panel.tab.files_tools"
@@ -2012,7 +2012,7 @@
     "origin": [
       [
         "src/app/components/RightPanel.tsx",
-        38
+        40
       ]
     ],
     "translation": "panel.tab.git"
@@ -2023,7 +2023,7 @@
     "origin": [
       [
         "src/app/components/RightPanel.tsx",
-        48
+        50
       ]
     ],
     "translation": "panel.tab.review"
@@ -2155,7 +2155,7 @@
     "origin": [
       [
         "src/app/projects/page.tsx",
-        18
+        13
       ]
     ],
     "translation": "View Claude Code conversation history and project operations"
@@ -2166,7 +2166,7 @@
     "origin": [
       [
         "src/app/projects/page.tsx",
-        34
+        29
       ]
     ],
     "translation": "Loading projects..."
@@ -2177,7 +2177,7 @@
     "origin": [
       [
         "src/app/projects/page.tsx",
-        26
+        21
       ]
     ],
     "translation": "Projects"
@@ -2575,7 +2575,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        541
+        523
       ]
     ],
     "translation": "Paused"
@@ -2586,7 +2586,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        532
+        514
       ]
     ],
     "translation": "Running"
@@ -2597,7 +2597,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        483
+        465
       ]
     ],
     "translation": "Cache creation"
@@ -2608,7 +2608,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        498
+        480
       ]
     ],
     "translation": "Cache read"
@@ -2619,7 +2619,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        455
+        437
       ]
     ],
     "translation": "Input tokens"
@@ -2630,7 +2630,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        440
+        422
       ]
     ],
     "translation": "Session Cost"
@@ -2641,7 +2641,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        469
+        451
       ]
     ],
     "translation": "Output tokens"
@@ -2652,7 +2652,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        447
+        429
       ]
     ],
     "translation": "Total"
@@ -2702,7 +2702,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        373
+        355
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/DeleteSessionDialog.tsx",
@@ -2717,7 +2717,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        572
+        554
       ]
     ],
     "translation": "session.empty_state.description"
@@ -2728,7 +2728,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        363
+        345
       ]
     ],
     "translation": "Copy session file path"
@@ -2739,7 +2739,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        344
+        326
       ]
     ],
     "translation": "Export to HTML"
@@ -2750,7 +2750,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        353
+        335
       ]
     ],
     "translation": "Export to JSONL"
@@ -2761,7 +2761,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        669
+        651
       ]
     ],
     "translation": "Claude Code is processing..."
@@ -2809,7 +2809,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        627
+        609
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
@@ -2828,7 +2828,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        625
+        607
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",

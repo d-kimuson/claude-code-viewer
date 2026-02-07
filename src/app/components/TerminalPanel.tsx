@@ -1,5 +1,6 @@
 import { FitAddon } from "@xterm/addon-fit";
 import { Terminal } from "@xterm/xterm";
+import type { FC } from "react";
 import { useEffect, useRef } from "react";
 import "@xterm/xterm/css/xterm.css";
 
@@ -11,7 +12,6 @@ type ServerMessage =
   | { type: "pong" };
 
 const SESSION_ID_KEY = "terminalSessionId";
-const LAST_SEQ_PREFIX = "terminalLastSeq";
 
 const parseServerMessage = (payload: string): ServerMessage | undefined => {
   try {
@@ -53,18 +53,6 @@ const getStoredSessionId = (cwd: string | undefined) => {
   return value && value.length > 0 ? value : undefined;
 };
 
-const getStoredLastSeq = (sessionId: string | undefined) => {
-  if (!sessionId) return 0;
-  const value = localStorage.getItem(`${LAST_SEQ_PREFIX}:${sessionId}`);
-  if (!value) return 0;
-  const parsed = Number.parseInt(value, 10);
-  return Number.isFinite(parsed) ? parsed : 0;
-};
-
-const storeLastSeq = (sessionId: string, seq: number) => {
-  localStorage.setItem(`${LAST_SEQ_PREFIX}:${sessionId}`, String(seq));
-};
-
 const buildWebSocketUrl = (
   sessionId: string | undefined,
   cwd: string | undefined,
@@ -88,20 +76,20 @@ type TerminalPanelProps = {
 };
 
 const clearStoredSession = (cwd: string | undefined) => {
-  const storedSessionId = localStorage.getItem(getSessionIdStorageKey(cwd));
-  if (storedSessionId) {
-    localStorage.removeItem(`${LAST_SEQ_PREFIX}:${storedSessionId}`);
-  }
   localStorage.removeItem(getSessionIdStorageKey(cwd));
 };
 
-export const TerminalPanel = ({ resetToken = 0, cwd }: TerminalPanelProps) => {
+export const TerminalPanel: FC<TerminalPanelProps> = ({
+  resetToken = 0,
+  cwd,
+}) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const terminalRef = useRef<Terminal | null>(null);
   const fitRef = useRef<FitAddon | null>(null);
   const socketRef = useRef<WebSocket | null>(null);
   const sessionIdRef = useRef<string | undefined>(undefined);
   const lastSeqRef = useRef<number>(0);
+  const refreshRequestedRef = useRef(false);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -119,15 +107,33 @@ export const TerminalPanel = ({ resetToken = 0, cwd }: TerminalPanelProps) => {
     const fit = new FitAddon();
     term.loadAddon(fit);
     term.open(container);
-    fit.fit();
+    const fitAndRefresh = () => {
+      fit.fit();
+      if (term.rows > 0) {
+        term.refresh(0, term.rows - 1);
+      }
+    };
+    const scheduleRefresh = () => {
+      if (refreshRequestedRef.current) return;
+      refreshRequestedRef.current = true;
+      requestAnimationFrame(() => {
+        refreshRequestedRef.current = false;
+        if (term.rows > 0) {
+          term.refresh(0, term.rows - 1);
+        }
+      });
+    };
+    fitAndRefresh();
+    requestAnimationFrame(() => {
+      fitAndRefresh();
+    });
 
     terminalRef.current = term;
     fitRef.current = fit;
 
     const storedSessionId = getStoredSessionId(cwd);
-    const storedLastSeq = getStoredLastSeq(storedSessionId);
     sessionIdRef.current = storedSessionId;
-    lastSeqRef.current = storedLastSeq;
+    lastSeqRef.current = 0;
 
     const socket = new WebSocket(buildWebSocketUrl(storedSessionId, cwd));
     socketRef.current = socket;
@@ -143,6 +149,7 @@ export const TerminalPanel = ({ resetToken = 0, cwd }: TerminalPanelProps) => {
 
     socket.addEventListener("open", () => {
       sendJson({ type: "sync", lastSeq: lastSeqRef.current });
+      fitAndRefresh();
       sendResize();
     });
 
@@ -157,11 +164,8 @@ export const TerminalPanel = ({ resetToken = 0, cwd }: TerminalPanelProps) => {
       }
       if (message.type === "output" || message.type === "snapshot") {
         term.write(message.data);
+        scheduleRefresh();
         lastSeqRef.current = message.seq;
-        const sessionId = sessionIdRef.current;
-        if (sessionId) {
-          storeLastSeq(sessionId, message.seq);
-        }
         return;
       }
       if (message.type === "exit") {
@@ -183,7 +187,7 @@ export const TerminalPanel = ({ resetToken = 0, cwd }: TerminalPanelProps) => {
     });
 
     const resizeObserver = new ResizeObserver(() => {
-      fit.fit();
+      fitAndRefresh();
       sendResize();
     });
     resizeObserver.observe(container);

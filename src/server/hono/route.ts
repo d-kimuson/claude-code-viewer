@@ -80,7 +80,7 @@ export const routes = (app: HonoAppType, options: CliOptions) =>
 
     // middleware
     const authMiddlewareService = yield* AuthMiddleware;
-    const { authMiddleware, validSessionToken, authEnabled, anthPassword } =
+    const { authMiddleware, validSessionToken, authEnabled, authPassword } =
       yield* authMiddlewareService;
 
     const runtime = yield* Effect.runtime<
@@ -138,7 +138,7 @@ export const routes = (app: HonoAppType, options: CliOptions) =>
               );
             }
 
-            if (password !== anthPassword) {
+            if (password !== authPassword) {
               return c.json({ error: "Invalid password" }, 401);
             }
 

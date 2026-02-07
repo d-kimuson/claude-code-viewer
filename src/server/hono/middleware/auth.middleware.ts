@@ -11,25 +11,35 @@ const generateSessionToken = (password: string | undefined): string => {
   return Buffer.from(`ccv-session:${password}`).toString("base64");
 };
 
+type PublicApiRoute = {
+  path: string;
+  methods: ReadonlyArray<string>;
+};
+
 // Routes that don't require authentication
-const PUBLIC_API_ROUTES = [
-  "/api/auth/login",
-  "/api/auth/check",
-  "/api/auth/logout",
-  "/api/config", // Allow config access for theme/locale loading
-  "/api/version",
+const PUBLIC_API_ROUTES: ReadonlyArray<PublicApiRoute> = [
+  { path: "/api/auth/login", methods: ["POST"] },
+  { path: "/api/auth/check", methods: ["GET"] },
+  { path: "/api/auth/logout", methods: ["POST"] },
+  { path: "/api/config", methods: ["GET"] }, // Allow config access for theme/locale loading
+  { path: "/api/version", methods: ["GET"] },
 ];
+
+const isPublicApiRoute = (path: string, method: string) =>
+  PUBLIC_API_ROUTES.some(
+    (route) => route.path === path && route.methods.includes(method),
+  );
 
 const LayerImpl = Effect.gen(function* () {
   const ccvOptionsService = yield* CcvOptionsService;
 
   return Effect.gen(function* () {
-    const anthPassword = yield* ccvOptionsService.getCcvOptions("password");
-    const authEnabled = anthPassword !== undefined;
-    const validSessionToken = generateSessionToken(anthPassword);
+    const authPassword = yield* ccvOptionsService.getCcvOptions("password");
+    const authEnabled = authPassword !== undefined;
+    const validSessionToken = generateSessionToken(authPassword);
     const authMiddleware = createMiddleware<HonoContext>(async (c, next) => {
       // Skip auth for public routes
-      if (PUBLIC_API_ROUTES.includes(c.req.path)) {
+      if (isPublicApiRoute(c.req.path, c.req.method)) {
         return next();
       }
 
@@ -54,7 +64,7 @@ const LayerImpl = Effect.gen(function* () {
 
     return {
       authEnabled,
-      anthPassword,
+      authPassword,
       validSessionToken,
       authMiddleware,
     };

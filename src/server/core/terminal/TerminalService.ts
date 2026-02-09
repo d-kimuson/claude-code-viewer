@@ -1,12 +1,17 @@
 import { Context, Effect, Layer } from "effect";
-import type { IPty } from "node-pty";
 import { ulid } from "ulid";
 import type WebSocket from "ws";
 import type { InferEffect } from "../../lib/effect/types";
 import { CcvOptionsService } from "../platform/services/CcvOptionsService";
 import { EnvService } from "../platform/services/EnvService";
+import { normalizePtyChunk } from "./normalizePtyChunk";
+import {
+  createRusptySession,
+  type RusptyModule,
+  type TerminalPtyProcess,
+} from "./rusptyAdapter";
 
-type PtyProcess = IPty;
+type PtyProcess = TerminalPtyProcess;
 
 type TerminalOutputChunk = {
   seq: number;
@@ -47,8 +52,6 @@ const selectShell = (
   return { command, args };
 };
 
-type NodePtyModule = typeof import("node-pty");
-
 const isFlagEnabled = (value: string | undefined) => {
   if (!value) return false;
   return value === "1" || value.toLowerCase() === "true";
@@ -73,9 +76,10 @@ const LayerImpl = Effect.gen(function* () {
     };
   };
 
-  const nodePty: NodePtyModule | null = yield* Effect.tryPromise({
-    try: () => import("node-pty"),
-    catch: (error) => new Error(`Failed to load node-pty: ${String(error)}`),
+  const ruspty: RusptyModule | null = yield* Effect.tryPromise({
+    try: () => import("@replit/ruspty"),
+    catch: (error) =>
+      new Error(`Failed to load @replit/ruspty: ${String(error)}`),
   }).pipe(
     Effect.catchAll((error) =>
       Effect.sync(() => {
@@ -85,11 +89,9 @@ const LayerImpl = Effect.gen(function* () {
     ),
   );
 
-  if (!nodePty) {
-    return disabledService("node-pty failed to load");
+  if (!ruspty) {
+    return disabledService("@replit/ruspty failed to load");
   }
-
-  const { spawn } = nodePty;
 
   const trimBuffer = (session: TerminalSession) => {
     while (
@@ -163,16 +165,26 @@ const LayerImpl = Effect.gen(function* () {
       options.fallbackShell,
       options.unrestrictedFlag,
     );
-    const pty = spawn(shell.command, shell.args, {
-      name: "xterm-color",
-      cols: DEFAULT_COLS,
-      rows: DEFAULT_ROWS,
-      cwd: options.cwd,
-      env: options.env,
+    const { process: ptyProcess, read } = createRusptySession(ruspty, {
+      command: shell.command,
+      args: shell.args,
+      envs: options.env,
+      dir: options.cwd,
+      size: { cols: DEFAULT_COLS, rows: DEFAULT_ROWS },
+      onExit: (_error, exitCode) => {
+        const current = sessions.get(id);
+        if (!current) return;
+        current.exited = true;
+        current.lastActivity = Date.now();
+        broadcast(current, { type: "exit", code: exitCode });
+        if (current.clients.size === 0) {
+          destroySession(current.id);
+        }
+      },
     });
     const session: TerminalSession = {
       id,
-      pty,
+      pty: ptyProcess,
       seq: 0,
       buffer: [],
       bufferBytes: 0,
@@ -181,26 +193,21 @@ const LayerImpl = Effect.gen(function* () {
       exited: false,
       inputBuffer: "",
     };
-    pty.onData((data: string) => {
-      if (session.exited) return;
-      session.lastActivity = Date.now();
-      session.seq += 1;
-      session.buffer.push({ seq: session.seq, data });
-      session.bufferBytes += Buffer.byteLength(data, "utf8");
-      trimBuffer(session);
-      broadcast(session, {
+    read.on("data", (chunk: unknown) => {
+      const data = normalizePtyChunk(chunk);
+      if (data === null) return;
+      const current = sessions.get(session.id);
+      if (!current || current.exited) return;
+      current.lastActivity = Date.now();
+      current.seq += 1;
+      current.buffer.push({ seq: current.seq, data });
+      current.bufferBytes += Buffer.byteLength(data, "utf8");
+      trimBuffer(current);
+      broadcast(current, {
         type: "output",
-        seq: session.seq,
+        seq: current.seq,
         data,
       });
-    });
-    pty.onExit((event: { exitCode: number; signal?: number }) => {
-      session.exited = true;
-      session.lastActivity = Date.now();
-      broadcast(session, { type: "exit", code: event.exitCode });
-      if (session.clients.size === 0) {
-        destroySession(session.id);
-      }
     });
     sessions.set(id, session);
     return session;

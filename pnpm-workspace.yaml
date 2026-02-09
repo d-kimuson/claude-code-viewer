@@ -5,6 +5,5 @@ onlyBuiltDependencies:
   - esbuild
   - lefthook
   - msgpackr-extract
-  - node-pty
   - sharp
   - workerd

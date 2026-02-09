@@ -83,6 +83,9 @@ importers:
       '@radix-ui/react-tooltip':
         specifier: 1.2.8
         version: 1.2.8(@types/react-dom@19.2.3(@types/react@19.2.9))(@types/react@19.2.9)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      '@replit/ruspty':
+        specifier: ^3.6.0
+        version: 3.6.0
       '@tailwindcss/vite':
         specifier: 4.1.18
         version: 4.1.18(vite@7.3.1(@types/node@25.0.10)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.2))
@@ -137,9 +140,6 @@ importers:
       minisearch:
         specifier: 7.2.0
         version: 7.2.0
-      node-pty:
-        specifier: 1.1.0-beta34
-        version: 1.1.0-beta34
       parse-git-diff:
         specifier: 0.0.19
         version: 0.0.19
@@ -2103,6 +2103,27 @@ packages:
 
   '@radix-ui/rect@1.1.1':
     resolution: {integrity: sha512-HPwpGIzkl28mWyZqG52jiqDJ12waP11Pa1lGoiyUkIEuMLBP0oeK/C89esbXrxsky5we7dfd8U58nm0SgAWpVw==}
+
+  '@replit/ruspty-darwin-arm64@3.6.0':
+    resolution: {integrity: sha512-KuWv8Gf700sMC7xteAqmAgVFQ9uGIw2OHiR1dwivlGhj1LqLXcV22qYsoCscxzMjbqLEsn5qhfjWgFPFzq9lkA==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@replit/ruspty-darwin-x64@3.6.0':
+    resolution: {integrity: sha512-xXkrZd4XhraqCx/cDmMM8lItZzoKxXZSXEcuzRMkFXmt9RNEiYfsXCghJfqxq4DS9sQpjVepn8x3HpIlJHsE1g==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [darwin]
+
+  '@replit/ruspty-linux-x64-gnu@3.6.0':
+    resolution: {integrity: sha512-lXuTTdL7rhSiV284GcpFYMhs1UjOOFEOQqaigFOGGK3W5cwV/EdKuiC34B6yEilVPXqbGOQRVxCHR6OY1MabnA==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [linux]
+
+  '@replit/ruspty@3.6.0':
+    resolution: {integrity: sha512-RkPhX6/fnvqJDxWo0n+XaL6ztIDnRT5uNpvnekj9crecLxsaPqjY3sIhbVb4x4+w5fpgBP5z8n3M+Fbbf40gdg==}
 
   '@rolldown/pluginutils@1.0.0-beta.47':
     resolution: {integrity: sha512-8QagwMH3kNCuzD8EWL8R2YPW5e4OrHNSAHRFDdmFqEwEaD/KcNKjVoumo+gP2vW5eKB2UPbM6vTYiGZX0ixLnw==}
@@ -4188,9 +4209,6 @@ packages:
   node-gyp-build-optional-packages@5.2.2:
     resolution: {integrity: sha512-s+w+rBWnpTMwSFbaE0UXsRlg7hU4FjekKU4eyAih5T8nJuNZT1nNsskXpxmeqSK9UzkBl6UgRlnKc8hz8IEqOw==}
     hasBin: true
-
-  node-pty@1.1.0-beta34:
-    resolution: {integrity: sha512-RraDtX9RS1G1I5iO7e4YIOIA4arzd4ZVCD4mZr7+szaNupoTg9fxDCRr0EanqS0Qlzgm3PIdHNbPmblJguJuyg==}
 
   node-releases@2.0.27:
     resolution: {integrity: sha512-nmh3lCkYZ3grZvqcCH+fjmQ7X+H0OeZgP40OierEaAptX4XofMh5kwNbWh7lBduUzCcV/8kZ+NDLCwm2iorIlA==}
@@ -6867,6 +6885,21 @@ snapshots:
 
   '@radix-ui/rect@1.1.1': {}
 
+  '@replit/ruspty-darwin-arm64@3.6.0':
+    optional: true
+
+  '@replit/ruspty-darwin-x64@3.6.0':
+    optional: true
+
+  '@replit/ruspty-linux-x64-gnu@3.6.0':
+    optional: true
+
+  '@replit/ruspty@3.6.0':
+    optionalDependencies:
+      '@replit/ruspty-darwin-arm64': 3.6.0
+      '@replit/ruspty-darwin-x64': 3.6.0
+      '@replit/ruspty-linux-x64-gnu': 3.6.0
+
   '@rolldown/pluginutils@1.0.0-beta.47': {}
 
   '@rollup/rollup-android-arm-eabi@4.56.0':
@@ -9076,10 +9109,6 @@ snapshots:
     dependencies:
       detect-libc: 2.1.2
     optional: true
-
-  node-pty@1.1.0-beta34:
-    dependencies:
-      node-addon-api: 7.1.1
 
   node-releases@2.0.27: {}
 

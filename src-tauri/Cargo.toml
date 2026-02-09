@@ -1,0 +1,16 @@
+[package]
+name = "claude-code-viewer"
+version = "0.1.0"
+description = "Claude Code Viewer desktop wrapper"
+authors = ["Claude Code Viewer contributors"]
+edition = "2021"
+
+[lib]
+name = "app_lib"
+crate-type = ["rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2.0.0", features = [] }
+
+[dependencies]
+tauri = { version = "2.0.0", features = [] }

@@ -2,13 +2,16 @@ import { Trans } from "@lingui/react";
 import {
   ChevronDownIcon,
   ChevronRightIcon,
+  CopyIcon,
   ExternalLinkIcon,
+  Eye,
   FileIcon,
   FilterIcon,
   TerminalIcon,
   WrenchIcon,
 } from "lucide-react";
 import { type FC, useMemo, useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -152,13 +155,19 @@ const FileListItem: FC<{
   projectId: string;
   isExternal?: boolean;
 }> = ({ filePath, displayPath, toolName, projectId, isExternal }) => {
+  const handleCopyPath = async () => {
+    try {
+      await navigator.clipboard.writeText(filePath);
+      toast.success("File path copied");
+    } catch (error) {
+      console.error("Failed to copy file path:", error);
+      toast.error("Failed to copy file path");
+    }
+  };
+
   return (
-    <FileContentDialog projectId={projectId} filePaths={[filePath]}>
-      <Button
-        variant="ghost"
-        size="sm"
-        className="w-full justify-start h-auto py-1.5 px-2 text-xs font-normal hover:bg-accent gap-2 rounded-md"
-      >
+    <div className="flex items-center gap-2 px-2 py-1.5 text-xs font-normal hover:bg-accent rounded-md transition-colors">
+      <div className="flex items-center gap-2 flex-1 min-w-0">
         {isExternal ? (
           <ExternalLinkIcon className="h-3.5 w-3.5 flex-shrink-0 text-muted-foreground" />
         ) : (
@@ -170,8 +179,29 @@ const FileListItem: FC<{
         <span className="text-[10px] text-muted-foreground/70 flex-shrink-0 bg-muted/50 px-1.5 py-0.5 rounded">
           {toolName}
         </span>
-      </Button>
-    </FileContentDialog>
+      </div>
+      <div className="flex items-center gap-1 flex-shrink-0">
+        <FileContentDialog projectId={projectId} filePaths={[filePath]}>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-6 w-6 p-0"
+            aria-label="Open file"
+          >
+            <Eye className="h-3.5 w-3.5 text-muted-foreground" />
+          </Button>
+        </FileContentDialog>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-6 w-6 p-0"
+          onClick={handleCopyPath}
+          aria-label="Copy file path"
+        >
+          <CopyIcon className="h-3.5 w-3.5 text-muted-foreground" />
+        </Button>
+      </div>
+    </div>
   );
 };
 

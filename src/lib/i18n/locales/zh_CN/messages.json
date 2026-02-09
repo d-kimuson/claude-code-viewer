@@ -1891,7 +1891,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/FilesToolsTabContent.tsx",
-        315
+        345
       ]
     ],
     "translation": "已编辑文件"
@@ -1902,7 +1902,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/FilesToolsTabContent.tsx",
-        374
+        404
       ]
     ],
     "translation": "按工具筛选"
@@ -1913,7 +1913,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/FilesToolsTabContent.tsx",
-        356
+        386
       ]
     ],
     "translation": "工具调用"
@@ -3545,7 +3545,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/FilesToolsTabContent.tsx",
-        295
+        325
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/EditedFilesTab.tsx",
@@ -3560,7 +3560,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/FilesToolsTabContent.tsx",
-        336
+        366
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/EditedFilesTab.tsx",

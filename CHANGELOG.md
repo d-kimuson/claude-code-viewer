@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.6.0-beta.2
+
+### &nbsp;&nbsp;&nbsp;Features
+
+- Support bearer token API auth &nbsp;-&nbsp; by **d-kimsuon** [<samp>(9b0cd)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/9b0cd99)
+
+### &nbsp;&nbsp;&nbsp;Bug Fixes
+
+- Restore terminal output after reopening panel &nbsp;-&nbsp; by **d-kimsuon** [<samp>(97093)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/97093e3)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.6.0-beta.1...0.6.0-beta.2)
+
 ## 0.6.0-beta.1
 
 ### &nbsp;&nbsp;&nbsp;Release Notes

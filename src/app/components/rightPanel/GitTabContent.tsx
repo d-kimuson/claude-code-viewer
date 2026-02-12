@@ -49,7 +49,7 @@ import { DiffViewer } from "../../projects/[projectId]/sessions/[sessionId]/comp
 import {
   useGitBranches,
   useGitCheckout,
-  useGitCurrentRevisions,
+  useGitCurrentRevisionsSuspense,
   useGitDiff,
 } from "../../projects/[projectId]/sessions/[sessionId]/hooks/useGit";
 import { useSession } from "../../projects/[projectId]/sessions/[sessionId]/hooks/useSession";
@@ -378,7 +378,7 @@ export const GitTabContent: FC<GitTabContentProps> = ({
   projectId,
   sessionId,
 }) => {
-  const { data: revisionsData } = useGitCurrentRevisions(projectId);
+  const { data: revisionsData } = useGitCurrentRevisionsSuspense(projectId);
   const {
     mutate: getDiff,
     data: diffData,

@@ -1,4 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import { honoClient } from "@/lib/api/client";
 import { gitCurrentRevisionsQuery } from "../../../../../../lib/api/queries";
 
@@ -7,6 +12,14 @@ export const useGitCurrentRevisions = (projectId: string) => {
     queryKey: gitCurrentRevisionsQuery(projectId).queryKey,
     queryFn: gitCurrentRevisionsQuery(projectId).queryFn,
     staleTime: 30000, // 30 seconds
+  });
+};
+
+export const useGitCurrentRevisionsSuspense = (projectId: string) => {
+  return useSuspenseQuery({
+    queryKey: gitCurrentRevisionsQuery(projectId).queryKey,
+    queryFn: gitCurrentRevisionsQuery(projectId).queryFn,
+    staleTime: 30000,
   });
 };
 

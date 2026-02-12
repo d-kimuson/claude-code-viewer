@@ -119,19 +119,40 @@ const projectRoutes = Effect.gen(function* () {
         );
         return response;
       })
+      .get("/:projectId/sessions/:sessionId/agent-sessions", async (c) => {
+        const projectId = c.req.param("projectId");
+        const sessionId = c.req.param("sessionId");
+        const response = await effectToResponse(
+          c,
+          agentSessionController.listAgentSessions({
+            projectId,
+            sessionId,
+          }),
+        );
+        return response;
+      })
 
       /**
        * agent sessions
        */
-      .get("/:projectId/agent-sessions/:agentId", async (c) => {
-        const projectId = c.req.param("projectId");
-        const agentId = c.req.param("agentId");
-        const response = await effectToResponse(
-          c,
-          agentSessionController.getAgentSession({ projectId, agentId }),
-        );
-        return response;
-      })
+      .get(
+        "/:projectId/agent-sessions/:agentId",
+        zValidator("query", z.object({ sessionId: z.string().optional() })),
+        async (c) => {
+          const projectId = c.req.param("projectId");
+          const agentId = c.req.param("agentId");
+          const { sessionId } = c.req.valid("query");
+          const response = await effectToResponse(
+            c,
+            agentSessionController.getAgentSession({
+              projectId,
+              agentId,
+              sessionId,
+            }),
+          );
+          return response;
+        },
+      )
 
       /**
        * claude code routes

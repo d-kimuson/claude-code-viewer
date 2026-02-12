@@ -283,6 +283,26 @@ export const featureFlagsQuery = {
   },
 } as const;
 
+export const agentSessionListQuery = (projectId: string, sessionId: string) =>
+  ({
+    queryKey: ["projects", projectId, "sessions", sessionId, "agent-sessions"],
+    queryFn: async () => {
+      const response = await honoClient.api.projects[":projectId"].sessions[
+        ":sessionId"
+      ]["agent-sessions"].$get({
+        param: { projectId, sessionId },
+      });
+
+      if (!response.ok) {
+        throw new Error(
+          `Failed to fetch agent sessions: ${response.statusText}`,
+        );
+      }
+
+      return await response.json();
+    },
+  }) as const;
+
 export const agentSessionQuery = (
   projectId: string,
   agentId: string,
@@ -295,6 +315,7 @@ export const agentSessionQuery = (
         "agent-sessions"
       ][":agentId"].$get({
         param: { projectId, agentId },
+        query: { sessionId },
       });
 
       if (!response.ok) {

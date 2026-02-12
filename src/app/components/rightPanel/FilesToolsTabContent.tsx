@@ -1,24 +1,38 @@
 import { Trans } from "@lingui/react";
+import { useQuery } from "@tanstack/react-query";
 import {
+  BotIcon,
   ChevronDownIcon,
   ChevronRightIcon,
   ExternalLinkIcon,
   FileIcon,
   FilterIcon,
+  Loader2,
+  MessageSquare,
   TerminalIcon,
   WrenchIcon,
+  XCircle,
 } from "lucide-react";
-import { type FC, useMemo, useState } from "react";
+import { type FC, useCallback, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { agentSessionListQuery, agentSessionQuery } from "@/lib/api/queries";
 import { extractAllEditedFiles, extractToolCalls } from "@/lib/file-viewer";
 import { extractLatestTodos } from "@/lib/todo-viewer";
 import { cn } from "@/lib/utils";
+import { ConversationList } from "../../projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList";
 import { FileContentDialog } from "../../projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog";
 import { useSession } from "../../projects/[projectId]/sessions/[sessionId]/hooks/useSession";
 import { CollapsibleTodoSection } from "./common/CollapsibleTodoSection";
@@ -212,12 +226,157 @@ const ToolCallItem: FC<{
   );
 };
 
+const noopGetToolResult = () => undefined;
+
+const AgentSessionDialog: FC<{
+  projectId: string;
+  sessionId: string;
+  agentId: string;
+  title: string;
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
+}> = ({ projectId, sessionId, agentId, title, isOpen, onOpenChange }) => {
+  const { data, isLoading, error, refetch } = useQuery({
+    ...agentSessionQuery(projectId, agentId, sessionId),
+    enabled: isOpen,
+    staleTime: 0,
+  });
+
+  const conversations = data?.conversations ?? [];
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+      <DialogContent
+        className="w-[95vw] md:w-[90vw] lg:w-[85vw] max-w-[1400px] h-[85vh] max-h-[85vh] flex flex-col p-0"
+        data-testid="agent-session-modal"
+      >
+        <DialogHeader className="px-6 py-4 border-b bg-muted/30">
+          <div className="flex items-start gap-3">
+            <div className="flex-shrink-0 mt-1">
+              <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                <MessageSquare className="h-5 w-5 text-primary" />
+              </div>
+            </div>
+            <div className="flex-1 min-w-0">
+              <DialogTitle className="text-lg font-semibold leading-tight mb-1 pr-2">
+                {title.length > 120 ? `${title.slice(0, 120)}...` : title}
+              </DialogTitle>
+              <DialogDescription className="text-xs flex items-center gap-2 flex-wrap">
+                <span className="flex items-center gap-1">
+                  Agent:{" "}
+                  <code className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">
+                    {agentId.slice(0, 8)}
+                  </code>
+                </span>
+                <span className="text-muted-foreground">|</span>
+                <span>
+                  <Trans
+                    id="assistant.tool.message_count"
+                    values={{ count: conversations.length }}
+                  />
+                </span>
+              </DialogDescription>
+            </div>
+          </div>
+        </DialogHeader>
+        <div className="flex-1 overflow-auto px-6 py-4">
+          {isLoading && (
+            <div className="flex flex-col items-center justify-center h-full gap-4">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              <p className="text-sm text-muted-foreground">
+                <Trans id="assistant.tool.loading_task" />
+              </p>
+            </div>
+          )}
+          {error !== null && !isLoading && (
+            <div className="flex flex-col items-center justify-center h-full gap-4">
+              <XCircle className="h-8 w-8 text-destructive" />
+              <p className="text-sm text-destructive">
+                <Trans id="assistant.tool.error_loading_task" />
+              </p>
+              <Button variant="outline" size="sm" onClick={() => refetch()}>
+                <Trans id="assistant.tool.retry" />
+              </Button>
+            </div>
+          )}
+          {!isLoading && error === null && conversations.length === 0 && (
+            <div className="flex flex-col items-center justify-center h-full gap-4">
+              <p className="text-sm text-muted-foreground">
+                <Trans id="assistant.tool.no_task_data" />
+              </p>
+            </div>
+          )}
+          {!isLoading && error === null && conversations.length > 0 && (
+            <ConversationList
+              conversations={conversations.map((c) => ({
+                ...c,
+                isSidechain: false,
+              }))}
+              getToolResult={noopGetToolResult}
+              projectId={projectId}
+              sessionId={sessionId}
+              scheduledJobs={[]}
+            />
+          )}
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+const AgentSessionItem: FC<{
+  agentId: string;
+  firstMessage: string | null;
+  onClick: () => void;
+}> = ({ agentId, firstMessage, onClick }) => {
+  const displayText = firstMessage ?? `Agent ${agentId.slice(0, 8)}`;
+  const truncated =
+    displayText.length > 80 ? `${displayText.slice(0, 80)}...` : displayText;
+
+  return (
+    <Button
+      variant="ghost"
+      size="sm"
+      className="w-full justify-start h-auto py-1.5 px-2 text-xs font-normal hover:bg-accent gap-2 rounded-md"
+      onClick={onClick}
+    >
+      <BotIcon className="h-3.5 w-3.5 flex-shrink-0 text-muted-foreground" />
+      <span className="truncate text-left flex-1 text-xs">{truncated}</span>
+      <span className="text-[10px] text-muted-foreground/70 flex-shrink-0 bg-muted/50 px-1.5 py-0.5 rounded font-mono">
+        {agentId.slice(0, 8)}
+      </span>
+    </Button>
+  );
+};
+
 export const FilesToolsTabContent: FC<FilesToolsTabContentProps> = ({
   projectId,
   sessionId,
 }) => {
   const { conversations } = useSession(projectId, sessionId);
   const [selectedTools, setSelectedTools] = useState<Set<string>>(new Set());
+  const [openAgentId, setOpenAgentId] = useState<string | null>(null);
+
+  // Agent sessions
+  const { data: agentSessionsData } = useQuery({
+    ...agentSessionListQuery(projectId, sessionId),
+  });
+  const agentSessions = agentSessionsData?.agentSessions ?? [];
+  const hasAgentSessions = agentSessions.length > 0;
+
+  const openAgentTitle = useMemo(() => {
+    if (openAgentId === null) return "";
+    const session = agentSessions.find((s) => s.agentId === openAgentId);
+    return session?.firstMessage ?? `Agent ${openAgentId.slice(0, 8)}`;
+  }, [openAgentId, agentSessions]);
+
+  const handleOpenAgent = useCallback((agentId: string) => {
+    setOpenAgentId(agentId);
+  }, []);
+
+  const handleCloseAgent = useCallback((open: boolean) => {
+    if (!open) setOpenAgentId(null);
+  }, []);
 
   // Edited files
   const editedFiles = useMemo(
@@ -282,7 +441,7 @@ export const FilesToolsTabContent: FC<FilesToolsTabContentProps> = ({
     setSelectedTools(new Set());
   };
 
-  if (!hasEditedFiles && !hasToolCalls) {
+  if (!hasEditedFiles && !hasToolCalls && !hasAgentSessions) {
     return (
       <div className="flex flex-col h-full">
         <div className="flex-1 flex items-center justify-center p-8">
@@ -423,10 +582,46 @@ export const FilesToolsTabContent: FC<FilesToolsTabContentProps> = ({
             </div>
           </CollapsibleSection>
         )}
+
+        {/* Agent Sessions Section */}
+        {hasAgentSessions && (
+          <CollapsibleSection
+            title="Agents"
+            count={agentSessions.length}
+            icon={<BotIcon className="w-3.5 h-3.5" />}
+            stickyTop={
+              (hasEditedFiles ? sectionHeaderHeight : 0) +
+              (hasToolCalls ? sectionHeaderHeight : 0)
+            }
+          >
+            <div className="space-y-0.5">
+              {agentSessions.map((agent) => (
+                <AgentSessionItem
+                  key={agent.agentId}
+                  agentId={agent.agentId}
+                  firstMessage={agent.firstMessage}
+                  onClick={() => handleOpenAgent(agent.agentId)}
+                />
+              ))}
+            </div>
+          </CollapsibleSection>
+        )}
       </div>
 
       {/* Todo Checklist Section - Fixed at bottom */}
       <CollapsibleTodoSection todos={latestTodos} />
+
+      {/* Agent Session Dialog */}
+      {openAgentId !== null && (
+        <AgentSessionDialog
+          projectId={projectId}
+          sessionId={sessionId}
+          agentId={openAgentId}
+          title={openAgentTitle}
+          isOpen={true}
+          onOpenChange={handleCloseAgent}
+        />
+      )}
     </div>
   );
 };

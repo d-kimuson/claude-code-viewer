@@ -44,8 +44,31 @@ const LayerImpl = Effect.gen(function* () {
       } as const satisfies ControllerResponse;
     });
 
+  /**
+   * List agent sessions for a given session.
+   */
+  const listAgentSessions = (params: {
+    projectId: string;
+    sessionId: string;
+  }) =>
+    Effect.gen(function* () {
+      const { projectId, sessionId } = params;
+      const agentSessions = yield* repository.listAgentSessionsForSession(
+        projectId,
+        sessionId,
+      );
+
+      return {
+        status: 200,
+        response: {
+          agentSessions,
+        },
+      } as const satisfies ControllerResponse;
+    });
+
   return {
     getAgentSession,
+    listAgentSessions,
   };
 });
 

@@ -61,6 +61,7 @@ describe("SessionController", () => {
         AgentSessionRepository,
         {
           getAgentSessionByAgentId: () => Effect.succeed(null),
+          listAgentSessionsForSession: () => Effect.succeed([]),
         },
       );
 

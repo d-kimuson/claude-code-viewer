@@ -1,5 +1,5 @@
 import { Trans } from "@lingui/react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useIsFetching, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   AlertCircle,
   CheckIcon,
@@ -8,8 +8,9 @@ import {
   GitBranchIcon,
   GitCompareIcon,
   Loader2,
+  RefreshCwIcon,
 } from "lucide-react";
-import { type FC, useEffect, useMemo, useState } from "react";
+import { type FC, Suspense, useCallback, useMemo, useState } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import {
   oneDark,
@@ -41,7 +42,11 @@ import {
 } from "@/components/ui/popover";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTheme } from "@/hooks/useTheme";
-import { fileContentQuery, gitCurrentRevisionsQuery } from "@/lib/api/queries";
+import {
+  fileContentQuery,
+  gitBranchesQuery,
+  gitCurrentRevisionsQuery,
+} from "@/lib/api/queries";
 import { detectLanguage } from "@/lib/file-viewer";
 import { extractLatestTodos } from "@/lib/todo-viewer";
 import { cn } from "@/lib/utils";
@@ -50,35 +55,43 @@ import {
   useGitBranches,
   useGitCheckout,
   useGitCurrentRevisionsSuspense,
-  useGitDiff,
+  useGitDiffSuspense,
 } from "../../projects/[projectId]/sessions/[sessionId]/hooks/useGit";
 import { useSession } from "../../projects/[projectId]/sessions/[sessionId]/hooks/useSession";
 import { CollapsibleTodoSection } from "./common/CollapsibleTodoSection";
 
-interface GitTabContentProps {
-  projectId: string;
-  sessionId?: string;
-}
+// ---------------------------------------------------------------------------
+// BranchSelector (Suspense component)
+// ---------------------------------------------------------------------------
 
-interface BranchSelectorProps {
-  projectId: string;
-  currentBranch: string | null;
-}
+const BranchSelectorFallback: FC = () => (
+  <Button
+    variant="ghost"
+    size="sm"
+    className="flex-1 min-w-0 justify-start gap-2 h-7 px-2 text-xs font-normal"
+    disabled
+  >
+    <GitBranchIcon className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
+    <span className="flex items-center gap-1">
+      <Loader2 className="w-3 h-3 animate-spin" />
+      <span className="text-muted-foreground">Loading...</span>
+    </span>
+  </Button>
+);
 
-const BranchSelector: FC<BranchSelectorProps> = ({
-  projectId,
-  currentBranch,
-}) => {
+const BranchSelectorContent: FC<{ projectId: string }> = ({ projectId }) => {
   const [open, setOpen] = useState(false);
-  const queryClient = useQueryClient();
-  const { data: branchesData, isLoading: isBranchesLoading } =
-    useGitBranches(projectId);
+  const { data: revisionsData } = useGitCurrentRevisionsSuspense(projectId);
+  const { data: branchesData } = useGitBranches(projectId);
   const { mutate: checkout, isPending: isCheckoutPending } =
     useGitCheckout(projectId);
 
+  const currentBranch = revisionsData?.success
+    ? (revisionsData.data.currentBranch?.name ?? null)
+    : null;
+
   const localBranches = useMemo(() => {
     if (!branchesData?.success) return [];
-    // All branches returned from API are already local branches (remote branches are filtered out)
     return branchesData.data.branches;
   }, [branchesData]);
 
@@ -92,9 +105,6 @@ const BranchSelector: FC<BranchSelectorProps> = ({
       onSuccess: (result) => {
         if (result.success) {
           toast.success(`Switched to ${branchName}`);
-          queryClient.invalidateQueries({
-            queryKey: gitCurrentRevisionsQuery(projectId).queryKey,
-          });
         } else {
           toast.error("Failed to switch branch");
         }
@@ -108,58 +118,60 @@ const BranchSelector: FC<BranchSelectorProps> = ({
   };
 
   return (
-    <div className="border-b border-border/40 px-3 py-2 bg-muted/10">
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="w-full justify-start gap-2 h-7 px-2 text-xs font-normal"
-            disabled={isBranchesLoading || isCheckoutPending}
-          >
-            <GitBranchIcon className="w-3.5 h-3.5 text-muted-foreground" />
-            <span className="font-mono truncate flex-1 text-left">
-              {isCheckoutPending ? (
-                <span className="flex items-center gap-1">
-                  <Loader2 className="w-3 h-3 animate-spin" />
-                  Switching...
-                </span>
-              ) : (
-                (currentBranch ?? "No branch")
-              )}
-            </span>
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-64 p-0" align="start">
-          <Command>
-            <CommandInput placeholder="Search branch..." className="h-8" />
-            <CommandList>
-              <CommandEmpty>No branch found.</CommandEmpty>
-              <CommandGroup>
-                {localBranches.map((branch) => (
-                  <CommandItem
-                    key={branch.name}
-                    value={branch.name}
-                    onSelect={() => handleCheckout(branch.name)}
-                    className="text-xs"
-                  >
-                    <GitBranchIcon className="w-3.5 h-3.5 mr-2 text-muted-foreground" />
-                    <span className="font-mono truncate flex-1">
-                      {branch.name}
-                    </span>
-                    {branch.name === currentBranch && (
-                      <CheckIcon className="w-3.5 h-3.5 text-primary" />
-                    )}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </CommandList>
-          </Command>
-        </PopoverContent>
-      </Popover>
-    </div>
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="flex-1 min-w-0 justify-start gap-2 h-7 px-2 text-xs font-normal"
+          disabled={isCheckoutPending}
+        >
+          <GitBranchIcon className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
+          <span className="font-mono truncate flex-1 text-left">
+            {isCheckoutPending ? (
+              <span className="flex items-center gap-1">
+                <Loader2 className="w-3 h-3 animate-spin" />
+                Switching...
+              </span>
+            ) : (
+              (currentBranch ?? "No branch")
+            )}
+          </span>
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-64 p-0" align="start">
+        <Command>
+          <CommandInput placeholder="Search branch..." className="h-8" />
+          <CommandList>
+            <CommandEmpty>No branch found.</CommandEmpty>
+            <CommandGroup>
+              {localBranches.map((branch) => (
+                <CommandItem
+                  key={branch.name}
+                  value={branch.name}
+                  onSelect={() => handleCheckout(branch.name)}
+                  className="text-xs"
+                >
+                  <GitBranchIcon className="w-3.5 h-3.5 mr-2 text-muted-foreground" />
+                  <span className="font-mono truncate flex-1">
+                    {branch.name}
+                  </span>
+                  {branch.name === currentBranch && (
+                    <CheckIcon className="w-3.5 h-3.5 text-primary" />
+                  )}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
   );
 };
+
+// ---------------------------------------------------------------------------
+// GitFileDialog (non-Suspense, uses lazy useQuery)
+// ---------------------------------------------------------------------------
 
 interface GitFileDialogProps {
   projectId: string;
@@ -362,44 +374,22 @@ const GitFileDialog: FC<GitFileDialogProps> = ({
   );
 };
 
-const SessionTodoSection: FC<{ projectId: string; sessionId: string }> = ({
-  projectId,
-  sessionId,
-}) => {
-  const { conversations } = useSession(projectId, sessionId);
-  const latestTodos = useMemo(
-    () => extractLatestTodos(conversations),
-    [conversations],
-  );
-  return <CollapsibleTodoSection todos={latestTodos} />;
-};
+// ---------------------------------------------------------------------------
+// GitFileList (Suspense component)
+// ---------------------------------------------------------------------------
 
-export const GitTabContent: FC<GitTabContentProps> = ({
-  projectId,
-  sessionId,
-}) => {
-  const { data: revisionsData } = useGitCurrentRevisionsSuspense(projectId);
-  const {
-    mutate: getDiff,
-    data: diffData,
-    isPending: isDiffLoading,
-  } = useGitDiff();
+const GitFileListFallback: FC = () => (
+  <div className="flex items-center justify-center py-8">
+    <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+  </div>
+);
 
-  // Load diff on mount
-  useEffect(() => {
-    if (revisionsData?.success) {
-      getDiff({
-        projectId,
-        fromRef: "HEAD",
-        toRef: "working",
-      });
-    }
-  }, [revisionsData, projectId, getDiff]);
+const GitFileList: FC<{ projectId: string }> = ({ projectId }) => {
+  const { data: diffData } = useGitDiffSuspense(projectId, "HEAD", "working");
 
-  const gitChangesCount = diffData?.success ? diffData.data.files.length : 0;
-  const hasGitChanges = gitChangesCount > 0;
+  const files = diffData?.success ? diffData.data.files : [];
+  const hasGitChanges = files.length > 0;
 
-  // Create a map of file path to diff data for quick lookup
   const diffsByFile = useMemo(() => {
     if (!diffData?.success) return new Map();
     const map = new Map<
@@ -423,102 +413,155 @@ export const GitTabContent: FC<GitTabContentProps> = ({
     return map;
   }, [diffData]);
 
-  const currentBranchName = revisionsData?.success
-    ? (revisionsData.data.currentBranch?.name ?? null)
-    : null;
-
-  if (!hasGitChanges && !isDiffLoading) {
+  if (!hasGitChanges) {
     return (
-      <div className="flex flex-col h-full">
-        <BranchSelector
-          projectId={projectId}
-          currentBranch={currentBranchName}
-        />
-        <div className="flex-1 flex items-center justify-center p-8">
-          <div className="text-center space-y-3">
-            <div className="w-12 h-12 mx-auto rounded-xl bg-muted/30 flex items-center justify-center">
-              <GitCompareIcon className="w-6 h-6 text-muted-foreground/50" />
-            </div>
-            <div className="space-y-1">
-              <p className="text-sm font-medium text-muted-foreground">
-                <Trans id="panel.git.empty" />
-              </p>
-            </div>
+      <div className="flex-1 flex items-center justify-center p-8">
+        <div className="text-center space-y-3">
+          <div className="w-12 h-12 mx-auto rounded-xl bg-muted/30 flex items-center justify-center">
+            <GitCompareIcon className="w-6 h-6 text-muted-foreground/50" />
+          </div>
+          <div className="space-y-1">
+            <p className="text-sm font-medium text-muted-foreground">
+              <Trans id="panel.git.empty" />
+            </p>
           </div>
         </div>
-        {sessionId && (
-          <SessionTodoSection projectId={projectId} sessionId={sessionId} />
-        )}
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col h-full">
-      {/* Branch Selector - Fixed at top */}
-      <BranchSelector projectId={projectId} currentBranch={currentBranchName} />
+    <div className="p-2 space-y-1">
+      {files.map((file) => {
+        const diffInfo = diffsByFile.get(file.filePath);
+        return (
+          <GitFileDialog
+            key={file.filePath}
+            projectId={projectId}
+            filePath={file.filePath}
+            status={file.status}
+            additions={file.additions}
+            deletions={file.deletions}
+            diffHunks={diffInfo?.hunks}
+          >
+            <button
+              type="button"
+              className="w-full flex items-center gap-2 px-2 py-1.5 text-xs hover:bg-muted/30 rounded-md transition-colors text-left"
+              data-testid="git-file-button"
+            >
+              <span
+                className={cn(
+                  "w-1.5 h-1.5 rounded-full flex-shrink-0",
+                  file.status === "added" && "bg-green-500",
+                  file.status === "deleted" && "bg-red-500",
+                  file.status === "modified" && "bg-amber-500",
+                  file.status === "renamed" && "bg-blue-500",
+                )}
+              />
+              <span className="truncate flex-1 font-mono">{file.filePath}</span>
+              <span className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
+                {file.additions > 0 && (
+                  <span className="text-green-600 dark:text-green-400">
+                    +{file.additions}
+                  </span>
+                )}
+                {file.deletions > 0 && (
+                  <span className="text-red-600 dark:text-red-400">
+                    -{file.deletions}
+                  </span>
+                )}
+              </span>
+            </button>
+          </GitFileDialog>
+        );
+      })}
+    </div>
+  );
+};
 
-      {/* Scrollable Files Section */}
-      <div className="flex-1 min-h-0 overflow-y-auto">
-        {isDiffLoading ? (
-          <div className="flex items-center justify-center py-8">
-            <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
-          </div>
-        ) : (
-          <div className="p-2 space-y-1">
-            {diffData?.success &&
-              diffData.data.files.map((file) => {
-                const diffInfo = diffsByFile.get(file.filePath);
-                return (
-                  <GitFileDialog
-                    key={file.filePath}
-                    projectId={projectId}
-                    filePath={file.filePath}
-                    status={file.status}
-                    additions={file.additions}
-                    deletions={file.deletions}
-                    diffHunks={diffInfo?.hunks}
-                  >
-                    <button
-                      type="button"
-                      className="w-full flex items-center gap-2 px-2 py-1.5 text-xs hover:bg-muted/30 rounded-md transition-colors text-left"
-                      data-testid="git-file-button"
-                    >
-                      <span
-                        className={cn(
-                          "w-1.5 h-1.5 rounded-full flex-shrink-0",
-                          file.status === "added" && "bg-green-500",
-                          file.status === "deleted" && "bg-red-500",
-                          file.status === "modified" && "bg-amber-500",
-                          file.status === "renamed" && "bg-blue-500",
-                        )}
-                      />
-                      <span className="truncate flex-1 font-mono">
-                        {file.filePath}
-                      </span>
-                      <span className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
-                        {file.additions > 0 && (
-                          <span className="text-green-600 dark:text-green-400">
-                            +{file.additions}
-                          </span>
-                        )}
-                        {file.deletions > 0 && (
-                          <span className="text-red-600 dark:text-red-400">
-                            -{file.deletions}
-                          </span>
-                        )}
-                      </span>
-                    </button>
-                  </GitFileDialog>
-                );
-              })}
-          </div>
-        )}
+// ---------------------------------------------------------------------------
+// SessionTodoSection (Suspense component)
+// ---------------------------------------------------------------------------
+
+const SessionTodoSection: FC<{ projectId: string; sessionId: string }> = ({
+  projectId,
+  sessionId,
+}) => {
+  const { conversations } = useSession(projectId, sessionId);
+  const latestTodos = useMemo(
+    () => extractLatestTodos(conversations),
+    [conversations],
+  );
+  return <CollapsibleTodoSection todos={latestTodos} />;
+};
+
+// ---------------------------------------------------------------------------
+// GitTabContent (exported, manages Suspense boundaries + reload)
+// ---------------------------------------------------------------------------
+
+interface GitTabContentProps {
+  projectId: string;
+  sessionId?: string;
+}
+
+export const GitTabContent: FC<GitTabContentProps> = ({
+  projectId,
+  sessionId,
+}) => {
+  const queryClient = useQueryClient();
+  const isGitFetching =
+    useIsFetching({
+      predicate: (query) =>
+        query.queryKey[0] === "git" && query.queryKey.includes(projectId),
+    }) > 0;
+
+  const handleReload = useCallback(() => {
+    queryClient.invalidateQueries({
+      queryKey: gitCurrentRevisionsQuery(projectId).queryKey,
+    });
+    queryClient.invalidateQueries({
+      queryKey: gitBranchesQuery(projectId).queryKey,
+    });
+    queryClient.invalidateQueries({
+      queryKey: ["git", "diff", projectId],
+    });
+  }, [queryClient, projectId]);
+
+  return (
+    <div className="flex flex-col h-full">
+      {/* Header: Branch selector + Reload button */}
+      <div className="border-b border-border/40 px-3 py-2 bg-muted/10 flex items-center gap-1">
+        <Suspense fallback={<BranchSelectorFallback />}>
+          <BranchSelectorContent projectId={projectId} />
+        </Suspense>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-7 w-7 p-0 flex-shrink-0"
+          onClick={handleReload}
+          disabled={isGitFetching}
+        >
+          <RefreshCwIcon
+            className={cn(
+              "w-3.5 h-3.5 text-muted-foreground",
+              isGitFetching && "animate-spin",
+            )}
+          />
+        </Button>
       </div>
 
-      {/* Todo Checklist Section - Fixed at bottom */}
+      {/* File list */}
+      <div className="flex-1 min-h-0 overflow-y-auto">
+        <Suspense fallback={<GitFileListFallback />}>
+          <GitFileList projectId={projectId} />
+        </Suspense>
+      </div>
+
+      {/* Todo section */}
       {sessionId && (
-        <SessionTodoSection projectId={projectId} sessionId={sessionId} />
+        <Suspense fallback={null}>
+          <SessionTodoSection projectId={projectId} sessionId={sessionId} />
+        </Suspense>
       )}
     </div>
   );

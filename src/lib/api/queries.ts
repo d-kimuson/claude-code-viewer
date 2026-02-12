@@ -165,6 +165,47 @@ export const gitCurrentRevisionsQuery = (projectId: string) =>
     },
   }) as const;
 
+export const gitBranchesQuery = (projectId: string) =>
+  ({
+    queryKey: ["git", "branches", projectId],
+    queryFn: async () => {
+      const response = await honoClient.api.projects[
+        ":projectId"
+      ].git.branches.$get({
+        param: { projectId },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch branches: ${response.statusText}`);
+      }
+
+      return await response.json();
+    },
+  }) as const;
+
+export const gitDiffQuery = (
+  projectId: string,
+  fromRef: string,
+  toRef: string,
+) =>
+  ({
+    queryKey: ["git", "diff", projectId, fromRef, toRef],
+    queryFn: async () => {
+      const response = await honoClient.api.projects[
+        ":projectId"
+      ].git.diff.$post({
+        param: { projectId },
+        json: { fromRef, toRef },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch diff: ${response.statusText}`);
+      }
+
+      return await response.json();
+    },
+  }) as const;
+
 export const mcpListQuery = (projectId: string) =>
   ({
     queryKey: ["mcp", "list", projectId],

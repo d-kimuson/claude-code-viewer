@@ -83,9 +83,7 @@ export const SessionPageContent: FC<{
           projectId={projectId}
           sessionId={sessionId}
           gitTabContent={
-            <Suspense fallback={<Loading />}>
-              <GitTabContent projectId={projectId} sessionId={sessionId} />
-            </Suspense>
+            <GitTabContent projectId={projectId} sessionId={sessionId} />
           }
           filesToolsTabContent={
             sessionId ? (

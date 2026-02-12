@@ -275,7 +275,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        325
+        337
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
@@ -290,7 +290,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        310
+        322
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
@@ -320,7 +320,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        322
+        334
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
@@ -357,7 +357,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        328
+        340
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
@@ -372,7 +372,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        302
+        314
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
@@ -447,7 +447,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        331
+        343
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
@@ -477,7 +477,7 @@
       ],
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        313
+        325
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
@@ -1944,7 +1944,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        444
+        425
       ]
     ],
     "translation": "No Git changes"
@@ -1955,7 +1955,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        272
+        284
       ]
     ],
     "translation": "Content"
@@ -1966,7 +1966,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        268
+        280
       ]
     ],
     "translation": "Diff"

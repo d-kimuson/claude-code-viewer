@@ -5,7 +5,11 @@ import {
   useSuspenseQuery,
 } from "@tanstack/react-query";
 import { honoClient } from "@/lib/api/client";
-import { gitCurrentRevisionsQuery } from "../../../../../../lib/api/queries";
+import {
+  gitBranchesQuery,
+  gitCurrentRevisionsQuery,
+  gitDiffQuery,
+} from "../../../../../../lib/api/queries";
 
 export const useGitCurrentRevisions = (projectId: string) => {
   return useQuery({
@@ -24,21 +28,21 @@ export const useGitCurrentRevisionsSuspense = (projectId: string) => {
 };
 
 export const useGitBranches = (projectId: string) => {
-  return useQuery({
-    queryKey: ["git", "branches", projectId],
-    queryFn: async () => {
-      const response = await honoClient.api.projects[
-        ":projectId"
-      ].git.branches.$get({
-        param: { projectId },
-      });
+  return useSuspenseQuery({
+    queryKey: gitBranchesQuery(projectId).queryKey,
+    queryFn: gitBranchesQuery(projectId).queryFn,
+    staleTime: 30000,
+  });
+};
 
-      if (!response.ok) {
-        throw new Error(`Failed to get branches: ${response.statusText}`);
-      }
-
-      return response.json();
-    },
+export const useGitDiffSuspense = (
+  projectId: string,
+  fromRef: string,
+  toRef: string,
+) => {
+  return useSuspenseQuery({
+    queryKey: gitDiffQuery(projectId, fromRef, toRef).queryKey,
+    queryFn: gitDiffQuery(projectId, fromRef, toRef).queryFn,
     staleTime: 30000,
   });
 };
@@ -63,10 +67,13 @@ export const useGitCheckout = (projectId: string) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["git", "branches", projectId],
+        queryKey: gitBranchesQuery(projectId).queryKey,
       });
       queryClient.invalidateQueries({
         queryKey: gitCurrentRevisionsQuery(projectId).queryKey,
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["git", "diff", projectId],
       });
     },
   });

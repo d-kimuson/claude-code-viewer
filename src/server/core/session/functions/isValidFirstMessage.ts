@@ -58,5 +58,9 @@ export const extractFirstUserMessage = (
     return undefined;
   }
 
+  if (command.kind === "local-command" && command.stdout.trim() === "") {
+    return undefined;
+  }
+
   return command;
 };

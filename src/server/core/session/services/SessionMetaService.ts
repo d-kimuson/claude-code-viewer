@@ -52,13 +52,13 @@ export class SessionMetaService extends Context.Tag("SessionMetaService")<
         Effect.gen(function* () {
           const cached = yield* firstUserMessageCache.get(jsonlFilePath);
           if (cached !== undefined) {
-            if (
+            const isStale =
               cached !== null &&
-              cached.kind === "text" &&
-              isLocalCommandCaveat(cached.content)
-            ) {
-              // Ignore stale cache entries that only contain the caveat.
-            } else {
+              ((cached.kind === "text" &&
+                isLocalCommandCaveat(cached.content)) ||
+                (cached.kind === "local-command" &&
+                  cached.stdout.trim() === ""));
+            if (!isStale) {
               return cached;
             }
           }

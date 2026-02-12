@@ -10,7 +10,7 @@ const sseRoutes = Effect.gen(function* () {
   const sseController = yield* SSEController;
   const runtime = yield* getHonoRuntime;
 
-  return new Hono<HonoContext>().get("/sse", async (c) => {
+  return new Hono<HonoContext>().get("/", async (c) => {
     return streamSSE(
       c,
       async (rawStream) => {

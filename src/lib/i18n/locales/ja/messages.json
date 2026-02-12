@@ -304,6 +304,10 @@
     "comments": [],
     "origin": [
       [
+        "src/app/components/rightPanel/FilesToolsTabContent.tsx",
+        295
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
         189
       ]
@@ -382,6 +386,10 @@
     "comments": [],
     "origin": [
       [
+        "src/app/components/rightPanel/FilesToolsTabContent.tsx",
+        287
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
         181
       ]
@@ -397,6 +405,10 @@
     "comments": [],
     "origin": [
       [
+        "src/app/components/rightPanel/FilesToolsTabContent.tsx",
+        273
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
         167
       ]
@@ -407,6 +419,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
+      [
+        "src/app/components/rightPanel/FilesToolsTabContent.tsx",
+        305
+      ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
         199
@@ -455,6 +471,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
+      [
+        "src/app/components/rightPanel/FilesToolsTabContent.tsx",
+        298
+      ],
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
         313
@@ -594,7 +614,7 @@
     "origin": [
       [
         "src/app/components/SessionHistoryPopover.tsx",
-        160
+        164
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
@@ -606,7 +626,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        101
+        105
       ]
     ],
     "translation": "新しいチャットを開始"
@@ -936,7 +956,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        185
+        193
       ]
     ],
     "translation": "読み込み中..."
@@ -1770,7 +1790,7 @@
     "origin": [
       [
         "src/routes/projects/$projectId/session.tsx",
-        21
+        25
       ]
     ],
     "translation": "お探しのセッションは存在しません。"
@@ -1781,7 +1801,7 @@
     "origin": [
       [
         "src/routes/projects/$projectId/session.tsx",
-        20
+        24
       ]
     ],
     "translation": "セッションが見つかりません"
@@ -1891,7 +1911,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/FilesToolsTabContent.tsx",
-        315
+        474
       ]
     ],
     "translation": "編集されたファイル"
@@ -1902,7 +1922,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/FilesToolsTabContent.tsx",
-        374
+        533
       ]
     ],
     "translation": "ツールでフィルター"
@@ -1913,7 +1933,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/FilesToolsTabContent.tsx",
-        356
+        515
       ]
     ],
     "translation": "ツール呼び出し"
@@ -1924,7 +1944,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        439
+        444
       ]
     ],
     "translation": "Git変更がありません"
@@ -2717,7 +2737,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        665
+        668
       ]
     ],
     "translation": "Claude Codeが処理中..."
@@ -2761,15 +2781,15 @@
     "origin": [
       [
         "src/app/components/SessionHistoryPopover.tsx",
-        209
+        217
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        630
+        633
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        148
+        156
       ]
     ],
     "translation": "一時停止"
@@ -2780,15 +2800,15 @@
     "origin": [
       [
         "src/app/components/SessionHistoryPopover.tsx",
-        207
+        215
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        628
+        631
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        146
+        154
       ]
     ],
     "translation": "実行中"
@@ -2799,11 +2819,11 @@
     "origin": [
       [
         "src/app/components/SessionHistoryPopover.tsx",
-        244
+        252
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        187
+        195
       ]
     ],
     "translation": "さらに読み込む"
@@ -3545,7 +3565,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/FilesToolsTabContent.tsx",
-        295
+        454
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/EditedFilesTab.tsx",
@@ -3560,7 +3580,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/FilesToolsTabContent.tsx",
-        336
+        495
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/EditedFilesTab.tsx",

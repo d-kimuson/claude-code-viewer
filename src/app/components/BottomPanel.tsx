@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/react";
-import { RocketIcon, RotateCcwIcon, XIcon } from "lucide-react";
+import { PanelBottomCloseIcon, RocketIcon, RotateCcwIcon } from "lucide-react";
 import type { FC } from "react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useDragResize } from "@/hooks/useDragResize";
 import {
   useBottomPanelActions,
@@ -19,6 +19,23 @@ export const BottomPanel: FC<BottomPanelProps> = ({ cwd }) => {
     useBottomPanelActions();
 
   const [terminalResetToken, setTerminalResetToken] = useState(0);
+  const collapseTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+  // Clean up timer on unmount
+  useEffect(() => {
+    return () => {
+      if (collapseTimerRef.current) {
+        clearTimeout(collapseTimerRef.current);
+      }
+    };
+  }, []);
+
+  const handleProcessExit = useCallback(() => {
+    // Delay collapse so user can see the exit message
+    collapseTimerRef.current = setTimeout(() => {
+      setIsBottomPanelOpen(false);
+    }, 1500);
+  }, [setIsBottomPanelOpen]);
 
   const handleResize = useCallback(
     (event: MouseEvent) => {
@@ -55,7 +72,7 @@ export const BottomPanel: FC<BottomPanelProps> = ({ cwd }) => {
 
   return (
     <div
-      className="border-t border-border/60 bg-background flex flex-col"
+      className="border-t border-border/60 bg-background flex flex-col flex-shrink-0"
       style={{
         height: `${bottomPanelHeight}%`,
         userSelect: isResizing ? "none" : "auto",
@@ -90,16 +107,20 @@ export const BottomPanel: FC<BottomPanelProps> = ({ cwd }) => {
             type="button"
             onClick={() => setIsBottomPanelOpen(false)}
             className="w-5 h-5 flex items-center justify-center rounded hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
-            aria-label="Close bottom panel"
+            aria-label="Collapse terminal panel"
           >
-            <XIcon className="w-3 h-3" />
+            <PanelBottomCloseIcon className="w-3 h-3" />
           </button>
         </div>
       </div>
 
       {/* Content */}
       <div className="flex-1 min-h-0 bg-muted/5">
-        <TerminalPanel resetToken={terminalResetToken} cwd={cwd} />
+        <TerminalPanel
+          resetToken={terminalResetToken}
+          cwd={cwd}
+          onProcessExit={handleProcessExit}
+        />
       </div>
     </div>
   );

@@ -73,6 +73,7 @@ const buildWebSocketUrl = (
 type TerminalPanelProps = {
   resetToken?: number;
   cwd?: string;
+  onProcessExit?: () => void;
 };
 
 const clearStoredSession = (cwd: string | undefined) => {
@@ -82,6 +83,7 @@ const clearStoredSession = (cwd: string | undefined) => {
 export const TerminalPanel: FC<TerminalPanelProps> = ({
   resetToken = 0,
   cwd,
+  onProcessExit,
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const terminalRef = useRef<Terminal | null>(null);
@@ -90,6 +92,8 @@ export const TerminalPanel: FC<TerminalPanelProps> = ({
   const sessionIdRef = useRef<string | undefined>(undefined);
   const lastSeqRef = useRef<number>(0);
   const refreshRequestedRef = useRef(false);
+  const onProcessExitRef = useRef(onProcessExit);
+  onProcessExitRef.current = onProcessExit;
 
   useEffect(() => {
     const container = containerRef.current;
@@ -170,6 +174,7 @@ export const TerminalPanel: FC<TerminalPanelProps> = ({
       }
       if (message.type === "exit") {
         term.write(`\r\n[process exited with code ${message.code}]\r\n`);
+        onProcessExitRef.current?.();
         return;
       }
     });

@@ -8,7 +8,6 @@ import { ReviewTabContent } from "@/app/components/rightPanel/ReviewTabContent";
 import { Loading } from "@/components/Loading";
 import { ResizableSidebar } from "@/components/ResizableSidebar";
 import { useIsMobile } from "@/hooks/useIsMobile";
-import { useBottomPanelState } from "@/hooks/useLayoutPanels";
 import { useRightPanelOpen, useRightPanelWidth } from "@/hooks/useRightPanel";
 import { useSyncRightPanelWithSearchParams } from "@/hooks/useSyncRightPanelWithSearchParams";
 import { useProject } from "../../../hooks/useProject";
@@ -26,16 +25,12 @@ export const SessionPageContent: FC<{
   const isMobile = useIsMobile();
   const isRightPanelOpen = useRightPanelOpen();
   const rightPanelWidth = useRightPanelWidth();
-  const { isBottomPanelOpen, bottomPanelHeight } = useBottomPanelState();
   const { data: projectData } = useProject(projectId);
 
   const firstPage = projectData.pages[0];
   const project = firstPage?.project;
   const projectPath = project?.meta.projectPath ?? project?.claudeProjectPath;
   const projectName = project?.meta.projectName ?? "Untitled Project";
-
-  // Calculate main content height based on bottom panel
-  const mainContentHeight = isBottomPanelOpen ? 100 - bottomPanelHeight : 100;
 
   // Right panel margin (when open, reserve space for fixed right panel)
   const rightPanelMargin =
@@ -48,30 +43,27 @@ export const SessionPageContent: FC<{
       projectName={projectName}
       onMobileLeftPanelOpen={() => setIsMobileSidebarOpen(true)}
     >
-      <div className="flex flex-col h-full">
-        {/* Main content area with sidebar */}
-        <div
-          className="flex flex-1 min-h-0 overflow-hidden transition-all duration-200"
-          style={{
-            height: `${mainContentHeight}%`,
-            marginRight: rightPanelMargin,
-          }}
-        >
-          <div className="flex h-full w-full">
-            {/* Left Sidebar - Resizable (Desktop only, controlled by ResizableSidebar) */}
-            <ResizableSidebar>
-              <Suspense fallback={<Loading />}>
-                <SessionSidebar
-                  currentSessionId={sessionId}
-                  projectId={projectId}
-                  isMobileOpen={isMobileSidebarOpen}
-                  onMobileOpenChange={setIsMobileSidebarOpen}
-                  initialTab={tab}
-                />
-              </Suspense>
-            </ResizableSidebar>
+      <div className="flex h-full overflow-hidden">
+        {/* Left Sidebar - full height, higher priority than bottom panel */}
+        <ResizableSidebar>
+          <Suspense fallback={<Loading />}>
+            <SessionSidebar
+              currentSessionId={sessionId}
+              projectId={projectId}
+              isMobileOpen={isMobileSidebarOpen}
+              onMobileOpenChange={setIsMobileSidebarOpen}
+              initialTab={tab}
+            />
+          </Suspense>
+        </ResizableSidebar>
 
-            {/* Main Chat Area */}
+        {/* Center column: main content + bottom panel */}
+        <div
+          className="flex flex-col flex-1 min-w-0 transition-all duration-200"
+          style={{ marginRight: rightPanelMargin }}
+        >
+          {/* Main Chat Area */}
+          <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
             <Suspense fallback={<Loading />}>
               <SessionPageMain
                 projectId={projectId}
@@ -82,35 +74,35 @@ export const SessionPageContent: FC<{
             </Suspense>
           </div>
 
-          {/* Right Panel */}
-          <RightPanel
-            projectId={projectId}
-            sessionId={sessionId}
-            gitTabContent={
-              <Suspense fallback={<Loading />}>
-                <GitTabContent projectId={projectId} sessionId={sessionId} />
-              </Suspense>
-            }
-            filesToolsTabContent={
-              sessionId ? (
-                <Suspense fallback={<Loading />}>
-                  <FilesToolsTabContent
-                    projectId={projectId}
-                    sessionId={sessionId}
-                  />
-                </Suspense>
-              ) : null
-            }
-            reviewTabContent={
-              <Suspense fallback={<Loading />}>
-                <ReviewTabContent projectId={projectId} sessionId={sessionId} />
-              </Suspense>
-            }
-          />
+          {/* Bottom Panel - between left and right panels */}
+          <BottomPanel cwd={projectPath} />
         </div>
 
-        {/* Bottom Panel */}
-        <BottomPanel cwd={projectPath} />
+        {/* Right Panel - fixed position, full height */}
+        <RightPanel
+          projectId={projectId}
+          sessionId={sessionId}
+          gitTabContent={
+            <Suspense fallback={<Loading />}>
+              <GitTabContent projectId={projectId} sessionId={sessionId} />
+            </Suspense>
+          }
+          filesToolsTabContent={
+            sessionId ? (
+              <Suspense fallback={<Loading />}>
+                <FilesToolsTabContent
+                  projectId={projectId}
+                  sessionId={sessionId}
+                />
+              </Suspense>
+            ) : null
+          }
+          reviewTabContent={
+            <Suspense fallback={<Loading />}>
+              <ReviewTabContent projectId={projectId} sessionId={sessionId} />
+            </Suspense>
+          }
+        />
       </div>
     </AppLayout>
   );

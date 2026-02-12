@@ -78,7 +78,7 @@ export function SearchDialog({
       navigate({
         to: "/projects/$projectId/session",
         params: { projectId: result.projectId },
-        search: { sessionId: result.sessionId },
+        search: (prev) => ({ ...prev, sessionId: result.sessionId }),
       });
     },
     [navigate, onOpenChange],

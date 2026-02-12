@@ -57,7 +57,7 @@ import { CollapsibleTodoSection } from "./common/CollapsibleTodoSection";
 
 interface GitTabContentProps {
   projectId: string;
-  sessionId: string;
+  sessionId?: string;
 }
 
 interface BranchSelectorProps {
@@ -362,11 +362,22 @@ const GitFileDialog: FC<GitFileDialogProps> = ({
   );
 };
 
-export const GitTabContent: FC<GitTabContentProps> = ({
+const SessionTodoSection: FC<{ projectId: string; sessionId: string }> = ({
   projectId,
   sessionId,
 }) => {
   const { conversations } = useSession(projectId, sessionId);
+  const latestTodos = useMemo(
+    () => extractLatestTodos(conversations),
+    [conversations],
+  );
+  return <CollapsibleTodoSection todos={latestTodos} />;
+};
+
+export const GitTabContent: FC<GitTabContentProps> = ({
+  projectId,
+  sessionId,
+}) => {
   const { data: revisionsData } = useGitCurrentRevisions(projectId);
   const {
     mutate: getDiff,
@@ -384,12 +395,6 @@ export const GitTabContent: FC<GitTabContentProps> = ({
       });
     }
   }, [revisionsData, projectId, getDiff]);
-
-  // Todo items
-  const latestTodos = useMemo(
-    () => extractLatestTodos(conversations),
-    [conversations],
-  );
 
   const gitChangesCount = diffData?.success ? diffData.data.files.length : 0;
   const hasGitChanges = gitChangesCount > 0;
@@ -441,7 +446,9 @@ export const GitTabContent: FC<GitTabContentProps> = ({
             </div>
           </div>
         </div>
-        <CollapsibleTodoSection todos={latestTodos} />
+        {sessionId && (
+          <SessionTodoSection projectId={projectId} sessionId={sessionId} />
+        )}
       </div>
     );
   }
@@ -510,7 +517,9 @@ export const GitTabContent: FC<GitTabContentProps> = ({
       </div>
 
       {/* Todo Checklist Section - Fixed at bottom */}
-      <CollapsibleTodoSection todos={latestTodos} />
+      {sessionId && (
+        <SessionTodoSection projectId={projectId} sessionId={sessionId} />
+      )}
     </div>
   );
 };

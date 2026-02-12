@@ -7,9 +7,13 @@ import { tabSchema } from "../../../app/projects/[projectId]/sessions/[sessionId
 import { NotFound } from "../../../components/NotFound";
 import { ProtectedRoute } from "../../../components/ProtectedRoute";
 
+const rightPanelTabSchema = z.enum(["git", "files-tools", "review", "browser"]);
+
 const sessionSearchSchema = z.object({
   sessionId: z.string().optional(),
   tab: tabSchema.optional().default("sessions"),
+  rightPanel: z.boolean().optional().default(true),
+  rightPanelTab: rightPanelTabSchema.optional().default("git"),
 });
 
 export const Route = createFileRoute("/projects/$projectId/session")({

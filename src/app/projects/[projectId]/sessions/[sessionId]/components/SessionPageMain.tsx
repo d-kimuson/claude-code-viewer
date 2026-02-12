@@ -603,7 +603,10 @@ const SessionPageMainContent: FC<
                             key={session.id}
                             to="/projects/$projectId/session"
                             params={{ projectId }}
-                            search={{ sessionId: session.id }}
+                            search={(prev) => ({
+                              ...prev,
+                              sessionId: session.id,
+                            })}
                             className={cn(
                               "block p-3 rounded-lg transition-colors border",
                               "border-border/40 hover:bg-muted/50 hover:border-primary/30",
@@ -709,7 +712,11 @@ const SessionPageMainContent: FC<
             navigate({
               to: "/projects/$projectId/session",
               params: { projectId },
-              search: { sessionId: undefined, tab: "sessions" },
+              search: (prev) => ({
+                ...prev,
+                sessionId: undefined,
+                tab: "sessions" as const,
+              }),
             });
           }}
         />

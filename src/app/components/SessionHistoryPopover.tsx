@@ -144,7 +144,11 @@ export const SessionHistoryPopover: FC<SessionHistoryPopoverProps> = ({
             <Link
               to="/projects/$projectId/session"
               params={{ projectId }}
-              search={{ tab: currentTab }}
+              search={(prev) => ({
+                ...prev,
+                tab: currentTab,
+                sessionId: undefined,
+              })}
               data-testid="start-new-chat-link"
               className={cn(
                 "flex items-center gap-3 p-2 rounded-md transition-colors border border-dashed",
@@ -180,7 +184,11 @@ export const SessionHistoryPopover: FC<SessionHistoryPopoverProps> = ({
                   key={session.id}
                   to="/projects/$projectId/session"
                   params={{ projectId }}
-                  search={{ tab: currentTab, sessionId: session.id }}
+                  search={(prev) => ({
+                    ...prev,
+                    tab: currentTab,
+                    sessionId: session.id,
+                  })}
                   className={cn(
                     "block p-2 rounded-md transition-colors border",
                     isActive

@@ -10,6 +10,7 @@ import { ResizableSidebar } from "@/components/ResizableSidebar";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useBottomPanelState } from "@/hooks/useLayoutPanels";
 import { useRightPanelOpen, useRightPanelWidth } from "@/hooks/useRightPanel";
+import { useSyncRightPanelWithSearchParams } from "@/hooks/useSyncRightPanelWithSearchParams";
 import { useProject } from "../../../hooks/useProject";
 import { SessionPageMain } from "./SessionPageMain";
 import { SessionSidebar } from "./sessionSidebar/SessionSidebar";
@@ -21,6 +22,7 @@ export const SessionPageContent: FC<{
   tab: Tab;
 }> = ({ projectId, sessionId, tab }) => {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  useSyncRightPanelWithSearchParams();
   const isMobile = useIsMobile();
   const isRightPanelOpen = useRightPanelOpen();
   const rightPanelWidth = useRightPanelWidth();
@@ -85,11 +87,9 @@ export const SessionPageContent: FC<{
             projectId={projectId}
             sessionId={sessionId}
             gitTabContent={
-              sessionId ? (
-                <Suspense fallback={<Loading />}>
-                  <GitTabContent projectId={projectId} sessionId={sessionId} />
-                </Suspense>
-              ) : null
+              <Suspense fallback={<Loading />}>
+                <GitTabContent projectId={projectId} sessionId={sessionId} />
+              </Suspense>
             }
             filesToolsTabContent={
               sessionId ? (

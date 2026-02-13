@@ -12,7 +12,9 @@ export const useSidechain = (conversations: Conversation[]) => {
         conv.type !== "summary" &&
         conv.type !== "file-history-snapshot" &&
         conv.type !== "queue-operation" &&
-        conv.type !== "progress",
+        conv.type !== "progress" &&
+        conv.type !== "custom-title" &&
+        conv.type !== "agent-name",
     )
     .filter((conv) => conv.isSidechain === true);
 
@@ -96,7 +98,9 @@ export const useSidechain = (conversations: Conversation[]) => {
       if (
         conversation.type === "summary" ||
         conversation.type === "file-history-snapshot" ||
-        conversation.type === "queue-operation"
+        conversation.type === "queue-operation" ||
+        conversation.type === "custom-title" ||
+        conversation.type === "agent-name"
       ) {
         return false;
       }

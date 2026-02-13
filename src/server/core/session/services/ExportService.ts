@@ -434,6 +434,8 @@ const buildSidechainData = (
       conv.type !== "file-history-snapshot" &&
       conv.type !== "queue-operation" &&
       conv.type !== "progress" &&
+      conv.type !== "custom-title" &&
+      conv.type !== "agent-name" &&
       conv.isSidechain === true,
   ) as Array<Extract<Conversation, { type: "user" | "assistant" | "system" }>>;
 
@@ -1095,6 +1097,8 @@ export const generateSessionHtml = (
         conv.type !== "file-history-snapshot" &&
         conv.type !== "queue-operation" &&
         conv.type !== "progress" &&
+        conv.type !== "custom-title" &&
+        conv.type !== "agent-name" &&
         conv.isSidechain === true &&
         conv.agentId !== undefined
       ) {

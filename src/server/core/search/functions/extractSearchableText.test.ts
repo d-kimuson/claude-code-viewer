@@ -114,6 +114,30 @@ describe("extractSearchableText", () => {
     });
   });
 
+  describe("custom-title and agent-name entries", () => {
+    it("returns customTitle string for custom-title entries", () => {
+      const conversation: Conversation = {
+        type: "custom-title",
+        customTitle: "My Custom Session Name",
+        sessionId: "abc-123",
+      };
+
+      const result = extractSearchableText(conversation);
+      expect(result).toBe("My Custom Session Name");
+    });
+
+    it("returns null for agent-name entries", () => {
+      const conversation: Conversation = {
+        type: "agent-name",
+        agentName: "claude-code-agent",
+        sessionId: "abc-123",
+      };
+
+      const result = extractSearchableText(conversation);
+      expect(result).toBeNull();
+    });
+  });
+
   describe("unsupported types", () => {
     it("returns null for x-error type", () => {
       const conversation = {

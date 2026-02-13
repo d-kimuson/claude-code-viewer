@@ -104,7 +104,10 @@ export const routes = (app: HonoAppType, options: CliOptions) =>
     );
   });
 
-export type RouteType =
-  ReturnType<typeof routes> extends Effect.Effect<infer A, unknown, unknown>
-    ? A
-    : never;
+export type RouteType = ReturnType<typeof routes> extends Effect.Effect<
+  infer A,
+  unknown,
+  unknown
+>
+  ? A
+  : never;

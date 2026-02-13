@@ -62,6 +62,14 @@ const getConversationKey = (conversation: Conversation) => {
     return `progress_${conversation.uuid}`;
   }
 
+  if (conversation.type === "custom-title") {
+    return `custom-title_${conversation.sessionId}_${conversation.customTitle}`;
+  }
+
+  if (conversation.type === "agent-name") {
+    return `agent-name_${conversation.sessionId}_${conversation.agentName}`;
+  }
+
   conversation satisfies never;
   throw new Error(`Unknown conversation type: ${conversation}`);
 };
@@ -286,6 +294,8 @@ export const ConversationList: FC<ConversationListProps> = ({
 
       // Existing checks
       if (conv.type === "progress") return false;
+      if (conv.type === "custom-title") return false;
+      if (conv.type === "agent-name") return false;
 
       const isSidechain =
         conv.type !== "summary" &&
@@ -320,7 +330,9 @@ export const ConversationList: FC<ConversationListProps> = ({
         conv.type === "summary" ||
         conv.type === "progress" ||
         conv.type === "queue-operation" ||
-        conv.type === "file-history-snapshot"
+        conv.type === "file-history-snapshot" ||
+        conv.type === "custom-title" ||
+        conv.type === "agent-name"
       ) {
         // These types might not have timestamp or are invisible
         return { conversation: conv, showTimestamp: false };
@@ -392,6 +404,8 @@ export const ConversationList: FC<ConversationListProps> = ({
               conversation.type !== "file-history-snapshot" &&
               conversation.type !== "queue-operation" &&
               conversation.type !== "progress" &&
+              conversation.type !== "custom-title" &&
+              conversation.type !== "agent-name" &&
               conversation.isSidechain;
 
             return [

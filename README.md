@@ -82,6 +82,7 @@ Options:
   -P, --password <password>        Password for authentication
   -e, --executable <executable>    Path to Claude Code executable
   --claude-dir <claude-dir>        Path to Claude directory
+  --api-only                       Run in API-only mode without Web UI
 ```
 
 ### Docker Deployment
@@ -162,6 +163,7 @@ Claude Code Viewer can be configured using command-line options or environment v
 | `--terminal-disabled` | `CCV_TERMINAL_DISABLED` | Disable the in-app terminal panel when set to `1`/`true` (env) or when the flag is present (CLI) | (unset) |
 | `--terminal-shell <path>` | `CCV_TERMINAL_SHELL` | Shell executable for terminal sessions (e.g. `/bin/zsh`) | (auto-detect) |
 | `--terminal-unrestricted` | `CCV_TERMINAL_UNRESTRICTED` | When set to `1` (env) or when the flag is present (CLI), disables the restricted shell flags for bash | (unset) |
+| `--api-only` | `CCV_API_ONLY` | Run in API-only mode. Disables Web UI, terminal WebSocket, and non-essential endpoints. Only core API routes (`/api/version`, `/api/config`, `/api/projects`, `/api/claude-code`, `/api/search`, `/api/sse`) are exposed. Useful for integrating with external tools like n8n | (unset) |
 
 **Breaking Change**: Environment variable names have been changed. If you're using environment variables, update them as follows:
 - `CLAUDE_CODE_VIEWER_AUTH_PASSWORD` → `CCV_PASSWORD`

@@ -10,6 +10,7 @@ export type CliOptions = {
   terminalDisabled?: boolean | undefined;
   terminalShell?: string | undefined;
   terminalUnrestricted?: boolean | undefined;
+  apiOnly?: boolean | undefined;
 };
 
 export type CcvOptions = {
@@ -21,6 +22,7 @@ export type CcvOptions = {
   terminalDisabled?: boolean | undefined;
   terminalShell?: string | undefined;
   terminalUnrestricted?: boolean | undefined;
+  apiOnly?: boolean | undefined;
 };
 
 const getOptionalEnv = (key: string): string | undefined => {
@@ -68,6 +70,9 @@ const LayerImpl = Effect.gen(function* () {
             (isFlagEnabled(getOptionalEnv("CCV_TERMINAL_UNRESTRICTED"))
               ? true
               : undefined),
+          apiOnly:
+            cliOptions.apiOnly ??
+            (isFlagEnabled(getOptionalEnv("CCV_API_ONLY")) ? true : undefined),
         };
       });
     });

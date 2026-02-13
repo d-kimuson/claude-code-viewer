@@ -47,8 +47,9 @@ import { setupTerminalWebSocket } from "./terminal/terminalWebSocket";
 export const startServer = async (options: CliOptions) => {
   // biome-ignore lint/style/noProcessEnv: allow only here
   const isDevelopment = isDevelopmentEnv(process.env.CCV_ENV);
+  const apiOnly = options.apiOnly === true;
 
-  if (!isDevelopment) {
+  if (!isDevelopment && !apiOnly) {
     const staticPath = resolve(import.meta.dirname, "static");
     console.log("Serving static files from ", staticPath);
 
@@ -75,7 +76,9 @@ export const startServer = async (options: CliOptions) => {
 
   const program = Effect.gen(function* () {
     yield* routes(honoApp, options);
-    yield* setupTerminalWebSocket(server);
+    if (!apiOnly) {
+      yield* setupTerminalWebSocket(server);
+    }
   })
     // 依存の浅い順にコンテナに pipe する必要がある
     .pipe(Effect.provide(MainLayer), Effect.scoped);
@@ -95,7 +98,8 @@ export const startServer = async (options: CliOptions) => {
     const info = server.address();
     const serverPort =
       typeof info === "object" && info !== null ? info.port : port;
-    console.log(`Server is running on http://${hostname}:${serverPort}`);
+    const mode = apiOnly ? " (API-only mode)" : "";
+    console.log(`Server is running on http://${hostname}:${serverPort}${mode}`);
   });
 };
 

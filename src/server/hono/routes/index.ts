@@ -1,6 +1,7 @@
 import { zValidator } from "@hono/zod-validator";
 import { Effect, Runtime } from "effect";
 import { setCookie } from "hono/cookie";
+import { createMiddleware } from "hono/factory";
 import prexit from "prexit";
 import packageJson from "../../../../package.json" with { type: "json" };
 import {
@@ -10,7 +11,7 @@ import {
 import { EnvService } from "../../core/platform/services/EnvService";
 import { UserConfigService } from "../../core/platform/services/UserConfigService";
 import { userConfigSchema } from "../../lib/config/config";
-import type { HonoAppType } from "../app";
+import type { HonoAppType, HonoContext } from "../app";
 import { InitializeService } from "../initialize";
 import { AuthMiddleware } from "../middleware/auth.middleware";
 import { configMiddleware } from "../middleware/config.middleware";
@@ -25,6 +26,29 @@ import { searchRoutes } from "./searchRoutes";
 import { sseRoutes } from "./sseRoutes";
 import { tasksRoutes } from "./tasksRoutes";
 
+const API_ONLY_ALLOWED_PREFIXES = [
+  "/api/version",
+  "/api/config",
+  "/api/projects",
+  "/api/claude-code",
+  "/api/search",
+  "/api/sse",
+];
+
+const createApiOnlyMiddleware = (apiOnly: boolean) =>
+  createMiddleware<HonoContext>(async (c, next) => {
+    if (apiOnly) {
+      const path = c.req.path;
+      const allowed = API_ONLY_ALLOWED_PREFIXES.some(
+        (prefix) => path === prefix || path.startsWith(`${prefix}/`),
+      );
+      if (!allowed) {
+        return c.json({ error: "Not Found" }, 404);
+      }
+    }
+    return next();
+  });
+
 export const routes = (app: HonoAppType, options: CliOptions) =>
   Effect.gen(function* () {
     const ccvOptionsService = yield* CcvOptionsService;
@@ -35,6 +59,9 @@ export const routes = (app: HonoAppType, options: CliOptions) =>
     const initializeService = yield* InitializeService;
 
     const { authRequiredMiddleware } = yield* AuthMiddleware;
+    const apiOnly =
+      (yield* ccvOptionsService.getCcvOptions("apiOnly")) === true;
+    const apiOnlyMiddleware = createApiOnlyMiddleware(apiOnly);
 
     const runtime = yield* getHonoRuntime;
 
@@ -50,6 +77,7 @@ export const routes = (app: HonoAppType, options: CliOptions) =>
       app
         // middleware
         .use(configMiddleware)
+        .use(apiOnlyMiddleware)
         .use(async (c, next) => {
           await Runtime.runPromise(
             runtime,

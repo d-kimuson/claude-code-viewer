@@ -1103,7 +1103,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        111
+        119
       ]
     ],
     "translation": "生データ："
@@ -1114,7 +1114,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        104
+        112
       ]
     ],
     "translation": "この問題を報告"
@@ -1125,7 +1125,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        79
+        87
       ]
     ],
     "translation": "スキーマエラー"
@@ -1136,7 +1136,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        94
+        102
       ]
     ],
     "translation": "スキーマ検証エラー"
@@ -1147,7 +1147,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        97
+        105
       ]
     ],
     "translation": "この会話エントリの解析に失敗しました。フォーマットの変更または解析の問題が考えられます。"

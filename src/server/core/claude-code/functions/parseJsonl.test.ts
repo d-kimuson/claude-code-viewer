@@ -324,6 +324,86 @@ describe("parseJsonl", () => {
     });
   });
 
+  describe("custom-title and agent-name entries", () => {
+    it("custom-title entry parses correctly", () => {
+      const jsonl = JSON.stringify({
+        type: "custom-title",
+        customTitle: "My Custom Name",
+        sessionId: "abc-123",
+      });
+
+      const result = parseJsonl(jsonl);
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toHaveProperty("type", "custom-title");
+      const entry = result[0];
+      if (entry && entry.type === "custom-title") {
+        expect(entry.customTitle).toBe("My Custom Name");
+        expect(entry.sessionId).toBe("abc-123");
+      }
+    });
+
+    it("agent-name entry parses correctly", () => {
+      const jsonl = JSON.stringify({
+        type: "agent-name",
+        agentName: "claude-code-agent",
+        sessionId: "abc-123",
+      });
+
+      const result = parseJsonl(jsonl);
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toHaveProperty("type", "agent-name");
+      const entry = result[0];
+      if (entry && entry.type === "agent-name") {
+        expect(entry.agentName).toBe("claude-code-agent");
+        expect(entry.sessionId).toBe("abc-123");
+      }
+    });
+
+    it("both types mixed with regular entries parse without x-error", () => {
+      const jsonl = [
+        JSON.stringify({
+          type: "user",
+          uuid: "550e8400-e29b-41d4-a716-446655440000",
+          timestamp: "2024-01-01T00:00:00.000Z",
+          message: { role: "user", content: "Hello" },
+          isSidechain: false,
+          userType: "external",
+          cwd: "/test",
+          sessionId: "session-1",
+          version: "1.0.0",
+          parentUuid: null,
+        }),
+        JSON.stringify({
+          type: "custom-title",
+          customTitle: "My Session",
+          sessionId: "session-1",
+        }),
+        JSON.stringify({
+          type: "agent-name",
+          agentName: "claude-code-agent",
+          sessionId: "session-1",
+        }),
+        JSON.stringify({
+          type: "summary",
+          summary: "Summary text",
+          leafUuid: "550e8400-e29b-41d4-a716-446655440001",
+        }),
+      ].join("\n");
+
+      const result = parseJsonl(jsonl);
+
+      expect(result).toHaveLength(4);
+      expect(result[0]).toHaveProperty("type", "user");
+      expect(result[1]).toHaveProperty("type", "custom-title");
+      expect(result[2]).toHaveProperty("type", "agent-name");
+      expect(result[3]).toHaveProperty("type", "summary");
+      // No x-error entries
+      expect(result.every((entry) => entry.type !== "x-error")).toBe(true);
+    });
+  });
+
   describe("ConversationSchemaのバリエーション", () => {
     it("オプショナルフィールドを含むUserエントリをパースできる", () => {
       const jsonl = JSON.stringify({

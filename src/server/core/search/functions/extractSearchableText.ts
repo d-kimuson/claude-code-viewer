@@ -20,6 +20,14 @@ export const extractSearchableText = (
     return extractAssistantText(conversation);
   }
 
+  if (conversation.type === "custom-title") {
+    return conversation.customTitle;
+  }
+
+  if (conversation.type === "agent-name") {
+    return null;
+  }
+
   return null;
 };
 

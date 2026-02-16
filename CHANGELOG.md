@@ -1,50 +1,32 @@
 # Changelog
 
-## 0.6.0-beta.3
+## 0.6.0
 
 ### &nbsp;&nbsp;&nbsp;Features
 
-- Show git branch without session and persist right panel state in URL &nbsp;-&nbsp; by **d-kimsuon** and **Claude Opus 4.6** [<samp>(e6abd)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/e6abd62)
-- Add agent sessions section to Explorer tab &nbsp;-&nbsp; by **d-kimsuon** and **Claude Opus 4.6** [<samp>(c686d)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/c686dca)
-- Improve terminal panel UX with collapse button, auto-close, and proper panel layout &nbsp;-&nbsp; by **d-kimsuon** and **Claude Opus 4.6** [<samp>(70187)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/70187b3)
-- Add reload button and granular Suspense boundaries to Git tab &nbsp;-&nbsp; by **d-kimsuon** and **Claude Opus 4.6** [<samp>(90f8e)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/90f8e11)
-- Add --api-only flag for headless API server mode &nbsp;-&nbsp; by **d-kimsuon** and **Claude Opus 4.6** [<samp>(c70fd)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/c70fd1a)
+- **Terminal panel**: Run shell commands directly within the UI. Collapsible panel with auto-close behavior and persistent output across panel toggles
+- **Files & tools inspector**: View edited files with content preview, tool call history, and quick-action buttons in the right panel
+- **Agent sessions in Explorer**: Browse subagent sessions from the Explorer tab
+- **Headless API server mode**: New `--api-only` flag to run the server without opening a browser, useful for integrations and automation
+- **Bearer token authentication**: API authentication via bearer tokens for programmatic access
+- **Git tab improvements**: View the current git branch without an active session, with a reload button for refreshing git data
+- **Right panel state in URL**: Panel state is now persisted in the URL, making it shareable and restorable
+- **Message sending options**: Specify Claude Code options (model, prompt, etc.) when sending messages
+- **Session list improvements**: Running/paused status indicators and cleaner session titles
 
 ### &nbsp;&nbsp;&nbsp;Bug Fixes
 
-- Session title empty after /clear command &nbsp;-&nbsp; by **d-kimsuon** and **Claude Opus 4.6** [<samp>(03750)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/03750eb)
-- Show loading state instead of "No Branch" while git data loads &nbsp;-&nbsp; by **d-kimsuon** and **Claude Opus 4.6** [<samp>(e7a83)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/e7a833e)
-- SSE connection broken after route refactor &nbsp;-&nbsp; by **d-kimsuon** and **Claude Opus 4.6** [<samp>(975f7)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/975f710)
-- Support custom-title and agent-name JSONL entry types &nbsp;-&nbsp; by **Ryan Malia** [<samp>(855fc)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/855fc8e)
+- Session title becoming empty after `/clear` command
+- "No Branch" flash while git data is loading
+- Multi-file viewing stability in the file content dialog
+- Handling of result-only sessions and local command outputs
+- Support for `custom-title` and `agent-name` session log entry types
 
-##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.6.0-beta.2...0.6.0-beta.3)
+### &nbsp;&nbsp;&nbsp;Performance
 
-## 0.6.0-beta.2
+- UI rendering and resize performance improvements
 
-### &nbsp;&nbsp;&nbsp;Features
-
-- Support bearer token API auth &nbsp;-&nbsp; by **d-kimsuon** [<samp>(9b0cd)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/9b0cd99)
-
-### &nbsp;&nbsp;&nbsp;Bug Fixes
-
-- Restore terminal output after reopening panel &nbsp;-&nbsp; by **d-kimsuon** [<samp>(97093)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/97093e3)
-
-##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.6.0-beta.1...0.6.0-beta.2)
-
-## 0.6.0-beta.1
-
-### &nbsp;&nbsp;&nbsp;Release Notes
-
-- New terminal panel for running shell commands within the UI.
-- Files & tools inspector: edited file list (with content preview) plus tool call history.
-- Message sending now supports explicit Claude Code options (model, prompt, etc.).
-- Session list clarity improvements: running/paused status and cleaner titles.
-
-### &nbsp;&nbsp;&nbsp;Fixes & Improvements
-
-- Stable multi-file viewing in the file content dialog.
-- Better handling of result-only sessions and local command outputs.
-- UI rendering and resize performance improvements.
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.5.9...v0.6.0)
 
 ## 0.5.9
 

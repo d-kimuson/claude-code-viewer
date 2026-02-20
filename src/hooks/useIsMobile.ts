@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
+import { getIsMobileSync, MOBILE_BREAKPOINT } from "./getIsMobileSync";
 
-const MOBILE_MEDIA_QUERY = "(max-width: 767px)";
+const MOBILE_MEDIA_QUERY = `(max-width: ${MOBILE_BREAKPOINT}px)`;
 
 export const useIsMobile = (): boolean => {
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(getIsMobileSync);
 
   useEffect(() => {
     if (typeof window === "undefined") return;

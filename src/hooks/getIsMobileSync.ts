@@ -1,4 +1,4 @@
-const MOBILE_BREAKPOINT = 767;
+export const MOBILE_BREAKPOINT = 767;
 
 /**
  * Synchronously determines if the current viewport is mobile-sized.

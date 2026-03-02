@@ -9,12 +9,12 @@ FROM base AS builder
 WORKDIR /app
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN --mount=type=cache,id=pnpm-store,target=/root/.pnpm-store \
-    pnpm install --frozen-lockfile
+    pnpm install --frozen-lockfile --ignore-scripts
 
 COPY . .
 RUN chmod +x scripts/docker-entrypoint.sh
 RUN --mount=type=cache,id=pnpm-store,target=/root/.pnpm-store \
-    pnpm build && pnpm prune --prod
+    pnpm build && pnpm prune --prod --ignore-scripts
 
 FROM base AS runner
 WORKDIR /app

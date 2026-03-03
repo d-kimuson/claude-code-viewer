@@ -5,13 +5,20 @@ import {
   rightPanelOpenAtom,
 } from "@/lib/atoms/rightPanel";
 import { Route } from "@/routes/projects/$projectId/session";
+import { getIsMobileSync } from "./getIsMobileSync";
+import { resolveRightPanelOpen } from "./resolveRightPanelOpen";
+import { useIsMobile } from "./useIsMobile";
 
 /**
  * Bidirectionally syncs jotai right panel atoms with TanStack Router search params.
  *
- * - On mount: initializes atoms from URL search params
+ * - On mount: initializes atoms from URL search params (with device-specific defaults for undefined)
  * - On atom change: updates URL (replace, no navigation)
  * - On search param change (e.g. browser back/forward): updates atoms
+ *
+ * Device-specific defaults (applied only when URL `rightPanel` is undefined):
+ * - PC (width > 767px): default open (true)
+ * - Mobile (width <= 767px): default closed (false)
  */
 export const useSyncRightPanelWithSearchParams = () => {
   const store = useStore();
@@ -20,13 +27,31 @@ export const useSyncRightPanelWithSearchParams = () => {
   const isSyncingFromUrl = useRef(false);
   const isSyncingFromAtom = useRef(false);
 
-  // On mount: initialize atoms from URL
+  // Use synchronous initial value to avoid flicker, then reactively update
+  const isMobile = useIsMobile();
+  // Track if initial sync has been done to avoid applying defaults after explicit user action
+  const hasInitializedRef = useRef(false);
+
+  // On mount: initialize atoms from URL (with device-specific defaults)
   useEffect(() => {
     isSyncingFromUrl.current = true;
-    store.set(rightPanelOpenAtom, search.rightPanel);
+
+    // For initial mount, use sync check to avoid flicker
+    // For subsequent updates (e.g., browser back/forward), use current isMobile value
+    const effectiveIsMobile = hasInitializedRef.current
+      ? isMobile
+      : getIsMobileSync();
+
+    const effectiveOpen = resolveRightPanelOpen(
+      search.rightPanel,
+      effectiveIsMobile,
+    );
+    store.set(rightPanelOpenAtom, effectiveOpen);
     store.set(rightPanelActiveTabAtom, search.rightPanelTab);
+
+    hasInitializedRef.current = true;
     isSyncingFromUrl.current = false;
-  }, [search.rightPanel, search.rightPanelTab, store.set]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [search.rightPanel, search.rightPanelTab, store, isMobile]);
 
   // Subscribe to atom changes → update URL
   useEffect(() => {
@@ -62,13 +87,4 @@ export const useSyncRightPanelWithSearchParams = () => {
       unsubTab();
     };
   }, [store, navigate]);
-
-  // Watch search params changes (browser back/forward) → update atoms
-  useEffect(() => {
-    if (isSyncingFromAtom.current) return;
-    isSyncingFromUrl.current = true;
-    store.set(rightPanelOpenAtom, search.rightPanel);
-    store.set(rightPanelActiveTabAtom, search.rightPanelTab);
-    isSyncingFromUrl.current = false;
-  }, [search.rightPanel, search.rightPanelTab, store]);
 };

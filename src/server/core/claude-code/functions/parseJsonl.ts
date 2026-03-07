@@ -8,8 +8,15 @@ export const parseJsonl = (content: string): ExtendedConversation[] => {
     .filter((line) => line.trim() !== "");
 
   return lines.map((line, index) => {
-    const parsed = ConversationSchema.safeParse(JSON.parse(line));
-    if (!parsed.success) {
+    // First, try to parse the JSON
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(line);
+    } catch (e) {
+      const errorMessage = e instanceof Error ? e.message : String(e);
+      console.warn(
+        `[parseJsonl] Skipping malformed JSON line ${index + 1}: ${errorMessage}`,
+      );
       const errorData: ErrorJsonl = {
         type: "x-error",
         line,
@@ -18,6 +25,17 @@ export const parseJsonl = (content: string): ExtendedConversation[] => {
       return errorData;
     }
 
-    return parsed.data;
+    // Then validate with Zod schema
+    const result = ConversationSchema.safeParse(parsed);
+    if (!result.success) {
+      const errorData: ErrorJsonl = {
+        type: "x-error",
+        line,
+        lineNumber: index + 1,
+      };
+      return errorData;
+    }
+
+    return result.data;
   });
 };

@@ -2,7 +2,7 @@ import { Trans } from "@lingui/react";
 import { Link, useSearch } from "@tanstack/react-router";
 import { useAtomValue } from "jotai";
 import { MessageSquareIcon, PlusIcon } from "lucide-react";
-import type { FC } from "react";
+import { type FC, useEffect, useRef } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -27,6 +27,16 @@ export const SessionsTab: FC<{
 
   const sessionProcesses = useAtomValue(sessionProcessesAtom);
   const { config } = useConfig();
+  const activeSessionRef = useRef<HTMLAnchorElement>(null);
+
+  // Scroll the active session into view when switching sessions.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: intentionally fires on currentSessionId change only
+  useEffect(() => {
+    activeSessionRef.current?.scrollIntoView({
+      block: "nearest",
+      behavior: "smooth",
+    });
+  }, [currentSessionId]);
   const search = useSearch({
     from: "/projects/$projectId/session",
   });
@@ -125,6 +135,7 @@ export const SessionsTab: FC<{
           return (
             <Link
               key={session.id}
+              ref={isActive ? activeSessionRef : undefined}
               to="/projects/$projectId/session"
               params={{ projectId }}
               search={(prev) => ({

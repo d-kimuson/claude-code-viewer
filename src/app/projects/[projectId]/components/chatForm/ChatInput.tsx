@@ -59,6 +59,8 @@ export interface ChatInputProps {
   minHeight?: string;
   containerClassName?: string;
   disabled?: boolean;
+  /** Disables only the send button, while keeping the text input editable. */
+  sendDisabled?: boolean;
   buttonSize?: "sm" | "default" | "lg";
   enableScheduledSend?: boolean;
   baseSessionId?: string | null;
@@ -75,6 +77,7 @@ export const ChatInput: FC<ChatInputProps> = ({
   minHeight: minHeightProp = "min-h-[64px]",
   containerClassName = "",
   disabled = false,
+  sendDisabled = false,
   buttonSize = "lg",
   enableScheduledSend = false,
   baseSessionId = null,
@@ -598,7 +601,8 @@ export const ChatInput: FC<ChatInputProps> = ({
                   disabled={
                     (!message.trim() && attachedFiles.length === 0) ||
                     isPending ||
-                    disabled
+                    disabled ||
+                    sendDisabled
                   }
                   size={buttonSize}
                   className="gap-2 px-6 h-9 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:via-indigo-500 hover:to-purple-500 disabled:from-muted disabled:to-muted disabled:shadow-none bg-[length:200%_auto] hover:bg-[position:right_center]"

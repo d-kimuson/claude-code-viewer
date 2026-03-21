@@ -49,6 +49,29 @@ export const ContinueChat: FC<{
 
   const isRunning = sessionProcessStatus === "running";
 
+  const getRunningPlaceholder = () => {
+    const behavior = config?.enterKeyBehavior;
+    if (behavior === "enter-send") {
+      return i18n._({
+        id: "chat.placeholder.running.enter",
+        message:
+          "Claude is running… type your next message and send when ready (Enter to send)",
+      });
+    }
+    if (behavior === "command-enter-send") {
+      return i18n._({
+        id: "chat.placeholder.running.command_enter",
+        message:
+          "Claude is running… type your next message and send when ready (Command+Enter to send)",
+      });
+    }
+    return i18n._({
+      id: "chat.placeholder.running.shift_enter",
+      message:
+        "Claude is running… type your next message and send when ready (Shift+Enter to send)",
+    });
+  };
+
   return (
     <div className="w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 pb-3">
       <ChatInput
@@ -56,13 +79,13 @@ export const ContinueChat: FC<{
         onSubmit={handleSubmit}
         isPending={continueSessionProcess.isPending}
         error={continueSessionProcess.error}
-        placeholder={getPlaceholder()}
+        placeholder={isRunning ? getRunningPlaceholder() : getPlaceholder()}
         buttonText={<Trans id="chat.send" />}
         containerClassName=""
         buttonSize="default"
         enableScheduledSend={!isRunning}
         baseSessionId={sessionId}
-        disabled={isRunning}
+        sendDisabled={isRunning}
       />
     </div>
   );

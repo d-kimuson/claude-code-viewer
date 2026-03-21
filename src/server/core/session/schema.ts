@@ -4,6 +4,7 @@ import { parsedUserMessageSchema } from "../claude-code/functions/parseUserMessa
 export const sessionMetaSchema = z.object({
   messageCount: z.number(),
   firstUserMessage: parsedUserMessageSchema.nullable(),
+  customTitle: z.string().nullable(),
   cost: z.object({
     totalUsd: z.number(),
     breakdown: z.object({

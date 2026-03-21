@@ -110,9 +110,11 @@ export const SessionsTab: FC<{
         {sortedSessions.map((session) => {
           const isActive = session.id === currentSessionId;
           const title =
-            session.meta.firstUserMessage !== null
-              ? firstUserMessageToTitle(session.meta.firstUserMessage)
-              : session.id;
+            session.meta.customTitle !== null
+              ? session.meta.customTitle
+              : session.meta.firstUserMessage !== null
+                ? firstUserMessageToTitle(session.meta.firstUserMessage)
+                : session.id;
 
           const sessionProcess = sessionProcesses.find(
             (task) => task.sessionId === session.id,

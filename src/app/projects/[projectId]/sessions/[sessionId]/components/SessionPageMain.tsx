@@ -254,9 +254,11 @@ const SessionPageMainContent: FC<
   };
 
   const sessionTitle =
-    sessionData?.session.meta.firstUserMessage != null
-      ? firstUserMessageToTitle(sessionData.session.meta.firstUserMessage)
-      : (sessionId ?? "");
+    sessionData?.session.meta.customTitle != null
+      ? sessionData.session.meta.customTitle
+      : sessionData?.session.meta.firstUserMessage != null
+        ? firstUserMessageToTitle(sessionData.session.meta.firstUserMessage)
+        : (sessionId ?? "");
 
   const handleExportJsonl = () => {
     if (!sessionData || !sessionId) return;

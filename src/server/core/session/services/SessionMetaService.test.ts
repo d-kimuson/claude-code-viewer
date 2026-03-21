@@ -290,6 +290,47 @@ describe("SessionMetaService", () => {
       expect(result.customTitle).toBeNull();
     });
 
+    it("uses the last custom-title entry when multiple exist", async () => {
+      const jsonlContent = [
+        '{"parentUuid":null,"isSidechain":false,"userType":"external","cwd":"/workspace/app","sessionId":"e2ab9812-8be7-4e9e-8194-d9b7b9d6da14","version":"1.0.0","gitBranch":"","type":"user","message":{"role":"user","content":"initial message"},"uuid":"e2ab9812-8be7-4e9e-8194-d9b7b9d6da14","timestamp":"2024-01-01T00:00:00.000Z"}',
+        '{"type":"custom-title","customTitle":"First Title","sessionId":"e2ab9812-8be7-4e9e-8194-d9b7b9d6da14"}',
+        '{"type":"custom-title","customTitle":"Second Title","sessionId":"e2ab9812-8be7-4e9e-8194-d9b7b9d6da14"}',
+        '{"type":"custom-title","customTitle":"Final Title","sessionId":"e2ab9812-8be7-4e9e-8194-d9b7b9d6da14"}',
+      ].join("\n");
+
+      const FileSystemMock = makeFileSystemMock({
+        readFileString: () => Effect.succeed(jsonlContent),
+        readDirectory: () => Effect.succeed([]),
+        exists: () => Effect.succeed(false),
+        makeDirectory: () => Effect.void,
+        writeFileString: () => Effect.void,
+      });
+
+      const PathMock = makePathMock();
+      const PersistentServiceMock = makePersistentServiceMock();
+
+      const program = Effect.gen(function* () {
+        const storage = yield* SessionMetaService;
+        const projectId = Buffer.from("/test/project").toString("base64url");
+        const sessionId = Buffer.from("/test/project/session.jsonl").toString(
+          "base64url",
+        );
+
+        return yield* storage.getSessionMeta(projectId, sessionId);
+      });
+
+      const result = await Effect.runPromise(
+        program.pipe(
+          Effect.provide(SessionMetaService.Live),
+          Effect.provide(FileSystemMock),
+          Effect.provide(PathMock),
+          Effect.provide(PersistentServiceMock),
+        ),
+      );
+
+      expect(result.customTitle).toBe("Final Title");
+    });
+
     it("bypasses stale persistent cache with empty local-command-stdout", async () => {
       const projectId = Buffer.from("/test/project").toString("base64url");
       const sessionId = Buffer.from("/test/project/session.jsonl").toString(

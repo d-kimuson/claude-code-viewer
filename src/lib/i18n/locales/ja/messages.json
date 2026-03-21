@@ -603,7 +603,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        584
+        586
       ]
     ],
     "translation": "最近のセッション"
@@ -618,11 +618,11 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        309
+        311
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        572
+        574
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
@@ -956,7 +956,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        193
+        195
       ]
     ],
     "translation": "読み込み中..."
@@ -1001,7 +1001,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        407
+        409
       ]
     ],
     "translation": "ブランチ"
@@ -1012,7 +1012,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        388
+        390
       ]
     ],
     "translation": "メタデータ"
@@ -1023,7 +1023,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        434
+        436
       ]
     ],
     "translation": "モデル"
@@ -1057,7 +1057,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        394
+        396
       ]
     ],
     "translation": "プロジェクトパス"
@@ -1092,7 +1092,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        421
+        423
       ]
     ],
     "translation": "セッションID"
@@ -2573,7 +2573,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        491
+        493
       ]
     ],
     "translation": "キャッシュ作成"
@@ -2584,7 +2584,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        506
+        508
       ]
     ],
     "translation": "キャッシュ読込"
@@ -2595,7 +2595,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        463
+        465
       ]
     ],
     "translation": "入力トークン"
@@ -2606,7 +2606,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        448
+        450
       ]
     ],
     "translation": "セッションコスト"
@@ -2617,7 +2617,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        477
+        479
       ]
     ],
     "translation": "出力トークン"
@@ -2628,7 +2628,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        455
+        457
       ]
     ],
     "translation": "合計"
@@ -2678,7 +2678,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        381
+        383
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/DeleteSessionDialog.tsx",
@@ -2693,7 +2693,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        575
+        577
       ]
     ],
     "translation": "新しいチャットを開始して会話を始めましょう"
@@ -2704,7 +2704,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        371
+        373
       ]
     ],
     "translation": "セッションファイルのパスをコピー"
@@ -2715,7 +2715,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        352
+        354
       ]
     ],
     "translation": "HTML をエクスポート"
@@ -2726,7 +2726,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        361
+        363
       ]
     ],
     "translation": "JSONL をエクスポート"
@@ -2737,7 +2737,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        668
+        670
       ]
     ],
     "translation": "Claude Codeが処理中..."
@@ -2785,11 +2785,11 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        633
+        635
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        156
+        158
       ]
     ],
     "translation": "一時停止"
@@ -2804,11 +2804,11 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        631
+        633
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        154
+        156
       ]
     ],
     "translation": "実行中"
@@ -2823,7 +2823,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        195
+        197
       ]
     ],
     "translation": "さらに読み込む"

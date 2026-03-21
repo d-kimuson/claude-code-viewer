@@ -588,11 +588,13 @@ const SessionPageMainContent: FC<
                     <div className="grid gap-2">
                       {sortedSessions.slice(0, 3).map((session) => {
                         const title =
-                          session.meta.firstUserMessage !== null
-                            ? firstUserMessageToTitle(
-                                session.meta.firstUserMessage,
-                              )
-                            : session.id;
+                          session.meta.customTitle !== null
+                            ? session.meta.customTitle
+                            : session.meta.firstUserMessage !== null
+                              ? firstUserMessageToTitle(
+                                  session.meta.firstUserMessage,
+                                )
+                              : session.id;
 
                         const sessionProcess = sessionProcesses.find(
                           (task) => task.sessionId === session.id,

@@ -22,19 +22,22 @@ export const useTaskNotifications = (
   const prevIsRunningRef = useRef<boolean>(isRunningTask);
   const prevSessionIdRef = useRef<string>(sessionId);
 
+  // Reset the running state synchronously during render when session changes.
+  // This prevents a false "Task completed" notification when switching away
+  // from a running session: even if isRunningTask and sessionId change across
+  // separate render cycles, the ref is already up-to-date before any effect runs.
+  if (prevSessionIdRef.current !== sessionId) {
+    prevSessionIdRef.current = sessionId;
+    prevIsRunningRef.current = isRunningTask;
+  }
+
   // Monitor task state changes
   useEffect(() => {
     const prevIsRunning = prevIsRunningRef.current;
-    const currentIsRunning = isRunningTask;
-    const sessionChanged = prevSessionIdRef.current !== sessionId;
-
-    // Update refs for next comparison
-    prevIsRunningRef.current = currentIsRunning;
-    prevSessionIdRef.current = sessionId;
+    prevIsRunningRef.current = isRunningTask;
 
     // Detect task completion: was running, now not running.
-    // Skip notification when the change is caused by switching sessions.
-    if (prevIsRunning && !currentIsRunning && !sessionChanged) {
+    if (prevIsRunning && !isRunningTask) {
       toast.success("Task completed");
 
       if (soundEnabled) {
@@ -42,5 +45,5 @@ export const useTaskNotifications = (
         playNotificationSound(settings.soundType);
       }
     }
-  }, [isRunningTask, sessionId, soundEnabled, settings.soundType]);
+  }, [isRunningTask, soundEnabled, settings.soundType]);
 };

@@ -175,7 +175,7 @@ const SessionPageMainContent: FC<
       : relatedSessionProcess?.status;
   const statusBadge = getSessionStatusBadgeProps(effectiveSessionStatus);
 
-  useTaskNotifications(effectiveSessionStatus === "running");
+  useTaskNotifications(effectiveSessionStatus === "running", sessionId ?? "");
 
   // Filter scheduler jobs related to this session
   const sessionScheduledJobs = useMemo(() => {

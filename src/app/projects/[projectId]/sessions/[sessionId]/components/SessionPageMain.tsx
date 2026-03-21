@@ -211,6 +211,15 @@ const SessionPageMainContent: FC<
     },
   });
 
+  // Scroll to bottom immediately when switching to a different session
+  // biome-ignore lint/correctness/useExhaustiveDependencies: intentionally fires on sessionId change only
+  useEffect(() => {
+    const scrollContainer = scrollContainerRef.current;
+    if (scrollContainer) {
+      scrollContainer.scrollTop = scrollContainer.scrollHeight;
+    }
+  }, [sessionId]);
+
   useEffect(() => {
     if (!isExistingSession) return;
     if (

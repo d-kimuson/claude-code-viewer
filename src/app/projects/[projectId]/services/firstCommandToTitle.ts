@@ -6,6 +6,20 @@ const stripLocalCommandCaveat = (text: string) => {
     .trim();
 };
 
+/**
+ * Resolves a session's display title with priority:
+ * 1. customTitle (user-renamed via /rename)
+ * 2. firstUserMessage-derived title
+ * 3. fallback string (e.g. sessionId)
+ */
+export const resolveSessionTitle = (
+  customTitle: string | null,
+  firstUserMessage: ParsedUserMessage | null,
+  fallback: string,
+): string =>
+  customTitle ??
+  (firstUserMessage ? firstUserMessageToTitle(firstUserMessage) : fallback);
+
 export const firstUserMessageToTitle = (firstCommand: ParsedUserMessage) => {
   switch (firstCommand.kind) {
     case "command":

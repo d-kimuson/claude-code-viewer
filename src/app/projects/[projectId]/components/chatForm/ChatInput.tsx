@@ -160,6 +160,7 @@ export const ChatInput: FC<ChatInputProps> = ({
 
   const handleSubmit = async () => {
     if (!message.trim() && attachedFiles.length === 0) return;
+    if (isPending || disabled || sendDisabled) return;
 
     const images: ImageBlockParam[] = [];
     const documents: DocumentBlockParam[] = [];

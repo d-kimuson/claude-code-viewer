@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import { formatLocaleDate } from "../../../../../../../lib/date/formatLocaleDate";
 import { useConfig } from "../../../../../../hooks/useConfig";
 import { useProject } from "../../../../hooks/useProject";
-import { firstUserMessageToTitle } from "../../../../services/firstCommandToTitle";
+import { resolveSessionTitle } from "../../../../services/firstCommandToTitle";
 import { sessionProcessesAtom } from "../../store/sessionProcessesAtom";
 
 export const SessionsTab: FC<{
@@ -119,12 +119,11 @@ export const SessionsTab: FC<{
         </Link>
         {sortedSessions.map((session) => {
           const isActive = session.id === currentSessionId;
-          const title =
-            session.meta.customTitle !== null
-              ? session.meta.customTitle
-              : session.meta.firstUserMessage !== null
-                ? firstUserMessageToTitle(session.meta.firstUserMessage)
-                : session.id;
+          const title = resolveSessionTitle(
+            session.meta.customTitle,
+            session.meta.firstUserMessage,
+            session.id,
+          );
 
           const sessionProcess = sessionProcesses.find(
             (task) => task.sessionId === session.id,

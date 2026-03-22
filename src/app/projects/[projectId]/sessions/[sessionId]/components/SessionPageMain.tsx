@@ -38,7 +38,7 @@ import { formatLocaleDate } from "@/lib/date/formatLocaleDate";
 import { cn } from "@/lib/utils";
 import { parseUserMessage } from "@/server/core/claude-code/functions/parseUserMessage";
 import { useProject } from "../../../hooks/useProject";
-import { firstUserMessageToTitle } from "../../../services/firstCommandToTitle";
+import { resolveSessionTitle } from "../../../services/firstCommandToTitle";
 import { useExportSession } from "../hooks/useExportSession";
 import { useGitCurrentRevisions } from "../hooks/useGit";
 import { useSession } from "../hooks/useSession";
@@ -262,12 +262,11 @@ const SessionPageMainContent: FC<
     }
   };
 
-  const sessionTitle =
-    sessionData?.session.meta.customTitle != null
-      ? sessionData.session.meta.customTitle
-      : sessionData?.session.meta.firstUserMessage != null
-        ? firstUserMessageToTitle(sessionData.session.meta.firstUserMessage)
-        : (sessionId ?? "");
+  const sessionTitle = resolveSessionTitle(
+    sessionData?.session.meta.customTitle ?? null,
+    sessionData?.session.meta.firstUserMessage ?? null,
+    sessionId ?? "",
+  );
 
   const handleExportJsonl = () => {
     if (!sessionData || !sessionId) return;
@@ -596,14 +595,11 @@ const SessionPageMainContent: FC<
                     </h3>
                     <div className="grid gap-2">
                       {sortedSessions.slice(0, 3).map((session) => {
-                        const title =
-                          session.meta.customTitle !== null
-                            ? session.meta.customTitle
-                            : session.meta.firstUserMessage !== null
-                              ? firstUserMessageToTitle(
-                                  session.meta.firstUserMessage,
-                                )
-                              : session.id;
+                        const title = resolveSessionTitle(
+                          session.meta.customTitle,
+                          session.meta.firstUserMessage,
+                          session.id,
+                        );
 
                         const sessionProcess = sessionProcesses.find(
                           (task) => task.sessionId === session.id,

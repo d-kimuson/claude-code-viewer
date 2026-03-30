@@ -3,7 +3,10 @@ import type {
   Conversation,
   SidechainConversation,
 } from "@/lib/conversation-schema";
-import { taskToolInputSchema } from "../components/conversationList/AssistantConversationContent";
+import {
+  SUBAGENT_TOOL_NAMES,
+  taskToolInputSchema,
+} from "../components/conversationList/AssistantConversationContent";
 
 export const useSidechain = (conversations: Conversation[]) => {
   const sidechainConversations = conversations
@@ -47,7 +50,7 @@ export const useSidechain = (conversations: Conversation[]) => {
           ),
         ])
         .flatMap((content) => {
-          if (content.name !== "Task") {
+          if (!SUBAGENT_TOOL_NAMES.has(content.name)) {
             return [];
           }
 

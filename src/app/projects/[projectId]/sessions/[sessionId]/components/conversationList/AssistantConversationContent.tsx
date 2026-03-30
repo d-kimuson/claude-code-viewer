@@ -27,6 +27,8 @@ export const taskToolInputSchema = z.object({
   prompt: z.string(),
 });
 
+export const SUBAGENT_TOOL_NAMES = new Set(["Task", "Agent"]);
+
 export const AssistantConversationContent: FC<{
   content: AssistantMessageContent;
   getToolResult: (toolUseId: string) => ToolResultContent | undefined;
@@ -61,6 +63,10 @@ export const AssistantConversationContent: FC<{
   }
 
   if (content.type === "thinking") {
+    if (content.thinking === "") {
+      return null;
+    }
+
     return (
       <Card className="bg-muted/50 border-dashed gap-2 py-1 mb-2 hover:shadow-sm transition-all duration-200">
         <Collapsible>
@@ -94,10 +100,9 @@ export const AssistantConversationContent: FC<{
       // NOTE: taskToolInputSchema は prompt 以外（description, subagent_type等）が含まれていると parse 失敗する可能性がある？
       // z.object({ prompt: z.string() }) は unknown keys を strip するので成功するはず。
       // ただし念の為 safeParse の結果を確認する。
-      const taskInput =
-        content.name === "Task"
-          ? taskToolInputSchema.safeParse(content.input)
-          : undefined;
+      const taskInput = SUBAGENT_TOOL_NAMES.has(content.name)
+        ? taskToolInputSchema.safeParse(content.input)
+        : undefined;
 
       if (taskInput === undefined || taskInput.success === false) {
         return undefined;

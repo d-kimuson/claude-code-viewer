@@ -586,6 +586,9 @@ const renderSidechainEntry = (
         }
 
         if (msg.type === "thinking") {
+          if (msg.thinking === "") {
+            return "";
+          }
           const charCount = msg.thinking.length;
           return `
             <div class="thinking-block collapsible collapsed">
@@ -610,7 +613,7 @@ const renderSidechainEntry = (
           const toolResult = toolResultMap.get(msg.id);
 
           // Check if this is a nested Task tool (recursive subagent)
-          if (msg.name === "Task") {
+          if (msg.name === "Task" || msg.name === "Agent") {
             return renderTaskTool(
               msg.id,
               msg.input,
@@ -794,6 +797,9 @@ const renderAssistantEntry = (
       }
 
       if (msg.type === "thinking") {
+        if (msg.thinking === "") {
+          return "";
+        }
         const charCount = msg.thinking.length;
         return `
           <div class="thinking-block collapsible">
@@ -818,7 +824,7 @@ const renderAssistantEntry = (
         const toolResult = toolResultMap.get(msg.id);
 
         // Special rendering for Task tool
-        if (msg.name === "Task") {
+        if (msg.name === "Task" || msg.name === "Agent") {
           return renderTaskTool(
             msg.id,
             msg.input,
@@ -980,6 +986,9 @@ const renderGroupedAssistantEntries = (
       }
 
       if (msg.type === "thinking") {
+        if (msg.thinking === "") {
+          return "";
+        }
         const charCount = msg.thinking.length;
         return `
           <div class="thinking-block collapsible">
@@ -1004,7 +1013,7 @@ const renderGroupedAssistantEntries = (
         const toolResult = toolResultMap.get(msg.id);
 
         // Special rendering for Task tool
-        if (msg.name === "Task") {
+        if (msg.name === "Task" || msg.name === "Agent") {
           return renderTaskTool(
             msg.id,
             msg.input,

@@ -1723,7 +1723,7 @@
     "origin": [
       [
         "src/app/components/AppLayout.tsx",
-        139
+        137
       ]
     ],
     "translation": "Toggle bottom panel"
@@ -1734,7 +1734,7 @@
     "origin": [
       [
         "src/app/components/AppLayout.tsx",
-        117
+        116
       ]
     ],
     "translation": "Toggle left panel"
@@ -1745,7 +1745,7 @@
     "origin": [
       [
         "src/app/components/AppLayout.tsx",
-        161
+        158
       ]
     ],
     "translation": "Toggle right panel"

@@ -1723,7 +1723,7 @@
     "origin": [
       [
         "src/app/components/AppLayout.tsx",
-        139
+        137
       ]
     ],
     "translation": "切换底部面板"
@@ -1734,7 +1734,7 @@
     "origin": [
       [
         "src/app/components/AppLayout.tsx",
-        117
+        116
       ]
     ],
     "translation": "切换左侧面板"
@@ -1745,7 +1745,7 @@
     "origin": [
       [
         "src/app/components/AppLayout.tsx",
-        161
+        158
       ]
     ],
     "translation": "切换右侧面板"

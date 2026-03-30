@@ -155,6 +155,18 @@ export class SessionMetaService extends Context.Tag("SessionMetaService")<
             }
           }
 
+          // Extract custom title (user-renamed session name)
+          let customTitle: string | null = null;
+          for (const line of lines) {
+            const conversation = parseJsonl(line).at(0);
+            if (
+              conversation !== undefined &&
+              conversation.type === "custom-title"
+            ) {
+              customTitle = conversation.customTitle;
+            }
+          }
+
           // Calculate cost information including agent sessions
           const fileContents = [content, ...agentContents];
           const { totalCost, modelName } =
@@ -163,6 +175,7 @@ export class SessionMetaService extends Context.Tag("SessionMetaService")<
           const sessionMeta: SessionMeta = {
             messageCount: lines.length,
             firstUserMessage: firstUserMessage,
+            customTitle: customTitle,
             cost: {
               totalUsd: totalCost.totalUsd,
               breakdown: totalCost.breakdown,

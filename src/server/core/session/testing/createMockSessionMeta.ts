@@ -9,6 +9,7 @@ export function createMockSessionMeta(
   return {
     messageCount: 0,
     firstUserMessage: null,
+    customTitle: null,
     cost: {
       totalUsd: 0,
       breakdown: {

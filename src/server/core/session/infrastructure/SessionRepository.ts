@@ -103,6 +103,7 @@ const LayerImpl = Effect.gen(function* () {
               meta: {
                 messageCount: 0,
                 firstUserMessage: null,
+                customTitle: null,
                 cost: {
                   totalUsd: 0,
                   breakdown: {
@@ -279,6 +280,7 @@ const LayerImpl = Effect.gen(function* () {
               firstUserMessage: firstUserText
                 ? parseUserMessage(firstUserText)
                 : null,
+              customTitle: null,
               cost: {
                 totalUsd: 0,
                 breakdown: {

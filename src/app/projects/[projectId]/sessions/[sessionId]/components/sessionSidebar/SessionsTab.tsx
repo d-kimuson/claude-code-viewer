@@ -2,14 +2,14 @@ import { Trans } from "@lingui/react";
 import { Link, useSearch } from "@tanstack/react-router";
 import { useAtomValue } from "jotai";
 import { MessageSquareIcon, PlusIcon } from "lucide-react";
-import type { FC } from "react";
+import { type FC, useEffect, useRef } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { formatLocaleDate } from "../../../../../../../lib/date/formatLocaleDate";
 import { useConfig } from "../../../../../../hooks/useConfig";
 import { useProject } from "../../../../hooks/useProject";
-import { firstUserMessageToTitle } from "../../../../services/firstCommandToTitle";
+import { resolveSessionTitle } from "../../../../services/firstCommandToTitle";
 import { sessionProcessesAtom } from "../../store/sessionProcessesAtom";
 
 export const SessionsTab: FC<{
@@ -27,6 +27,16 @@ export const SessionsTab: FC<{
 
   const sessionProcesses = useAtomValue(sessionProcessesAtom);
   const { config } = useConfig();
+  const activeSessionRef = useRef<HTMLAnchorElement>(null);
+
+  // Scroll the active session into view when switching sessions.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: intentionally fires on currentSessionId change only
+  useEffect(() => {
+    activeSessionRef.current?.scrollIntoView({
+      block: "nearest",
+      behavior: "smooth",
+    });
+  }, [currentSessionId]);
   const search = useSearch({
     from: "/projects/$projectId/session",
   });
@@ -109,10 +119,11 @@ export const SessionsTab: FC<{
         </Link>
         {sortedSessions.map((session) => {
           const isActive = session.id === currentSessionId;
-          const title =
-            session.meta.firstUserMessage !== null
-              ? firstUserMessageToTitle(session.meta.firstUserMessage)
-              : session.id;
+          const title = resolveSessionTitle(
+            session.meta.customTitle,
+            session.meta.firstUserMessage,
+            session.id,
+          );
 
           const sessionProcess = sessionProcesses.find(
             (task) => task.sessionId === session.id,
@@ -123,6 +134,7 @@ export const SessionsTab: FC<{
           return (
             <Link
               key={session.id}
+              ref={isActive ? activeSessionRef : undefined}
               to="/projects/$projectId/session"
               params={{ projectId }}
               search={(prev) => ({

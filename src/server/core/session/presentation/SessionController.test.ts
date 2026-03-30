@@ -70,6 +70,7 @@ describe("SessionController", () => {
           Effect.succeed({
             messageCount: 0,
             firstUserMessage: null,
+            customTitle: null,
             cost: {
               totalUsd: 0,
               breakdown: {

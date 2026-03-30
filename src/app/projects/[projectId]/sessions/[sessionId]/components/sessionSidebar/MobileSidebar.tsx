@@ -20,6 +20,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useSwipeGesture } from "@/hooks/useSwipeGesture";
 import { cn } from "@/lib/utils";
 import { McpTab } from "./McpTab";
 import { SessionsTab } from "./SessionsTab";
@@ -73,6 +74,16 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
   ) => {
     setActiveTab(tab);
   };
+
+  // Swipe left to close sidebar
+  const swipeRef = useSwipeGesture({
+    onSwipe: (direction) => {
+      if (direction === "left") {
+        onClose();
+      }
+    },
+    enabled: isOpen,
+  });
 
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
@@ -155,19 +166,20 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
 
       {/* Sidebar */}
       <div
+        ref={swipeRef}
         className={cn(
           "absolute left-0 top-0 h-full w-80 max-w-[85vw] bg-sidebar text-sidebar-foreground transition-transform duration-300 ease-out flex",
           isOpen ? "translate-x-0" : "-translate-x-full",
         )}
       >
-        {/* Tab Icons */}
-        <div className="w-12 flex flex-col border-r border-sidebar-border bg-sidebar/50">
+        {/* Tab Icons - wider column with larger touch targets for mobile */}
+        <div className="w-14 flex flex-col border-r border-sidebar-border bg-sidebar/50">
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
                   to="/projects"
-                  className="w-12 h-12 flex items-center justify-center border-b border-sidebar-border hover:bg-sidebar-accent transition-colors"
+                  className="w-14 h-14 flex items-center justify-center border-b border-sidebar-border hover:bg-sidebar-accent transition-colors"
                 >
                   <ArrowLeftIcon className="w-4 h-4 text-sidebar-foreground/70" />
                 </Link>
@@ -186,7 +198,7 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
                     type="button"
                     onClick={() => handleTabClick("sessions")}
                     className={cn(
-                      "w-8 h-8 flex items-center justify-center rounded-md transition-colors",
+                      "w-11 h-11 flex items-center justify-center rounded-md transition-colors",
                       "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
                       activeTab === "sessions"
                         ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-sm"
@@ -210,7 +222,7 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
                     type="button"
                     onClick={() => handleTabClick("mcp")}
                     className={cn(
-                      "w-8 h-8 flex items-center justify-center rounded-md transition-colors",
+                      "w-11 h-11 flex items-center justify-center rounded-md transition-colors",
                       "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
                       activeTab === "mcp"
                         ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-sm"
@@ -234,7 +246,7 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
                     type="button"
                     onClick={() => handleTabClick("settings")}
                     className={cn(
-                      "w-8 h-8 flex items-center justify-center rounded-md transition-colors",
+                      "w-11 h-11 flex items-center justify-center rounded-md transition-colors",
                       "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
                       activeTab === "settings"
                         ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-sm"
@@ -256,7 +268,7 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
                     type="button"
                     onClick={() => handleTabClick("system-info")}
                     className={cn(
-                      "w-8 h-8 flex items-center justify-center rounded-md transition-colors",
+                      "w-11 h-11 flex items-center justify-center rounded-md transition-colors",
                       "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
                       activeTab === "system-info"
                         ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-sm"

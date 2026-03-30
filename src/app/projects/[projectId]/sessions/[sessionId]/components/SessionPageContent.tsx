@@ -9,6 +9,7 @@ import { Loading } from "@/components/Loading";
 import { ResizableSidebar } from "@/components/ResizableSidebar";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useRightPanelOpen, useRightPanelWidth } from "@/hooks/useRightPanel";
+import { useSwipeGesture } from "@/hooks/useSwipeGesture";
 import { useSyncRightPanelWithSearchParams } from "@/hooks/useSyncRightPanelWithSearchParams";
 import { useProject } from "../../../hooks/useProject";
 import { SessionPageMain } from "./SessionPageMain";
@@ -23,6 +24,17 @@ export const SessionPageContent: FC<{
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   useSyncRightPanelWithSearchParams();
   const isMobile = useIsMobile();
+
+  // Swipe from left edge to open mobile sidebar
+  const swipeToOpenRef = useSwipeGesture({
+    onSwipe: (direction) => {
+      if (direction === "right" && !isMobileSidebarOpen) {
+        setIsMobileSidebarOpen(true);
+      }
+    },
+    edgeWidth: 30,
+    enabled: isMobile,
+  });
   const isRightPanelOpen = useRightPanelOpen();
   const rightPanelWidth = useRightPanelWidth();
   const { data: projectData } = useProject(projectId);
@@ -43,7 +55,7 @@ export const SessionPageContent: FC<{
       projectName={projectName}
       onMobileLeftPanelOpen={() => setIsMobileSidebarOpen(true)}
     >
-      <div className="flex h-full overflow-hidden">
+      <div ref={swipeToOpenRef} className="flex h-full overflow-hidden">
         {/* Left Sidebar - full height, higher priority than bottom panel */}
         <ResizableSidebar>
           <Suspense fallback={<Loading />}>

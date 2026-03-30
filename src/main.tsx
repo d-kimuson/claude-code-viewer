@@ -1,3 +1,4 @@
+import { registerSW } from "virtual:pwa-register";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
@@ -6,6 +7,19 @@ import { QueryClientProviderWrapper } from "./lib/api/QueryClientProviderWrapper
 import { routeTree } from "./routeTree.gen";
 
 import "./styles.css";
+
+const ONE_HOUR_MS = 60 * 60 * 1000;
+
+registerSW({
+  immediate: true,
+  onRegisteredSW(_swUrl, registration) {
+    if (registration) {
+      setInterval(() => {
+        void registration.update();
+      }, ONE_HOUR_MS);
+    }
+  },
+});
 
 const router = createRouter({
   routeTree,

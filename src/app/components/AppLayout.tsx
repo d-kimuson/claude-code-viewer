@@ -102,8 +102,7 @@ export const AppLayout: FC<AppLayoutProps> = ({
                     setIsLeftPanelOpen(!isLeftPanelOpen);
                   }}
                   className={cn(
-                    "relative w-5 h-5 flex items-center justify-center rounded transition-colors",
-                    "after:content-[''] after:absolute after:-inset-2.5 md:after:inset-0",
+                    "w-11 h-11 md:w-5 md:h-5 flex items-center justify-center rounded transition-colors",
                     isLeftPanelOpen
                       ? "bg-primary/10 text-primary"
                       : "hover:bg-muted text-muted-foreground hover:text-foreground",
@@ -124,8 +123,7 @@ export const AppLayout: FC<AppLayoutProps> = ({
                   type="button"
                   onClick={() => setIsBottomPanelOpen(!isBottomPanelOpen)}
                   className={cn(
-                    "relative w-5 h-5 flex items-center justify-center rounded transition-colors",
-                    "after:content-[''] after:absolute after:-inset-2.5 md:after:inset-0",
+                    "w-11 h-11 md:w-5 md:h-5 flex items-center justify-center rounded transition-colors",
                     isBottomPanelOpen
                       ? "bg-primary/10 text-primary"
                       : "hover:bg-muted text-muted-foreground hover:text-foreground",
@@ -146,8 +144,7 @@ export const AppLayout: FC<AppLayoutProps> = ({
                   type="button"
                   onClick={toggleRightPanel}
                   className={cn(
-                    "relative w-5 h-5 flex items-center justify-center rounded transition-colors",
-                    "after:content-[''] after:absolute after:-inset-2.5 md:after:inset-0",
+                    "w-11 h-11 md:w-5 md:h-5 flex items-center justify-center rounded transition-colors",
                     isRightPanelOpen
                       ? "bg-primary/10 text-primary"
                       : "hover:bg-muted text-muted-foreground hover:text-foreground",

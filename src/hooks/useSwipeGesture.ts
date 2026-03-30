@@ -107,12 +107,11 @@ export const useSwipeGesture = ({
 
       const handleTouchEnd = (e: TouchEvent) => {
         const start = startRef.current;
+        startRef.current = null;
         if (!start) return;
 
         const touch = getFirstTouch(e);
         if (!touch) return;
-
-        startRef.current = null;
 
         const direction = detectSwipe({
           startX: start.x,
@@ -129,14 +128,22 @@ export const useSwipeGesture = ({
         }
       };
 
+      const handleTouchCancel = () => {
+        startRef.current = null;
+      };
+
       element.addEventListener("touchstart", handleTouchStart, {
         passive: true,
       });
       element.addEventListener("touchend", handleTouchEnd, { passive: true });
+      element.addEventListener("touchcancel", handleTouchCancel, {
+        passive: true,
+      });
 
       cleanupRef.current = () => {
         element.removeEventListener("touchstart", handleTouchStart);
         element.removeEventListener("touchend", handleTouchEnd);
+        element.removeEventListener("touchcancel", handleTouchCancel);
       };
     },
     [enabled, threshold, maxVerticalRatio, edgeWidth],

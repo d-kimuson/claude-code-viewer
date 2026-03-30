@@ -1,4 +1,4 @@
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 type SwipeDirection = "left" | "right";
 
@@ -141,6 +141,14 @@ export const useSwipeGesture = ({
     },
     [enabled, threshold, maxVerticalRatio, edgeWidth],
   );
+
+  // Defensive cleanup on unmount (especially important for portal-based components)
+  useEffect(() => {
+    return () => {
+      cleanupRef.current?.();
+      cleanupRef.current = null;
+    };
+  }, []);
 
   return callbackRef;
 };

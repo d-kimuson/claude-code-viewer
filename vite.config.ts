@@ -56,6 +56,11 @@ export default defineConfig({
         globPatterns: ["**/*.{js,css,html,ico,png,svg,woff,woff2}"],
         runtimeCaching: [
           {
+            // SSE must never be cached
+            urlPattern: /\/api\/sse/,
+            handler: "NetworkOnly",
+          },
+          {
             urlPattern: /^.*\/api\/.*/i,
             handler: "NetworkFirst",
             options: {

@@ -1,0 +1,24 @@
+defaults:
+  changed: untracked,unstaged,staged,branch:main
+  target: all
+checks:
+  - name: biome-format
+    match: \.((m|c)?(j|t)sx?|json|jsonc|css)$
+    group: format
+    command: pnpm exec biome format --write {{ ctx.CHANGED_FILES }}
+  - name: biome-check
+    match: \.((m|c)?(j|t)sx?|json|jsonc|css)$
+    group: lint
+    command: pnpm exec biome check --write {{ ctx.CHANGED_FILES }}
+  - name: typecheck
+    match: \.(m|c)?tsx?$
+    group: typecheck
+    command: pnpm exec tsc --noEmit
+  - name: typecheck-tsgo
+    match: \.(m|c)?tsx?$
+    group: typecheck
+    command: pnpm exec tsgo --noEmit
+  - name: vitest
+    match: \.(m|c)?(j|t)sx?$
+    group: test
+    command: pnpm exec vitest related --run --passWithNoTests {{ ctx.CHANGED_FILES }}

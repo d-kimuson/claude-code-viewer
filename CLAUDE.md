@@ -70,6 +70,7 @@ After changing source code, always run before committing:
 
 ```bash
 pnpm gatecheck check
+./scripts/lingui-check.sh
 ```
 
 ## Key Directory Patterns

@@ -50,41 +50,28 @@ Claude Code Viewer reads Claude Code session logs directly from JSONL files (`~/
 - Data: Direct JSONL reads with strict Zod validation
 - Real-time: Server-Sent Events (SSE) for live updates
 
-## Development Workflow
+## Recommended Coding Process
 
-### Quality Checks
+This project is designed with the philosophy of achieving both rapid feedback and code quality maintenance (passing checks = nearly guaranteed runtime correctness) by leveraging:
 
-```bash
-# Type checking (mandatory before commits)
-pnpm typecheck
+- Strict typing with Effect-TS and ADT
+- Constraints for maintaining code quality configured in Lint as much as possible
+- Dependency injection and effective testing with Effect-TS
 
-# Auto-fix linting and formatting (Biome)
-pnpm fix
-```
+For development, we recommend implementing with t-wada's TDD development style.
 
-After `pnpm fix`, manually address any remaining issues.
+For checks, you can run `pnpm gatecheck check` to execute all the above checks against the diff at once, so proceed with implementation in a loop of problem detection and fixing with gatecheck.
 
-### Testing
+By utilizing this, you can quickly inspect code with static checks and unit tests.
 
-```bash
-# Run unit tests
-pnpm test
-```
+## Quality Gate (MUST follow)
 
-**TDD Workflow**: Write tests → Run tests → Implement → Verify → Quality checks
-
-### Default Verification Expectations
-
-When changes are made, run the following by default without asking:
+After changing source code, always run before committing:
 
 ```bash
-pnpm typecheck
-pnpm fix
-pnpm vitest run --changed origin/main
+pnpm gatecheck check
 ./scripts/lingui-check.sh
 ```
-
-If any command fails, fix the issues proactively and report the outcome after resolving them.
 
 ## Key Directory Patterns
 

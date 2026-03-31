@@ -36,7 +36,8 @@ import { useTaskNotifications } from "@/hooks/useTaskNotifications";
 import { honoClient } from "@/lib/api/client";
 import { formatLocaleDate } from "@/lib/date/formatLocaleDate";
 import { cn } from "@/lib/utils";
-import { getVirtualMessagesByProject } from "@/lib/virtual-messages/virtualMessageStore";
+import { createVirtualSessionEntries } from "@/lib/virtual-messages/createVirtualSessionEntries";
+import { virtualMessagesAtom } from "@/lib/virtual-messages/virtualMessageStore";
 import { parseUserMessage } from "@/server/core/claude-code/functions/parseUserMessage";
 import { useProject } from "../../../hooks/useProject";
 import { resolveSessionTitle } from "../../../services/firstCommandToTitle";
@@ -105,48 +106,19 @@ const SessionPageMainContent: FC<
   const { data: allSchedulerJobs } = useSchedulerJobs();
   const { data: projectData } = useProject(projectId);
   const sessionProcesses = useAtomValue(sessionProcessesAtom);
+  const virtualMessages = useAtomValue(virtualMessagesAtom);
   const { config } = useConfig();
   // Merge virtual sessions (not yet persisted) into the session list
   const sessions = useMemo(() => {
     const serverSessions = projectData.pages.flatMap((page) => page.sessions);
-    const virtualMessages = getVirtualMessagesByProject(projectId);
     const existingIds = new Set(serverSessions.map((s) => s.id));
-
-    const virtualSessions = virtualMessages
-      .filter((vm) => !existingIds.has(vm.sessionId))
-      .map((vm) => ({
-        id: vm.sessionId,
-        jsonlFilePath: "",
-        lastModifiedAt: vm.sentAt,
-        meta: {
-          messageCount: 0,
-          firstUserMessage: {
-            kind: "text" as const,
-            content: vm.userMessage,
-          },
-          customTitle: null,
-          cost: {
-            totalUsd: 0,
-            breakdown: {
-              inputTokensUsd: 0,
-              outputTokensUsd: 0,
-              cacheCreationUsd: 0,
-              cacheReadUsd: 0,
-            },
-            tokenUsage: {
-              inputTokens: 0,
-              outputTokens: 0,
-              cacheCreationTokens: 0,
-              cacheReadTokens: 0,
-            },
-          },
-          modelName: null,
-          prLinks: [],
-        },
-      }));
-
+    const virtualSessions = createVirtualSessionEntries(
+      virtualMessages,
+      projectId,
+      existingIds,
+    );
     return [...serverSessions, ...virtualSessions];
-  }, [projectData.pages, projectId]);
+  }, [projectData.pages, projectId, virtualMessages]);
 
   const hasLocalCommandOutput = useMemo(
     () =>

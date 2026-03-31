@@ -8,7 +8,7 @@ import {
   useRef,
 } from "react";
 import type { SSEEvent } from "../../../types/sse";
-import { projectListQuery } from "../../api/queries";
+import { projectListQuery, sessionProcessesQuery } from "../../api/queries";
 import { callSSE } from "../callSSE";
 import {
   type EventListener,
@@ -45,6 +45,10 @@ export const ServerEventsProvider: FC<PropsWithChildren> = ({ children }) => {
             );
           },
         });
+        // Invalidate session processes to pick up any status changes missed during reconnection
+        await queryClient.invalidateQueries({
+          queryKey: sessionProcessesQuery.queryKey,
+        });
       },
     });
     sseRef.current = sse;
@@ -61,6 +65,10 @@ export const ServerEventsProvider: FC<PropsWithChildren> = ({ children }) => {
       // clean up
       sse.cleanUp();
       removeEventListener();
+      // Reset ref so that during StrictMode re-mount, children correctly
+      // defer listener registration via setTimeout instead of registering
+      // on the now-closed EventSource.
+      sseRef.current = null;
     };
   }, [setSSEState, queryClient]);
 

@@ -1,13 +1,9 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
 import { sessionDetailQuery } from "../../../../../../lib/api/queries";
 import type { Conversation } from "../../../../../../lib/conversation-schema";
 import { createVirtualUserEntry } from "../../../../../../lib/virtual-messages/createVirtualUserEntry";
 import { shouldRemoveVirtualMessage } from "../../../../../../lib/virtual-messages/shouldRemoveVirtualMessage";
-import {
-  getVirtualMessage,
-  removeVirtualMessage,
-} from "../../../../../../lib/virtual-messages/virtualMessageStore";
+import { getVirtualMessage } from "../../../../../../lib/virtual-messages/virtualMessageStore";
 
 const filterConversations = (
   conversations: ReadonlyArray<
@@ -91,21 +87,10 @@ export const useSessionQuery = (projectId: string, sessionId: string) => {
     refetchIntervalInBackground: false,
   });
 
-  // Clean up virtual message when real data appears
-  // Filter out virtual entries (vc__ prefix) to avoid self-matching
-  useEffect(() => {
-    const virtualMessage = getVirtualMessage(sessionId);
-    if (virtualMessage && query.data?.session) {
-      const realConversations = filterConversations(
-        query.data.session.conversations,
-      ).filter((c) => !("uuid" in c && c.uuid.startsWith("vc__")));
-      if (
-        shouldRemoveVirtualMessage(realConversations, virtualMessage.sentAt)
-      ) {
-        removeVirtualMessage(sessionId);
-      }
-    }
-  }, [sessionId, query.data]);
+  // Virtual message cleanup is handled by session list components
+  // (SessionsTab, SessionPageMain) when the server session appears in the project list.
+  // We don't clean up here because the session detail query refreshes before the
+  // project session list, causing the virtual session to disappear from the sidebar prematurely.
 
   return query;
 };

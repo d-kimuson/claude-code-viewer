@@ -2,10 +2,15 @@ import { Trans } from "@lingui/react";
 import { Link, useSearch } from "@tanstack/react-router";
 import { useAtomValue } from "jotai";
 import { MessageSquareIcon, PlusIcon } from "lucide-react";
-import { type FC, useEffect, useRef } from "react";
+import { type FC, useEffect, useMemo, useRef } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { createVirtualSessionEntries } from "@/lib/virtual-messages/createVirtualSessionEntries";
+import {
+  removeVirtualMessage,
+  virtualMessagesAtom,
+} from "@/lib/virtual-messages/virtualMessageStore";
 import { formatLocaleDate } from "../../../../../../../lib/date/formatLocaleDate";
 import { useConfig } from "../../../../../../hooks/useConfig";
 import { useProject } from "../../../../hooks/useProject";
@@ -23,9 +28,32 @@ export const SessionsTab: FC<{
     hasNextPage,
     isFetchingNextPage,
   } = useProject(projectId);
-  const sessions = projectData.pages.flatMap((page) => page.sessions);
-
   const sessionProcesses = useAtomValue(sessionProcessesAtom);
+  const virtualMessages = useAtomValue(virtualMessagesAtom);
+
+  const sessions = useMemo(() => {
+    const serverSessions = projectData.pages.flatMap((page) => page.sessions);
+    const existingIds = new Set(serverSessions.map((s) => s.id));
+    const virtualSessions = createVirtualSessionEntries(
+      virtualMessages,
+      projectId,
+      existingIds,
+    );
+    return [...serverSessions, ...virtualSessions];
+  }, [projectData.pages, projectId, virtualMessages]);
+
+  // Clean up virtual messages once the server session list includes them
+  useEffect(() => {
+    const serverIds = new Set(
+      projectData.pages.flatMap((page) => page.sessions).map((s) => s.id),
+    );
+    for (const vm of virtualMessages.values()) {
+      if (vm.projectId === projectId && serverIds.has(vm.sessionId)) {
+        removeVirtualMessage(vm.sessionId);
+      }
+    }
+  }, [projectData.pages, projectId, virtualMessages]);
+
   const { config } = useConfig();
   const activeSessionRef = useRef<HTMLAnchorElement>(null);
 

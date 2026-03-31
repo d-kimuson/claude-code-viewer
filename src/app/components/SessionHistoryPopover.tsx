@@ -7,7 +7,7 @@ import {
   MessageSquareIcon,
   PlusIcon,
 } from "lucide-react";
-import type { FC } from "react";
+import { type FC, useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,6 +22,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import { createVirtualSessionEntries } from "@/lib/virtual-messages/createVirtualSessionEntries";
+import { virtualMessagesAtom } from "@/lib/virtual-messages/virtualMessageStore";
 import { formatLocaleDate } from "../../lib/date/formatLocaleDate";
 import { useConfig } from "../hooks/useConfig";
 import { useProject } from "../projects/[projectId]/hooks/useProject";
@@ -48,8 +50,19 @@ export const SessionHistoryPopover: FC<SessionHistoryPopoverProps> = ({
     fetchNextPage,
     hasNextPage,
   } = useProject(projectId);
-  const sessions = projectData.pages.flatMap((page) => page.sessions);
   const sessionProcesses = useAtomValue(sessionProcessesAtom);
+  const virtualMessages = useAtomValue(virtualMessagesAtom);
+
+  const sessions = useMemo(() => {
+    const serverSessions = projectData.pages.flatMap((page) => page.sessions);
+    const existingIds = new Set(serverSessions.map((s) => s.id));
+    const virtualSessions = createVirtualSessionEntries(
+      virtualMessages,
+      projectId,
+      existingIds,
+    );
+    return [...serverSessions, ...virtualSessions];
+  }, [projectData.pages, projectId, virtualMessages]);
   const { config } = useConfig();
 
   const sortedSessions = [...sessions].sort((a, b) => {

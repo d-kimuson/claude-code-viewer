@@ -72,7 +72,8 @@ export const useCreateSessionProcessMutation = (
           throw new Error(response.statusText);
         }
 
-        return response.json();
+        const result = await response.json();
+        return result;
       } catch (error) {
         removeVirtualMessage(sessionId);
         throw error;
@@ -121,7 +122,8 @@ export const useContinueSessionProcessMutation = (
           throw new Error(response.statusText);
         }
 
-        return response.json();
+        const result = await response.json();
+        return result;
       } catch (error) {
         removeVirtualMessage(baseSessionId);
         throw error;

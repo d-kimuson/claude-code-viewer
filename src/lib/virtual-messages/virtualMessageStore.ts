@@ -1,3 +1,5 @@
+import { atom, getDefaultStore } from "jotai";
+
 export type VirtualMessage = {
   readonly sessionId: string;
   readonly projectId: string;
@@ -5,28 +7,41 @@ export type VirtualMessage = {
   readonly sentAt: string; // ISO timestamp
 };
 
-const store = new Map<string, VirtualMessage>();
+export const virtualMessagesAtom = atom<ReadonlyMap<string, VirtualMessage>>(
+  new Map(),
+);
+
+const jotaiStore = getDefaultStore();
 
 export const addVirtualMessage = (message: VirtualMessage): void => {
-  store.set(message.sessionId, message);
+  const current = jotaiStore.get(virtualMessagesAtom);
+  const next = new Map(current);
+  next.set(message.sessionId, message);
+  jotaiStore.set(virtualMessagesAtom, next);
 };
 
 export const getVirtualMessage = (
   sessionId: string,
 ): VirtualMessage | undefined => {
-  return store.get(sessionId);
+  return jotaiStore.get(virtualMessagesAtom).get(sessionId);
 };
 
 export const removeVirtualMessage = (sessionId: string): void => {
-  store.delete(sessionId);
+  const current = jotaiStore.get(virtualMessagesAtom);
+  if (!current.has(sessionId)) return;
+  const next = new Map(current);
+  next.delete(sessionId);
+  jotaiStore.set(virtualMessagesAtom, next);
 };
 
 export const getVirtualMessagesByProject = (
   projectId: string,
 ): VirtualMessage[] => {
-  return [...store.values()].filter((m) => m.projectId === projectId);
+  return [...jotaiStore.get(virtualMessagesAtom).values()].filter(
+    (m) => m.projectId === projectId,
+  );
 };
 
 export const clear = (): void => {
-  store.clear();
+  jotaiStore.set(virtualMessagesAtom, new Map());
 };

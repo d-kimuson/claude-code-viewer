@@ -43,6 +43,29 @@ const LayerImpl = Effect.gen(function* () {
   >([]);
   const eventBus = yield* EventBus;
 
+  const emitSessionProcessChanged = (
+    changed: CCSessionProcess.CCSessionProcessState,
+  ) =>
+    Effect.gen(function* () {
+      const processes = yield* Ref.get(processesRef);
+      const publicProcesses = processes
+        .filter(CCSessionProcess.isPublic)
+        .map((process) => ({
+          id: process.def.sessionProcessId,
+          projectId: process.def.projectId,
+          sessionId: process.sessionId,
+          status:
+            process.type === "paused"
+              ? ("paused" as const)
+              : ("running" as const),
+        }));
+
+      yield* eventBus.emit("sessionProcessChanged", {
+        processes: publicProcesses,
+        changed,
+      });
+    });
+
   const startSessionProcess = (options: {
     sessionDef: CCSessionProcess.CCSessionProcessDef;
     turnDef: CCTurn.NewClaudeCodeTurnDef | CCTurn.ResumeClaudeCodeTurnDef;
@@ -68,6 +91,9 @@ const LayerImpl = Effect.gen(function* () {
         ...processes,
         newProcess,
       ]);
+
+      yield* emitSessionProcessChanged(newProcess);
+
       return {
         sessionProcess: newProcess,
         task,
@@ -122,6 +148,8 @@ const LayerImpl = Effect.gen(function* () {
           p.def.sessionProcessId === sessionProcessId ? newProcess : p,
         );
       });
+
+      yield* emitSessionProcessChanged(newProcess);
 
       return {
         sessionProcess: newProcess,

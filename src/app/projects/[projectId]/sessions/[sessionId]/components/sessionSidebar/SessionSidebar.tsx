@@ -7,7 +7,7 @@ import {
   MessageSquareIcon,
   PlugIcon,
 } from "lucide-react";
-import { type FC, Suspense, useMemo } from "react";
+import { type FC, Suspense, useCallback, useMemo, useState } from "react";
 import type { SidebarTab } from "@/components/GlobalSidebar";
 import { GlobalSidebar } from "@/components/GlobalSidebar";
 import {
@@ -16,6 +16,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import {
   useLeftPanelActions,
   useLeftPanelState,
@@ -46,7 +47,9 @@ export const SessionSidebar: FC<{
 }) => {
   const { isLeftPanelOpen } = useLeftPanelState();
   const { toggleLeftPanel } = useLeftPanelActions();
+  const isMobile = useIsMobile();
   const activeSessionId = currentSessionId ?? "";
+  const [mobileActiveTab, setMobileActiveTab] = useState<string>(initialTab);
   const additionalTabs: SidebarTab[] = useMemo(
     () => [
       {
@@ -86,9 +89,23 @@ export const SessionSidebar: FC<{
     [activeSessionId, projectId],
   );
 
+  const handleMobileTabClick = useCallback(
+    (tabId: string) => {
+      if (isMobileOpen && mobileActiveTab === tabId) {
+        // Same tab clicked while open - close
+        onMobileOpenChange?.(false);
+      } else {
+        // Different tab or panel closed - open with this tab
+        setMobileActiveTab(tabId);
+        onMobileOpenChange?.(true);
+      }
+    },
+    [isMobileOpen, mobileActiveTab, onMobileOpenChange],
+  );
+
   return (
     <>
-      {/* Desktop sidebar - takes full width of parent container */}
+      {/* Sidebar - takes full width of parent container */}
       <div className={cn("flex h-full w-full", className)}>
         <GlobalSidebar
           projectId={projectId}
@@ -100,7 +117,7 @@ export const SessionSidebar: FC<{
                 <TooltipTrigger asChild>
                   <Link
                     to="/projects"
-                    className="w-12 h-12 flex items-center justify-center hover:bg-sidebar-accent transition-colors"
+                    className="w-(--spacing-sidebar-icon-menu-mobile) h-(--spacing-sidebar-icon-menu-mobile) md:w-(--spacing-sidebar-icon-menu) md:h-(--spacing-sidebar-icon-menu) flex items-center justify-center hover:bg-sidebar-accent transition-colors"
                   >
                     <ArrowLeftIcon className="w-4 h-4 text-sidebar-foreground/70" />
                   </Link>
@@ -114,17 +131,19 @@ export const SessionSidebar: FC<{
             </TooltipProvider>
           }
           fillWidth
-          isContentHidden={!isLeftPanelOpen}
+          isContentHidden={isMobile || !isLeftPanelOpen}
           onToggle={toggleLeftPanel}
+          onMobileTabClick={isMobile ? handleMobileTabClick : undefined}
         />
       </div>
 
-      {/* Mobile sidebar */}
+      {/* Mobile sidebar overlay - content only, icon menu is always visible */}
       <MobileSidebar
         currentSessionId={activeSessionId}
         projectId={projectId}
         isOpen={isMobileOpen}
         onClose={() => onMobileOpenChange?.(false)}
+        initialTab={mobileActiveTab}
       />
     </>
   );

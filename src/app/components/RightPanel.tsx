@@ -162,7 +162,7 @@ export const RightPanel: FC<RightPanelProps> = ({
         isMobile ? "left-0 right-0" : "right-0 border-l",
       )}
       style={{
-        top: "28px", // AppLayout header height (h-7 = 1.75rem = 28px)
+        top: "var(--header-height)",
         bottom: "0px",
         width: isMobile ? "100%" : `${width}%`,
         userSelect: isResizing ? "none" : "auto",

@@ -1,14 +1,15 @@
 import type { FC, ReactNode } from "react";
 import { useCallback, useEffect } from "react";
 import { useDragResize } from "@/hooks/useDragResize";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import {
   useLeftPanelActions,
   useLeftPanelState,
 } from "@/hooks/useLayoutPanels";
 import { cn } from "@/lib/utils";
 
-// Icon menu width (w-12 = 3rem = 48px)
-const ICON_MENU_WIDTH = 48;
+// Desktop icon menu pixel width (must match --sidebar-icon-menu-width in styles.css)
+const ICON_MENU_WIDTH_PX = 48;
 // Minimum width for content area
 const MIN_CONTENT_WIDTH = 200;
 
@@ -23,6 +24,7 @@ export const ResizableSidebar: FC<ResizableSidebarProps> = ({
 }) => {
   const { isLeftPanelOpen, leftPanelWidth } = useLeftPanelState();
   const { setLeftPanelWidth } = useLeftPanelActions();
+  const isMobile = useIsMobile();
 
   const handleResize = useCallback(
     (event: MouseEvent) => {
@@ -54,26 +56,40 @@ export const ResizableSidebar: FC<ResizableSidebarProps> = ({
     };
   }, [isResizing]);
 
+  // On mobile, always show compact icon-only width
+  if (isMobile) {
+    return (
+      <div
+        className={cn(
+          "relative flex-shrink-0 h-full flex overflow-hidden z-[51] w-(--spacing-sidebar-icon-menu-mobile) min-w-(--spacing-sidebar-icon-menu-mobile) max-w-(--spacing-sidebar-icon-menu-mobile)",
+          className,
+        )}
+      >
+        <div className="w-full h-full overflow-hidden">{children}</div>
+      </div>
+    );
+  }
+
   // When content is hidden, only show icon menu (48px)
   // When content is shown, use percentage width with min/max constraints
   const sidebarWidth = isLeftPanelOpen
     ? `${leftPanelWidth}%`
-    : `${ICON_MENU_WIDTH}px`;
+    : `${ICON_MENU_WIDTH_PX}px`;
 
   const minWidth = isLeftPanelOpen
-    ? `${ICON_MENU_WIDTH + MIN_CONTENT_WIDTH}px`
-    : `${ICON_MENU_WIDTH}px`;
+    ? `${ICON_MENU_WIDTH_PX + MIN_CONTENT_WIDTH}px`
+    : `${ICON_MENU_WIDTH_PX}px`;
 
   return (
     <div
       className={cn(
-        "relative flex-shrink-0 h-full hidden md:flex overflow-hidden transition-all duration-200",
+        "relative flex-shrink-0 h-full flex overflow-hidden transition-all duration-200",
         className,
       )}
       style={{
         width: sidebarWidth,
         minWidth,
-        maxWidth: isLeftPanelOpen ? "50%" : `${ICON_MENU_WIDTH}px`,
+        maxWidth: isLeftPanelOpen ? "50%" : `${ICON_MENU_WIDTH_PX}px`,
         userSelect: isResizing ? "none" : "auto",
       }}
     >

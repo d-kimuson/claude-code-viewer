@@ -41,9 +41,19 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
+  /* Layout spacing tokens */
+  --spacing-header-height: var(--header-height);
+  --spacing-sidebar-icon-menu: var(--sidebar-icon-menu-width);
+  --spacing-sidebar-icon-menu-mobile: var(--sidebar-icon-menu-width-mobile);
 }
 
 :root {
+  /* Layout dimensions */
+  --header-height: 2.75rem; /* h-11 = 44px */
+  --sidebar-icon-menu-width: 3rem; /* w-12 = 48px */
+  --sidebar-icon-menu-width-mobile: 2.5rem; /* w-10 = 40px */
+
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);

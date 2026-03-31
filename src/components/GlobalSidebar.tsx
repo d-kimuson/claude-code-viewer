@@ -36,6 +36,8 @@ interface GlobalSidebarProps {
   isContentHidden?: boolean;
   /** Callback when panel should be toggled (called when same tab is clicked while open) */
   onToggle?: () => void;
+  /** On mobile, called with tab id instead of inline content expansion */
+  onMobileTabClick?: (tabId: string) => void;
 }
 
 export const GlobalSidebar: FC<GlobalSidebarProps> = ({
@@ -47,6 +49,7 @@ export const GlobalSidebar: FC<GlobalSidebarProps> = ({
   fillWidth = false,
   isContentHidden = false,
   onToggle,
+  onMobileTabClick,
 }) => {
   const { openSearch } = useSearch();
   const { authEnabled, logout } = useAuth();
@@ -118,10 +121,16 @@ export const GlobalSidebar: FC<GlobalSidebarProps> = ({
   );
 
   // Tab click behavior:
+  // - If onMobileTabClick is set: delegate to mobile overlay
   // - If panel is closed: open panel and switch to clicked tab
   // - If panel is open and different tab: switch to clicked tab
   // - If panel is open and same tab: close panel (toggle)
   const handleTabClick = (tabId: string) => {
+    if (onMobileTabClick) {
+      setActiveTab(tabId);
+      onMobileTabClick(tabId);
+      return;
+    }
     if (isContentHidden) {
       // Panel is closed - open it and switch to this tab
       setActiveTab(tabId);
@@ -144,24 +153,28 @@ export const GlobalSidebar: FC<GlobalSidebarProps> = ({
     <div
       className={cn(
         "h-full border-r border-sidebar-border transition-all duration-300 ease-in-out flex bg-sidebar text-sidebar-foreground",
-        showContent ? (fillWidth ? "w-full" : "w-80 lg:w-80") : "w-12",
+        showContent
+          ? fillWidth
+            ? "w-full"
+            : "w-80 lg:w-80"
+          : "w-(--spacing-sidebar-icon-menu-mobile) md:w-(--spacing-sidebar-icon-menu)",
         className,
       )}
     >
-      {/* Vertical Icon Menu - Always Visible */}
-      <div className="w-12 flex flex-col border-r border-sidebar-border bg-sidebar/50">
+      {/* Vertical Icon Menu - Always Visible (compact on mobile) */}
+      <div className="w-(--spacing-sidebar-icon-menu-mobile) md:w-(--spacing-sidebar-icon-menu) flex flex-col border-r border-sidebar-border bg-sidebar/50">
         <TooltipProvider>
           {headerButton && (
             <div className="border-b border-sidebar-border">{headerButton}</div>
           )}
-          <div className="p-2 border-b border-sidebar-border">
+          <div className="p-1.5 md:p-2 border-b border-sidebar-border">
             <Tooltip>
               <TooltipTrigger asChild>
                 <button
                   type="button"
                   onClick={openSearch}
                   className={cn(
-                    "w-8 h-8 flex items-center justify-center rounded-md transition-colors",
+                    "w-7 h-7 md:w-8 md:h-8 flex items-center justify-center rounded-md transition-colors",
                     "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
                     "text-sidebar-foreground/70",
                   )}
@@ -177,7 +190,7 @@ export const GlobalSidebar: FC<GlobalSidebarProps> = ({
               </TooltipContent>
             </Tooltip>
           </div>
-          <div className="flex-1 flex flex-col p-2 space-y-1">
+          <div className="flex-1 flex flex-col p-1.5 md:p-2 space-y-0.5 md:space-y-1">
             {allTabs.map((tab) => {
               const Icon = tab.icon;
               return (
@@ -187,7 +200,7 @@ export const GlobalSidebar: FC<GlobalSidebarProps> = ({
                       type="button"
                       onClick={() => handleTabClick(tab.id)}
                       className={cn(
-                        "w-8 h-8 flex items-center justify-center rounded-md transition-colors",
+                        "w-7 h-7 md:w-8 md:h-8 flex items-center justify-center rounded-md transition-colors",
                         "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
                         activeTab === tab.id && showContent
                           ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-sm"
@@ -207,14 +220,14 @@ export const GlobalSidebar: FC<GlobalSidebarProps> = ({
           </div>
           {/* Logout button at bottom - only show when auth is enabled */}
           {authEnabled && (
-            <div className="p-2 border-t border-sidebar-border">
+            <div className="p-1.5 md:p-2 border-t border-sidebar-border">
               <Tooltip>
                 <TooltipTrigger asChild>
                   <button
                     type="button"
                     onClick={handleLogout}
                     className={cn(
-                      "w-8 h-8 flex items-center justify-center rounded-md transition-colors",
+                      "w-7 h-7 md:w-8 md:h-8 flex items-center justify-center rounded-md transition-colors",
                       "hover:bg-destructive/10 hover:text-destructive",
                       "text-sidebar-foreground/70",
                     )}
@@ -235,7 +248,7 @@ export const GlobalSidebar: FC<GlobalSidebarProps> = ({
       {/* Content Area - Only shown when expanded and not hidden by external control */}
       {showContent && (
         <div className="flex-1 flex flex-col overflow-hidden">
-          <Suspense fallback={<Loading />}>{activeTabContent}</Suspense>
+          {activeTabContent}
         </div>
       )}
     </div>

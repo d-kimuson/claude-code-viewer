@@ -1,35 +1,25 @@
 import { Trans, useLingui } from "@lingui/react";
-import { Link } from "@tanstack/react-router";
-import {
-  ArrowLeftIcon,
-  InfoIcon,
-  MessageSquareIcon,
-  PlugIcon,
-  SettingsIcon,
-  XIcon,
-} from "lucide-react";
+import { XIcon } from "lucide-react";
 import { type FC, Suspense, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { NotificationSettings } from "@/components/NotificationSettings";
 import { SettingsControls } from "@/components/SettingsControls";
 import { SystemInfoCard } from "@/components/SystemInfoCard";
 import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { useSwipeGesture } from "@/hooks/useSwipeGesture";
 import { cn } from "@/lib/utils";
 import { McpTab } from "./McpTab";
+import { SchedulerTab } from "./SchedulerTab";
 import { SessionsTab } from "./SessionsTab";
+import { TasksTab } from "./TasksTab";
 
 interface MobileSidebarProps {
   currentSessionId: string;
   projectId: string;
   isOpen: boolean;
   onClose: () => void;
+  /** Tab to show when opened, synced from GlobalSidebar icon clicks */
+  initialTab?: string;
 }
 
 export const MobileSidebar: FC<MobileSidebarProps> = ({
@@ -37,12 +27,18 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
   projectId,
   isOpen,
   onClose,
+  initialTab = "sessions",
 }) => {
   const { i18n } = useLingui();
-  const [activeTab, setActiveTab] = useState<
-    "sessions" | "mcp" | "settings" | "system-info"
-  >("sessions");
+  const [activeTab, setActiveTab] = useState(initialTab);
   const [mounted, setMounted] = useState(false);
+
+  // Sync tab when opened from GlobalSidebar icon click
+  useEffect(() => {
+    if (isOpen) {
+      setActiveTab(initialTab);
+    }
+  }, [isOpen, initialTab]);
 
   // Handle portal mounting
   useEffect(() => {
@@ -59,7 +55,6 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
 
     if (isOpen) {
       document.addEventListener("keydown", handleEscape);
-      // Prevent body scroll when sidebar is open
       document.body.style.overflow = "hidden";
     }
 
@@ -68,12 +63,6 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
       document.body.style.overflow = "";
     };
   }, [isOpen, onClose]);
-
-  const handleTabClick = (
-    tab: "sessions" | "mcp" | "settings" | "system-info",
-  ) => {
-    setActiveTab(tab);
-  };
 
   // Swipe left to close sidebar
   const swipeRef = useSwipeGesture({
@@ -103,6 +92,12 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
         );
       case "mcp":
         return <McpTab projectId={projectId} />;
+      case "tasks":
+        return <TasksTab projectId={projectId} sessionId={currentSessionId} />;
+      case "scheduler":
+        return (
+          <SchedulerTab projectId={projectId} sessionId={currentSessionId} />
+        );
       case "settings":
         return (
           <div className="h-full flex flex-col">
@@ -151,7 +146,7 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
           : "invisible opacity-0 pointer-events-none",
       )}
     >
-      {/* Backdrop */}
+      {/* Backdrop - starts after the icon menu so icons remain clickable */}
       <button
         type="button"
         className="absolute inset-0 bg-black/50 backdrop-blur-sm cursor-default"
@@ -161,150 +156,34 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
             onClose();
           }
         }}
+        style={{ left: "var(--sidebar-icon-menu-width-mobile)" }}
         aria-label={i18n._("Close sidebar")}
       />
 
-      {/* Sidebar */}
+      {/* Content overlay - positioned next to the always-visible icon menu */}
       <div
         ref={swipeRef}
         className={cn(
-          "absolute left-0 top-0 h-full w-80 max-w-[85vw] bg-sidebar text-sidebar-foreground transition-transform duration-300 ease-out flex",
+          "absolute top-0 h-full w-72 max-w-[calc(85vw-var(--sidebar-icon-menu-width-mobile))] bg-sidebar text-sidebar-foreground transition-transform duration-300 ease-out flex flex-col shadow-xl",
           isOpen ? "translate-x-0" : "-translate-x-full",
         )}
+        style={{ left: "var(--sidebar-icon-menu-width-mobile)" }}
       >
-        {/* Tab Icons - wider column with larger touch targets for mobile */}
-        <div className="w-14 flex flex-col border-r border-sidebar-border bg-sidebar/50">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Link
-                  to="/projects"
-                  className="w-14 h-14 flex items-center justify-center border-b border-sidebar-border hover:bg-sidebar-accent transition-colors"
-                >
-                  <ArrowLeftIcon className="w-4 h-4 text-sidebar-foreground/70" />
-                </Link>
-              </TooltipTrigger>
-              <TooltipContent side="right">
-                <p>
-                  <Trans id="sidebar.back.to.projects" />
-                </p>
-              </TooltipContent>
-            </Tooltip>
-
-            <div className="flex flex-col p-2 space-y-1">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    type="button"
-                    onClick={() => handleTabClick("sessions")}
-                    className={cn(
-                      "w-11 h-11 flex items-center justify-center rounded-md transition-colors",
-                      "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-                      activeTab === "sessions"
-                        ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-sm"
-                        : "text-sidebar-foreground/70",
-                    )}
-                    data-testid="sessions-tab-button-mobile"
-                  >
-                    <MessageSquareIcon className="w-4 h-4" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="right">
-                  <p>
-                    <Trans id="sidebar.show.session.list" />
-                  </p>
-                </TooltipContent>
-              </Tooltip>
-
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    type="button"
-                    onClick={() => handleTabClick("mcp")}
-                    className={cn(
-                      "w-11 h-11 flex items-center justify-center rounded-md transition-colors",
-                      "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-                      activeTab === "mcp"
-                        ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-sm"
-                        : "text-sidebar-foreground/70",
-                    )}
-                    data-testid="mcp-tab-button-mobile"
-                  >
-                    <PlugIcon className="w-4 h-4" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="right">
-                  <p>
-                    <Trans id="sidebar.show.mcp.settings" />
-                  </p>
-                </TooltipContent>
-              </Tooltip>
-
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    type="button"
-                    onClick={() => handleTabClick("settings")}
-                    className={cn(
-                      "w-11 h-11 flex items-center justify-center rounded-md transition-colors",
-                      "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-                      activeTab === "settings"
-                        ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-sm"
-                        : "text-sidebar-foreground/70",
-                    )}
-                    data-testid="settings-tab-button-mobile"
-                  >
-                    <SettingsIcon className="w-4 h-4" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="right">
-                  <Trans id="settings.tab.title" />
-                </TooltipContent>
-              </Tooltip>
-
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    type="button"
-                    onClick={() => handleTabClick("system-info")}
-                    className={cn(
-                      "w-11 h-11 flex items-center justify-center rounded-md transition-colors",
-                      "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-                      activeTab === "system-info"
-                        ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-sm"
-                        : "text-sidebar-foreground/70",
-                    )}
-                    data-testid="system-info-tab-button-mobile"
-                  >
-                    <InfoIcon className="w-4 h-4" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="right">
-                  <Trans id="system.info.tab.title" />
-                </TooltipContent>
-              </Tooltip>
-            </div>
-          </TooltipProvider>
+        {/* Header with close button - matches AppLayout header height */}
+        <div className="h-(--spacing-header-height) flex items-center justify-between px-3 border-b border-sidebar-border bg-sidebar/80 backdrop-blur-sm flex-shrink-0">
+          <h2 className="text-sm font-semibold capitalize">{activeTab}</h2>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onClose}
+            className="h-7 w-7 p-0 hover:bg-sidebar-accent/50"
+          >
+            <XIcon className="w-3.5 h-3.5" />
+          </Button>
         </div>
 
-        {/* Content Area */}
-        <div className="flex-1 flex flex-col overflow-hidden">
-          {/* Header with close button */}
-          <div className="flex items-center justify-between p-4 border-b border-sidebar-border bg-sidebar/80 backdrop-blur-sm">
-            <h2 className="text-lg font-semibold capitalize">{activeTab}</h2>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onClose}
-              className="h-8 w-8 p-0 hover:bg-sidebar-accent/50"
-            >
-              <XIcon className="w-4 h-4" />
-            </Button>
-          </div>
-
-          {/* Tab Content */}
-          <div className="flex-1 overflow-hidden">{renderContent()}</div>
-        </div>
+        {/* Tab Content */}
+        <div className="flex-1 overflow-hidden">{renderContent()}</div>
       </div>
     </div>,
     document.body,

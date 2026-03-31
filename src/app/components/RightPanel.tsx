@@ -158,7 +158,7 @@ export const RightPanel: FC<RightPanelProps> = ({
   return (
     <div
       className={cn(
-        "fixed bg-background border-border/60 shadow-2xl z-[52] flex flex-col",
+        "fixed bg-background border-border/60 shadow-2xl z-[40] flex flex-col",
         isMobile ? "left-0 right-0" : "right-0 border-l",
       )}
       style={{

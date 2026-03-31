@@ -1,10 +1,6 @@
-import { Effect } from "effect";
-import type { UserEntry } from "../../../../lib/conversation-schema/entry/UserEntrySchema";
 import type { UserMessageInput } from "../functions/createMessageGenerator";
 import type { InitMessageContext } from "../types";
-import * as ClaudeCode from "./ClaudeCode";
 import type * as CCTurn from "./ClaudeCodeTurn";
-import * as ClaudeCodeVersion from "./ClaudeCodeVersion";
 
 export type CCSessionProcessDef = {
   sessionProcessId: string;
@@ -19,21 +15,15 @@ type CCSessionProcessStateBase = {
   tasks: CCTurn.ClaudeCodeTurnState[];
 };
 
-export type CCSessionProcessPendingState = CCSessionProcessStateBase & {
-  type: "pending" /* メッセージがまだ解決されていない状態 */;
-  sessionId?: undefined;
-  currentTask: CCTurn.PendingClaudeCodeTurnState;
-};
-
-export type CCSessionProcessNotInitializedState = CCSessionProcessStateBase & {
-  type: "not_initialized" /* メッセージは解決されているが、init メッセージを未受信 */;
-  sessionId?: undefined;
+export type CCSessionProcessStartingState = CCSessionProcessStateBase & {
+  type: "starting" /* SDK process started, waiting for init message */;
+  sessionId: string;
   currentTask: CCTurn.RunningClaudeCodeTurnState;
   rawUserMessage: string;
 };
 
 export type CCSessionProcessInitializedState = CCSessionProcessStateBase & {
-  type: "initialized" /* init メッセージを受信した状態 */;
+  type: "initialized" /* init message received */;
   sessionId: string;
   currentTask: CCTurn.RunningClaudeCodeTurnState;
   rawUserMessage: string;
@@ -41,7 +31,7 @@ export type CCSessionProcessInitializedState = CCSessionProcessStateBase & {
 };
 
 export type CCSessionProcessFileCreatedState = CCSessionProcessStateBase & {
-  type: "file_created" /* ファイルが作成された状態 */;
+  type: "file_created" /* file has been created */;
   sessionId: string;
   currentTask: CCTurn.RunningClaudeCodeTurnState;
   rawUserMessage: string;
@@ -49,23 +39,22 @@ export type CCSessionProcessFileCreatedState = CCSessionProcessStateBase & {
 };
 
 export type CCSessionProcessPausedState = CCSessionProcessStateBase & {
-  type: "paused" /* タスクが完了し、次のタスクを受け付け可能 */;
+  type: "paused" /* task completed, ready for next task */;
   sessionId: string;
 };
 
 export type CCSessionProcessCompletedState = CCSessionProcessStateBase & {
-  type: "completed" /* paused あるいは起動中のタスクが中断された状態。再開不可 */;
-  sessionId?: string | undefined;
+  type: "completed" /* paused or running task was aborted. Cannot resume */;
+  sessionId: string;
 };
 
 export type CCSessionProcessStatePublic =
+  | CCSessionProcessStartingState
   | CCSessionProcessInitializedState
   | CCSessionProcessFileCreatedState
   | CCSessionProcessPausedState;
 
 export type CCSessionProcessState =
-  | CCSessionProcessPendingState
-  | CCSessionProcessNotInitializedState
   | CCSessionProcessStatePublic
   | CCSessionProcessCompletedState;
 
@@ -73,6 +62,7 @@ export const isPublic = (
   process: CCSessionProcessState,
 ): process is CCSessionProcessStatePublic => {
   return (
+    process.type === "starting" ||
     process.type === "initialized" ||
     process.type === "file_created" ||
     process.type === "paused"
@@ -85,38 +75,4 @@ export const getAliveTasks = (
   return process.tasks.filter(
     (task) => task.status === "pending" || task.status === "running",
   );
-};
-
-export const createVirtualConversation = (
-  process: CCSessionProcessState,
-  ctx: {
-    sessionId: string;
-    userMessage: string;
-  },
-) => {
-  const timestamp = new Date().toISOString();
-
-  return Effect.gen(function* () {
-    const config = yield* ClaudeCode.Config;
-
-    const virtualConversation: UserEntry = {
-      type: "user",
-      message: {
-        role: "user",
-        content: ctx.userMessage,
-      },
-      isSidechain: false,
-      userType: "external",
-      cwd: process.def.cwd,
-      sessionId: ctx.sessionId,
-      version: config.claudeCodeVersion
-        ? ClaudeCodeVersion.versionText(config.claudeCodeVersion)
-        : "unknown",
-      uuid: `vc__${ctx.sessionId}__${timestamp}`,
-      timestamp,
-      parentUuid: null,
-    };
-
-    return virtualConversation;
-  });
 };

@@ -45,24 +45,23 @@ const LayerImpl = Effect.gen(function* () {
 
   const startSessionProcess = (options: {
     sessionDef: CCSessionProcess.CCSessionProcessDef;
-    turnDef:
-      | CCTurn.NewClaudeCodeTurnDef
-      | CCTurn.ResumeClaudeCodeTurnDef
-      | CCTurn.ForkClaudeCodeTurnDef;
+    turnDef: CCTurn.NewClaudeCodeTurnDef | CCTurn.ResumeClaudeCodeTurnDef;
   }) => {
     const { sessionDef, turnDef } = options;
 
     return Effect.gen(function* () {
-      const task: CCTurn.PendingClaudeCodeTurnState = {
+      const task: CCTurn.RunningClaudeCodeTurnState = {
         def: turnDef,
-        status: "pending",
+        status: "running",
       };
 
-      const newProcess: CCSessionProcess.CCSessionProcessState = {
+      const newProcess: CCSessionProcess.CCSessionProcessStartingState = {
         def: sessionDef,
-        type: "pending",
+        type: "starting",
+        sessionId: turnDef.sessionId,
         tasks: [task],
         currentTask: task,
+        rawUserMessage: "", // Will be set when message is resolved
       };
 
       yield* Ref.update(processesRef, (processes) => [
@@ -99,22 +98,23 @@ const LayerImpl = Effect.gen(function* () {
           new SessionProcessAlreadyAliveError({
             sessionProcessId,
             aliveTaskId: firstAliveTask.def.turnId,
-            aliveTaskSessionId:
-              firstAliveTask.def.sessionId ?? firstAliveTask.sessionId,
+            aliveTaskSessionId: firstAliveTask.def.sessionId,
           }),
         );
       }
 
-      const newTask: CCTurn.PendingClaudeCodeTurnState = {
+      const newTask: CCTurn.RunningClaudeCodeTurnState = {
         def: options.turnDef,
-        status: "pending",
+        status: "running",
       };
 
-      const newProcess: CCSessionProcess.CCSessionProcessPendingState = {
+      const newProcess: CCSessionProcess.CCSessionProcessStartingState = {
         def: process.def,
-        type: "pending",
+        type: "starting",
+        sessionId: process.sessionId,
         tasks: [...process.tasks, newTask],
         currentTask: newTask,
+        rawUserMessage: "", // Will be set when message is resolved
       };
 
       yield* Ref.update(processesRef, (processes) => {
@@ -254,7 +254,7 @@ const LayerImpl = Effect.gen(function* () {
     });
   };
 
-  const toNotInitializedState = (options: {
+  const updateRawUserMessage = (options: {
     sessionProcessId: string;
     rawUserMessage: string;
   }) => {
@@ -263,38 +263,25 @@ const LayerImpl = Effect.gen(function* () {
     return Effect.gen(function* () {
       const currentProcess = yield* getSessionProcess(sessionProcessId);
 
-      if (currentProcess.type !== "pending") {
+      if (currentProcess.type !== "starting") {
         return yield* Effect.fail(
           new IllegalStateChangeError({
             from: currentProcess.type,
-            to: "not_initialized",
+            to: "starting",
           }),
         );
       }
 
-      const newTask = yield* changeTurnState({
-        sessionProcessId,
-        turnId: currentProcess.currentTask.def.turnId,
-        nextTask: {
-          status: "running",
-          def: currentProcess.currentTask.def,
-        },
-      });
-
       const newProcess = yield* dangerouslyChangeProcessState({
         sessionProcessId,
         nextState: {
-          type: "not_initialized",
-          def: currentProcess.def,
-          tasks: currentProcess.tasks,
-          currentTask: newTask,
+          ...currentProcess,
           rawUserMessage,
         },
       });
 
       return {
         sessionProcess: newProcess,
-        task: newTask,
       };
     });
   };
@@ -307,7 +294,7 @@ const LayerImpl = Effect.gen(function* () {
 
     return Effect.gen(function* () {
       const currentProcess = yield* getSessionProcess(sessionProcessId);
-      if (currentProcess.type !== "not_initialized") {
+      if (currentProcess.type !== "starting") {
         return yield* Effect.fail(
           new IllegalStateChangeError({
             from: currentProcess.type,
@@ -323,7 +310,7 @@ const LayerImpl = Effect.gen(function* () {
           def: currentProcess.def,
           tasks: currentProcess.tasks,
           currentTask: currentProcess.currentTask,
-          sessionId: initContext.initMessage.session_id,
+          sessionId: currentProcess.sessionId,
           rawUserMessage: currentProcess.rawUserMessage,
           initContext: initContext,
         },
@@ -427,7 +414,7 @@ const LayerImpl = Effect.gen(function* () {
       const currentProcess = yield* getSessionProcess(sessionProcessId);
 
       const currentTask =
-        currentProcess.type === "not_initialized" ||
+        currentProcess.type === "starting" ||
         currentProcess.type === "initialized" ||
         currentProcess.type === "file_created"
           ? currentProcess.currentTask
@@ -482,7 +469,7 @@ const LayerImpl = Effect.gen(function* () {
     // session
     startSessionProcess,
     continueSessionProcess,
-    toNotInitializedState,
+    updateRawUserMessage,
     toInitializedState,
     toFileCreatedState,
     toPausedState,

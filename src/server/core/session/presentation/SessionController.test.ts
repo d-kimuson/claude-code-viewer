@@ -6,7 +6,6 @@ import { AgentSessionRepository } from "../../agent-session/infrastructure/Agent
 import { EventBus, type IEventBus } from "../../events/services/EventBus";
 import type { InternalEventDeclaration } from "../../events/types/InternalEventDeclaration";
 import { SessionRepository } from "../infrastructure/SessionRepository";
-import { VirtualConversationDatabase } from "../infrastructure/VirtualConversationDatabase";
 import { SessionMetaService } from "../services/SessionMetaService";
 import { SessionController } from "./SessionController";
 
@@ -92,16 +91,6 @@ describe("SessionController", () => {
         invalidateSession: () => Effect.void,
       });
 
-      const virtualConversationDatabaseLayer = Layer.succeed(
-        VirtualConversationDatabase,
-        {
-          getProjectVirtualConversations: () => Effect.succeed([]),
-          getSessionVirtualConversation: () => Effect.succeed(null),
-          createVirtualConversation: () => Effect.void,
-          deleteVirtualConversations: () => Effect.void,
-        },
-      );
-
       const eventBusLayer = Layer.succeed(EventBus, {
         emit: <EventName extends keyof InternalEventDeclaration>(
           event: EventName,
@@ -122,7 +111,6 @@ describe("SessionController", () => {
           fileSystemLayer,
           sessionRepositoryLayer,
           sessionMetaServiceLayer,
-          virtualConversationDatabaseLayer,
           eventBusLayer,
           agentSessionRepositoryLayer,
         ),

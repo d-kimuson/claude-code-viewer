@@ -35,13 +35,10 @@ const LayerImpl = Effect.gen(function* () {
 
   const createSessionProcess = (options: {
     projectId: string;
+    sessionId?: string;
     input: UserMessageInput;
     baseSession:
       | undefined
-      | {
-          type: "fork";
-          sessionId: string;
-        }
       | {
           type: "resume";
           sessionId: string;
@@ -49,7 +46,7 @@ const LayerImpl = Effect.gen(function* () {
     ccOptions?: CCTurn.CCOptions;
   }) =>
     Effect.gen(function* () {
-      const { projectId, input, baseSession, ccOptions } = options;
+      const { projectId, sessionId, input, baseSession, ccOptions } = options;
 
       const { project } = yield* projectRepository.getProject(projectId);
       const userConfig = yield* userConfigService.getUserConfig();
@@ -64,13 +61,12 @@ const LayerImpl = Effect.gen(function* () {
       const result = yield* claudeCodeLifeCycleService.startSessionProcess({
         projectId,
         cwd: project.meta.projectPath,
+        sessionId,
         baseSession,
         userConfig,
         input,
         ccOptions,
       });
-
-      const { sessionId } = yield* result.yieldSessionInitialized();
 
       return {
         status: 201 as const,
@@ -78,7 +74,7 @@ const LayerImpl = Effect.gen(function* () {
           sessionProcess: {
             id: result.sessionProcess.def.sessionProcessId,
             projectId,
-            sessionId,
+            sessionId: result.sessionId,
           },
         },
       } as const satisfies ControllerResponse;

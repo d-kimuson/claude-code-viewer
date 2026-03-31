@@ -111,8 +111,8 @@ describe("RateLimitAutoScheduleService", () => {
         Effect.succeed({ sessionProcess: {} as never, task: {} as never }),
       continueSessionProcess: () =>
         Effect.succeed({ sessionProcess: {} as never, task: {} as never }),
-      toNotInitializedState: () =>
-        Effect.succeed({ sessionProcess: {} as never, task: {} as never }),
+      updateRawUserMessage: () =>
+        Effect.succeed({ sessionProcess: {} as never }),
       toInitializedState: () => Effect.succeed({ sessionProcess: {} as never }),
       toFileCreatedState: () => Effect.succeed({ sessionProcess: {} as never }),
       toPausedState: () => Effect.succeed({ sessionProcess: {} as never }),

@@ -78,13 +78,10 @@ const claudeCodeRoutes = Effect.gen(function* () {
         "json",
         z.object({
           projectId: z.string(),
+          sessionId: z.string().uuid().optional(),
           input: userMessageInputSchema,
           baseSession: z.union([
             z.undefined(),
-            z.object({
-              type: z.literal("fork"),
-              sessionId: z.string(),
-            }),
             z.object({
               type: z.literal("resume"),
               sessionId: z.string(),

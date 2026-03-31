@@ -28,9 +28,4 @@ export type InternalEventDeclaration = {
   permissionRequested: {
     permissionRequest: PermissionRequest;
   };
-
-  virtualConversationUpdated: {
-    projectId: string;
-    sessionId: string;
-  };
 };

@@ -1,6 +1,10 @@
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { honoClient } from "../../../../../lib/api/client";
+import {
+  addVirtualMessage,
+  removeVirtualMessage,
+} from "../../../../../lib/virtual-messages/virtualMessageStore";
 import type { MessageInput } from "./ChatInput";
 
 export const useCreateSessionProcessMutation = (
@@ -14,53 +18,65 @@ export const useCreateSessionProcessMutation = (
       input: MessageInput;
       baseSessionId?: string;
     }) => {
-      const { ccOptions, forkSession, ...input } = options.input;
+      const { ccOptions, ...input } = options.input;
+      const sessionId = options.baseSessionId ?? crypto.randomUUID();
 
-      const getBaseSession = ():
-        | undefined
-        | { type: "fork"; sessionId: string }
-        | { type: "resume"; sessionId: string } => {
-        if (!options.baseSessionId) return undefined;
-        const sessionType = forkSession !== false ? "fork" : "resume";
-        return { type: sessionType, sessionId: options.baseSessionId };
-      };
+      // Add virtual message to store before navigation
+      addVirtualMessage({
+        sessionId,
+        projectId,
+        userMessage: input.text,
+        sentAt: new Date().toISOString(),
+      });
 
-      const response = await honoClient.api["claude-code"][
-        "session-processes"
-      ].$post(
-        {
-          json: {
-            projectId,
-            baseSession: getBaseSession(),
-            input,
-            ccOptions,
-          },
-        },
-        {
-          init: {
-            signal: AbortSignal.timeout(60 * 1000),
-          },
-        },
-      );
-
-      if (!response.ok) {
-        throw new Error(response.statusText);
-      }
-
-      return response.json();
-    },
-    onSuccess: async (response) => {
-      onSuccess?.();
+      // Navigate immediately (before API response)
       navigate({
         to: "/projects/$projectId/session",
-        params: {
-          projectId,
-        },
+        params: { projectId },
         search: (prev) => ({
           ...prev,
-          sessionId: response.sessionProcess.sessionId,
+          sessionId,
         }),
       });
+      onSuccess?.();
+
+      // Then fire API call
+      const getBaseSession = ():
+        | undefined
+        | { type: "resume"; sessionId: string } => {
+        if (!options.baseSessionId) return undefined;
+        return { type: "resume", sessionId: options.baseSessionId };
+      };
+
+      try {
+        const response = await honoClient.api["claude-code"][
+          "session-processes"
+        ].$post(
+          {
+            json: {
+              projectId,
+              sessionId: options.baseSessionId ? undefined : sessionId,
+              baseSession: getBaseSession(),
+              input,
+              ccOptions,
+            },
+          },
+          {
+            init: {
+              signal: AbortSignal.timeout(10 * 1000),
+            },
+          },
+        );
+
+        if (!response.ok) {
+          throw new Error(response.statusText);
+        }
+
+        return response.json();
+      } catch (error) {
+        removeVirtualMessage(sessionId);
+        throw error;
+      }
     },
   });
 };
@@ -74,29 +90,42 @@ export const useContinueSessionProcessMutation = (
       input: MessageInput;
       sessionProcessId: string;
     }) => {
-      const response = await honoClient.api["claude-code"]["session-processes"][
-        ":sessionProcessId"
-      ].continue.$post(
-        {
-          param: { sessionProcessId: options.sessionProcessId },
-          json: {
-            projectId: projectId,
-            baseSessionId: baseSessionId,
-            input: options.input,
-          },
-        },
-        {
-          init: {
-            signal: AbortSignal.timeout(60 * 1000),
-          },
-        },
-      );
+      // Add virtual message to store for continue
+      addVirtualMessage({
+        sessionId: baseSessionId,
+        projectId,
+        userMessage: options.input.text,
+        sentAt: new Date().toISOString(),
+      });
 
-      if (!response.ok) {
-        throw new Error(response.statusText);
+      try {
+        const response = await honoClient.api["claude-code"][
+          "session-processes"
+        ][":sessionProcessId"].continue.$post(
+          {
+            param: { sessionProcessId: options.sessionProcessId },
+            json: {
+              projectId: projectId,
+              baseSessionId: baseSessionId,
+              input: options.input,
+            },
+          },
+          {
+            init: {
+              signal: AbortSignal.timeout(10 * 1000),
+            },
+          },
+        );
+
+        if (!response.ok) {
+          throw new Error(response.statusText);
+        }
+
+        return response.json();
+      } catch (error) {
+        removeVirtualMessage(baseSessionId);
+        throw error;
       }
-
-      return response.json();
     },
   });
 };

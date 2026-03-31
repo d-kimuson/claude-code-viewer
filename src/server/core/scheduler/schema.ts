@@ -27,10 +27,6 @@ export const messageConfigSchema = z.object({
   baseSession: z.union([
     z.null(),
     z.object({
-      type: z.literal("fork"),
-      sessionId: z.string(),
-    }),
-    z.object({
       type: z.literal("resume"),
       sessionId: z.string(),
     }),

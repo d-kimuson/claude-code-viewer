@@ -149,7 +149,7 @@ const LayerImpl = Effect.gen(function* () {
         },
       });
 
-      const { sessionId } = yield* result.yieldSessionFileCreated();
+      const { sessionId } = result;
 
       return {
         status: 201,

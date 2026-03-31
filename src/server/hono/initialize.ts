@@ -6,7 +6,6 @@ import { ProjectRepository } from "../core/project/infrastructure/ProjectReposit
 import { ProjectMetaService } from "../core/project/services/ProjectMetaService";
 import { RateLimitAutoScheduleService } from "../core/rate-limit/services/RateLimitAutoScheduleService";
 import { SessionRepository } from "../core/session/infrastructure/SessionRepository";
-import { VirtualConversationDatabase } from "../core/session/infrastructure/VirtualConversationDatabase";
 import { SessionMetaService } from "../core/session/services/SessionMetaService";
 
 interface InitializeServiceInterface {
@@ -27,14 +26,10 @@ export class InitializeService extends Context.Tag("InitializeService")<
       const sessionRepository = yield* SessionRepository;
       const projectMetaService = yield* ProjectMetaService;
       const sessionMetaService = yield* SessionMetaService;
-      const virtualConversationDatabase = yield* VirtualConversationDatabase;
       const rateLimitAutoScheduleService = yield* RateLimitAutoScheduleService;
 
       // 状態管理用の Ref
       const listenersRef = yield* Ref.make<{
-        sessionProcessChanged?:
-          | ((event: InternalEventDeclaration["sessionProcessChanged"]) => void)
-          | null;
         sessionChanged?:
           | ((event: InternalEventDeclaration["sessionChanged"]) => void)
           | null;
@@ -74,29 +69,10 @@ export class InitializeService extends Context.Tag("InitializeService")<
             );
           };
 
-          const onSessionProcessChanged = (
-            event: InternalEventDeclaration["sessionProcessChanged"],
-          ) => {
-            if (
-              (event.changed.type === "completed" ||
-                event.changed.type === "paused") &&
-              event.changed.sessionId !== undefined
-            ) {
-              Effect.runFork(
-                virtualConversationDatabase.deleteVirtualConversations(
-                  event.changed.sessionId,
-                ),
-              );
-              return;
-            }
-          };
-
           yield* Ref.set(listenersRef, {
             sessionChanged: onSessionChanged,
-            sessionProcessChanged: onSessionProcessChanged,
           });
           yield* eventBus.on("sessionChanged", onSessionChanged);
-          yield* eventBus.on("sessionProcessChanged", onSessionProcessChanged);
 
           yield* Effect.gen(function* () {
             console.log("Initializing projects cache");
@@ -127,13 +103,6 @@ export class InitializeService extends Context.Tag("InitializeService")<
           const listeners = yield* Ref.get(listenersRef);
           if (listeners.sessionChanged) {
             yield* eventBus.off("sessionChanged", listeners.sessionChanged);
-          }
-
-          if (listeners.sessionProcessChanged) {
-            yield* eventBus.off(
-              "sessionProcessChanged",
-              listeners.sessionProcessChanged,
-            );
           }
 
           yield* Ref.set(listenersRef, {});

@@ -46,7 +46,6 @@ export interface MessageInput {
   images?: ImageBlockParam[];
   documents?: DocumentBlockParam[];
   ccOptions?: CCOptionsSchema;
-  forkSession?: boolean;
 }
 
 export interface ChatInputProps {
@@ -125,8 +124,6 @@ export const ChatInput: FC<ChatInputProps> = ({
   const [ccOptions, setCCOptions] = useState<CCOptionsSchema | undefined>(
     getDefaultCCOptions,
   );
-  const [forkSession, setForkSession] = useState(true);
-
   const containerRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -253,7 +250,6 @@ export const ChatInput: FC<ChatInputProps> = ({
         images: images.length > 0 ? images : undefined,
         documents: documents.length > 0 ? documents : undefined,
         ccOptions: ccOptions,
-        forkSession: baseSessionId ? forkSession : undefined,
       });
 
       setMessage("");
@@ -541,9 +537,6 @@ export const ChatInput: FC<ChatInputProps> = ({
                     value={ccOptions}
                     onChange={setCCOptions}
                     disabled={isPending || disabled}
-                    showForkOption={Boolean(baseSessionId)}
-                    forkSession={forkSession}
-                    onForkSessionChange={setForkSession}
                   />
                 )}
               </div>

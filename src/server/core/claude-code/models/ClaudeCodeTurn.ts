@@ -19,7 +19,7 @@ export type CCOptions = Pick<
 
 export type NewClaudeCodeTurnDef = BaseClaudeCodeTurnDef & {
   type: "new"; // new session
-  sessionId?: undefined;
+  sessionId: string; // FE-generated UUID
   baseSessionId?: undefined;
   ccOptions?: CCOptions;
 };
@@ -31,15 +31,8 @@ export type ContinueClaudeCodeTurnDef = BaseClaudeCodeTurnDef & {
 };
 
 export type ResumeClaudeCodeTurnDef = BaseClaudeCodeTurnDef & {
-  type: "resume"; // resume from base session process
-  sessionId?: undefined;
-  baseSessionId: string;
-  ccOptions?: CCOptions;
-};
-
-export type ForkClaudeCodeTurnDef = BaseClaudeCodeTurnDef & {
-  type: "fork"; // fork from base session process
-  sessionId: string;
+  type: "resume"; // resume from base session process (forkSession=false, keeps same session-id)
+  sessionId: string; // = baseSessionId, since forkSession=false keeps the same ID
   baseSessionId: string;
   ccOptions?: CCOptions;
 };
@@ -47,8 +40,7 @@ export type ForkClaudeCodeTurnDef = BaseClaudeCodeTurnDef & {
 export type ClaudeCodeTaskDef =
   | NewClaudeCodeTurnDef
   | ContinueClaudeCodeTurnDef
-  | ResumeClaudeCodeTurnDef
-  | ForkClaudeCodeTurnDef;
+  | ResumeClaudeCodeTurnDef;
 
 type ClaudeCodeTurnStateBase = {
   def: ClaudeCodeTaskDef;

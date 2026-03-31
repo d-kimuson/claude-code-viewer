@@ -29,11 +29,6 @@ export type SSEEventDeclaration = {
   permissionRequested: {
     permissionRequest: PermissionRequest;
   };
-
-  virtualConversationUpdated: {
-    projectId: string;
-    sessionId: string;
-  };
 };
 
 export type SSEEventMap = {

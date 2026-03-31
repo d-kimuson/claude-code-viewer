@@ -35,13 +35,5 @@ export const SSEEventListeners: FC<PropsWithChildren> = ({ children }) => {
     });
   });
 
-  // Listen for virtual conversation updates - triggers before file watcher debounce
-  // This reduces perceived latency by refreshing session data as soon as new assistant message is received
-  useServerEventListener("virtualConversationUpdated", async (event) => {
-    await queryClient.invalidateQueries({
-      queryKey: sessionDetailQuery(event.projectId, event.sessionId).queryKey,
-    });
-  });
-
   return <>{children}</>;
 };

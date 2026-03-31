@@ -10,7 +10,6 @@ import { FileWatcherService } from "../core/events/services/fileWatcher";
 import type { InternalEventDeclaration } from "../core/events/types/InternalEventDeclaration";
 import { ProjectRepository } from "../core/project/infrastructure/ProjectRepository";
 import { RateLimitAutoScheduleService } from "../core/rate-limit/services/RateLimitAutoScheduleService";
-import { VirtualConversationDatabase } from "../core/session/infrastructure/VirtualConversationDatabase";
 import { createMockSessionMeta } from "../core/session/testing/createMockSessionMeta";
 import { InitializeService } from "./initialize";
 
@@ -29,7 +28,6 @@ const mockRateLimitAutoScheduleService = Layer.succeed(
 
 const allDependencies = Layer.mergeAll(
   fileWatcherWithEventBus,
-  VirtualConversationDatabase.Live,
   mockRateLimitAutoScheduleService,
   testProjectMetaServiceLayer({
     meta: {

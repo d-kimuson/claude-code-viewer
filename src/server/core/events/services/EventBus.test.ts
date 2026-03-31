@@ -164,6 +164,7 @@ describe("EventBus", () => {
             def: {
               type: "new",
               turnId: "task-1",
+              sessionId: "session-1",
             },
           },
           rawUserMessage: "test message",

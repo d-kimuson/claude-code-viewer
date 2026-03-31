@@ -27,9 +27,6 @@ type ClaudeCodeSettingsFormProps = {
   value: CCOptionsSchema | undefined;
   onChange: (value: CCOptionsSchema | undefined) => void;
   disabled?: boolean;
-  showForkOption?: boolean;
-  forkSession?: boolean;
-  onForkSessionChange?: (fork: boolean) => void;
 };
 
 const AVAILABLE_TOOLS = [
@@ -234,9 +231,6 @@ export const ClaudeCodeSettingsForm: FC<ClaudeCodeSettingsFormProps> = ({
   value,
   onChange,
   disabled = false,
-  showForkOption = false,
-  forkSession = true,
-  onForkSessionChange,
 }) => {
   const { i18n } = useLingui();
 
@@ -271,25 +265,6 @@ export const ClaudeCodeSettingsForm: FC<ClaudeCodeSettingsFormProps> = ({
 
   return (
     <div className="space-y-4 text-sm">
-      {/* Fork Session Option */}
-      {showForkOption && onForkSessionChange && (
-        <div className="p-3 bg-muted/30 rounded-md">
-          {/* biome-ignore lint/a11y/noLabelWithoutControl: Checkbox is a custom component that wraps input */}
-          <label className="flex items-center gap-2 cursor-pointer">
-            <Checkbox
-              checked={forkSession}
-              onCheckedChange={(checked) =>
-                onForkSessionChange(checked === true)
-              }
-              disabled={disabled}
-            />
-            <span className="text-xs">
-              <Trans id="settings.forkSession" />
-            </span>
-          </label>
-        </div>
-      )}
-
       {/* Model */}
       <div className="space-y-1.5">
         <Label htmlFor="model" className="text-xs font-medium">
@@ -664,17 +639,7 @@ export const ClaudeCodeSettingsPopover: FC<{
   value: CCOptionsSchema | undefined;
   onChange: (value: CCOptionsSchema | undefined) => void;
   disabled?: boolean;
-  showForkOption?: boolean;
-  forkSession?: boolean;
-  onForkSessionChange?: (fork: boolean) => void;
-}> = ({
-  value,
-  onChange,
-  disabled,
-  showForkOption,
-  forkSession,
-  onForkSessionChange,
-}) => {
+}> = ({ value, onChange, disabled }) => {
   const [open, setOpen] = useState(false);
   const hasSettings = hasNonDefaultCCOptions(value);
 
@@ -721,9 +686,6 @@ export const ClaudeCodeSettingsPopover: FC<{
             value={value}
             onChange={onChange}
             disabled={disabled}
-            showForkOption={showForkOption}
-            forkSession={forkSession}
-            onForkSessionChange={onForkSessionChange}
           />
         </div>
       </PopoverContent>

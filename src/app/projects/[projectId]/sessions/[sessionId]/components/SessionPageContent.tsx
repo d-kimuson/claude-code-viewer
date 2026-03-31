@@ -50,9 +50,9 @@ export const SessionPageContent: FC<{
 
   return (
     <AppLayout
+      projectId={projectId}
       projectPath={projectPath}
       sessionId={sessionId}
-      projectName={projectName}
       onMobileLeftPanelOpen={() => setIsMobileSidebarOpen(true)}
     >
       <div ref={swipeToOpenRef} className="flex h-full overflow-hidden">

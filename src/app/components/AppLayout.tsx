@@ -22,23 +22,24 @@ import {
 } from "@/hooks/useLayoutPanels";
 import { useRightPanelActions, useRightPanelOpen } from "@/hooks/useRightPanel";
 import { cn } from "@/lib/utils";
+import { ProjectSwitcher } from "./ProjectSwitcher";
 
 interface AppLayoutProps {
   children: ReactNode;
   // Session context info
+  projectId?: string;
   projectPath?: string;
   currentBranch?: string;
   sessionId?: string;
-  projectName?: string;
   onMobileLeftPanelOpen?: () => void;
 }
 
 export const AppLayout: FC<AppLayoutProps> = ({
   children,
+  projectId,
   projectPath,
   currentBranch,
   sessionId,
-  projectName,
   onMobileLeftPanelOpen,
 }) => {
   const isMobile = useIsMobile();
@@ -55,19 +56,12 @@ export const AppLayout: FC<AppLayoutProps> = ({
       <header className="h-(--spacing-header-height) flex items-center justify-between px-3 bg-muted/30 border-b border-border/40 text-xs flex-shrink-0 select-none">
         {/* Left: Project/Session Info */}
         <div className="flex items-center gap-2.5 min-w-0 flex-1 overflow-x-auto overflow-y-hidden">
-          {projectName && (
-            <span className="text-foreground/70 font-medium truncate">
-              {projectName}
-            </span>
-          )}
-          {projectPath && (
-            <Badge
-              variant="outline"
-              className="h-5 text-[11px] px-2 bg-background/50 border-border/60 shrink-0 whitespace-nowrap"
-            >
-              {projectPath}
-            </Badge>
-          )}
+          <div className="shrink-0">
+            <ProjectSwitcher
+              currentProjectId={projectId}
+              currentProjectPath={projectPath}
+            />
+          </div>
           {currentBranch && (
             <Badge
               variant="outline"
@@ -80,7 +74,7 @@ export const AppLayout: FC<AppLayoutProps> = ({
           {sessionId && (
             <Badge
               variant="outline"
-              className="h-5 text-[11px] px-2 bg-background/50 border-border/60 font-mono shrink-0 whitespace-nowrap"
+              className="h-5 text-[11px] px-2 bg-background/50 border-border/60 font-mono shrink-0 whitespace-nowrap hidden md:flex"
             >
               {sessionId}
             </Badge>

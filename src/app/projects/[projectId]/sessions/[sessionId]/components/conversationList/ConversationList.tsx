@@ -70,6 +70,14 @@ const getConversationKey = (conversation: Conversation) => {
     return `agent-name_${conversation.sessionId}_${conversation.agentName}`;
   }
 
+  if (conversation.type === "pr-link") {
+    return `pr-link_${conversation.sessionId}_${conversation.prNumber}`;
+  }
+
+  if (conversation.type === "last-prompt") {
+    return `last-prompt_${conversation.sessionId}`;
+  }
+
   conversation satisfies never;
   throw new Error(`Unknown conversation type: ${conversation}`);
 };
@@ -296,6 +304,8 @@ export const ConversationList: FC<ConversationListProps> = ({
       if (conv.type === "progress") return false;
       if (conv.type === "custom-title") return false;
       if (conv.type === "agent-name") return false;
+      if (conv.type === "pr-link") return false;
+      if (conv.type === "last-prompt") return false;
 
       const isSidechain =
         conv.type !== "summary" &&
@@ -406,6 +416,8 @@ export const ConversationList: FC<ConversationListProps> = ({
               conversation.type !== "progress" &&
               conversation.type !== "custom-title" &&
               conversation.type !== "agent-name" &&
+              conversation.type !== "pr-link" &&
+              conversation.type !== "last-prompt" &&
               conversation.isSidechain;
 
             return [

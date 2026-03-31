@@ -26,6 +26,7 @@ export function createMockSessionMeta(
       },
     },
     modelName: null,
+    prLinks: [],
     ...overrides,
   };
 }

@@ -3,10 +3,12 @@ import { useIsFetching, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   AlertCircle,
   CheckIcon,
+  ExternalLinkIcon,
   Eye,
   FileCode,
   GitBranchIcon,
   GitCompareIcon,
+  GitPullRequestIcon,
   Loader2,
   RefreshCwIcon,
 } from "lucide-react";
@@ -496,6 +498,50 @@ const SessionTodoSection: FC<{ projectId: string; sessionId: string }> = ({
 };
 
 // ---------------------------------------------------------------------------
+// SessionPrLinksSection (Suspense component)
+// ---------------------------------------------------------------------------
+
+const SessionPrLinksSection: FC<{ projectId: string; sessionId: string }> = ({
+  projectId,
+  sessionId,
+}) => {
+  const { session } = useSession(projectId, sessionId);
+  const prLinks = session.meta.prLinks;
+
+  if (prLinks.length === 0) return null;
+
+  return (
+    <div className="border-t border-border/40">
+      <div className="px-3 py-2 bg-muted/10">
+        <div className="flex items-center gap-1.5 mb-2">
+          <GitPullRequestIcon className="w-3.5 h-3.5 text-muted-foreground" />
+          <span className="text-xs font-medium text-muted-foreground">
+            <Trans id="panel.git.pr_links" />
+          </span>
+        </div>
+        <div className="space-y-1.5">
+          {prLinks.map((link) => (
+            <a
+              key={`${link.prRepository}#${link.prNumber}`}
+              href={link.prUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-muted/50 transition-colors group text-xs"
+            >
+              <GitPullRequestIcon className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
+              <span className="flex-1 min-w-0 truncate text-foreground">
+                {link.prRepository}#{link.prNumber}
+              </span>
+              <ExternalLinkIcon className="w-3 h-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ---------------------------------------------------------------------------
 // GitTabContent (exported, manages Suspense boundaries + reload)
 // ---------------------------------------------------------------------------
 
@@ -556,6 +602,13 @@ export const GitTabContent: FC<GitTabContentProps> = ({
           <GitFileList projectId={projectId} />
         </Suspense>
       </div>
+
+      {/* PR links section */}
+      {sessionId && (
+        <Suspense fallback={null}>
+          <SessionPrLinksSection projectId={projectId} sessionId={sessionId} />
+        </Suspense>
+      )}
 
       {/* Todo section */}
       {sessionId && (

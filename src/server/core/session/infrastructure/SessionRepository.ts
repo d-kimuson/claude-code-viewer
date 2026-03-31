@@ -120,6 +120,7 @@ const LayerImpl = Effect.gen(function* () {
                   },
                 },
                 modelName: null,
+                prLinks: [],
               },
               conversations: virtualConversation.conversations,
               lastModifiedAt:
@@ -297,6 +298,7 @@ const LayerImpl = Effect.gen(function* () {
                 },
               },
               modelName: null,
+              prLinks: [],
             },
           };
         })

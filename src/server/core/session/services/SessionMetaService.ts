@@ -155,8 +155,12 @@ export class SessionMetaService extends Context.Tag("SessionMetaService")<
             }
           }
 
-          // Extract custom title (user-renamed session name)
+          // Extract custom title and pr-links
           let customTitle: string | null = null;
+          const prLinksMap = new Map<
+            string,
+            { prNumber: number; prUrl: string; prRepository: string }
+          >();
           for (const line of lines) {
             const conversation = parseJsonl(line).at(0);
             if (
@@ -165,7 +169,16 @@ export class SessionMetaService extends Context.Tag("SessionMetaService")<
             ) {
               customTitle = conversation.customTitle;
             }
+            if (conversation !== undefined && conversation.type === "pr-link") {
+              const key = `${conversation.prRepository}#${conversation.prNumber}`;
+              prLinksMap.set(key, {
+                prNumber: conversation.prNumber,
+                prUrl: conversation.prUrl,
+                prRepository: conversation.prRepository,
+              });
+            }
           }
+          const prLinks = [...prLinksMap.values()];
 
           // Calculate cost information including agent sessions
           const fileContents = [content, ...agentContents];
@@ -182,6 +195,7 @@ export class SessionMetaService extends Context.Tag("SessionMetaService")<
               tokenUsage: totalCost.tokenUsage,
             },
             modelName: modelName,
+            prLinks: prLinks,
           };
 
           yield* Ref.update(sessionMetaCacheRef, (cache) => {

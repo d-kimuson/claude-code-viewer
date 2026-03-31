@@ -87,6 +87,7 @@ describe("SessionController", () => {
               },
             },
             modelName: null,
+            prLinks: [],
           }),
         invalidateSession: () => Effect.void,
       });

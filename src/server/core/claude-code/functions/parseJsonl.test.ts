@@ -408,6 +408,96 @@ describe("parseJsonl", () => {
     });
   });
 
+  describe("pr-link and last-prompt entries", () => {
+    it("pr-link entry parses correctly", () => {
+      const jsonl = JSON.stringify({
+        type: "pr-link",
+        sessionId: "28fc793f-fbe6-4062-8b4a-3d6e28f65b8b",
+        prNumber: 167,
+        prUrl: "https://github.com/d-kimuson/claude-code-viewer/pull/167",
+        prRepository: "d-kimuson/claude-code-viewer",
+        timestamp: "2026-03-30T19:16:39.642Z",
+      });
+
+      const result = parseJsonl(jsonl);
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toHaveProperty("type", "pr-link");
+      const entry = result[0];
+      if (entry && entry.type === "pr-link") {
+        expect(entry.prNumber).toBe(167);
+        expect(entry.prUrl).toBe(
+          "https://github.com/d-kimuson/claude-code-viewer/pull/167",
+        );
+        expect(entry.prRepository).toBe("d-kimuson/claude-code-viewer");
+      }
+    });
+
+    it("last-prompt entry parses correctly", () => {
+      const jsonl = JSON.stringify({
+        type: "last-prompt",
+        lastPrompt: "Read docs/2026-03-12-phase-2-raise-only-hires.md...",
+        sessionId: "28fc793f-fbe6-4062-8b4a-3d6e28f65b8b",
+      });
+
+      const result = parseJsonl(jsonl);
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toHaveProperty("type", "last-prompt");
+      const entry = result[0];
+      if (entry && entry.type === "last-prompt") {
+        expect(entry.lastPrompt).toBe(
+          "Read docs/2026-03-12-phase-2-raise-only-hires.md...",
+        );
+      }
+    });
+
+    it("pr-link and last-prompt mixed with regular entries parse without x-error", () => {
+      const jsonl = [
+        JSON.stringify({
+          type: "user",
+          uuid: "550e8400-e29b-41d4-a716-446655440000",
+          timestamp: "2024-01-01T00:00:00.000Z",
+          message: { role: "user", content: "Hello" },
+          isSidechain: false,
+          userType: "external",
+          cwd: "/test",
+          sessionId: "session-1",
+          version: "1.0.0",
+          parentUuid: null,
+        }),
+        JSON.stringify({
+          type: "pr-link",
+          sessionId: "session-1",
+          prNumber: 167,
+          prUrl: "https://github.com/d-kimuson/claude-code-viewer/pull/167",
+          prRepository: "d-kimuson/claude-code-viewer",
+          timestamp: "2026-03-30T19:16:39.642Z",
+        }),
+        JSON.stringify({
+          type: "last-prompt",
+          lastPrompt: "Some prompt text",
+          sessionId: "session-1",
+        }),
+        JSON.stringify({
+          type: "summary",
+          summary: "Summary text",
+          leafUuid: "550e8400-e29b-41d4-a716-446655440001",
+        }),
+      ].join("\n");
+
+      const result = parseJsonl(jsonl);
+
+      expect(result).toHaveLength(4);
+      expect(result[0]).toHaveProperty("type", "user");
+      expect(result[1]).toHaveProperty("type", "pr-link");
+      expect(result[2]).toHaveProperty("type", "last-prompt");
+      expect(result[3]).toHaveProperty("type", "summary");
+      // No x-error entries
+      expect(result.every((entry) => entry.type !== "x-error")).toBe(true);
+    });
+  });
+
   describe("ConversationSchemaのバリエーション", () => {
     it("オプショナルフィールドを含むUserエントリをパースできる", () => {
       const jsonl = JSON.stringify({

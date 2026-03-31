@@ -21,4 +21,11 @@ export const sessionMetaSchema = z.object({
     }),
   }),
   modelName: z.string().nullable(),
+  prLinks: z.array(
+    z.object({
+      prNumber: z.number(),
+      prUrl: z.string(),
+      prRepository: z.string(),
+    }),
+  ),
 });

@@ -275,7 +275,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        337
+        339
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
@@ -290,7 +290,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        322
+        324
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
@@ -320,7 +320,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        334
+        336
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
@@ -357,7 +357,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        340
+        342
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
@@ -372,7 +372,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        314
+        316
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
@@ -447,7 +447,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        343
+        345
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
@@ -477,7 +477,7 @@
       ],
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        325
+        327
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
@@ -1980,10 +1980,21 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        425
+        427
       ]
     ],
     "translation": "没有Git更改"
+  },
+  "panel.git.pr_links": {
+    "translation": "拉取请求",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/rightPanel/GitTabContent.tsx",
+        519
+      ]
+    ]
   },
   "panel.git.view_content": {
     "placeholders": {},
@@ -1991,7 +2002,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        284
+        286
       ]
     ],
     "translation": "内容"
@@ -2002,7 +2013,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        280
+        282
       ]
     ],
     "translation": "差异"

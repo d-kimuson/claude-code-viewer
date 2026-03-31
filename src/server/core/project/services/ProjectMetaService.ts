@@ -43,7 +43,9 @@ const LayerImpl = Effect.gen(function* () {
           conversation.type === "file-history-snapshot" ||
           conversation.type === "queue-operation" ||
           conversation.type === "custom-title" ||
-          conversation.type === "agent-name"
+          conversation.type === "agent-name" ||
+          conversation.type === "pr-link" ||
+          conversation.type === "last-prompt"
         ) {
           continue;
         }

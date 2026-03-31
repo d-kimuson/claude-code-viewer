@@ -48,6 +48,5 @@ export const useTaskNotifications = (
     // sessionId is intentionally omitted: session changes are handled
     // synchronously above (lines 29-32), so the effect only needs to
     // re-run when the running state itself changes.
-    // biome-ignore lint/correctness/useExhaustiveDependencies: see comment above
   }, [isRunningTask, soundEnabled, settings.soundType]);
 };

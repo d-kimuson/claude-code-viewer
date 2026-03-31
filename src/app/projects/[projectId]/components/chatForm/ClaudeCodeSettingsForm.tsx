@@ -98,8 +98,8 @@ const KeyValueEditor: FC<{
 
   return (
     <div className="space-y-2">
-      {entries.map(([key, val], index) => (
-        <div key={`env-${index}-${key}`} className="flex items-center gap-2">
+      {entries.map(([key, val]) => (
+        <div key={`env-${key}`} className="flex items-center gap-2">
           <Input
             value={key}
             onChange={(e) => handleKeyChange(key, e.target.value)}

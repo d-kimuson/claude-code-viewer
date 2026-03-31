@@ -22,9 +22,9 @@ const DiffHunkComponent: FC<DiffHunkProps> = ({ hunk }) => {
       <div className="flex-shrink-0 sticky left-0 z-10 bg-white dark:bg-gray-900">
         {/* 旧行番号列 */}
         <div className="float-left w-10 bg-gray-50 dark:bg-gray-800/50 border-r border-gray-200 dark:border-gray-700">
-          {hunk.lines.map((line, index) => (
+          {hunk.lines.map((line) => (
             <div
-              key={`old-${line.oldLineNumber}-${index}`}
+              key={`old-${line.oldLineNumber ?? ""}-${line.newLineNumber ?? ""}`}
               className="px-1 py-0.5 text-xs text-gray-400 dark:text-gray-600 font-mono text-right leading-tight"
             >
               {line.type !== "added" &&
@@ -37,9 +37,9 @@ const DiffHunkComponent: FC<DiffHunkProps> = ({ hunk }) => {
         </div>
         {/* 新行番号列 */}
         <div className="float-left w-10 bg-gray-50 dark:bg-gray-800/50 border-r border-gray-200 dark:border-gray-700">
-          {hunk.lines.map((line, index) => (
+          {hunk.lines.map((line) => (
             <div
-              key={`new-${line.newLineNumber}-${index}`}
+              key={`new-${line.oldLineNumber ?? ""}-${line.newLineNumber ?? ""}`}
               className="px-1 py-0.5 text-xs text-gray-400 dark:text-gray-600 font-mono text-right leading-tight"
             >
               {line.type !== "deleted" &&
@@ -54,9 +54,9 @@ const DiffHunkComponent: FC<DiffHunkProps> = ({ hunk }) => {
 
       {/* コンテンツ列（スクロール可能） */}
       <div className="flex-1 min-w-0">
-        {hunk.lines.map((line, index) => (
+        {hunk.lines.map((line) => (
           <div
-            key={`content-${line.content}-${line.oldLineNumber}-${line.newLineNumber}-${index}`}
+            key={`content-${line.oldLineNumber ?? ""}-${line.newLineNumber ?? ""}`}
             className={cn("flex border-l-4", {
               "bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-800/50 border-l-green-400":
                 line.type === "added",
@@ -220,9 +220,9 @@ export const DiffViewer: FC<DiffViewerProps> = ({ fileDiff, className }) => {
       />
       {!isCollapsed && (
         <div className="border-t border-gray-200 dark:border-gray-700">
-          {fileDiff.hunks.map((hunk, index) => (
+          {fileDiff.hunks.map((hunk) => (
             <DiffHunkComponent
-              key={`${hunk.oldStart}-${hunk.newStart}-${index}`}
+              key={`${hunk.oldStart}-${hunk.newStart}`}
               hunk={hunk}
             />
           ))}

@@ -103,9 +103,9 @@ export const CollapsibleTodoSection: FC<CollapsibleTodoSectionProps> = ({
       {/* Content - collapsible */}
       {isOpen && (
         <div className="p-2 space-y-1 max-h-48 overflow-y-auto border-t border-border/40">
-          {todos.map((todo, index) => (
+          {todos.map((todo) => (
             <div
-              key={`${todo.content}-${index}`}
+              key={`${todo.content}-${todo.status}`}
               className={cn(
                 "flex items-start gap-2 px-2 py-1.5 text-xs rounded-md transition-colors",
                 todo.status === "completed" && "text-muted-foreground",

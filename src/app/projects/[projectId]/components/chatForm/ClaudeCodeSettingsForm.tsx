@@ -13,7 +13,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Switch } from "@/components/ui/switch";
-import { Textarea } from "@/components/ui/textarea";
 import type { CCOptionsSchema } from "@/server/core/claude-code/schema";
 import {
   type CCOptionsForm,
@@ -261,27 +260,8 @@ export const ClaudeCodeSettingsForm: FC<ClaudeCodeSettingsFormProps> = ({
     onChange(transformed);
   }, [transformed, onChange]);
 
-  const usePreset = formData.systemPrompt?.mode === "preset";
-
   return (
     <div className="space-y-4 text-sm">
-      {/* Model */}
-      <div className="space-y-1.5">
-        <Label htmlFor="model" className="text-xs font-medium">
-          <Trans id="settings.model.label" />
-        </Label>
-        <Input
-          id="model"
-          {...register("model")}
-          placeholder={i18n._("e.g., claude-sonnet-4-5-20250929")}
-          disabled={disabled}
-          className="h-8 text-xs"
-        />
-        {errors.model?.message && (
-          <p className="text-xs text-red-500">{errors.model.message}</p>
-        )}
-      </div>
-
       {/* Disallowed Tools */}
       <div className="space-y-1.5">
         <Label className="text-xs font-medium">
@@ -296,66 +276,6 @@ export const ClaudeCodeSettingsForm: FC<ClaudeCodeSettingsFormProps> = ({
           <p className="text-xs text-red-500">
             {errors.disallowedTools.message}
           </p>
-        )}
-      </div>
-
-      {/* System Prompt */}
-      <div className="space-y-2">
-        {/* biome-ignore lint/a11y/noLabelWithoutControl: Checkbox is a custom component that wraps input */}
-        <label className="flex items-center gap-2 cursor-pointer">
-          <Checkbox
-            checked={usePreset}
-            onCheckedChange={(checked) => {
-              if (checked) {
-                setValue("systemPrompt", {
-                  mode: "preset",
-                  append:
-                    formData.systemPrompt?.mode === "preset"
-                      ? formData.systemPrompt.append
-                      : undefined,
-                });
-              } else {
-                setValue("systemPrompt", undefined);
-              }
-            }}
-            disabled={disabled}
-          />
-          <span className="text-xs">
-            <Trans id="settings.systemPrompt.usePreset" />
-          </span>
-        </label>
-
-        {usePreset && (
-          <div className="space-y-1.5">
-            <Label htmlFor="systemPrompt" className="text-xs font-medium">
-              <Trans
-                id="settings.systemPrompt.additional"
-                message="Additional System Prompt"
-              />
-            </Label>
-            <Textarea
-              id="systemPrompt"
-              value={
-                (formData.systemPrompt?.mode === "preset"
-                  ? formData.systemPrompt.append
-                  : undefined) ?? ""
-              }
-              onChange={(e) => {
-                setValue("systemPrompt", {
-                  mode: "preset",
-                  append: e.target.value || undefined,
-                });
-              }}
-              placeholder={i18n._("Additional instructions to append...")}
-              disabled={disabled}
-              className="text-xs min-h-[60px]"
-            />
-            {errors.systemPrompt?.message && (
-              <p className="text-xs text-red-500">
-                {errors.systemPrompt.message}
-              </p>
-            )}
-          </div>
         )}
       </div>
 
@@ -654,18 +574,16 @@ export const ClaudeCodeSettingsPopover: FC<{
           className={`gap-1.5 px-2 hover:bg-background/80 hover:text-foreground text-muted-foreground transition-all duration-200 h-8 rounded-lg ${hasSettings ? "text-primary" : ""}`}
         >
           <SettingsIcon className="w-4 h-4" />
-          <span className="text-xs font-medium hidden sm:inline">
-            <Trans id="chat.settings" message="Settings" />
-          </span>
           {hasSettings && (
             <span className="w-1.5 h-1.5 rounded-full bg-primary" />
           )}
         </Button>
       </PopoverTrigger>
       <PopoverContent
-        className="w-80 max-h-[70vh] overflow-y-auto"
+        className="w-[calc(100vw-2rem)] sm:w-80 max-h-[70vh] overflow-y-auto z-[60]"
         align="end"
         side="top"
+        collisionPadding={16}
       >
         <div className="space-y-3">
           <div className="flex items-center justify-between">

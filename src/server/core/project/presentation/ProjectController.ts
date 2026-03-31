@@ -133,7 +133,6 @@ const LayerImpl = Effect.gen(function* () {
           .claudeProjectsDirPath,
       });
       const projectId = encodeProjectId(claudeProjectFilePath);
-      const userConfig = yield* userConfigService.getUserConfig();
 
       // Check if CLAUDE.md exists in the project directory
       const claudeMdPath = path.join(projectPath, "CLAUDE.md");
@@ -143,7 +142,6 @@ const LayerImpl = Effect.gen(function* () {
         projectId,
         cwd: projectPath,
         baseSession: undefined,
-        userConfig,
         input: {
           text: claudeMdExists ? "describe this project" : "/init",
         },

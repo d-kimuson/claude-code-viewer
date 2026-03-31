@@ -1,5 +1,6 @@
 import { Trans, useLingui } from "@lingui/react";
 import type { FC } from "react";
+import type { CCOptionsSchema } from "@/server/core/claude-code/schema";
 import { useConfig } from "../../../../../../hooks/useConfig";
 import {
   ChatInput,
@@ -7,10 +8,19 @@ import {
   useCreateSessionProcessMutation,
 } from "../../../../components/chatForm";
 
-export const ResumeChat: FC<{
+type ResumeChatProps = {
   projectId: string;
   sessionId: string;
-}> = ({ projectId, sessionId }) => {
+  ccOptions?: CCOptionsSchema;
+  onCCOptionsChange?: (value: CCOptionsSchema | undefined) => void;
+};
+
+export const ResumeChat: FC<ResumeChatProps> = ({
+  projectId,
+  sessionId,
+  ccOptions,
+  onCCOptionsChange,
+}) => {
   const { i18n } = useLingui();
   const createSessionProcess = useCreateSessionProcessMutation(projectId);
   const { config } = useConfig();
@@ -61,6 +71,8 @@ export const ResumeChat: FC<{
         enableScheduledSend={true}
         baseSessionId={sessionId}
         enableCCOptions={true}
+        ccOptions={ccOptions}
+        onCCOptionsChange={onCCOptionsChange}
       />
     </div>
   );

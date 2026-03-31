@@ -1,15 +1,4 @@
 {
-  "Additional instructions to append...": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        349
-      ]
-    ],
-    "translation": "Additional instructions to append"
-  },
   "Available commands": {
     "placeholders": {},
     "comments": [],
@@ -79,7 +68,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        211
+        210
       ]
     ],
     "translation": "Custom tool name"
@@ -135,7 +124,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        103
+        102
       ]
     ],
     "translation": "Key name"
@@ -146,7 +135,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        428
+        470
       ]
     ],
     "translation": "Message input with autocomplete support"
@@ -183,7 +172,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        221
+        227
       ]
     ],
     "translation": "Select Enter key behavior"
@@ -194,21 +183,10 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        332
+        354
       ]
     ],
     "translation": "Select Language"
-  },
-  "Select permission mode": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/components/SettingsControls.tsx",
-        289
-      ]
-    ],
-    "translation": "Select Permission Mode"
   },
   "Select search hotkey": {
     "placeholders": {},
@@ -216,7 +194,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        256
+        262
       ]
     ],
     "translation": "Select Search Hotkey"
@@ -227,7 +205,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        361
+        383
       ]
     ],
     "translation": "Select Theme"
@@ -253,7 +231,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        111
+        110
       ]
     ],
     "translation": "Value field"
@@ -551,7 +529,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        524
+        570
       ]
     ],
     "translation": "Attach"
@@ -573,7 +551,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        392
+        434
       ]
     ],
     "translation": "Failed to send message. Please try again."
@@ -769,7 +747,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        237
+        279
       ]
     ],
     "translation": "Failed to schedule message"
@@ -781,7 +759,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        221
+        263
       ]
     ],
     "translation": "Message scheduled successfully"
@@ -793,7 +771,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        226
+        268
       ]
     ],
     "translation": "You can view and manage it in the Scheduler tab"
@@ -815,11 +793,11 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        481
+        523
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        568
+        795
       ]
     ],
     "translation": "Send Now"
@@ -830,11 +808,11 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        464
+        506
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        551
+        778
       ]
     ],
     "translation": "Send Mode"
@@ -845,15 +823,15 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        484
+        526
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        571
+        798
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        588
+        815
       ]
     ],
     "translation": "Schedule Send"
@@ -864,7 +842,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        491
+        533
       ]
     ],
     "translation": "Scheduled Send Time"
@@ -876,7 +854,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        658
+        578
       ]
     ],
     "translation": "Settings"
@@ -887,10 +865,118 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        608
+        835
       ]
     ],
     "translation": "Processing..."
+  },
+  "chat.toolbar.effort.tooltip": {
+    "message": "Select reasoning effort",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        647
+      ]
+    ],
+    "translation": "Select reasoning effort"
+  },
+  "chat.toolbar.model.tooltip": {
+    "message": "Select model",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        605
+      ]
+    ],
+    "translation": "Select model"
+  },
+  "chat.toolbar.permission_mode.accept_edits": {
+    "message": "Accept Edits",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        688
+      ]
+    ],
+    "translation": "Accept Edits"
+  },
+  "chat.toolbar.permission_mode.bypass": {
+    "message": "Bypass",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        694
+      ]
+    ],
+    "translation": "Bypass"
+  },
+  "chat.toolbar.permission_mode.default": {
+    "message": "Default",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        682
+      ]
+    ],
+    "translation": "Default"
+  },
+  "chat.toolbar.permission_mode.plan": {
+    "message": "Plan",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        700
+      ]
+    ],
+    "translation": "Plan"
+  },
+  "chat.toolbar.permission_mode.tooltip": {
+    "message": "Select permission mode",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        710
+      ]
+    ],
+    "translation": "Select permission mode"
+  },
+  "chat.toolbar.system_prompt": {
+    "message": "CC Prompt",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        738
+      ]
+    ],
+    "translation": "CC Prompt"
+  },
+  "chat.toolbar.system_prompt.tooltip": {
+    "message": "Include default Claude Code prompt",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        746
+      ]
+    ],
+    "translation": "Include default Claude Code prompt"
   },
   "common.action.cancel": {
     "placeholders": {},
@@ -1140,7 +1226,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/CopyableMarkdownContent.tsx",
-        39
+        42
       ]
     ],
     "translation": "Copy message"
@@ -1152,7 +1238,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/CopyableMarkdownContent.tsx",
-        31
+        34
       ]
     ],
     "translation": "Failed to copy message"
@@ -1164,7 +1250,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/CopyableMarkdownContent.tsx",
-        23
+        26
       ]
     ],
     "translation": "Message copied"
@@ -1693,7 +1779,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        622
+        542
       ]
     ],
     "translation": "Example: 1.00"
@@ -1704,7 +1790,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        571
+        491
       ]
     ],
     "translation": "Example: 10"
@@ -1715,7 +1801,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        595
+        515
       ]
     ],
     "translation": "Example: 10000"
@@ -1726,21 +1812,10 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        489
+        409
       ]
     ],
     "translation": "Example: api.example.com, cdn.example.com"
-  },
-  "e.g., claude-sonnet-4-5-20250929": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        276
-      ]
-    ],
-    "translation": "Example: claude-sonnet-4-5-20250929"
   },
   "layout.bottom_panel.title": {
     "placeholders": {},
@@ -2966,7 +3041,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        505
+        425
       ]
     ],
     "translation": "Advanced Settings"
@@ -2988,7 +3063,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        288
+        268
       ]
     ],
     "translation": "Disabled tools"
@@ -2999,7 +3074,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        136
+        135
       ]
     ],
     "translation": "Add environment variable"
@@ -3011,7 +3086,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        365
+        285
       ]
     ],
     "translation": "Environment Variables"
@@ -3022,7 +3097,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        213
+        219
       ]
     ],
     "translation": "Enter Key Behavior"
@@ -3033,7 +3108,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        231
+        237
       ]
     ],
     "translation": "Send with Command+Enter"
@@ -3044,7 +3119,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        237
+        243
       ]
     ],
     "translation": "Select Enter key behavior for message input"
@@ -3055,7 +3130,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        228
+        234
       ]
     ],
     "translation": "Send with Enter"
@@ -3066,7 +3141,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        225
+        231
       ]
     ],
     "translation": "Send with Shift+Enter (Default)"
@@ -3077,7 +3152,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        248
+        254
       ]
     ],
     "translation": "Search Hotkey"
@@ -3088,7 +3163,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        263
+        269
       ]
     ],
     "translation": "Command+K"
@@ -3099,7 +3174,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        260
+        266
       ]
     ],
     "translation": "Ctrl+K"
@@ -3110,7 +3185,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        269
+        275
       ]
     ],
     "translation": "Select the hotkey to open search dialog"
@@ -3136,7 +3211,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        324
+        346
       ]
     ],
     "translation": "Language"
@@ -3147,7 +3222,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        348
+        370
       ]
     ],
     "translation": "Select your preferred language"
@@ -3158,7 +3233,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        339
+        361
       ]
     ],
     "translation": "English"
@@ -3169,7 +3244,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        336
+        358
       ]
     ],
     "translation": "Japanese"
@@ -3180,7 +3255,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        342
+        364
       ]
     ],
     "translation": "Chinese (Simplified)"
@@ -3192,7 +3267,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        609
+        529
       ]
     ],
     "translation": "Max Budget (USD)"
@@ -3204,7 +3279,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        583
+        503
       ]
     ],
     "translation": "Max Thinking Tokens"
@@ -3216,21 +3291,46 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        562
+        482
       ]
     ],
     "translation": "Max Turns"
   },
-  "settings.model.label": {
+  "settings.model_choices.description": {
+    "message": "Configure the model options available in the session toolbar",
     "placeholders": {},
     "comments": [],
     "origin": [
       [
-        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        271
+        "src/components/SettingsControls.tsx",
+        332
       ]
     ],
-    "translation": "Model"
+    "translation": "Configure the model options available in the session toolbar"
+  },
+  "settings.model_choices.label": {
+    "message": "Model Choices",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/components/SettingsControls.tsx",
+        283
+      ]
+    ],
+    "translation": "Model Choices"
+  },
+  "settings.model_choices.placeholder": {
+    "message": "Add model choice...",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/components/SettingsControls.tsx",
+        313
+      ]
+    ],
+    "translation": "Add model choice..."
   },
   "settings.notifications": {
     "placeholders": {},
@@ -3243,83 +3343,6 @@
     ],
     "translation": "Notifications"
   },
-  "settings.permission.mode": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/components/SettingsControls.tsx",
-        280
-      ]
-    ],
-    "translation": "Permission Mode"
-  },
-  "settings.permission.mode.accept_edits": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/components/SettingsControls.tsx",
-        296
-      ]
-    ],
-    "translation": "Accept Edits (Auto-approve file edits)"
-  },
-  "settings.permission.mode.bypass_permissions": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/components/SettingsControls.tsx",
-        299
-      ]
-    ],
-    "translation": "Bypass Permissions (No prompts)"
-  },
-  "settings.permission.mode.default": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/components/SettingsControls.tsx",
-        293
-      ]
-    ],
-    "translation": "Default (Confirm Permissions)"
-  },
-  "settings.permission.mode.description": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/components/SettingsControls.tsx",
-        308
-      ]
-    ],
-    "translation": "Control how file operation permission requests are handled"
-  },
-  "settings.permission.mode.plan": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/components/SettingsControls.tsx",
-        302
-      ]
-    ],
-    "translation": "Plan Mode (Planning only)"
-  },
-  "settings.permission.mode.unavailable": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/components/SettingsControls.tsx",
-        313
-      ]
-    ],
-    "translation": "This feature is not available in your Claude Code version. All tools are automatically approved."
-  },
   "settings.sandbox.allowUnsandboxedCommands": {
     "message": "Allow unsandboxed commands",
     "placeholders": {},
@@ -3327,7 +3350,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        430
+        350
       ]
     ],
     "translation": "Allow unsandboxed commands"
@@ -3339,7 +3362,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        410
+        330
       ]
     ],
     "translation": "Auto-allow Bash if sandboxed"
@@ -3351,7 +3374,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        381
+        301
       ]
     ],
     "translation": "Sandbox"
@@ -3363,7 +3386,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        464
+        384
       ]
     ],
     "translation": "Allow local binding"
@@ -3375,7 +3398,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        473
+        393
       ]
     ],
     "translation": "Allowed Domains (comma-separated)"
@@ -3387,7 +3410,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        440
+        360
       ]
     ],
     "translation": "Network Settings"
@@ -3431,7 +3454,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        197
+        203
       ]
     ],
     "translation": "Auto-schedule Continue on Rate Limit"
@@ -3442,7 +3465,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        203
+        209
       ]
     ],
     "translation": "Automatically schedule a continue message when Claude hits rate limits"
@@ -3464,7 +3487,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        155
+        161
       ]
     ],
     "translation": "Hide Sessions Without User Messages"
@@ -3475,7 +3498,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        161
+        167
       ]
     ],
     "translation": "Show only sessions that contain user commands or messages"
@@ -3486,7 +3509,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        176
+        182
       ]
     ],
     "translation": "Unify Sessions with Same Title"
@@ -3497,7 +3520,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        182
+        188
       ]
     ],
     "translation": "When multiple sessions have the same title, show only the latest session"
@@ -3509,33 +3532,10 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        511
+        431
       ]
     ],
     "translation": "Setting Sources"
-  },
-  "settings.systemPrompt.additional": {
-    "message": "Additional System Prompt",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        331
-      ]
-    ],
-    "translation": "Additional System Prompt"
-  },
-  "settings.systemPrompt.usePreset": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        324
-      ]
-    ],
-    "translation": "Use Claude Code standard system prompt"
   },
   "settings.tab.title": {
     "placeholders": {},
@@ -3554,7 +3554,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        356
+        378
       ]
     ],
     "translation": "Theme"
@@ -3565,7 +3565,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        368
+        390
       ]
     ],
     "translation": "Dark"
@@ -3576,7 +3576,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        377
+        399
       ]
     ],
     "translation": "Select your preferred color theme"
@@ -3587,7 +3587,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        365
+        387
       ]
     ],
     "translation": "Light"
@@ -3598,7 +3598,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        371
+        393
       ]
     ],
     "translation": "System"
@@ -3610,7 +3610,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        673
+        593
       ],
       [
         "src/components/GlobalSidebar.tsx",

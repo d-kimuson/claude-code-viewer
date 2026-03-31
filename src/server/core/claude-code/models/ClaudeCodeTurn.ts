@@ -15,6 +15,8 @@ export type CCOptions = Pick<
   | "maxThinkingTokens"
   | "env"
   | "maxBudgetUsd"
+  | "effort"
+  | "permissionMode"
 >;
 
 export type NewClaudeCodeTurnDef = BaseClaudeCodeTurnDef & {

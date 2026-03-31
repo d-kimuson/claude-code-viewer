@@ -1,11 +1,13 @@
-import type { CanUseTool } from "@anthropic-ai/claude-agent-sdk";
+import type {
+  CanUseTool,
+  PermissionMode,
+} from "@anthropic-ai/claude-agent-sdk";
 import { Context, Effect, Layer, Ref } from "effect";
 import { ulid } from "ulid";
 import type {
   PermissionRequest,
   PermissionResponse,
 } from "../../../../types/permissions";
-import type { UserConfig } from "../../../lib/config/config";
 import type { InferEffect } from "../../../lib/effect/types";
 import { EventBus } from "../../events/services/EventBus";
 import * as ClaudeCode from "../models/ClaudeCode";
@@ -51,10 +53,11 @@ const LayerImpl = Effect.gen(function* () {
 
   const createCanUseToolRelatedOptions = (options: {
     turnId: string;
-    userConfig: UserConfig;
+    permissionMode?: PermissionMode;
     sessionId?: string;
   }) => {
-    const { turnId, userConfig, sessionId } = options;
+    const { turnId, sessionId } = options;
+    const permissionMode = options.permissionMode ?? "default";
 
     return Effect.gen(function* () {
       const claudeCodeConfig = yield* ClaudeCode.Config;
@@ -69,11 +72,11 @@ const LayerImpl = Effect.gen(function* () {
       }
 
       const canUseTool: CanUseTool = async (toolName, toolInput, _options) => {
-        if (userConfig.permissionMode !== "default") {
+        if (permissionMode !== "default") {
           // Convert Claude Code permission modes to canUseTool behaviors
           if (
-            userConfig.permissionMode === "bypassPermissions" ||
-            userConfig.permissionMode === "acceptEdits"
+            permissionMode === "bypassPermissions" ||
+            permissionMode === "acceptEdits"
           ) {
             return {
               behavior: "allow" as const,
@@ -123,7 +126,7 @@ const LayerImpl = Effect.gen(function* () {
 
       return {
         canUseTool,
-        permissionMode: userConfig.permissionMode,
+        permissionMode,
       } as const;
     });
   };

@@ -1,5 +1,6 @@
 import { Trans, useLingui } from "@lingui/react";
 import type { FC } from "react";
+import type { CCOptionsSchema } from "@/server/core/claude-code/schema";
 import { useConfig } from "../../../../../../hooks/useConfig";
 import {
   ChatInput,
@@ -7,7 +8,17 @@ import {
   useCreateSessionProcessMutation,
 } from "../../../../components/chatForm";
 
-export const StartNewChat: FC<{ projectId: string }> = ({ projectId }) => {
+type StartNewChatProps = {
+  projectId: string;
+  ccOptions?: CCOptionsSchema;
+  onCCOptionsChange?: (value: CCOptionsSchema | undefined) => void;
+};
+
+export const StartNewChat: FC<StartNewChatProps> = ({
+  projectId,
+  ccOptions,
+  onCCOptionsChange,
+}) => {
   const { i18n } = useLingui();
   const createSessionProcess = useCreateSessionProcessMutation(projectId);
   const { config } = useConfig();
@@ -52,6 +63,8 @@ export const StartNewChat: FC<{ projectId: string }> = ({ projectId }) => {
         buttonSize="default"
         enableScheduledSend={true}
         enableCCOptions={true}
+        ccOptions={ccOptions}
+        onCCOptionsChange={onCCOptionsChange}
       />
     </div>
   );

@@ -43,6 +43,10 @@ export const ccOptionsFormSchema = z.object({
   maxTurns: z.number().int().positive().optional(),
   maxThinkingTokens: z.number().int().positive().optional(),
   maxBudgetUsd: z.number().nonnegative().optional(),
+  effort: z.enum(["low", "medium", "high", "max"]).optional(),
+  permissionMode: z
+    .enum(["acceptEdits", "bypassPermissions", "default", "plan"])
+    .optional(),
 });
 
 export type CCOptionsForm = z.infer<typeof ccOptionsFormSchema>;
@@ -60,6 +64,11 @@ const defaultSettingSources: Array<"user" | "project" | "local"> = [
 export function getDefaultCCOptions(): CCOptionsSchema {
   return {
     settingSources: [...defaultSettingSources],
+    permissionMode: "default",
+    systemPrompt: {
+      type: "preset",
+      preset: "claude_code",
+    },
   };
 }
 
@@ -87,12 +96,21 @@ export function hasNonDefaultCCOptions(
     options.model !== undefined ||
     (options.disallowedTools !== undefined &&
       options.disallowedTools.length > 0) ||
-    options.systemPrompt !== undefined ||
+    (options.systemPrompt !== undefined &&
+      // Treat preset without append as default
+      !(
+        typeof options.systemPrompt === "object" &&
+        options.systemPrompt.type === "preset" &&
+        !options.systemPrompt.append
+      )) ||
     (options.env !== undefined && Object.keys(options.env).length > 0) ||
     options.sandbox !== undefined ||
     options.maxTurns !== undefined ||
     options.maxThinkingTokens !== undefined ||
-    options.maxBudgetUsd !== undefined;
+    options.maxBudgetUsd !== undefined ||
+    options.effort !== undefined ||
+    (options.permissionMode !== undefined &&
+      options.permissionMode !== "default");
 
   return settingSourcesChanged || hasOtherSettings;
 }
@@ -196,6 +214,10 @@ export function transformFormToSchema(
     ...(form.maxBudgetUsd !== undefined
       ? { maxBudgetUsd: form.maxBudgetUsd }
       : {}),
+    ...(form.effort !== undefined ? { effort: form.effort } : {}),
+    ...(form.permissionMode !== undefined
+      ? { permissionMode: form.permissionMode }
+      : {}),
   };
 
   return hasValue(result) ? result : undefined;
@@ -297,6 +319,16 @@ export function transformSchemaToForm(
   // Max Budget USD
   if (schema.maxBudgetUsd !== undefined) {
     form.maxBudgetUsd = schema.maxBudgetUsd;
+  }
+
+  // Effort
+  if (schema.effort !== undefined) {
+    form.effort = schema.effort;
+  }
+
+  // Permission Mode
+  if (schema.permissionMode !== undefined) {
+    form.permissionMode = schema.permissionMode;
   }
 
   return form;

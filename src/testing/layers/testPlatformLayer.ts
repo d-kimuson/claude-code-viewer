@@ -65,12 +65,17 @@ export const testPlatformLayer = (overrides?: {
           overrides?.userConfig?.unifySameTitleSession ?? true,
         enterKeyBehavior:
           overrides?.userConfig?.enterKeyBehavior ?? "shift-enter-send",
-        permissionMode: overrides?.userConfig?.permissionMode ?? "default",
         locale: overrides?.userConfig?.locale ?? DEFAULT_LOCALE,
         theme: overrides?.userConfig?.theme ?? "system",
         searchHotkey: overrides?.userConfig?.searchHotkey ?? "command-k",
         autoScheduleContinueOnRateLimit:
           overrides?.userConfig?.autoScheduleContinueOnRateLimit ?? false,
+        modelChoices: overrides?.userConfig?.modelChoices ?? [
+          "default",
+          "haiku",
+          "sonnet",
+          "opus",
+        ],
       }),
   });
 

@@ -1,6 +1,5 @@
 import { Effect } from "effect";
 import { ClaudeCodeLifeCycleService } from "../../claude-code/services/ClaudeCodeLifeCycleService";
-import { UserConfigService } from "../../platform/services/UserConfigService";
 import { ProjectRepository } from "../../project/infrastructure/ProjectRepository";
 import type { SchedulerJob } from "../schema";
 
@@ -8,11 +7,9 @@ export const executeJob = (job: SchedulerJob) =>
   Effect.gen(function* () {
     const lifeCycleService = yield* ClaudeCodeLifeCycleService;
     const projectRepository = yield* ProjectRepository;
-    const userConfigService = yield* UserConfigService;
 
     const { message } = job;
     const { project } = yield* projectRepository.getProject(message.projectId);
-    const userConfig = yield* userConfigService.getUserConfig();
 
     if (project.meta.projectPath === null) {
       return yield* Effect.fail(
@@ -24,7 +21,6 @@ export const executeJob = (job: SchedulerJob) =>
       projectId: message.projectId,
       cwd: project.meta.projectPath,
       baseSession: message.baseSession ?? undefined,
-      userConfig,
       input: {
         text: message.content,
       },

@@ -8,14 +8,14 @@ export const userConfigSchema = z.object({
     .enum(["shift-enter-send", "enter-send", "command-enter-send"])
     .optional()
     .default("shift-enter-send"),
-  permissionMode: z
-    .enum(["acceptEdits", "bypassPermissions", "default", "plan"])
-    .optional()
-    .default("default"),
   locale: localeSchema.optional().default("en"),
   theme: z.enum(["light", "dark", "system"]).optional().default("system"),
   searchHotkey: z.enum(["ctrl-k", "command-k"]).optional().default("command-k"),
   autoScheduleContinueOnRateLimit: z.boolean().optional().default(false),
+  modelChoices: z
+    .array(z.string())
+    .optional()
+    .default(["default", "haiku", "sonnet", "opus"]),
 });
 
 export const defaultUserConfig = userConfigSchema.parse({});

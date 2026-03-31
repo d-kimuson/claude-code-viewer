@@ -1,8 +1,11 @@
 import { Trans, useLingui } from "@lingui/react";
 import { useQueryClient } from "@tanstack/react-query";
-import { type FC, useId, useMemo } from "react";
+import { PlusIcon, XIcon } from "lucide-react";
+import { type FC, useId, useMemo, useState } from "react";
 import { useConfig } from "@/app/hooks/useConfig";
+import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -10,7 +13,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useFeatureFlags } from "@/hooks/useFeatureFlags";
 import { useTheme } from "@/hooks/useTheme";
 import { projectDetailQuery, projectListQuery } from "../lib/api/queries";
 import {
@@ -36,19 +38,17 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
   showDescriptions = true,
   className = "",
 }: SettingsControlsProps) => {
+  const [newModelChoice, setNewModelChoice] = useState("");
   const checkboxId = useId();
   const enterKeyBehaviorId = useId();
   const searchHotkeyId = useId();
-  const permissionModeId = useId();
   const localeId = useId();
   const themeId = useId();
   const { config, updateConfig } = useConfig();
   const queryClient = useQueryClient();
   const { theme } = useTheme();
   const { i18n } = useLingui();
-  const { isFlagEnabled } = useFeatureFlags();
 
-  const isToolApprovalAvailable = isFlagEnabled("tool-approval");
   const inferredLocale = useMemo(() => {
     return detectLocaleFromNavigator() ?? DEFAULT_LOCALE;
   }, []);
@@ -111,16 +111,22 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
     updateConfig(newConfig);
   };
 
-  const handlePermissionModeChange = async (value: string) => {
-    const newConfig = {
+  const handleAddModelChoice = () => {
+    const trimmed = newModelChoice.trim();
+    if (trimmed && !config?.modelChoices?.includes(trimmed)) {
+      updateConfig({
+        ...config,
+        modelChoices: [...(config?.modelChoices ?? []), trimmed],
+      });
+      setNewModelChoice("");
+    }
+  };
+
+  const handleRemoveModelChoice = (choice: string) => {
+    updateConfig({
       ...config,
-      permissionMode: value as
-        | "acceptEdits"
-        | "bypassPermissions"
-        | "default"
-        | "plan",
-    };
-    updateConfig(newConfig);
+      modelChoices: (config?.modelChoices ?? []).filter((c) => c !== choice),
+    });
   };
 
   const handleLocaleChange = async (value: SupportedLocale) => {
@@ -273,44 +279,60 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
 
       <div className="space-y-2">
         {showLabels && (
-          <label
-            htmlFor={permissionModeId}
-            className="text-sm font-medium leading-none"
+          <span className="text-sm font-medium leading-none block">
+            <Trans id="settings.model_choices.label" message="Model Choices" />
+          </span>
+        )}
+        <div className="flex flex-wrap gap-1.5">
+          {(config?.modelChoices ?? []).map((choice) => (
+            <span
+              key={choice}
+              className="inline-flex items-center gap-1 px-2 py-0.5 bg-primary/10 text-primary rounded text-xs"
+            >
+              {choice}
+              <button
+                type="button"
+                onClick={() => handleRemoveModelChoice(choice)}
+                className="hover:bg-primary/20 rounded-full p-0.5"
+              >
+                <XIcon className="w-3 h-3" />
+              </button>
+            </span>
+          ))}
+        </div>
+        <div className="flex gap-2">
+          <Input
+            value={newModelChoice}
+            onChange={(e) => setNewModelChoice(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                handleAddModelChoice();
+              }
+            }}
+            placeholder={i18n._({
+              id: "settings.model_choices.placeholder",
+              message: "Add model choice...",
+            })}
+            className="h-8 text-xs flex-1"
+          />
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={handleAddModelChoice}
+            disabled={!newModelChoice.trim()}
+            className="h-8 text-xs"
           >
-            <Trans id="settings.permission.mode" />
-          </label>
-        )}
-        <Select
-          value={config?.permissionMode || "default"}
-          onValueChange={handlePermissionModeChange}
-          disabled={!isToolApprovalAvailable}
-        >
-          <SelectTrigger id={permissionModeId} className="w-full">
-            <SelectValue placeholder={i18n._("Select permission mode")} />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="default">
-              <Trans id="settings.permission.mode.default" />
-            </SelectItem>
-            <SelectItem value="acceptEdits">
-              <Trans id="settings.permission.mode.accept_edits" />
-            </SelectItem>
-            <SelectItem value="bypassPermissions">
-              <Trans id="settings.permission.mode.bypass_permissions" />
-            </SelectItem>
-            <SelectItem value="plan">
-              <Trans id="settings.permission.mode.plan" />
-            </SelectItem>
-          </SelectContent>
-        </Select>
-        {showDescriptions && isToolApprovalAvailable && (
+            <PlusIcon className="w-3 h-3" />
+          </Button>
+        </div>
+        {showDescriptions && (
           <p className="text-xs text-muted-foreground mt-1">
-            <Trans id="settings.permission.mode.description" />
-          </p>
-        )}
-        {showDescriptions && !isToolApprovalAvailable && (
-          <p className="text-xs text-destructive mt-1">
-            <Trans id="settings.permission.mode.unavailable" />
+            <Trans
+              id="settings.model_choices.description"
+              message="Configure the model options available in the session toolbar"
+            />
           </p>
         )}
       </div>

@@ -1,6 +1,7 @@
 import { Trans, useLingui } from "@lingui/react";
 import {
   AlertCircleIcon,
+  CalendarClockIcon,
   LoaderIcon,
   PaperclipIcon,
   SendIcon,
@@ -26,6 +27,11 @@ import {
   SelectValue,
 } from "../../../../../components/ui/select";
 import { Textarea } from "../../../../../components/ui/textarea";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "../../../../../components/ui/tooltip";
 import { useCreateSchedulerJob } from "../../../../../hooks/useScheduler";
 import type {
   CCOptionsSchema,
@@ -35,7 +41,6 @@ import type {
 import { useConfig } from "../../../../hooks/useConfig";
 import { ClaudeCodeSettingsPopover } from "./ClaudeCodeSettingsForm";
 import type { CommandCompletionRef } from "./CommandCompletion";
-import { getDefaultCCOptions } from "./ccOptionsFormSchema";
 import { isInCompletionContext } from "./completionUtils";
 import type { FileCompletionRef } from "./FileCompletion";
 import { processFile } from "./fileUtils";
@@ -64,6 +69,8 @@ export interface ChatInputProps {
   enableScheduledSend?: boolean;
   baseSessionId?: string | null;
   enableCCOptions?: boolean;
+  ccOptions?: CCOptionsSchema;
+  onCCOptionsChange?: (value: CCOptionsSchema | undefined) => void;
 }
 
 export const ChatInput: FC<ChatInputProps> = ({
@@ -81,6 +88,8 @@ export const ChatInput: FC<ChatInputProps> = ({
   enableScheduledSend = false,
   baseSessionId = null,
   enableCCOptions = false,
+  ccOptions,
+  onCCOptionsChange,
 }) => {
   // Parse minHeight prop to get pixel value (default to 48px for 1.5 lines)
   // Supports both "200px" and Tailwind format like "min-h-[200px]"
@@ -119,11 +128,6 @@ export const ChatInput: FC<ChatInputProps> = ({
     const minutes = String(now.getMinutes()).padStart(2, "0");
     return `${year}-${month}-${day}T${hours}:${minutes}`;
   });
-  // Initialize with default values so settingSources is always sent correctly
-  // even when the user doesn't open the settings popover
-  const [ccOptions, setCCOptions] = useState<CCOptionsSchema | undefined>(
-    getDefaultCCOptions,
-  );
   const containerRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -502,8 +506,8 @@ export const ChatInput: FC<ChatInputProps> = ({
               </div>
             )}
 
-            <div className="flex items-center justify-between gap-3">
-              <div className="flex items-center gap-3 text-muted-foreground/70">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-1.5 text-muted-foreground/70">
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -511,19 +515,100 @@ export const ChatInput: FC<ChatInputProps> = ({
                   onChange={handleFileSelect}
                   className="hidden"
                 />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => fileInputRef.current?.click()}
-                  disabled={isPending || disabled}
-                  className="gap-2 px-2 hover:bg-background/80 hover:text-foreground text-muted-foreground transition-all duration-200 h-8 rounded-lg"
-                >
-                  <PaperclipIcon className="w-4 h-4" />
-                  <span className="text-xs font-medium hidden sm:inline">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={isPending || disabled}
+                      className="px-1.5 hover:bg-background/80 hover:text-foreground text-muted-foreground transition-all duration-200 h-7 rounded-lg"
+                    >
+                      <PaperclipIcon className="w-3.5 h-3.5" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
                     <Trans id="chat.attach_file" />
-                  </span>
-                </Button>
+                  </TooltipContent>
+                </Tooltip>
+                {enableCCOptions && (
+                  <>
+                    {/* Model selector */}
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span>
+                          <Select
+                            value={ccOptions?.model ?? "default"}
+                            onValueChange={(value) =>
+                              onCCOptionsChange?.({
+                                ...ccOptions,
+                                model: value === "default" ? undefined : value,
+                              })
+                            }
+                            disabled={isPending || disabled}
+                          >
+                            <SelectTrigger className="h-7 w-auto min-w-[80px] text-[11px] font-medium bg-background/50 border-border/30 shadow-none hover:bg-background hover:border-border/50 transition-all duration-200 gap-1 px-2">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {(config?.modelChoices ?? ["default"]).map(
+                                (choice) => (
+                                  <SelectItem key={choice} value={choice}>
+                                    {choice}
+                                  </SelectItem>
+                                ),
+                              )}
+                            </SelectContent>
+                          </Select>
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <Trans
+                          id="chat.toolbar.model.tooltip"
+                          message="Select model"
+                        />
+                      </TooltipContent>
+                    </Tooltip>
+
+                    {/* Effort selector */}
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span>
+                          <Select
+                            value={ccOptions?.effort ?? "auto"}
+                            onValueChange={(
+                              value: "auto" | "low" | "medium" | "high" | "max",
+                            ) =>
+                              onCCOptionsChange?.({
+                                ...ccOptions,
+                                effort: value === "auto" ? undefined : value,
+                              })
+                            }
+                            disabled={isPending || disabled}
+                          >
+                            <SelectTrigger className="h-7 w-auto min-w-[70px] text-[11px] font-medium bg-background/50 border-border/30 shadow-none hover:bg-background hover:border-border/50 transition-all duration-200 gap-1 px-2">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="auto">Auto</SelectItem>
+                              <SelectItem value="low">Low</SelectItem>
+                              <SelectItem value="medium">Medium</SelectItem>
+                              <SelectItem value="high">High</SelectItem>
+                              <SelectItem value="max">Max</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <Trans
+                          id="chat.toolbar.effort.tooltip"
+                          message="Select reasoning effort"
+                        />
+                      </TooltipContent>
+                    </Tooltip>
+                  </>
+                )}
                 {message.length > 0 && (
                   <span
                     className="text-[10px] font-medium bg-muted/50 px-2 py-0.5 rounded-full border border-border/30 transition-all duration-200"
@@ -532,10 +617,10 @@ export const ChatInput: FC<ChatInputProps> = ({
                     {message.length}
                   </span>
                 )}
-                {enableCCOptions && (
+                {enableCCOptions && onCCOptionsChange && (
                   <ClaudeCodeSettingsPopover
                     value={ccOptions}
-                    onChange={setCCOptions}
+                    onChange={onCCOptionsChange}
                     disabled={isPending || disabled}
                   />
                 )}
@@ -576,18 +661,23 @@ export const ChatInput: FC<ChatInputProps> = ({
                 )}
 
                 {enableScheduledSend && sendMode === "immediate" && (
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setSendMode("scheduled")}
-                    disabled={isPending || disabled}
-                    className="sm:hidden gap-1.5 h-9"
-                  >
-                    <span className="text-xs font-medium">
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setSendMode("scheduled")}
+                        disabled={isPending || disabled}
+                        className="sm:hidden h-9 px-2"
+                      >
+                        <CalendarClockIcon className="w-4 h-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
                       <Trans id="chat.send_mode.scheduled" />
-                    </span>
-                  </Button>
+                    </TooltipContent>
+                  </Tooltip>
                 )}
 
                 <Button

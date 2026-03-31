@@ -104,6 +104,10 @@ export const ccOptionsSchema = z.object({
   maxThinkingTokens: z.number().optional(),
   env: z.record(z.string(), z.string().optional()).optional(),
   maxBudgetUsd: z.number().optional(),
+  effort: z.enum(["low", "medium", "high", "max"]).optional(),
+  permissionMode: z
+    .enum(["acceptEdits", "bypassPermissions", "default", "plan"])
+    .optional(),
 });
 
 export type CCOptionsSchema = z.infer<typeof ccOptionsSchema>;

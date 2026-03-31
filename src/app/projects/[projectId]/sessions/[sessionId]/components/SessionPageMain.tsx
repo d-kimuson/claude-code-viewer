@@ -15,6 +15,7 @@ import {
 import {
   type FC,
   type ReactNode,
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -22,6 +23,7 @@ import {
 } from "react";
 import { toast } from "sonner";
 import { useConfig } from "@/app/hooks/useConfig";
+import { getDefaultCCOptions } from "@/app/projects/[projectId]/components/chatForm/ccOptionsFormSchema";
 import { PermissionDialog } from "@/components/PermissionDialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -34,11 +36,13 @@ import { usePermissionRequests } from "@/hooks/usePermissionRequests";
 import { useSchedulerJobs } from "@/hooks/useScheduler";
 import { useTaskNotifications } from "@/hooks/useTaskNotifications";
 import { honoClient } from "@/lib/api/client";
+import { useProjectSessionOptions } from "@/lib/atoms/sessionOptions";
 import { formatLocaleDate } from "@/lib/date/formatLocaleDate";
 import { cn } from "@/lib/utils";
 import { createVirtualSessionEntries } from "@/lib/virtual-messages/createVirtualSessionEntries";
 import { virtualMessagesAtom } from "@/lib/virtual-messages/virtualMessageStore";
 import { parseUserMessage } from "@/server/core/claude-code/functions/parseUserMessage";
+import type { CCOptionsSchema } from "@/server/core/claude-code/schema";
 import { useProject } from "../../../hooks/useProject";
 import { resolveSessionTitle } from "../../../services/firstCommandToTitle";
 import { useExportSession } from "../hooks/useExportSession";
@@ -108,6 +112,35 @@ const SessionPageMainContent: FC<
   const sessionProcesses = useAtomValue(sessionProcessesAtom);
   const virtualMessages = useAtomValue(virtualMessagesAtom);
   const { config } = useConfig();
+
+  // CC Options state - lifted here to share between ChatActionMenu and ChatInput
+  const [savedOptions, setSavedOptions] = useProjectSessionOptions(projectId);
+  const [ccOptions, setCCOptions] = useState<CCOptionsSchema | undefined>(
+    () => ({
+      ...getDefaultCCOptions(),
+      ...(savedOptions.model ? { model: savedOptions.model } : {}),
+      ...(savedOptions.effort ? { effort: savedOptions.effort } : {}),
+      ...(savedOptions.permissionMode
+        ? { permissionMode: savedOptions.permissionMode }
+        : {}),
+      ...(savedOptions.useSystemPromptPreset === false
+        ? { systemPrompt: undefined }
+        : {}),
+    }),
+  );
+  const handleCCOptionsChange = useCallback(
+    (next: CCOptionsSchema | undefined) => {
+      setCCOptions(next);
+      setSavedOptions({
+        model: next?.model,
+        effort: next?.effort,
+        permissionMode: next?.permissionMode,
+        useSystemPromptPreset: next?.systemPrompt !== undefined,
+      });
+    },
+    [setSavedOptions],
+  );
+
   // Merge virtual sessions (not yet persisted) into the session list
   const sessions = useMemo(() => {
     const serverSessions = projectData.pages.flatMap((page) => page.sessions);
@@ -181,6 +214,8 @@ const SessionPageMainContent: FC<
     if (!sessionId) return undefined;
     return sessionProcess.getSessionProcess(sessionId);
   }, [sessionProcess, sessionId]);
+
+  const enableCCOptions = !relatedSessionProcess;
 
   const effectiveSessionStatus =
     relatedSessionProcess?.status === "running" && hasLocalCommandOutput
@@ -696,12 +731,14 @@ const SessionPageMainContent: FC<
         <div className="w-full pt-3">
           <ChatActionMenu
             projectId={projectId}
-            sessionId={sessionId}
             onScrollToTop={handleScrollToTop}
             onScrollToBottom={handleScrollToBottom}
             sessionProcess={relatedSessionProcess}
             abortTask={abortTask}
             isNewChat={!isExistingSession}
+            enableCCOptions={enableCCOptions}
+            ccOptions={ccOptions}
+            onCCOptionsChange={handleCCOptionsChange}
           />
         </div>
 
@@ -714,9 +751,18 @@ const SessionPageMainContent: FC<
               sessionProcessStatus={effectiveSessionStatus}
             />
           ) : isExistingSession && sessionId ? (
-            <ResumeChat projectId={projectId} sessionId={sessionId} />
+            <ResumeChat
+              projectId={projectId}
+              sessionId={sessionId}
+              ccOptions={ccOptions}
+              onCCOptionsChange={handleCCOptionsChange}
+            />
           ) : (
-            <StartNewChat projectId={projectId} />
+            <StartNewChat
+              projectId={projectId}
+              ccOptions={ccOptions}
+              onCCOptionsChange={handleCCOptionsChange}
+            />
           )}
         </div>
       </div>

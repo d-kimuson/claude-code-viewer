@@ -1,15 +1,4 @@
 {
-  "Additional instructions to append...": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        349
-      ]
-    ],
-    "translation": "要附加的额外指令..."
-  },
   "Available commands": {
     "placeholders": {},
     "comments": [],
@@ -79,7 +68,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        211
+        210
       ]
     ],
     "translation": "自定义工具名称..."
@@ -135,7 +124,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        103
+        102
       ]
     ],
     "translation": "键"
@@ -146,7 +135,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        428
+        470
       ]
     ],
     "translation": "带补全支持的消息输入"
@@ -183,7 +172,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        221
+        227
       ]
     ],
     "translation": "选择回车键行为"
@@ -194,21 +183,10 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        332
+        354
       ]
     ],
     "translation": "选择语言"
-  },
-  "Select permission mode": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/components/SettingsControls.tsx",
-        289
-      ]
-    ],
-    "translation": "选择权限模式"
   },
   "Select search hotkey": {
     "placeholders": {},
@@ -216,7 +194,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        256
+        262
       ]
     ],
     "translation": "选择搜索快捷键"
@@ -227,7 +205,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        361
+        383
       ]
     ],
     "translation": "选择主题"
@@ -253,7 +231,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        111
+        110
       ]
     ],
     "translation": "值"
@@ -551,7 +529,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        524
+        570
       ]
     ],
     "translation": "附加"
@@ -573,7 +551,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        392
+        434
       ]
     ],
     "translation": "发送消息失败。请重试。"
@@ -769,7 +747,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        237
+        279
       ]
     ],
     "translation": "定时发送消息失败"
@@ -781,7 +759,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        221
+        263
       ]
     ],
     "translation": "消息定时发送成功"
@@ -793,7 +771,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        226
+        268
       ]
     ],
     "translation": "您可以在定时任务选项卡中查看和管理"
@@ -815,11 +793,11 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        481
+        523
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        568
+        795
       ]
     ],
     "translation": "立即发送"
@@ -830,11 +808,11 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        464
+        506
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        551
+        778
       ]
     ],
     "translation": "发送模式"
@@ -845,15 +823,15 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        484
+        526
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        571
+        798
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        588
+        815
       ]
     ],
     "translation": "定时发送"
@@ -864,7 +842,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        491
+        533
       ]
     ],
     "translation": "定时发送时间"
@@ -876,7 +854,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        658
+        578
       ]
     ],
     "translation": "设置"
@@ -887,10 +865,118 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        608
+        835
       ]
     ],
     "translation": "处理中..."
+  },
+  "chat.toolbar.effort.tooltip": {
+    "message": "Select reasoning effort",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        647
+      ]
+    ],
+    "translation": "选择推理努力程度"
+  },
+  "chat.toolbar.model.tooltip": {
+    "message": "Select model",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        605
+      ]
+    ],
+    "translation": "选择模型"
+  },
+  "chat.toolbar.permission_mode.accept_edits": {
+    "message": "Accept Edits",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        688
+      ]
+    ],
+    "translation": "接受编辑"
+  },
+  "chat.toolbar.permission_mode.bypass": {
+    "message": "Bypass",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        694
+      ]
+    ],
+    "translation": "跳过"
+  },
+  "chat.toolbar.permission_mode.default": {
+    "message": "Default",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        682
+      ]
+    ],
+    "translation": "默认"
+  },
+  "chat.toolbar.permission_mode.plan": {
+    "message": "Plan",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        700
+      ]
+    ],
+    "translation": "计划"
+  },
+  "chat.toolbar.permission_mode.tooltip": {
+    "message": "Select permission mode",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        710
+      ]
+    ],
+    "translation": "选择权限模式"
+  },
+  "chat.toolbar.system_prompt": {
+    "message": "CC Prompt",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        738
+      ]
+    ],
+    "translation": "CC 提示词"
+  },
+  "chat.toolbar.system_prompt.tooltip": {
+    "message": "Include default Claude Code prompt",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        746
+      ]
+    ],
+    "translation": "包含默认 Claude Code 提示词"
   },
   "common.action.cancel": {
     "placeholders": {},
@@ -1140,7 +1226,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/CopyableMarkdownContent.tsx",
-        39
+        42
       ]
     ],
     "translation": "复制消息"
@@ -1152,7 +1238,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/CopyableMarkdownContent.tsx",
-        31
+        34
       ]
     ],
     "translation": "复制消息失败"
@@ -1164,7 +1250,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/CopyableMarkdownContent.tsx",
-        23
+        26
       ]
     ],
     "translation": "消息已复制"
@@ -1693,7 +1779,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        622
+        542
       ]
     ],
     "translation": "例如: 1.00"
@@ -1704,7 +1790,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        571
+        491
       ]
     ],
     "translation": "例如: 10"
@@ -1715,7 +1801,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        595
+        515
       ]
     ],
     "translation": "例如: 10000"
@@ -1726,21 +1812,10 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        489
+        409
       ]
     ],
     "translation": "例如: api.example.com, cdn.example.com"
-  },
-  "e.g., claude-sonnet-4-5-20250929": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        276
-      ]
-    ],
-    "translation": "例如: claude-sonnet-4-5-20250929"
   },
   "layout.bottom_panel.title": {
     "placeholders": {},
@@ -2966,7 +3041,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        505
+        425
       ]
     ],
     "translation": "高级设置"
@@ -2988,7 +3063,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        288
+        268
       ]
     ],
     "translation": "禁用的工具"
@@ -2999,7 +3074,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        136
+        135
       ]
     ],
     "translation": "添加环境变量"
@@ -3011,7 +3086,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        365
+        285
       ]
     ],
     "translation": "环境变量"
@@ -3022,7 +3097,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        213
+        219
       ]
     ],
     "translation": "回车键行为"
@@ -3033,7 +3108,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        231
+        237
       ]
     ],
     "translation": "使用 Command+Enter 发送"
@@ -3044,7 +3119,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        237
+        243
       ]
     ],
     "translation": "选择消息输入的回车键行为"
@@ -3055,7 +3130,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        228
+        234
       ]
     ],
     "translation": "使用 Enter 发送"
@@ -3066,7 +3141,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        225
+        231
       ]
     ],
     "translation": "使用 Shift+Enter 发送(默认)"
@@ -3077,7 +3152,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        248
+        254
       ]
     ],
     "translation": "搜索快捷键"
@@ -3088,7 +3163,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        263
+        269
       ]
     ],
     "translation": "Command+K"
@@ -3099,7 +3174,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        260
+        266
       ]
     ],
     "translation": "Ctrl+K"
@@ -3110,7 +3185,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        269
+        275
       ]
     ],
     "translation": "选择打开搜索对话框的快捷键"
@@ -3136,7 +3211,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        324
+        346
       ]
     ],
     "translation": "语言"
@@ -3147,7 +3222,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        348
+        370
       ]
     ],
     "translation": "选择您偏好的语言"
@@ -3158,7 +3233,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        339
+        361
       ]
     ],
     "translation": "英语"
@@ -3169,7 +3244,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        336
+        358
       ]
     ],
     "translation": "日语"
@@ -3180,7 +3255,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        342
+        364
       ]
     ],
     "translation": "简体中文"
@@ -3192,7 +3267,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        609
+        529
       ]
     ],
     "translation": "最大预算 (USD)"
@@ -3204,7 +3279,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        583
+        503
       ]
     ],
     "translation": "最大思考令牌数"
@@ -3216,21 +3291,46 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        562
+        482
       ]
     ],
     "translation": "最大轮次"
   },
-  "settings.model.label": {
+  "settings.model_choices.description": {
+    "message": "Configure the model options available in the session toolbar",
     "placeholders": {},
     "comments": [],
     "origin": [
       [
-        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        271
+        "src/components/SettingsControls.tsx",
+        332
       ]
     ],
-    "translation": "模型"
+    "translation": "配置会话工具栏中可用的模型选项"
+  },
+  "settings.model_choices.label": {
+    "message": "Model Choices",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/components/SettingsControls.tsx",
+        283
+      ]
+    ],
+    "translation": "模型选项"
+  },
+  "settings.model_choices.placeholder": {
+    "message": "Add model choice...",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/components/SettingsControls.tsx",
+        313
+      ]
+    ],
+    "translation": "添加模型选项..."
   },
   "settings.notifications": {
     "placeholders": {},
@@ -3243,83 +3343,6 @@
     ],
     "translation": "通知"
   },
-  "settings.permission.mode": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/components/SettingsControls.tsx",
-        280
-      ]
-    ],
-    "translation": "权限模式"
-  },
-  "settings.permission.mode.accept_edits": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/components/SettingsControls.tsx",
-        296
-      ]
-    ],
-    "translation": "接受编辑(自动批准文件编辑)"
-  },
-  "settings.permission.mode.bypass_permissions": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/components/SettingsControls.tsx",
-        299
-      ]
-    ],
-    "translation": "跳过权限(无提示)"
-  },
-  "settings.permission.mode.default": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/components/SettingsControls.tsx",
-        293
-      ]
-    ],
-    "translation": "默认(确认权限)"
-  },
-  "settings.permission.mode.description": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/components/SettingsControls.tsx",
-        308
-      ]
-    ],
-    "translation": "控制如何处理文件操作权限请求"
-  },
-  "settings.permission.mode.plan": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/components/SettingsControls.tsx",
-        302
-      ]
-    ],
-    "translation": "计划模式(仅规划)"
-  },
-  "settings.permission.mode.unavailable": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/components/SettingsControls.tsx",
-        313
-      ]
-    ],
-    "translation": "此功能在您的 Claude Code 版本中不可用。所有工具都会自动批准。"
-  },
   "settings.sandbox.allowUnsandboxedCommands": {
     "message": "Allow unsandboxed commands",
     "placeholders": {},
@@ -3327,7 +3350,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        430
+        350
       ]
     ],
     "translation": "允许非沙盒命令"
@@ -3339,7 +3362,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        410
+        330
       ]
     ],
     "translation": "沙盒化时自动允许 Bash"
@@ -3351,7 +3374,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        381
+        301
       ]
     ],
     "translation": "沙盒"
@@ -3363,7 +3386,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        464
+        384
       ]
     ],
     "translation": "允许本地绑定"
@@ -3375,7 +3398,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        473
+        393
       ]
     ],
     "translation": "允许的域名 (逗号分隔)"
@@ -3387,7 +3410,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        440
+        360
       ]
     ],
     "translation": "网络设置"
@@ -3431,7 +3454,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        197
+        203
       ]
     ],
     "translation": "达到速率限制时自动调度继续"
@@ -3442,7 +3465,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        203
+        209
       ]
     ],
     "translation": "当 Claude 达到速率限制时,自动调度继续消息"
@@ -3464,7 +3487,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        155
+        161
       ]
     ],
     "translation": "隐藏无用户消息的会话"
@@ -3475,7 +3498,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        161
+        167
       ]
     ],
     "translation": "仅显示包含用户命令或消息的会话"
@@ -3486,7 +3509,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        176
+        182
       ]
     ],
     "translation": "合并同名会话"
@@ -3497,7 +3520,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        182
+        188
       ]
     ],
     "translation": "当多个会话标题相同时,仅显示最新的会话"
@@ -3509,33 +3532,10 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        511
+        431
       ]
     ],
     "translation": "设置来源"
-  },
-  "settings.systemPrompt.additional": {
-    "message": "Additional System Prompt",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        331
-      ]
-    ],
-    "translation": "附加系统提示词"
-  },
-  "settings.systemPrompt.usePreset": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        324
-      ]
-    ],
-    "translation": "使用 Claude Code 标准系统提示"
   },
   "settings.tab.title": {
     "placeholders": {},
@@ -3554,7 +3554,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        356
+        378
       ]
     ],
     "translation": "主题"
@@ -3565,7 +3565,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        368
+        390
       ]
     ],
     "translation": "深色"
@@ -3576,7 +3576,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        377
+        399
       ]
     ],
     "translation": "选择您偏好的颜色主题"
@@ -3587,7 +3587,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        365
+        387
       ]
     ],
     "translation": "浅色"
@@ -3598,7 +3598,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        371
+        393
       ]
     ],
     "translation": "跟随系统"
@@ -3610,7 +3610,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        673
+        593
       ],
       [
         "src/components/GlobalSidebar.tsx",

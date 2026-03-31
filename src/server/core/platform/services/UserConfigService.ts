@@ -8,11 +8,11 @@ const LayerImpl = Effect.gen(function* () {
     hideNoUserMessageSession: true,
     unifySameTitleSession: false,
     enterKeyBehavior: "shift-enter-send",
-    permissionMode: "default",
     locale: DEFAULT_LOCALE,
     theme: "system",
     searchHotkey: "command-k",
     autoScheduleContinueOnRateLimit: false,
+    modelChoices: ["default", "haiku", "sonnet", "opus"],
   });
 
   const setUserConfig = (newConfig: UserConfig) =>

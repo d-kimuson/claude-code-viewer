@@ -14,6 +14,11 @@ describe("ccOptionsFormSchema", () => {
       const result = getDefaultCCOptions();
       expect(result).toEqual({
         settingSources: ["user", "project", "local"],
+        permissionMode: "default",
+        systemPrompt: {
+          type: "preset",
+          preset: "claude_code",
+        },
       });
     });
 
@@ -292,7 +297,18 @@ describe("ccOptionsFormSchema", () => {
       expect(hasNonDefaultCCOptions(options)).toBe(false);
     });
 
-    test("should return true when systemPrompt is set", () => {
+    test("should return false when systemPrompt is preset without append", () => {
+      const options: CCOptionsSchema = {
+        systemPrompt: {
+          type: "preset",
+          preset: "claude_code",
+        },
+        settingSources: ["user", "project", "local"],
+      };
+      expect(hasNonDefaultCCOptions(options)).toBe(false);
+    });
+
+    test("should return true when systemPrompt has append", () => {
       const options: CCOptionsSchema = {
         systemPrompt: {
           type: "preset",

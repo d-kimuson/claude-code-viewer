@@ -1,15 +1,4 @@
 {
-  "Additional instructions to append...": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        349
-      ]
-    ],
-    "translation": "追加の指示を入力..."
-  },
   "Available commands": {
     "placeholders": {},
     "comments": [],
@@ -79,7 +68,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        211
+        210
       ]
     ],
     "translation": "カスタムツール名..."
@@ -135,7 +124,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        103
+        102
       ]
     ],
     "translation": "キー"
@@ -146,7 +135,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        428
+        470
       ]
     ],
     "translation": "補完機能付きメッセージ入力"
@@ -183,7 +172,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        221
+        227
       ]
     ],
     "translation": "Enterキーの動作を選択"
@@ -194,21 +183,10 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        332
+        354
       ]
     ],
     "translation": "言語を選択"
-  },
-  "Select permission mode": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/components/SettingsControls.tsx",
-        289
-      ]
-    ],
-    "translation": "権限モードを選択"
   },
   "Select search hotkey": {
     "placeholders": {},
@@ -216,7 +194,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        256
+        262
       ]
     ],
     "translation": "検索ホットキーを選択"
@@ -227,7 +205,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        361
+        383
       ]
     ],
     "translation": "テーマを選択"
@@ -253,7 +231,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        111
+        110
       ]
     ],
     "translation": "値"
@@ -551,7 +529,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        524
+        570
       ]
     ],
     "translation": "添付"
@@ -573,7 +551,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        392
+        434
       ]
     ],
     "translation": "メッセージの送信に失敗しました。もう一度お試しください。"
@@ -769,7 +747,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        237
+        279
       ]
     ],
     "translation": "メッセージの予約に失敗しました"
@@ -781,7 +759,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        221
+        263
       ]
     ],
     "translation": "メッセージを予約しました"
@@ -793,7 +771,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        226
+        268
       ]
     ],
     "translation": "スケジューラタブで確認・管理できます"
@@ -815,11 +793,11 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        481
+        523
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        568
+        795
       ]
     ],
     "translation": "今すぐ送信"
@@ -830,11 +808,11 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        464
+        506
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        551
+        778
       ]
     ],
     "translation": "送信モード"
@@ -845,15 +823,15 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        484
+        526
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        571
+        798
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        588
+        815
       ]
     ],
     "translation": "予約送信"
@@ -864,7 +842,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        491
+        533
       ]
     ],
     "translation": "送信予定時刻"
@@ -876,7 +854,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        658
+        578
       ]
     ],
     "translation": "設定"
@@ -887,10 +865,118 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        608
+        835
       ]
     ],
     "translation": "処理中..."
+  },
+  "chat.toolbar.effort.tooltip": {
+    "message": "Select reasoning effort",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        647
+      ]
+    ],
+    "translation": "Reasoning effort を選択"
+  },
+  "chat.toolbar.model.tooltip": {
+    "message": "Select model",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        605
+      ]
+    ],
+    "translation": "モデルを選択"
+  },
+  "chat.toolbar.permission_mode.accept_edits": {
+    "message": "Accept Edits",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        688
+      ]
+    ],
+    "translation": "編集許可"
+  },
+  "chat.toolbar.permission_mode.bypass": {
+    "message": "Bypass",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        694
+      ]
+    ],
+    "translation": "バイパス"
+  },
+  "chat.toolbar.permission_mode.default": {
+    "message": "Default",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        682
+      ]
+    ],
+    "translation": "デフォルト"
+  },
+  "chat.toolbar.permission_mode.plan": {
+    "message": "Plan",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        700
+      ]
+    ],
+    "translation": "プラン"
+  },
+  "chat.toolbar.permission_mode.tooltip": {
+    "message": "Select permission mode",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        710
+      ]
+    ],
+    "translation": "権限モードを選択"
+  },
+  "chat.toolbar.system_prompt": {
+    "message": "CC Prompt",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        738
+      ]
+    ],
+    "translation": "CC プロンプト"
+  },
+  "chat.toolbar.system_prompt.tooltip": {
+    "message": "Include default Claude Code prompt",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        746
+      ]
+    ],
+    "translation": "デフォルトの Claude Code プロンプトを含める"
   },
   "common.action.cancel": {
     "placeholders": {},
@@ -1140,7 +1226,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/CopyableMarkdownContent.tsx",
-        39
+        42
       ]
     ],
     "translation": "メッセージをコピー"
@@ -1152,7 +1238,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/CopyableMarkdownContent.tsx",
-        31
+        34
       ]
     ],
     "translation": "メッセージのコピーに失敗しました"
@@ -1164,7 +1250,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/CopyableMarkdownContent.tsx",
-        23
+        26
       ]
     ],
     "translation": "メッセージをコピーしました"
@@ -1693,7 +1779,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        622
+        542
       ]
     ],
     "translation": "例: 1.00"
@@ -1704,7 +1790,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        571
+        491
       ]
     ],
     "translation": "例: 10"
@@ -1715,7 +1801,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        595
+        515
       ]
     ],
     "translation": "例: 10000"
@@ -1726,21 +1812,10 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        489
+        409
       ]
     ],
     "translation": "例: api.example.com, cdn.example.com"
-  },
-  "e.g., claude-sonnet-4-5-20250929": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        276
-      ]
-    ],
-    "translation": "例: claude-sonnet-4-5-20250929"
   },
   "layout.bottom_panel.title": {
     "placeholders": {},
@@ -2966,7 +3041,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        505
+        425
       ]
     ],
     "translation": "詳細設定"
@@ -2988,7 +3063,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        288
+        268
       ]
     ],
     "translation": "無効化するツール"
@@ -2999,7 +3074,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        136
+        135
       ]
     ],
     "translation": "環境変数を追加"
@@ -3011,7 +3086,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        365
+        285
       ]
     ],
     "translation": "環境変数"
@@ -3022,7 +3097,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        213
+        219
       ]
     ],
     "translation": "Enterキーの動作"
@@ -3033,7 +3108,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        231
+        237
       ]
     ],
     "translation": "Command+Enterで送信"
@@ -3044,7 +3119,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        237
+        243
       ]
     ],
     "translation": "メッセージ入力でのEnterキーの動作を選択"
@@ -3055,7 +3130,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        228
+        234
       ]
     ],
     "translation": "Enterで送信"
@@ -3066,7 +3141,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        225
+        231
       ]
     ],
     "translation": "Shift+Enterで送信（デフォルト）"
@@ -3077,7 +3152,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        248
+        254
       ]
     ],
     "translation": "検索ホットキー"
@@ -3088,7 +3163,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        263
+        269
       ]
     ],
     "translation": "Command+K"
@@ -3099,7 +3174,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        260
+        266
       ]
     ],
     "translation": "Ctrl+K"
@@ -3110,7 +3185,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        269
+        275
       ]
     ],
     "translation": "検索ダイアログを開くホットキーを選択します"
@@ -3136,7 +3211,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        324
+        346
       ]
     ],
     "translation": "言語"
@@ -3147,7 +3222,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        348
+        370
       ]
     ],
     "translation": "お好みの言語を選択"
@@ -3158,7 +3233,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        339
+        361
       ]
     ],
     "translation": "English"
@@ -3169,7 +3244,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        336
+        358
       ]
     ],
     "translation": "日本語"
@@ -3180,7 +3255,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        342
+        364
       ]
     ],
     "translation": "中国語（簡体字）"
@@ -3192,7 +3267,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        609
+        529
       ]
     ],
     "translation": "最大予算 (USD)"
@@ -3204,7 +3279,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        583
+        503
       ]
     ],
     "translation": "最大思考トークン数"
@@ -3216,21 +3291,46 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        562
+        482
       ]
     ],
     "translation": "最大ターン数"
   },
-  "settings.model.label": {
+  "settings.model_choices.description": {
+    "message": "Configure the model options available in the session toolbar",
     "placeholders": {},
     "comments": [],
     "origin": [
       [
-        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        271
+        "src/components/SettingsControls.tsx",
+        332
       ]
     ],
-    "translation": "モデル"
+    "translation": "セッションツールバーで利用可能なモデル選択肢を設定します"
+  },
+  "settings.model_choices.label": {
+    "message": "Model Choices",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/components/SettingsControls.tsx",
+        283
+      ]
+    ],
+    "translation": "モデル選択肢"
+  },
+  "settings.model_choices.placeholder": {
+    "message": "Add model choice...",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/components/SettingsControls.tsx",
+        313
+      ]
+    ],
+    "translation": "モデル選択肢を追加..."
   },
   "settings.notifications": {
     "placeholders": {},
@@ -3243,83 +3343,6 @@
     ],
     "translation": "通知"
   },
-  "settings.permission.mode": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/components/SettingsControls.tsx",
-        280
-      ]
-    ],
-    "translation": "権限モード"
-  },
-  "settings.permission.mode.accept_edits": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/components/SettingsControls.tsx",
-        296
-      ]
-    ],
-    "translation": "編集を承認（ファイル編集を自動承認）"
-  },
-  "settings.permission.mode.bypass_permissions": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/components/SettingsControls.tsx",
-        299
-      ]
-    ],
-    "translation": "権限をバイパス（プロンプトなし）"
-  },
-  "settings.permission.mode.default": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/components/SettingsControls.tsx",
-        293
-      ]
-    ],
-    "translation": "デフォルト（権限を確認）"
-  },
-  "settings.permission.mode.description": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/components/SettingsControls.tsx",
-        308
-      ]
-    ],
-    "translation": "ファイル操作の権限リクエストの処理方法を制御"
-  },
-  "settings.permission.mode.plan": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/components/SettingsControls.tsx",
-        302
-      ]
-    ],
-    "translation": "プランモード（計画のみ）"
-  },
-  "settings.permission.mode.unavailable": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/components/SettingsControls.tsx",
-        313
-      ]
-    ],
-    "translation": "お使いのClaude Codeバージョンではこの機能は利用できません。すべてのツールは自動で承認されます。"
-  },
   "settings.sandbox.allowUnsandboxedCommands": {
     "message": "Allow unsandboxed commands",
     "placeholders": {},
@@ -3327,7 +3350,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        430
+        350
       ]
     ],
     "translation": "サンドボックス外のコマンドを許可"
@@ -3339,7 +3362,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        410
+        330
       ]
     ],
     "translation": "サンドボックス化されている場合Bashを自動許可"
@@ -3351,7 +3374,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        381
+        301
       ]
     ],
     "translation": "サンドボックス"
@@ -3363,7 +3386,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        464
+        384
       ]
     ],
     "translation": "ローカルバインディングを許可"
@@ -3375,7 +3398,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        473
+        393
       ]
     ],
     "translation": "許可するドメイン (カンマ区切り)"
@@ -3387,7 +3410,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        440
+        360
       ]
     ],
     "translation": "ネットワーク設定"
@@ -3431,7 +3454,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        197
+        203
       ]
     ],
     "translation": "レート制限時に自動的に継続をスケジュール"
@@ -3442,7 +3465,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        203
+        209
       ]
     ],
     "translation": "Claude がレート制限に達した際に、自動的に継続メッセージをスケジュール実行します"
@@ -3464,7 +3487,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        155
+        161
       ]
     ],
     "translation": "ユーザーメッセージのないセッションを非表示"
@@ -3475,7 +3498,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        161
+        167
       ]
     ],
     "translation": "ユーザーコマンドまたはメッセージを含むセッションのみを表示"
@@ -3486,7 +3509,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        176
+        182
       ]
     ],
     "translation": "同じタイトルのセッションを統合"
@@ -3497,7 +3520,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        182
+        188
       ]
     ],
     "translation": "同じタイトルの複数のセッションがある場合、最新のセッションのみを表示"
@@ -3509,33 +3532,10 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        511
+        431
       ]
     ],
     "translation": "設定ソース"
-  },
-  "settings.systemPrompt.additional": {
-    "message": "Additional System Prompt",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        331
-      ]
-    ],
-    "translation": "追加システムプロンプト"
-  },
-  "settings.systemPrompt.usePreset": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        324
-      ]
-    ],
-    "translation": "Claude Code 標準のシステムプロンプトを使用"
   },
   "settings.tab.title": {
     "placeholders": {},
@@ -3554,7 +3554,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        356
+        378
       ]
     ],
     "translation": "テーマ"
@@ -3565,7 +3565,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        368
+        390
       ]
     ],
     "translation": "ダーク"
@@ -3576,7 +3576,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        377
+        399
       ]
     ],
     "translation": "お好みのカラーテーマを選択"
@@ -3587,7 +3587,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        365
+        387
       ]
     ],
     "translation": "ライト"
@@ -3598,7 +3598,7 @@
     "origin": [
       [
         "src/components/SettingsControls.tsx",
-        371
+        393
       ]
     ],
     "translation": "システム"
@@ -3610,7 +3610,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        673
+        593
       ],
       [
         "src/components/GlobalSidebar.tsx",

@@ -73,7 +73,6 @@ const LayerImpl = Effect.gen(function* () {
     projectId: string;
     cwd: string;
     input: UserMessageInput;
-    userConfig: import("../../../lib/config/config").UserConfig;
     sessionId?: string;
     baseSession:
       | undefined
@@ -83,15 +82,8 @@ const LayerImpl = Effect.gen(function* () {
         };
     ccOptions?: CCTurn.CCOptions;
   }) => {
-    const {
-      projectId,
-      cwd,
-      input,
-      userConfig,
-      sessionId,
-      baseSession,
-      ccOptions,
-    } = options;
+    const { projectId, cwd, input, sessionId, baseSession, ccOptions } =
+      options;
 
     return Effect.gen(function* () {
       const {
@@ -223,7 +215,10 @@ const LayerImpl = Effect.gen(function* () {
             const permissionOptions =
               yield* permissionService.createCanUseToolRelatedOptions({
                 turnId: task.def.turnId,
-                userConfig,
+                permissionMode:
+                  task.def.type !== "continue"
+                    ? task.def.ccOptions?.permissionMode
+                    : undefined,
                 sessionId: task.def.baseSessionId,
               });
 

@@ -215,6 +215,9 @@ export const AssistantConversationContent: FC<{
                             </pre>
                           );
                         }
+                        if (item.type === "tool_reference") {
+                          return null;
+                        }
                         item satisfies never;
                         throw new Error("Unexpected tool result content type");
                       })

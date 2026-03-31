@@ -5,7 +5,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        374
+        349
       ]
     ],
     "translation": "要附加的额外指令..."
@@ -38,7 +38,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        164
+        160
       ]
     ],
     "translation": "关闭侧边栏"
@@ -79,7 +79,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        214
+        211
       ]
     ],
     "translation": "自定义工具名称..."
@@ -135,7 +135,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        106
+        103
       ]
     ],
     "translation": "键"
@@ -146,7 +146,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        432
+        428
       ]
     ],
     "translation": "带补全支持的消息输入"
@@ -253,7 +253,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        114
+        111
       ]
     ],
     "translation": "值"
@@ -551,7 +551,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        528
+        524
       ]
     ],
     "translation": "附加"
@@ -573,7 +573,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        396
+        392
       ]
     ],
     "translation": "发送消息失败。请重试。"
@@ -584,11 +584,11 @@
     "origin": [
       [
         "src/app/components/SessionHistoryPopover.tsx",
-        97
+        109
       ],
       [
         "src/app/components/SessionHistoryPopover.tsx",
-        116
+        128
       ]
     ],
     "translation": "会话历史"
@@ -599,11 +599,11 @@
     "origin": [
       [
         "src/app/components/SessionHistoryPopover.tsx",
-        134
+        146
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        594
+        605
       ]
     ],
     "translation": "最近会话"
@@ -614,19 +614,19 @@
     "origin": [
       [
         "src/app/components/SessionHistoryPopover.tsx",
-        164
+        176
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        319
+        332
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        582
+        593
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        115
+        142
       ]
     ],
     "translation": "开始新对话"
@@ -769,7 +769,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        240
+        237
       ]
     ],
     "translation": "定时发送消息失败"
@@ -781,7 +781,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        224
+        221
       ]
     ],
     "translation": "消息定时发送成功"
@@ -793,7 +793,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        229
+        226
       ]
     ],
     "translation": "您可以在定时任务选项卡中查看和管理"
@@ -815,11 +815,11 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        485
+        481
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        575
+        568
       ]
     ],
     "translation": "立即发送"
@@ -830,11 +830,11 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        468
+        464
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        558
+        551
       ]
     ],
     "translation": "发送模式"
@@ -845,15 +845,15 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        488
+        484
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        578
+        571
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        595
+        588
       ]
     ],
     "translation": "定时发送"
@@ -864,7 +864,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        495
+        491
       ]
     ],
     "translation": "定时发送时间"
@@ -876,7 +876,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        693
+        658
       ]
     ],
     "translation": "设置"
@@ -887,7 +887,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        615
+        608
       ]
     ],
     "translation": "处理中..."
@@ -992,7 +992,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        205
+        232
       ]
     ],
     "translation": "加载中..."
@@ -1037,7 +1037,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        417
+        450
       ]
     ],
     "translation": "分支"
@@ -1048,7 +1048,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        398
+        431
       ]
     ],
     "translation": "元数据"
@@ -1059,7 +1059,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        444
+        477
       ]
     ],
     "translation": "模型"
@@ -1093,7 +1093,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        404
+        437
       ]
     ],
     "translation": "项目路径"
@@ -1128,10 +1128,46 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        431
+        464
       ]
     ],
     "translation": "会话 ID"
+  },
+  "conversation.copy": {
+    "message": "Copy message",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/CopyableMarkdownContent.tsx",
+        39
+      ]
+    ],
+    "translation": "复制消息"
+  },
+  "conversation.copy.failed": {
+    "message": "Failed to copy message",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/CopyableMarkdownContent.tsx",
+        31
+      ]
+    ],
+    "translation": "复制消息失败"
+  },
+  "conversation.copy.success": {
+    "message": "Message copied",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/CopyableMarkdownContent.tsx",
+        23
+      ]
+    ],
+    "translation": "消息已复制"
   },
   "conversation.error.raw_content": {
     "placeholders": {},
@@ -1139,7 +1175,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        119
+        127
       ]
     ],
     "translation": "原始数据:"
@@ -1150,7 +1186,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        112
+        120
       ]
     ],
     "translation": "报告此问题"
@@ -1161,7 +1197,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        87
+        95
       ]
     ],
     "translation": "模式错误"
@@ -1172,7 +1208,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        102
+        110
       ]
     ],
     "translation": "模式验证错误"
@@ -1183,7 +1219,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        105
+        113
       ]
     ],
     "translation": "无法解析此对话条目。这可能是由于格式更改或解析问题。"
@@ -1657,7 +1693,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        647
+        622
       ]
     ],
     "translation": "例如: 1.00"
@@ -1668,7 +1704,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        596
+        571
       ]
     ],
     "translation": "例如: 10"
@@ -1679,7 +1715,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        620
+        595
       ]
     ],
     "translation": "例如: 10000"
@@ -1690,7 +1726,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        514
+        489
       ]
     ],
     "translation": "例如: api.example.com, cdn.example.com"
@@ -1701,7 +1737,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        301
+        276
       ]
     ],
     "translation": "例如: claude-sonnet-4-5-20250929"
@@ -1723,7 +1759,7 @@
     "origin": [
       [
         "src/app/components/AppLayout.tsx",
-        137
+        131
       ]
     ],
     "translation": "切换底部面板"
@@ -1734,7 +1770,7 @@
     "origin": [
       [
         "src/app/components/AppLayout.tsx",
-        116
+        110
       ]
     ],
     "translation": "切换左侧面板"
@@ -1745,7 +1781,7 @@
     "origin": [
       [
         "src/app/components/AppLayout.tsx",
-        158
+        152
       ]
     ],
     "translation": "切换右侧面板"
@@ -1986,7 +2022,6 @@
     "translation": "没有Git更改"
   },
   "panel.git.pr_links": {
-    "translation": "拉取请求",
     "placeholders": {},
     "comments": [],
     "origin": [
@@ -1994,7 +2029,8 @@
         "src/app/components/rightPanel/GitTabContent.tsx",
         519
       ]
-    ]
+    ],
+    "translation": "拉取请求"
   },
   "panel.git.view_content": {
     "placeholders": {},
@@ -2193,6 +2229,28 @@
       ]
     ],
     "translation": "查看对话"
+  },
+  "project_switcher.no_project": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/ProjectSwitcher.tsx",
+        68
+      ]
+    ],
+    "translation": "没有项目"
+  },
+  "project_switcher.no_results": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/ProjectSwitcher.tsx",
+        79
+      ]
+    ],
+    "translation": "没有匹配的项目"
   },
   "projects.page.description": {
     "placeholders": {},
@@ -2620,7 +2678,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        501
+        533
       ]
     ],
     "translation": "缓存创建"
@@ -2631,7 +2689,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        516
+        547
       ]
     ],
     "translation": "缓存读取"
@@ -2642,7 +2700,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        473
+        505
       ]
     ],
     "translation": "输入令牌"
@@ -2653,7 +2711,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        458
+        490
       ]
     ],
     "translation": "会话成本"
@@ -2664,7 +2722,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        487
+        519
       ]
     ],
     "translation": "输出令牌"
@@ -2675,7 +2733,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        465
+        497
       ]
     ],
     "translation": "总计"
@@ -2725,7 +2783,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        391
+        424
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/DeleteSessionDialog.tsx",
@@ -2740,7 +2798,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        585
+        596
       ]
     ],
     "translation": "开始新对话以展开交流"
@@ -2751,7 +2809,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        381
+        414
       ]
     ],
     "translation": "复制会话文件路径"
@@ -2762,7 +2820,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        362
+        395
       ]
     ],
     "translation": "导出为 HTML"
@@ -2773,7 +2831,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        371
+        404
       ]
     ],
     "translation": "导出为 JSONL"
@@ -2784,7 +2842,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        677
+        688
       ]
     ],
     "translation": "Claude Code 正在处理..."
@@ -2828,15 +2886,15 @@
     "origin": [
       [
         "src/app/components/SessionHistoryPopover.tsx",
-        217
+        229
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        642
+        653
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        168
+        195
       ]
     ],
     "translation": "已暂停"
@@ -2847,15 +2905,15 @@
     "origin": [
       [
         "src/app/components/SessionHistoryPopover.tsx",
-        215
+        227
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        640
+        651
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        166
+        193
       ]
     ],
     "translation": "运行中"
@@ -2866,11 +2924,11 @@
     "origin": [
       [
         "src/app/components/SessionHistoryPopover.tsx",
-        252
+        264
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        207
+        234
       ]
     ],
     "translation": "加载更多"
@@ -2881,7 +2939,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        86
+        113
       ]
     ],
     "translation": "会话"
@@ -2892,11 +2950,11 @@
     "origin": [
       [
         "src/app/components/SessionHistoryPopover.tsx",
-        137
+        149
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
-        90
+        117
       ]
     ],
     "translation": "总计"
@@ -2908,7 +2966,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        530
+        505
       ]
     ],
     "translation": "高级设置"
@@ -2919,7 +2977,7 @@
     "origin": [
       [
         "src/components/GlobalSidebar.tsx",
-        71
+        74
       ]
     ],
     "translation": "显示和行为设置"
@@ -2930,7 +2988,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        313
+        288
       ]
     ],
     "translation": "禁用的工具"
@@ -2941,7 +2999,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        139
+        136
       ]
     ],
     "translation": "添加环境变量"
@@ -2953,21 +3011,10 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        390
+        365
       ]
     ],
     "translation": "环境变量"
-  },
-  "settings.forkSession": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        287
-      ]
-    ],
-    "translation": "分叉会话"
   },
   "settings.input.enter_key_behavior": {
     "placeholders": {},
@@ -3074,11 +3121,11 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        113
+        108
       ],
       [
         "src/components/GlobalSidebar.tsx",
-        79
+        82
       ]
     ],
     "translation": "正在加载设置..."
@@ -3145,7 +3192,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        634
+        609
       ]
     ],
     "translation": "最大预算 (USD)"
@@ -3157,7 +3204,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        608
+        583
       ]
     ],
     "translation": "最大思考令牌数"
@@ -3169,7 +3216,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        587
+        562
       ]
     ],
     "translation": "最大轮次"
@@ -3180,7 +3227,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        296
+        271
       ]
     ],
     "translation": "模型"
@@ -3191,7 +3238,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        128
+        123
       ]
     ],
     "translation": "通知"
@@ -3280,7 +3327,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        455
+        430
       ]
     ],
     "translation": "允许非沙盒命令"
@@ -3292,7 +3339,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        435
+        410
       ]
     ],
     "translation": "沙盒化时自动允许 Bash"
@@ -3304,7 +3351,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        406
+        381
       ]
     ],
     "translation": "沙盒"
@@ -3316,7 +3363,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        489
+        464
       ]
     ],
     "translation": "允许本地绑定"
@@ -3328,7 +3375,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        498
+        473
       ]
     ],
     "translation": "允许的域名 (逗号分隔)"
@@ -3340,7 +3387,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        465
+        440
       ]
     ],
     "translation": "网络设置"
@@ -3351,7 +3398,7 @@
     "origin": [
       [
         "src/components/GlobalSidebar.tsx",
-        94
+        97
       ]
     ],
     "translation": "通知"
@@ -3362,7 +3409,7 @@
     "origin": [
       [
         "src/components/GlobalSidebar.tsx",
-        87
+        90
       ]
     ],
     "translation": "会话显示"
@@ -3373,7 +3420,7 @@
     "origin": [
       [
         "src/components/GlobalSidebar.tsx",
-        107
+        110
       ]
     ],
     "translation": "系统信息"
@@ -3406,7 +3453,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        121
+        116
       ]
     ],
     "translation": "会话显示"
@@ -3462,7 +3509,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        536
+        511
       ]
     ],
     "translation": "设置来源"
@@ -3474,7 +3521,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        356
+        331
       ]
     ],
     "translation": "附加系统提示词"
@@ -3485,7 +3532,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        349
+        324
       ]
     ],
     "translation": "使用 Claude Code 标准系统提示"
@@ -3495,12 +3542,8 @@
     "comments": [],
     "origin": [
       [
-        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        261
-      ],
-      [
         "src/components/GlobalSidebar.tsx",
-        63
+        66
       ]
     ],
     "translation": "显示和通知设置"
@@ -3567,11 +3610,11 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        708
+        673
       ],
       [
         "src/components/GlobalSidebar.tsx",
-        68
+        71
       ]
     ],
     "translation": "设置"
@@ -3581,12 +3624,8 @@
     "comments": [],
     "origin": [
       [
-        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        189
-      ],
-      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        110
+        127
       ]
     ],
     "translation": "返回项目列表"
@@ -3663,12 +3702,8 @@
     "comments": [],
     "origin": [
       [
-        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        238
-      ],
-      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        68
+        71
       ]
     ],
     "translation": "显示 MCP 服务器设置"
@@ -3679,7 +3714,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        80
+        83
       ]
     ],
     "translation": "显示定时任务"
@@ -3689,12 +3724,8 @@
     "comments": [],
     "origin": [
       [
-        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        214
-      ],
-      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        55
+        58
       ]
     ],
     "translation": "显示会话列表"
@@ -3705,21 +3736,10 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        74
+        77
       ]
     ],
     "translation": "显示任务列表"
-  },
-  "system.info.tab.title": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        283
-      ]
-    ],
-    "translation": "显示系统信息"
   },
   "system_info.available_features": {
     "placeholders": {},

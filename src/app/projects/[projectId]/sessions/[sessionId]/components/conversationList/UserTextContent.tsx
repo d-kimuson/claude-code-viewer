@@ -4,7 +4,7 @@ import type { FC } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { parseUserMessage } from "../../../../../../../server/core/claude-code/functions/parseUserMessage";
-import { MarkdownContent } from "../../../../../../components/MarkdownContent";
+import { CopyableMarkdownContent } from "./CopyableMarkdownContent";
 
 export const UserTextContent: FC<{ text: string; id?: string }> = ({
   text,
@@ -87,7 +87,7 @@ export const UserTextContent: FC<{ text: string; id?: string }> = ({
   }
 
   return (
-    <MarkdownContent
+    <CopyableMarkdownContent
       className="w-full px-3 py-3 mb-5 border border-border rounded-lg bg-slate-50 dark:bg-slate-900/50"
       content={parsed.content}
     />

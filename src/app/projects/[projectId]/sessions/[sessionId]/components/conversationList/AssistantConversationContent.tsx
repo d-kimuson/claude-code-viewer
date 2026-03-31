@@ -18,7 +18,7 @@ import type { AssistantMessageContent } from "@/lib/conversation-schema/message/
 import { extractEditedFilePaths } from "@/lib/file-viewer";
 import { useTheme } from "../../../../../../../hooks/useTheme";
 import type { SidechainConversation } from "../../../../../../../lib/conversation-schema";
-import { MarkdownContent } from "../../../../../../components/MarkdownContent";
+import { CopyableMarkdownContent } from "./CopyableMarkdownContent";
 import { FileContentDialog } from "./FileContentDialog";
 import { TaskModal } from "./TaskModal";
 import { ToolInputOneLine } from "./ToolInputOneLine";
@@ -57,7 +57,7 @@ export const AssistantConversationContent: FC<{
   if (content.type === "text") {
     return (
       <div className="w-full mx-1 sm:mx-2 my-4 sm:my-6">
-        <MarkdownContent content={content.text} />
+        <CopyableMarkdownContent content={content.text} placement="assistant" />
       </div>
     );
   }

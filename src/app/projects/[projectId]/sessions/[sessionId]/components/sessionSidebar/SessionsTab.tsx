@@ -74,17 +74,7 @@ export const SessionsTab: FC<{
   const isNewChatActive = currentSessionId === "";
 
   // Sort sessions: Running > Paused > Others, then by lastModifiedAt (newest first)
-  const sortedSessions = [...sessions].sort((a, b) => {
-    const aProcess = sessionProcesses.find(
-      (process) => process.sessionId === a.id,
-    );
-    const bProcess = sessionProcesses.find(
-      (process) => process.sessionId === b.id,
-    );
-
-    const aStatus = aProcess?.status;
-    const bStatus = bProcess?.status;
-
+  const sortedSessions = useMemo(() => {
     // Define priority: running = 0, paused = 1, others = 2
     const getPriority = (status: "paused" | "running" | undefined) => {
       if (status === "running") return 0;
@@ -92,19 +82,28 @@ export const SessionsTab: FC<{
       return 2;
     };
 
-    const aPriority = getPriority(aStatus);
-    const bPriority = getPriority(bStatus);
+    return [...sessions].sort((a, b) => {
+      const aStatus = sessionProcesses.find(
+        (process) => process.sessionId === a.id,
+      )?.status;
+      const bStatus = sessionProcesses.find(
+        (process) => process.sessionId === b.id,
+      )?.status;
 
-    // First sort by priority
-    if (aPriority !== bPriority) {
-      return aPriority - bPriority;
-    }
+      const aPriority = getPriority(aStatus);
+      const bPriority = getPriority(bStatus);
 
-    // Then sort by lastModifiedAt (newest first)
-    const aTime = a.lastModifiedAt ? new Date(a.lastModifiedAt).getTime() : 0;
-    const bTime = b.lastModifiedAt ? new Date(b.lastModifiedAt).getTime() : 0;
-    return bTime - aTime;
-  });
+      // First sort by priority
+      if (aPriority !== bPriority) {
+        return aPriority - bPriority;
+      }
+
+      // Then sort by lastModifiedAt (newest first)
+      const aTime = a.lastModifiedAt ? new Date(a.lastModifiedAt).getTime() : 0;
+      const bTime = b.lastModifiedAt ? new Date(b.lastModifiedAt).getTime() : 0;
+      return bTime - aTime;
+    });
+  }, [sessions, sessionProcesses]);
 
   return (
     <div className="h-full flex flex-col">

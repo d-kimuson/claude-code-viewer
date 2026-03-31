@@ -65,34 +65,33 @@ export const SessionHistoryPopover: FC<SessionHistoryPopoverProps> = ({
   }, [projectData.pages, projectId, virtualMessages]);
   const { config } = useConfig();
 
-  const sortedSessions = [...sessions].sort((a, b) => {
-    const aProcess = sessionProcesses.find(
-      (process) => process.sessionId === a.id,
-    );
-    const bProcess = sessionProcesses.find(
-      (process) => process.sessionId === b.id,
-    );
-
-    const aStatus = aProcess?.status;
-    const bStatus = bProcess?.status;
-
+  const sortedSessions = useMemo(() => {
     const getPriority = (status: "paused" | "running" | undefined) => {
       if (status === "running") return 0;
       if (status === "paused") return 1;
       return 2;
     };
 
-    const aPriority = getPriority(aStatus);
-    const bPriority = getPriority(bStatus);
+    return [...sessions].sort((a, b) => {
+      const aStatus = sessionProcesses.find(
+        (process) => process.sessionId === a.id,
+      )?.status;
+      const bStatus = sessionProcesses.find(
+        (process) => process.sessionId === b.id,
+      )?.status;
 
-    if (aPriority !== bPriority) {
-      return aPriority - bPriority;
-    }
+      const aPriority = getPriority(aStatus);
+      const bPriority = getPriority(bStatus);
 
-    const aTime = a.lastModifiedAt ? new Date(a.lastModifiedAt).getTime() : 0;
-    const bTime = b.lastModifiedAt ? new Date(b.lastModifiedAt).getTime() : 0;
-    return bTime - aTime;
-  });
+      if (aPriority !== bPriority) {
+        return aPriority - bPriority;
+      }
+
+      const aTime = a.lastModifiedAt ? new Date(a.lastModifiedAt).getTime() : 0;
+      const bTime = b.lastModifiedAt ? new Date(b.lastModifiedAt).getTime() : 0;
+      return bTime - aTime;
+    });
+  }, [sessions, sessionProcesses]);
 
   const isNewChatActive = !currentSessionId;
 

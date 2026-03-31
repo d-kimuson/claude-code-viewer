@@ -9,19 +9,23 @@ import {
 } from "../components/conversationList/AssistantConversationContent";
 
 export const useSidechain = (conversations: Conversation[]) => {
-  const sidechainConversations = conversations
-    .filter(
-      (conv) =>
-        conv.type !== "summary" &&
-        conv.type !== "file-history-snapshot" &&
-        conv.type !== "queue-operation" &&
-        conv.type !== "progress" &&
-        conv.type !== "custom-title" &&
-        conv.type !== "agent-name" &&
-        conv.type !== "pr-link" &&
-        conv.type !== "last-prompt",
-    )
-    .filter((conv) => conv.isSidechain === true);
+  const sidechainConversations = useMemo(
+    () =>
+      conversations
+        .filter(
+          (conv) =>
+            conv.type !== "summary" &&
+            conv.type !== "file-history-snapshot" &&
+            conv.type !== "queue-operation" &&
+            conv.type !== "progress" &&
+            conv.type !== "custom-title" &&
+            conv.type !== "agent-name" &&
+            conv.type !== "pr-link" &&
+            conv.type !== "last-prompt",
+        )
+        .filter((conv) => conv.isSidechain === true),
+    [conversations],
+  );
 
   const conversationMap = useMemo(() => {
     return new Map<string, SidechainConversation>(

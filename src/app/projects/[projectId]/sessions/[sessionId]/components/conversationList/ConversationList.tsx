@@ -325,15 +325,20 @@ export const ConversationList: FC<ConversationListProps> = ({
     [isOnlyToolResult],
   );
 
-  // Calculate timestamp visibility
+  // Calculate timestamp visibility and render eligibility
   const conversationsWithTimestamp = useMemo(() => {
     return conversations.map((conv) => {
       if (conv.type === "x-error") {
-        return { conversation: conv, showTimestamp: false };
+        return { conversation: conv, showTimestamp: false, shouldRender: true };
       }
 
-      if (!shouldRenderConversation(conv)) {
-        return { conversation: conv, showTimestamp: false };
+      const shouldRender = shouldRenderConversation(conv);
+      if (!shouldRender) {
+        return {
+          conversation: conv,
+          showTimestamp: false,
+          shouldRender: false,
+        };
       }
 
       if (
@@ -345,13 +350,11 @@ export const ConversationList: FC<ConversationListProps> = ({
         conv.type === "agent-name"
       ) {
         // These types might not have timestamp or are invisible
-        return { conversation: conv, showTimestamp: false };
+        return { conversation: conv, showTimestamp: false, shouldRender: true };
       }
 
       // Always show timestamp for every message as per new requirement
-      const showTimestamp = true;
-
-      return { conversation: conv, showTimestamp };
+      return { conversation: conv, showTimestamp: true, shouldRender: true };
     });
   }, [conversations, shouldRenderConversation]);
 
@@ -359,16 +362,8 @@ export const ConversationList: FC<ConversationListProps> = ({
     <>
       <ul>
         {conversationsWithTimestamp.flatMap(
-          ({ conversation, showTimestamp }) => {
-            if (!shouldRenderConversation(conversation)) {
-              if (conversation.type === "x-error") {
-                return (
-                  <SchemaErrorDisplay
-                    key={`error_${conversation.line}`}
-                    errorLine={conversation.line}
-                  />
-                );
-              }
+          ({ conversation, showTimestamp, shouldRender }) => {
+            if (!shouldRender) {
               return [];
             }
 

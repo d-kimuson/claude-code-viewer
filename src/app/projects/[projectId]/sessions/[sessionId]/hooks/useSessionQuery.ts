@@ -1,6 +1,8 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { useAtomValue } from "jotai";
 import { sessionDetailQuery } from "../../../../../../lib/api/queries";
 import type { Conversation } from "../../../../../../lib/conversation-schema";
+import { sseAtom } from "../../../../../../lib/sse/store/sseAtom";
 import { createVirtualUserEntry } from "../../../../../../lib/virtual-messages/createVirtualUserEntry";
 import { shouldRemoveVirtualMessage } from "../../../../../../lib/virtual-messages/shouldRemoveVirtualMessage";
 import { getVirtualMessage } from "../../../../../../lib/virtual-messages/virtualMessageStore";
@@ -13,6 +15,8 @@ const filterConversations = (
   conversations.filter((c): c is Conversation => c.type !== "x-error");
 
 export const useSessionQuery = (projectId: string, sessionId: string) => {
+  const { isConnected: isSSEConnected } = useAtomValue(sseAtom);
+
   const query = useSuspenseQuery({
     queryKey: sessionDetailQuery(projectId, sessionId).queryKey,
     queryFn: async () => {
@@ -82,8 +86,8 @@ export const useSessionQuery = (projectId: string, sessionId: string) => {
       return result;
     },
     // Fallback polling in case SSE connection is lost
-    // This ensures users don't need to manually refresh the page
-    refetchInterval: 3000,
+    // When SSE is connected, rely on SSE-triggered invalidations instead
+    refetchInterval: isSSEConnected ? false : 30_000,
     refetchIntervalInBackground: false,
   });
 

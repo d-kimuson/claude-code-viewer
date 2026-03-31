@@ -171,3 +171,15 @@ Claude Code processes remain alive in the background (unless aborted), allowing 
 1. **Session Logs**: Examine `~/.claude/projects/` JSONL files to understand data structures
 2. **Mock Data**: `mock-global-claude-dir/` contains E2E test mocks (useful reference for schema examples)
 3. **Effect-TS Help**: https://effect.website/llms.txt
+
+## References
+
+Project-specific conventions and procedures. Follow Progressive Disclosure: **read only the reference you need, when you need it**.
+
+| Path | When to Read |
+|------|-------------|
+| `docs/guidelines/commit_message.md` | Before creating a commit |
+| `docs/guidelines/branch_naming.md` | Before creating a branch |
+| `docs/guidelines/definition_of_done.md` | Before marking a task as done |
+| `docs/guidelines/qa_guideline.md` | When verifying implemented features. Delegate to a QA or general-purpose subagent with this file path |
+| `docs/guidelines/internal_review.md` | When requesting a code review |

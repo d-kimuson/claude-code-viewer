@@ -44,7 +44,11 @@ describe("ProjectRepository", () => {
             }),
           ),
           Effect.provide(FileSystemMock),
-          Effect.provide(testPlatformLayer()),
+          Effect.provide(
+            testPlatformLayer({
+              claudeCodePaths: { claudeProjectsDirPath: "/test" },
+            }),
+          ),
         ),
       );
 
@@ -91,7 +95,11 @@ describe("ProjectRepository", () => {
               }),
             ),
             Effect.provide(FileSystemMock),
-            Effect.provide(testPlatformLayer()),
+            Effect.provide(
+              testPlatformLayer({
+                claudeCodePaths: { claudeProjectsDirPath: "/test" },
+              }),
+            ),
           ),
         ),
       ).rejects.toThrow("Project not found");

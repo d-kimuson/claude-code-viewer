@@ -3,7 +3,11 @@ import { Context, Effect, Layer, Option } from "effect";
 import type { InferEffect } from "../../../lib/effect/types";
 import { ApplicationContext } from "../../platform/services/ApplicationContext";
 import type { Project } from "../../types";
-import { decodeProjectId, encodeProjectId } from "../functions/id";
+import {
+  decodeProjectId,
+  encodeProjectId,
+  validateProjectPath,
+} from "../functions/id";
 import { ProjectMetaService } from "../services/ProjectMetaService";
 
 const LayerImpl = Effect.gen(function* () {
@@ -15,6 +19,14 @@ const LayerImpl = Effect.gen(function* () {
   const getProject = (projectId: string) =>
     Effect.gen(function* () {
       const fullPath = decodeProjectId(projectId);
+
+      // Validate that the decoded path is within the Claude projects directory
+      const { claudeProjectsDirPath } = yield* context.claudeCodePaths;
+      if (!validateProjectPath(fullPath, claudeProjectsDirPath)) {
+        return yield* Effect.fail(
+          new Error("Invalid project path: outside allowed directory"),
+        );
+      }
 
       // Check if project directory exists
       const exists = yield* fs.exists(fullPath);

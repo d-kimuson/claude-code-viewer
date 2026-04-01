@@ -407,6 +407,34 @@ export const notificationsQuery = {
   },
 } as const;
 
+export const pendingPermissionRequestsQuery = {
+  queryKey: ["pending-permission-requests"],
+  queryFn: async () => {
+    const response =
+      await honoClient.api["claude-code"]["pending-permission-requests"].$get();
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch pending permission requests");
+    }
+
+    return await response.json();
+  },
+} as const;
+
+export const pendingQuestionRequestsQuery = {
+  queryKey: ["pending-question-requests"],
+  queryFn: async () => {
+    const response =
+      await honoClient.api["claude-code"]["pending-question-requests"].$get();
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch pending question requests");
+    }
+
+    return await response.json();
+  },
+} as const;
+
 export const fileContentQuery = (projectId: string, filePath: string) =>
   ({
     queryKey: ["projects", projectId, "files", filePath],

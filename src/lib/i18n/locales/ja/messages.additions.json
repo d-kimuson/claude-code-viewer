@@ -190,5 +190,11 @@
   },
   "notification.session_completed": {
     "translation": "セッションが完了しました"
+  },
+  "notification.permission_requested": {
+    "translation": "権限の許可が必要です"
+  },
+  "notification.question_asked": {
+    "translation": "Claudeからの質問"
   }
 }

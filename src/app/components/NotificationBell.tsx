@@ -33,6 +33,7 @@ export const NotificationBell: FC<NotificationBellProps> = ({ sessionId }) => {
     mutationFn: async (targetSessionId: string) => {
       await honoClient.api.notifications[":sessionId"].consume.$post({
         param: { sessionId: targetSessionId },
+        json: { types: ["session_paused", "session_completed"] },
       });
     },
     onSuccess: () => {
@@ -49,7 +50,9 @@ export const NotificationBell: FC<NotificationBellProps> = ({ sessionId }) => {
     if (consumedSessionRef.current === sessionId) return;
 
     const hasNotification = notifications.some(
-      (n) => n.sessionId === sessionId,
+      (n) =>
+        n.sessionId === sessionId &&
+        (n.type === "session_paused" || n.type === "session_completed"),
     );
     if (hasNotification) {
       consumedSessionRef.current = sessionId;
@@ -130,8 +133,12 @@ export const NotificationBell: FC<NotificationBellProps> = ({ sessionId }) => {
                       <p className="text-xs font-medium truncate">
                         {notification.type === "session_paused" ? (
                           <Trans id="notification.session_paused" />
-                        ) : (
+                        ) : notification.type === "session_completed" ? (
                           <Trans id="notification.session_completed" />
+                        ) : notification.type === "permission_requested" ? (
+                          <Trans id="notification.permission_requested" />
+                        ) : (
+                          <Trans id="notification.question_asked" />
                         )}
                       </p>
                       <p className="text-[11px] text-muted-foreground font-mono truncate">

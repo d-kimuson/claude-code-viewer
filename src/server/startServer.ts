@@ -6,9 +6,11 @@ import { serveStatic } from "@hono/node-server/serve-static";
 import { Effect, Layer } from "effect";
 import { AgentSessionLayer } from "./core/agent-session";
 import { AgentSessionController } from "./core/agent-session/presentation/AgentSessionController";
+import { CCVAskUserQuestionController } from "./core/claude-code/presentation/CCVAskUserQuestionController";
 import { ClaudeCodeController } from "./core/claude-code/presentation/ClaudeCodeController";
 import { ClaudeCodePermissionController } from "./core/claude-code/presentation/ClaudeCodePermissionController";
 import { ClaudeCodeSessionProcessController } from "./core/claude-code/presentation/ClaudeCodeSessionProcessController";
+import { CCVAskUserQuestionService } from "./core/claude-code/services/CCVAskUserQuestionService";
 import { ClaudeCodeLifeCycleService } from "./core/claude-code/services/ClaudeCodeLifeCycleService";
 import { ClaudeCodePermissionService } from "./core/claude-code/services/ClaudeCodePermissionService";
 import { ClaudeCodeService } from "./core/claude-code/services/ClaudeCodeService";
@@ -119,6 +121,7 @@ const InfraRepos = Layer.mergeAll(
 const InfraLayer = AgentSessionLayer.pipe(Layer.provideMerge(InfraRepos));
 
 const DomainBase = Layer.mergeAll(
+  CCVAskUserQuestionService.Live,
   ClaudeCodePermissionService.Live,
   ClaudeCodeSessionProcessService.Live,
   ClaudeCodeService.Live,
@@ -152,6 +155,7 @@ const PresentationLayer = Layer.mergeAll(
   GitController.Live,
   ClaudeCodeController.Live,
   ClaudeCodeSessionProcessController.Live,
+  CCVAskUserQuestionController.Live,
   ClaudeCodePermissionController.Live,
   FileSystemController.Live,
   SSEController.Live,

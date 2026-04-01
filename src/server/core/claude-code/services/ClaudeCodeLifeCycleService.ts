@@ -18,6 +18,7 @@ import {
 import * as CCSessionProcess from "../models/CCSessionProcess";
 import * as ClaudeCode from "../models/ClaudeCode";
 import type * as CCTurn from "../models/ClaudeCodeTurn";
+import { CCVAskUserQuestionService } from "./CCVAskUserQuestionService";
 import { ClaudeCodePermissionService } from "./ClaudeCodePermissionService";
 import { ClaudeCodeSessionProcessService } from "./ClaudeCodeSessionProcessService";
 
@@ -31,6 +32,7 @@ const LayerImpl = Effect.gen(function* () {
   const eventBusService = yield* EventBus;
   const sessionProcessService = yield* ClaudeCodeSessionProcessService;
   const permissionService = yield* ClaudeCodePermissionService;
+  const ccvAskUserQuestionService = yield* CCVAskUserQuestionService;
 
   const runtime = yield* Effect.runtime<
     | FileSystem.FileSystem
@@ -215,18 +217,34 @@ const LayerImpl = Effect.gen(function* () {
             const permissionOptions =
               yield* permissionService.createCanUseToolRelatedOptions({
                 turnId: task.def.turnId,
+                projectId: sessionProcess.def.projectId,
                 permissionMode:
                   task.def.type !== "continue"
                     ? task.def.ccOptions?.permissionMode
                     : undefined,
-                sessionId: task.def.baseSessionId,
+                sessionId:
+                  task.def.type === "new"
+                    ? task.def.sessionId
+                    : task.def.baseSessionId,
               });
+
+            const ccvMcpServer = ccvAskUserQuestionService.createMcpServer({
+              turnId: task.def.turnId,
+              projectId: sessionProcess.def.projectId,
+              sessionId:
+                task.def.type === "new"
+                  ? task.def.sessionId
+                  : task.def.baseSessionId,
+            });
 
             const baseOptions = {
               ...(task.def.type === "continue" ? {} : task.def.ccOptions),
               ...permissionOptions,
               cwd: sessionProcess.def.cwd,
               abortController: sessionProcess.def.abortController,
+              mcpServers: {
+                ccv: ccvMcpServer,
+              },
             };
 
             const sdkOptions: Parameters<typeof ClaudeCode.query>[1] =
@@ -324,6 +342,11 @@ const LayerImpl = Effect.gen(function* () {
     Effect.gen(function* () {
       const currentProcess =
         yield* sessionProcessService.getSessionProcess(sessionProcessId);
+
+      yield* permissionService.cancelPendingRequests(currentProcess.sessionId);
+      yield* ccvAskUserQuestionService.cancelPendingRequests(
+        currentProcess.sessionId,
+      );
 
       currentProcess.def.abortController.abort();
 

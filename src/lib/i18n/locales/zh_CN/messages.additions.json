@@ -190,5 +190,11 @@
   },
   "notification.session_completed": {
     "translation": "会话已完成"
+  },
+  "notification.permission_requested": {
+    "translation": "需要权限许可"
+  },
+  "notification.question_asked": {
+    "translation": "来自Claude的提问"
   }
 }

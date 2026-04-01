@@ -1,5 +1,4 @@
 import type { SessionNotification } from "./notification";
-import type { PermissionRequest } from "./permissions";
 import type { PublicSessionProcess } from "./session-process";
 
 export type SSEEventDeclaration = {
@@ -28,7 +27,19 @@ export type SSEEventDeclaration = {
   };
 
   permissionRequested: {
-    permissionRequest: PermissionRequest;
+    sessionId: string;
+  };
+
+  permissionResolved: {
+    sessionId: string;
+  };
+
+  questionRequested: {
+    sessionId: string;
+  };
+
+  questionResolved: {
+    sessionId: string;
   };
 
   notificationCreated: {

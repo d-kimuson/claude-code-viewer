@@ -187,5 +187,11 @@
   },
   "notification.session_completed": {
     "translation": "Session completed"
+  },
+  "notification.permission_requested": {
+    "translation": "Permission Required"
+  },
+  "notification.question_asked": {
+    "translation": "Question from Claude"
   }
 }

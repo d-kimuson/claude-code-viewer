@@ -101,6 +101,28 @@ const LayerImpl = Effect.gen(function* () {
     }
   });
 
+  // Subscribe to permission requests
+  yield* eventBus.on("permissionRequested", (event) => {
+    Effect.runFork(
+      createNotification({
+        projectId: event.permissionRequest.projectId,
+        sessionId: event.permissionRequest.sessionId,
+        type: "permission_requested",
+      }),
+    );
+  });
+
+  // Subscribe to question requests
+  yield* eventBus.on("questionRequested", (event) => {
+    Effect.runFork(
+      createNotification({
+        projectId: event.questionRequest.projectId,
+        sessionId: event.questionRequest.sessionId,
+        type: "question_asked",
+      }),
+    );
+  });
+
   const getNotifications = (): Effect.Effect<SessionNotification[]> =>
     Ref.get(notificationsRef);
 
@@ -131,17 +153,26 @@ const LayerImpl = Effect.gen(function* () {
       return notification;
     });
 
-  const consumeNotifications = (sessionId: string): Effect.Effect<void> =>
+  const consumeNotifications = (
+    sessionId: string,
+    options?: { types?: SessionNotificationType[] },
+  ): Effect.Effect<void> =>
     Effect.gen(function* () {
       const notifications = yield* Ref.get(notificationsRef);
-      const hasMatch = notifications.some((n) => n.sessionId === sessionId);
+      const types = options?.types;
+
+      const shouldConsume = (n: SessionNotification) =>
+        n.sessionId === sessionId &&
+        (types === undefined || types.includes(n.type));
+
+      const hasMatch = notifications.some(shouldConsume);
 
       if (!hasMatch) {
         return;
       }
 
       yield* Ref.update(notificationsRef, (notifications) =>
-        notifications.filter((n) => n.sessionId !== sessionId),
+        notifications.filter((n) => !shouldConsume(n)),
       );
 
       yield* eventBus.emit("notificationConsumed", { sessionId });
@@ -168,10 +199,13 @@ const LayerImpl = Effect.gen(function* () {
       const subscriptions = yield* Ref.get(pushSubscriptionsRef);
       if (subscriptions.length === 0) return;
 
-      const title =
-        notification.type === "session_paused"
-          ? "Session Paused"
-          : "Session Completed";
+      const titleMap: Record<SessionNotificationType, string> = {
+        session_paused: "Session Paused",
+        session_completed: "Session Completed",
+        permission_requested: "Permission Required",
+        question_asked: "Question from Claude",
+      };
+      const title = titleMap[notification.type];
 
       const body = `Session ${notification.sessionId.slice(0, 8)}...`;
       const url = `/projects/${notification.projectId}/session?sessionId=${notification.sessionId}`;

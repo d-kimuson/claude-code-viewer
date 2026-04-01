@@ -1,7 +1,6 @@
 import { Effect } from "effect";
 import type { SSEStreamingApi } from "hono/streaming";
 import { describe, expect, it, vi } from "vitest";
-import type { PermissionRequest } from "../../../../types/permissions";
 import { TypeSafeSSE } from "./typeSafeSSE";
 
 describe("typeSafeSSE", () => {
@@ -141,20 +140,11 @@ describe("typeSafeSSE", () => {
         }),
       } as unknown as SSEStreamingApi;
 
-      const mockPermissionRequest: PermissionRequest = {
-        id: "permission-1",
-        sessionId: "session-1",
-        turnId: "task-1",
-        toolName: "read",
-        toolInput: {},
-        timestamp: Date.now(),
-      };
-
       const program = Effect.gen(function* () {
         const typeSafeSSE = yield* TypeSafeSSE;
 
         yield* typeSafeSSE.writeSSE("permissionRequested", {
-          permissionRequest: mockPermissionRequest,
+          sessionId: "session-1",
         });
 
         return writtenEvents;
@@ -174,7 +164,7 @@ describe("typeSafeSSE", () => {
 
       const data = JSON.parse(item.data);
       expect(data.kind).toBe("permissionRequested");
-      expect(data.permissionRequest.id).toBe("permission-1");
+      expect(data.sessionId).toBe("session-1");
       expect(data.timestamp).toBeDefined();
     });
 

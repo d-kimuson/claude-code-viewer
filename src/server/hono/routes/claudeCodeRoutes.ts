@@ -3,6 +3,7 @@ import { Effect } from "effect";
 import { Hono } from "hono";
 import { z } from "zod";
 import type { UserMessageInput } from "../../core/claude-code/functions/createMessageGenerator";
+import { CCVAskUserQuestionController } from "../../core/claude-code/presentation/CCVAskUserQuestionController";
 import { ClaudeCodeController } from "../../core/claude-code/presentation/ClaudeCodeController";
 import { ClaudeCodePermissionController } from "../../core/claude-code/presentation/ClaudeCodePermissionController";
 import { ClaudeCodeSessionProcessController } from "../../core/claude-code/presentation/ClaudeCodeSessionProcessController";
@@ -44,6 +45,7 @@ const claudeCodeRoutes = Effect.gen(function* () {
   const claudeCodeController = yield* ClaudeCodeController;
   const claudeCodeSessionProcessController =
     yield* ClaudeCodeSessionProcessController;
+  const ccvAskUserQuestionController = yield* CCVAskUserQuestionController;
   const claudeCodePermissionController = yield* ClaudeCodePermissionController;
   const claudeCodeLifeCycleService = yield* ClaudeCodeLifeCycleService;
   const runtime = yield* getHonoRuntime;
@@ -142,6 +144,20 @@ const claudeCodeRoutes = Effect.gen(function* () {
         return c.json({ message: "Task aborted" });
       },
     )
+    .get("/pending-permission-requests", async (c) => {
+      const response = await effectToResponse(
+        c,
+        claudeCodePermissionController.getPendingPermissionRequests(),
+      );
+      return response;
+    })
+    .get("/pending-question-requests", async (c) => {
+      const response = await effectToResponse(
+        c,
+        ccvAskUserQuestionController.getPendingQuestionRequests(),
+      );
+      return response;
+    })
     .post(
       "/permission-response",
       zValidator(
@@ -156,6 +172,32 @@ const claudeCodeRoutes = Effect.gen(function* () {
           c,
           claudeCodePermissionController.permissionResponse({
             permissionResponse: c.req.valid("json"),
+          }),
+        );
+        return response;
+      },
+    )
+    .post(
+      "/question-response",
+      zValidator(
+        "json",
+        z.object({
+          questionRequestId: z.string(),
+          answers: z.record(z.string(), z.string()),
+          annotations: z.record(
+            z.string(),
+            z.object({
+              notes: z.string().optional(),
+              preview: z.string().optional(),
+            }),
+          ),
+        }),
+      ),
+      async (c) => {
+        const response = await effectToResponse(
+          c,
+          ccvAskUserQuestionController.questionResponse({
+            questionResponse: c.req.valid("json"),
           }),
         );
         return response;

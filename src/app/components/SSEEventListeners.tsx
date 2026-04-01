@@ -2,6 +2,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import type { FC, PropsWithChildren } from "react";
 import {
   notificationsQuery,
+  pendingPermissionRequestsQuery,
+  pendingQuestionRequestsQuery,
   projectDetailQuery,
   sessionDetailQuery,
 } from "../../lib/api/queries";
@@ -36,6 +38,30 @@ export const SSEEventListeners: FC<PropsWithChildren> = ({ children }) => {
           queryKey[3] === event.agentSessionId
         );
       },
+    });
+  });
+
+  useServerEventListener("permissionRequested", async () => {
+    await queryClient.invalidateQueries({
+      queryKey: pendingPermissionRequestsQuery.queryKey,
+    });
+  });
+
+  useServerEventListener("permissionResolved", async () => {
+    await queryClient.invalidateQueries({
+      queryKey: pendingPermissionRequestsQuery.queryKey,
+    });
+  });
+
+  useServerEventListener("questionRequested", async () => {
+    await queryClient.invalidateQueries({
+      queryKey: pendingQuestionRequestsQuery.queryKey,
+    });
+  });
+
+  useServerEventListener("questionResolved", async () => {
+    await queryClient.invalidateQueries({
+      queryKey: pendingQuestionRequestsQuery.queryKey,
     });
   });
 

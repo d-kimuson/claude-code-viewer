@@ -581,7 +581,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        640
+        643
       ]
     ],
     "translation": "Recent sessions"
@@ -596,11 +596,11 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        367
+        370
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        628
+        631
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
@@ -797,7 +797,7 @@
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        709
+        667
       ]
     ],
     "translation": "Send Now"
@@ -812,7 +812,7 @@
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        692
+        650
       ]
     ],
     "translation": "Send Mode"
@@ -827,11 +827,11 @@
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        712
+        670
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        734
+        692
       ]
     ],
     "translation": "Schedule Send"
@@ -865,7 +865,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        660
+        618
       ]
     ],
     "translation": "Select reasoning effort"
@@ -877,7 +877,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        623
+        581
       ]
     ],
     "translation": "Select model"
@@ -961,7 +961,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        573
+        734
       ]
     ],
     "translation": "Voice input"
@@ -1111,7 +1111,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        485
+        488
       ]
     ],
     "translation": "Branch"
@@ -1122,7 +1122,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        466
+        469
       ]
     ],
     "translation": "Metadata"
@@ -1133,7 +1133,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        512
+        515
       ]
     ],
     "translation": "Model"
@@ -1167,7 +1167,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        472
+        475
       ]
     ],
     "translation": "Project Path"
@@ -1202,7 +1202,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        499
+        502
       ]
     ],
     "translation": "Session ID"
@@ -1980,7 +1980,7 @@
     "origin": [
       [
         "src/app/components/NotificationBell.tsx",
-        112
+        115
       ]
     ],
     "translation": "No new notifications"
@@ -1995,6 +1995,17 @@
       ]
     ],
     "translation": "None"
+  },
+  "notification.permission_requested": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/NotificationBell.tsx",
+        139
+      ]
+    ],
+    "translation": "Permission Required"
   },
   "notification.ping": {
     "placeholders": {},
@@ -2018,13 +2029,24 @@
     ],
     "translation": "Pop"
   },
+  "notification.question_asked": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/NotificationBell.tsx",
+        141
+      ]
+    ],
+    "translation": "Question from Claude"
+  },
   "notification.session_completed": {
     "placeholders": {},
     "comments": [],
     "origin": [
       [
         "src/app/components/NotificationBell.tsx",
-        134
+        137
       ]
     ],
     "translation": "Session completed"
@@ -2035,7 +2057,7 @@
     "origin": [
       [
         "src/app/components/NotificationBell.tsx",
-        132
+        135
       ]
     ],
     "translation": "Session paused"
@@ -2057,11 +2079,11 @@
     "origin": [
       [
         "src/app/components/NotificationBell.tsx",
-        88
+        91
       ],
       [
         "src/app/components/NotificationBell.tsx",
-        100
+        103
       ]
     ],
     "translation": "Notifications"
@@ -2789,7 +2811,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        568
+        571
       ]
     ],
     "translation": "Cache creation"
@@ -2800,7 +2822,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        582
+        585
       ]
     ],
     "translation": "Cache read"
@@ -2811,7 +2833,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        540
+        543
       ]
     ],
     "translation": "Input tokens"
@@ -2822,7 +2844,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        525
+        528
       ]
     ],
     "translation": "Session Cost"
@@ -2833,7 +2855,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        554
+        557
       ]
     ],
     "translation": "Output tokens"
@@ -2844,7 +2866,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        532
+        535
       ]
     ],
     "translation": "Total"
@@ -2894,7 +2916,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        459
+        462
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/DeleteSessionDialog.tsx",
@@ -2909,7 +2931,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        631
+        634
       ]
     ],
     "translation": "Start a new chat to begin the conversation"
@@ -2920,7 +2942,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        449
+        452
       ]
     ],
     "translation": "Copy session file path"
@@ -2931,7 +2953,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        430
+        433
       ]
     ],
     "translation": "Export to HTML"
@@ -2942,7 +2964,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        439
+        442
       ]
     ],
     "translation": "Export to JSONL"
@@ -2953,7 +2975,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        723
+        726
       ]
     ],
     "translation": "Claude Code is processing..."
@@ -3001,7 +3023,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        688
+        691
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
@@ -3020,7 +3042,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        686
+        689
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",

@@ -1,4 +1,8 @@
-export type SessionNotificationType = "session_paused" | "session_completed";
+export type SessionNotificationType =
+  | "session_paused"
+  | "session_completed"
+  | "permission_requested"
+  | "question_asked";
 
 export type SessionNotification = {
   id: string;

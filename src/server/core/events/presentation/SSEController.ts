@@ -73,7 +73,37 @@ const LayerImpl = Effect.gen(function* () {
       ) => {
         Effect.runFork(
           typeSafeSSE.writeSSE("permissionRequested", {
-            permissionRequest: event.permissionRequest,
+            sessionId: event.permissionRequest.sessionId,
+          }),
+        );
+      };
+
+      const onPermissionResolved = (
+        event: InternalEventDeclaration["permissionResolved"],
+      ) => {
+        Effect.runFork(
+          typeSafeSSE.writeSSE("permissionResolved", {
+            sessionId: event.sessionId,
+          }),
+        );
+      };
+
+      const onQuestionRequested = (
+        event: InternalEventDeclaration["questionRequested"],
+      ) => {
+        Effect.runFork(
+          typeSafeSSE.writeSSE("questionRequested", {
+            sessionId: event.questionRequest.sessionId,
+          }),
+        );
+      };
+
+      const onQuestionResolved = (
+        event: InternalEventDeclaration["questionResolved"],
+      ) => {
+        Effect.runFork(
+          typeSafeSSE.writeSSE("questionResolved", {
+            sessionId: event.sessionId,
           }),
         );
       };
@@ -104,6 +134,9 @@ const LayerImpl = Effect.gen(function* () {
       yield* eventBus.on("sessionProcessChanged", onSessionProcessChanged);
       yield* eventBus.on("heartbeat", onHeartbeat);
       yield* eventBus.on("permissionRequested", onPermissionRequested);
+      yield* eventBus.on("permissionResolved", onPermissionResolved);
+      yield* eventBus.on("questionRequested", onQuestionRequested);
+      yield* eventBus.on("questionResolved", onQuestionResolved);
       yield* eventBus.on("notificationCreated", onNotificationCreated);
       yield* eventBus.on("notificationConsumed", onNotificationConsumed);
 
@@ -121,6 +154,9 @@ const LayerImpl = Effect.gen(function* () {
               );
               yield* eventBus.off("heartbeat", onHeartbeat);
               yield* eventBus.off("permissionRequested", onPermissionRequested);
+              yield* eventBus.off("permissionResolved", onPermissionResolved);
+              yield* eventBus.off("questionRequested", onQuestionRequested);
+              yield* eventBus.off("questionResolved", onQuestionResolved);
               yield* eventBus.off("notificationCreated", onNotificationCreated);
               yield* eventBus.off(
                 "notificationConsumed",

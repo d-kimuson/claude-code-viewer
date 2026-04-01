@@ -25,14 +25,38 @@ const notificationRoutes = Effect.gen(function* () {
       );
       return response;
     })
-    .post("/:sessionId/consume", async (c) => {
-      const { sessionId } = c.req.param();
-      const response = await effectToResponse(
-        c,
-        notificationController.consumeNotifications({ sessionId }),
-      );
-      return response;
-    })
+    .post(
+      "/:sessionId/consume",
+      zValidator(
+        "json",
+        z
+          .object({
+            types: z
+              .array(
+                z.enum([
+                  "session_paused",
+                  "session_completed",
+                  "permission_requested",
+                  "question_asked",
+                ]),
+              )
+              .optional(),
+          })
+          .optional(),
+      ),
+      async (c) => {
+        const { sessionId } = c.req.param();
+        const body = c.req.valid("json");
+        const response = await effectToResponse(
+          c,
+          notificationController.consumeNotifications({
+            sessionId,
+            types: body?.types,
+          }),
+        );
+        return response;
+      },
+    )
     .get("/vapid-public-key", async (c) => {
       const response = await effectToResponse(
         c,

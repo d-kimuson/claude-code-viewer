@@ -24,7 +24,7 @@ import {
 import { toast } from "sonner";
 import { useConfig } from "@/app/hooks/useConfig";
 import { getDefaultCCOptions } from "@/app/projects/[projectId]/components/chatForm/ccOptionsFormSchema";
-import { PermissionDialog } from "@/components/PermissionDialog";
+import { InlineApprovalPanel } from "@/components/InlineApprovalPanel";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -33,6 +33,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { usePermissionRequests } from "@/hooks/usePermissionRequests";
+import { useQuestionRequests } from "@/hooks/useQuestionRequests";
 import { useSchedulerJobs } from "@/hooks/useScheduler";
 import { useTaskNotifications } from "@/hooks/useTaskNotifications";
 import { honoClient } from "@/lib/api/client";
@@ -100,8 +101,10 @@ const SessionPageMainContent: FC<
   const getToolResult = sessionData?.getToolResult ?? emptyToolResult;
   const isExistingSession =
     Boolean(sessionId) && sessionData !== null && sessionData !== undefined;
-  const { currentPermissionRequest, isDialogOpen, onPermissionResponse } =
-    usePermissionRequests();
+  const { currentPermissionRequest, onPermissionResponse } =
+    usePermissionRequests(sessionId);
+  const { currentQuestionRequest, onQuestionResponse } =
+    useQuestionRequests(sessionId);
   const { data: revisionsData } = useGitCurrentRevisions(projectId);
   const currentBranch = revisionsData?.success
     ? revisionsData.data.currentBranch?.name
@@ -728,6 +731,13 @@ const SessionPageMainContent: FC<
           </main>
         </div>
 
+        <InlineApprovalPanel
+          permissionRequest={currentPermissionRequest}
+          questionRequest={currentQuestionRequest}
+          onPermissionResponse={onPermissionResponse}
+          onQuestionResponse={onQuestionResponse}
+        />
+
         <div className="w-full pt-3">
           <ChatActionMenu
             projectId={projectId}
@@ -787,12 +797,6 @@ const SessionPageMainContent: FC<
           }}
         />
       )}
-
-      <PermissionDialog
-        permissionRequest={currentPermissionRequest}
-        isOpen={isDialogOpen}
-        onResponse={onPermissionResponse}
-      />
     </>
   );
 };

@@ -1,4 +1,5 @@
 import { Context, Effect, Layer } from "effect";
+import type { SessionNotificationType } from "../../../../types/notification";
 import type { ControllerResponse } from "../../../lib/effect/toEffectResponse";
 import type { InferEffect } from "../../../lib/effect/types";
 import { NotificationService } from "../services/NotificationService";
@@ -16,9 +17,14 @@ const LayerImpl = Effect.gen(function* () {
       } as const satisfies ControllerResponse;
     });
 
-  const consumeNotifications = (params: { sessionId: string }) =>
+  const consumeNotifications = (params: {
+    sessionId: string;
+    types?: SessionNotificationType[];
+  }) =>
     Effect.gen(function* () {
-      yield* notificationService.consumeNotifications(params.sessionId);
+      yield* notificationService.consumeNotifications(params.sessionId, {
+        types: params.types,
+      });
 
       return {
         response: { success: true },

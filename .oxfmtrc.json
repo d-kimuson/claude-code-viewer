@@ -4,5 +4,6 @@
     "order": "asc",
     "newlinesBetween": false
   },
-  "experimentalSortPackageJson": true
+  "experimentalSortPackageJson": true,
+  "ignorePatterns": ["src/routeTree.gen.ts"]
 }

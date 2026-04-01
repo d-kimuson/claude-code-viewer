@@ -13,10 +13,6 @@ checks:
   - name: typecheck
     match: \.(m|c)?tsx?$
     group: typecheck
-    command: pnpm exec tsc --noEmit
-  - name: typecheck-tsgo
-    match: \.(m|c)?tsx?$
-    group: typecheck
     command: pnpm exec tsgo --noEmit
   - name: vitest
     match: \.(m|c)?(j|t)sx?$

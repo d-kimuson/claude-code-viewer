@@ -9,16 +9,8 @@ import type { Tab } from "./sessionSidebar/schema";
 export const SessionPageMainWrapper: FC<{
   projectId: string;
   sessionId?: string;
-  isMobileSidebarOpen: boolean;
-  setIsMobileSidebarOpen: (open: boolean) => void;
   tab: Tab;
-}> = ({
-  projectId,
-  sessionId,
-  isMobileSidebarOpen,
-  setIsMobileSidebarOpen,
-  tab,
-}) => {
+}> = ({ projectId, sessionId, tab }) => {
   const { data: projectData } = useProject(projectId);
   const firstPage = projectData.pages[0];
   if (firstPage === undefined) {
@@ -34,8 +26,6 @@ export const SessionPageMainWrapper: FC<{
         <SessionSidebar
           currentSessionId={sessionId}
           projectId={projectId}
-          isMobileOpen={isMobileSidebarOpen}
-          onMobileOpenChange={setIsMobileSidebarOpen}
           initialTab={tab}
         />
       </Suspense>

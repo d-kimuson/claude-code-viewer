@@ -13,7 +13,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useIsMobile } from "@/hooks/useIsMobile";
 import {
   useBottomPanelActions,
   useBottomPanelState,
@@ -32,7 +31,6 @@ interface AppLayoutProps {
   projectPath?: string;
   currentBranch?: string;
   sessionId?: string;
-  onMobileLeftPanelOpen?: () => void;
 }
 
 export const AppLayout: FC<AppLayoutProps> = ({
@@ -41,9 +39,7 @@ export const AppLayout: FC<AppLayoutProps> = ({
   projectPath,
   currentBranch,
   sessionId,
-  onMobileLeftPanelOpen,
 }) => {
-  const isMobile = useIsMobile();
   const { isLeftPanelOpen } = useLeftPanelState();
   const { setIsLeftPanelOpen } = useLeftPanelActions();
   const { isBottomPanelOpen } = useBottomPanelState();
@@ -91,14 +87,10 @@ export const AppLayout: FC<AppLayoutProps> = ({
                 <button
                   type="button"
                   onClick={() => {
-                    if (isMobile) {
-                      onMobileLeftPanelOpen?.();
-                      return;
-                    }
                     setIsLeftPanelOpen(!isLeftPanelOpen);
                   }}
                   className={cn(
-                    "w-11 h-11 md:w-7 md:h-7 flex items-center justify-center rounded transition-colors",
+                    "hidden md:flex w-7 h-7 items-center justify-center rounded transition-colors",
                     isLeftPanelOpen
                       ? "bg-primary/10 text-primary"
                       : "hover:bg-muted text-muted-foreground hover:text-foreground",

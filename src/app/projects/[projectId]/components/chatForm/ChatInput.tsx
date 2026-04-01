@@ -267,7 +267,7 @@ export const ChatInput: FC<ChatInputProps> = ({
         text: message,
         images: images.length > 0 ? images : undefined,
         documents: documents.length > 0 ? documents : undefined,
-        ccOptions: ccOptions,
+        ccOptions,
       });
 
       setMessage("");
@@ -475,7 +475,7 @@ export const ChatInput: FC<ChatInputProps> = ({
             </div>
           )}
 
-          <div className="flex flex-col gap-2 px-5 py-1 bg-muted/10 border-t border-border/30 backdrop-blur-sm">
+          <div className="flex flex-col gap-2 px-2 sm:px-5 py-1 bg-muted/10 border-t border-border/30 backdrop-blur-sm">
             {enableScheduledSend && sendMode === "scheduled" && (
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 pt-1 animate-in fade-in duration-200">
                 <Label htmlFor="send-mode-mobile" className="text-xs sr-only">
@@ -521,7 +521,7 @@ export const ChatInput: FC<ChatInputProps> = ({
             )}
 
             <div className="flex items-center justify-between gap-2">
-              <div className="flex items-center gap-1.5 text-muted-foreground/70">
+              <div className="flex items-center gap-0.5 sm:gap-1.5 text-muted-foreground/70">
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -640,7 +640,7 @@ export const ChatInput: FC<ChatInputProps> = ({
                 )}
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1 sm:gap-2">
                 {enableScheduledSend && sendMode === "immediate" && (
                   <div className="hidden sm:flex items-center gap-2">
                     <Label
@@ -745,7 +745,7 @@ export const ChatInput: FC<ChatInputProps> = ({
                     sendDisabled
                   }
                   size={buttonSize}
-                  className="gap-2 px-6 h-9 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:via-indigo-500 hover:to-purple-500 disabled:from-muted disabled:to-muted disabled:shadow-none bg-[length:200%_auto] hover:bg-[position:right_center]"
+                  className="gap-2 px-3 sm:px-6 h-9 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:via-indigo-500 hover:to-purple-500 disabled:from-muted disabled:to-muted disabled:shadow-none bg-[length:200%_auto] hover:bg-[position:right_center]"
                 >
                   {isPending ? (
                     <>

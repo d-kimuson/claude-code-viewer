@@ -7,7 +7,7 @@ import {
   MessageSquareIcon,
   PlugIcon,
 } from "lucide-react";
-import { type FC, Suspense, useCallback, useMemo, useState } from "react";
+import { type FC, Suspense, useMemo } from "react";
 import type { SidebarTab } from "@/components/GlobalSidebar";
 import { GlobalSidebar } from "@/components/GlobalSidebar";
 import {
@@ -16,7 +16,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useIsMobile } from "@/hooks/useIsMobile";
 import {
   useLeftPanelActions,
   useLeftPanelState,
@@ -24,7 +23,6 @@ import {
 import { cn } from "@/lib/utils";
 import { Loading } from "../../../../../../../components/Loading";
 import { McpTab } from "./McpTab";
-import { MobileSidebar } from "./MobileSidebar";
 import { SchedulerTab } from "./SchedulerTab";
 import { SessionsTab } from "./SessionsTab";
 import type { Tab } from "./schema";
@@ -34,22 +32,11 @@ export const SessionSidebar: FC<{
   currentSessionId?: string;
   projectId: string;
   className?: string;
-  isMobileOpen?: boolean;
-  onMobileOpenChange?: (open: boolean) => void;
   initialTab: Tab;
-}> = ({
-  currentSessionId,
-  projectId,
-  className,
-  isMobileOpen = false,
-  onMobileOpenChange,
-  initialTab,
-}) => {
+}> = ({ currentSessionId, projectId, className, initialTab }) => {
   const { isLeftPanelOpen } = useLeftPanelState();
   const { toggleLeftPanel } = useLeftPanelActions();
-  const isMobile = useIsMobile();
   const activeSessionId = currentSessionId ?? "";
-  const [mobileActiveTab, setMobileActiveTab] = useState<string>(initialTab);
   const additionalTabs: SidebarTab[] = useMemo(
     () => [
       {
@@ -89,62 +76,35 @@ export const SessionSidebar: FC<{
     [activeSessionId, projectId],
   );
 
-  const handleMobileTabClick = useCallback(
-    (tabId: string) => {
-      if (isMobileOpen && mobileActiveTab === tabId) {
-        // Same tab clicked while open - close
-        onMobileOpenChange?.(false);
-      } else {
-        // Different tab or panel closed - open with this tab
-        setMobileActiveTab(tabId);
-        onMobileOpenChange?.(true);
-      }
-    },
-    [isMobileOpen, mobileActiveTab, onMobileOpenChange],
-  );
-
   return (
-    <>
-      {/* Sidebar - takes full width of parent container */}
-      <div className={cn("flex h-full w-full", className)}>
-        <GlobalSidebar
-          projectId={projectId}
-          additionalTabs={additionalTabs}
-          defaultActiveTab={initialTab}
-          headerButton={
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Link
-                    to="/projects"
-                    className="w-(--spacing-sidebar-icon-menu-mobile) h-(--spacing-sidebar-icon-menu-mobile) md:w-(--spacing-sidebar-icon-menu) md:h-(--spacing-sidebar-icon-menu) flex items-center justify-center hover:bg-sidebar-accent transition-colors"
-                  >
-                    <ArrowLeftIcon className="w-4 h-4 text-sidebar-foreground/70" />
-                  </Link>
-                </TooltipTrigger>
-                <TooltipContent side="right">
-                  <p>
-                    <Trans id="sidebar.back.to.projects" />
-                  </p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          }
-          fillWidth
-          isContentHidden={isMobile || !isLeftPanelOpen}
-          onToggle={toggleLeftPanel}
-          onMobileTabClick={isMobile ? handleMobileTabClick : undefined}
-        />
-      </div>
-
-      {/* Mobile sidebar overlay - content only, icon menu is always visible */}
-      <MobileSidebar
-        currentSessionId={activeSessionId}
+    <div className={cn("hidden md:flex h-full w-full", className)}>
+      <GlobalSidebar
         projectId={projectId}
-        isOpen={isMobileOpen}
-        onClose={() => onMobileOpenChange?.(false)}
-        initialTab={mobileActiveTab}
+        additionalTabs={additionalTabs}
+        defaultActiveTab={initialTab}
+        headerButton={
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link
+                  to="/projects"
+                  className="w-(--spacing-sidebar-icon-menu) h-(--spacing-sidebar-icon-menu) flex items-center justify-center hover:bg-sidebar-accent transition-colors"
+                >
+                  <ArrowLeftIcon className="w-4 h-4 text-sidebar-foreground/70" />
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="right">
+                <p>
+                  <Trans id="sidebar.back.to.projects" />
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        }
+        fillWidth
+        isContentHidden={!isLeftPanelOpen}
+        onToggle={toggleLeftPanel}
       />
-    </>
+    </div>
   );
 };

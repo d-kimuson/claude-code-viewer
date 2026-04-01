@@ -8,6 +8,7 @@ import {
   EllipsisVertical as EllipsisVerticalIcon,
   GitBranchIcon,
   LoaderIcon,
+  MenuIcon,
   MessageSquareIcon,
   PauseIcon,
   TrashIcon,
@@ -64,13 +65,20 @@ type SessionPageMainProps = {
   sessionId?: string;
   projectPath?: string;
   projectName: string;
+  onMobileMenuOpen?: () => void;
 };
 
 type SessionData = ReturnType<typeof useSession>;
 
 export const SessionPageMain: FC<SessionPageMainProps> = (props) => {
   if (!props.sessionId) {
-    return <SessionPageMainContent {...props} sessionData={null} />;
+    return (
+      <SessionPageMainContent
+        {...props}
+        sessionData={null}
+        onMobileMenuOpen={props.onMobileMenuOpen}
+      />
+    );
   }
 
   return <SessionPageMainWithData {...props} sessionId={props.sessionId} />;
@@ -85,6 +93,7 @@ const SessionPageMainWithData: FC<
       {...props}
       sessionId={props.sessionId}
       sessionData={sessionData}
+      onMobileMenuOpen={props.onMobileMenuOpen}
     />
   );
 };
@@ -94,7 +103,14 @@ const SessionPageMainContent: FC<
     sessionId?: string;
     sessionData: SessionData | null;
   }
-> = ({ projectId, sessionId, projectPath, projectName, sessionData }) => {
+> = ({
+  projectId,
+  sessionId,
+  projectPath,
+  projectName,
+  sessionData,
+  onMobileMenuOpen,
+}) => {
   const navigate = useNavigate();
   const conversations = sessionData?.conversations ?? [];
   const emptyToolResult: SessionData["getToolResult"] = () => undefined;
@@ -379,6 +395,17 @@ const SessionPageMainContent: FC<
         <header className="px-2 sm:px-3 py-1.5 sm:py-2 sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 w-full flex-shrink-0 min-w-0 border-b border-border/40">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2 min-w-0 flex-1">
+              {onMobileMenuOpen && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="flex-shrink-0 h-7 w-7 p-0 md:hidden"
+                  onClick={onMobileMenuOpen}
+                  aria-label="Open menu"
+                >
+                  <MenuIcon className="w-4 h-4" />
+                </Button>
+              )}
               {statusBadge && (
                 <Badge
                   variant="secondary"

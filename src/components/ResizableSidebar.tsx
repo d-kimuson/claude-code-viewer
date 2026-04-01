@@ -56,18 +56,9 @@ export const ResizableSidebar: FC<ResizableSidebarProps> = ({
     };
   }, [isResizing]);
 
-  // On mobile, always show compact icon-only width
+  // On mobile, hide the icon menu entirely — MobileSidebar handles navigation
   if (isMobile) {
-    return (
-      <div
-        className={cn(
-          "relative flex-shrink-0 h-full flex overflow-hidden z-[51] w-(--spacing-sidebar-icon-menu-mobile) min-w-(--spacing-sidebar-icon-menu-mobile) max-w-(--spacing-sidebar-icon-menu-mobile)",
-          className,
-        )}
-      >
-        <div className="w-full h-full overflow-hidden">{children}</div>
-      </div>
-    );
+    return null;
   }
 
   // When content is hidden, only show icon menu (48px)

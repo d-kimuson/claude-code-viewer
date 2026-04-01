@@ -20,8 +20,8 @@ import { sessionProcessesAtom } from "../../store/sessionProcessesAtom";
 export const SessionsTab: FC<{
   currentSessionId: string;
   projectId: string;
-  isMobile?: boolean;
-}> = ({ currentSessionId, projectId }) => {
+  onSessionSelect?: () => void;
+}> = ({ currentSessionId, projectId, onSessionSelect }) => {
   const {
     data: projectData,
     fetchNextPage,
@@ -127,6 +127,7 @@ export const SessionsTab: FC<{
             tab: currentTab,
             sessionId: undefined,
           })}
+          onClick={onSessionSelect}
           className={cn(
             "block rounded-lg p-2.5 transition-all duration-200 border-2 border-dashed border-sidebar-border/60 hover:border-blue-400/80 hover:bg-blue-50/50 dark:hover:bg-blue-950/40 bg-sidebar/10",
             isNewChatActive &&
@@ -169,6 +170,7 @@ export const SessionsTab: FC<{
                 tab: currentTab,
                 sessionId: session.id,
               })}
+              onClick={onSessionSelect}
               className={cn(
                 "group relative block rounded-lg p-2.5 transition-all duration-200 hover:bg-blue-50/60 dark:hover:bg-blue-950/40 hover:border-blue-300/60 dark:hover:border-blue-700/60 hover:shadow-sm border border-sidebar-border/40 bg-sidebar/30",
                 isActive &&

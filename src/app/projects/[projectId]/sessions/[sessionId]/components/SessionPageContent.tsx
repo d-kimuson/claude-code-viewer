@@ -1,4 +1,4 @@
-import { type FC, Suspense, useState } from "react";
+import { type FC, Suspense, useCallback, useState } from "react";
 import { AppLayout } from "@/app/components/AppLayout";
 import { BottomPanel } from "@/app/components/BottomPanel";
 import { RightPanel } from "@/app/components/RightPanel";
@@ -11,8 +11,10 @@ import { useIsMobile } from "@/hooks/useIsMobile";
 import { useRightPanelOpen, useRightPanelWidth } from "@/hooks/useRightPanel";
 import { useSwipeGesture } from "@/hooks/useSwipeGesture";
 import { useSyncRightPanelWithSearchParams } from "@/hooks/useSyncRightPanelWithSearchParams";
+import { cn } from "@/lib/utils";
 import { useProject } from "../../../hooks/useProject";
 import { SessionPageMain } from "./SessionPageMain";
+import { MobileSidebar } from "./sessionSidebar/MobileSidebar";
 import { SessionSidebar } from "./sessionSidebar/SessionSidebar";
 import type { Tab } from "./sessionSidebar/schema";
 
@@ -48,22 +50,60 @@ export const SessionPageContent: FC<{
   const rightPanelMargin =
     isRightPanelOpen && !isMobile ? `${rightPanelWidth}%` : "0";
 
+  const handleMobileSidebarOpen = useCallback(() => {
+    setIsMobileSidebarOpen(true);
+  }, []);
+
+  const handleMobileSidebarClose = useCallback(() => {
+    setIsMobileSidebarOpen(false);
+  }, []);
+
   return (
     <AppLayout
       projectId={projectId}
       projectPath={projectPath}
       sessionId={sessionId}
-      onMobileLeftPanelOpen={() => setIsMobileSidebarOpen(true)}
     >
-      <div ref={swipeToOpenRef} className="flex h-full overflow-hidden">
+      {/* Mobile sidebar (fixed, push-style) */}
+      {isMobile && (
+        <MobileSidebar
+          currentSessionId={sessionId ?? ""}
+          projectId={projectId}
+          isOpen={isMobileSidebarOpen}
+          onClose={handleMobileSidebarClose}
+          initialTab={tab}
+        />
+      )}
+
+      {/* Backdrop overlay - closes sidebar when tapping pushed content */}
+      {isMobile && isMobileSidebarOpen && (
+        <button
+          type="button"
+          className="fixed inset-0 z-40 bg-black/30 md:hidden"
+          onClick={handleMobileSidebarClose}
+          aria-label="Close sidebar"
+        />
+      )}
+
+      {/* Main layout wrapper - pushed right when mobile sidebar is open */}
+      <div
+        ref={swipeToOpenRef}
+        className={cn(
+          "flex h-full overflow-hidden",
+          isMobile && "transition-transform duration-300 ease-out",
+        )}
+        style={
+          isMobile && isMobileSidebarOpen
+            ? { transform: "translateX(75vw)" }
+            : undefined
+        }
+      >
         {/* Left Sidebar - full height, higher priority than bottom panel */}
         <ResizableSidebar>
           <Suspense fallback={<Loading />}>
             <SessionSidebar
               currentSessionId={sessionId}
               projectId={projectId}
-              isMobileOpen={isMobileSidebarOpen}
-              onMobileOpenChange={setIsMobileSidebarOpen}
               initialTab={tab}
             />
           </Suspense>
@@ -82,6 +122,9 @@ export const SessionPageContent: FC<{
                 sessionId={sessionId}
                 projectPath={projectPath}
                 projectName={projectName}
+                onMobileMenuOpen={
+                  isMobile ? handleMobileSidebarOpen : undefined
+                }
               />
             </Suspense>
           </div>

@@ -1,16 +1,25 @@
 import { Trans, useLingui } from "@lingui/react";
-import { XIcon } from "lucide-react";
+import { Link, useSearch } from "@tanstack/react-router";
+import { PlusIcon, XIcon } from "lucide-react";
 import { type FC, Suspense, useEffect, useState } from "react";
-import { createPortal } from "react-dom";
 import { NotificationSettings } from "@/components/NotificationSettings";
 import { SettingsControls } from "@/components/SettingsControls";
 import { SystemInfoCard } from "@/components/SystemInfoCard";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useSwipeGesture } from "@/hooks/useSwipeGesture";
 import { cn } from "@/lib/utils";
 import { McpTab } from "./McpTab";
 import { SchedulerTab } from "./SchedulerTab";
 import { SessionsTab } from "./SessionsTab";
+import type { Tab } from "./schema";
+import { tabSchema } from "./schema";
 import { TasksTab } from "./TasksTab";
 
 interface MobileSidebarProps {
@@ -18,8 +27,8 @@ interface MobileSidebarProps {
   projectId: string;
   isOpen: boolean;
   onClose: () => void;
-  /** Tab to show when opened, synced from GlobalSidebar icon clicks */
-  initialTab?: string;
+  /** Tab to show when opened */
+  initialTab?: Tab;
 }
 
 export const MobileSidebar: FC<MobileSidebarProps> = ({
@@ -30,34 +39,37 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
   initialTab = "sessions",
 }) => {
   const { i18n } = useLingui();
-  const [activeTab, setActiveTab] = useState(initialTab);
-  const [mounted, setMounted] = useState(false);
+  const [activeTab, setActiveTab] = useState<Tab>(initialTab);
+  const search = useSearch({ strict: false });
+  const currentTab = (search?.tab ?? "sessions") satisfies string;
 
-  // Sync tab when opened from GlobalSidebar icon click
-  useEffect(() => {
-    if (isOpen) {
-      setActiveTab(initialTab);
-    }
-  }, [isOpen, initialTab]);
+  const tabLabels: Record<Tab, string> = {
+    sessions: i18n._({ id: "sidebar.show.session.list" }),
+    mcp: i18n._({ id: "sidebar.show.mcp.settings" }),
+    tasks: i18n._({ id: "sidebar.show.task.list" }),
+    scheduler: i18n._({ id: "sidebar.show.scheduler.jobs" }),
+    settings: i18n._({ id: "settings.tab.title" }),
+    "system-info": i18n._({ id: "settings.section.system_info" }),
+  };
 
-  // Handle portal mounting
+  // Sync tab only when initialTab changes (e.g. opened from a specific tab trigger)
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    setActiveTab(initialTab);
+  }, [initialTab]);
 
-  // Handle escape key
+  // Handle escape key and prevent background scroll
   useEffect(() => {
+    if (!isOpen) return;
+
+    document.body.style.overflow = "hidden";
+
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         onClose();
       }
     };
 
-    if (isOpen) {
-      document.addEventListener("keydown", handleEscape);
-      document.body.style.overflow = "hidden";
-    }
-
+    document.addEventListener("keydown", handleEscape);
     return () => {
       document.removeEventListener("keydown", handleEscape);
       document.body.style.overflow = "";
@@ -74,9 +86,10 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
     enabled: isOpen,
   });
 
-  const handleBackdropClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      onClose();
+  const handleTabChange = (value: string) => {
+    const parsed = tabSchema.safeParse(value);
+    if (parsed.success) {
+      setActiveTab(parsed.data);
     }
   };
 
@@ -87,7 +100,7 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
           <SessionsTab
             currentSessionId={currentSessionId}
             projectId={projectId}
-            isMobile={true}
+            onSessionSelect={onClose}
           />
         );
       case "mcp":
@@ -129,63 +142,82 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
           </div>
         );
       case "system-info":
-        return <SystemInfoCard />;
+        return (
+          <Suspense
+            fallback={
+              <div className="flex-1 flex items-center justify-center p-4">
+                <div className="text-sm text-sidebar-foreground/70">
+                  Loading...
+                </div>
+              </div>
+            }
+          >
+            <SystemInfoCard />
+          </Suspense>
+        );
       default:
         return null;
     }
   };
 
-  if (!mounted) return null;
-
-  return createPortal(
+  return (
     <div
+      ref={swipeRef}
       className={cn(
-        "fixed inset-0 z-50 transition-all duration-300 ease-out md:hidden",
-        isOpen
-          ? "visible opacity-100"
-          : "invisible opacity-0 pointer-events-none",
+        "fixed inset-y-0 left-0 w-[75vw] z-50 bg-sidebar text-sidebar-foreground flex flex-col shadow-xl md:hidden",
+        "transition-transform duration-300 ease-out",
+        isOpen ? "translate-x-0" : "-translate-x-full",
       )}
     >
-      {/* Backdrop - starts after the icon menu so icons remain clickable */}
-      <button
-        type="button"
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm cursor-default"
-        onClick={handleBackdropClick}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            onClose();
-          }
-        }}
-        style={{ left: "var(--sidebar-icon-menu-width-mobile)" }}
-        aria-label={i18n._("Close sidebar")}
-      />
+      {/* Header with tab selector, new chat button, and close button */}
+      <div className="h-(--spacing-header-height) flex items-center gap-2 px-3 border-b border-sidebar-border bg-sidebar/80 backdrop-blur-sm flex-shrink-0">
+        <Select value={activeTab} onValueChange={handleTabChange}>
+          <SelectTrigger className="flex-1 h-7 text-xs">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {tabSchema.options.map((tab) => (
+              <SelectItem key={tab} value={tab} className="text-xs">
+                {tabLabels[tab]}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
-      {/* Content overlay - positioned next to the always-visible icon menu */}
-      <div
-        ref={swipeRef}
-        className={cn(
-          "absolute top-0 h-full w-72 max-w-[calc(85vw-var(--sidebar-icon-menu-width-mobile))] bg-sidebar text-sidebar-foreground transition-transform duration-300 ease-out flex flex-col shadow-xl",
-          isOpen ? "translate-x-0" : "-translate-x-full",
-        )}
-        style={{ left: "var(--sidebar-icon-menu-width-mobile)" }}
-      >
-        {/* Header with close button - matches AppLayout header height */}
-        <div className="h-(--spacing-header-height) flex items-center justify-between px-3 border-b border-sidebar-border bg-sidebar/80 backdrop-blur-sm flex-shrink-0">
-          <h2 className="text-sm font-semibold capitalize">{activeTab}</h2>
+        <Link
+          to="/projects/$projectId/session"
+          params={{ projectId }}
+          search={(prev) => ({
+            ...prev,
+            tab: currentTab,
+            sessionId: undefined,
+          })}
+          onClick={onClose}
+          className="flex-shrink-0"
+        >
           <Button
             variant="ghost"
             size="sm"
-            onClick={onClose}
             className="h-7 w-7 p-0 hover:bg-sidebar-accent/50"
+            aria-label={i18n._("New chat")}
           >
-            <XIcon className="w-3.5 h-3.5" />
+            <PlusIcon className="w-3.5 h-3.5" />
           </Button>
-        </div>
+        </Link>
 
-        {/* Tab Content */}
-        <div className="flex-1 overflow-hidden">{renderContent()}</div>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onClose}
+          className="h-7 w-7 p-0 hover:bg-sidebar-accent/50 flex-shrink-0"
+          aria-label={i18n._("Close sidebar")}
+        >
+          <XIcon className="w-3.5 h-3.5" />
+        </Button>
       </div>
-    </div>,
-    document.body,
+
+      {/* Tab Content */}
+      <div className="flex-1 overflow-hidden">{renderContent()}</div>
+    </div>
   );
 };

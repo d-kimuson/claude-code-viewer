@@ -46,6 +46,24 @@ describe("DiffViewer", () => {
           },
         ],
       },
+      {
+        oldStart: 10,
+        newStart: 10,
+        lines: [
+          {
+            type: "unchanged",
+            oldLineNumber: 10,
+            newLineNumber: 10,
+            content: "const example = true;",
+          },
+          {
+            type: "added",
+            newLineNumber: 11,
+            content:
+              "const secondHunk = 'also-needs-the-same-horizontal-scroll-surface';",
+          },
+        ],
+      },
     ],
   };
 
@@ -72,6 +90,7 @@ describe("DiffViewer", () => {
     renderComponent();
 
     const scrollSurface = container?.querySelector(".inline-block.min-w-full");
+    const scrollContainers = container?.querySelectorAll(".overflow-x-auto");
     const rows = container?.querySelectorAll("[data-slot='diff-row']");
     const contentRows = container?.querySelectorAll(
       "[data-slot='diff-row-content']",
@@ -81,9 +100,10 @@ describe("DiffViewer", () => {
 
     expect(scrollSurface).not.toBeNull();
     expect(scrollSurface?.className).toContain("w-max");
+    expect(scrollContainers?.length).toBe(1);
     expect(gutter).not.toBeNull();
-    expect(rows?.length).toBe(2);
-    expect(contentRows?.length).toBe(2);
+    expect(rows?.length).toBe(4);
+    expect(contentRows?.length).toBe(4);
     expect(contentRows?.[0]?.className).toContain("[font-family:");
     expect(rows?.[0]?.className).toContain("min-w-full");
     expect(contentText?.className).toContain("w-max");
@@ -97,6 +117,7 @@ describe("DiffViewer", () => {
 
     expect(signs?.[0]?.textContent).toBe("-");
     expect(signs?.[1]?.textContent).toBe("+");
+    expect(signs?.[3]?.textContent).toBe("+");
     expect(signs?.[0]?.className).toContain("w-4");
     expect(signs?.[0]?.className).toContain("text-center");
   });

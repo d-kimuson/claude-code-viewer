@@ -15,6 +15,10 @@ interface DiffHunkProps {
   hunk: DiffHunk;
 }
 
+interface DiffContentRowsProps {
+  hunks: FileDiff["hunks"];
+}
+
 const diffMonoClass =
   '[font-family:"Fira_Code","Fira_Mono",Menlo,Consolas,"DejaVu_Sans_Mono",monospace]';
 
@@ -38,7 +42,7 @@ const getStickyCellClasses = (type: DiffHunk["lines"][number]["type"]) => {
 
 const DiffHunkComponent: FC<DiffHunkProps> = ({ hunk }) => {
   return (
-    <div className="relative flex">
+    <>
       <div className="w-20 shrink-0">
         <div>
           {hunk.lines.map((line) => (
@@ -78,12 +82,19 @@ const DiffHunkComponent: FC<DiffHunkProps> = ({ hunk }) => {
           ))}
         </div>
       </div>
-      <div className="min-w-0 flex-1 overflow-x-auto">
-        <div className="inline-block w-max min-w-full align-top">
+    </>
+  );
+};
+
+const DiffContentRows: FC<DiffContentRowsProps> = ({ hunks }) => {
+  return (
+    <>
+      {hunks.map((hunk) => (
+        <div key={`${hunk.oldStart}-${hunk.newStart}`}>
           {hunk.lines.map((line) => (
             <div
               data-slot="diff-row"
-              key={`content-${line.oldLineNumber ?? ""}-${line.newLineNumber ?? ""}`}
+              key={`content-${hunk.oldStart}-${hunk.newStart}-${line.oldLineNumber ?? ""}-${line.newLineNumber ?? ""}`}
               className={cn(
                 "relative min-w-full border-l-4",
                 getRowClasses(line.type),
@@ -131,6 +142,26 @@ const DiffHunkComponent: FC<DiffHunkProps> = ({ hunk }) => {
               </div>
             </div>
           ))}
+        </div>
+      ))}
+    </>
+  );
+};
+
+const DiffBody: FC<{ hunks: FileDiff["hunks"] }> = ({ hunks }) => {
+  return (
+    <div className="relative flex">
+      <div className="w-20 shrink-0">
+        {hunks.map((hunk) => (
+          <DiffHunkComponent
+            key={`${hunk.oldStart}-${hunk.newStart}`}
+            hunk={hunk}
+          />
+        ))}
+      </div>
+      <div className="min-w-0 flex-1 overflow-x-auto">
+        <div className="inline-block w-max min-w-full align-top">
+          <DiffContentRows hunks={hunks} />
         </div>
       </div>
     </div>
@@ -269,12 +300,7 @@ export const DiffViewer: FC<DiffViewerProps> = ({ fileDiff, className }) => {
       />
       {!isCollapsed && (
         <div className="border-t border-gray-200 dark:border-gray-700">
-          {fileDiff.hunks.map((hunk) => (
-            <DiffHunkComponent
-              key={`${hunk.oldStart}-${hunk.newStart}`}
-              hunk={hunk}
-            />
-          ))}
+          <DiffBody hunks={fileDiff.hunks} />
         </div>
       )}
     </div>

@@ -32,7 +32,16 @@ const layerImpl = Effect.gen(function* () {
         Array.from(listeners).map(async (listener) => {
           await listener(data);
         }),
-      );
+      ).then((results) => {
+        for (const r of results) {
+          if (r.status === "rejected") {
+            console.error(
+              `[EventBus] listener error for "${event}":`,
+              r.reason,
+            );
+          }
+        }
+      });
     });
 
   const on = <EventName extends keyof InternalEventDeclaration>(

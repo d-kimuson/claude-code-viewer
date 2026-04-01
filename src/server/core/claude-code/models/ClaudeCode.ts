@@ -110,14 +110,9 @@ export const getMcpListOutput = (projectCwd: string) =>
   Effect.gen(function* () {
     const { claudeCodeExecutablePath } = yield* Config;
     const output = yield* Command.string(
-      Command.make(
-        "cd",
-        projectCwd,
-        "&&",
-        claudeCodeExecutablePath,
-        "mcp",
-        "list",
-      ).pipe(Command.runInShell(true)),
+      Command.make(claudeCodeExecutablePath, "mcp", "list").pipe(
+        Command.workingDirectory(projectCwd),
+      ),
     );
     return output;
   });

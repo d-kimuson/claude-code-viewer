@@ -16,7 +16,7 @@ interface DiffHunkProps {
 }
 
 const diffMonoClass =
-  "[font-family:var(--font-geist-mono),ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation_Mono,Courier_New,monospace]";
+  '[font-family:"Fira_Code","Fira_Mono",Menlo,Consolas,"DejaVu_Sans_Mono",monospace]';
 
 const getRowClasses = (type: DiffHunk["lines"][number]["type"]) => {
   return cn({
@@ -38,9 +38,9 @@ const getStickyCellClasses = (type: DiffHunk["lines"][number]["type"]) => {
 
 const DiffHunkComponent: FC<DiffHunkProps> = ({ hunk }) => {
   return (
-    <div className="relative overflow-x-auto">
-      <div className="inline-grid w-max min-w-full grid-cols-[5rem_max-content] align-top">
-        <div className="sticky left-0 z-20">
+    <div className="relative flex">
+      <div className="w-20 shrink-0">
+        <div>
           {hunk.lines.map((line) => (
             <div
               key={`gutter-${line.oldLineNumber ?? ""}-${line.newLineNumber ?? ""}`}
@@ -77,7 +77,9 @@ const DiffHunkComponent: FC<DiffHunkProps> = ({ hunk }) => {
             </div>
           ))}
         </div>
-        <div>
+      </div>
+      <div className="min-w-0 flex-1 overflow-x-auto">
+        <div className="inline-block w-max min-w-full align-top">
           {hunk.lines.map((line) => (
             <div
               data-slot="diff-row"

@@ -76,16 +76,16 @@ describe("DiffViewer", () => {
     const contentRows = container?.querySelectorAll(
       "[data-slot='diff-row-content']",
     );
-    const lineNumbers = container?.querySelectorAll(".sticky.left-0");
+    const gutter = container?.querySelector(".w-20.shrink-0");
     const contentText = contentRows?.[1]?.querySelector("span:last-child");
 
     expect(scrollSurface).not.toBeNull();
     expect(scrollSurface?.className).toContain("w-max");
+    expect(gutter).not.toBeNull();
     expect(rows?.length).toBe(2);
     expect(contentRows?.length).toBe(2);
     expect(contentRows?.[0]?.className).toContain("[font-family:");
     expect(rows?.[0]?.className).toContain("min-w-full");
-    expect(lineNumbers?.[0]?.className).toContain("z-20");
     expect(contentText?.className).toContain("w-max");
     expect(contentText?.className).toContain("min-w-full");
   });

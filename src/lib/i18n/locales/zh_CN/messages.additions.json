@@ -196,5 +196,23 @@
   },
   "notification.question_asked": {
     "translation": "来自Claude的提问"
+  },
+  "review.action.reset": {
+    "translation": "重置"
+  },
+  "review.action.insert": {
+    "translation": "插入审查"
+  },
+  "review.action.insert.success": {
+    "translation": "审查已插入聊天输入"
+  },
+  "review.action.reset.success": {
+    "translation": "已清除所有评论"
+  },
+  "review.comments.count": {
+    "translation": "{count} 条评论"
+  },
+  "review.comments.empty": {
+    "translation": "无评论"
   }
 }

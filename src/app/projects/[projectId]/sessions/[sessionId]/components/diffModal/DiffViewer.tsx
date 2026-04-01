@@ -1,14 +1,38 @@
-import { ChevronDownIcon, ChevronRightIcon, CopyIcon } from "lucide-react";
+import { Trans, useLingui } from "@lingui/react";
+import {
+  ChevronDownIcon,
+  ChevronRightIcon,
+  CopyIcon,
+  MessageSquarePlusIcon,
+  SendHorizonalIcon,
+  Trash2Icon,
+  XIcon,
+} from "lucide-react";
 import type { FC } from "react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Textarea } from "@/components/ui/textarea";
+import type { ReviewComment } from "@/lib/atoms/reviewComments";
+import { useReviewComments } from "@/lib/atoms/reviewComments";
 import { cn } from "@/lib/utils";
-import { Button } from "../../../../../../../components/ui/button";
-import type { DiffHunk, FileDiff } from "./types";
+import type { DiffHunk, DiffLine, FileDiff } from "./types";
+
+interface ReviewProps {
+  filename: string;
+  reviewSessionId: string;
+}
 
 interface DiffViewerProps {
   fileDiff: FileDiff;
   className?: string;
+  filename?: string;
+  reviewSessionId?: string;
 }
 
 interface DiffHunkProps {
@@ -17,6 +41,8 @@ interface DiffHunkProps {
 
 interface DiffContentRowsProps {
   hunks: FileDiff["hunks"];
+  reviewProps?: ReviewProps;
+  commentsByLine?: ReadonlyMap<number, readonly ReviewComment[]>;
 }
 
 const diffMonoClass =
@@ -40,115 +66,295 @@ const getStickyCellClasses = (type: DiffHunk["lines"][number]["type"]) => {
   });
 };
 
-const DiffHunkComponent: FC<DiffHunkProps> = ({ hunk }) => {
+const getLineNumber = (line: DiffLine): number =>
+  line.newLineNumber ?? line.oldLineNumber ?? 0;
+
+interface CommentFormProps {
+  reviewProps: ReviewProps;
+  line: DiffLine;
+  onClose: () => void;
+}
+
+const CommentForm: FC<CommentFormProps> = ({ reviewProps, line, onClose }) => {
+  const [content, setContent] = useState("");
+  const { addComment } = useReviewComments(reviewProps.reviewSessionId);
+  const { i18n } = useLingui();
+
+  const handleSave = () => {
+    if (content.trim() === "") return;
+    addComment({
+      filename: reviewProps.filename,
+      lineNumber: getLineNumber(line),
+      lineType: line.type,
+      content: content.trim(),
+    });
+    setContent("");
+    onClose();
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+      e.preventDefault();
+      handleSave();
+    }
+  };
+
   return (
-    <>
-      <div className="w-20 shrink-0">
-        <div>
-          {hunk.lines.map((line) => (
-            <div
-              key={`gutter-${line.oldLineNumber ?? ""}-${line.newLineNumber ?? ""}`}
-              className={cn(
-                "grid grid-cols-[2.5rem_2.5rem] border-r border-l-4",
-                diffMonoClass,
-                getStickyCellClasses(line.type),
-                {
-                  "border-green-200 border-l-green-400 dark:border-green-800/50":
-                    line.type === "added",
-                  "border-red-200 border-l-red-400 dark:border-red-800/50":
-                    line.type === "deleted",
-                  "border-blue-200 border-l-blue-400 dark:border-blue-800/50":
-                    line.type === "hunk",
-                  "border-gray-200 border-l-transparent dark:border-gray-700":
-                    line.type === "unchanged" || line.type === "context",
-                },
-              )}
-            >
-              <div className="border-r px-1 py-0.5 text-right text-xs leading-tight tabular-nums border-gray-200 dark:border-gray-700">
-                {line.type !== "added" &&
-                line.type !== "hunk" &&
-                line.oldLineNumber
-                  ? line.oldLineNumber
-                  : "\u00A0"}
-              </div>
-              <div className="px-1 py-0.5 text-right text-xs leading-tight tabular-nums">
-                {line.type !== "deleted" &&
-                line.type !== "hunk" &&
-                line.newLineNumber
-                  ? line.newLineNumber
-                  : "\u00A0"}
-              </div>
-            </div>
-          ))}
+    <div className="flex flex-col gap-1.5">
+      <Textarea
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
+        onKeyDown={handleKeyDown}
+        placeholder={i18n._("review.comment.placeholder")}
+        className="min-h-[72px] border-0 bg-transparent px-2.5 text-[13px] leading-relaxed shadow-none ring-0 placeholder:text-muted-foreground/50 focus-visible:ring-0"
+        autoFocus
+      />
+      <div className="flex items-center justify-between border-t border-border/40 pt-2">
+        <span className="text-[10px] text-muted-foreground/50">⌘ + Enter</span>
+        <div className="flex items-center gap-1">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onClose}
+            className="h-7 w-7 p-0 text-muted-foreground hover:text-foreground"
+          >
+            <XIcon className="h-3.5 w-3.5" />
+          </Button>
+          <Button
+            size="sm"
+            onClick={handleSave}
+            disabled={content.trim() === ""}
+            className="h-7 gap-1 rounded-full px-3 text-[11px] font-medium"
+          >
+            <SendHorizonalIcon className="h-3 w-3" />
+            <Trans id="review.comment.save" />
+          </Button>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
-const DiffContentRows: FC<DiffContentRowsProps> = ({ hunks }) => {
+interface CommentButtonProps {
+  reviewProps: ReviewProps;
+  line: DiffLine;
+  lineComments: readonly ReviewComment[];
+}
+
+const ExistingComment: FC<{
+  comment: ReviewComment;
+  sessionId: string;
+}> = ({ comment, sessionId }) => {
+  const { removeComment } = useReviewComments(sessionId);
+
+  return (
+    <div className="group/comment relative rounded-md border border-border/50 bg-muted/30 px-2.5 py-2 transition-colors hover:border-border">
+      <p className="pr-5 text-[13px] leading-relaxed text-foreground/90">
+        {comment.content}
+      </p>
+      <button
+        type="button"
+        onClick={() => removeComment(comment.id)}
+        className="absolute right-1.5 top-1.5 rounded p-0.5 text-muted-foreground/40 opacity-0 transition-all hover:bg-destructive/10 hover:text-destructive group-hover/comment:opacity-100"
+      >
+        <Trash2Icon className="h-3 w-3" />
+      </button>
+    </div>
+  );
+};
+
+const CommentButton: FC<CommentButtonProps> = ({
+  reviewProps,
+  line,
+  lineComments,
+}) => {
+  const [open, setOpen] = useState(false);
+  const hasComments = lineComments.length > 0;
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          className={cn(
+            "absolute left-0.5 top-px z-10 flex items-center rounded-sm transition-all",
+            hasComments ? "opacity-100" : "opacity-0 group-hover:opacity-100",
+          )}
+        >
+          {hasComments ? (
+            <span className="flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-sky-500 px-1 text-[10px] font-semibold tabular-nums text-white shadow-sm shadow-sky-500/25">
+              {lineComments.length}
+            </span>
+          ) : (
+            <span className="flex h-[18px] w-[18px] items-center justify-center rounded-sm text-muted-foreground/60 transition-colors hover:bg-primary/10 hover:text-primary">
+              <MessageSquarePlusIcon className="h-3.5 w-3.5" />
+            </span>
+          )}
+        </button>
+      </PopoverTrigger>
+      <PopoverContent
+        side="right"
+        align="start"
+        className="w-80 overflow-hidden rounded-xl border-border/50 p-0 shadow-xl shadow-black/5 dark:shadow-black/20"
+      >
+        {hasComments && (
+          <div className="space-y-1.5 border-b border-border/40 bg-muted/20 p-3">
+            {lineComments.map((comment) => (
+              <ExistingComment
+                key={comment.id}
+                comment={comment}
+                sessionId={reviewProps.reviewSessionId}
+              />
+            ))}
+          </div>
+        )}
+        <div className="p-3">
+          <CommentForm
+            reviewProps={reviewProps}
+            line={line}
+            onClose={() => setOpen(false)}
+          />
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+};
+
+const DiffHunkComponent: FC<DiffHunkProps> = ({ hunk }) => {
+  return (
+    <div className="w-20 shrink-0">
+      <div>
+        {hunk.lines.map((line) => (
+          <div
+            key={`gutter-${line.oldLineNumber ?? ""}-${line.newLineNumber ?? ""}`}
+            className={cn(
+              "grid grid-cols-[2.5rem_2.5rem] border-r border-l-4",
+              diffMonoClass,
+              getStickyCellClasses(line.type),
+              {
+                "border-green-200 border-l-green-400 dark:border-green-800/50":
+                  line.type === "added",
+                "border-red-200 border-l-red-400 dark:border-red-800/50":
+                  line.type === "deleted",
+                "border-blue-200 border-l-blue-400 dark:border-blue-800/50":
+                  line.type === "hunk",
+                "border-gray-200 border-l-transparent dark:border-gray-700":
+                  line.type === "unchanged" || line.type === "context",
+              },
+            )}
+          >
+            <div className="border-r px-1 py-0.5 text-right text-xs leading-tight tabular-nums border-gray-200 dark:border-gray-700">
+              {line.type !== "added" &&
+              line.type !== "hunk" &&
+              line.oldLineNumber
+                ? line.oldLineNumber
+                : "\u00A0"}
+            </div>
+            <div className="px-1 py-0.5 text-right text-xs leading-tight tabular-nums">
+              {line.type !== "deleted" &&
+              line.type !== "hunk" &&
+              line.newLineNumber
+                ? line.newLineNumber
+                : "\u00A0"}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const DiffContentRows: FC<DiffContentRowsProps> = ({
+  hunks,
+  reviewProps,
+  commentsByLine,
+}) => {
   return (
     <>
       {hunks.map((hunk) => (
         <div key={`${hunk.oldStart}-${hunk.newStart}`}>
-          {hunk.lines.map((line) => (
-            <div
-              data-slot="diff-row"
-              key={`content-${hunk.oldStart}-${hunk.newStart}-${line.oldLineNumber ?? ""}-${line.newLineNumber ?? ""}`}
-              className={cn(
-                "relative min-w-full border-l-4",
-                getRowClasses(line.type),
-                {
-                  "border-green-200 border-l-green-400 dark:border-green-800/50":
-                    line.type === "added",
-                  "border-red-200 border-l-red-400 dark:border-red-800/50":
-                    line.type === "deleted",
-                  "border-blue-200 border-l-blue-400 dark:border-blue-800/50":
-                    line.type === "hunk",
-                  "border-gray-100 border-l-transparent dark:border-gray-800":
-                    line.type === "unchanged" || line.type === "context",
-                },
-              )}
-            >
+          {hunk.lines.map((line) => {
+            const lineNum = getLineNumber(line);
+            const lineComments = commentsByLine?.get(lineNum) ?? [];
+
+            return (
               <div
-                data-slot="diff-row-content"
+                data-slot="diff-row"
+                key={`content-${hunk.oldStart}-${hunk.newStart}-${line.oldLineNumber ?? ""}-${line.newLineNumber ?? ""}`}
                 className={cn(
-                  "relative min-w-0 px-2 py-0.5 pl-7 text-xs leading-tight whitespace-pre",
-                  diffMonoClass,
+                  "relative min-w-full border-l-4",
+                  getRowClasses(line.type),
+                  {
+                    "border-green-200 border-l-green-400 dark:border-green-800/50":
+                      line.type === "added",
+                    "border-red-200 border-l-red-400 dark:border-red-800/50":
+                      line.type === "deleted",
+                    "border-blue-200 border-l-blue-400 dark:border-blue-800/50":
+                      line.type === "hunk",
+                    "border-gray-100 border-l-transparent dark:border-gray-800":
+                      line.type === "unchanged" || line.type === "context",
+                  },
+                  reviewProps != null && line.type !== "hunk" && "group",
                 )}
               >
-                <span
-                  data-slot="diff-sign"
-                  className={cn("absolute left-2 top-0.5 w-4 text-center", {
-                    "text-green-600 dark:text-green-400": line.type === "added",
-                    "text-red-600 dark:text-red-400": line.type === "deleted",
-                    "font-medium text-blue-600 dark:text-blue-400":
-                      line.type === "hunk",
-                    "text-gray-400 dark:text-gray-600":
-                      line.type === "unchanged" || line.type === "context",
-                  })}
+                <div
+                  data-slot="diff-row-content"
+                  className={cn(
+                    "relative min-w-0 px-2 py-0.5 pl-7 text-xs leading-tight whitespace-pre",
+                    diffMonoClass,
+                  )}
                 >
-                  {line.type === "added"
-                    ? "+"
-                    : line.type === "deleted"
-                      ? "-"
-                      : line.type === "hunk"
-                        ? "@"
-                        : "\u00A0"}
-                </span>
-                <span className="inline-block w-max min-w-full pr-4">
-                  {line.content || " "}
-                </span>
+                  {reviewProps != null && line.type !== "hunk" && (
+                    <CommentButton
+                      reviewProps={reviewProps}
+                      line={line}
+                      lineComments={lineComments}
+                    />
+                  )}
+                  <span
+                    data-slot="diff-sign"
+                    className={cn("absolute left-2 top-0.5 w-4 text-center", {
+                      "text-green-600 dark:text-green-400":
+                        line.type === "added",
+                      "text-red-600 dark:text-red-400": line.type === "deleted",
+                      "font-medium text-blue-600 dark:text-blue-400":
+                        line.type === "hunk",
+                      "text-gray-400 dark:text-gray-600":
+                        line.type === "unchanged" || line.type === "context",
+                    })}
+                  >
+                    {line.type === "added"
+                      ? "+"
+                      : line.type === "deleted"
+                        ? "-"
+                        : line.type === "hunk"
+                          ? "@"
+                          : "\u00A0"}
+                  </span>
+                  <span className="inline-block w-max min-w-full pr-4">
+                    {line.content || " "}
+                  </span>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       ))}
     </>
   );
 };
 
-const DiffBody: FC<{ hunks: FileDiff["hunks"] }> = ({ hunks }) => {
+interface DiffBodyProps {
+  hunks: FileDiff["hunks"];
+  reviewProps?: ReviewProps;
+  commentsByLine?: ReadonlyMap<number, readonly ReviewComment[]>;
+}
+
+const DiffBody: FC<DiffBodyProps> = ({
+  hunks,
+  reviewProps,
+  commentsByLine,
+}) => {
   return (
     <div className="relative flex">
       <div className="w-20 shrink-0">
@@ -161,7 +367,11 @@ const DiffBody: FC<{ hunks: FileDiff["hunks"] }> = ({ hunks }) => {
       </div>
       <div className="min-w-0 flex-1 overflow-x-auto">
         <div className="inline-block w-max min-w-full align-top">
-          <DiffContentRows hunks={hunks} />
+          <DiffContentRows
+            hunks={hunks}
+            reviewProps={reviewProps}
+            commentsByLine={commentsByLine}
+          />
         </div>
       </div>
     </div>
@@ -257,8 +467,45 @@ const FileHeader: FC<FileHeaderProps> = ({
   );
 };
 
-export const DiffViewer: FC<DiffViewerProps> = ({ fileDiff, className }) => {
+const useCommentsByLine = (
+  reviewSessionId: string | undefined,
+  filename: string | undefined,
+) => {
+  const sessionId = reviewSessionId ?? "";
+  const { comments, addComment, removeComment, clearComments } =
+    useReviewComments(sessionId);
+
+  const commentsByLine = useMemo(() => {
+    if (filename == null) return new Map<number, readonly ReviewComment[]>();
+    const map = new Map<number, ReviewComment[]>();
+    for (const comment of comments) {
+      if (comment.filename !== filename) continue;
+      const existing = map.get(comment.lineNumber);
+      if (existing != null) {
+        existing.push(comment);
+      } else {
+        map.set(comment.lineNumber, [comment]);
+      }
+    }
+    return map;
+  }, [comments, filename]);
+
+  return { commentsByLine, addComment, removeComment, clearComments };
+};
+
+export const DiffViewer: FC<DiffViewerProps> = ({
+  fileDiff,
+  className,
+  filename,
+  reviewSessionId,
+}) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const commentModeEnabled = filename != null && reviewSessionId != null;
+  const { commentsByLine } = useCommentsByLine(reviewSessionId, filename);
+
+  const reviewProps: ReviewProps | undefined = commentModeEnabled
+    ? { filename, reviewSessionId }
+    : undefined;
 
   const toggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
@@ -300,7 +547,11 @@ export const DiffViewer: FC<DiffViewerProps> = ({ fileDiff, className }) => {
       />
       {!isCollapsed && (
         <div className="border-t border-gray-200 dark:border-gray-700">
-          <DiffBody hunks={fileDiff.hunks} />
+          <DiffBody
+            hunks={fileDiff.hunks}
+            reviewProps={reviewProps}
+            commentsByLine={commentsByLine}
+          />
         </div>
       )}
     </div>

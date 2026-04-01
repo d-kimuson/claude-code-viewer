@@ -193,5 +193,23 @@
   },
   "notification.question_asked": {
     "translation": "Question from Claude"
+  },
+  "review.action.reset": {
+    "translation": "Reset"
+  },
+  "review.action.insert": {
+    "translation": "Insert Review"
+  },
+  "review.action.insert.success": {
+    "translation": "Review inserted into chat input"
+  },
+  "review.action.reset.success": {
+    "translation": "All comments cleared"
+  },
+  "review.comments.count": {
+    "translation": "{count} comments"
+  },
+  "review.comments.empty": {
+    "translation": "No comments"
   }
 }

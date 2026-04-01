@@ -1,18 +1,17 @@
 import { Trans, useLingui } from "@lingui/react";
 import {
-  ChevronDown,
-  ChevronUp,
+  ClipboardPasteIcon,
   FileText,
   GitBranch,
   GitCompareIcon,
   Loader2,
   RefreshCcwIcon,
+  Trash2Icon,
 } from "lucide-react";
 import type { FC } from "react";
 import { useCallback, useEffect, useId, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -20,16 +19,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
+import { useChatInputDraft } from "@/lib/atoms/chatInputDrafts";
+import {
+  formatReviewMarkdown,
+  useReviewComments,
+} from "@/lib/atoms/reviewComments";
 import { cn } from "@/lib/utils";
 import { DiffViewer } from "../../projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffViewer";
 import type { GitRef } from "../../projects/[projectId]/sessions/[sessionId]/components/diffModal/types";
 import {
-  useCommitAndPush,
-  useCommitFiles,
   useGitCurrentRevisions,
   useGitDiff,
-  usePushCommits,
 } from "../../projects/[projectId]/sessions/[sessionId]/hooks/useGit";
 import { CollapsibleTodoSection } from "./common/CollapsibleTodoSection";
 import { ReviewTodoSection } from "./ReviewTodoSection";
@@ -144,20 +144,15 @@ export const ReviewTabContent: FC<ReviewTabContentProps> = ({
   sessionId,
 }) => {
   const { i18n } = useLingui();
-  const commitMessageId = useId();
   const [compareFrom, setCompareFrom] = useState("HEAD");
   const [compareTo, setCompareTo] = useState("working");
 
-  // File selection state
-  const [selectedFiles, setSelectedFiles] = useState<Map<string, boolean>>(
-    new Map(),
-  );
-
-  // Commit message state
-  const [commitMessage, setCommitMessage] = useState("");
-
-  // Commit section collapse state
-  const [isCommitSectionExpanded, setIsCommitSectionExpanded] = useState(false);
+  // Review comments
+  const { comments, clearComments } = useReviewComments(sessionId ?? "");
+  const [, setDraft] = useChatInputDraft({
+    projectId,
+    sessionId: sessionId ?? "",
+  });
 
   // API hooks
   const { data: revisionsData, isLoading: isLoadingRevisions } =
@@ -168,9 +163,6 @@ export const ReviewTabContent: FC<ReviewTabContentProps> = ({
     isPending: isDiffLoading,
     error: diffError,
   } = useGitDiff();
-  const commitMutation = useCommitFiles(projectId);
-  const pushMutation = usePushCommits(projectId);
-  const commitAndPushMutation = useCommitAndPush(projectId);
 
   // Transform revisions data to GitRef format
   const gitRefs: GitRef[] =
@@ -225,137 +217,23 @@ export const ReviewTabContent: FC<ReviewTabContentProps> = ({
     }
   }, [compareFrom, compareTo, getDiff, projectId]);
 
-  // Initialize file selection when diff data changes
-  useEffect(() => {
-    if (diffData?.success && diffData.data.files.length > 0) {
-      const initialSelection = new Map(
-        diffData.data.files.map((file) => [file.filePath, true]),
-      );
-      setSelectedFiles(initialSelection);
-    }
-  }, [diffData]);
-
   useEffect(() => {
     if (compareFrom && compareTo) {
       loadDiff();
     }
   }, [compareFrom, compareTo, loadDiff]);
 
-  // File selection handlers
-  const handleToggleFile = (filePath: string) => {
-    setSelectedFiles((prev) => {
-      const next = new Map(prev);
-      const newValue = !prev.get(filePath);
-      next.set(filePath, newValue);
-      return next;
-    });
+  // Review action handlers
+  const handleReset = () => {
+    clearComments();
+    toast.success(i18n._("review.action.reset.success"));
   };
 
-  const handleSelectAll = () => {
-    if (diffData?.success && diffData.data.files.length > 0) {
-      setSelectedFiles(
-        new Map(diffData.data.files.map((file) => [file.filePath, true])),
-      );
-    }
+  const handleInsertReview = () => {
+    const markdown = formatReviewMarkdown(comments, compareFrom, compareTo);
+    setDraft((prev) => (prev ? `${prev}\n\n${markdown}` : markdown));
+    toast.success(i18n._("review.action.insert.success"));
   };
-
-  const handleDeselectAll = () => {
-    if (diffData?.success && diffData.data.files.length > 0) {
-      setSelectedFiles(
-        new Map(diffData.data.files.map((file) => [file.filePath, false])),
-      );
-    }
-  };
-
-  // Commit handler
-  const handleCommit = async () => {
-    const selected = Array.from(selectedFiles.entries())
-      .filter(([_, isSelected]) => isSelected)
-      .map(([path]) => path);
-
-    try {
-      const result = await commitMutation.mutateAsync({
-        files: selected,
-        message: commitMessage,
-      });
-
-      if (result.success) {
-        toast.success(
-          `Committed ${result.filesCommitted} files (${result.commitSha.slice(0, 7)})`,
-        );
-        setCommitMessage("");
-        loadDiff();
-      } else {
-        toast.error(result.error, { description: result.details });
-      }
-    } catch {
-      toast.error(i18n._("Failed to commit"));
-    }
-  };
-
-  // Push handler
-  const handlePush = async () => {
-    try {
-      const result = await pushMutation.mutateAsync();
-
-      if (result.success) {
-        toast.success(`Pushed to ${result.remote}/${result.branch}`);
-      } else {
-        toast.error(result.error, { description: result.details });
-      }
-    } catch {
-      toast.error(i18n._("Failed to push"));
-    }
-  };
-
-  // Commit and Push handler
-  const handleCommitAndPush = async () => {
-    const selected = Array.from(selectedFiles.entries())
-      .filter(([_, isSelected]) => isSelected)
-      .map(([path]) => path);
-
-    try {
-      const result = await commitAndPushMutation.mutateAsync({
-        files: selected,
-        message: commitMessage,
-      });
-
-      if (result.success) {
-        toast.success(`Committed and pushed (${result.commitSha.slice(0, 7)})`);
-        setCommitMessage("");
-        loadDiff();
-      } else if (
-        result.success === false &&
-        "commitSucceeded" in result &&
-        result.commitSucceeded
-      ) {
-        toast.warning(
-          `Committed (${result.commitSha?.slice(0, 7)}), but push failed: ${result.error}`,
-          {
-            action: {
-              label: i18n._("Retry Push"),
-              onClick: handlePush,
-            },
-          },
-        );
-        setCommitMessage("");
-        loadDiff();
-      } else {
-        toast.error(result.error, { description: result.details });
-      }
-    } catch {
-      toast.error(i18n._("Failed to commit and push"));
-    }
-  };
-
-  // Validation
-  const selectedCount = Array.from(selectedFiles.values()).filter(
-    Boolean,
-  ).length;
-  const isCommitDisabled =
-    selectedCount === 0 ||
-    commitMessage.trim().length === 0 ||
-    commitMutation.isPending;
 
   if (isLoadingRevisions) {
     return (
@@ -440,182 +318,70 @@ export const ReviewTabContent: FC<ReviewTabContentProps> = ({
         )}
 
         {diffData?.success && (
-          <div className="p-3 space-y-3">
-            <DiffSummaryComponent
-              summary={{
-                filesChanged: diffData.data.files.length,
-                insertions: diffData.data.summary.totalAdditions,
-                deletions: diffData.data.summary.totalDeletions,
-              }}
-            />
-
-            {/* Commit UI Section */}
-            {compareTo === "working" && (
-              <div className="bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
-                <button
-                  type="button"
-                  onClick={() =>
-                    setIsCommitSectionExpanded(!isCommitSectionExpanded)
-                  }
-                  className="w-full flex items-center justify-between p-2 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors rounded-t-lg"
+          <div>
+            {/* Review Actions bar - sticky */}
+            <div className="sticky top-0 z-10 flex items-center justify-between border-b border-border/40 bg-background/95 px-3 py-2 backdrop-blur-sm">
+              <span className="text-xs text-muted-foreground">
+                {comments.length === 0
+                  ? i18n._("review.comments.empty")
+                  : i18n._("review.comments.count", {
+                      count: comments.length,
+                    })}
+              </span>
+              <div className="flex items-center gap-1">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  disabled={comments.length === 0}
+                  onClick={handleReset}
+                  className="h-7 text-xs"
                 >
-                  <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
-                    <Trans id="diff.commit.changes" />
-                  </span>
-                  {isCommitSectionExpanded ? (
-                    <ChevronUp className="h-4 w-4 text-gray-600 dark:text-gray-400" />
-                  ) : (
-                    <ChevronDown className="h-4 w-4 text-gray-600 dark:text-gray-400" />
-                  )}
-                </button>
-
-                {isCommitSectionExpanded && (
-                  <div className="p-3 pt-0 space-y-3">
-                    {/* File selection controls */}
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={handleSelectAll}
-                        disabled={commitMutation.isPending}
-                        className="h-6 text-[10px]"
-                      >
-                        <Trans id="diff.select.all" />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={handleDeselectAll}
-                        disabled={commitMutation.isPending}
-                        className="h-6 text-[10px]"
-                      >
-                        <Trans id="diff.deselect.all" />
-                      </Button>
-                      <span className="text-[10px] text-gray-600 dark:text-gray-400">
-                        {selectedCount} / {diffData.data.files.length} files
-                      </span>
-                    </div>
-
-                    {/* File list with checkboxes */}
-                    <div className="space-y-1 max-h-32 overflow-y-auto border border-gray-200 dark:border-gray-700 rounded p-2">
-                      {diffData.data.files.map((file) => (
-                        <div
-                          key={file.filePath}
-                          className="flex items-center gap-2"
-                        >
-                          <Checkbox
-                            id={`file-${file.filePath}`}
-                            checked={selectedFiles.get(file.filePath) ?? false}
-                            onCheckedChange={() =>
-                              handleToggleFile(file.filePath)
-                            }
-                            disabled={commitMutation.isPending}
-                            className="h-3 w-3"
-                          />
-                          <label
-                            htmlFor={`file-${file.filePath}`}
-                            className="text-[10px] font-mono cursor-pointer flex-1 truncate"
-                          >
-                            {file.filePath}
-                          </label>
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Commit message input */}
-                    <div className="space-y-1">
-                      <label
-                        htmlFor={commitMessageId}
-                        className="text-[10px] font-medium text-gray-700 dark:text-gray-300"
-                      >
-                        <Trans id="diff.commit.message" />
-                      </label>
-                      <Textarea
-                        id={commitMessageId}
-                        placeholder="Enter commit message..."
-                        value={commitMessage}
-                        onChange={(e) => setCommitMessage(e.target.value)}
-                        disabled={commitMutation.isPending}
-                        className="resize-none text-xs min-h-[60px]"
-                        rows={2}
-                      />
-                    </div>
-
-                    {/* Action buttons */}
-                    <div className="flex items-center gap-1.5 flex-wrap">
-                      <Button
-                        onClick={handleCommit}
-                        disabled={isCommitDisabled}
-                        size="sm"
-                        className="h-7 text-xs"
-                      >
-                        {commitMutation.isPending ? (
-                          <>
-                            <Loader2 className="w-3 h-3 mr-1 animate-spin" />
-                            <Trans id="diff.committing" />
-                          </>
-                        ) : (
-                          <Trans id="diff.commit" />
-                        )}
-                      </Button>
-                      <Button
-                        onClick={handlePush}
-                        disabled={pushMutation.isPending}
-                        variant="outline"
-                        size="sm"
-                        className="h-7 text-xs"
-                      >
-                        {pushMutation.isPending ? (
-                          <>
-                            <Loader2 className="w-3 h-3 mr-1 animate-spin" />
-                            <Trans id="diff.pushing" />
-                          </>
-                        ) : (
-                          <Trans id="diff.push" />
-                        )}
-                      </Button>
-                      <Button
-                        onClick={handleCommitAndPush}
-                        disabled={
-                          isCommitDisabled || commitAndPushMutation.isPending
-                        }
-                        variant="secondary"
-                        size="sm"
-                        className="h-7 text-xs"
-                      >
-                        {commitAndPushMutation.isPending ? (
-                          <>
-                            <Loader2 className="w-3 h-3 mr-1 animate-spin" />
-                            <Trans id="diff.committing.pushing" />
-                          </>
-                        ) : (
-                          <Trans id="diff.commit.push" />
-                        )}
-                      </Button>
-                    </div>
-                  </div>
-                )}
+                  <Trash2Icon className="w-3 h-3 mr-1" />
+                  <Trans id="review.action.reset" />
+                </Button>
+                <Button
+                  variant="default"
+                  size="sm"
+                  disabled={comments.length === 0}
+                  onClick={handleInsertReview}
+                  className="h-7 text-xs"
+                >
+                  <ClipboardPasteIcon className="w-3 h-3 mr-1" />
+                  <Trans id="review.action.insert" />
+                </Button>
               </div>
-            )}
+            </div>
 
-            {/* Diff viewer */}
-            <div className="space-y-2">
-              {diffData.data.diffs.map((diff) => (
-                <DiffViewer
-                  key={diff.file.filePath}
-                  fileDiff={{
-                    filename: diff.file.filePath,
-                    oldFilename: diff.file.oldPath,
-                    isNew: diff.file.status === "added",
-                    isDeleted: diff.file.status === "deleted",
-                    isRenamed: diff.file.status === "renamed",
-                    isBinary: false,
-                    hunks: diff.hunks,
-                    linesAdded: diff.file.additions,
-                    linesDeleted: diff.file.deletions,
-                  }}
-                />
-              ))}
+            <div className="p-3 space-y-3">
+              <DiffSummaryComponent
+                summary={{
+                  filesChanged: diffData.data.files.length,
+                  insertions: diffData.data.summary.totalAdditions,
+                  deletions: diffData.data.summary.totalDeletions,
+                }}
+              />
+
+              {/* Diff viewer */}
+              <div className="space-y-2">
+                {diffData.data.diffs.map((diff) => (
+                  <DiffViewer
+                    key={diff.file.filePath}
+                    fileDiff={{
+                      filename: diff.file.filePath,
+                      oldFilename: diff.file.oldPath,
+                      isNew: diff.file.status === "added",
+                      isDeleted: diff.file.status === "deleted",
+                      isRenamed: diff.file.status === "renamed",
+                      isBinary: false,
+                      hunks: diff.hunks,
+                      linesAdded: diff.file.additions,
+                      linesDeleted: diff.file.deletions,
+                    }}
+                    filename={diff.file.filePath}
+                    reviewSessionId={sessionId}
+                  />
+                ))}
+              </div>
             </div>
           </div>
         )}

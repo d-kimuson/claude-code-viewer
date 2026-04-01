@@ -1,8 +1,10 @@
-import { Trans } from "@lingui/react";
+import { Trans, useLingui } from "@lingui/react";
 import { useIsFetching, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   AlertCircle,
   CheckIcon,
+  ChevronDown,
+  ChevronUp,
   ExternalLinkIcon,
   Eye,
   FileCode,
@@ -12,7 +14,15 @@ import {
   Loader2,
   RefreshCwIcon,
 } from "lucide-react";
-import { type FC, Suspense, useCallback, useMemo, useState } from "react";
+import {
+  type FC,
+  Suspense,
+  useCallback,
+  useEffect,
+  useId,
+  useMemo,
+  useState,
+} from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import {
   oneDark,
@@ -21,6 +31,7 @@ import {
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Command,
   CommandEmpty,
@@ -43,6 +54,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
 import { useTheme } from "@/hooks/useTheme";
 import {
   fileContentQuery,
@@ -54,10 +66,13 @@ import { extractLatestTodos } from "@/lib/todo-viewer";
 import { cn } from "@/lib/utils";
 import { DiffViewer } from "../../projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffViewer";
 import {
+  useCommitAndPush,
+  useCommitFiles,
   useGitBranches,
   useGitCheckout,
   useGitCurrentRevisionsSuspense,
   useGitDiffSuspense,
+  usePushCommits,
 } from "../../projects/[projectId]/sessions/[sessionId]/hooks/useGit";
 import { useSession } from "../../projects/[projectId]/sessions/[sessionId]/hooks/useSession";
 import { CollapsibleTodoSection } from "./common/CollapsibleTodoSection";
@@ -386,11 +401,24 @@ const GitFileListFallback: FC = () => (
   </div>
 );
 
-const GitFileList: FC<{ projectId: string }> = ({ projectId }) => {
+const GitFileListWithCommit: FC<{ projectId: string }> = ({ projectId }) => {
+  const { i18n } = useLingui();
+  const commitMessageId = useId();
   const { data: diffData } = useGitDiffSuspense(projectId, "HEAD", "working");
+  const queryClient = useQueryClient();
 
   const files = diffData?.success ? diffData.data.files : [];
   const hasGitChanges = files.length > 0;
+
+  const [selectedFiles, setSelectedFiles] = useState<Map<string, boolean>>(
+    () => new Map(),
+  );
+  const [commitMessage, setCommitMessage] = useState("");
+  const [isCommitSectionExpanded, setIsCommitSectionExpanded] = useState(false);
+
+  const commitMutation = useCommitFiles(projectId);
+  const pushMutation = usePushCommits(projectId);
+  const commitAndPushMutation = useCommitAndPush(projectId);
 
   const diffsByFile = useMemo(() => {
     if (!diffData?.success) return new Map();
@@ -415,6 +443,130 @@ const GitFileList: FC<{ projectId: string }> = ({ projectId }) => {
     return map;
   }, [diffData]);
 
+  useEffect(() => {
+    if (diffData?.success && diffData.data.files.length > 0) {
+      setSelectedFiles(
+        new Map(diffData.data.files.map((file) => [file.filePath, true])),
+      );
+    }
+  }, [diffData]);
+
+  const handleToggleFile = (filePath: string) => {
+    setSelectedFiles((prev) => {
+      const next = new Map(prev);
+      next.set(filePath, !prev.get(filePath));
+      return next;
+    });
+  };
+
+  const handleSelectAll = () => {
+    if (diffData?.success && diffData.data.files.length > 0) {
+      setSelectedFiles(
+        new Map(diffData.data.files.map((file) => [file.filePath, true])),
+      );
+    }
+  };
+
+  const handleDeselectAll = () => {
+    if (diffData?.success && diffData.data.files.length > 0) {
+      setSelectedFiles(
+        new Map(diffData.data.files.map((file) => [file.filePath, false])),
+      );
+    }
+  };
+
+  const invalidateDiffQueries = useCallback(() => {
+    queryClient.invalidateQueries({
+      queryKey: ["git", "diff", projectId],
+    });
+  }, [queryClient, projectId]);
+
+  const handleCommit = async () => {
+    const selected = Array.from(selectedFiles.entries())
+      .filter(([, isSelected]) => isSelected)
+      .map(([path]) => path);
+
+    try {
+      const result = await commitMutation.mutateAsync({
+        files: selected,
+        message: commitMessage,
+      });
+
+      if (result.success) {
+        toast.success(
+          `Committed ${result.filesCommitted} files (${result.commitSha.slice(0, 7)})`,
+        );
+        setCommitMessage("");
+        invalidateDiffQueries();
+      } else {
+        toast.error(result.error, { description: result.details });
+      }
+    } catch {
+      toast.error(i18n._("Failed to commit"));
+    }
+  };
+
+  const handlePush = async () => {
+    try {
+      const result = await pushMutation.mutateAsync();
+
+      if (result.success) {
+        toast.success(`Pushed to ${result.remote}/${result.branch}`);
+      } else {
+        toast.error(result.error, { description: result.details });
+      }
+    } catch {
+      toast.error(i18n._("Failed to push"));
+    }
+  };
+
+  const handleCommitAndPush = async () => {
+    const selected = Array.from(selectedFiles.entries())
+      .filter(([, isSelected]) => isSelected)
+      .map(([path]) => path);
+
+    try {
+      const result = await commitAndPushMutation.mutateAsync({
+        files: selected,
+        message: commitMessage,
+      });
+
+      if (result.success) {
+        toast.success(`Committed and pushed (${result.commitSha.slice(0, 7)})`);
+        setCommitMessage("");
+        invalidateDiffQueries();
+      } else if (
+        result.success === false &&
+        "commitSucceeded" in result &&
+        result.commitSucceeded
+      ) {
+        toast.warning(
+          `Committed (${result.commitSha?.slice(0, 7)}), but push failed: ${result.error}`,
+          {
+            action: {
+              label: i18n._("Retry Push"),
+              onClick: handlePush,
+            },
+          },
+        );
+        setCommitMessage("");
+        invalidateDiffQueries();
+      } else {
+        toast.error(result.error, { description: result.details });
+      }
+    } catch {
+      toast.error(i18n._("Failed to commit and push"));
+    }
+  };
+
+  const selectedCount = Array.from(selectedFiles.values()).filter(
+    Boolean,
+  ).length;
+  const isCommitDisabled =
+    selectedCount === 0 ||
+    commitMessage.trim().length === 0 ||
+    commitMutation.isPending;
+
   if (!hasGitChanges) {
     return (
       <div className="flex-1 flex items-center justify-center p-8">
@@ -433,50 +585,179 @@ const GitFileList: FC<{ projectId: string }> = ({ projectId }) => {
   }
 
   return (
-    <div className="p-2 space-y-1">
-      {files.map((file) => {
-        const diffInfo = diffsByFile.get(file.filePath);
-        return (
-          <GitFileDialog
-            key={file.filePath}
-            projectId={projectId}
-            filePath={file.filePath}
-            status={file.status}
-            additions={file.additions}
-            deletions={file.deletions}
-            diffHunks={diffInfo?.hunks}
-          >
-            <button
-              type="button"
-              className="w-full flex items-center gap-2 px-2 py-1.5 text-xs hover:bg-muted/30 rounded-md transition-colors text-left"
-              data-testid="git-file-button"
+    <div className="flex flex-col">
+      {/* File list with checkboxes */}
+      <div className="p-2 space-y-1">
+        {files.map((file) => {
+          const diffInfo = diffsByFile.get(file.filePath);
+          return (
+            <GitFileDialog
+              key={file.filePath}
+              projectId={projectId}
+              filePath={file.filePath}
+              status={file.status}
+              additions={file.additions}
+              deletions={file.deletions}
+              diffHunks={diffInfo?.hunks}
             >
-              <span
-                className={cn(
-                  "w-1.5 h-1.5 rounded-full flex-shrink-0",
-                  file.status === "added" && "bg-green-500",
-                  file.status === "deleted" && "bg-red-500",
-                  file.status === "modified" && "bg-amber-500",
-                  file.status === "renamed" && "bg-blue-500",
-                )}
-              />
-              <span className="truncate flex-1 font-mono">{file.filePath}</span>
-              <span className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
-                {file.additions > 0 && (
-                  <span className="text-green-600 dark:text-green-400">
-                    +{file.additions}
-                  </span>
-                )}
-                {file.deletions > 0 && (
-                  <span className="text-red-600 dark:text-red-400">
-                    -{file.deletions}
-                  </span>
-                )}
+              <button
+                type="button"
+                className="w-full flex items-center gap-2 px-2 py-1.5 text-xs hover:bg-muted/30 rounded-md transition-colors text-left"
+                data-testid="git-file-button"
+              >
+                <Checkbox
+                  checked={selectedFiles.get(file.filePath) ?? false}
+                  onCheckedChange={() => handleToggleFile(file.filePath)}
+                  onClick={(e) => e.stopPropagation()}
+                  disabled={commitMutation.isPending}
+                  className="h-3 w-3"
+                />
+                <span
+                  className={cn(
+                    "w-1.5 h-1.5 rounded-full flex-shrink-0",
+                    file.status === "added" && "bg-green-500",
+                    file.status === "deleted" && "bg-red-500",
+                    file.status === "modified" && "bg-amber-500",
+                    file.status === "renamed" && "bg-blue-500",
+                  )}
+                />
+                <span className="truncate flex-1 font-mono">
+                  {file.filePath}
+                </span>
+                <span className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
+                  {file.additions > 0 && (
+                    <span className="text-green-600 dark:text-green-400">
+                      +{file.additions}
+                    </span>
+                  )}
+                  {file.deletions > 0 && (
+                    <span className="text-red-600 dark:text-red-400">
+                      -{file.deletions}
+                    </span>
+                  )}
+                </span>
+              </button>
+            </GitFileDialog>
+          );
+        })}
+      </div>
+
+      {/* Commit section */}
+      <div className="mx-2 mb-2 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
+        <button
+          type="button"
+          onClick={() => setIsCommitSectionExpanded(!isCommitSectionExpanded)}
+          className="w-full flex items-center justify-between p-2 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors rounded-t-lg"
+        >
+          <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
+            <Trans id="diff.commit.changes" />
+          </span>
+          {isCommitSectionExpanded ? (
+            <ChevronUp className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+          ) : (
+            <ChevronDown className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+          )}
+        </button>
+
+        {isCommitSectionExpanded && (
+          <div className="p-3 pt-0 space-y-3">
+            {/* File selection controls */}
+            <div className="flex items-center gap-2 flex-wrap">
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={handleSelectAll}
+                disabled={commitMutation.isPending}
+                className="h-6 text-[10px]"
+              >
+                <Trans id="diff.select.all" />
+              </Button>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={handleDeselectAll}
+                disabled={commitMutation.isPending}
+                className="h-6 text-[10px]"
+              >
+                <Trans id="diff.deselect.all" />
+              </Button>
+              <span className="text-[10px] text-gray-600 dark:text-gray-400">
+                {selectedCount} / {files.length} files
               </span>
-            </button>
-          </GitFileDialog>
-        );
-      })}
+            </div>
+
+            {/* Commit message input */}
+            <div className="space-y-1">
+              <label
+                htmlFor={commitMessageId}
+                className="text-[10px] font-medium text-gray-700 dark:text-gray-300"
+              >
+                <Trans id="diff.commit.message" />
+              </label>
+              <Textarea
+                id={commitMessageId}
+                placeholder="Enter commit message..."
+                value={commitMessage}
+                onChange={(e) => setCommitMessage(e.target.value)}
+                disabled={commitMutation.isPending}
+                className="resize-none text-xs min-h-[60px]"
+                rows={2}
+              />
+            </div>
+
+            {/* Action buttons */}
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <Button
+                onClick={handleCommit}
+                disabled={isCommitDisabled}
+                size="sm"
+                className="h-7 text-xs"
+              >
+                {commitMutation.isPending ? (
+                  <>
+                    <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                    <Trans id="diff.committing" />
+                  </>
+                ) : (
+                  <Trans id="diff.commit" />
+                )}
+              </Button>
+              <Button
+                onClick={handlePush}
+                disabled={pushMutation.isPending}
+                variant="outline"
+                size="sm"
+                className="h-7 text-xs"
+              >
+                {pushMutation.isPending ? (
+                  <>
+                    <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                    <Trans id="diff.pushing" />
+                  </>
+                ) : (
+                  <Trans id="diff.push" />
+                )}
+              </Button>
+              <Button
+                onClick={handleCommitAndPush}
+                disabled={isCommitDisabled || commitAndPushMutation.isPending}
+                variant="secondary"
+                size="sm"
+                className="h-7 text-xs"
+              >
+                {commitAndPushMutation.isPending ? (
+                  <>
+                    <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                    <Trans id="diff.committing.pushing" />
+                  </>
+                ) : (
+                  <Trans id="diff.commit.push" />
+                )}
+              </Button>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
@@ -599,7 +880,7 @@ export const GitTabContent: FC<GitTabContentProps> = ({
       {/* File list */}
       <div className="flex-1 min-h-0 overflow-y-auto">
         <Suspense fallback={<GitFileListFallback />}>
-          <GitFileList projectId={projectId} />
+          <GitFileListWithCommit projectId={projectId} />
         </Suspense>
       </div>
 

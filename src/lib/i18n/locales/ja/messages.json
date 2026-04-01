@@ -38,7 +38,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/ReviewTabContent.tsx",
-        382
+        260
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
@@ -53,7 +53,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/ReviewTabContent.tsx",
-        390
+        268
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
@@ -78,8 +78,8 @@
     "comments": [],
     "origin": [
       [
-        "src/app/components/rightPanel/ReviewTabContent.tsx",
-        292
+        "src/app/components/rightPanel/GitTabContent.tsx",
+        505
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
@@ -93,8 +93,8 @@
     "comments": [],
     "origin": [
       [
-        "src/app/components/rightPanel/ReviewTabContent.tsx",
-        347
+        "src/app/components/rightPanel/GitTabContent.tsx",
+        558
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
@@ -108,8 +108,8 @@
     "comments": [],
     "origin": [
       [
-        "src/app/components/rightPanel/ReviewTabContent.tsx",
-        307
+        "src/app/components/rightPanel/GitTabContent.tsx",
+        519
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
@@ -135,7 +135,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        454
+        473
       ]
     ],
     "translation": "補完機能付きメッセージ入力"
@@ -167,8 +167,8 @@
     "comments": [],
     "origin": [
       [
-        "src/app/components/rightPanel/ReviewTabContent.tsx",
-        336
+        "src/app/components/rightPanel/GitTabContent.tsx",
+        547
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
@@ -227,7 +227,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/ReviewTabContent.tsx",
-        182
+        174
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
@@ -264,7 +264,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        339
+        354
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
@@ -279,7 +279,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        324
+        339
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
@@ -309,7 +309,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        336
+        351
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
@@ -346,7 +346,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        342
+        357
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
@@ -361,7 +361,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        316
+        331
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
@@ -436,7 +436,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        345
+        360
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
@@ -466,7 +466,7 @@
       ],
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        327
+        342
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
@@ -529,7 +529,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        554
+        573
       ]
     ],
     "translation": "添付"
@@ -551,7 +551,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        418
+        436
       ]
     ],
     "translation": "メッセージの送信に失敗しました。もう一度お試しください。"
@@ -747,7 +747,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        263
+        276
       ]
     ],
     "translation": "メッセージの予約に失敗しました"
@@ -759,7 +759,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        247
+        260
       ]
     ],
     "translation": "メッセージを予約しました"
@@ -771,7 +771,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        252
+        265
       ]
     ],
     "translation": "スケジューラタブで確認・管理できます"
@@ -793,11 +793,11 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        507
+        526
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        675
+        694
       ]
     ],
     "translation": "今すぐ送信"
@@ -808,11 +808,11 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        490
+        509
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        658
+        677
       ]
     ],
     "translation": "送信モード"
@@ -823,15 +823,15 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        510
+        529
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        678
+        697
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        700
+        719
       ]
     ],
     "translation": "予約送信"
@@ -842,7 +842,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        517
+        536
       ]
     ],
     "translation": "送信予定時刻"
@@ -853,7 +853,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        762
+        781
       ]
     ],
     "translation": "処理中..."
@@ -865,7 +865,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        626
+        645
       ]
     ],
     "translation": "Reasoning effort を選択"
@@ -877,7 +877,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        589
+        608
       ]
     ],
     "translation": "モデルを選択"
@@ -961,7 +961,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        742
+        761
       ]
     ],
     "translation": "音声入力"
@@ -1058,7 +1058,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/ReviewTabContent.tsx",
-        406
+        284
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
@@ -1509,8 +1509,8 @@
     "comments": [],
     "origin": [
       [
-        "src/app/components/rightPanel/ReviewTabContent.tsx",
-        558
+        "src/app/components/rightPanel/GitTabContent.tsx",
+        722
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
@@ -1524,8 +1524,8 @@
     "comments": [],
     "origin": [
       [
-        "src/app/components/rightPanel/ReviewTabContent.tsx",
-        463
+        "src/app/components/rightPanel/GitTabContent.tsx",
+        653
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
@@ -1539,8 +1539,8 @@
     "comments": [],
     "origin": [
       [
-        "src/app/components/rightPanel/ReviewTabContent.tsx",
-        531
+        "src/app/components/rightPanel/GitTabContent.tsx",
+        695
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
@@ -1554,8 +1554,8 @@
     "comments": [],
     "origin": [
       [
-        "src/app/components/rightPanel/ReviewTabContent.tsx",
-        592
+        "src/app/components/rightPanel/GitTabContent.tsx",
+        754
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
@@ -1569,8 +1569,8 @@
     "comments": [],
     "origin": [
       [
-        "src/app/components/rightPanel/ReviewTabContent.tsx",
-        555
+        "src/app/components/rightPanel/GitTabContent.tsx",
+        719
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
@@ -1584,8 +1584,8 @@
     "comments": [],
     "origin": [
       [
-        "src/app/components/rightPanel/ReviewTabContent.tsx",
-        589
+        "src/app/components/rightPanel/GitTabContent.tsx",
+        751
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
@@ -1599,8 +1599,8 @@
     "comments": [],
     "origin": [
       [
-        "src/app/components/rightPanel/ReviewTabContent.tsx",
-        492
+        "src/app/components/rightPanel/GitTabContent.tsx",
+        682
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
@@ -1652,7 +1652,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/ReviewTabContent.tsx",
-        628
+        392
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
@@ -1666,8 +1666,8 @@
     "comments": [],
     "origin": [
       [
-        "src/app/components/rightPanel/ReviewTabContent.tsx",
-        574
+        "src/app/components/rightPanel/GitTabContent.tsx",
+        738
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
@@ -1681,8 +1681,8 @@
     "comments": [],
     "origin": [
       [
-        "src/app/components/rightPanel/ReviewTabContent.tsx",
-        571
+        "src/app/components/rightPanel/GitTabContent.tsx",
+        735
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
@@ -1696,8 +1696,8 @@
     "comments": [],
     "origin": [
       [
-        "src/app/components/rightPanel/ReviewTabContent.tsx",
-        483
+        "src/app/components/rightPanel/GitTabContent.tsx",
+        673
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
@@ -2149,7 +2149,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        427
+        579
       ]
     ],
     "translation": "Git変更がありません"
@@ -2160,7 +2160,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        519
+        800
       ]
     ],
     "translation": "プルリクエスト"
@@ -2171,7 +2171,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        286
+        301
       ]
     ],
     "translation": "コンテンツ"
@@ -2182,7 +2182,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        282
+        297
       ]
     ],
     "translation": "差分"
@@ -2193,7 +2193,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/ReviewTabContent.tsx",
-        435
+        313
       ]
     ],
     "translation": "レビュー対象がありません"
@@ -2417,6 +2417,109 @@
       ]
     ],
     "translation": "プロジェクト"
+  },
+  "review.action.insert": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        358
+      ]
+    ],
+    "translation": "レビューを挿入"
+  },
+  "review.action.insert.success": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        235
+      ]
+    ],
+    "translation": "レビューをチャット入力に挿入しました"
+  },
+  "review.action.reset": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        348
+      ]
+    ],
+    "translation": "リセット"
+  },
+  "review.action.reset.success": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        229
+      ]
+    ],
+    "translation": "すべてのコメントをクリアしました"
+  },
+  "review.comment.cancel": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffViewer.tsx",
+        108
+      ]
+    ],
+    "translation": "キャンセル"
+  },
+  "review.comment.placeholder": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffViewer.tsx",
+        102
+      ]
+    ],
+    "translation": "コメントを追加..."
+  },
+  "review.comment.save": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffViewer.tsx",
+        111
+      ]
+    ],
+    "translation": "保存"
+  },
+  "review.comments.count": {
+    "placeholders": {
+      "count": [
+        "comments.length"
+      ]
+    },
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        335
+      ]
+    ],
+    "translation": "{count} 件のコメント"
+  },
+  "review.comments.empty": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/rightPanel/ReviewTabContent.tsx",
+        334
+      ]
+    ],
+    "translation": "コメントなし"
   },
   "scheduler.create_job": {
     "message": "Create Job",

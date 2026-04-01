@@ -196,5 +196,23 @@
   },
   "notification.question_asked": {
     "translation": "Claudeからの質問"
+  },
+  "review.action.reset": {
+    "translation": "リセット"
+  },
+  "review.action.insert": {
+    "translation": "レビューを挿入"
+  },
+  "review.action.insert.success": {
+    "translation": "レビューをチャット入力に挿入しました"
+  },
+  "review.action.reset.success": {
+    "translation": "すべてのコメントをクリアしました"
+  },
+  "review.comments.count": {
+    "translation": "{count} 件のコメント"
+  },
+  "review.comments.empty": {
+    "translation": "コメントなし"
   }
 }

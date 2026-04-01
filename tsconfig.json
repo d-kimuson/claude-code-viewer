@@ -1,43 +1,29 @@
 {
   "extends": "@tsconfig/strictest/tsconfig.json",
   "compilerOptions": {
-    // Ignore Linter
     "noImplicitReturns": false,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": false,
-
-    // Module Resolution
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "resolveJsonModule": true,
     "verbatimModuleSyntax": true,
     "allowImportingTsExtensions": true,
-
-    // TypeChecking
     "exactOptionalPropertyTypes": false,
     "noPropertyAccessFromIndexSignature": false,
     "noUncheckedIndexedAccess": true,
     "allowJs": true,
     "types": ["node", "vitest/globals", "vite/client", "vite-plugin-pwa/client"],
-
-    // transpile
     "noEmit": true,
     "erasableSyntaxOnly": true,
-    "target": "ES2020",
-
-    // React
     "target": "es2024",
     "lib": ["dom", "dom.iterable", "esnext"],
     "jsx": "react-jsx",
-
-    // paths alias
     "paths": {
       "@/*": ["./src/*"]
     },
-
     "plugins": [
-      // Effect-TS
       {
         "name": "@effect/language-service"
       }

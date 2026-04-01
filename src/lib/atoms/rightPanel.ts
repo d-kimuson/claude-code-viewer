@@ -2,6 +2,7 @@ import { atom } from "jotai";
 import type { RefObject } from "react";
 import type { RightPanelTab } from "@/lib/types/rightPanel";
 
+export const rightPanelResizingAtom = atom(false);
 export const rightPanelOpenAtom = atom(false);
 export const rightPanelActiveTabAtom = atom<RightPanelTab>("git");
 export const rightPanelWidthAtom = atom(28);

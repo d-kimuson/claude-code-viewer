@@ -8,8 +8,7 @@ import {
   Trash2Icon,
   XIcon,
 } from "lucide-react";
-import type { FC } from "react";
-import { useMemo, useState } from "react";
+import { type FC, memo, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -43,6 +42,7 @@ interface DiffContentRowsProps {
   hunks: FileDiff["hunks"];
   reviewProps?: ReviewProps;
   commentsByLine?: ReadonlyMap<number, readonly ReviewComment[]>;
+  onRemoveComment?: (id: string) => void;
 }
 
 const diffMonoClass =
@@ -139,14 +139,13 @@ interface CommentButtonProps {
   reviewProps: ReviewProps;
   line: DiffLine;
   lineComments: readonly ReviewComment[];
+  onRemoveComment: (id: string) => void;
 }
 
 const ExistingComment: FC<{
   comment: ReviewComment;
-  sessionId: string;
-}> = ({ comment, sessionId }) => {
-  const { removeComment } = useReviewComments(sessionId);
-
+  onRemove: (id: string) => void;
+}> = ({ comment, onRemove }) => {
   return (
     <div className="group/comment relative rounded-md border border-border/50 bg-muted/30 px-2.5 py-2 transition-colors hover:border-border">
       <p className="pr-5 text-[13px] leading-relaxed text-foreground/90">
@@ -154,7 +153,7 @@ const ExistingComment: FC<{
       </p>
       <button
         type="button"
-        onClick={() => removeComment(comment.id)}
+        onClick={() => onRemove(comment.id)}
         className="absolute right-1.5 top-1.5 rounded p-0.5 text-muted-foreground/40 opacity-0 transition-all hover:bg-destructive/10 hover:text-destructive group-hover/comment:opacity-100"
       >
         <Trash2Icon className="h-3 w-3" />
@@ -167,6 +166,7 @@ const CommentButton: FC<CommentButtonProps> = ({
   reviewProps,
   line,
   lineComments,
+  onRemoveComment,
 }) => {
   const [open, setOpen] = useState(false);
   const hasComments = lineComments.length > 0;
@@ -203,7 +203,7 @@ const CommentButton: FC<CommentButtonProps> = ({
               <ExistingComment
                 key={comment.id}
                 comment={comment}
-                sessionId={reviewProps.reviewSessionId}
+                onRemove={onRemoveComment}
               />
             ))}
           </div>
@@ -268,6 +268,7 @@ const DiffContentRows: FC<DiffContentRowsProps> = ({
   hunks,
   reviewProps,
   commentsByLine,
+  onRemoveComment,
 }) => {
   return (
     <>
@@ -304,13 +305,16 @@ const DiffContentRows: FC<DiffContentRowsProps> = ({
                     diffMonoClass,
                   )}
                 >
-                  {reviewProps != null && line.type !== "hunk" && (
-                    <CommentButton
-                      reviewProps={reviewProps}
-                      line={line}
-                      lineComments={lineComments}
-                    />
-                  )}
+                  {reviewProps != null &&
+                    line.type !== "hunk" &&
+                    onRemoveComment != null && (
+                      <CommentButton
+                        reviewProps={reviewProps}
+                        line={line}
+                        lineComments={lineComments}
+                        onRemoveComment={onRemoveComment}
+                      />
+                    )}
                   <span
                     data-slot="diff-sign"
                     className={cn("absolute left-2 top-0.5 w-4 text-center", {
@@ -348,12 +352,14 @@ interface DiffBodyProps {
   hunks: FileDiff["hunks"];
   reviewProps?: ReviewProps;
   commentsByLine?: ReadonlyMap<number, readonly ReviewComment[]>;
+  onRemoveComment?: (id: string) => void;
 }
 
 const DiffBody: FC<DiffBodyProps> = ({
   hunks,
   reviewProps,
   commentsByLine,
+  onRemoveComment,
 }) => {
   return (
     <div className="relative flex">
@@ -371,6 +377,7 @@ const DiffBody: FC<DiffBodyProps> = ({
             hunks={hunks}
             reviewProps={reviewProps}
             commentsByLine={commentsByLine}
+            onRemoveComment={onRemoveComment}
           />
         </div>
       </div>
@@ -493,25 +500,45 @@ const useCommentsByLine = (
   return { commentsByLine, addComment, removeComment, clearComments };
 };
 
-export const DiffViewer: FC<DiffViewerProps> = ({
-  fileDiff,
-  className,
-  filename,
-  reviewSessionId,
-}) => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  const commentModeEnabled = filename != null && reviewSessionId != null;
-  const { commentsByLine } = useCommentsByLine(reviewSessionId, filename);
+export const DiffViewer: FC<DiffViewerProps> = memo(
+  ({ fileDiff, className, filename, reviewSessionId }) => {
+    const [isCollapsed, setIsCollapsed] = useState(false);
+    const commentModeEnabled = filename != null && reviewSessionId != null;
+    const { commentsByLine, removeComment } = useCommentsByLine(
+      reviewSessionId,
+      filename,
+    );
 
-  const reviewProps: ReviewProps | undefined = commentModeEnabled
-    ? { filename, reviewSessionId }
-    : undefined;
+    const reviewProps: ReviewProps | undefined = commentModeEnabled
+      ? { filename, reviewSessionId }
+      : undefined;
 
-  const toggleCollapse = () => {
-    setIsCollapsed(!isCollapsed);
-  };
+    const toggleCollapse = () => {
+      setIsCollapsed(!isCollapsed);
+    };
 
-  if (fileDiff.isBinary) {
+    if (fileDiff.isBinary) {
+      return (
+        <div
+          className={cn(
+            "overflow-hidden border border-gray-200 dark:border-gray-700 rounded-lg",
+            className,
+          )}
+        >
+          <FileHeader
+            fileDiff={fileDiff}
+            isCollapsed={isCollapsed}
+            onToggleCollapse={toggleCollapse}
+          />
+          {!isCollapsed && (
+            <div className="text-center py-8 text-gray-500 dark:text-gray-400 text-sm">
+              Binary file cannot be displayed
+            </div>
+          )}
+        </div>
+      );
+    }
+
     return (
       <div
         className={cn(
@@ -525,35 +552,18 @@ export const DiffViewer: FC<DiffViewerProps> = ({
           onToggleCollapse={toggleCollapse}
         />
         {!isCollapsed && (
-          <div className="text-center py-8 text-gray-500 dark:text-gray-400 text-sm">
-            Binary file cannot be displayed
+          <div className="border-t border-gray-200 dark:border-gray-700">
+            <DiffBody
+              hunks={fileDiff.hunks}
+              reviewProps={reviewProps}
+              commentsByLine={commentsByLine}
+              onRemoveComment={removeComment}
+            />
           </div>
         )}
       </div>
     );
-  }
+  },
+);
 
-  return (
-    <div
-      className={cn(
-        "overflow-hidden border border-gray-200 dark:border-gray-700 rounded-lg",
-        className,
-      )}
-    >
-      <FileHeader
-        fileDiff={fileDiff}
-        isCollapsed={isCollapsed}
-        onToggleCollapse={toggleCollapse}
-      />
-      {!isCollapsed && (
-        <div className="border-t border-gray-200 dark:border-gray-700">
-          <DiffBody
-            hunks={fileDiff.hunks}
-            reviewProps={reviewProps}
-            commentsByLine={commentsByLine}
-          />
-        </div>
-      )}
-    </div>
-  );
-};
+DiffViewer.displayName = "DiffViewer";

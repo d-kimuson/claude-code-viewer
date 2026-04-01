@@ -1,3 +1,4 @@
+import { useAtomValue } from "jotai";
 import { type FC, Suspense, useCallback, useState } from "react";
 import { AppLayout } from "@/app/components/AppLayout";
 import { BottomPanel } from "@/app/components/BottomPanel";
@@ -11,6 +12,7 @@ import { useIsMobile } from "@/hooks/useIsMobile";
 import { useRightPanelOpen, useRightPanelWidth } from "@/hooks/useRightPanel";
 import { useSwipeGesture } from "@/hooks/useSwipeGesture";
 import { useSyncRightPanelWithSearchParams } from "@/hooks/useSyncRightPanelWithSearchParams";
+import { rightPanelResizingAtom } from "@/lib/atoms/rightPanel";
 import { cn } from "@/lib/utils";
 import { useProject } from "../../../hooks/useProject";
 import { SessionPageMain } from "./SessionPageMain";
@@ -39,6 +41,7 @@ export const SessionPageContent: FC<{
   });
   const isRightPanelOpen = useRightPanelOpen();
   const rightPanelWidth = useRightPanelWidth();
+  const isRightPanelResizing = useAtomValue(rightPanelResizingAtom);
   const { data: projectData } = useProject(projectId);
 
   const firstPage = projectData.pages[0];
@@ -111,7 +114,10 @@ export const SessionPageContent: FC<{
 
         {/* Center column: main content + bottom panel */}
         <div
-          className="flex flex-col flex-1 min-w-0 transition-all duration-200"
+          className={cn(
+            "flex flex-col flex-1 min-w-0",
+            !isRightPanelResizing && "transition-all duration-200",
+          )}
           style={{ marginRight: rightPanelMargin }}
         >
           {/* Main Chat Area */}

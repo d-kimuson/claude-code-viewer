@@ -18,7 +18,10 @@ import {
 } from "@/components/ui/tooltip";
 import { useDragResize } from "@/hooks/useDragResize";
 import { useIsMobile } from "@/hooks/useIsMobile";
-import { rightPanelIframeRefAtom } from "@/lib/atoms/rightPanel";
+import {
+  rightPanelIframeRefAtom,
+  rightPanelResizingAtom,
+} from "@/lib/atoms/rightPanel";
 import { cn } from "@/lib/utils";
 import {
   type RightPanelTab,
@@ -119,12 +122,15 @@ export const RightPanel: FC<RightPanelProps> = ({
     [setWidth],
   );
 
+  const setResizingAtom = useSetAtom(rightPanelResizingAtom);
+
   const { isResizing, handleMouseDown } = useDragResize({
     onResize: handleResize,
     enabled: isOpen && !isMobile,
   });
 
   useEffect(() => {
+    setResizingAtom(isResizing);
     if (isResizing) {
       document.body.style.userSelect = "none";
       document.body.style.cursor = "ew-resize";
@@ -140,7 +146,7 @@ export const RightPanel: FC<RightPanelProps> = ({
       document.body.style.cursor = "";
       document.body.style.pointerEvents = "";
     };
-  }, [isResizing]);
+  }, [isResizing, setResizingAtom]);
 
   const handleUrlKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {

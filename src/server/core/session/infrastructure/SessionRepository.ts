@@ -1,5 +1,8 @@
-import { FileSystem, Path } from "@effect/platform";
+import { FileSystem } from "@effect/platform";
+import { desc, eq, sql } from "drizzle-orm";
 import { Context, Effect, Layer, Option } from "effect";
+import { DrizzleService } from "../../../lib/db/DrizzleService";
+import { projects, sessions } from "../../../lib/db/schema";
 import type { InferEffect } from "../../../lib/effect/types";
 import { parseJsonl } from "../../claude-code/functions/parseJsonl";
 import { ApplicationContext } from "../../platform/services/ApplicationContext";
@@ -7,20 +10,17 @@ import {
   decodeProjectId,
   validateProjectPath,
 } from "../../project/functions/id";
+import { SyncService } from "../../sync/services/SyncService";
 import type { Session, SessionDetail } from "../../types";
-import {
-  decodeSessionId,
-  encodeSessionId,
-  validateSessionId,
-} from "../functions/id";
-import { isRegularSessionFile } from "../functions/isRegularSessionFile";
+import { decodeSessionId, validateSessionId } from "../functions/id";
 import { SessionMetaService } from "../services/SessionMetaService";
 
 const LayerImpl = Effect.gen(function* () {
   const fs = yield* FileSystem.FileSystem;
-  const path = yield* Path.Path;
   const sessionMetaService = yield* SessionMetaService;
   const appContext = yield* ApplicationContext;
+  const { db } = yield* DrizzleService;
+  const syncService = yield* SyncService;
 
   const getSession = (projectId: string, sessionId: string) =>
     Effect.gen(function* () {
@@ -100,114 +100,60 @@ const LayerImpl = Effect.gen(function* () {
         );
       }
 
-      // Check if project directory exists
-      const dirExists = yield* fs.exists(claudeProjectPath);
-      if (!dirExists) {
-        console.warn(`Project directory not found at ${claudeProjectPath}`);
+      // Ensure project is synced in DB
+      const projectExists = db
+        .select({ one: sql<number>`1` })
+        .from(projects)
+        .where(eq(projects.id, projectId))
+        .get();
+      if (!projectExists) {
+        yield* syncService
+          .syncProjectList(projectId)
+          .pipe(Effect.catchAll(() => Effect.void));
+      }
+
+      // Fetch all sessions for project ordered by lastModifiedAt DESC
+      const rows = db
+        .select()
+        .from(sessions)
+        .where(eq(sessions.projectId, projectId))
+        .orderBy(desc(sessions.lastModifiedAt))
+        .all();
+
+      if (rows.length === 0) {
         return { sessions: [] };
       }
 
-      // Read directory entries with error handling
-      const dirents = yield* Effect.tryPromise({
-        try: () => fs.readDirectory(claudeProjectPath).pipe(Effect.runPromise),
-        catch: (error) => {
-          console.warn(
-            `Failed to read sessions for project ${projectId}:`,
-            error,
-          );
-          return new Error("Failed to read directory");
-        },
-      }).pipe(Effect.catchAll(() => Effect.succeed([])));
-
-      // Process session files (excluding agent-*.jsonl files)
-      const sessionEffects = dirents.filter(isRegularSessionFile).map((entry) =>
-        Effect.gen(function* () {
-          const fullPath = path.resolve(claudeProjectPath, entry);
-          const sessionId = encodeSessionId(fullPath);
-
-          // Get file stats with error handling
-          const stat = yield* Effect.tryPromise(() =>
-            fs.stat(fullPath).pipe(Effect.runPromise),
-          ).pipe(Effect.catchAll(() => Effect.succeed(null)));
-
-          if (!stat) {
-            return null;
-          }
-
-          return {
-            id: sessionId,
-            jsonlFilePath: fullPath,
-            lastModifiedAt: Option.getOrElse(stat.mtime, () => new Date()),
-          };
-        }),
-      );
-
-      // Execute all effects in parallel and filter out nulls
-      const sessionsWithNulls = yield* Effect.all(sessionEffects, {
-        concurrency: "unbounded",
-      });
-      const sessions = sessionsWithNulls
-        .filter((s): s is NonNullable<typeof s> => s !== null)
-        .sort(
-          (a, b) => b.lastModifiedAt.getTime() - a.lastModifiedAt.getTime(),
-        );
-
-      const index =
+      // Cursor-based pagination
+      const startIndex =
         cursor !== undefined
-          ? sessions.findIndex((session) => session.id === cursor)
-          : -1;
+          ? (() => {
+              const idx = rows.findIndex((r) => r.id === cursor);
+              return idx === -1 ? 0 : idx + 1;
+            })()
+          : 0;
 
-      if (index !== -1) {
-        const sessionsToReturn = sessions.slice(
-          index + 1,
-          Math.min(index + 1 + maxCount, sessions.length),
-        );
+      const sessionsToReturn = rows.slice(startIndex, startIndex + maxCount);
 
-        const sessionsWithMeta = yield* Effect.all(
-          sessionsToReturn.map((item) =>
-            Effect.gen(function* () {
-              const meta = yield* sessionMetaService.getSessionMeta(
-                projectId,
-                item.id,
-              );
-              return {
-                ...item,
-                meta,
-              };
-            }),
-          ),
-          { concurrency: "unbounded" },
-        );
-
-        return {
-          sessions: sessionsWithMeta,
-        };
-      }
-
-      // Get sessions with metadata
-      const sessionsToReturn = sessions.slice(
-        0,
-        Math.min(maxCount, sessions.length),
-      );
-      const sessionsWithMeta: Session[] = yield* Effect.all(
-        sessionsToReturn.map((item) =>
+      const sessionsResult: Session[] = yield* Effect.all(
+        sessionsToReturn.map((row) =>
           Effect.gen(function* () {
             const meta = yield* sessionMetaService.getSessionMeta(
               projectId,
-              item.id,
+              row.id,
             );
             return {
-              ...item,
+              id: row.id,
+              jsonlFilePath: row.filePath,
+              lastModifiedAt: new Date(row.lastModifiedAt),
               meta,
-            };
+            } satisfies Session;
           }),
         ),
         { concurrency: "unbounded" },
       );
 
-      return {
-        sessions: sessionsWithMeta,
-      };
+      return { sessions: sessionsResult };
     });
 
   return {

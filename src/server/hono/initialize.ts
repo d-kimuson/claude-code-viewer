@@ -2,11 +2,10 @@ import { Context, Effect, Layer, Ref, Schedule } from "effect";
 import { EventBus } from "../core/events/services/EventBus";
 import { FileWatcherService } from "../core/events/services/fileWatcher";
 import type { InternalEventDeclaration } from "../core/events/types/InternalEventDeclaration";
-import { ProjectRepository } from "../core/project/infrastructure/ProjectRepository";
 import { ProjectMetaService } from "../core/project/services/ProjectMetaService";
 import { RateLimitAutoScheduleService } from "../core/rate-limit/services/RateLimitAutoScheduleService";
-import { SessionRepository } from "../core/session/infrastructure/SessionRepository";
 import { SessionMetaService } from "../core/session/services/SessionMetaService";
+import { SyncService } from "../core/sync/services/SyncService";
 
 interface InitializeServiceInterface {
   readonly startInitialization: () => Effect.Effect<void>;
@@ -22,21 +21,33 @@ export class InitializeService extends Context.Tag("InitializeService")<
     Effect.gen(function* () {
       const eventBus = yield* EventBus;
       const fileWatcher = yield* FileWatcherService;
-      const projectRepository = yield* ProjectRepository;
-      const sessionRepository = yield* SessionRepository;
       const projectMetaService = yield* ProjectMetaService;
       const sessionMetaService = yield* SessionMetaService;
       const rateLimitAutoScheduleService = yield* RateLimitAutoScheduleService;
+      const syncService = yield* SyncService;
 
       // 状態管理用の Ref
       const listenersRef = yield* Ref.make<{
         sessionChanged?:
           | ((event: InternalEventDeclaration["sessionChanged"]) => void)
           | null;
+        sessionListChanged?:
+          | ((event: InternalEventDeclaration["sessionListChanged"]) => void)
+          | null;
       }>({});
 
       const startInitialization = (): Effect.Effect<void> => {
         return Effect.gen(function* () {
+          // Run full sync to populate SQLite cache
+          console.log("Starting fullSync...");
+          yield* syncService.fullSync().pipe(
+            Effect.catchAll((e) => {
+              console.error("[InitializeService] fullSync failed:", e);
+              return Effect.void;
+            }),
+          );
+          console.log("fullSync completed");
+
           // ファイルウォッチャーを開始
           yield* fileWatcher.startWatching();
 
@@ -69,32 +80,29 @@ export class InitializeService extends Context.Tag("InitializeService")<
             );
           };
 
+          // sessionListChanged イベントのリスナーを登録
+          const onSessionListChanged = (
+            event: InternalEventDeclaration["sessionListChanged"],
+          ) => {
+            Effect.runFork(
+              syncService.syncProjectList(event.projectId).pipe(
+                Effect.catchAll((e) => {
+                  console.error(
+                    "[InitializeService] syncProjectList failed:",
+                    e,
+                  );
+                  return Effect.void;
+                }),
+              ),
+            );
+          };
+
           yield* Ref.set(listenersRef, {
             sessionChanged: onSessionChanged,
+            sessionListChanged: onSessionListChanged,
           });
           yield* eventBus.on("sessionChanged", onSessionChanged);
-
-          yield* Effect.gen(function* () {
-            console.log("Initializing projects cache");
-            const { projects } = yield* projectRepository.getProjects();
-            console.log(`${projects.length} projects cache initialized`);
-
-            console.log("Initializing sessions cache");
-            const results = yield* Effect.all(
-              projects.map((project) =>
-                sessionRepository.getSessions(project.id),
-              ),
-              { concurrency: "unbounded" },
-            );
-            const totalSessions = results.reduce(
-              (s, { sessions }) => s + sessions.length,
-              0,
-            );
-            console.log(`${totalSessions} sessions cache initialized`);
-          }).pipe(
-            Effect.catchAll(() => Effect.void),
-            Effect.withSpan("initialize-cache"),
-          );
+          yield* eventBus.on("sessionListChanged", onSessionListChanged);
         }).pipe(Effect.withSpan("start-initialization")) as Effect.Effect<void>;
       };
 
@@ -103,6 +111,12 @@ export class InitializeService extends Context.Tag("InitializeService")<
           const listeners = yield* Ref.get(listenersRef);
           if (listeners.sessionChanged) {
             yield* eventBus.off("sessionChanged", listeners.sessionChanged);
+          }
+          if (listeners.sessionListChanged) {
+            yield* eventBus.off(
+              "sessionListChanged",
+              listeners.sessionListChanged,
+            );
           }
 
           yield* Ref.set(listenersRef, {});

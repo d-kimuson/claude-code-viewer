@@ -1,0 +1,315 @@
+{
+  "dialect": "sqlite",
+  "id": "382a3f92-e566-45ff-af50-939de0afe931",
+  "prevIds": ["00000000-0000-0000-0000-000000000000"],
+  "version": "7",
+  "ddl": [
+    {
+      "name": "projects",
+      "entityType": "tables"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "table": "projects",
+      "entityType": "columns"
+    },
+    {
+      "columns": ["id"],
+      "nameExplicit": false,
+      "name": "projects_pk",
+      "table": "projects",
+      "entityType": "pks"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "name",
+      "table": "projects",
+      "entityType": "columns"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "path",
+      "table": "projects",
+      "entityType": "columns"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "0",
+      "generated": null,
+      "name": "session_count",
+      "table": "projects",
+      "entityType": "columns"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "dir_mtime_ms",
+      "table": "projects",
+      "entityType": "columns"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "synced_at",
+      "table": "projects",
+      "entityType": "columns"
+    },
+    {
+      "name": "sessions",
+      "entityType": "tables"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "table": "sessions",
+      "entityType": "columns"
+    },
+    {
+      "columns": ["id"],
+      "nameExplicit": false,
+      "name": "sessions_pk",
+      "table": "sessions",
+      "entityType": "pks"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "project_id",
+      "table": "sessions",
+      "entityType": "columns"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "file_path",
+      "table": "sessions",
+      "entityType": "columns"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "0",
+      "generated": null,
+      "name": "message_count",
+      "table": "sessions",
+      "entityType": "columns"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "first_user_message_json",
+      "table": "sessions",
+      "entityType": "columns"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "custom_title",
+      "table": "sessions",
+      "entityType": "columns"
+    },
+    {
+      "type": "real",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "0",
+      "generated": null,
+      "name": "total_cost_usd",
+      "table": "sessions",
+      "entityType": "columns"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "cost_breakdown_json",
+      "table": "sessions",
+      "entityType": "columns"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "token_usage_json",
+      "table": "sessions",
+      "entityType": "columns"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "model_name",
+      "table": "sessions",
+      "entityType": "columns"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "pr_links_json",
+      "table": "sessions",
+      "entityType": "columns"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "file_mtime_ms",
+      "table": "sessions",
+      "entityType": "columns"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "last_modified_at",
+      "table": "sessions",
+      "entityType": "columns"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "synced_at",
+      "table": "sessions",
+      "entityType": "columns"
+    },
+    {
+      "columns": [
+        {
+          "value": "file_path",
+          "isExpression": false
+        }
+      ],
+      "isUnique": true,
+      "where": null,
+      "origin": "manual",
+      "name": "sessions_file_path_unique",
+      "table": "sessions",
+      "entityType": "indexes"
+    },
+    {
+      "columns": [
+        {
+          "value": "project_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "origin": "manual",
+      "name": "idx_sessions_project_id",
+      "table": "sessions",
+      "entityType": "indexes"
+    },
+    {
+      "columns": [
+        {
+          "value": "file_mtime_ms",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "origin": "manual",
+      "name": "idx_sessions_file_mtime",
+      "table": "sessions",
+      "entityType": "indexes"
+    },
+    {
+      "columns": ["project_id"],
+      "tableTo": "projects",
+      "columnsTo": ["id"],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "sessions_project_id_projects_id_fk",
+      "table": "sessions",
+      "entityType": "fks"
+    },
+    {
+      "name": "sync_state",
+      "entityType": "tables"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "key",
+      "table": "sync_state",
+      "entityType": "columns"
+    },
+    {
+      "columns": ["key"],
+      "nameExplicit": false,
+      "name": "sync_state_pk",
+      "table": "sync_state",
+      "entityType": "pks"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "value",
+      "table": "sync_state",
+      "entityType": "columns"
+    }
+  ],
+  "renames": []
+}

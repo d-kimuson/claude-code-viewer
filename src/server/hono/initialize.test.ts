@@ -11,6 +11,7 @@ import type { InternalEventDeclaration } from "../core/events/types/InternalEven
 import { ProjectRepository } from "../core/project/infrastructure/ProjectRepository";
 import { RateLimitAutoScheduleService } from "../core/rate-limit/services/RateLimitAutoScheduleService";
 import { createMockSessionMeta } from "../core/session/testing/createMockSessionMeta";
+import { SyncService } from "../core/sync/services/SyncService";
 import { InitializeService } from "./initialize";
 
 const fileWatcherWithEventBus = FileWatcherService.Live.pipe(
@@ -26,9 +27,17 @@ const mockRateLimitAutoScheduleService = Layer.succeed(
   },
 );
 
+// Mock SyncService for testing
+const mockSyncService = Layer.succeed(SyncService, {
+  fullSync: () => Effect.void,
+  syncSession: () => Effect.void,
+  syncProjectList: () => Effect.void,
+});
+
 const allDependencies = Layer.mergeAll(
   fileWatcherWithEventBus,
   mockRateLimitAutoScheduleService,
+  mockSyncService,
   testProjectMetaServiceLayer({
     meta: {
       projectName: "Test Project",

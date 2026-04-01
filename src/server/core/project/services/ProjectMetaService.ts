@@ -1,133 +1,70 @@
-import { FileSystem, Path } from "@effect/platform";
-import { Context, Effect, Layer, Option, Ref } from "effect";
-import { z } from "zod";
+import { Path } from "@effect/platform";
+import { eq } from "drizzle-orm";
+import { Context, Effect, Layer } from "effect";
+import { DrizzleService } from "../../../lib/db/DrizzleService";
+import type { ProjectRow } from "../../../lib/db/schema";
+import { projects } from "../../../lib/db/schema";
 import type { InferEffect } from "../../../lib/effect/types";
-import {
-  FileCacheStorage,
-  makeFileCacheStorageLayer,
-} from "../../../lib/storage/FileCacheStorage";
-import { PersistentService } from "../../../lib/storage/FileCacheStorage/PersistentService";
-import { parseJsonl } from "../../claude-code/functions/parseJsonl";
+import { SyncService } from "../../sync/services/SyncService";
 import type { ProjectMeta } from "../../types";
-import { decodeProjectId } from "../functions/id";
 
-const ProjectPathSchema = z.string().nullable();
+const rowToProjectMeta = (row: ProjectRow, baseName: string): ProjectMeta => {
+  const projectPath = row.path;
+  const projectName = projectPath !== null ? baseName : null;
+
+  return {
+    projectName,
+    projectPath,
+    sessionCount: row.sessionCount,
+  };
+};
 
 const LayerImpl = Effect.gen(function* () {
-  const fs = yield* FileSystem.FileSystem;
+  const { db } = yield* DrizzleService;
+  const syncService = yield* SyncService;
   const path = yield* Path.Path;
-  const projectPathCache = yield* FileCacheStorage<string | null>();
-  const projectMetaCacheRef = yield* Ref.make(new Map<string, ProjectMeta>());
-
-  const extractProjectPathFromJsonl = (
-    filePath: string,
-  ): Effect.Effect<string | null, Error> =>
-    Effect.gen(function* () {
-      const cached = yield* projectPathCache.get(filePath);
-      if (cached !== undefined) {
-        return cached;
-      }
-
-      const content = yield* fs.readFileString(filePath);
-      const lines = content.split("\n");
-
-      let cwd: string | null = null;
-
-      for (const line of lines) {
-        const conversation = parseJsonl(line).at(0);
-
-        if (
-          conversation === undefined ||
-          conversation.type === "summary" ||
-          conversation.type === "x-error" ||
-          conversation.type === "file-history-snapshot" ||
-          conversation.type === "queue-operation" ||
-          conversation.type === "custom-title" ||
-          conversation.type === "agent-name" ||
-          conversation.type === "pr-link" ||
-          conversation.type === "last-prompt"
-        ) {
-          continue;
-        }
-
-        cwd = conversation.cwd;
-        break;
-      }
-
-      if (cwd !== null) {
-        yield* projectPathCache.set(filePath, cwd);
-      }
-
-      return cwd;
-    });
 
   const getProjectMeta = (
     projectId: string,
   ): Effect.Effect<ProjectMeta, Error> =>
     Effect.gen(function* () {
-      const metaCache = yield* Ref.get(projectMetaCacheRef);
-      const cached = metaCache.get(projectId);
-      if (cached !== undefined) {
-        return cached;
-      }
+      const row = db
+        .select()
+        .from(projects)
+        .where(eq(projects.id, projectId))
+        .get();
 
-      const claudeProjectPath = decodeProjectId(projectId);
+      if (row === undefined) {
+        // Not in DB yet — sync and retry
+        yield* syncService
+          .syncProjectList(projectId)
+          .pipe(Effect.catchAll(() => Effect.void));
 
-      const dirents = yield* fs.readDirectory(claudeProjectPath);
-      const fileEntries = yield* Effect.all(
-        dirents
-          .filter((name) => name.endsWith(".jsonl"))
-          .map((name) =>
-            Effect.gen(function* () {
-              const fullPath = path.resolve(claudeProjectPath, name);
-              const stat = yield* fs.stat(fullPath);
-              const mtime = Option.getOrElse(stat.mtime, () => new Date(0));
-              return {
-                fullPath,
-                mtime,
-              } as const;
-            }),
-          ),
-        { concurrency: "unbounded" },
-      );
+        const retryRow = db
+          .select()
+          .from(projects)
+          .where(eq(projects.id, projectId))
+          .get();
 
-      const files = fileEntries.sort((a, b) => {
-        return a.mtime.getTime() - b.mtime.getTime();
-      });
-
-      let projectPath: string | null = null;
-
-      for (const file of files) {
-        projectPath = yield* extractProjectPathFromJsonl(file.fullPath);
-
-        if (projectPath === null) {
-          continue;
+        if (retryRow === undefined) {
+          return yield* Effect.fail(
+            new Error(`Project not found: ${projectId}`),
+          );
         }
 
-        break;
+        const baseName =
+          retryRow.path !== null ? path.basename(retryRow.path) : "";
+        return rowToProjectMeta(retryRow, baseName);
       }
 
-      const projectMeta: ProjectMeta = {
-        projectName: projectPath ? path.basename(projectPath) : null,
-        projectPath,
-        sessionCount: files.length,
-      };
-
-      yield* Ref.update(projectMetaCacheRef, (cache) => {
-        cache.set(projectId, projectMeta);
-        return cache;
-      });
-
-      return projectMeta;
+      const baseName = row.path !== null ? path.basename(row.path) : "";
+      return rowToProjectMeta(row, baseName);
     });
 
   const invalidateProject = (projectId: string): Effect.Effect<void> =>
-    Effect.gen(function* () {
-      yield* Ref.update(projectMetaCacheRef, (cache) => {
-        cache.delete(projectId);
-        return cache;
-      });
-    });
+    syncService
+      .syncProjectList(projectId)
+      .pipe(Effect.catchAll(() => Effect.void));
 
   return {
     getProjectMeta,
@@ -141,10 +78,5 @@ export class ProjectMetaService extends Context.Tag("ProjectMetaService")<
   ProjectMetaService,
   IProjectMetaService
 >() {
-  static Live = Layer.effect(this, LayerImpl).pipe(
-    Layer.provide(
-      makeFileCacheStorageLayer("project-path-cache", ProjectPathSchema),
-    ),
-    Layer.provide(PersistentService.Live),
-  );
+  static Live = Layer.effect(this, LayerImpl);
 }

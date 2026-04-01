@@ -1,13 +1,7 @@
-import { FileSystem, Path } from "@effect/platform";
-import { Context, Effect, Layer, Ref } from "effect";
-import MiniSearch from "minisearch";
+import { sql } from "drizzle-orm";
+import { Context, Effect, Layer } from "effect";
+import { DrizzleService } from "../../../lib/db/DrizzleService";
 import type { InferEffect } from "../../../lib/effect/types";
-import { parseJsonl } from "../../claude-code/functions/parseJsonl";
-import { ApplicationContext } from "../../platform/services/ApplicationContext";
-import { encodeProjectId } from "../../project/functions/id";
-import { encodeSessionId } from "../../session/functions/id";
-import { isRegularSessionFile } from "../../session/functions/isRegularSessionFile";
-import { extractSearchableText } from "../functions/extractSearchableText";
 
 export type SearchResult = {
   projectId: string;
@@ -20,197 +14,88 @@ export type SearchResult = {
   score: number;
 };
 
-type SearchDocument = {
-  id: string;
-  projectId: string;
-  projectName: string;
-  sessionId: string;
-  conversationIndex: number;
-  type: "user" | "assistant";
-  text: string;
-  timestamp: string;
+// FTS5 query result row type (raw SQL returns snake_case)
+interface SearchJoinRow {
+  session_id: string;
+  project_id: string;
+  project_name: string | null;
+  role: string;
+  content: string;
+  conversation_index: number;
+  rank: number;
+  last_modified_at: string | null;
+}
+
+/**
+ * Escape user input for FTS5 MATCH queries.
+ * When using trigram tokenizer, queries are treated as plain strings,
+ * but special characters like double quotes or parentheses can cause
+ * parse errors. Wrap the entire input in double quotes and escape
+ * internal double quotes.
+ */
+const escapeFtsQuery = (query: string): string => {
+  const escaped = query.replace(/"/g, '""');
+  return `"${escaped}"`;
 };
 
-type IndexCache = {
-  index: MiniSearch<SearchDocument>;
-  documents: Map<string, SearchDocument>;
-  builtAt: number;
-};
-
-const INDEX_TTL_MS = 60_000; // Cache index for 1 minute
-const MAX_TEXT_LENGTH = 2000; // Limit indexed text to reduce memory
-const MAX_ASSISTANT_TEXT_LENGTH = 500; // Assistant responses less important
-
-const createMiniSearchIndex = () =>
-  new MiniSearch<SearchDocument>({
-    fields: ["text"],
-    storeFields: ["id"],
-    searchOptions: {
-      fuzzy: 0.2,
-      prefix: true,
-      boost: { text: 1 },
-    },
-  });
+const isValidRole = (role: string): role is "user" | "assistant" =>
+  role === "user" || role === "assistant";
 
 const LayerImpl = Effect.gen(function* () {
-  const fs = yield* FileSystem.FileSystem;
-  const path = yield* Path.Path;
-  const context = yield* ApplicationContext;
-  const indexCacheRef = yield* Ref.make<IndexCache | null>(null);
-
-  const buildIndex = () =>
-    Effect.gen(function* () {
-      const { claudeProjectsDirPath } = yield* context.claudeCodePaths;
-
-      const dirExists = yield* fs.exists(claudeProjectsDirPath);
-      if (!dirExists) {
-        return { index: createMiniSearchIndex(), documents: new Map() };
-      }
-
-      const projectEntries = yield* fs.readDirectory(claudeProjectsDirPath);
-      const miniSearch = createMiniSearchIndex();
-
-      const documentEffects = projectEntries.map((projectEntry) =>
-        Effect.gen(function* () {
-          const projectPath = path.resolve(claudeProjectsDirPath, projectEntry);
-          const stat = yield* fs
-            .stat(projectPath)
-            .pipe(Effect.catchAll(() => Effect.succeed(null)));
-
-          if (stat?.type !== "Directory") {
-            return [];
-          }
-
-          const projectId = encodeProjectId(projectPath);
-          const projectName = path.basename(projectPath);
-
-          const sessionEntries = yield* fs
-            .readDirectory(projectPath)
-            .pipe(Effect.catchAll(() => Effect.succeed([])));
-
-          const sessionFiles = sessionEntries.filter(isRegularSessionFile);
-
-          const sessionDocuments = yield* Effect.all(
-            sessionFiles.map((sessionFile) =>
-              Effect.gen(function* () {
-                const sessionPath = path.resolve(projectPath, sessionFile);
-                const sessionId = encodeSessionId(sessionPath);
-
-                const content = yield* fs
-                  .readFileString(sessionPath)
-                  .pipe(Effect.catchAll(() => Effect.succeed("")));
-
-                if (!content) return [];
-
-                const conversations = parseJsonl(content);
-                const documents: SearchDocument[] = [];
-
-                for (let i = 0; i < conversations.length; i++) {
-                  const conversation = conversations[i];
-                  if (conversation === undefined) continue;
-                  if (
-                    conversation.type !== "user" &&
-                    conversation.type !== "assistant"
-                  ) {
-                    continue;
-                  }
-
-                  let text = extractSearchableText(conversation);
-                  if (!text || text.length < 3) continue;
-
-                  // Truncate text to reduce memory usage
-                  // User prompts get more space as they're more relevant
-                  const maxLen =
-                    conversation.type === "user"
-                      ? MAX_TEXT_LENGTH
-                      : MAX_ASSISTANT_TEXT_LENGTH;
-                  if (text.length > maxLen) {
-                    text = text.slice(0, maxLen);
-                  }
-
-                  documents.push({
-                    id: `${sessionId}:${i}`,
-                    projectId,
-                    projectName,
-                    sessionId,
-                    conversationIndex: i,
-                    type: conversation.type,
-                    text,
-                    timestamp:
-                      "timestamp" in conversation ? conversation.timestamp : "",
-                  });
-                }
-
-                return documents;
-              }),
-            ),
-            { concurrency: 20 },
-          );
-
-          return sessionDocuments.flat();
-        }),
-      );
-
-      const allDocuments = yield* Effect.all(documentEffects, {
-        concurrency: 10,
-      });
-      const flatDocuments = allDocuments.flat();
-
-      miniSearch.addAll(flatDocuments);
-
-      const documentsMap = new Map<string, SearchDocument>();
-      for (const doc of flatDocuments) {
-        documentsMap.set(doc.id, doc);
-      }
-
-      return { index: miniSearch, documents: documentsMap };
-    });
-
-  const getIndex = () =>
-    Effect.gen(function* () {
-      const cached = yield* Ref.get(indexCacheRef);
-      const now = Date.now();
-
-      if (cached && now - cached.builtAt < INDEX_TTL_MS) {
-        return { index: cached.index, documents: cached.documents };
-      }
-
-      const { index, documents } = yield* buildIndex();
-      yield* Ref.set(indexCacheRef, { index, documents, builtAt: now });
-      return { index, documents };
-    });
+  const drizzleService = yield* DrizzleService;
+  const { db } = drizzleService;
 
   const search = (query: string, limit = 20, projectId?: string) =>
     Effect.gen(function* () {
-      const { claudeProjectsDirPath } = yield* context.claudeCodePaths;
-
-      const dirExists = yield* fs.exists(claudeProjectsDirPath);
-      if (!dirExists) {
+      if (!query.trim()) {
         return { results: [] as SearchResult[] };
       }
 
-      const { index: miniSearch, documents } = yield* getIndex();
+      const ftsQuery = escapeFtsQuery(query);
 
-      const searchResults = miniSearch.search(query).slice(0, limit * 2); // fetch extra to account for filtering
+      let drizzleQuery = sql`
+        SELECT
+          fts.session_id,
+          fts.project_id,
+          p.name as project_name,
+          fts.role,
+          fts.content,
+          CAST(fts.conversation_index AS INTEGER) as conversation_index,
+          fts.rank,
+          s.last_modified_at
+        FROM session_messages_fts fts
+        LEFT JOIN projects p ON p.id = fts.project_id
+        LEFT JOIN sessions s ON s.id = fts.session_id
+        WHERE session_messages_fts MATCH ${ftsQuery}
+      `;
+
+      if (projectId !== undefined) {
+        drizzleQuery = sql`${drizzleQuery} AND fts.project_id = ${projectId}`;
+      }
+
+      // rank sorts by BM25 score (lower = more relevant)
+      // Fetch extra rows to allow for role filtering
+      drizzleQuery = sql`${drizzleQuery} ORDER BY rank LIMIT ${limit * 2}`;
+
+      const rows = yield* Effect.try({
+        try: () => db.all<SearchJoinRow>(drizzleQuery),
+        catch: (err) =>
+          new Error(
+            `FTS5 query failed: ${err instanceof Error ? err.message : String(err)}`,
+          ),
+      });
 
       const results: SearchResult[] = [];
-      for (const result of searchResults) {
+      for (const row of rows) {
         if (results.length >= limit) break;
 
-        const doc = documents.get(String(result.id));
-        if (!doc) continue;
+        if (!isValidRole(row.role)) continue;
 
-        // Filter by projectId if provided
-        if (projectId && doc.projectId !== projectId) continue;
-
-        // Minor boost for user messages (your prompts)
-        const score = doc.type === "user" ? result.score * 1.2 : result.score;
-
-        const snippetLength = 150;
-        const text = doc.text;
+        const text = row.content;
         const queryLower = query.toLowerCase();
         const textLower = text.toLowerCase();
         const matchIndex = textLower.indexOf(queryLower);
+        const snippetLength = 150;
 
         let snippet: string;
         if (matchIndex !== -1) {
@@ -226,22 +111,32 @@ const LayerImpl = Effect.gen(function* () {
             (text.length > snippetLength ? "..." : "");
         }
 
+        // FTS5 rank is negative (BM25): larger absolute value = more relevant
+        // Boost user messages
+        const score = row.role === "user" ? -row.rank * 1.2 : -row.rank;
+
         results.push({
-          projectId: doc.projectId,
-          projectName: doc.projectName,
-          sessionId: doc.sessionId,
-          conversationIndex: doc.conversationIndex,
-          type: doc.type,
+          projectId: row.project_id,
+          projectName: row.project_name ?? "",
+          sessionId: row.session_id,
+          conversationIndex: row.conversation_index,
+          type: row.role,
           snippet,
-          timestamp: doc.timestamp,
+          timestamp: row.last_modified_at ?? "",
           score,
         });
       }
 
       return { results };
-    });
+    }).pipe(
+      Effect.catchAll((err) => {
+        console.error("SearchService.search error:", err);
+        return Effect.succeed({ results: [] as SearchResult[] });
+      }),
+    );
 
-  const invalidateIndex = () => Ref.set(indexCacheRef, null);
+  // FTS5 always reads latest data, so invalidation is a no-op
+  const invalidateIndex = () => Effect.void;
 
   return {
     search,

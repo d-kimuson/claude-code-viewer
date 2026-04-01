@@ -135,7 +135,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        432
+        446
       ]
     ],
     "translation": "带补全支持的消息输入"
@@ -529,7 +529,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        532
+        546
       ]
     ],
     "translation": "附加"
@@ -551,7 +551,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        396
+        410
       ]
     ],
     "translation": "发送消息失败。请重试。"
@@ -747,7 +747,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        241
+        255
       ]
     ],
     "translation": "定时发送消息失败"
@@ -759,7 +759,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        225
+        239
       ]
     ],
     "translation": "消息定时发送成功"
@@ -771,7 +771,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        230
+        244
       ]
     ],
     "translation": "您可以在定时任务选项卡中查看和管理"
@@ -793,11 +793,11 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        485
+        499
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        653
+        709
       ]
     ],
     "translation": "立即发送"
@@ -808,11 +808,11 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        468
+        482
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        636
+        692
       ]
     ],
     "translation": "发送模式"
@@ -823,15 +823,15 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        488
+        502
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        656
+        712
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        678
+        734
       ]
     ],
     "translation": "定时发送"
@@ -842,7 +842,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        495
+        509
       ]
     ],
     "translation": "定时发送时间"
@@ -853,7 +853,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        698
+        754
       ]
     ],
     "translation": "处理中..."
@@ -865,7 +865,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        604
+        660
       ]
     ],
     "translation": "选择推理努力程度"
@@ -877,7 +877,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        567
+        623
       ]
     ],
     "translation": "选择模型"
@@ -953,6 +953,18 @@
       ]
     ],
     "translation": "包含默认 Claude Code 提示词"
+  },
+  "chat.voice_input": {
+    "message": "Voice input",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        573
+      ]
+    ],
+    "translation": "语音输入"
   },
   "common.action.cancel": {
     "placeholders": {},
@@ -1968,7 +1980,7 @@
     "origin": [
       [
         "src/app/components/NotificationBell.tsx",
-        104
+        112
       ]
     ],
     "translation": "没有新通知"
@@ -2012,7 +2024,7 @@
     "origin": [
       [
         "src/app/components/NotificationBell.tsx",
-        126
+        134
       ]
     ],
     "translation": "会话已完成"
@@ -2023,7 +2035,7 @@
     "origin": [
       [
         "src/app/components/NotificationBell.tsx",
-        124
+        132
       ]
     ],
     "translation": "会话已暂停"
@@ -2045,11 +2057,11 @@
     "origin": [
       [
         "src/app/components/NotificationBell.tsx",
-        85
+        88
       ],
       [
         "src/app/components/NotificationBell.tsx",
-        92
+        100
       ]
     ],
     "translation": "通知"

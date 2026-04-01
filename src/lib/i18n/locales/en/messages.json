@@ -135,7 +135,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        432
+        446
       ]
     ],
     "translation": "Message input with autocomplete support"
@@ -529,7 +529,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        532
+        546
       ]
     ],
     "translation": "Attach"
@@ -551,7 +551,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        396
+        410
       ]
     ],
     "translation": "Failed to send message. Please try again."
@@ -747,7 +747,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        241
+        255
       ]
     ],
     "translation": "Failed to schedule message"
@@ -759,7 +759,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        225
+        239
       ]
     ],
     "translation": "Message scheduled successfully"
@@ -771,7 +771,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        230
+        244
       ]
     ],
     "translation": "You can view and manage it in the Scheduler tab"
@@ -793,11 +793,11 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        485
+        499
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        653
+        709
       ]
     ],
     "translation": "Send Now"
@@ -808,11 +808,11 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        468
+        482
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        636
+        692
       ]
     ],
     "translation": "Send Mode"
@@ -823,15 +823,15 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        488
+        502
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        656
+        712
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        678
+        734
       ]
     ],
     "translation": "Schedule Send"
@@ -842,7 +842,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        495
+        509
       ]
     ],
     "translation": "Scheduled Send Time"
@@ -853,7 +853,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        698
+        754
       ]
     ],
     "translation": "Processing..."
@@ -865,7 +865,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        604
+        660
       ]
     ],
     "translation": "Select reasoning effort"
@@ -877,7 +877,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        567
+        623
       ]
     ],
     "translation": "Select model"
@@ -953,6 +953,18 @@
       ]
     ],
     "translation": "Include default Claude Code prompt"
+  },
+  "chat.voice_input": {
+    "message": "Voice input",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        573
+      ]
+    ],
+    "translation": "Voice input"
   },
   "common.action.cancel": {
     "placeholders": {},
@@ -1968,7 +1980,7 @@
     "origin": [
       [
         "src/app/components/NotificationBell.tsx",
-        104
+        112
       ]
     ],
     "translation": "No new notifications"
@@ -2012,7 +2024,7 @@
     "origin": [
       [
         "src/app/components/NotificationBell.tsx",
-        126
+        134
       ]
     ],
     "translation": "Session completed"
@@ -2023,7 +2035,7 @@
     "origin": [
       [
         "src/app/components/NotificationBell.tsx",
-        124
+        132
       ]
     ],
     "translation": "Session paused"
@@ -2045,11 +2057,11 @@
     "origin": [
       [
         "src/app/components/NotificationBell.tsx",
-        85
+        88
       ],
       [
         "src/app/components/NotificationBell.tsx",
-        92
+        100
       ]
     ],
     "translation": "Notifications"

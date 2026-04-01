@@ -3,6 +3,8 @@ import {
   AlertCircleIcon,
   CalendarClockIcon,
   LoaderIcon,
+  MicIcon,
+  MicOffIcon,
   PaperclipIcon,
   SendIcon,
   XIcon,
@@ -33,6 +35,7 @@ import {
   TooltipTrigger,
 } from "../../../../../components/ui/tooltip";
 import { useCreateSchedulerJob } from "../../../../../hooks/useScheduler";
+import { useSpeechRecognition } from "../../../../../hooks/useSpeechRecognition";
 import type {
   CCOptionsSchema,
   DocumentBlockParam,
@@ -136,6 +139,17 @@ export const ChatInput: FC<ChatInputProps> = ({
   const helpId = useId();
   const { config } = useConfig();
   const createSchedulerJob = useCreateSchedulerJob();
+
+  const {
+    isSupported: isSpeechSupported,
+    isListening,
+    audioLevels,
+    toggle: toggleSpeechRecognition,
+  } = useSpeechRecognition({
+    onTranscript: useCallback((text: string) => {
+      setMessage((prev) => prev + text);
+    }, []),
+  });
 
   // Auto-resize textarea based on content
   // biome-ignore lint/correctness/useExhaustiveDependencies: message is intentionally included to trigger resize
@@ -680,6 +694,48 @@ export const ChatInput: FC<ChatInputProps> = ({
                   </Tooltip>
                 )}
 
+                {isSpeechSupported && (
+                  <div className="flex items-center gap-0.5">
+                    {isListening && (
+                      <div className="flex items-center gap-px h-4 px-0.5">
+                        {(["a", "b", "c", "d"] as const).map((id, i) => (
+                          <div
+                            key={id}
+                            className="w-0.5 rounded-full bg-red-500 transition-all duration-75 ease-out"
+                            style={{
+                              height: `${Math.max(3, (audioLevels[i] ?? 0) * 16)}px`,
+                            }}
+                          />
+                        ))}
+                      </div>
+                    )}
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={toggleSpeechRecognition}
+                          disabled={isPending || disabled}
+                          className={`px-1.5 hover:bg-background/80 hover:text-foreground transition-all duration-200 h-7 rounded-lg ${
+                            isListening
+                              ? "text-red-500"
+                              : "text-muted-foreground"
+                          }`}
+                        >
+                          {isListening ? (
+                            <MicOffIcon className="w-3.5 h-3.5" />
+                          ) : (
+                            <MicIcon className="w-3.5 h-3.5" />
+                          )}
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <Trans id="chat.voice_input" message="Voice input" />
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
+                )}
                 <Button
                   onClick={handleSubmit}
                   disabled={

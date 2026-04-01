@@ -135,7 +135,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        432
+        446
       ]
     ],
     "translation": "補完機能付きメッセージ入力"
@@ -529,7 +529,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        532
+        546
       ]
     ],
     "translation": "添付"
@@ -551,7 +551,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        396
+        410
       ]
     ],
     "translation": "メッセージの送信に失敗しました。もう一度お試しください。"
@@ -747,7 +747,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        241
+        255
       ]
     ],
     "translation": "メッセージの予約に失敗しました"
@@ -759,7 +759,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        225
+        239
       ]
     ],
     "translation": "メッセージを予約しました"
@@ -771,7 +771,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        230
+        244
       ]
     ],
     "translation": "スケジューラタブで確認・管理できます"
@@ -793,11 +793,11 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        485
+        499
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        653
+        709
       ]
     ],
     "translation": "今すぐ送信"
@@ -808,11 +808,11 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        468
+        482
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        636
+        692
       ]
     ],
     "translation": "送信モード"
@@ -823,15 +823,15 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        488
+        502
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        656
+        712
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        678
+        734
       ]
     ],
     "translation": "予約送信"
@@ -842,7 +842,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        495
+        509
       ]
     ],
     "translation": "送信予定時刻"
@@ -853,7 +853,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        698
+        754
       ]
     ],
     "translation": "処理中..."
@@ -865,7 +865,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        604
+        660
       ]
     ],
     "translation": "Reasoning effort を選択"
@@ -877,7 +877,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        567
+        623
       ]
     ],
     "translation": "モデルを選択"
@@ -953,6 +953,18 @@
       ]
     ],
     "translation": "デフォルトの Claude Code プロンプトを含める"
+  },
+  "chat.voice_input": {
+    "message": "Voice input",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        573
+      ]
+    ],
+    "translation": "音声入力"
   },
   "common.action.cancel": {
     "placeholders": {},
@@ -1968,7 +1980,7 @@
     "origin": [
       [
         "src/app/components/NotificationBell.tsx",
-        104
+        112
       ]
     ],
     "translation": "新しい通知はありません"
@@ -2012,7 +2024,7 @@
     "origin": [
       [
         "src/app/components/NotificationBell.tsx",
-        126
+        134
       ]
     ],
     "translation": "セッションが完了しました"
@@ -2023,7 +2035,7 @@
     "origin": [
       [
         "src/app/components/NotificationBell.tsx",
-        124
+        132
       ]
     ],
     "translation": "セッションが一時停止しました"
@@ -2045,11 +2057,11 @@
     "origin": [
       [
         "src/app/components/NotificationBell.tsx",
-        85
+        88
       ],
       [
         "src/app/components/NotificationBell.tsx",
-        92
+        100
       ]
     ],
     "translation": "通知"

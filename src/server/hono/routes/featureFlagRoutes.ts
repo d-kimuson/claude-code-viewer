@@ -1,9 +1,9 @@
 import { Effect } from "effect";
 import { Hono } from "hono";
-import { FeatureFlagController } from "../../core/feature-flag/presentation/FeatureFlagController";
-import { effectToResponse } from "../../lib/effect/toEffectResponse";
-import type { HonoContext } from "../app";
-import { getHonoRuntime } from "../runtime";
+import { FeatureFlagController } from "../../core/feature-flag/presentation/FeatureFlagController.ts";
+import { effectToResponse } from "../../lib/effect/toEffectResponse.ts";
+import type { HonoContext } from "../app.ts";
+import { getHonoRuntime } from "../runtime.ts";
 
 const featureFlagRoutes = Effect.gen(function* () {
   const featureFlagController = yield* FeatureFlagController;

@@ -1,5 +1,5 @@
-import { parseLines } from "../functions/utils";
-import type { GitCommit } from "../types";
+import { parseLines } from "../functions/utils.ts";
+import type { GitCommit } from "../types.ts";
 
 /**
  * Get the last 20 commits from the current branch

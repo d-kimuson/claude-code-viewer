@@ -1,12 +1,12 @@
 import type { CommandExecutor, FileSystem, Path } from "@effect/platform";
 import { Effect } from "effect";
-import type { ClaudeCodeLifeCycleService } from "../core/claude-code/services/ClaudeCodeLifeCycleService";
-import type { CcvOptionsService } from "../core/platform/services/CcvOptionsService";
-import type { EnvService } from "../core/platform/services/EnvService";
-import type { UserConfigService } from "../core/platform/services/UserConfigService";
-import type { ProjectRepository } from "../core/project/infrastructure/ProjectRepository";
-import type { SchedulerConfigBaseDir } from "../core/scheduler/config";
-import type { SessionMetaService } from "../core/session/services/SessionMetaService";
+import type { ClaudeCodeLifeCycleService } from "../core/claude-code/services/ClaudeCodeLifeCycleService.ts";
+import type { CcvOptionsService } from "../core/platform/services/CcvOptionsService.ts";
+import type { EnvService } from "../core/platform/services/EnvService.ts";
+import type { UserConfigService } from "../core/platform/services/UserConfigService.ts";
+import type { ProjectRepository } from "../core/project/infrastructure/ProjectRepository.ts";
+import type { SchedulerConfigBaseDir } from "../core/scheduler/config.ts";
+import type { SessionMetaService } from "../core/session/services/SessionMetaService.ts";
 
 export type HonoRuntime =
   | CcvOptionsService

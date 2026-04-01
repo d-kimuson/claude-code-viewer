@@ -1,5 +1,5 @@
 import { Context, Effect, Layer, Ref } from "effect";
-import type { InferEffect } from "../../../lib/effect/types";
+import type { InferEffect } from "../../../lib/effect/types.ts";
 
 export type CliOptions = {
   port: string;

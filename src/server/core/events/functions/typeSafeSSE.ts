@@ -1,7 +1,7 @@
 import { Context, Effect, Layer } from "effect";
 import type { SSEStreamingApi } from "hono/streaming";
 import { ulid } from "ulid";
-import type { SSEEventDeclaration } from "../../../../types/sse";
+import type { SSEEventDeclaration } from "../../../../types/sse.ts";
 
 type TypeSafeSSEService = {
   readonly writeSSE: <EventName extends keyof SSEEventDeclaration>(

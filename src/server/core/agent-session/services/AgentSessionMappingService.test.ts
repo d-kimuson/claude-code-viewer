@@ -1,9 +1,9 @@
 import { resolve } from "node:path";
 import { NodeFileSystem } from "@effect/platform-node";
 import { Effect, Layer } from "effect";
-import { testPlatformLayer } from "../../../../testing/layers/testPlatformLayer";
-import { encodeProjectId } from "../../project/functions/id";
-import { AgentSessionMappingService } from "./AgentSessionMappingService";
+import { testPlatformLayer } from "../../../../testing/layers/testPlatformLayer.ts";
+import { encodeProjectId } from "../../project/functions/id.ts";
+import { AgentSessionMappingService } from "./AgentSessionMappingService.ts";
 
 const testLayer = Layer.mergeAll(testPlatformLayer(), NodeFileSystem.layer);
 

@@ -1,11 +1,15 @@
 import { Context, Effect, Layer } from "effect";
 import { ulid } from "ulid";
 import type WebSocket from "ws";
-import type { InferEffect } from "../../lib/effect/types";
-import { CcvOptionsService } from "../platform/services/CcvOptionsService";
-import { EnvService } from "../platform/services/EnvService";
-import { normalizePtyChunk } from "./normalizePtyChunk";
-import { createRusptySession, type RusptyModule, type TerminalPtyProcess } from "./rusptyAdapter";
+import type { InferEffect } from "../../lib/effect/types.ts";
+import { CcvOptionsService } from "../platform/services/CcvOptionsService.ts";
+import { EnvService } from "../platform/services/EnvService.ts";
+import { normalizePtyChunk } from "./normalizePtyChunk.ts";
+import {
+  createRusptySession,
+  type RusptyModule,
+  type TerminalPtyProcess,
+} from "./rusptyAdapter.ts";
 
 type PtyProcess = TerminalPtyProcess;
 

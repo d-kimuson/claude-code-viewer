@@ -1,4 +1,4 @@
-import { userConfigSchema } from "./config";
+import { userConfigSchema } from "./config.ts";
 
 export const parseUserConfig = (configJson: string | undefined) => {
   const parsed = (() => {

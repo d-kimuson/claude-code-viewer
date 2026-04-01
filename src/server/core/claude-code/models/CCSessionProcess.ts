@@ -1,6 +1,6 @@
-import type { UserMessageInput } from "../functions/createMessageGenerator";
-import type { InitMessageContext } from "../types";
-import type * as CCTurn from "./ClaudeCodeTurn";
+import type { UserMessageInput } from "../functions/createMessageGenerator.ts";
+import type { InitMessageContext } from "../types.ts";
+import type * as CCTurn from "./ClaudeCodeTurn.ts";
 
 export type CCSessionProcessDef = {
   sessionProcessId: string;

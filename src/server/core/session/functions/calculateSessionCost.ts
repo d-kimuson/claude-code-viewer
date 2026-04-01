@@ -3,7 +3,7 @@ import {
   MODEL_PRICING,
   type ModelName,
   type ModelPricing,
-} from "../constants/pricing";
+} from "../constants/pricing.ts";
 
 /**
  * Token usage information extracted from assistant messages

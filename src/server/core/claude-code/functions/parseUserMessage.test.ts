@@ -1,4 +1,4 @@
-import { parseUserMessage } from "./parseUserMessage";
+import { parseUserMessage } from "./parseUserMessage.ts";
 
 const expectCommandResult = (result: ReturnType<typeof parseUserMessage>) => {
   expect(result.kind).toBe("command");

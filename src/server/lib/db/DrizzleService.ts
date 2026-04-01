@@ -7,7 +7,7 @@ import { DatabaseSync } from "node:sqlite";
 import { drizzle, type NodeSQLiteDatabase } from "drizzle-orm/node-sqlite";
 import { migrate } from "drizzle-orm/node-sqlite/migrator";
 import { Context, Effect, Layer } from "effect";
-import * as schema from "./schema";
+import * as schema from "./schema.ts";
 
 // ---------------------------------------------------------------------------
 // Paths

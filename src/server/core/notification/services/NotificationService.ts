@@ -3,9 +3,12 @@ import { Context, Effect, Layer, Ref } from "effect";
 import { ulid } from "ulid";
 import webpush from "web-push";
 import { z } from "zod";
-import type { SessionNotification, SessionNotificationType } from "../../../../types/notification";
-import type { InferEffect } from "../../../lib/effect/types";
-import { EventBus } from "../../events/services/EventBus";
+import type {
+  SessionNotification,
+  SessionNotificationType,
+} from "../../../../types/notification.ts";
+import type { InferEffect } from "../../../lib/effect/types.ts";
+import { EventBus } from "../../events/services/EventBus.ts";
 
 type PushSubscriptionRecord = {
   endpoint: string;

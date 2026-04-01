@@ -1,10 +1,10 @@
 import { Context, Effect, Layer } from "effect";
 import type { SSEStreamingApi } from "hono/streaming";
-import type { InferEffect } from "../../../lib/effect/types";
-import { adaptInternalEventToSSE } from "../functions/adaptInternalEventToSSE";
-import { TypeSafeSSE } from "../functions/typeSafeSSE";
-import { EventBus } from "../services/EventBus";
-import type { InternalEventDeclaration } from "../types/InternalEventDeclaration";
+import type { InferEffect } from "../../../lib/effect/types.ts";
+import { adaptInternalEventToSSE } from "../functions/adaptInternalEventToSSE.ts";
+import { TypeSafeSSE } from "../functions/typeSafeSSE.ts";
+import { EventBus } from "../services/EventBus.ts";
+import type { InternalEventDeclaration } from "../types/InternalEventDeclaration.ts";
 
 const LayerImpl = Effect.gen(function* () {
   const eventBus = yield* EventBus;

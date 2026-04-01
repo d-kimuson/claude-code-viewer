@@ -1,4 +1,4 @@
-import type { SSEEventMap } from "../../types/sse";
+import type { SSEEventMap } from "../../types/sse.ts";
 
 export const callSSE = (options?: { onOpen?: (event: Event) => void }) => {
   const { onOpen } = options ?? {};

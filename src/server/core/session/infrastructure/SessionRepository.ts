@@ -1,16 +1,16 @@
 import { FileSystem } from "@effect/platform";
 import { desc, eq, sql } from "drizzle-orm";
 import { Context, Effect, Layer, Option } from "effect";
-import { DrizzleService } from "../../../lib/db/DrizzleService";
-import { projects, sessions } from "../../../lib/db/schema";
-import type { InferEffect } from "../../../lib/effect/types";
-import { parseJsonl } from "../../claude-code/functions/parseJsonl";
-import { ApplicationContext } from "../../platform/services/ApplicationContext";
-import { decodeProjectId, validateProjectPath } from "../../project/functions/id";
-import { SyncService } from "../../sync/services/SyncService";
-import type { Session, SessionDetail } from "../../types";
-import { decodeSessionId, validateSessionId } from "../functions/id";
-import { SessionMetaService } from "../services/SessionMetaService";
+import { DrizzleService } from "../../../lib/db/DrizzleService.ts";
+import { projects, sessions } from "../../../lib/db/schema.ts";
+import type { InferEffect } from "../../../lib/effect/types.ts";
+import { parseJsonl } from "../../claude-code/functions/parseJsonl.ts";
+import { ApplicationContext } from "../../platform/services/ApplicationContext.ts";
+import { decodeProjectId, validateProjectPath } from "../../project/functions/id.ts";
+import { SyncService } from "../../sync/services/SyncService.ts";
+import type { Session, SessionDetail } from "../../types.ts";
+import { decodeSessionId, validateSessionId } from "../functions/id.ts";
+import { SessionMetaService } from "../services/SessionMetaService.ts";
 
 const LayerImpl = Effect.gen(function* () {
   const fs = yield* FileSystem.FileSystem;

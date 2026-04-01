@@ -1,13 +1,13 @@
 import { SystemError } from "@effect/platform/Error";
 import { Effect, Layer } from "effect";
-import { testFileSystemLayer } from "../../../../testing/layers/testFileSystemLayer";
-import { testPlatformLayer } from "../../../../testing/layers/testPlatformLayer";
-import { AgentSessionRepository } from "../../agent-session/infrastructure/AgentSessionRepository";
-import { EventBus, type IEventBus } from "../../events/services/EventBus";
-import type { InternalEventDeclaration } from "../../events/types/InternalEventDeclaration";
-import { SessionRepository } from "../infrastructure/SessionRepository";
-import { SessionMetaService } from "../services/SessionMetaService";
-import { SessionController } from "./SessionController";
+import { testFileSystemLayer } from "../../../../testing/layers/testFileSystemLayer.ts";
+import { testPlatformLayer } from "../../../../testing/layers/testPlatformLayer.ts";
+import { AgentSessionRepository } from "../../agent-session/infrastructure/AgentSessionRepository.ts";
+import { EventBus, type IEventBus } from "../../events/services/EventBus.ts";
+import type { InternalEventDeclaration } from "../../events/types/InternalEventDeclaration.ts";
+import { SessionRepository } from "../infrastructure/SessionRepository.ts";
+import { SessionMetaService } from "../services/SessionMetaService.ts";
+import { SessionController } from "./SessionController.ts";
 
 describe("SessionController", () => {
   describe("deleteSession", () => {

@@ -1,7 +1,7 @@
 import type { z } from "zod";
-import type { Conversation } from "../../lib/conversation-schema";
-import type { projectMetaSchema } from "./project/schema";
-import type { sessionMetaSchema } from "./session/schema";
+import type { Conversation } from "../../lib/conversation-schema/index.ts";
+import type { projectMetaSchema } from "./project/schema.ts";
+import type { sessionMetaSchema } from "./session/schema.ts";
 
 export type Project = {
   id: string;

@@ -2,9 +2,9 @@ import { createHash } from "node:crypto";
 import { Context, Effect, Layer, Runtime } from "effect";
 import { getCookie } from "hono/cookie";
 import { createMiddleware } from "hono/factory";
-import { CcvOptionsService } from "../../core/platform/services/CcvOptionsService";
-import type { InferEffect } from "../../lib/effect/types";
-import type { HonoContext } from "../app";
+import { CcvOptionsService } from "../../core/platform/services/CcvOptionsService.ts";
+import type { InferEffect } from "../../lib/effect/types.ts";
+import type { HonoContext } from "../app.ts";
 
 // Session token is a SHA-256 hash of the password
 const generateSessionToken = (password: string | undefined): string => {

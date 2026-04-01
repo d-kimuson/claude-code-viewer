@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseSessionFilePath } from "./parseSessionFilePath";
+import { parseSessionFilePath } from "./parseSessionFilePath.ts";
 
 describe("parseSessionFilePath", () => {
   describe("regular session files", () => {

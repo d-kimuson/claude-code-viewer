@@ -1,8 +1,8 @@
 import { NodeContext } from "@effect/platform-node";
 import { Effect, Either, Layer } from "effect";
 import { describe, expect, test } from "vitest";
-import { testPlatformLayer } from "../../../../testing/layers/testPlatformLayer";
-import { GitService } from "./GitService";
+import { testPlatformLayer } from "../../../../testing/layers/testPlatformLayer.ts";
+import { GitService } from "./GitService.ts";
 
 const testLayer = GitService.Live.pipe(
   Layer.provide(NodeContext.layer),

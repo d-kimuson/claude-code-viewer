@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { DocumentContentSchema } from "../content/DocumentContentSchema";
-import { ImageContentSchema } from "../content/ImageContentSchema";
-import { TextContentSchema } from "../content/TextContentSchema";
-import { ToolResultContentSchema } from "../content/ToolResultContentSchema";
+import { DocumentContentSchema } from "../content/DocumentContentSchema.ts";
+import { ImageContentSchema } from "../content/ImageContentSchema.ts";
+import { TextContentSchema } from "../content/TextContentSchema.ts";
+import { ToolResultContentSchema } from "../content/ToolResultContentSchema.ts";
 
 const QueueOperationContentSchema = z.union([
   z.string(),

@@ -5,8 +5,8 @@ import { describe, expect, it } from "vitest";
 import {
   createFileInfo,
   testFileSystemLayer,
-} from "../../../../testing/layers/testFileSystemLayer";
-import { TasksService } from "./TasksService";
+} from "../../../../testing/layers/testFileSystemLayer.ts";
+import { TasksService } from "./TasksService.ts";
 
 /**
  * Test layer that provides Path service

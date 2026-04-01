@@ -2,9 +2,9 @@ import { zValidator } from "@hono/zod-validator";
 import { Effect } from "effect";
 import { Hono } from "hono";
 import { z } from "zod";
-import { FileSystemController } from "../../core/file-system/presentation/FileSystemController";
-import { effectToResponse } from "../../lib/effect/toEffectResponse";
-import type { HonoContext } from "../app";
+import { FileSystemController } from "../../core/file-system/presentation/FileSystemController.ts";
+import { effectToResponse } from "../../lib/effect/toEffectResponse.ts";
+import type { HonoContext } from "../app.ts";
 
 const fileSystemRoutes = Effect.gen(function* () {
   const fileSystemController = yield* FileSystemController;

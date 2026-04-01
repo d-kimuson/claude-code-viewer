@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import parseGitDiff, { type AnyChunk, type AnyFileChange } from "parse-git-diff";
-import { executeGitCommand, parseLines, stripAnsiColors } from "../functions/utils";
+import { executeGitCommand, parseLines, stripAnsiColors } from "../functions/utils.ts";
 import type {
   GitComparisonResult,
   GitDiff,
@@ -9,7 +9,7 @@ import type {
   GitDiffHunk,
   GitDiffLine,
   GitResult,
-} from "../types";
+} from "../types.ts";
 
 /**
  * Convert parse-git-diff file change to GitDiffFile

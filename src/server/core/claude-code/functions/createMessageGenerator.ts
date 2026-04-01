@@ -1,6 +1,6 @@
 import type { SDKMessage, SDKUserMessage } from "@anthropic-ai/claude-agent-sdk";
 import type { DocumentBlockParam, ImageBlockParam } from "@anthropic-ai/sdk/resources";
-import { controllablePromise } from "../../../../lib/controllablePromise";
+import { controllablePromise } from "../../../../lib/controllablePromise.ts";
 
 export type UserMessageInput = {
   text: string;

@@ -1,11 +1,11 @@
 import { eq } from "drizzle-orm";
 import { Context, Effect, Layer } from "effect";
 import { z } from "zod";
-import { DrizzleService } from "../../../lib/db/DrizzleService";
-import { type SessionRow, sessions } from "../../../lib/db/schema";
-import { parsedUserMessageSchema } from "../../claude-code/functions/parseUserMessage";
-import { SyncService } from "../../sync/services/SyncService";
-import type { SessionMeta } from "../../types";
+import { DrizzleService } from "../../../lib/db/DrizzleService.ts";
+import { type SessionRow, sessions } from "../../../lib/db/schema.ts";
+import { parsedUserMessageSchema } from "../../claude-code/functions/parseUserMessage.ts";
+import { SyncService } from "../../sync/services/SyncService.ts";
+import type { SessionMeta } from "../../types.ts";
 
 const parsedUserMessageOrNullSchema = parsedUserMessageSchema.nullable();
 

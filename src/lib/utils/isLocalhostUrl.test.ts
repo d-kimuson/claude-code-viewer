@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { isLocalhostUrl } from "./isLocalhostUrl";
+import { isLocalhostUrl } from "./isLocalhostUrl.ts";
 
 describe("isLocalhostUrl", () => {
   test("returns true for localhost URLs", () => {

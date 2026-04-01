@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { ImageContentSchema } from "./ImageContentSchema";
-import { TextContentSchema } from "./TextContentSchema";
-import { ToolReferenceContentSchema } from "./ToolReferenceContentSchema";
+import { ImageContentSchema } from "./ImageContentSchema.ts";
+import { TextContentSchema } from "./TextContentSchema.ts";
+import { ToolReferenceContentSchema } from "./ToolReferenceContentSchema.ts";
 
 export const ToolResultContentSchema = z.object({
   type: z.literal("tool_result"),

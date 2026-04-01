@@ -6,7 +6,7 @@ import {
   getVirtualMessagesByProject,
   removeVirtualMessage,
   type VirtualMessage,
-} from "./virtualMessageStore";
+} from "./virtualMessageStore.ts";
 
 const makeMessage = (overrides: Partial<VirtualMessage> = {}): VirtualMessage => ({
   sessionId: "session-1",

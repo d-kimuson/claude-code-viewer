@@ -3,19 +3,19 @@ import { Effect, Layer, Option } from "effect";
 import {
   createInMemoryDrizzle,
   makeDrizzleTestServiceLayer,
-} from "../../../../testing/layers/testDrizzleServiceLayer";
+} from "../../../../testing/layers/testDrizzleServiceLayer.ts";
 import {
   createFileInfo,
   testFileSystemLayer,
-} from "../../../../testing/layers/testFileSystemLayer";
-import { testPlatformLayer } from "../../../../testing/layers/testPlatformLayer";
-import { DrizzleService } from "../../../lib/db/DrizzleService";
-import { projects, sessions } from "../../../lib/db/schema";
-import { type ISyncService, SyncService } from "../../sync/services/SyncService";
-import type { SessionMeta } from "../../types";
-import { SessionRepository } from "../infrastructure/SessionRepository";
-import { SessionMetaService } from "../services/SessionMetaService";
-import { createMockSessionMeta } from "../testing/createMockSessionMeta";
+} from "../../../../testing/layers/testFileSystemLayer.ts";
+import { testPlatformLayer } from "../../../../testing/layers/testPlatformLayer.ts";
+import { DrizzleService } from "../../../lib/db/DrizzleService.ts";
+import { projects, sessions } from "../../../lib/db/schema.ts";
+import { type ISyncService, SyncService } from "../../sync/services/SyncService.ts";
+import type { SessionMeta } from "../../types.ts";
+import { SessionRepository } from "../infrastructure/SessionRepository.ts";
+import { SessionMetaService } from "../services/SessionMetaService.ts";
+import { createMockSessionMeta } from "../testing/createMockSessionMeta.ts";
 
 // ---------------------------------------------------------------------------
 // Helpers

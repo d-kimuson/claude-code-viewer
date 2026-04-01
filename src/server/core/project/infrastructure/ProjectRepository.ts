@@ -1,13 +1,13 @@
 import { FileSystem } from "@effect/platform";
 import { desc } from "drizzle-orm";
 import { Context, Effect, Layer, Option } from "effect";
-import { DrizzleService } from "../../../lib/db/DrizzleService";
-import { projects } from "../../../lib/db/schema";
-import type { InferEffect } from "../../../lib/effect/types";
-import { ApplicationContext } from "../../platform/services/ApplicationContext";
-import type { Project } from "../../types";
-import { decodeProjectId, validateProjectPath } from "../functions/id";
-import { ProjectMetaService } from "../services/ProjectMetaService";
+import { DrizzleService } from "../../../lib/db/DrizzleService.ts";
+import { projects } from "../../../lib/db/schema.ts";
+import type { InferEffect } from "../../../lib/effect/types.ts";
+import { ApplicationContext } from "../../platform/services/ApplicationContext.ts";
+import type { Project } from "../../types.ts";
+import { decodeProjectId, validateProjectPath } from "../functions/id.ts";
+import { ProjectMetaService } from "../services/ProjectMetaService.ts";
 
 const LayerImpl = Effect.gen(function* () {
   const fs = yield* FileSystem.FileSystem;

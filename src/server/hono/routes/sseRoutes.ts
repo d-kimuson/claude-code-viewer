@@ -1,10 +1,10 @@
 import { Effect, Runtime } from "effect";
 import { Hono } from "hono";
 import { streamSSE } from "hono/streaming";
-import { TypeSafeSSE } from "../../core/events/functions/typeSafeSSE";
-import { SSEController } from "../../core/events/presentation/SSEController";
-import type { HonoContext } from "../app";
-import { getHonoRuntime } from "../runtime";
+import { TypeSafeSSE } from "../../core/events/functions/typeSafeSSE.ts";
+import { SSEController } from "../../core/events/presentation/SSEController.ts";
+import type { HonoContext } from "../app.ts";
+import { getHonoRuntime } from "../runtime.ts";
 
 const sseRoutes = Effect.gen(function* () {
   const sseController = yield* SSEController;

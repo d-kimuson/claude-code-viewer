@@ -1,10 +1,10 @@
 import { FileSystem, Path } from "@effect/platform";
 import { Context, Effect, Layer } from "effect";
 import { z } from "zod";
-import { parseJsonl } from "../../claude-code/functions/parseJsonl";
-import { decodeProjectId } from "../../project/functions/id";
-import { extractFirstUserText } from "../../session/functions/extractFirstUserText";
-import type { ExtendedConversation } from "../../types";
+import { parseJsonl } from "../../claude-code/functions/parseJsonl.ts";
+import { decodeProjectId } from "../../project/functions/id.ts";
+import { extractFirstUserText } from "../../session/functions/extractFirstUserText.ts";
+import type { ExtendedConversation } from "../../types.ts";
 
 const LayerImpl = Effect.gen(function* () {
   const fs = yield* FileSystem.FileSystem;

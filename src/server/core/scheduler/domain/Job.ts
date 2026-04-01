@@ -1,7 +1,7 @@
 import { Effect } from "effect";
-import { ClaudeCodeLifeCycleService } from "../../claude-code/services/ClaudeCodeLifeCycleService";
-import { ProjectRepository } from "../../project/infrastructure/ProjectRepository";
-import type { SchedulerJob } from "../schema";
+import { ClaudeCodeLifeCycleService } from "../../claude-code/services/ClaudeCodeLifeCycleService.ts";
+import { ProjectRepository } from "../../project/infrastructure/ProjectRepository.ts";
+import type { SchedulerJob } from "../schema.ts";
 
 export const executeJob = (job: SchedulerJob) =>
   Effect.gen(function* () {

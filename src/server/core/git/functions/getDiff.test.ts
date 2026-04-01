@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { compareBranches, getDiff } from "./getDiff";
-import * as utils from "./utils";
+import { compareBranches, getDiff } from "./getDiff.ts";
+import * as utils from "./utils.ts";
 
 vi.mock("./utils", async (importOriginal) => {
   const actual = await importOriginal<typeof utils>();

@@ -1,11 +1,11 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useAtom } from "jotai";
 import { type FC, type PropsWithChildren, useCallback, useEffect, useRef } from "react";
-import type { SSEEvent } from "../../../types/sse";
-import { projectListQuery, sessionProcessesQuery } from "../../../web/lib/api/queries";
-import { callSSE } from "../callSSE";
-import { type EventListener, SSEContext, type SSEContextType } from "../SSEContext";
-import { sseAtom } from "../store/sseAtom";
+import type { SSEEvent } from "../../../types/sse.ts";
+import { projectListQuery, sessionProcessesQuery } from "../../../web/lib/api/queries.ts";
+import { callSSE } from "../callSSE.ts";
+import { type EventListener, SSEContext, type SSEContextType } from "../SSEContext.ts";
+import { sseAtom } from "../store/sseAtom.ts";
 
 export const ServerEventsProvider: FC<PropsWithChildren> = ({ children }) => {
   const sseRef = useRef<ReturnType<typeof callSSE> | null>(null);

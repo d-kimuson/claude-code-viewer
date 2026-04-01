@@ -6,9 +6,9 @@ import {
 import { Context, Deferred, Effect, Layer, Ref } from "effect";
 import { ulid } from "ulid";
 import { z } from "zod";
-import type { QuestionRequest, QuestionResponse } from "../../../../types/question";
-import type { InferEffect } from "../../../lib/effect/types";
-import { EventBus } from "../../events/services/EventBus";
+import type { QuestionRequest, QuestionResponse } from "../../../../types/question.ts";
+import type { InferEffect } from "../../../lib/effect/types.ts";
+import { EventBus } from "../../events/services/EventBus.ts";
 
 const LayerImpl = Effect.gen(function* () {
   const pendingQuestionsRef = yield* Ref.make<Map<string, QuestionRequest>>(new Map());

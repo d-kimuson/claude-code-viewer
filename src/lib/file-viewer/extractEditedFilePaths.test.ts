@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import type { ToolUseContent } from "../conversation-schema/content/ToolUseContentSchema";
-import { extractEditedFilePaths } from "./extractEditedFilePaths";
+import type { ToolUseContent } from "../conversation-schema/content/ToolUseContentSchema.ts";
+import { extractEditedFilePaths } from "./extractEditedFilePaths.ts";
 
 describe("extractEditedFilePaths", () => {
   describe("Write tool", () => {

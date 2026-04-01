@@ -1,4 +1,4 @@
-import { normalizePrompt } from "./normalizePrompt";
+import { normalizePrompt } from "./normalizePrompt.ts";
 
 describe("normalizePrompt", () => {
   it("should trim leading and trailing whitespace", () => {

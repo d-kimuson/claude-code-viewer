@@ -2,11 +2,11 @@ import { Effect, Layer } from "effect";
 import {
   createInMemoryDrizzle,
   makeDrizzleTestServiceLayer,
-} from "../../../../testing/layers/testDrizzleServiceLayer";
-import { DrizzleService } from "../../../lib/db/DrizzleService";
-import { projects, sessions } from "../../../lib/db/schema";
-import { type ISyncService, SyncService } from "../../sync/services/SyncService";
-import { SessionMetaService } from "../services/SessionMetaService";
+} from "../../../../testing/layers/testDrizzleServiceLayer.ts";
+import { DrizzleService } from "../../../lib/db/DrizzleService.ts";
+import { projects, sessions } from "../../../lib/db/schema.ts";
+import { type ISyncService, SyncService } from "../../sync/services/SyncService.ts";
+import { SessionMetaService } from "../services/SessionMetaService.ts";
 
 // ---------------------------------------------------------------------------
 // Helpers

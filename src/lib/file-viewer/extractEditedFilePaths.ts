@@ -1,4 +1,4 @@
-import type { ToolUseContent } from "../conversation-schema/content/ToolUseContentSchema";
+import type { ToolUseContent } from "../conversation-schema/content/ToolUseContentSchema.ts";
 
 /** Tools that create or modify files */
 const FILE_EDITING_TOOLS = new Set(["Write", "Edit", "MultiEdit"]);

@@ -1,8 +1,8 @@
 import { homedir } from "node:os";
 import { Path } from "@effect/platform";
 import { Effect, Context as EffectContext, Layer } from "effect";
-import type { InferEffect } from "../../../lib/effect/types";
-import { CcvOptionsService } from "./CcvOptionsService";
+import type { InferEffect } from "../../../lib/effect/types.ts";
+import { CcvOptionsService } from "./CcvOptionsService.ts";
 
 export type ClaudeCodePaths = {
   globalClaudeDirectoryPath: string;

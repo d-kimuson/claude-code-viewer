@@ -1,10 +1,10 @@
 import { Path } from "@effect/platform";
 import { Effect } from "effect";
 import { describe, expect, it } from "vitest";
-import { testPlatformLayer } from "../../../../testing/layers/testPlatformLayer";
-import type { InternalEventDeclaration } from "../types/InternalEventDeclaration";
-import { EventBus } from "./EventBus";
-import { FileWatcherService } from "./fileWatcher";
+import { testPlatformLayer } from "../../../../testing/layers/testPlatformLayer.ts";
+import type { InternalEventDeclaration } from "../types/InternalEventDeclaration.ts";
+import { EventBus } from "./EventBus.ts";
+import { FileWatcherService } from "./fileWatcher.ts";
 
 describe("FileWatcherService", () => {
   describe("startWatching", () => {

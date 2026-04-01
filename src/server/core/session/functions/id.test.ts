@@ -1,5 +1,5 @@
 import { resolve } from "node:path";
-import { decodeSessionId, encodeSessionId, validateSessionId } from "./id";
+import { decodeSessionId, encodeSessionId, validateSessionId } from "./id.ts";
 
 const sampleProjectId =
   "L3BhdGgvdG8vY2xhdWRlLWNvZGUtcHJvamVjdC1kaXIvcHJvamVjdHMvc2FtcGxlLXByb2plY3Q";

@@ -5,15 +5,15 @@ import { join } from "node:path";
 import { NodeContext, NodeFileSystem, NodePath } from "@effect/platform-node";
 import { Effect, Layer } from "effect";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { DEFAULT_LOCALE } from "../../../../lib/i18n/localeDetection";
-import { ClaudeCodeLifeCycleService } from "../../claude-code/services/ClaudeCodeLifeCycleService";
-import { ClaudeCodeSessionProcessService } from "../../claude-code/services/ClaudeCodeSessionProcessService";
-import { EnvService } from "../../platform/services/EnvService";
-import { UserConfigService } from "../../platform/services/UserConfigService";
-import { ProjectRepository } from "../../project/infrastructure/ProjectRepository";
-import { SchedulerConfigBaseDir } from "../config";
-import type { NewSchedulerJob } from "../schema";
-import { SchedulerService } from "./Scheduler";
+import { DEFAULT_LOCALE } from "../../../../lib/i18n/localeDetection.ts";
+import { ClaudeCodeLifeCycleService } from "../../claude-code/services/ClaudeCodeLifeCycleService.ts";
+import { ClaudeCodeSessionProcessService } from "../../claude-code/services/ClaudeCodeSessionProcessService.ts";
+import { EnvService } from "../../platform/services/EnvService.ts";
+import { UserConfigService } from "../../platform/services/UserConfigService.ts";
+import { ProjectRepository } from "../../project/infrastructure/ProjectRepository.ts";
+import { SchedulerConfigBaseDir } from "../config.ts";
+import type { NewSchedulerJob } from "../schema.ts";
+import { SchedulerService } from "./Scheduler.ts";
 
 describe("SchedulerService", () => {
   let testDir: string;

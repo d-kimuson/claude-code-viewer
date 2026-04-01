@@ -1,7 +1,7 @@
 import { Effect, Either } from "effect";
 import { expect, test } from "vitest";
-import { testPlatformLayer } from "../../../testing/layers/testPlatformLayer";
-import { TerminalService } from "./TerminalService";
+import { testPlatformLayer } from "../../../testing/layers/testPlatformLayer.ts";
+import { TerminalService } from "./TerminalService.ts";
 
 test("disables terminal when CCV_TERMINAL_DISABLED is enabled", async () => {
   const program = Effect.gen(function* () {

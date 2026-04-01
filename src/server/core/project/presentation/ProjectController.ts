@@ -1,14 +1,14 @@
 import { FileSystem, Path } from "@effect/platform";
 import { Context, Effect, Layer } from "effect";
-import type { ControllerResponse } from "../../../lib/effect/toEffectResponse";
-import type { InferEffect } from "../../../lib/effect/types";
-import { computeClaudeProjectFilePath } from "../../claude-code/functions/computeClaudeProjectFilePath";
-import { ClaudeCodeLifeCycleService } from "../../claude-code/services/ClaudeCodeLifeCycleService";
-import { ApplicationContext } from "../../platform/services/ApplicationContext";
-import { UserConfigService } from "../../platform/services/UserConfigService";
-import { SessionRepository } from "../../session/infrastructure/SessionRepository";
-import { encodeProjectId } from "../functions/id";
-import { ProjectRepository } from "../infrastructure/ProjectRepository";
+import type { ControllerResponse } from "../../../lib/effect/toEffectResponse.ts";
+import type { InferEffect } from "../../../lib/effect/types.ts";
+import { computeClaudeProjectFilePath } from "../../claude-code/functions/computeClaudeProjectFilePath.ts";
+import { ClaudeCodeLifeCycleService } from "../../claude-code/services/ClaudeCodeLifeCycleService.ts";
+import { ApplicationContext } from "../../platform/services/ApplicationContext.ts";
+import { UserConfigService } from "../../platform/services/UserConfigService.ts";
+import { SessionRepository } from "../../session/infrastructure/SessionRepository.ts";
+import { encodeProjectId } from "../functions/id.ts";
+import { ProjectRepository } from "../infrastructure/ProjectRepository.ts";
 
 const LayerImpl = Effect.gen(function* () {
   const projectRepository = yield* ProjectRepository;

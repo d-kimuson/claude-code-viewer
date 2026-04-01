@@ -1,10 +1,10 @@
 import { NodeContext } from "@effect/platform-node";
 import { Effect, Layer } from "effect";
 import { describe, expect, test } from "vitest";
-import { testPlatformLayer } from "../../../../testing/layers/testPlatformLayer";
-import { testProjectRepositoryLayer } from "../../../../testing/layers/testProjectRepositoryLayer";
-import { GitService } from "../services/GitService";
-import { GitController } from "./GitController";
+import { testPlatformLayer } from "../../../../testing/layers/testPlatformLayer.ts";
+import { testProjectRepositoryLayer } from "../../../../testing/layers/testProjectRepositoryLayer.ts";
+import { GitService } from "../services/GitService.ts";
+import { GitController } from "./GitController.ts";
 
 describe("GitController.commitFiles", () => {
   test("returns 400 when projectPath is null", async () => {

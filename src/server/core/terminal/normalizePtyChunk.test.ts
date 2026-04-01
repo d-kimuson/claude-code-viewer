@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { normalizePtyChunk } from "./normalizePtyChunk";
+import { normalizePtyChunk } from "./normalizePtyChunk.ts";
 
 describe("normalizePtyChunk", () => {
   it("returns string as-is", () => {

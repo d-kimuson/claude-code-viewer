@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { isRegularSessionFile } from "./isRegularSessionFile";
+import { isRegularSessionFile } from "./isRegularSessionFile.ts";
 
 describe("isRegularSessionFile", () => {
   describe("returns true for regular session files", () => {

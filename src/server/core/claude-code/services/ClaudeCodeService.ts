@@ -1,8 +1,8 @@
 import { Context, Data, Effect, Layer } from "effect";
-import type { InferEffect } from "../../../lib/effect/types";
-import { ProjectRepository } from "../../project/infrastructure/ProjectRepository";
-import { parseMcpListOutput } from "../functions/parseMcpListOutput";
-import * as ClaudeCode from "../models/ClaudeCode";
+import type { InferEffect } from "../../../lib/effect/types.ts";
+import { ProjectRepository } from "../../project/infrastructure/ProjectRepository.ts";
+import { parseMcpListOutput } from "../functions/parseMcpListOutput.ts";
+import * as ClaudeCode from "../models/ClaudeCode.ts";
 
 class ProjectPathNotFoundError extends Data.TaggedError("ProjectPathNotFoundError")<{
   projectId: string;

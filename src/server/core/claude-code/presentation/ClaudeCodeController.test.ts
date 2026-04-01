@@ -2,11 +2,11 @@ import { FileSystem } from "@effect/platform";
 import { NodeContext } from "@effect/platform-node";
 import { Effect, Layer } from "effect";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { testPlatformLayer } from "../../../../testing/layers/testPlatformLayer";
-import { testProjectRepositoryLayer } from "../../../../testing/layers/testProjectRepositoryLayer";
-import { ApplicationContext } from "../../platform/services/ApplicationContext";
-import { ClaudeCodeService } from "../services/ClaudeCodeService";
-import { ClaudeCodeController } from "./ClaudeCodeController";
+import { testPlatformLayer } from "../../../../testing/layers/testPlatformLayer.ts";
+import { testProjectRepositoryLayer } from "../../../../testing/layers/testProjectRepositoryLayer.ts";
+import { ApplicationContext } from "../../platform/services/ApplicationContext.ts";
+import { ClaudeCodeService } from "../services/ClaudeCodeService.ts";
+import { ClaudeCodeController } from "./ClaudeCodeController.ts";
 
 // Mock ClaudeCodeService to avoid depending on ClaudeCode.Config
 const testClaudeCodeServiceLayer = Layer.succeed(

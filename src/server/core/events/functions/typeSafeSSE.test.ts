@@ -2,7 +2,7 @@ import { Effect } from "effect";
 import { SSEStreamingApi } from "hono/streaming";
 import { describe, expect, it, vi } from "vitest";
 import { z } from "zod";
-import { TypeSafeSSE } from "./typeSafeSSE";
+import { TypeSafeSSE } from "./typeSafeSSE.ts";
 
 const baseEventSchema = z.object({
   kind: z.string(),

@@ -1,11 +1,11 @@
 import { Context, Effect, Layer, Ref, Schedule } from "effect";
-import { EventBus } from "../core/events/services/EventBus";
-import { FileWatcherService } from "../core/events/services/fileWatcher";
-import type { InternalEventDeclaration } from "../core/events/types/InternalEventDeclaration";
-import { ProjectMetaService } from "../core/project/services/ProjectMetaService";
-import { RateLimitAutoScheduleService } from "../core/rate-limit/services/RateLimitAutoScheduleService";
-import { SessionMetaService } from "../core/session/services/SessionMetaService";
-import { SyncService } from "../core/sync/services/SyncService";
+import { EventBus } from "../core/events/services/EventBus.ts";
+import { FileWatcherService } from "../core/events/services/fileWatcher.ts";
+import type { InternalEventDeclaration } from "../core/events/types/InternalEventDeclaration.ts";
+import { ProjectMetaService } from "../core/project/services/ProjectMetaService.ts";
+import { RateLimitAutoScheduleService } from "../core/rate-limit/services/RateLimitAutoScheduleService.ts";
+import { SessionMetaService } from "../core/session/services/SessionMetaService.ts";
+import { SyncService } from "../core/sync/services/SyncService.ts";
 
 type InitializeServiceInterface = {
   readonly startInitialization: () => Effect.Effect<void>;

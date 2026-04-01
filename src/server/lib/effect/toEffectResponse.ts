@@ -1,7 +1,7 @@
 import { Effect } from "effect";
 import type { Context, Input } from "hono";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
-import type { HonoContext } from "../../hono/app";
+import type { HonoContext } from "../../hono/app.ts";
 
 export type ControllerResponse = {
   status: ContentfulStatusCode;

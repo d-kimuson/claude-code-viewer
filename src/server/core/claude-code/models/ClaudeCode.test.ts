@@ -1,8 +1,8 @@
 import { CommandExecutor } from "@effect/platform";
 import { NodeContext } from "@effect/platform-node";
 import { Effect, Layer } from "effect";
-import { testPlatformLayer } from "../../../../testing/layers/testPlatformLayer";
-import * as ClaudeCode from "./ClaudeCode";
+import { testPlatformLayer } from "../../../../testing/layers/testPlatformLayer.ts";
+import * as ClaudeCode from "./ClaudeCode.ts";
 
 describe("ClaudeCode.claudeCodePathPriority", () => {
   describe("should return 0 for npx cache paths (lowest priority)", () => {

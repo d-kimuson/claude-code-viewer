@@ -1,4 +1,4 @@
-import type { VirtualMessage } from "./virtualMessageStore";
+import type { VirtualMessage } from "./virtualMessageStore.ts";
 
 /**
  * Creates virtual session list entries from virtual messages that don't yet

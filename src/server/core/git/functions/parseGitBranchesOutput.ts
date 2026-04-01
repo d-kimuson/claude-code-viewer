@@ -1,5 +1,5 @@
-import type { GitBranch } from "../types";
-import { parseLines } from "./utils";
+import type { GitBranch } from "../types.ts";
+import { parseLines } from "./utils.ts";
 
 /**
  * Get all branches (local and remote) in the repository

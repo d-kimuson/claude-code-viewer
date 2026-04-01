@@ -3,8 +3,8 @@ import { Effect } from "effect";
 import { Hono } from "hono";
 import { deleteCookie, getCookie, setCookie } from "hono/cookie";
 import { z } from "zod";
-import type { HonoContext } from "../app";
-import { AuthMiddleware } from "../middleware/auth.middleware";
+import type { HonoContext } from "../app.ts";
+import { AuthMiddleware } from "../middleware/auth.middleware.ts";
 
 const authRoutes = Effect.gen(function* () {
   const { getAuthState } = yield* AuthMiddleware;

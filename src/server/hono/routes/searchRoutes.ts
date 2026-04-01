@@ -2,10 +2,10 @@ import { zValidator } from "@hono/zod-validator";
 import { Effect } from "effect";
 import { Hono } from "hono";
 import { z } from "zod";
-import { SearchController } from "../../core/search/presentation/SearchController";
-import { effectToResponse } from "../../lib/effect/toEffectResponse";
-import type { HonoContext } from "../app";
-import { getHonoRuntime } from "../runtime";
+import { SearchController } from "../../core/search/presentation/SearchController.ts";
+import { effectToResponse } from "../../lib/effect/toEffectResponse.ts";
+import type { HonoContext } from "../app.ts";
+import { getHonoRuntime } from "../runtime.ts";
 
 const searchRoutes = Effect.gen(function* () {
   const searchController = yield* SearchController;

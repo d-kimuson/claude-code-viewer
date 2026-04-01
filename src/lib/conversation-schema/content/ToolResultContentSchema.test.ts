@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { ToolResultContentSchema } from "./ToolResultContentSchema";
+import { ToolResultContentSchema } from "./ToolResultContentSchema.ts";
 
 describe("ToolResultContentSchema", () => {
   test("accepts tool_result with string content", () => {

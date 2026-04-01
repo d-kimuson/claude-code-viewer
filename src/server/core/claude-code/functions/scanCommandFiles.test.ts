@@ -2,12 +2,12 @@ import { FileSystem } from "@effect/platform";
 import { NodeContext } from "@effect/platform-node";
 import { Effect, Layer } from "effect";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { testPlatformLayer } from "../../../../testing/layers/testPlatformLayer";
+import { testPlatformLayer } from "../../../../testing/layers/testPlatformLayer.ts";
 import {
   pathToCommandName,
   scanCommandFilesRecursively,
   scanSkillFilesRecursively,
-} from "./scanCommandFiles";
+} from "./scanCommandFiles.ts";
 
 const testLayer = Layer.provide(NodeContext.layer, testPlatformLayer());
 

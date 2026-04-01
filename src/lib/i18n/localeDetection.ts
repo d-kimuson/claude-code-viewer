@@ -1,4 +1,4 @@
-import type { SupportedLocale } from "./schema";
+import type { SupportedLocale } from "./schema.ts";
 
 export const DEFAULT_LOCALE: SupportedLocale = "en";
 

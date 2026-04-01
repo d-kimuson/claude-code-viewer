@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
-import type { SchedulerJob } from "../schema";
-import { calculateReservedDelay, shouldExecuteJob } from "./Job";
+import type { SchedulerJob } from "../schema.ts";
+import { calculateReservedDelay, shouldExecuteJob } from "./Job.ts";
 
 describe("shouldExecuteJob", () => {
   test("returns false when job is disabled", () => {

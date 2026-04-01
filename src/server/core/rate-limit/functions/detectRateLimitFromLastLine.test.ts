@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { detectRateLimitFromLastLine } from "./detectRateLimitFromLastLine";
+import { detectRateLimitFromLastLine } from "./detectRateLimitFromLastLine.ts";
 
 describe("detectRateLimitFromLastLine", () => {
   describe("rate limit detection", () => {

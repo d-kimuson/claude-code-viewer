@@ -1,12 +1,12 @@
 import { FileSystem } from "@effect/platform";
 import { Context, Effect, Layer } from "effect";
-import type { ControllerResponse } from "../../../lib/effect/toEffectResponse";
-import type { InferEffect } from "../../../lib/effect/types";
-import { AgentSessionRepository } from "../../agent-session/infrastructure/AgentSessionRepository";
-import { EventBus } from "../../events/services/EventBus";
-import { SessionRepository } from "../../session/infrastructure/SessionRepository";
-import { decodeSessionId } from "../functions/id";
-import { generateSessionHtml } from "../services/ExportService";
+import type { ControllerResponse } from "../../../lib/effect/toEffectResponse.ts";
+import type { InferEffect } from "../../../lib/effect/types.ts";
+import { AgentSessionRepository } from "../../agent-session/infrastructure/AgentSessionRepository.ts";
+import { EventBus } from "../../events/services/EventBus.ts";
+import { SessionRepository } from "../../session/infrastructure/SessionRepository.ts";
+import { decodeSessionId } from "../functions/id.ts";
+import { generateSessionHtml } from "../services/ExportService.ts";
 
 const LayerImpl = Effect.gen(function* () {
   const sessionRepository = yield* SessionRepository;

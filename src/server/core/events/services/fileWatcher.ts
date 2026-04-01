@@ -3,10 +3,10 @@
 import { type FSWatcher, watch } from "node:fs";
 import { Path } from "@effect/platform";
 import { Context, Effect, Layer, Ref } from "effect";
-import { ApplicationContext } from "../../platform/services/ApplicationContext";
-import { encodeProjectIdFromSessionFilePath } from "../../project/functions/id";
-import { parseSessionFilePath } from "../functions/parseSessionFilePath";
-import { EventBus } from "./EventBus";
+import { ApplicationContext } from "../../platform/services/ApplicationContext.ts";
+import { encodeProjectIdFromSessionFilePath } from "../../project/functions/id.ts";
+import { parseSessionFilePath } from "../functions/parseSessionFilePath.ts";
+import { EventBus } from "./EventBus.ts";
 
 type FileWatcherServiceInterface = {
   readonly startWatching: () => Effect.Effect<void>;

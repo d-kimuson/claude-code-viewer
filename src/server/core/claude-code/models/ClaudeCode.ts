@@ -2,8 +2,8 @@ import * as agentSdk from "@anthropic-ai/claude-agent-sdk";
 import { Command, Path } from "@effect/platform";
 import { Data, Effect } from "effect";
 import { uniq } from "es-toolkit";
-import { CcvOptionsService } from "../../platform/services/CcvOptionsService";
-import * as ClaudeCodeVersion from "./ClaudeCodeVersion";
+import { CcvOptionsService } from "../../platform/services/CcvOptionsService.ts";
+import * as ClaudeCodeVersion from "./ClaudeCodeVersion.ts";
 
 type AgentSdkQuery = typeof agentSdk.query;
 type AgentSdkPrompt = Parameters<AgentSdkQuery>[0]["prompt"];

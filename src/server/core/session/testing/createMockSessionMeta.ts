@@ -1,4 +1,4 @@
-import type { SessionMeta } from "../../types";
+import type { SessionMeta } from "../../types.ts";
 
 /**
  * Creates a mock SessionMeta object for testing purposes with default cost values

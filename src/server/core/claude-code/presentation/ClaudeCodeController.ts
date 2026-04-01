@@ -1,16 +1,16 @@
 import { FileSystem, Path } from "@effect/platform";
 import { Context, Effect, Layer } from "effect";
-import type { ControllerResponse } from "../../../lib/effect/toEffectResponse";
-import type { InferEffect } from "../../../lib/effect/types";
-import { ApplicationContext } from "../../platform/services/ApplicationContext";
-import { ProjectRepository } from "../../project/infrastructure/ProjectRepository";
+import type { ControllerResponse } from "../../../lib/effect/toEffectResponse.ts";
+import type { InferEffect } from "../../../lib/effect/types.ts";
+import { ApplicationContext } from "../../platform/services/ApplicationContext.ts";
+import { ProjectRepository } from "../../project/infrastructure/ProjectRepository.ts";
 import {
   type CommandInfo,
   scanCommandFilesWithMetadata,
   scanSkillFilesWithMetadata,
-} from "../functions/scanCommandFiles";
-import * as ClaudeCodeVersion from "../models/ClaudeCodeVersion";
-import { ClaudeCodeService } from "../services/ClaudeCodeService";
+} from "../functions/scanCommandFiles.ts";
+import * as ClaudeCodeVersion from "../models/ClaudeCodeVersion.ts";
+import { ClaudeCodeService } from "../services/ClaudeCodeService.ts";
 
 const LayerImpl = Effect.gen(function* () {
   const projectRepository = yield* ProjectRepository;

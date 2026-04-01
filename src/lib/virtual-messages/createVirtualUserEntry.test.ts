@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
-import { createVirtualUserEntry } from "./createVirtualUserEntry";
-import type { VirtualMessage } from "./virtualMessageStore";
+import { createVirtualUserEntry } from "./createVirtualUserEntry.ts";
+import type { VirtualMessage } from "./virtualMessageStore.ts";
 
 describe("createVirtualUserEntry", () => {
   const baseMessage: VirtualMessage = {

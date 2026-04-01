@@ -1,11 +1,11 @@
 import { Context, Effect, Layer } from "effect";
-import type { PublicSessionProcess } from "../../../../types/session-process";
-import type { ControllerResponse } from "../../../lib/effect/toEffectResponse";
-import type { InferEffect } from "../../../lib/effect/types";
-import { ProjectRepository } from "../../project/infrastructure/ProjectRepository";
-import type { UserMessageInput } from "../functions/createMessageGenerator";
-import type * as CCTurn from "../models/ClaudeCodeTurn";
-import { ClaudeCodeLifeCycleService } from "../services/ClaudeCodeLifeCycleService";
+import type { PublicSessionProcess } from "../../../../types/session-process.ts";
+import type { ControllerResponse } from "../../../lib/effect/toEffectResponse.ts";
+import type { InferEffect } from "../../../lib/effect/types.ts";
+import { ProjectRepository } from "../../project/infrastructure/ProjectRepository.ts";
+import type { UserMessageInput } from "../functions/createMessageGenerator.ts";
+import type * as CCTurn from "../models/ClaudeCodeTurn.ts";
+import { ClaudeCodeLifeCycleService } from "../services/ClaudeCodeLifeCycleService.ts";
 
 const LayerImpl = Effect.gen(function* () {
   const projectRepository = yield* ProjectRepository;

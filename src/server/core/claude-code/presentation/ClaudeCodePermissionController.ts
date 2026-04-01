@@ -1,8 +1,8 @@
 import { Context, Effect, Layer } from "effect";
-import type { PermissionResponse } from "../../../../types/permissions";
-import type { ControllerResponse } from "../../../lib/effect/toEffectResponse";
-import type { InferEffect } from "../../../lib/effect/types";
-import { ClaudeCodePermissionService } from "../services/ClaudeCodePermissionService";
+import type { PermissionResponse } from "../../../../types/permissions.ts";
+import type { ControllerResponse } from "../../../lib/effect/toEffectResponse.ts";
+import type { InferEffect } from "../../../lib/effect/types.ts";
+import { ClaudeCodePermissionService } from "../services/ClaudeCodePermissionService.ts";
 
 const LayerImpl = Effect.gen(function* () {
   const claudeCodePermissionService = yield* ClaudeCodePermissionService;

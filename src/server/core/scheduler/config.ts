@@ -1,7 +1,7 @@
 import { homedir } from "node:os";
 import { FileSystem, Path } from "@effect/platform";
 import { Context, Data, Effect, Layer } from "effect";
-import { type SchedulerConfig, schedulerConfigSchema } from "./schema";
+import { type SchedulerConfig, schedulerConfigSchema } from "./schema.ts";
 
 class ConfigFileNotFoundError extends Data.TaggedError("ConfigFileNotFoundError")<{
   readonly path: string;

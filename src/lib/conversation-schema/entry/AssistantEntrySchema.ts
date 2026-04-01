@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { AssistantMessageSchema } from "../message/AssistantMessageSchema";
-import { BaseEntrySchema } from "./BaseEntrySchema";
+import { AssistantMessageSchema } from "../message/AssistantMessageSchema.ts";
+import { BaseEntrySchema } from "./BaseEntrySchema.ts";
 
 export const AssistantEntrySchema = BaseEntrySchema.extend({
   // discriminator

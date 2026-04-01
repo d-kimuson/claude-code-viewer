@@ -66,8 +66,9 @@ const colocatedTests = {
   },
 };
 
-const RE_FRONTEND_FILE = /[/\\]src[/\\](app|components|hooks|routes)[/\\]/;
+const RE_FRONTEND_FILE = /[/\\]src[/\\]web[/\\]/;
 const RE_BACKEND_FILE = /[/\\]src[/\\]server[/\\]/;
+const RE_WEB_FILE = /[/\\]src[/\\]web[/\\]/;
 
 const resolveTargetDomain = (source) => {
   if (typeof source !== "string") {
@@ -79,7 +80,7 @@ const resolveTargetDomain = (source) => {
     return "backend";
   }
 
-  if (/^@\/(app|components|hooks|routes)(?:[/\\]|$)/.test(source)) {
+  if (/^@\/web(?:[/\\]|$)/.test(source)) {
     return "frontend";
   }
 
@@ -88,7 +89,7 @@ const resolveTargetDomain = (source) => {
     return "backend";
   }
 
-  if (/(?:^|[/\\])(app|components|hooks|routes)[/\\]/.test(source)) {
+  if (/(?:^|[/\\])web[/\\]/.test(source)) {
     return "frontend";
   }
 
@@ -146,6 +147,44 @@ const moduleBoundaries = {
   },
 };
 
+const noProjectAliasOutsideWeb = {
+  create(context) {
+    const filename = context.filename ?? context.getFilename();
+
+    if (RE_WEB_FILE.test(filename)) {
+      return {};
+    }
+
+    const reportAliasIfNeeded = (node, source) => {
+      if (typeof source !== "string" || !source.startsWith("@/")) {
+        return;
+      }
+
+      context.report({
+        node,
+        message:
+          "Project alias import (`@/...`) is only allowed in src/web/**. Use relative imports in other areas.",
+      });
+    };
+
+    return {
+      ImportDeclaration(node) {
+        reportAliasIfNeeded(node, node.source?.value);
+      },
+      ExportAllDeclaration(node) {
+        reportAliasIfNeeded(node, node.source?.value);
+      },
+      ExportNamedDeclaration(node) {
+        reportAliasIfNeeded(node, node.source?.value);
+      },
+      ImportExpression(node) {
+        const sourceValue = node.source?.value;
+        reportAliasIfNeeded(node, sourceValue);
+      },
+    };
+  },
+};
+
 const plugin = {
   meta: {
     name: "conventions",
@@ -154,6 +193,7 @@ const plugin = {
     "no-barrel-file": noBarrelFile,
     "colocated-tests": colocatedTests,
     "module-boundaries": moduleBoundaries,
+    "no-project-alias-outside-web": noProjectAliasOutsideWeb,
   },
 };
 

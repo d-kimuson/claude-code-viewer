@@ -1,4 +1,4 @@
-import { type RateLimitDetectionResult, RateLimitEntrySchema } from "../schema";
+import { type RateLimitDetectionResult, RateLimitEntrySchema } from "../schema.ts";
 
 /**
  * Detects if a JSON line represents a rate limit error from Claude Code.

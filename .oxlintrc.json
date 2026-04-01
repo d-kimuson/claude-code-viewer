@@ -236,7 +236,8 @@
     ],
     "conventions/no-barrel-file": "error",
     "conventions/colocated-tests": "error",
-    "conventions/module-boundaries": "error"
+    "conventions/module-boundaries": "error",
+    "conventions/no-project-alias-outside-web": "error"
   },
   "overrides": [
     {

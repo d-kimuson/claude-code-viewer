@@ -1,10 +1,10 @@
 import { NodeContext } from "@effect/platform-node";
 import { Layer } from "effect";
-import { EventBus } from "../../core/events/services/EventBus";
-import { ApplicationContext } from "../../core/platform/services/ApplicationContext";
-import { CcvOptionsService } from "../../core/platform/services/CcvOptionsService";
-import { EnvService } from "../../core/platform/services/EnvService";
-import { UserConfigService } from "../../core/platform/services/UserConfigService";
+import { EventBus } from "../../core/events/services/EventBus.ts";
+import { ApplicationContext } from "../../core/platform/services/ApplicationContext.ts";
+import { CcvOptionsService } from "../../core/platform/services/CcvOptionsService.ts";
+import { EnvService } from "../../core/platform/services/EnvService.ts";
+import { UserConfigService } from "../../core/platform/services/UserConfigService.ts";
 
 export const platformLayer = Layer.mergeAll(
   ApplicationContext.Live,

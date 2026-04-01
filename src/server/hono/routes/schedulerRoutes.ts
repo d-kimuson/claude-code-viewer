@@ -1,11 +1,11 @@
 import { zValidator } from "@hono/zod-validator";
 import { Effect } from "effect";
 import { Hono } from "hono";
-import { SchedulerController } from "../../core/scheduler/presentation/SchedulerController";
-import { newSchedulerJobSchema, updateSchedulerJobSchema } from "../../core/scheduler/schema";
-import { effectToResponse } from "../../lib/effect/toEffectResponse";
-import type { HonoContext } from "../app";
-import { getHonoRuntime } from "../runtime";
+import { SchedulerController } from "../../core/scheduler/presentation/SchedulerController.ts";
+import { newSchedulerJobSchema, updateSchedulerJobSchema } from "../../core/scheduler/schema.ts";
+import { effectToResponse } from "../../lib/effect/toEffectResponse.ts";
+import type { HonoContext } from "../app.ts";
+import { getHonoRuntime } from "../runtime.ts";
 
 const schedulerRoutes = Effect.gen(function* () {
   const schedulerController = yield* SchedulerController;

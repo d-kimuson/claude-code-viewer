@@ -1,9 +1,9 @@
 import { Context, Data, Effect, Layer, Ref } from "effect";
-import type { InferEffect } from "../../../lib/effect/types";
-import { EventBus } from "../../events/services/EventBus";
-import * as CCSessionProcess from "../models/CCSessionProcess";
-import type * as CCTurn from "../models/ClaudeCodeTurn";
-import type { InitMessageContext } from "../types";
+import type { InferEffect } from "../../../lib/effect/types.ts";
+import { EventBus } from "../../events/services/EventBus.ts";
+import * as CCSessionProcess from "../models/CCSessionProcess.ts";
+import type * as CCTurn from "../models/ClaudeCodeTurn.ts";
+import type { InitMessageContext } from "../types.ts";
 
 class SessionProcessNotFoundError extends Data.TaggedError("SessionProcessNotFoundError")<{
   sessionProcessId: string;

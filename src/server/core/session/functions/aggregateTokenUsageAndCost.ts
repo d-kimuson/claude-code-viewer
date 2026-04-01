@@ -1,5 +1,5 @@
-import { parseJsonl } from "../../claude-code/functions/parseJsonl";
-import { calculateTokenCost, type TokenUsage } from "./calculateSessionCost";
+import { parseJsonl } from "../../claude-code/functions/parseJsonl.ts";
+import { calculateTokenCost, type TokenUsage } from "./calculateSessionCost.ts";
 
 /**
  * Aggregates token usage and cost from multiple file contents.

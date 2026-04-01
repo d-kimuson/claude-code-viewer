@@ -1,6 +1,6 @@
 import { atom } from "jotai";
 import type { RefObject } from "react";
-import type { RightPanelTab } from "@/lib/types/rightPanel";
+import type { RightPanelTab } from "../types/rightPanel.ts";
 
 export const rightPanelResizingAtom = atom(false);
 export const rightPanelOpenAtom = atom(false);

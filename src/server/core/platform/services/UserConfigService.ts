@@ -1,7 +1,7 @@
 import { Context, Effect, Layer, Ref } from "effect";
-import { DEFAULT_LOCALE } from "../../../../lib/i18n/localeDetection";
-import type { UserConfig } from "../../../lib/config/config";
-import type { InferEffect } from "../../../lib/effect/types";
+import { DEFAULT_LOCALE } from "../../../../lib/i18n/localeDetection.ts";
+import type { UserConfig } from "../../../lib/config/config.ts";
+import type { InferEffect } from "../../../lib/effect/types.ts";
 
 const LayerImpl = Effect.gen(function* () {
   const configRef = yield* Ref.make<UserConfig>({

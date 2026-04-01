@@ -1,8 +1,8 @@
 import { Layer } from "effect";
-import { AgentSessionRepository } from "./infrastructure/AgentSessionRepository";
+import { AgentSessionRepository } from "./infrastructure/AgentSessionRepository.ts";
 
-export { AgentSessionRepository } from "./infrastructure/AgentSessionRepository";
-export { AgentSessionController } from "./presentation/AgentSessionController";
+export { AgentSessionRepository } from "./infrastructure/AgentSessionRepository.ts";
+export { AgentSessionController } from "./presentation/AgentSessionController.ts";
 
 // Layer composition for dependency injection
 // Note: AgentSessionMappingService is no longer used since agentId-based lookup

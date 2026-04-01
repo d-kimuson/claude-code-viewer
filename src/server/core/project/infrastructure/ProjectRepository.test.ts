@@ -1,15 +1,15 @@
 import { Effect, Option, type Layer } from "effect";
-import { makeDrizzleTestServiceLayer } from "../../../../testing/layers/testDrizzleServiceLayer";
+import { makeDrizzleTestServiceLayer } from "../../../../testing/layers/testDrizzleServiceLayer.ts";
 import {
   createFileInfo,
   testFileSystemLayer,
-} from "../../../../testing/layers/testFileSystemLayer";
-import { testPlatformLayer } from "../../../../testing/layers/testPlatformLayer";
-import { testProjectMetaServiceLayer } from "../../../../testing/layers/testProjectMetaServiceLayer";
-import type { DrizzleService } from "../../../lib/db/DrizzleService";
-import { projects } from "../../../lib/db/schema";
-import type { ProjectMeta } from "../../types";
-import { ProjectRepository } from "./ProjectRepository";
+} from "../../../../testing/layers/testFileSystemLayer.ts";
+import { testPlatformLayer } from "../../../../testing/layers/testPlatformLayer.ts";
+import { testProjectMetaServiceLayer } from "../../../../testing/layers/testProjectMetaServiceLayer.ts";
+import type { DrizzleService } from "../../../lib/db/DrizzleService.ts";
+import { projects } from "../../../lib/db/schema.ts";
+import type { ProjectMeta } from "../../types.ts";
+import { ProjectRepository } from "./ProjectRepository.ts";
 
 // ---------------------------------------------------------------------------
 // Helpers

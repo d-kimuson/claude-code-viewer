@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { CommitAndPushRequestSchema, CommitRequestSchema } from "./schema";
+import { CommitAndPushRequestSchema, CommitRequestSchema } from "./schema.ts";
 
 describe("CommitRequestSchema", () => {
   test("accepts valid request", () => {

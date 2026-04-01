@@ -1,18 +1,18 @@
 import { Effect, Layer, Ref } from "effect";
 import { describe, expect, it } from "vitest";
-import { testPlatformLayer } from "../../testing/layers/testPlatformLayer";
-import { testProjectMetaServiceLayer } from "../../testing/layers/testProjectMetaServiceLayer";
-import { testProjectRepositoryLayer } from "../../testing/layers/testProjectRepositoryLayer";
-import { testSessionMetaServiceLayer } from "../../testing/layers/testSessionMetaServiceLayer";
-import { testSessionRepositoryLayer } from "../../testing/layers/testSessionRepositoryLayer";
-import { EventBus } from "../core/events/services/EventBus";
-import { FileWatcherService } from "../core/events/services/fileWatcher";
-import type { InternalEventDeclaration } from "../core/events/types/InternalEventDeclaration";
-import { ProjectRepository } from "../core/project/infrastructure/ProjectRepository";
-import { RateLimitAutoScheduleService } from "../core/rate-limit/services/RateLimitAutoScheduleService";
-import { createMockSessionMeta } from "../core/session/testing/createMockSessionMeta";
-import { SyncService } from "../core/sync/services/SyncService";
-import { InitializeService } from "./initialize";
+import { testPlatformLayer } from "../../testing/layers/testPlatformLayer.ts";
+import { testProjectMetaServiceLayer } from "../../testing/layers/testProjectMetaServiceLayer.ts";
+import { testProjectRepositoryLayer } from "../../testing/layers/testProjectRepositoryLayer.ts";
+import { testSessionMetaServiceLayer } from "../../testing/layers/testSessionMetaServiceLayer.ts";
+import { testSessionRepositoryLayer } from "../../testing/layers/testSessionRepositoryLayer.ts";
+import { EventBus } from "../core/events/services/EventBus.ts";
+import { FileWatcherService } from "../core/events/services/fileWatcher.ts";
+import type { InternalEventDeclaration } from "../core/events/types/InternalEventDeclaration.ts";
+import { ProjectRepository } from "../core/project/infrastructure/ProjectRepository.ts";
+import { RateLimitAutoScheduleService } from "../core/rate-limit/services/RateLimitAutoScheduleService.ts";
+import { createMockSessionMeta } from "../core/session/testing/createMockSessionMeta.ts";
+import { SyncService } from "../core/sync/services/SyncService.ts";
+import { InitializeService } from "./initialize.ts";
 
 const fileWatcherWithEventBus = FileWatcherService.Live.pipe(Layer.provide(EventBus.Live));
 

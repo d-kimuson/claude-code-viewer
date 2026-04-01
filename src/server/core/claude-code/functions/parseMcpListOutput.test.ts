@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseMcpListOutput } from "./parseMcpListOutput";
+import { parseMcpListOutput } from "./parseMcpListOutput.ts";
 
 describe("parseMcpListOutput", () => {
   it("should parse claude mcp list output correctly", () => {

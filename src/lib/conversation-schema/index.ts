@@ -1,15 +1,15 @@
 import { z } from "zod";
-import { AgentNameEntrySchema } from "./entry/AgentNameEntrySchema";
-import { type AssistantEntry, AssistantEntrySchema } from "./entry/AssistantEntrySchema";
-import { CustomTitleEntrySchema } from "./entry/CustomTitleEntrySchema";
-import { FileHistorySnapshotEntrySchema } from "./entry/FileHIstorySnapshotEntrySchema";
-import { LastPromptEntrySchema } from "./entry/LastPromptEntrySchema";
-import { PrLinkEntrySchema } from "./entry/PrLinkEntrySchema";
-import { ProgressEntrySchema } from "./entry/ProgressEntrySchema";
-import { QueueOperationEntrySchema } from "./entry/QueueOperationEntrySchema";
-import { SummaryEntrySchema } from "./entry/SummaryEntrySchema";
-import { type SystemEntry, SystemEntrySchema } from "./entry/SystemEntrySchema";
-import { type UserEntry, UserEntrySchema } from "./entry/UserEntrySchema";
+import { AgentNameEntrySchema } from "./entry/AgentNameEntrySchema.ts";
+import { type AssistantEntry, AssistantEntrySchema } from "./entry/AssistantEntrySchema.ts";
+import { CustomTitleEntrySchema } from "./entry/CustomTitleEntrySchema.ts";
+import { FileHistorySnapshotEntrySchema } from "./entry/FileHIstorySnapshotEntrySchema.ts";
+import { LastPromptEntrySchema } from "./entry/LastPromptEntrySchema.ts";
+import { PrLinkEntrySchema } from "./entry/PrLinkEntrySchema.ts";
+import { ProgressEntrySchema } from "./entry/ProgressEntrySchema.ts";
+import { QueueOperationEntrySchema } from "./entry/QueueOperationEntrySchema.ts";
+import { SummaryEntrySchema } from "./entry/SummaryEntrySchema.ts";
+import { type SystemEntry, SystemEntrySchema } from "./entry/SystemEntrySchema.ts";
+import { type UserEntry, UserEntrySchema } from "./entry/UserEntrySchema.ts";
 
 export const ConversationSchema = z.union([
   UserEntrySchema,

@@ -1,10 +1,10 @@
 import { Effect } from "effect";
 import { describe, expect, it } from "vitest";
-import type { PermissionRequest } from "../../../../types/permissions";
-import type { PublicSessionProcess } from "../../../../types/session-process";
-import type { CCSessionProcessState } from "../../claude-code/models/CCSessionProcess";
-import type { InternalEventDeclaration } from "../types/InternalEventDeclaration";
-import { EventBus } from "./EventBus";
+import type { PermissionRequest } from "../../../../types/permissions.ts";
+import type { PublicSessionProcess } from "../../../../types/session-process.ts";
+import type { CCSessionProcessState } from "../../claude-code/models/CCSessionProcess.ts";
+import type { InternalEventDeclaration } from "../types/InternalEventDeclaration.ts";
+import { EventBus } from "./EventBus.ts";
 
 describe("EventBus", () => {
   describe("basic event processing", () => {

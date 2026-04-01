@@ -4,7 +4,7 @@ import { execFile } from "node:child_process";
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 import { promisify } from "node:util";
-import type { GitError, GitResult } from "../types";
+import type { GitError, GitResult } from "../types.ts";
 
 const execFileAsync = promisify(execFile);
 

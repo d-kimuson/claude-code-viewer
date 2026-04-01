@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { BaseEntrySchema } from "./BaseEntrySchema";
+import { BaseEntrySchema } from "./BaseEntrySchema.ts";
 
 // Hook info for stop_hook_summary
 const HookInfoSchema = z.object({

@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { PrLinkEntrySchema } from "./PrLinkEntrySchema";
+import { PrLinkEntrySchema } from "./PrLinkEntrySchema.ts";
 
 describe("PrLinkEntrySchema", () => {
   test("accepts valid pr-link entry with all fields", () => {

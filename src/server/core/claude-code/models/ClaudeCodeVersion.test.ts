@@ -1,4 +1,4 @@
-import * as ClaudeCodeVersion from "./ClaudeCodeVersion";
+import * as ClaudeCodeVersion from "./ClaudeCodeVersion.ts";
 
 describe("ClaudeCodeVersion.fromCLIString", () => {
   describe("with valid version string", () => {

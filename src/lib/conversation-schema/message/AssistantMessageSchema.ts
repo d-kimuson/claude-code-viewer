@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { TextContentSchema } from "../content/TextContentSchema";
-import { ThinkingContentSchema } from "../content/ThinkingContentSchema";
-import { ToolResultContentSchema } from "../content/ToolResultContentSchema";
-import { ToolUseContentSchema } from "../content/ToolUseContentSchema";
+import { TextContentSchema } from "../content/TextContentSchema.ts";
+import { ThinkingContentSchema } from "../content/ThinkingContentSchema.ts";
+import { ToolResultContentSchema } from "../content/ToolResultContentSchema.ts";
+import { ToolUseContentSchema } from "../content/ToolUseContentSchema.ts";
 
 const AssistantMessageContentSchema = z.union([
   ThinkingContentSchema,

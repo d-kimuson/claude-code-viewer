@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { aggregateTokenUsageAndCost } from "./aggregateTokenUsageAndCost";
+import { aggregateTokenUsageAndCost } from "./aggregateTokenUsageAndCost.ts";
 
 describe("aggregateTokenUsageAndCost", () => {
   describe("single file", () => {

@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { SystemEntrySchema } from "./SystemEntrySchema";
+import { SystemEntrySchema } from "./SystemEntrySchema.ts";
 
 describe("SystemEntrySchema", () => {
   describe("turn_duration subtype", () => {

@@ -1,9 +1,9 @@
 import { Effect } from "effect";
 import { Hono } from "hono";
 import { describe, expect, it } from "vitest";
-import { CcvOptionsService } from "../../core/platform/services/CcvOptionsService";
-import type { HonoContext } from "../app";
-import { AuthMiddleware } from "./auth.middleware";
+import { CcvOptionsService } from "../../core/platform/services/CcvOptionsService.ts";
+import type { HonoContext } from "../app.ts";
+import { AuthMiddleware } from "./auth.middleware.ts";
 
 const createTestApp = (password?: string) =>
   Effect.gen(function* () {

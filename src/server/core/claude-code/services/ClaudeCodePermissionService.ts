@@ -1,10 +1,10 @@
 import type { CanUseTool, PermissionMode } from "@anthropic-ai/claude-agent-sdk";
 import { Context, Deferred, Effect, Layer, Ref } from "effect";
 import { ulid } from "ulid";
-import type { PermissionRequest, PermissionResponse } from "../../../../types/permissions";
-import type { InferEffect } from "../../../lib/effect/types";
-import { EventBus } from "../../events/services/EventBus";
-import * as ClaudeCode from "../models/ClaudeCode";
+import type { PermissionRequest, PermissionResponse } from "../../../../types/permissions.ts";
+import type { InferEffect } from "../../../lib/effect/types.ts";
+import { EventBus } from "../../events/services/EventBus.ts";
+import * as ClaudeCode from "../models/ClaudeCode.ts";
 
 const LayerImpl = Effect.gen(function* () {
   const pendingPermissionRequestsRef = yield* Ref.make<Map<string, PermissionRequest>>(new Map());

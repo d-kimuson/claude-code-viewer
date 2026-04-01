@@ -4,25 +4,28 @@ import { setCookie } from "hono/cookie";
 import { createMiddleware } from "hono/factory";
 import prexit from "prexit";
 import packageJson from "../../../../package.json" with { type: "json" };
-import { CcvOptionsService, type CliOptions } from "../../core/platform/services/CcvOptionsService";
-import { EnvService } from "../../core/platform/services/EnvService";
-import { UserConfigService } from "../../core/platform/services/UserConfigService";
-import { userConfigSchema } from "../../lib/config/config";
-import type { HonoAppType, HonoContext } from "../app";
-import { InitializeService } from "../initialize";
-import { AuthMiddleware } from "../middleware/auth.middleware";
-import { configMiddleware } from "../middleware/config.middleware";
-import { getHonoRuntime } from "../runtime";
-import { authRoutes } from "./authRoutes";
-import { claudeCodeRoutes } from "./claudeCodeRoutes";
-import { featureFlagRoutes } from "./featureFlagRoutes";
-import { fileSystemRoutes } from "./fileSystemRoutes";
-import { notificationRoutes } from "./notificationRoutes";
-import { projectRoutes } from "./projectRoutes";
-import { schedulerRoutes } from "./schedulerRoutes";
-import { searchRoutes } from "./searchRoutes";
-import { sseRoutes } from "./sseRoutes";
-import { tasksRoutes } from "./tasksRoutes";
+import {
+  CcvOptionsService,
+  type CliOptions,
+} from "../../core/platform/services/CcvOptionsService.ts";
+import { EnvService } from "../../core/platform/services/EnvService.ts";
+import { UserConfigService } from "../../core/platform/services/UserConfigService.ts";
+import { userConfigSchema } from "../../lib/config/config.ts";
+import type { HonoAppType, HonoContext } from "../app.ts";
+import { InitializeService } from "../initialize.ts";
+import { AuthMiddleware } from "../middleware/auth.middleware.ts";
+import { configMiddleware } from "../middleware/config.middleware.ts";
+import { getHonoRuntime } from "../runtime.ts";
+import { authRoutes } from "./authRoutes.ts";
+import { claudeCodeRoutes } from "./claudeCodeRoutes.ts";
+import { featureFlagRoutes } from "./featureFlagRoutes.ts";
+import { fileSystemRoutes } from "./fileSystemRoutes.ts";
+import { notificationRoutes } from "./notificationRoutes.ts";
+import { projectRoutes } from "./projectRoutes.ts";
+import { schedulerRoutes } from "./schedulerRoutes.ts";
+import { searchRoutes } from "./searchRoutes.ts";
+import { sseRoutes } from "./sseRoutes.ts";
+import { tasksRoutes } from "./tasksRoutes.ts";
 
 const API_ONLY_ALLOWED_PREFIXES = [
   "/api/version",

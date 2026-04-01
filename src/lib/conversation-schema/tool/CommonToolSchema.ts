@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { StructuredPatchSchema } from "./StructuredPatchSchema";
+import { StructuredPatchSchema } from "./StructuredPatchSchema.ts";
 
 export const CommonToolResultSchema = z.union([
   z.object({

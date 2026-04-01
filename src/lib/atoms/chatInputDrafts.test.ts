@@ -3,7 +3,7 @@ import {
   buildChatInputDraftKey,
   sanitizeChatInputDraftStore,
   updateChatInputDraftStore,
-} from "./chatInputDrafts";
+} from "./chatInputDrafts.ts";
 
 describe("chatInputDrafts", () => {
   it("builds a draft key from project and session scope", () => {

@@ -1,5 +1,5 @@
-import type { Conversation } from "../../../../lib/conversation-schema";
-import { extractSearchableText } from "./extractSearchableText";
+import type { Conversation } from "../../../../lib/conversation-schema/index.ts";
+import { extractSearchableText } from "./extractSearchableText.ts";
 
 type UserConversation = Extract<Conversation, { type: "user" }>;
 

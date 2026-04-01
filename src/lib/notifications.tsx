@@ -4,7 +4,7 @@
 
 import { Trans } from "@lingui/react";
 import type { ReactNode } from "react";
-import type { NotificationSoundType } from "./atoms/notifications";
+import type { NotificationSoundType } from "./atoms/notifications.ts";
 
 /**
  * Sound configuration for different notification types

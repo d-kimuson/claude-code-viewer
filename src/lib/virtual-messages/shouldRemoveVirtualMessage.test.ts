@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
-import type { Conversation } from "@/lib/conversation-schema";
-import { shouldRemoveVirtualMessage } from "./shouldRemoveVirtualMessage";
+import type { Conversation } from "../conversation-schema/index.ts";
+import { shouldRemoveVirtualMessage } from "./shouldRemoveVirtualMessage.ts";
 
 // Minimal helper to create a user-type conversation entry for testing.
 // Only the fields relevant to shouldRemoveVirtualMessage are needed,

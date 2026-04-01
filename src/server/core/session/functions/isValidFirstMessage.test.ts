@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import type { ParsedUserMessage } from "../../claude-code/functions/parseUserMessage";
-import { extractFirstUserMessage } from "./isValidFirstMessage";
+import type { ParsedUserMessage } from "../../claude-code/functions/parseUserMessage.ts";
+import { extractFirstUserMessage } from "./isValidFirstMessage.ts";
 
 const expectTextMessage = (
   result: ReturnType<typeof extractFirstUserMessage> | null,

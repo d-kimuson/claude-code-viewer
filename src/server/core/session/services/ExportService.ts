@@ -1,8 +1,8 @@
 import { Effect } from "effect";
-import type { Conversation } from "../../../../lib/conversation-schema";
-import type { ToolResultContent } from "../../../../lib/conversation-schema/content/ToolResultContentSchema";
-import type { IAgentSessionRepository } from "../../agent-session/infrastructure/AgentSessionRepository";
-import type { SessionDetail } from "../../types";
+import type { ToolResultContent } from "../../../../lib/conversation-schema/content/ToolResultContentSchema.ts";
+import type { Conversation } from "../../../../lib/conversation-schema/index.ts";
+import type { IAgentSessionRepository } from "../../agent-session/infrastructure/AgentSessionRepository.ts";
+import type { SessionDetail } from "../../types.ts";
 
 /**
  * Escapes HTML special characters to prevent XSS

@@ -2,7 +2,7 @@ import { format } from "date-fns";
 import { enUS } from "date-fns/locale/en-US";
 import { ja } from "date-fns/locale/ja";
 import { zhCN } from "date-fns/locale/zh-CN";
-import type { SupportedLocale } from "../i18n/schema";
+import type { SupportedLocale } from "../i18n/schema.ts";
 
 export const convertDateFnsLocale = (locale: SupportedLocale) => {
   switch (locale) {

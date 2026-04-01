@@ -2,7 +2,7 @@ import { FileSystem, Path } from "@effect/platform";
 import { SystemError } from "@effect/platform/Error";
 import { Effect, type Layer } from "effect";
 import { describe, expect, test } from "vitest";
-import { getAgentSessionFilesForSession } from "./getAgentSessionFilesForSession";
+import { getAgentSessionFilesForSession } from "./getAgentSessionFilesForSession.ts";
 
 /**
  * Helper function to create a FileSystem mock layer

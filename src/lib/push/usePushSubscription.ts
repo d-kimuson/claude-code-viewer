@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { honoClient } from "../../web/lib/api/client";
+import { honoClient } from "../../web/lib/api/client.ts";
 
 const urlBase64ToUint8Array = (base64String: string): ArrayBuffer => {
   const padding = "=".repeat((4 - (base64String.length % 4)) % 4);

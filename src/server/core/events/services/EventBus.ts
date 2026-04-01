@@ -1,6 +1,6 @@
 import { Context, Effect, Layer } from "effect";
-import type { InferEffect } from "../../../lib/effect/types";
-import type { InternalEventDeclaration } from "../types/InternalEventDeclaration";
+import type { InferEffect } from "../../../lib/effect/types.ts";
+import type { InternalEventDeclaration } from "../types/InternalEventDeclaration.ts";
 
 type Listener<T> = (data: T) => void | Promise<void>;
 

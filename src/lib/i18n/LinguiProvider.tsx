@@ -2,7 +2,7 @@ import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
 import { type FC, type PropsWithChildren, useEffect } from "react";
 import { activateLocale } from ".";
-import { useConfig } from "../../web/app/hooks/useConfig";
+import { useConfig } from "../../web/app/hooks/useConfig.ts";
 
 export const LinguiClientProvider: FC<PropsWithChildren> = ({ children }) => {
   const { config } = useConfig();

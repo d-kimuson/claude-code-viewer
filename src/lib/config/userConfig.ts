@@ -1,5 +1,5 @@
 import z from "zod";
-import { localeSchema } from "../i18n/schema";
+import { localeSchema } from "../i18n/schema.ts";
 
 export const userConfigSchema = z.object({
   hideNoUserMessageSession: z.boolean().optional().default(true),

@@ -1,5 +1,5 @@
-import type { Conversation } from "../../../../lib/conversation-schema";
-import type { ExtendedConversation } from "../../types";
+import type { Conversation } from "../../../../lib/conversation-schema/index.ts";
+import type { ExtendedConversation } from "../../types.ts";
 
 /**
  * Extracts searchable text from a conversation entry.

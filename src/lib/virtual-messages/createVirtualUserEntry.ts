@@ -1,5 +1,5 @@
-import type { UserEntry } from "@/lib/conversation-schema/entry/UserEntrySchema";
-import type { VirtualMessage } from "./virtualMessageStore";
+import type { UserEntry } from "../conversation-schema/entry/UserEntrySchema.ts";
+import type { VirtualMessage } from "./virtualMessageStore.ts";
 
 export const createVirtualUserEntry = (message: VirtualMessage): UserEntry => {
   return {

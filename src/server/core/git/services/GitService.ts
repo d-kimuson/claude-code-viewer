@@ -1,9 +1,9 @@
 import { Command, FileSystem, Path } from "@effect/platform";
 import { Context, Data, Duration, Effect, Either, Layer } from "effect";
-import type { InferEffect } from "../../../lib/effect/types";
-import { EnvService } from "../../platform/services/EnvService";
-import { parseGitBranchesOutput } from "../functions/parseGitBranchesOutput";
-import { parseGitCommitsOutput } from "../functions/parseGitCommitsOutput";
+import type { InferEffect } from "../../../lib/effect/types.ts";
+import { EnvService } from "../../platform/services/EnvService.ts";
+import { parseGitBranchesOutput } from "../functions/parseGitBranchesOutput.ts";
+import { parseGitCommitsOutput } from "../functions/parseGitCommitsOutput.ts";
 
 class NotARepositoryError extends Data.TaggedError("NotARepositoryError")<{
   cwd: string;

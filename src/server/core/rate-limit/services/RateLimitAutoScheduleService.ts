@@ -1,18 +1,18 @@
 import { FileSystem, Path } from "@effect/platform";
 import { Context, Effect, Layer, Ref } from "effect";
-import type { InferEffect } from "../../../lib/effect/types";
-import { ClaudeCodeLifeCycleService } from "../../claude-code/services/ClaudeCodeLifeCycleService";
-import { ClaudeCodeSessionProcessService } from "../../claude-code/services/ClaudeCodeSessionProcessService";
-import { EventBus } from "../../events/services/EventBus";
-import type { InternalEventDeclaration } from "../../events/types/InternalEventDeclaration";
-import { UserConfigService } from "../../platform/services/UserConfigService";
-import { decodeProjectId } from "../../project/functions/id";
-import { ProjectRepository } from "../../project/infrastructure/ProjectRepository";
-import { SchedulerConfigBaseDir } from "../../scheduler/config";
-import { SchedulerService } from "../../scheduler/domain/Scheduler";
-import { detectRateLimitFromLastLine } from "../functions/detectRateLimitFromLastLine";
-import { parseRateLimitResetTime } from "../functions/parseRateLimitResetTime";
-import { readLastLine } from "../functions/readLastLine";
+import type { InferEffect } from "../../../lib/effect/types.ts";
+import { ClaudeCodeLifeCycleService } from "../../claude-code/services/ClaudeCodeLifeCycleService.ts";
+import { ClaudeCodeSessionProcessService } from "../../claude-code/services/ClaudeCodeSessionProcessService.ts";
+import { EventBus } from "../../events/services/EventBus.ts";
+import type { InternalEventDeclaration } from "../../events/types/InternalEventDeclaration.ts";
+import { UserConfigService } from "../../platform/services/UserConfigService.ts";
+import { decodeProjectId } from "../../project/functions/id.ts";
+import { ProjectRepository } from "../../project/infrastructure/ProjectRepository.ts";
+import { SchedulerConfigBaseDir } from "../../scheduler/config.ts";
+import { SchedulerService } from "../../scheduler/domain/Scheduler.ts";
+import { detectRateLimitFromLastLine } from "../functions/detectRateLimitFromLastLine.ts";
+import { parseRateLimitResetTime } from "../functions/parseRateLimitResetTime.ts";
+import { readLastLine } from "../functions/readLastLine.ts";
 
 type SessionChangedListener = (event: InternalEventDeclaration["sessionChanged"]) => void;
 

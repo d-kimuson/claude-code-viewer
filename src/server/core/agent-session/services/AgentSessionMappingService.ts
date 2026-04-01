@@ -1,8 +1,8 @@
 import { FileSystem, Path } from "@effect/platform";
 import { Context, Effect, Layer, Ref } from "effect";
-import { UserEntrySchema } from "../../../../lib/conversation-schema/entry/UserEntrySchema";
-import { decodeProjectId } from "../../project/functions/id";
-import { normalizePrompt } from "../functions/normalizePrompt";
+import { UserEntrySchema } from "../../../../lib/conversation-schema/entry/UserEntrySchema.ts";
+import { decodeProjectId } from "../../project/functions/id.ts";
+import { normalizePrompt } from "../functions/normalizePrompt.ts";
 
 /**
  * Cache structure: Map<cacheKey, agentFilePath>

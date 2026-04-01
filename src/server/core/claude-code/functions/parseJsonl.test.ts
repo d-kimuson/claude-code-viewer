@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import type { ErrorJsonl, ExtendedConversation } from "../../types";
-import { parseJsonl } from "./parseJsonl";
+import type { ErrorJsonl, ExtendedConversation } from "../../types.ts";
+import { parseJsonl } from "./parseJsonl.ts";
 
 type UserEntry = Extract<ExtendedConversation, { type: "user" }>;
 type SummaryEntry = Extract<ExtendedConversation, { type: "summary" }>;

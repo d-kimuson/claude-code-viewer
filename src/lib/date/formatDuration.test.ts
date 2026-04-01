@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { calculateDuration, formatDuration } from "./formatDuration";
+import { calculateDuration, formatDuration } from "./formatDuration.ts";
 
 describe("formatDuration", () => {
   test("formats sub-second durations", () => {

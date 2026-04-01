@@ -7,7 +7,7 @@ import {
   getFileContent,
   type FileContentError,
   type FileContentSuccess,
-} from "./getFileContent";
+} from "./getFileContent.ts";
 
 const expectSuccessResult = (
   result: Awaited<ReturnType<typeof getFileContent>>,

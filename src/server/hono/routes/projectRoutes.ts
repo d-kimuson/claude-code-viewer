@@ -2,16 +2,16 @@ import { zValidator } from "@hono/zod-validator";
 import { Effect } from "effect";
 import { Hono } from "hono";
 import { z } from "zod";
-import { AgentSessionController } from "../../core/agent-session/presentation/AgentSessionController";
-import { ClaudeCodeController } from "../../core/claude-code/presentation/ClaudeCodeController";
-import { FileSystemController } from "../../core/file-system/presentation/FileSystemController";
-import { GitController } from "../../core/git/presentation/GitController";
-import { CommitRequestSchema } from "../../core/git/schema";
-import { ProjectController } from "../../core/project/presentation/ProjectController";
-import { SessionController } from "../../core/session/presentation/SessionController";
-import { effectToResponse } from "../../lib/effect/toEffectResponse";
-import type { HonoContext } from "../app";
-import { getHonoRuntime } from "../runtime";
+import { AgentSessionController } from "../../core/agent-session/presentation/AgentSessionController.ts";
+import { ClaudeCodeController } from "../../core/claude-code/presentation/ClaudeCodeController.ts";
+import { FileSystemController } from "../../core/file-system/presentation/FileSystemController.ts";
+import { GitController } from "../../core/git/presentation/GitController.ts";
+import { CommitRequestSchema } from "../../core/git/schema.ts";
+import { ProjectController } from "../../core/project/presentation/ProjectController.ts";
+import { SessionController } from "../../core/session/presentation/SessionController.ts";
+import { effectToResponse } from "../../lib/effect/toEffectResponse.ts";
+import type { HonoContext } from "../app.ts";
+import { getHonoRuntime } from "../runtime.ts";
 
 const projectRoutes = Effect.gen(function* () {
   const projectController = yield* ProjectController;

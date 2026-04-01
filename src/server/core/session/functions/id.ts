@@ -1,5 +1,5 @@
 import { basename, extname, resolve } from "node:path";
-import { decodeProjectId } from "../../project/functions/id";
+import { decodeProjectId } from "../../project/functions/id.ts";
 
 const SESSION_ID_PATTERN = /^[a-zA-Z0-9_-]+$/;
 

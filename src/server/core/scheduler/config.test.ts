@@ -11,8 +11,8 @@ import {
   readConfig,
   SchedulerConfigBaseDir,
   writeConfig,
-} from "./config";
-import type { SchedulerConfig } from "./schema";
+} from "./config.ts";
+import type { SchedulerConfig } from "./schema.ts";
 
 describe("scheduler config", () => {
   let testDir: string;

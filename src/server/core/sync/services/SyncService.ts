@@ -2,17 +2,17 @@ import { FileSystem, Path } from "@effect/platform";
 import { count, eq } from "drizzle-orm";
 import { Context, Effect, Layer, Option } from "effect";
 import { z } from "zod";
-import { DrizzleService } from "../../../lib/db/DrizzleService";
-import { projects, sessions } from "../../../lib/db/schema";
-import { parseJsonl } from "../../claude-code/functions/parseJsonl";
-import { ApplicationContext } from "../../platform/services/ApplicationContext";
-import { decodeProjectId, encodeProjectId } from "../../project/functions/id";
-import { extractSearchableText } from "../../search/functions/extractSearchableText";
-import { aggregateTokenUsageAndCost } from "../../session/functions/aggregateTokenUsageAndCost";
-import { getAgentSessionFilesForSession } from "../../session/functions/getAgentSessionFilesForSession";
-import { decodeSessionId, encodeSessionId } from "../../session/functions/id";
-import { isRegularSessionFile } from "../../session/functions/isRegularSessionFile";
-import { extractFirstUserMessage } from "../../session/functions/isValidFirstMessage";
+import { DrizzleService } from "../../../lib/db/DrizzleService.ts";
+import { projects, sessions } from "../../../lib/db/schema.ts";
+import { parseJsonl } from "../../claude-code/functions/parseJsonl.ts";
+import { ApplicationContext } from "../../platform/services/ApplicationContext.ts";
+import { decodeProjectId, encodeProjectId } from "../../project/functions/id.ts";
+import { extractSearchableText } from "../../search/functions/extractSearchableText.ts";
+import { aggregateTokenUsageAndCost } from "../../session/functions/aggregateTokenUsageAndCost.ts";
+import { getAgentSessionFilesForSession } from "../../session/functions/getAgentSessionFilesForSession.ts";
+import { decodeSessionId, encodeSessionId } from "../../session/functions/id.ts";
+import { isRegularSessionFile } from "../../session/functions/isRegularSessionFile.ts";
+import { extractFirstUserMessage } from "../../session/functions/isValidFirstMessage.ts";
 
 // ---------------------------------------------------------------------------
 // SyncService interface

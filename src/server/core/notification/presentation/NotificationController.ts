@@ -1,8 +1,8 @@
 import { Context, Effect, Layer } from "effect";
-import type { SessionNotificationType } from "../../../../types/notification";
-import type { ControllerResponse } from "../../../lib/effect/toEffectResponse";
-import type { InferEffect } from "../../../lib/effect/types";
-import { NotificationService } from "../services/NotificationService";
+import type { SessionNotificationType } from "../../../../types/notification.ts";
+import type { ControllerResponse } from "../../../lib/effect/toEffectResponse.ts";
+import type { InferEffect } from "../../../lib/effect/types.ts";
+import { NotificationService } from "../services/NotificationService.ts";
 
 const LayerImpl = Effect.gen(function* () {
   const notificationService = yield* NotificationService;

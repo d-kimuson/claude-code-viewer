@@ -4,8 +4,8 @@ import {
   detectLocaleFromAcceptLanguage,
   detectLocaleFromNavigator,
   resolvePreferredLocale,
-} from "./localeDetection";
-import type { SupportedLocale } from "./schema";
+} from "./localeDetection.ts";
+import type { SupportedLocale } from "./schema.ts";
 
 describe("localeDetection", () => {
   describe("detectLocaleFromAcceptLanguage", () => {

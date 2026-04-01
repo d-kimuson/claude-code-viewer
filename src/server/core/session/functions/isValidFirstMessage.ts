@@ -1,9 +1,9 @@
 import {
   type ParsedUserMessage,
   parseUserMessage,
-} from "../../claude-code/functions/parseUserMessage";
-import type { ExtendedConversation } from "../../types";
-import { extractFirstUserText } from "./extractFirstUserText";
+} from "../../claude-code/functions/parseUserMessage.ts";
+import type { ExtendedConversation } from "../../types.ts";
+import { extractFirstUserText } from "./extractFirstUserText.ts";
 
 const ignoreCommands = ["/clear", "/login", "/logout", "/exit", "/mcp", "/memory"];
 const localCommandCaveatText =

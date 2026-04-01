@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { BaseEntrySchema } from "./BaseEntrySchema";
+import { BaseEntrySchema } from "./BaseEntrySchema.ts";
 
 export const ProgressEntrySchema = BaseEntrySchema.extend({
   // discriminator

@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { QueueOperationEntrySchema } from "./QueueOperationEntrySchema";
+import { QueueOperationEntrySchema } from "./QueueOperationEntrySchema.ts";
 
 describe("QueueOperationEntrySchema", () => {
   describe("enqueue operation", () => {

@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { isDevelopmentEnv } from "./ccvEnv";
+import { isDevelopmentEnv } from "./ccvEnv.ts";
 
 describe("isDevelopmentEnv", () => {
   test("returns true only for development", () => {

@@ -1,10 +1,10 @@
 import { Context, Effect, Either, Layer } from "effect";
-import type { ControllerResponse } from "../../../lib/effect/toEffectResponse";
-import type { InferEffect } from "../../../lib/effect/types";
-import { ProjectRepository } from "../../project/infrastructure/ProjectRepository";
-import { getDiff } from "../functions/getDiff";
-import type { CommitErrorCode, PushErrorCode } from "../schema";
-import { GitService } from "../services/GitService";
+import type { ControllerResponse } from "../../../lib/effect/toEffectResponse.ts";
+import type { InferEffect } from "../../../lib/effect/types.ts";
+import { ProjectRepository } from "../../project/infrastructure/ProjectRepository.ts";
+import { getDiff } from "../functions/getDiff.ts";
+import type { CommitErrorCode, PushErrorCode } from "../schema.ts";
+import { GitService } from "../services/GitService.ts";
 
 const LayerImpl = Effect.gen(function* () {
   const gitService = yield* GitService;

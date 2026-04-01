@@ -1,24 +1,41 @@
 {
   "extends": "@tsconfig/strictest/tsconfig.json",
   "compilerOptions": {
-    // transpile target
-    "target": "ES2020",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "noEmit": true,
-    // module
-    "module": "esnext",
-    "moduleResolution": "bundler",
+    // Ignore Linter
+    "noImplicitReturns": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noFallthroughCasesInSwitch": false,
+
+    // Module Resolution
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "resolveJsonModule": true,
+    "verbatimModuleSyntax": true,
+    "allowImportingTsExtensions": true,
+
+    // TypeChecking
+    "exactOptionalPropertyTypes": false,
+    "noPropertyAccessFromIndexSignature": false,
+    "noUncheckedIndexedAccess": true,
+    "allowJs": true,
+    "types": ["node", "vitest/globals", "vite/client", "vite-plugin-pwa/client"],
+
+    // transpile
+    "noEmit": true,
+    "erasableSyntaxOnly": true,
+    "target": "ES2020",
+
+    // React
+    "target": "es2024",
+    "lib": ["dom", "dom.iterable", "esnext"],
     "jsx": "react-jsx",
+
     // paths alias
     "paths": {
       "@/*": ["./src/*"]
     },
-    // typecheck
-    "types": ["node", "vitest/globals", "vite/client", "vite-plugin-pwa/client"],
-    "exactOptionalPropertyTypes": false,
-    "noPropertyAccessFromIndexSignature": false,
-    "allowJs": true,
+
     "plugins": [
       // Effect-TS
       {

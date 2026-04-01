@@ -4,8 +4,8 @@ import type { ServerType } from "@hono/node-server";
 import { Effect, Runtime } from "effect";
 import WebSocket, { WebSocketServer } from "ws";
 import { z } from "zod";
-import { TerminalService } from "../core/terminal/TerminalService";
-import { AuthMiddleware } from "../hono/middleware/auth.middleware";
+import { TerminalService } from "../core/terminal/TerminalService.ts";
+import { AuthMiddleware } from "../hono/middleware/auth.middleware.ts";
 
 type ServerMessage =
   | { type: "hello"; sessionId: string; seq: number }

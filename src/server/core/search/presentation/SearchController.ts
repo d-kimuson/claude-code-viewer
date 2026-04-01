@@ -1,7 +1,7 @@
 import { Context, Effect, Layer } from "effect";
-import type { ControllerResponse } from "../../../lib/effect/toEffectResponse";
-import type { InferEffect } from "../../../lib/effect/types";
-import { SearchService } from "../services/SearchService";
+import type { ControllerResponse } from "../../../lib/effect/toEffectResponse.ts";
+import type { InferEffect } from "../../../lib/effect/types.ts";
+import { SearchService } from "../services/SearchService.ts";
 
 const LayerImpl = Effect.gen(function* () {
   const searchService = yield* SearchService;

@@ -1,8 +1,8 @@
 import { Context, Effect, Layer } from "effect";
-import type { QuestionResponse } from "../../../../types/question";
-import type { ControllerResponse } from "../../../lib/effect/toEffectResponse";
-import type { InferEffect } from "../../../lib/effect/types";
-import { CCVAskUserQuestionService } from "../services/CCVAskUserQuestionService";
+import type { QuestionResponse } from "../../../../types/question.ts";
+import type { ControllerResponse } from "../../../lib/effect/toEffectResponse.ts";
+import type { InferEffect } from "../../../lib/effect/types.ts";
+import { CCVAskUserQuestionService } from "../services/CCVAskUserQuestionService.ts";
 
 const LayerImpl = Effect.gen(function* () {
   const ccvAskUserQuestionService = yield* CCVAskUserQuestionService;

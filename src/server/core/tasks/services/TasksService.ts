@@ -5,7 +5,7 @@ import { join } from "node:path";
 import { FileSystem, Path } from "@effect/platform";
 import { Context, Effect, Layer, Option } from "effect";
 import { z } from "zod";
-import { type Task, type TaskCreate, TaskSchema, type TaskUpdate } from "../schema";
+import { type Task, type TaskCreate, TaskSchema, type TaskUpdate } from "../schema.ts";
 
 const TASKS_DIR_NAME = "tasks";
 const PROJECTS_DIR_NAME = "projects";

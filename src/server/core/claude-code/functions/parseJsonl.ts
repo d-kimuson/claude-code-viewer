@@ -1,5 +1,5 @@
-import { ConversationSchema } from "../../../../lib/conversation-schema";
-import type { ErrorJsonl, ExtendedConversation } from "../../types";
+import { ConversationSchema } from "../../../../lib/conversation-schema/index.ts";
+import type { ErrorJsonl, ExtendedConversation } from "../../types.ts";
 
 export const parseJsonl = (content: string): ExtendedConversation[] => {
   const lines = content

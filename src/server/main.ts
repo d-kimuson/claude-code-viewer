@@ -2,9 +2,9 @@
 import { Command } from "commander";
 import { Effect } from "effect";
 import packageJson from "../../package.json" with { type: "json" };
-import type { CliOptions } from "./core/platform/services/CcvOptionsService";
-import { checkDeprecatedEnvs } from "./core/platform/services/DeprecatedEnvDetector";
-import { startServer } from "./startServer";
+import type { CliOptions } from "./core/platform/services/CcvOptionsService.ts";
+import { checkDeprecatedEnvs } from "./core/platform/services/DeprecatedEnvDetector.ts";
+import { startServer } from "./startServer.ts";
 
 const program = new Command();
 

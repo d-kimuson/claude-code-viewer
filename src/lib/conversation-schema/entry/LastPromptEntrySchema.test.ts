@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { LastPromptEntrySchema } from "./LastPromptEntrySchema";
+import { LastPromptEntrySchema } from "./LastPromptEntrySchema.ts";
 
 describe("LastPromptEntrySchema", () => {
   test("accepts valid last-prompt entry", () => {

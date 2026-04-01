@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
-import type { SSEEvent } from "../../../types/sse";
-import { type EventListener, useSSEContext } from "../SSEContext";
+import type { SSEEvent } from "../../../types/sse.ts";
+import { type EventListener, useSSEContext } from "../SSEContext.ts";
 
 /**
  * Custom hook to listen for specific SSE events

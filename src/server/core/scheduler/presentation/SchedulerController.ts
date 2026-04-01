@@ -1,8 +1,8 @@
 import { Context, Effect, Layer } from "effect";
-import type { ControllerResponse } from "../../../lib/effect/toEffectResponse";
-import type { InferEffect } from "../../../lib/effect/types";
-import { SchedulerService } from "../domain/Scheduler";
-import type { NewSchedulerJob, UpdateSchedulerJob } from "../schema";
+import type { ControllerResponse } from "../../../lib/effect/toEffectResponse.ts";
+import type { InferEffect } from "../../../lib/effect/types.ts";
+import { SchedulerService } from "../domain/Scheduler.ts";
+import type { NewSchedulerJob, UpdateSchedulerJob } from "../schema.ts";
 
 const LayerImpl = Effect.gen(function* () {
   const schedulerService = yield* SchedulerService;

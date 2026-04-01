@@ -1,7 +1,7 @@
 import { Context, Effect, Layer } from "effect";
-import type { ControllerResponse } from "../../../lib/effect/toEffectResponse";
-import type { InferEffect } from "../../../lib/effect/types";
-import { AgentSessionRepository } from "../infrastructure/AgentSessionRepository";
+import type { ControllerResponse } from "../../../lib/effect/toEffectResponse.ts";
+import type { InferEffect } from "../../../lib/effect/types.ts";
+import { AgentSessionRepository } from "../infrastructure/AgentSessionRepository.ts";
 
 const LayerImpl = Effect.gen(function* () {
   const repository = yield* AgentSessionRepository;

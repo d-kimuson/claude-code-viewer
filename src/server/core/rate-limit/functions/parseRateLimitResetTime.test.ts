@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { parseRateLimitResetTime } from "./parseRateLimitResetTime";
+import { parseRateLimitResetTime } from "./parseRateLimitResetTime.ts";
 
 describe("parseRateLimitResetTime", () => {
   beforeEach(() => {

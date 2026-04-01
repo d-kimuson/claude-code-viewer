@@ -1,4 +1,4 @@
-import type { QueueOperationEntry } from "./QueueOperationEntrySchema";
+import type { QueueOperationEntry } from "./QueueOperationEntrySchema.ts";
 
 type EnqueueContent = Extract<QueueOperationEntry, { operation: "enqueue" }>["content"];
 

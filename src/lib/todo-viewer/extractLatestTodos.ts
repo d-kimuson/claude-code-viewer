@@ -1,4 +1,4 @@
-import type { Conversation } from "../conversation-schema";
+import type { Conversation } from "../conversation-schema/index.ts";
 
 export type TodoItem = {
   readonly content: string;

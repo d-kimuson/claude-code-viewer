@@ -2,12 +2,12 @@ import { zValidator } from "@hono/zod-validator";
 import { Effect } from "effect";
 import { Hono } from "hono";
 import { z } from "zod";
-import { decodeProjectId } from "../../core/project/functions/id";
-import { TasksController } from "../../core/tasks/presentation/TasksController";
-import { TaskCreateSchema, TaskUpdateSchema } from "../../core/tasks/schema";
-import { effectToResponse } from "../../lib/effect/toEffectResponse";
-import type { HonoContext } from "../app";
-import { getHonoRuntime } from "../runtime";
+import { decodeProjectId } from "../../core/project/functions/id.ts";
+import { TasksController } from "../../core/tasks/presentation/TasksController.ts";
+import { TaskCreateSchema, TaskUpdateSchema } from "../../core/tasks/schema.ts";
+import { effectToResponse } from "../../lib/effect/toEffectResponse.ts";
+import type { HonoContext } from "../app.ts";
+import { getHonoRuntime } from "../runtime.ts";
 
 const tasksRoutes = Effect.gen(function* () {
   const tasksController = yield* TasksController;

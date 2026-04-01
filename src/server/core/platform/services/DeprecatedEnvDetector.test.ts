@@ -25,7 +25,7 @@ describe("DeprecatedEnvDetector", () => {
     process.env.CCV_PASSWORD = "test";
 
     // Dynamically import after env vars are set
-    const { checkDeprecatedEnvs } = await import("./DeprecatedEnvDetector");
+    const { checkDeprecatedEnvs } = await import("./DeprecatedEnvDetector.ts");
 
     await Effect.runPromise(checkDeprecatedEnvs);
 
@@ -41,7 +41,7 @@ describe("DeprecatedEnvDetector", () => {
     // biome-ignore lint/style/noProcessEnv: Testing environment variable detection
     process.env.CLAUDE_CODE_VIEWER_AUTH_PASSWORD = "test";
 
-    const { checkDeprecatedEnvs } = await import("./DeprecatedEnvDetector");
+    const { checkDeprecatedEnvs } = await import("./DeprecatedEnvDetector.ts");
 
     await expect(Effect.runPromise(checkDeprecatedEnvs)).rejects.toThrow(
       "Cannot start server: removed environment variables detected",
@@ -65,7 +65,7 @@ describe("DeprecatedEnvDetector", () => {
     // biome-ignore lint/style/noProcessEnv: Testing environment variable detection
     process.env.CLAUDE_CODE_VIEWER_CC_EXECUTABLE_PATH = "/path/to/claude";
 
-    const { checkDeprecatedEnvs } = await import("./DeprecatedEnvDetector");
+    const { checkDeprecatedEnvs } = await import("./DeprecatedEnvDetector.ts");
 
     await expect(Effect.runPromise(checkDeprecatedEnvs)).rejects.toThrow(
       "Cannot start server: removed environment variables detected",
@@ -91,7 +91,7 @@ describe("DeprecatedEnvDetector", () => {
     // biome-ignore lint/style/noProcessEnv: Testing environment variable detection
     process.env.CLAUDE_CODE_VIEWER_CC_EXECUTABLE_PATH = "/path/to/claude";
 
-    const { checkDeprecatedEnvs } = await import("./DeprecatedEnvDetector");
+    const { checkDeprecatedEnvs } = await import("./DeprecatedEnvDetector.ts");
 
     await expect(Effect.runPromise(checkDeprecatedEnvs)).rejects.toThrow(
       "Cannot start server: removed environment variables detected",
@@ -120,7 +120,7 @@ describe("DeprecatedEnvDetector", () => {
     // biome-ignore lint/style/noProcessEnv: Testing environment variable detection
     process.env.CLAUDE_CODE_VIEWER_AUTH_PASSWORD = "test";
 
-    const { checkDeprecatedEnvs } = await import("./DeprecatedEnvDetector");
+    const { checkDeprecatedEnvs } = await import("./DeprecatedEnvDetector.ts");
 
     await expect(Effect.runPromise(checkDeprecatedEnvs)).rejects.toThrow(
       "Cannot start server: removed environment variables detected",

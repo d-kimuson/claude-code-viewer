@@ -1,11 +1,11 @@
 import { homedir } from "node:os";
 import { Context, Effect, Layer } from "effect";
-import type { ControllerResponse } from "../../../lib/effect/toEffectResponse";
-import type { InferEffect } from "../../../lib/effect/types";
-import { ProjectRepository } from "../../project/infrastructure/ProjectRepository";
-import { getDirectoryListing } from "../functions/getDirectoryListing";
-import { getFileCompletion } from "../functions/getFileCompletion";
-import { getFileContent } from "../functions/getFileContent";
+import type { ControllerResponse } from "../../../lib/effect/toEffectResponse.ts";
+import type { InferEffect } from "../../../lib/effect/types.ts";
+import { ProjectRepository } from "../../project/infrastructure/ProjectRepository.ts";
+import { getDirectoryListing } from "../functions/getDirectoryListing.ts";
+import { getFileCompletion } from "../functions/getFileCompletion.ts";
+import { getFileContent } from "../functions/getFileContent.ts";
 
 const LayerImpl = Effect.gen(function* () {
   const projectRepository = yield* ProjectRepository;

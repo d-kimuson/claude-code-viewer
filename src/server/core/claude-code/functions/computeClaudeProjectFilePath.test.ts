@@ -2,7 +2,7 @@ import path from "node:path";
 import { Path } from "@effect/platform";
 import { Effect } from "effect";
 import { describe, expect, it } from "vitest";
-import { computeClaudeProjectFilePath } from "./computeClaudeProjectFilePath";
+import { computeClaudeProjectFilePath } from "./computeClaudeProjectFilePath.ts";
 
 describe("computeClaudeProjectFilePath", () => {
   const TEST_GLOBAL_CLAUDE_DIR = "/test/mock/claude";

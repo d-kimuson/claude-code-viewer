@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { normalizeQueueOperationContent } from "./normalizeQueueOperationContent";
+import { normalizeQueueOperationContent } from "./normalizeQueueOperationContent.ts";
 
 describe("normalizeQueueOperationContent", () => {
   test("returns string content as-is", () => {

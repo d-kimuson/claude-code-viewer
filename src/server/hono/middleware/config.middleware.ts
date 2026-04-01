@@ -1,9 +1,12 @@
 import { getCookie, setCookie } from "hono/cookie";
 import { createMiddleware } from "hono/factory";
-import { DEFAULT_LOCALE, detectLocaleFromAcceptLanguage } from "../../../lib/i18n/localeDetection";
-import { defaultUserConfig, type UserConfig } from "../../lib/config/config";
-import { parseUserConfig } from "../../lib/config/parseUserConfig";
-import type { HonoContext } from "../app";
+import {
+  DEFAULT_LOCALE,
+  detectLocaleFromAcceptLanguage,
+} from "../../../lib/i18n/localeDetection.ts";
+import { defaultUserConfig, type UserConfig } from "../../lib/config/config.ts";
+import { parseUserConfig } from "../../lib/config/parseUserConfig.ts";
+import type { HonoContext } from "../app.ts";
 
 export const configMiddleware = createMiddleware<HonoContext>(async (c, next) => {
   const cookie = getCookie(c, "ccv-config");

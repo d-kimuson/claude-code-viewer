@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import type { SSEEvent } from "../../types/sse";
+import type { SSEEvent } from "../../types/sse.ts";
 
 export type EventListener<T extends SSEEvent["kind"]> = (
   event: Extract<SSEEvent, { kind: T }>,

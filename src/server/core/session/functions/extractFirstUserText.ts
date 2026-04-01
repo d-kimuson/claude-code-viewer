@@ -1,4 +1,4 @@
-import type { ExtendedConversation } from "../../types";
+import type { ExtendedConversation } from "../../types.ts";
 
 export const extractFirstUserText = (conversation: ExtendedConversation): string | null => {
   if (conversation.type !== "user") {

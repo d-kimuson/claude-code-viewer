@@ -1,11 +1,11 @@
 import { Path } from "@effect/platform";
 import { eq } from "drizzle-orm";
 import { Context, Effect, Layer } from "effect";
-import { DrizzleService } from "../../../lib/db/DrizzleService";
-import { type ProjectRow, projects } from "../../../lib/db/schema";
-import type { InferEffect } from "../../../lib/effect/types";
-import { SyncService } from "../../sync/services/SyncService";
-import type { ProjectMeta } from "../../types";
+import { DrizzleService } from "../../../lib/db/DrizzleService.ts";
+import { type ProjectRow, projects } from "../../../lib/db/schema.ts";
+import type { InferEffect } from "../../../lib/effect/types.ts";
+import { SyncService } from "../../sync/services/SyncService.ts";
+import type { ProjectMeta } from "../../types.ts";
 
 const rowToProjectMeta = (row: ProjectRow, baseName: string): ProjectMeta => {
   const projectPath = row.path;

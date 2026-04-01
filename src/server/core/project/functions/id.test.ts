@@ -4,7 +4,7 @@ import {
   encodeProjectId,
   encodeProjectIdFromSessionFilePath,
   validateProjectPath,
-} from "./id";
+} from "./id.ts";
 
 const sampleProjectPath = "/path/to/claude-code-project-dir/projects/sample-project";
 const sampleProjectId =

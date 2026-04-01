@@ -1,4 +1,4 @@
-import type { Conversation } from "@/lib/conversation-schema";
+import type { Conversation } from "../conversation-schema/index.ts";
 
 export const shouldRemoveVirtualMessage = (
   conversations: readonly Conversation[],

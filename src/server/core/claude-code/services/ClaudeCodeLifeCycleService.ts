@@ -3,18 +3,21 @@ import type { FileSystem, Path } from "@effect/platform";
 import type { CommandExecutor } from "@effect/platform/CommandExecutor";
 import { Context, Effect, Layer, Runtime } from "effect";
 import { ulid } from "ulid";
-import type { InferEffect } from "../../../lib/effect/types";
-import { EventBus } from "../../events/services/EventBus";
-import type { CcvOptionsService } from "../../platform/services/CcvOptionsService";
-import type { EnvService } from "../../platform/services/EnvService";
-import type { SessionMetaService } from "../../session/services/SessionMetaService";
-import { createMessageGenerator, type UserMessageInput } from "../functions/createMessageGenerator";
-import * as CCSessionProcess from "../models/CCSessionProcess";
-import * as ClaudeCode from "../models/ClaudeCode";
-import type * as CCTurn from "../models/ClaudeCodeTurn";
-import { CCVAskUserQuestionService } from "./CCVAskUserQuestionService";
-import { ClaudeCodePermissionService } from "./ClaudeCodePermissionService";
-import { ClaudeCodeSessionProcessService } from "./ClaudeCodeSessionProcessService";
+import type { InferEffect } from "../../../lib/effect/types.ts";
+import { EventBus } from "../../events/services/EventBus.ts";
+import type { CcvOptionsService } from "../../platform/services/CcvOptionsService.ts";
+import type { EnvService } from "../../platform/services/EnvService.ts";
+import type { SessionMetaService } from "../../session/services/SessionMetaService.ts";
+import {
+  createMessageGenerator,
+  type UserMessageInput,
+} from "../functions/createMessageGenerator.ts";
+import * as CCSessionProcess from "../models/CCSessionProcess.ts";
+import * as ClaudeCode from "../models/ClaudeCode.ts";
+import type * as CCTurn from "../models/ClaudeCodeTurn.ts";
+import { CCVAskUserQuestionService } from "./CCVAskUserQuestionService.ts";
+import { ClaudeCodePermissionService } from "./ClaudeCodePermissionService.ts";
+import { ClaudeCodeSessionProcessService } from "./ClaudeCodeSessionProcessService.ts";
 
 export type MessageGenerator = () => AsyncGenerator<SDKUserMessage, void, unknown>;
 

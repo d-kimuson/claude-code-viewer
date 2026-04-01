@@ -6,7 +6,7 @@ import {
   type ReviewComment,
   removeCommentFromStore,
   sanitizeReviewCommentStore,
-} from "./reviewComments";
+} from "./reviewComments.ts";
 
 const makeComment = (overrides: Partial<ReviewComment> = {}): ReviewComment => ({
   id: "comment-1",

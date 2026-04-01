@@ -2,16 +2,16 @@ import { zValidator } from "@hono/zod-validator";
 import { Effect } from "effect";
 import { Hono } from "hono";
 import { z } from "zod";
-import type { UserMessageInput } from "../../core/claude-code/functions/createMessageGenerator";
-import { CCVAskUserQuestionController } from "../../core/claude-code/presentation/CCVAskUserQuestionController";
-import { ClaudeCodeController } from "../../core/claude-code/presentation/ClaudeCodeController";
-import { ClaudeCodePermissionController } from "../../core/claude-code/presentation/ClaudeCodePermissionController";
-import { ClaudeCodeSessionProcessController } from "../../core/claude-code/presentation/ClaudeCodeSessionProcessController";
-import { ccOptionsSchema, userMessageInputSchema } from "../../core/claude-code/schema";
-import { ClaudeCodeLifeCycleService } from "../../core/claude-code/services/ClaudeCodeLifeCycleService";
-import { effectToResponse } from "../../lib/effect/toEffectResponse";
-import type { HonoContext } from "../app";
-import { getHonoRuntime } from "../runtime";
+import type { UserMessageInput } from "../../core/claude-code/functions/createMessageGenerator.ts";
+import { CCVAskUserQuestionController } from "../../core/claude-code/presentation/CCVAskUserQuestionController.ts";
+import { ClaudeCodeController } from "../../core/claude-code/presentation/ClaudeCodeController.ts";
+import { ClaudeCodePermissionController } from "../../core/claude-code/presentation/ClaudeCodePermissionController.ts";
+import { ClaudeCodeSessionProcessController } from "../../core/claude-code/presentation/ClaudeCodeSessionProcessController.ts";
+import { ccOptionsSchema, userMessageInputSchema } from "../../core/claude-code/schema.ts";
+import { ClaudeCodeLifeCycleService } from "../../core/claude-code/services/ClaudeCodeLifeCycleService.ts";
+import { effectToResponse } from "../../lib/effect/toEffectResponse.ts";
+import type { HonoContext } from "../app.ts";
+import { getHonoRuntime } from "../runtime.ts";
 
 const normalizeUserMessageInput = (
   input: z.infer<typeof userMessageInputSchema>,

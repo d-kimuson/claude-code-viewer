@@ -1,7 +1,7 @@
 import { sql } from "drizzle-orm";
 import { Context, Effect, Layer } from "effect";
-import { DrizzleService } from "../../../lib/db/DrizzleService";
-import type { InferEffect } from "../../../lib/effect/types";
+import { DrizzleService } from "../../../lib/db/DrizzleService.ts";
+import type { InferEffect } from "../../../lib/effect/types.ts";
 
 export type SearchResult = {
   projectId: string;

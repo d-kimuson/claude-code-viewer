@@ -4,11 +4,13 @@ import type { RouteType } from "@/server/hono/routes";
 type Fetch = typeof fetch;
 
 export class HttpError extends Error {
-  constructor(
-    public readonly status: number,
-    public readonly statusText: string,
-  ) {
+  public readonly status: number;
+  public readonly statusText: string;
+
+  constructor(status: number, statusText: string) {
     super(`HttpError: ${status} ${statusText}`);
+    this.status = status;
+    this.statusText = statusText;
   }
 }
 

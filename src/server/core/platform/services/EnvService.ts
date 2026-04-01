@@ -1,6 +1,6 @@
 import { Context, Effect, Layer, Ref } from "effect";
-import type { InferEffect } from "../../../lib/effect/types";
-import { type EnvSchema, envSchema } from "../schema";
+import type { InferEffect } from "../../../lib/effect/types.ts";
+import { type EnvSchema, envSchema } from "../schema.ts";
 
 const LayerImpl = Effect.gen(function* () {
   const envRef = yield* Ref.make<EnvSchema | undefined>(undefined);

@@ -2,9 +2,9 @@ import { zValidator } from "@hono/zod-validator";
 import { Effect } from "effect";
 import { Hono } from "hono";
 import { z } from "zod";
-import { NotificationController } from "../../core/notification/presentation/NotificationController";
-import { effectToResponse } from "../../lib/effect/toEffectResponse";
-import type { HonoContext } from "../app";
+import { NotificationController } from "../../core/notification/presentation/NotificationController.ts";
+import { effectToResponse } from "../../lib/effect/toEffectResponse.ts";
+import type { HonoContext } from "../app.ts";
 
 const pushSubscriptionSchema = z.object({
   endpoint: z.string(),

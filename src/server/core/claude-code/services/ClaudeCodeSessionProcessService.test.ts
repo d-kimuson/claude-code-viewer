@@ -1,10 +1,10 @@
 import { Effect } from "effect";
 import { describe, expect, it } from "vitest";
-import { testPlatformLayer } from "../../../../testing/layers/testPlatformLayer";
-import type * as CCSessionProcess from "../models/CCSessionProcess";
-import type * as CCTurn from "../models/ClaudeCodeTurn";
-import type { InitMessageContext } from "../types";
-import { ClaudeCodeSessionProcessService } from "./ClaudeCodeSessionProcessService";
+import { testPlatformLayer } from "../../../../testing/layers/testPlatformLayer.ts";
+import type * as CCSessionProcess from "../models/CCSessionProcess.ts";
+import type * as CCTurn from "../models/ClaudeCodeTurn.ts";
+import type { InitMessageContext } from "../types.ts";
+import { ClaudeCodeSessionProcessService } from "./ClaudeCodeSessionProcessService.ts";
 
 // Helper function to create mock session process definition
 const createMockSessionProcessDef = (

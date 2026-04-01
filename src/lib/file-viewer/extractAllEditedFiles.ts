@@ -1,5 +1,5 @@
-import type { Conversation } from "../conversation-schema";
-import { extractEditedFilePaths } from "./extractEditedFilePaths";
+import type { Conversation } from "../conversation-schema/index.ts";
+import { extractEditedFilePaths } from "./extractEditedFilePaths.ts";
 
 export type EditedFileInfo = {
   readonly filePath: string;

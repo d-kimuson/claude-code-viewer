@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseGitCommitsOutput } from "./parseGitCommitsOutput";
+import { parseGitCommitsOutput } from "./parseGitCommitsOutput.ts";
 
 const expectSuccessfulResult = (result: ReturnType<typeof parseGitCommitsOutput>) => {
   expect(result.success).toBe(true);

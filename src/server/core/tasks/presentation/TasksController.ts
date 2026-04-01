@@ -1,6 +1,6 @@
 import { Context, Effect, Layer } from "effect";
-import type { TaskCreate, TaskUpdate } from "../schema";
-import { TasksService } from "../services/TasksService";
+import type { TaskCreate, TaskUpdate } from "../schema.ts";
+import { TasksService } from "../services/TasksService.ts";
 
 const make = Effect.gen(function* () {
   const service = yield* TasksService;

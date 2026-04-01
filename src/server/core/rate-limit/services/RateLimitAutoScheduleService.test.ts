@@ -1,15 +1,15 @@
 import { FileSystem, Path } from "@effect/platform";
 import { Effect, Layer } from "effect";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { testPlatformLayer } from "../../../../testing/layers/testPlatformLayer";
-import { ClaudeCodeLifeCycleService } from "../../claude-code/services/ClaudeCodeLifeCycleService";
-import { ClaudeCodeSessionProcessService } from "../../claude-code/services/ClaudeCodeSessionProcessService";
-import { EventBus } from "../../events/services/EventBus";
-import { ProjectRepository } from "../../project/infrastructure/ProjectRepository";
-import { SchedulerConfigBaseDir } from "../../scheduler/config";
-import { SchedulerService, type ISchedulerService } from "../../scheduler/domain/Scheduler";
-import type { NewSchedulerJob, SchedulerJob } from "../../scheduler/schema";
-import { RateLimitAutoScheduleService } from "./RateLimitAutoScheduleService";
+import { testPlatformLayer } from "../../../../testing/layers/testPlatformLayer.ts";
+import { ClaudeCodeLifeCycleService } from "../../claude-code/services/ClaudeCodeLifeCycleService.ts";
+import { ClaudeCodeSessionProcessService } from "../../claude-code/services/ClaudeCodeSessionProcessService.ts";
+import { EventBus } from "../../events/services/EventBus.ts";
+import { ProjectRepository } from "../../project/infrastructure/ProjectRepository.ts";
+import { SchedulerConfigBaseDir } from "../../scheduler/config.ts";
+import { SchedulerService, type ISchedulerService } from "../../scheduler/domain/Scheduler.ts";
+import type { NewSchedulerJob, SchedulerJob } from "../../scheduler/schema.ts";
+import { RateLimitAutoScheduleService } from "./RateLimitAutoScheduleService.ts";
 
 /**
  * Helper to wait for async event processing to complete.

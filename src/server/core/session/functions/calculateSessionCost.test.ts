@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { calculateTokenCost, normalizeModelName, type TokenUsage } from "./calculateSessionCost";
+import { calculateTokenCost, normalizeModelName, type TokenUsage } from "./calculateSessionCost.ts";
 
 describe("normalizeModelName", () => {
   it("should normalize claude-sonnet-4-20250514 to claude-3.5-sonnet", () => {

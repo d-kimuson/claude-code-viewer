@@ -1,5 +1,4 @@
 import { Trans, useLingui } from "@lingui/react";
-import { useVirtualizer } from "@tanstack/react-virtual";
 import {
   ClipboardPasteIcon,
   FileText,
@@ -9,7 +8,7 @@ import {
   RefreshCcwIcon,
   Trash2Icon,
 } from "lucide-react";
-import { type FC, useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import { type FC, useCallback, useEffect, useId, useState } from "react";
 import { toast } from "sonner";
 import { useChatInputDraft } from "@/lib/atoms/chatInputDrafts";
 import { formatReviewMarkdown, useReviewComments } from "@/lib/atoms/reviewComments";
@@ -132,9 +131,6 @@ export const ReviewTabContent: FC<ReviewTabContentProps> = ({ projectId, session
   const { i18n } = useLingui();
   const [compareFrom, setCompareFrom] = useState("HEAD");
   const [compareTo, setCompareTo] = useState("working");
-  const diffScrollContainerRef = useRef<HTMLDivElement | null>(null);
-  const diffListAnchorRef = useRef<HTMLDivElement | null>(null);
-  const [diffListScrollMargin, setDiffListScrollMargin] = useState(0);
 
   // Review comments
   const { comments, clearComments } = useReviewComments(sessionId ?? "");
@@ -153,7 +149,6 @@ export const ReviewTabContent: FC<ReviewTabContentProps> = ({ projectId, session
   } = useGitDiff();
   const revisionDetails = revisionsData?.success === true ? revisionsData.data : undefined;
   const diffResult = diffData?.success === true ? diffData.data : undefined;
-  const diffEntries = useMemo(() => diffResult?.diffs ?? [], [diffResult]);
   const createBranchRef = (name: string, displayName: string, sha: string): GitRef => ({
     name: `branch:${name}`,
     type: "branch",
@@ -237,58 +232,6 @@ export const ReviewTabContent: FC<ReviewTabContentProps> = ({ projectId, session
     toast.success(i18n._("review.action.insert.success"));
   };
 
-  const diffVirtualizer = useVirtualizer({
-    count: diffEntries.length,
-    getScrollElement: () => diffScrollContainerRef.current,
-    getItemKey: (index) => {
-      const diff = diffEntries[index];
-      return diff === undefined ? index : `${diff.file.filePath}-${index}`;
-    },
-    estimateSize: () => 420,
-    overscan: 8,
-    scrollMargin: diffListScrollMargin,
-    useAnimationFrameWithResizeObserver: true,
-  });
-
-  useEffect(() => {
-    const scrollElement = diffScrollContainerRef.current;
-    const anchorElement = diffListAnchorRef.current;
-    if (scrollElement === null || anchorElement === null) {
-      return;
-    }
-
-    const updateScrollMargin = () => {
-      const scrollRect = scrollElement.getBoundingClientRect();
-      const anchorRect = anchorElement.getBoundingClientRect();
-      setDiffListScrollMargin(anchorRect.top - scrollRect.top + scrollElement.scrollTop);
-    };
-
-    updateScrollMargin();
-
-    const resizeObserver = new ResizeObserver(() => {
-      updateScrollMargin();
-    });
-    resizeObserver.observe(scrollElement);
-    resizeObserver.observe(anchorElement);
-    window.addEventListener("resize", updateScrollMargin);
-
-    return () => {
-      resizeObserver.disconnect();
-      window.removeEventListener("resize", updateScrollMargin);
-    };
-  }, [diffEntries.length]);
-
-  useEffect(() => {
-    diffVirtualizer.measure();
-  }, [diffVirtualizer, diffEntries]);
-
-  const virtualDiffItems = diffVirtualizer.getVirtualItems();
-  const totalDiffSize = diffVirtualizer.getTotalSize();
-  const firstVirtualDiff = virtualDiffItems[0];
-  const lastVirtualDiff = virtualDiffItems[virtualDiffItems.length - 1];
-  const diffPaddingTop = firstVirtualDiff?.start ?? 0;
-  const diffPaddingBottom = totalDiffSize - (lastVirtualDiff?.end ?? 0);
-
   if (isLoadingRevisions) {
     return (
       <div className="flex flex-col h-full">
@@ -347,7 +290,7 @@ export const ReviewTabContent: FC<ReviewTabContentProps> = ({ projectId, session
       </div>
 
       {/* Scrollable content */}
-      <div ref={diffScrollContainerRef} className="flex-1 min-h-0 overflow-y-auto">
+      <div className="flex-1 min-h-0 overflow-y-auto">
         {diffError && (
           <div className="m-3 bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800 rounded-lg p-3">
             <p className="text-red-600 dark:text-red-400 text-xs">{diffError.message}</p>
@@ -414,46 +357,25 @@ export const ReviewTabContent: FC<ReviewTabContentProps> = ({ projectId, session
               />
 
               {/* Diff viewer */}
-              <div ref={diffListAnchorRef}>
-                <ul
-                  className="w-full"
-                  style={{
-                    paddingTop: `${diffPaddingTop}px`,
-                    paddingBottom: `${diffPaddingBottom}px`,
-                  }}
-                >
-                  {virtualDiffItems.map((virtualDiff) => {
-                    const diff = diffEntries[virtualDiff.index];
-                    if (diff === undefined) {
-                      return null;
-                    }
-
-                    return (
-                      <li
-                        key={`${diff.file.filePath}-${virtualDiff.index}`}
-                        ref={diffVirtualizer.measureElement}
-                        data-index={virtualDiff.index}
-                        className="pb-2 last:pb-0"
-                      >
-                        <DiffViewer
-                          fileDiff={{
-                            filename: diff.file.filePath,
-                            oldFilename: diff.file.oldPath,
-                            isNew: diff.file.status === "added",
-                            isDeleted: diff.file.status === "deleted",
-                            isRenamed: diff.file.status === "renamed",
-                            isBinary: false,
-                            hunks: diff.hunks,
-                            linesAdded: diff.file.additions,
-                            linesDeleted: diff.file.deletions,
-                          }}
-                          filename={diff.file.filePath}
-                          reviewSessionId={sessionId}
-                        />
-                      </li>
-                    );
-                  })}
-                </ul>
+              <div className="space-y-2">
+                {diffResult.diffs.map((diff) => (
+                  <DiffViewer
+                    key={diff.file.filePath}
+                    fileDiff={{
+                      filename: diff.file.filePath,
+                      oldFilename: diff.file.oldPath,
+                      isNew: diff.file.status === "added",
+                      isDeleted: diff.file.status === "deleted",
+                      isRenamed: diff.file.status === "renamed",
+                      isBinary: false,
+                      hunks: diff.hunks,
+                      linesAdded: diff.file.additions,
+                      linesDeleted: diff.file.deletions,
+                    }}
+                    filename={diff.file.filePath}
+                    reviewSessionId={sessionId}
+                  />
+                ))}
               </div>
             </div>
           </div>

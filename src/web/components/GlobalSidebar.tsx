@@ -1,0 +1,253 @@
+import { Trans } from "@lingui/react";
+import { useNavigate } from "@tanstack/react-router";
+import { type LucideIcon, InfoIcon, LogOut, SearchIcon, SettingsIcon } from "lucide-react";
+import { type FC, type ReactNode, Suspense, useState } from "react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/web/components/ui/tooltip";
+import { cn } from "@/web/utils";
+import { useAuth } from "./AuthProvider";
+import { Loading } from "./Loading";
+import { NotificationSettings } from "./NotificationSettings";
+import { useSearch } from "./SearchProvider";
+import { SettingsControls } from "./SettingsControls";
+import { SystemInfoCard } from "./SystemInfoCard";
+
+export type SidebarTab = {
+  id: string;
+  icon: LucideIcon;
+  title: ReactNode;
+  content: ReactNode;
+};
+
+type GlobalSidebarProps = {
+  projectId?: string;
+  className?: string;
+  additionalTabs?: SidebarTab[];
+  defaultActiveTab?: string;
+  headerButton?: ReactNode;
+  /** When true, expands to fill parent container width instead of fixed width */
+  fillWidth?: boolean;
+  /** When true, hides the content area but keeps the icon menu visible */
+  isContentHidden?: boolean;
+  /** Callback when panel should be toggled (called when same tab is clicked while open) */
+  onToggle?: () => void;
+  /** On mobile, called with tab id instead of inline content expansion */
+  onMobileTabClick?: (tabId: string) => void;
+};
+
+export const GlobalSidebar: FC<GlobalSidebarProps> = ({
+  projectId,
+  className,
+  additionalTabs = [],
+  defaultActiveTab,
+  headerButton,
+  fillWidth = false,
+  isContentHidden = false,
+  onToggle,
+  onMobileTabClick,
+}) => {
+  const { openSearch } = useSearch();
+  const { authEnabled, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await logout();
+    void navigate({ to: "/login" });
+  };
+
+  const settingsTab: SidebarTab = {
+    id: "settings",
+    icon: SettingsIcon,
+    title: <Trans id="settings.tab.title" />,
+    content: (
+      <div className="h-full flex flex-col">
+        <div className="border-b border-sidebar-border p-4">
+          <h2 className="font-semibold text-lg">
+            <Trans id="settings.title" />
+          </h2>
+          <p className="text-xs text-sidebar-foreground/70">
+            <Trans id="settings.description" />
+          </p>
+        </div>
+
+        <Suspense
+          fallback={
+            <div className="flex-1 flex items-center justify-center p-4">
+              <div className="text-sm text-sidebar-foreground/70">
+                <Trans id="settings.loading" />
+              </div>
+            </div>
+          }
+        >
+          <div className="flex-1 overflow-y-auto p-4 space-y-6">
+            <div className="space-y-4">
+              <h3 className="font-medium text-sm text-sidebar-foreground">
+                <Trans id="settings.section.session_display" />
+              </h3>
+              <SettingsControls openingProjectId={projectId ?? ""} />
+            </div>
+
+            <div className="space-y-4">
+              <h3 className="font-medium text-sm text-sidebar-foreground">
+                <Trans id="settings.section.notifications" />
+              </h3>
+              <NotificationSettings />
+            </div>
+          </div>
+        </Suspense>
+      </div>
+    ),
+  };
+
+  const systemInfoTab: SidebarTab = {
+    id: "system-info",
+    icon: InfoIcon,
+    title: <Trans id="settings.section.system_info" />,
+    content: (
+      <Suspense fallback={<Loading />}>
+        <SystemInfoCard />
+      </Suspense>
+    ),
+  };
+
+  const allTabs = [...additionalTabs, settingsTab, systemInfoTab];
+  const [activeTab, setActiveTab] = useState<string>(
+    defaultActiveTab ?? allTabs[0]?.id ?? "settings",
+  );
+
+  // Tab click behavior:
+  // - If onMobileTabClick is set: delegate to mobile overlay
+  // - If panel is closed: open panel and switch to clicked tab
+  // - If panel is open and different tab: switch to clicked tab
+  // - If panel is open and same tab: close panel (toggle)
+  const handleTabClick = (tabId: string) => {
+    if (onMobileTabClick) {
+      setActiveTab(tabId);
+      onMobileTabClick(tabId);
+      return;
+    }
+    if (isContentHidden) {
+      // Panel is closed - open it and switch to this tab
+      setActiveTab(tabId);
+      onToggle?.();
+    } else if (activeTab === tabId) {
+      // Same tab clicked while open - close panel
+      onToggle?.();
+    } else {
+      // Different tab clicked while open - just switch tabs
+      setActiveTab(tabId);
+    }
+  };
+
+  const activeTabContent = allTabs.find((tab) => tab.id === activeTab)?.content;
+
+  // Content is shown when not hidden by external control
+  const showContent = !isContentHidden;
+
+  return (
+    <div
+      className={cn(
+        "h-full border-r border-sidebar-border transition-all duration-300 ease-in-out flex bg-sidebar text-sidebar-foreground",
+        showContent
+          ? fillWidth
+            ? "w-full"
+            : "w-80 lg:w-80"
+          : "w-(--spacing-sidebar-icon-menu-mobile) md:w-(--spacing-sidebar-icon-menu)",
+        className,
+      )}
+    >
+      {/* Vertical Icon Menu - Always Visible (compact on mobile) */}
+      <div className="w-(--spacing-sidebar-icon-menu-mobile) md:w-(--spacing-sidebar-icon-menu) flex flex-col border-r border-sidebar-border bg-sidebar/50">
+        <TooltipProvider>
+          {headerButton !== undefined && (
+            <div className="border-b border-sidebar-border">{headerButton}</div>
+          )}
+          <div className="p-1.5 md:p-2 border-b border-sidebar-border">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  onClick={openSearch}
+                  className={cn(
+                    "w-7 h-7 md:w-8 md:h-8 flex items-center justify-center rounded-md transition-colors",
+                    "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                    "text-sidebar-foreground/70",
+                  )}
+                  data-testid="search-button"
+                >
+                  <SearchIcon className="w-4 h-4" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="right">
+                <p>
+                  Search <kbd className="ml-1 text-xs opacity-60">⌘K</kbd>
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </div>
+          <div className="flex-1 flex flex-col p-1.5 md:p-2 space-y-0.5 md:space-y-1">
+            {allTabs.map((tab) => {
+              const Icon = tab.icon;
+              return (
+                <Tooltip key={tab.id}>
+                  <TooltipTrigger asChild>
+                    <button
+                      type="button"
+                      onClick={() => handleTabClick(tab.id)}
+                      className={cn(
+                        "w-7 h-7 md:w-8 md:h-8 flex items-center justify-center rounded-md transition-colors",
+                        "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                        activeTab === tab.id && showContent
+                          ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-sm"
+                          : "text-sidebar-foreground/70",
+                      )}
+                      data-testid={`${tab.id}-tab-button`}
+                    >
+                      <Icon className="w-4 h-4" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right">
+                    <p>{tab.title}</p>
+                  </TooltipContent>
+                </Tooltip>
+              );
+            })}
+          </div>
+          {/* Logout button at bottom - only show when auth is enabled */}
+          {authEnabled && (
+            <div className="p-1.5 md:p-2 border-t border-sidebar-border">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    type="button"
+                    onClick={() => void handleLogout()}
+                    className={cn(
+                      "w-7 h-7 md:w-8 md:h-8 flex items-center justify-center rounded-md transition-colors",
+                      "hover:bg-destructive/10 hover:text-destructive",
+                      "text-sidebar-foreground/70",
+                    )}
+                    data-testid="logout-button"
+                  >
+                    <LogOut className="w-4 h-4" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="right">
+                  <p>Logout</p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
+          )}
+        </TooltipProvider>
+      </div>
+
+      {/* Content Area - Only shown when expanded and not hidden by external control */}
+      {showContent && (
+        <div className="flex-1 flex flex-col overflow-hidden">{activeTabContent}</div>
+      )}
+    </div>
+  );
+};

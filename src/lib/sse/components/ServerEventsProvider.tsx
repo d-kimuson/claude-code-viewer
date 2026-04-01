@@ -2,7 +2,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useAtom } from "jotai";
 import { type FC, type PropsWithChildren, useCallback, useEffect, useRef } from "react";
 import type { SSEEvent } from "../../../types/sse";
-import { projectListQuery, sessionProcessesQuery } from "../../api/queries";
+import { projectListQuery, sessionProcessesQuery } from "../../../web/lib/api/queries";
 import { callSSE } from "../callSSE";
 import { type EventListener, SSEContext, type SSEContextType } from "../SSEContext";
 import { sseAtom } from "../store/sseAtom";

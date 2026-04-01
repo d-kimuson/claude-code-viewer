@@ -1,0 +1,103 @@
+import { Trans } from "@lingui/react";
+import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
+import { Loader2, Plus } from "lucide-react";
+import { type FC, useState } from "react";
+import { toast } from "sonner";
+import { Button } from "@/web/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/web/components/ui/dialog";
+import { honoClient } from "@/web/lib/api/client";
+import { DirectoryPicker } from "./DirectoryPicker";
+
+export const SetupProjectDialog: FC = () => {
+  const [open, setOpen] = useState(false);
+  const [selectedPath, setSelectedPath] = useState<string>("");
+  const navigate = useNavigate();
+
+  const setupProjectMutation = useMutation({
+    mutationFn: async () => {
+      const response = await honoClient.api.projects.$post({
+        json: { projectPath: selectedPath },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to set up project");
+      }
+
+      return await response.json();
+    },
+
+    onSuccess: (result) => {
+      toast.success("Project set up successfully");
+      setOpen(false);
+      void navigate({
+        to: "/projects/$projectId/session",
+        params: {
+          projectId: result.projectId,
+        },
+        search: { sessionId: result.sessionId },
+      });
+    },
+
+    onError: (error) => {
+      toast.error(error instanceof Error ? error.message : "Failed to set up project");
+    },
+  });
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button data-testid="new-project-button">
+          <Plus className="w-4 h-4 mr-2" />
+          <Trans id="project.new" />
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-2xl" data-testid="new-project-modal">
+        <DialogHeader>
+          <DialogTitle>
+            <Trans id="project.setup.title" />
+          </DialogTitle>
+          <DialogDescription>
+            <Trans
+              id="project.setup.description"
+              components={{
+                0: <code className="text-sm bg-muted px-1 py-0.5 rounded" />,
+              }}
+            />
+          </DialogDescription>
+        </DialogHeader>
+        <div className="py-4">
+          <DirectoryPicker onPathChange={setSelectedPath} />
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setOpen(false)}>
+            <Trans id="common.action.cancel" />
+          </Button>
+          <Button
+            onClick={() => {
+              void setupProjectMutation.mutateAsync();
+            }}
+            disabled={selectedPath === "" || setupProjectMutation.isPending}
+          >
+            {setupProjectMutation.isPending ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                <Trans id="project.setup.action.setting_up" />
+              </>
+            ) : (
+              <Trans id="project.setup.action.setup" />
+            )}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+};

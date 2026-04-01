@@ -14,6 +14,8 @@ export default defineConfig({
     tanstackRouter({
       target: "react",
       autoCodeSplitting: true,
+      routesDirectory: "./src/web/routes",
+      generatedRouteTree: "./src/web/routeTree.gen.ts",
     }),
     viteReact(),
     lingui(),

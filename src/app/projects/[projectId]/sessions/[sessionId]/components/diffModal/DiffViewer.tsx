@@ -15,69 +15,104 @@ interface DiffHunkProps {
   hunk: DiffHunk;
 }
 
+const diffMonoClass =
+  "[font-family:var(--font-geist-mono),ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation_Mono,Courier_New,monospace]";
+
+const getRowClasses = (type: DiffHunk["lines"][number]["type"]) => {
+  return cn({
+    "bg-green-50 dark:bg-green-950/30": type === "added",
+    "bg-red-50 dark:bg-red-950/30": type === "deleted",
+    "bg-blue-50 dark:bg-blue-950/30": type === "hunk",
+    "bg-white dark:bg-gray-900": type === "unchanged" || type === "context",
+  });
+};
+
+const getStickyCellClasses = (type: DiffHunk["lines"][number]["type"]) => {
+  return cn({
+    "bg-green-50 dark:bg-green-950": type === "added",
+    "bg-red-50 dark:bg-red-950": type === "deleted",
+    "bg-blue-50 dark:bg-blue-950": type === "hunk",
+    "bg-white dark:bg-gray-900": type === "unchanged" || type === "context",
+  });
+};
+
 const DiffHunkComponent: FC<DiffHunkProps> = ({ hunk }) => {
   return (
-    <div className="relative flex overflow-x-auto">
-      {/* 行番号列（固定） */}
-      <div className="flex-shrink-0 sticky left-0 z-10 bg-white dark:bg-gray-900">
-        {/* 旧行番号列 */}
-        <div className="float-left w-10 bg-gray-50 dark:bg-gray-800/50 border-r border-gray-200 dark:border-gray-700">
+    <div className="relative overflow-x-auto">
+      <div className="inline-grid w-max min-w-full grid-cols-[5rem_max-content] align-top">
+        <div className="sticky left-0 z-20">
           {hunk.lines.map((line) => (
             <div
-              key={`old-${line.oldLineNumber ?? ""}-${line.newLineNumber ?? ""}`}
-              className="px-1 py-0.5 text-xs text-gray-400 dark:text-gray-600 font-mono text-right leading-tight"
+              key={`gutter-${line.oldLineNumber ?? ""}-${line.newLineNumber ?? ""}`}
+              className={cn(
+                "grid grid-cols-[2.5rem_2.5rem] border-r border-l-4",
+                diffMonoClass,
+                getStickyCellClasses(line.type),
+                {
+                  "border-green-200 border-l-green-400 dark:border-green-800/50":
+                    line.type === "added",
+                  "border-red-200 border-l-red-400 dark:border-red-800/50":
+                    line.type === "deleted",
+                  "border-blue-200 border-l-blue-400 dark:border-blue-800/50":
+                    line.type === "hunk",
+                  "border-gray-200 border-l-transparent dark:border-gray-700":
+                    line.type === "unchanged" || line.type === "context",
+                },
+              )}
             >
-              {line.type !== "added" &&
-              line.type !== "hunk" &&
-              line.oldLineNumber
-                ? line.oldLineNumber
-                : "　"}
+              <div className="border-r px-1 py-0.5 text-right text-xs leading-tight tabular-nums border-gray-200 dark:border-gray-700">
+                {line.type !== "added" &&
+                line.type !== "hunk" &&
+                line.oldLineNumber
+                  ? line.oldLineNumber
+                  : "\u00A0"}
+              </div>
+              <div className="px-1 py-0.5 text-right text-xs leading-tight tabular-nums">
+                {line.type !== "deleted" &&
+                line.type !== "hunk" &&
+                line.newLineNumber
+                  ? line.newLineNumber
+                  : "\u00A0"}
+              </div>
             </div>
           ))}
         </div>
-        {/* 新行番号列 */}
-        <div className="float-left w-10 bg-gray-50 dark:bg-gray-800/50 border-r border-gray-200 dark:border-gray-700">
+        <div>
           {hunk.lines.map((line) => (
             <div
-              key={`new-${line.oldLineNumber ?? ""}-${line.newLineNumber ?? ""}`}
-              className="px-1 py-0.5 text-xs text-gray-400 dark:text-gray-600 font-mono text-right leading-tight"
+              data-slot="diff-row"
+              key={`content-${line.oldLineNumber ?? ""}-${line.newLineNumber ?? ""}`}
+              className={cn(
+                "relative min-w-full border-l-4",
+                getRowClasses(line.type),
+                {
+                  "border-green-200 border-l-green-400 dark:border-green-800/50":
+                    line.type === "added",
+                  "border-red-200 border-l-red-400 dark:border-red-800/50":
+                    line.type === "deleted",
+                  "border-blue-200 border-l-blue-400 dark:border-blue-800/50":
+                    line.type === "hunk",
+                  "border-gray-100 border-l-transparent dark:border-gray-800":
+                    line.type === "unchanged" || line.type === "context",
+                },
+              )}
             >
-              {line.type !== "deleted" &&
-              line.type !== "hunk" &&
-              line.newLineNumber
-                ? line.newLineNumber
-                : "　"}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* コンテンツ列（スクロール可能） */}
-      <div className="flex-1 min-w-0">
-        {hunk.lines.map((line) => (
-          <div
-            key={`content-${line.oldLineNumber ?? ""}-${line.newLineNumber ?? ""}`}
-            className={cn("flex border-l-4", {
-              "bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-800/50 border-l-green-400":
-                line.type === "added",
-              "bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800/50 border-l-red-400":
-                line.type === "deleted",
-              "bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800/50 border-l-blue-400":
-                line.type === "hunk",
-              "bg-white dark:bg-gray-900 border-gray-100 dark:border-gray-800 border-l-transparent":
-                line.type === "unchanged",
-            })}
-          >
-            <div className="flex-1 px-2 py-0.5">
-              <span className="font-mono text-xs whitespace-pre block leading-tight">
+              <div
+                data-slot="diff-row-content"
+                className={cn(
+                  "relative min-w-0 px-2 py-0.5 pl-7 text-xs leading-tight whitespace-pre",
+                  diffMonoClass,
+                )}
+              >
                 <span
-                  className={cn({
+                  data-slot="diff-sign"
+                  className={cn("absolute left-2 top-0.5 w-4 text-center", {
                     "text-green-600 dark:text-green-400": line.type === "added",
                     "text-red-600 dark:text-red-400": line.type === "deleted",
-                    "text-blue-600 dark:text-blue-400 font-medium":
+                    "font-medium text-blue-600 dark:text-blue-400":
                       line.type === "hunk",
                     "text-gray-400 dark:text-gray-600":
-                      line.type === "unchanged",
+                      line.type === "unchanged" || line.type === "context",
                   })}
                 >
                   {line.type === "added"
@@ -85,14 +120,16 @@ const DiffHunkComponent: FC<DiffHunkProps> = ({ hunk }) => {
                     : line.type === "deleted"
                       ? "-"
                       : line.type === "hunk"
-                        ? ""
-                        : " "}
+                        ? "@"
+                        : "\u00A0"}
                 </span>
-                {line.content || " "}
-              </span>
+                <span className="inline-block w-max min-w-full pr-4">
+                  {line.content || " "}
+                </span>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -141,10 +178,20 @@ const FileHeader: FC<FileHeaderProps> = ({
         ) : (
           <ChevronDownIcon className="w-4 h-4 text-gray-500 flex-shrink-0" />
         )}
-        <div className="w-5 h-5 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-xs font-mono flex-shrink-0">
+        <div
+          className={cn(
+            "w-5 h-5 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-xs flex-shrink-0",
+            diffMonoClass,
+          )}
+        >
           {getFileStatusIcon()}
         </div>
-        <span className="font-mono text-xs font-medium text-black dark:text-white text-left truncate flex-1 min-w-0">
+        <span
+          className={cn(
+            "text-xs font-medium text-black dark:text-white text-left truncate flex-1 min-w-0",
+            diffMonoClass,
+          )}
+        >
           {fileDiff.filename}
         </span>
         <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400 flex-shrink-0">
@@ -188,7 +235,7 @@ export const DiffViewer: FC<DiffViewerProps> = ({ fileDiff, className }) => {
     return (
       <div
         className={cn(
-          "border border-gray-200 dark:border-gray-700 rounded-lg",
+          "overflow-hidden border border-gray-200 dark:border-gray-700 rounded-lg",
           className,
         )}
       >
@@ -209,7 +256,7 @@ export const DiffViewer: FC<DiffViewerProps> = ({ fileDiff, className }) => {
   return (
     <div
       className={cn(
-        "border border-gray-200 dark:border-gray-700 rounded-lg",
+        "overflow-hidden border border-gray-200 dark:border-gray-700 rounded-lg",
         className,
       )}
     >

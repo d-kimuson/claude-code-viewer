@@ -118,7 +118,7 @@ export const MarkdownContent: FC<MarkdownContentProps> = ({
         if (isInline) {
           return (
             <code
-              className="bg-muted/70 px-2 py-1 rounded-md text-sm font-mono text-foreground border break-all"
+              className="inline-block max-w-full align-middle overflow-hidden rounded-md border bg-muted/70 px-2 py-1 font-mono text-sm text-foreground whitespace-break-spaces break-words [overflow-wrap:anywhere]"
               {...props}
             >
               {children}

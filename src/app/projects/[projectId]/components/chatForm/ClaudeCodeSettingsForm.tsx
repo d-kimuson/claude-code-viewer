@@ -17,7 +17,6 @@ import type { CCOptionsSchema } from "@/server/core/claude-code/schema";
 import {
   type CCOptionsForm,
   ccOptionsFormSchema,
-  hasNonDefaultCCOptions,
   transformFormToSchema,
   transformSchemaToForm,
 } from "./ccOptionsFormSchema";
@@ -561,7 +560,6 @@ export const ClaudeCodeSettingsPopover: FC<{
   disabled?: boolean;
 }> = ({ value, onChange, disabled }) => {
   const [open, setOpen] = useState(false);
-  const hasSettings = hasNonDefaultCCOptions(value);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -571,12 +569,9 @@ export const ClaudeCodeSettingsPopover: FC<{
           variant="ghost"
           size="sm"
           disabled={disabled}
-          className={`gap-1.5 px-2 hover:bg-background/80 hover:text-foreground text-muted-foreground transition-all duration-200 h-8 rounded-lg ${hasSettings ? "text-primary" : ""}`}
+          className="px-2 hover:bg-background/80 hover:text-foreground text-muted-foreground transition-all duration-200 h-8 rounded-lg"
         >
           <SettingsIcon className="w-4 h-4" />
-          {hasSettings && (
-            <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-          )}
         </Button>
       </PopoverTrigger>
       <PopoverContent

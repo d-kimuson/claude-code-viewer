@@ -3511,10 +3511,6 @@
     "comments": [],
     "origin": [
       [
-        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        52
-      ],
-      [
         "src/components/GlobalSidebar.tsx",
         110
       ]
@@ -3615,10 +3611,6 @@
     "comments": [],
     "origin": [
       [
-        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        51
-      ],
-      [
         "src/components/GlobalSidebar.tsx",
         66
       ]
@@ -3687,7 +3679,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        591
+        588
       ],
       [
         "src/components/GlobalSidebar.tsx",
@@ -3779,10 +3771,6 @@
     "comments": [],
     "origin": [
       [
-        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        48
-      ],
-      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
         58
       ]
@@ -3793,10 +3781,6 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      [
-        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        50
-      ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
         70
@@ -3809,10 +3793,6 @@
     "comments": [],
     "origin": [
       [
-        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        47
-      ],
-      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
         45
       ]
@@ -3824,15 +3804,77 @@
     "comments": [],
     "origin": [
       [
-        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        49
-      ],
-      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
         64
       ]
     ],
     "translation": "タスク一覧を表示"
+  },
+  "sidebar.tab.mcp": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
+        48
+      ]
+    ],
+    "translation": "MCP"
+  },
+  "sidebar.tab.scheduler": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
+        50
+      ]
+    ],
+    "translation": "スケジューラー"
+  },
+  "sidebar.tab.sessions": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
+        47
+      ]
+    ],
+    "translation": "セッション一覧"
+  },
+  "sidebar.tab.settings": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
+        51
+      ]
+    ],
+    "translation": "設定"
+  },
+  "sidebar.tab.system_info": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
+        52
+      ]
+    ],
+    "translation": "システム情報"
+  },
+  "sidebar.tab.tasks": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
+        49
+      ]
+    ],
+    "translation": "タスク一覧"
   },
   "system_info.available_features": {
     "placeholders": {},

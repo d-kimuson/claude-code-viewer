@@ -44,12 +44,12 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
   const currentTab = (search?.tab ?? "sessions") satisfies string;
 
   const tabLabels: Record<Tab, string> = {
-    sessions: i18n._({ id: "sidebar.show.session.list" }),
-    mcp: i18n._({ id: "sidebar.show.mcp.settings" }),
-    tasks: i18n._({ id: "sidebar.show.task.list" }),
-    scheduler: i18n._({ id: "sidebar.show.scheduler.jobs" }),
-    settings: i18n._({ id: "settings.tab.title" }),
-    "system-info": i18n._({ id: "settings.section.system_info" }),
+    sessions: i18n._({ id: "sidebar.tab.sessions" }),
+    mcp: i18n._({ id: "sidebar.tab.mcp" }),
+    tasks: i18n._({ id: "sidebar.tab.tasks" }),
+    scheduler: i18n._({ id: "sidebar.tab.scheduler" }),
+    settings: i18n._({ id: "sidebar.tab.settings" }),
+    "system-info": i18n._({ id: "sidebar.tab.system_info" }),
   };
 
   // Sync tab only when initialTab changes (e.g. opened from a specific tab trigger)

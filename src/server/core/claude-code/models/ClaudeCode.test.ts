@@ -87,6 +87,42 @@ describe("ClaudeCode.claudeCodePathPriority", () => {
 
 describe("ClaudeCode.Config", () => {
   describe("when environment variable CLAUDE_CODE_VIEWER_CC_EXECUTABLE_PATH is not set", () => {
+    it("should resolve claude path without shell execution", async () => {
+      const shellModes: Array<boolean | string> = [];
+
+      const CommandExecutorTest = Layer.effect(
+        CommandExecutor.CommandExecutor,
+        Effect.map(CommandExecutor.CommandExecutor, (realExecutor) => ({
+          ...realExecutor,
+          string: (command, _encoding) => {
+            if (command._tag === "StandardCommand") {
+              shellModes.push(command.shell);
+
+              if (command.command === "which") {
+                return Effect.succeed("/usr/local/bin/claude\n");
+              }
+
+              if (command.args.includes("--version")) {
+                return Effect.succeed("1.0.125 (Claude Code)\n");
+              }
+            }
+
+            return Effect.succeed("");
+          },
+        })),
+      ).pipe(Layer.provide(NodeContext.layer));
+
+      const config = await Effect.runPromise(
+        ClaudeCode.Config.pipe(
+          Effect.provide(testPlatformLayer()),
+          Effect.provide(CommandExecutorTest),
+        ),
+      );
+
+      expect(config.claudeCodeExecutablePath).toBe("/usr/local/bin/claude");
+      expect(shellModes.every((mode) => mode === false)).toBe(true);
+    });
+
     it("should correctly parse results of 'which claude' and 'claude --version'", async () => {
       const CommandExecutorTest = Layer.effect(
         CommandExecutor.CommandExecutor,

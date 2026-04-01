@@ -116,7 +116,7 @@ const LayerImpl = Effect.gen(function* () {
         );
       }
 
-      const result = yield* execGitCommand(["add", ...files], cwd);
+      const result = yield* execGitCommand(["add", "--", ...files], cwd);
       return result;
     });
 

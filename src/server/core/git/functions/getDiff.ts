@@ -268,7 +268,7 @@ export const getDiff = async (
 
   // Get diff with numstat for file statistics
   const numstatResult = await executeGitCommand(
-    ["diff", "--numstat", ...commandArgs],
+    ["diff", "--numstat", ...commandArgs, "--"],
     cwd,
   );
 
@@ -278,7 +278,7 @@ export const getDiff = async (
 
   // Get diff with full content
   const diffResult = await executeGitCommand(
-    ["diff", "--unified=5", ...commandArgs],
+    ["diff", "--unified=5", ...commandArgs, "--"],
     cwd,
   );
 

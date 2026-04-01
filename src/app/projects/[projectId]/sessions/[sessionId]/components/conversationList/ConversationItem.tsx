@@ -22,6 +22,7 @@ type ConversationItemProps = {
   conversation: Conversation;
   getToolResult: (toolUseId: string) => ToolResultContent | undefined;
   getAgentIdForToolUse: (toolUseId: string) => string | undefined;
+  getToolUseResult: (toolUseId: string) => unknown;
   getTurnDuration: (uuid: string) => number | undefined;
   isRootSidechain: (conversation: Conversation) => boolean;
   getSidechainConversationByAgentId: (
@@ -121,6 +122,7 @@ const ConversationItemComponent: FC<ConversationItemProps> = ({
   conversation,
   getToolResult,
   getAgentIdForToolUse,
+  getToolUseResult,
   getTurnDuration,
   getSidechainConversationByPrompt,
   getSidechainConversations,
@@ -184,6 +186,7 @@ const ConversationItemComponent: FC<ConversationItemProps> = ({
                   content={assistantContent}
                   getToolResult={getToolResult}
                   getAgentIdForToolUse={getAgentIdForToolUse}
+                  getToolUseResult={getToolUseResult}
                   getSidechainConversationByAgentId={
                     getSidechainConversationByAgentId
                   }
@@ -264,6 +267,7 @@ const ConversationItemComponent: FC<ConversationItemProps> = ({
                 content={content}
                 getToolResult={getToolResult}
                 getAgentIdForToolUse={getAgentIdForToolUse}
+                getToolUseResult={getToolUseResult}
                 getSidechainConversationByAgentId={
                   getSidechainConversationByAgentId
                 }

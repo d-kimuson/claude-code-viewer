@@ -283,6 +283,33 @@ export const ConversationList: FC<ConversationListProps> = ({
     [toolUseIdToAgentIdMap],
   );
 
+  const toolUseIdToToolUseResultMap = useMemo(() => {
+    const map = new Map<string, unknown>();
+    for (const conv of validConversations) {
+      if (conv.type !== "user") continue;
+      const messageContent = conv.message.content;
+      if (typeof messageContent === "string") continue;
+
+      for (const content of messageContent) {
+        if (typeof content === "string") continue;
+        if (
+          content.type === "tool_result" &&
+          conv.toolUseResult !== undefined
+        ) {
+          map.set(content.tool_use_id, conv.toolUseResult);
+        }
+      }
+    }
+    return map;
+  }, [validConversations]);
+
+  const getToolUseResult = useCallback(
+    (toolUseId: string): unknown => {
+      return toolUseIdToToolUseResultMap.get(toolUseId);
+    },
+    [toolUseIdToToolUseResultMap],
+  );
+
   // Helper to check if a conversation is a user message containing only tool results
   const isOnlyToolResult = useCallback((conv: Conversation): boolean => {
     if (conv.type !== "user") return false;
@@ -382,6 +409,7 @@ export const ConversationList: FC<ConversationListProps> = ({
                 conversation={conversation}
                 getToolResult={getToolResult}
                 getAgentIdForToolUse={getAgentIdForToolUse}
+                getToolUseResult={getToolUseResult}
                 getTurnDuration={getTurnDuration}
                 isRootSidechain={isRootSidechain}
                 getSidechainConversations={getSidechainConversations}

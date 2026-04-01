@@ -68,7 +68,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        210
+        209
       ]
     ],
     "translation": "Custom tool name"
@@ -124,7 +124,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        102
+        101
       ]
     ],
     "translation": "Key name"
@@ -242,7 +242,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        110
+        109
       ]
     ],
     "translation": "Value field"
@@ -253,7 +253,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        78
+        305
       ]
     ],
     "translation": "Thinking"
@@ -335,7 +335,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        176
+        194
       ]
     ],
     "translation": "Input Parameters"
@@ -451,7 +451,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        190
+        208
       ]
     ],
     "translation": "Tool Result"
@@ -496,7 +496,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        168
+        153
       ]
     ],
     "translation": "Tool ID"
@@ -1778,7 +1778,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        542
+        541
       ]
     ],
     "translation": "Example: 1.00"
@@ -1789,7 +1789,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        491
+        490
       ]
     ],
     "translation": "Example: 10"
@@ -1800,7 +1800,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        515
+        514
       ]
     ],
     "translation": "Example: 10000"
@@ -1811,7 +1811,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        409
+        408
       ]
     ],
     "translation": "Example: api.example.com, cdn.example.com"
@@ -3110,7 +3110,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        425
+        424
       ]
     ],
     "translation": "Advanced Settings"
@@ -3132,7 +3132,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        268
+        267
       ]
     ],
     "translation": "Disabled tools"
@@ -3143,7 +3143,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        135
+        134
       ]
     ],
     "translation": "Add environment variable"
@@ -3155,7 +3155,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        285
+        284
       ]
     ],
     "translation": "Environment Variables"
@@ -3336,7 +3336,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        529
+        528
       ]
     ],
     "translation": "Max Budget (USD)"
@@ -3348,7 +3348,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        503
+        502
       ]
     ],
     "translation": "Max Thinking Tokens"
@@ -3360,7 +3360,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        482
+        481
       ]
     ],
     "translation": "Max Turns"
@@ -3419,7 +3419,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        350
+        349
       ]
     ],
     "translation": "Allow unsandboxed commands"
@@ -3431,7 +3431,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        330
+        329
       ]
     ],
     "translation": "Auto-allow Bash if sandboxed"
@@ -3443,7 +3443,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        301
+        300
       ]
     ],
     "translation": "Sandbox"
@@ -3455,7 +3455,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        384
+        383
       ]
     ],
     "translation": "Allow local binding"
@@ -3467,7 +3467,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        393
+        392
       ]
     ],
     "translation": "Allowed Domains (comma-separated)"
@@ -3479,7 +3479,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        360
+        359
       ]
     ],
     "translation": "Network Settings"
@@ -3601,7 +3601,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        431
+        430
       ]
     ],
     "translation": "Setting Sources"
@@ -3679,7 +3679,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        588
+        586
       ],
       [
         "src/components/GlobalSidebar.tsx",

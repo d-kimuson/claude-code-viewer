@@ -1,6 +1,6 @@
 import { Trans } from "@lingui/react";
-import { ChevronDown, Lightbulb, Wrench } from "lucide-react";
-import type { FC } from "react";
+import { ChevronDown, Code, Lightbulb, Wrench } from "lucide-react";
+import { type FC, useMemo, useState } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import {
   oneDark,
@@ -22,6 +22,7 @@ import { CopyableMarkdownContent } from "./CopyableMarkdownContent";
 import { FileContentDialog } from "./FileContentDialog";
 import { TaskModal } from "./TaskModal";
 import { ToolInputOneLine } from "./ToolInputOneLine";
+import { getToolVisualizer } from "./toolVisualizers";
 
 export const taskToolInputSchema = z.object({
   prompt: z.string(),
@@ -29,10 +30,221 @@ export const taskToolInputSchema = z.object({
 
 export const SUBAGENT_TOOL_NAMES = new Set(["Task", "Agent"]);
 
+type ToolUseViewMode = "visual" | "raw";
+
+type ToolUseContentProps = {
+  content: Extract<AssistantMessageContent, { type: "tool_use" }>;
+  getToolResult: (toolUseId: string) => ToolResultContent | undefined;
+  getAgentIdForToolUse: (toolUseId: string) => string | undefined;
+  getToolUseResult: (toolUseId: string) => unknown;
+  getSidechainConversationByAgentId: (
+    agentId: string,
+  ) => SidechainConversation | undefined;
+  getSidechainConversationByPrompt: (
+    prompt: string,
+  ) => SidechainConversation | undefined;
+  getSidechainConversations: (rootUuid: string) => SidechainConversation[];
+  projectId: string;
+  sessionId: string;
+  syntaxTheme: Record<string, React.CSSProperties>;
+};
+
+const ToolUseContent: FC<ToolUseContentProps> = ({
+  content,
+  getToolResult,
+  getAgentIdForToolUse,
+  getToolUseResult,
+  getSidechainConversationByAgentId,
+  getSidechainConversationByPrompt,
+  getSidechainConversations,
+  projectId,
+  sessionId,
+  syntaxTheme,
+}) => {
+  const Visualizer = getToolVisualizer(content.name);
+  const [viewMode, setViewMode] = useState<ToolUseViewMode>(
+    Visualizer ? "visual" : "raw",
+  );
+
+  const toolResult = getToolResult(content.id);
+  const toolUseResult = getToolUseResult(content.id);
+
+  const visualizerElement = useMemo(() => {
+    if (!Visualizer || viewMode !== "visual") return null;
+    return (
+      <Visualizer
+        input={content.input}
+        output={toolResult}
+        toolUseResult={toolUseResult}
+      />
+    );
+  }, [Visualizer, viewMode, content.input, toolResult, toolUseResult]);
+
+  // If visualizer returned null (validation failed), force raw mode
+  const effectiveMode =
+    viewMode === "visual" && Visualizer && visualizerElement === null
+      ? "raw"
+      : viewMode;
+
+  const taskModal = (() => {
+    const taskInput = SUBAGENT_TOOL_NAMES.has(content.name)
+      ? taskToolInputSchema.safeParse(content.input)
+      : undefined;
+
+    if (taskInput === undefined || taskInput.success === false) {
+      return undefined;
+    }
+
+    const agentId = getAgentIdForToolUse(content.id);
+
+    return (
+      <TaskModal
+        prompt={taskInput.data.prompt}
+        projectId={projectId}
+        sessionId={sessionId}
+        agentId={agentId}
+        getSidechainConversationByAgentId={getSidechainConversationByAgentId}
+        getSidechainConversationByPrompt={getSidechainConversationByPrompt}
+        getSidechainConversations={getSidechainConversations}
+        getToolResult={getToolResult}
+      />
+    );
+  })();
+
+  const editedFilePaths = extractEditedFilePaths(content);
+  const fileContentDialog =
+    editedFilePaths.length > 0 ? (
+      <FileContentDialog projectId={projectId} filePaths={editedFilePaths} />
+    ) : undefined;
+
+  return (
+    <Card className="border-blue-200 bg-blue-50/50 dark:border-blue-800 dark:bg-blue-950/20 mb-2 p-0 overflow-hidden">
+      <Collapsible>
+        <div className="flex items-center min-w-0">
+          <CollapsibleTrigger asChild>
+            <div className="flex-1 min-w-0 cursor-pointer hover:bg-blue-100/50 dark:hover:bg-blue-900/20 transition-all duration-200 px-3 py-1.5 group">
+              <div className="flex items-center gap-2 min-w-0">
+                <Wrench className="h-4 w-4 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+                <div className="w-full min-w-0 text-sm font-medium group-hover:text-foreground transition-colors overflow-hidden text-ellipsis whitespace-nowrap">
+                  {content.name}
+                  {Object.keys(content.input).length > 0 && (
+                    <span className="font-normal">
+                      {" "}
+                      (
+                      <ToolInputOneLine input={content.input} />)
+                    </span>
+                  )}
+                </div>
+                <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180 flex-shrink-0" />
+              </div>
+            </div>
+          </CollapsibleTrigger>
+          {(taskModal || fileContentDialog) && (
+            <div className="flex-shrink-0 border-l border-blue-200 dark:border-blue-800 flex items-center">
+              {taskModal}
+              {fileContentDialog}
+            </div>
+          )}
+        </div>
+        <CollapsibleContent>
+          <div className="space-y-3 py-3 px-4 border-t border-blue-200 dark:border-blue-800">
+            <div className="flex items-center gap-2">
+              <h4 className="text-xs font-medium text-muted-foreground">ID</h4>
+              <code className="text-xs bg-background/50 px-2 py-1 rounded border border-blue-200 dark:border-blue-800 font-mono">
+                {content.id}
+              </code>
+              {Visualizer && (
+                <button
+                  type="button"
+                  onClick={() =>
+                    setViewMode(effectiveMode === "raw" ? "visual" : "raw")
+                  }
+                  className={`ml-auto flex items-center gap-1 px-2 py-0.5 text-xs rounded-md border transition-colors ${
+                    effectiveMode === "raw"
+                      ? "border-blue-300 dark:border-blue-700 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300"
+                      : "border-gray-200 dark:border-gray-700 text-muted-foreground hover:bg-gray-100 dark:hover:bg-gray-800"
+                  }`}
+                >
+                  <Code className="h-3 w-3" />
+                  Raw
+                </button>
+              )}
+            </div>
+
+            {effectiveMode === "visual" && visualizerElement}
+
+            {effectiveMode === "raw" && (
+              <>
+                <div>
+                  <h4 className="text-xs font-medium text-muted-foreground mb-2">
+                    <Trans id="assistant.tool.input_parameters" />
+                  </h4>
+                  <SyntaxHighlighter
+                    style={syntaxTheme}
+                    language="json"
+                    PreTag="div"
+                    className="text-xs rounded"
+                  >
+                    {JSON.stringify(content.input, null, 2)}
+                  </SyntaxHighlighter>
+                </div>
+                {toolResult && (
+                  <div>
+                    <h4 className="text-xs font-medium text-muted-foreground mb-2">
+                      <Trans id="assistant.tool.result" />
+                    </h4>
+                    <div className="bg-background rounded border p-3">
+                      {typeof toolResult.content === "string" ? (
+                        <pre className="text-xs overflow-x-auto whitespace-pre-wrap break-words">
+                          {toolResult.content}
+                        </pre>
+                      ) : (
+                        toolResult.content.map((item) => {
+                          if (item.type === "image") {
+                            return (
+                              <img
+                                key={item.source.data}
+                                src={`data:${item.source.media_type};base64,${item.source.data}`}
+                                alt="Tool Result"
+                              />
+                            );
+                          }
+                          if (item.type === "text") {
+                            return (
+                              <pre
+                                key={item.text}
+                                className="text-xs overflow-x-auto whitespace-pre-wrap break-words"
+                              >
+                                {item.text}
+                              </pre>
+                            );
+                          }
+                          if (item.type === "tool_reference") {
+                            return null;
+                          }
+                          item satisfies never;
+                          throw new Error(
+                            "Unexpected tool result content type",
+                          );
+                        })
+                      )}
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        </CollapsibleContent>
+      </Collapsible>
+    </Card>
+  );
+};
+
 export const AssistantConversationContent: FC<{
   content: AssistantMessageContent;
   getToolResult: (toolUseId: string) => ToolResultContent | undefined;
   getAgentIdForToolUse: (toolUseId: string) => string | undefined;
+  getToolUseResult: (toolUseId: string) => unknown;
   getSidechainConversationByAgentId: (
     agentId: string,
   ) => SidechainConversation | undefined;
@@ -46,6 +258,7 @@ export const AssistantConversationContent: FC<{
   content,
   getToolResult,
   getAgentIdForToolUse,
+  getToolUseResult,
   getSidechainConversationByAgentId,
   getSidechainConversationByPrompt,
   getSidechainConversations,
@@ -94,141 +307,19 @@ export const AssistantConversationContent: FC<{
   }
 
   if (content.type === "tool_use") {
-    const toolResult = getToolResult(content.id);
-
-    const taskModal = (() => {
-      // NOTE: taskToolInputSchema は prompt 以外（description, subagent_type等）が含まれていると parse 失敗する可能性がある？
-      // z.object({ prompt: z.string() }) は unknown keys を strip するので成功するはず。
-      // ただし念の為 safeParse の結果を確認する。
-      const taskInput = SUBAGENT_TOOL_NAMES.has(content.name)
-        ? taskToolInputSchema.safeParse(content.input)
-        : undefined;
-
-      if (taskInput === undefined || taskInput.success === false) {
-        return undefined;
-      }
-
-      // Get agentId from toolUseResult if available (new Claude Code versions)
-      const agentId = getAgentIdForToolUse(content.id);
-
-      return (
-        <TaskModal
-          prompt={taskInput.data.prompt}
-          projectId={projectId}
-          sessionId={sessionId}
-          agentId={agentId}
-          getSidechainConversationByAgentId={getSidechainConversationByAgentId}
-          getSidechainConversationByPrompt={getSidechainConversationByPrompt}
-          getSidechainConversations={getSidechainConversations}
-          getToolResult={getToolResult}
-        />
-      );
-    })();
-
-    // Extract file paths from Write/Edit/MultiEdit tools
-    const editedFilePaths = extractEditedFilePaths(content);
-    const fileContentDialog =
-      editedFilePaths.length > 0 ? (
-        <FileContentDialog projectId={projectId} filePaths={editedFilePaths} />
-      ) : undefined;
-
     return (
-      <Card className="border-blue-200 bg-blue-50/50 dark:border-blue-800 dark:bg-blue-950/20 mb-2 p-0 overflow-hidden">
-        <Collapsible>
-          <div className="flex items-center min-w-0">
-            <CollapsibleTrigger asChild>
-              <div className="flex-1 min-w-0 cursor-pointer hover:bg-blue-100/50 dark:hover:bg-blue-900/20 transition-all duration-200 px-3 py-1.5 group">
-                <div className="flex items-center gap-2 min-w-0">
-                  <Wrench className="h-4 w-4 text-blue-600 dark:text-blue-400 flex-shrink-0" />
-                  <div className="w-full min-w-0 text-sm font-medium group-hover:text-foreground transition-colors overflow-hidden text-ellipsis whitespace-nowrap">
-                    {content.name}
-                    {Object.keys(content.input).length > 0 && (
-                      <span className="font-normal">
-                        {" "}
-                        (
-                        <ToolInputOneLine input={content.input} />)
-                      </span>
-                    )}
-                  </div>
-                  <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180 flex-shrink-0" />
-                </div>
-              </div>
-            </CollapsibleTrigger>
-            {(taskModal || fileContentDialog) && (
-              <div className="flex-shrink-0 border-l border-blue-200 dark:border-blue-800 flex items-center">
-                {taskModal}
-                {fileContentDialog}
-              </div>
-            )}
-          </div>
-          <CollapsibleContent>
-            <div className="space-y-3 py-3 px-4 border-t border-blue-200 dark:border-blue-800">
-              <div>
-                <h4 className="text-xs font-medium text-muted-foreground mb-1">
-                  <Trans id="assistant.tool.tool_id" />
-                </h4>
-                <code className="text-xs bg-background/50 px-2 py-1 rounded border border-blue-200 dark:border-blue-800 font-mono">
-                  {content.id}
-                </code>
-              </div>
-              <div>
-                <h4 className="text-xs font-medium text-muted-foreground mb-2">
-                  <Trans id="assistant.tool.input_parameters" />
-                </h4>
-                <SyntaxHighlighter
-                  style={syntaxTheme}
-                  language="json"
-                  PreTag="div"
-                  className="text-xs rounded"
-                >
-                  {JSON.stringify(content.input, null, 2)}
-                </SyntaxHighlighter>
-              </div>
-              {toolResult && (
-                <div>
-                  <h4 className="text-xs font-medium text-muted-foreground mb-2">
-                    <Trans id="assistant.tool.result" />
-                  </h4>
-                  <div className="bg-background rounded border p-3">
-                    {typeof toolResult.content === "string" ? (
-                      <pre className="text-xs overflow-x-auto whitespace-pre-wrap break-words">
-                        {toolResult.content}
-                      </pre>
-                    ) : (
-                      toolResult.content.map((item) => {
-                        if (item.type === "image") {
-                          return (
-                            <img
-                              key={item.source.data}
-                              src={`data:${item.source.media_type};base64,${item.source.data}`}
-                              alt="Tool Result"
-                            />
-                          );
-                        }
-                        if (item.type === "text") {
-                          return (
-                            <pre
-                              key={item.text}
-                              className="text-xs overflow-x-auto whitespace-pre-wrap break-words"
-                            >
-                              {item.text}
-                            </pre>
-                          );
-                        }
-                        if (item.type === "tool_reference") {
-                          return null;
-                        }
-                        item satisfies never;
-                        throw new Error("Unexpected tool result content type");
-                      })
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-          </CollapsibleContent>
-        </Collapsible>
-      </Card>
+      <ToolUseContent
+        content={content}
+        getToolResult={getToolResult}
+        getAgentIdForToolUse={getAgentIdForToolUse}
+        getToolUseResult={getToolUseResult}
+        getSidechainConversationByAgentId={getSidechainConversationByAgentId}
+        getSidechainConversationByPrompt={getSidechainConversationByPrompt}
+        getSidechainConversations={getSidechainConversations}
+        projectId={projectId}
+        sessionId={sessionId}
+        syntaxTheme={syntaxTheme}
+      />
     );
   }
 

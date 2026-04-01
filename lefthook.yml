@@ -1,14 +1,14 @@
 pre-commit:
   parallel: true
   commands:
-    biome-lint:
+    oxlint:
       glob: "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}"
-      run: pnpm exec biome check --write --unsafe --no-errors-on-unmatched --files-ignore-unknown=true --colors=off {staged_files}
+      run: pnpm fix:oxlint {staged_files}
       stage_fixed: true
 
-    biome-format:
+    oxfmt:
       glob: "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}"
-      run: pnpm exec biome format --write --no-errors-on-unmatched --files-ignore-unknown=true --colors=off {staged_files}
+      run: pnpm fix:oxfmt {staged_files}
       stage_fixed: true
 
 pre-push:

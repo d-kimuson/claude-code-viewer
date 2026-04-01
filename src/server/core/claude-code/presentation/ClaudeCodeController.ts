@@ -39,9 +39,7 @@ const LayerImpl = Effect.gen(function* () {
             );
 
       const globalSkills: CommandInfo[] = features.runSkillsDirectly
-        ? yield* scanSkillFilesWithMetadata(
-            (yield* context.claudeCodePaths).claudeSkillsDirPath,
-          )
+        ? yield* scanSkillFilesWithMetadata((yield* context.claudeCodePaths).claudeSkillsDirPath)
         : [];
 
       const projectSkills: CommandInfo[] =
@@ -126,6 +124,7 @@ const LayerImpl = Effect.gen(function* () {
       const featuresList = Object.entries(features).flatMap(([key, value]) => {
         return [
           {
+            // oxlint-disable-next-line typescript-eslint/no-unsafe-type-assertion -- Object.entries preserves key type
             name: key as keyof typeof features,
             enabled: value,
           },

@@ -1,17 +1,13 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Trans, useLingui } from "@lingui/react";
 import { PlusIcon, SettingsIcon, TrashIcon, XIcon } from "lucide-react";
-import { type FC, useEffect, useMemo, useRef, useState } from "react";
+import { type FC, useEffect, useId, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Switch } from "@/components/ui/switch";
 import type { CCOptionsSchema } from "@/server/core/claude-code/schema";
 import {
@@ -215,7 +211,7 @@ const DisallowedToolsEditor: FC<{
           variant="outline"
           size="sm"
           onClick={handleAddCustom}
-          disabled={disabled || !inputValue.trim()}
+          disabled={disabled ?? !inputValue.trim()}
           className="h-8 text-xs"
         >
           <PlusIcon className="w-3 h-3" />
@@ -231,6 +227,9 @@ export const ClaudeCodeSettingsForm: FC<ClaudeCodeSettingsFormProps> = ({
   disabled = false,
 }) => {
   const { i18n } = useLingui();
+  const autoAllowBashId = useId();
+  const allowUnsandboxedCommandsId = useId();
+  const allowLocalBindingId = useId();
 
   const {
     register,
@@ -243,10 +242,7 @@ export const ClaudeCodeSettingsForm: FC<ClaudeCodeSettingsFormProps> = ({
   });
 
   const formData = watch();
-  const transformed = useMemo(
-    () => transformFormToSchema(formData),
-    [formData],
-  );
+  const transformed = useMemo(() => transformFormToSchema(formData), [formData]);
   const lastSerialized = useRef<string | null>(null);
 
   // Sync form data to parent component
@@ -271,10 +267,8 @@ export const ClaudeCodeSettingsForm: FC<ClaudeCodeSettingsFormProps> = ({
           onChange={(selected) => setValue("disallowedTools", selected)}
           disabled={disabled}
         />
-        {errors.disallowedTools?.message && (
-          <p className="text-xs text-red-500">
-            {errors.disallowedTools.message}
-          </p>
+        {errors.disallowedTools?.message !== undefined && errors.disallowedTools.message !== "" && (
+          <p className="text-xs text-red-500">{errors.disallowedTools.message}</p>
         )}
       </div>
 
@@ -288,7 +282,7 @@ export const ClaudeCodeSettingsForm: FC<ClaudeCodeSettingsFormProps> = ({
           onChange={(env) => setValue("env", env)}
           disabled={disabled}
         />
-        {errors.env?.root?.message && (
+        {errors.env?.root?.message !== undefined && errors.env.root.message !== "" && (
           <p className="text-xs text-red-500">{errors.env.root.message}</p>
         )}
       </div>
@@ -311,11 +305,11 @@ export const ClaudeCodeSettingsForm: FC<ClaudeCodeSettingsFormProps> = ({
           />
         </div>
 
-        {formData.sandbox?.enabled && (
+        {formData.sandbox?.enabled === true && (
           <div className="space-y-3 pt-2 border-t border-border/50">
-            {/* biome-ignore lint/a11y/noLabelWithoutControl: Checkbox is a custom component that wraps input */}
-            <label className="flex items-center gap-2 cursor-pointer">
+            <label htmlFor={autoAllowBashId} className="flex items-center gap-2 cursor-pointer">
               <Checkbox
+                id={autoAllowBashId}
                 checked={formData.sandbox?.autoAllowBashIfSandboxed ?? false}
                 onCheckedChange={(checked) =>
                   setValue("sandbox", {
@@ -326,16 +320,16 @@ export const ClaudeCodeSettingsForm: FC<ClaudeCodeSettingsFormProps> = ({
                 disabled={disabled}
               />
               <span className="text-xs">
-                <Trans
-                  id="settings.sandbox.autoAllowBash"
-                  message="Auto-allow Bash if sandboxed"
-                />
+                <Trans id="settings.sandbox.autoAllowBash" message="Auto-allow Bash if sandboxed" />
               </span>
             </label>
 
-            {/* biome-ignore lint/a11y/noLabelWithoutControl: Checkbox is a custom component that wraps input */}
-            <label className="flex items-center gap-2 cursor-pointer">
+            <label
+              htmlFor={allowUnsandboxedCommandsId}
+              className="flex items-center gap-2 cursor-pointer"
+            >
               <Checkbox
+                id={allowUnsandboxedCommandsId}
                 checked={formData.sandbox?.allowUnsandboxedCommands ?? false}
                 onCheckedChange={(checked) =>
                   setValue("sandbox", {
@@ -356,18 +350,16 @@ export const ClaudeCodeSettingsForm: FC<ClaudeCodeSettingsFormProps> = ({
             {/* Network Settings */}
             <div className="space-y-2">
               <Label className="text-xs font-medium">
-                <Trans
-                  id="settings.sandbox.network.label"
-                  message="Network Settings"
-                />
+                <Trans id="settings.sandbox.network.label" message="Network Settings" />
               </Label>
 
-              {/* biome-ignore lint/a11y/noLabelWithoutControl: Checkbox is a custom component that wraps input */}
-              <label className="flex items-center gap-2 cursor-pointer">
+              <label
+                htmlFor={allowLocalBindingId}
+                className="flex items-center gap-2 cursor-pointer"
+              >
                 <Checkbox
-                  checked={
-                    formData.sandbox?.network?.allowLocalBinding ?? false
-                  }
+                  id={allowLocalBindingId}
+                  checked={formData.sandbox?.network?.allowLocalBinding ?? false}
                   onCheckedChange={(checked) =>
                     setValue("sandbox", {
                       ...formData.sandbox,
@@ -413,7 +405,7 @@ export const ClaudeCodeSettingsForm: FC<ClaudeCodeSettingsFormProps> = ({
             </div>
           </div>
         )}
-        {errors.sandbox?.message && (
+        {errors.sandbox?.message !== undefined && errors.sandbox.message !== "" && (
           <p className="text-xs text-red-500">{errors.sandbox.message}</p>
         )}
       </div>
@@ -427,33 +419,20 @@ export const ClaudeCodeSettingsForm: FC<ClaudeCodeSettingsFormProps> = ({
           {/* Setting Sources */}
           <div className="space-y-1.5">
             <Label className="text-xs font-medium">
-              <Trans
-                id="settings.settingSources.label"
-                message="Setting Sources"
-              />
+              <Trans id="settings.settingSources.label" message="Setting Sources" />
             </Label>
             <div className="flex flex-wrap gap-2">
               {(["user", "project", "local"] as const).map((source) => {
-                const currentSources = formData.settingSources ?? [
-                  "user",
-                  "project",
-                  "local",
-                ];
+                const currentSources = formData.settingSources ?? ["user", "project", "local"];
                 const isSelected = currentSources.includes(source);
                 return (
                   // biome-ignore lint/a11y/noLabelWithoutControl: Checkbox is a custom component that wraps input
-                  <label
-                    key={source}
-                    className="inline-flex items-center gap-1.5 cursor-pointer"
-                  >
+                  <label key={source} className="inline-flex items-center gap-1.5 cursor-pointer">
                     <Checkbox
                       checked={isSelected}
                       onCheckedChange={(checked) => {
-                        if (checked) {
-                          setValue("settingSources", [
-                            ...currentSources,
-                            source,
-                          ]);
+                        if (checked === true) {
+                          setValue("settingSources", [...currentSources, source]);
                         } else {
                           setValue(
                             "settingSources",
@@ -468,11 +447,10 @@ export const ClaudeCodeSettingsForm: FC<ClaudeCodeSettingsFormProps> = ({
                 );
               })}
             </div>
-            {errors.settingSources?.message && (
-              <p className="text-xs text-red-500">
-                {errors.settingSources.message}
-              </p>
-            )}
+            {errors.settingSources?.message !== undefined &&
+              errors.settingSources.message !== "" && (
+                <p className="text-xs text-red-500">{errors.settingSources.message}</p>
+              )}
           </div>
 
           {/* Max Turns */}
@@ -491,7 +469,7 @@ export const ClaudeCodeSettingsForm: FC<ClaudeCodeSettingsFormProps> = ({
               disabled={disabled}
               className="h-8 text-xs"
             />
-            {errors.maxTurns?.message && (
+            {errors.maxTurns?.message !== undefined && errors.maxTurns.message !== "" && (
               <p className="text-xs text-red-500">{errors.maxTurns.message}</p>
             )}
           </div>
@@ -499,10 +477,7 @@ export const ClaudeCodeSettingsForm: FC<ClaudeCodeSettingsFormProps> = ({
           {/* Max Thinking Tokens */}
           <div className="space-y-1.5">
             <Label htmlFor="maxThinkingTokens" className="text-xs font-medium">
-              <Trans
-                id="settings.maxThinkingTokens.label"
-                message="Max Thinking Tokens"
-              />
+              <Trans id="settings.maxThinkingTokens.label" message="Max Thinking Tokens" />
             </Label>
             <Input
               id="maxThinkingTokens"
@@ -515,20 +490,16 @@ export const ClaudeCodeSettingsForm: FC<ClaudeCodeSettingsFormProps> = ({
               disabled={disabled}
               className="h-8 text-xs"
             />
-            {errors.maxThinkingTokens?.message && (
-              <p className="text-xs text-red-500">
-                {errors.maxThinkingTokens.message}
-              </p>
-            )}
+            {errors.maxThinkingTokens?.message !== undefined &&
+            errors.maxThinkingTokens.message !== "" ? (
+              <p className="text-xs text-red-500">{errors.maxThinkingTokens.message}</p>
+            ) : null}
           </div>
 
           {/* Max Budget USD */}
           <div className="space-y-1.5">
             <Label htmlFor="maxBudgetUsd" className="text-xs font-medium">
-              <Trans
-                id="settings.maxBudgetUsd.label"
-                message="Max Budget (USD)"
-              />
+              <Trans id="settings.maxBudgetUsd.label" message="Max Budget (USD)" />
             </Label>
             <Input
               id="maxBudgetUsd"
@@ -542,10 +513,8 @@ export const ClaudeCodeSettingsForm: FC<ClaudeCodeSettingsFormProps> = ({
               disabled={disabled}
               className="h-8 text-xs"
             />
-            {errors.maxBudgetUsd?.message && (
-              <p className="text-xs text-red-500">
-                {errors.maxBudgetUsd.message}
-              </p>
+            {errors.maxBudgetUsd?.message !== undefined && errors.maxBudgetUsd.message !== "" && (
+              <p className="text-xs text-red-500">{errors.maxBudgetUsd.message}</p>
             )}
           </div>
         </div>
@@ -595,11 +564,7 @@ export const ClaudeCodeSettingsPopover: FC<{
               <XIcon className="w-4 h-4" />
             </Button>
           </div>
-          <ClaudeCodeSettingsForm
-            value={value}
-            onChange={onChange}
-            disabled={disabled}
-          />
+          <ClaudeCodeSettingsForm value={value} onChange={onChange} disabled={disabled} />
         </div>
       </PopoverContent>
     </Popover>

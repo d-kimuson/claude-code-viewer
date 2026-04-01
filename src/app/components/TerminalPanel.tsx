@@ -1,7 +1,6 @@
 import { FitAddon } from "@xterm/addon-fit";
 import { Terminal } from "@xterm/xterm";
-import type { FC } from "react";
-import { useEffect, useRef } from "react";
+import { type FC, useEffect, useRef } from "react";
 import "@xterm/xterm/css/xterm.css";
 
 type ServerMessage =
@@ -15,8 +14,10 @@ const SESSION_ID_KEY = "terminalSessionId";
 
 const parseServerMessage = (payload: string): ServerMessage | undefined => {
   try {
-    const parsed = JSON.parse(payload);
-    if (!parsed || typeof parsed !== "object") return undefined;
+    const raw: unknown = JSON.parse(payload);
+    if (raw === null || typeof raw !== "object") return undefined;
+    // oxlint-disable-next-line no-unsafe-type-assertion -- After null/typeof checks, raw is a non-null object
+    const parsed = raw as Record<string, unknown>;
     if (
       parsed.type === "hello" &&
       typeof parsed.sessionId === "string" &&
@@ -44,26 +45,23 @@ const parseServerMessage = (payload: string): ServerMessage | undefined => {
 };
 
 const getSessionIdStorageKey = (cwd: string | undefined) => {
-  if (!cwd) return SESSION_ID_KEY;
+  if (cwd === undefined || cwd === "") return SESSION_ID_KEY;
   return `${SESSION_ID_KEY}:${cwd}`;
 };
 
 const getStoredSessionId = (cwd: string | undefined) => {
   const value = localStorage.getItem(getSessionIdStorageKey(cwd));
-  return value && value.length > 0 ? value : undefined;
+  return value !== null && value.length > 0 ? value : undefined;
 };
 
-const buildWebSocketUrl = (
-  sessionId: string | undefined,
-  cwd: string | undefined,
-) => {
+const buildWebSocketUrl = (sessionId: string | undefined, cwd: string | undefined) => {
   const protocol = window.location.protocol === "https:" ? "wss" : "ws";
   const host = window.location.host;
   const searchParams = new URLSearchParams();
-  if (sessionId) {
+  if (sessionId !== undefined && sessionId !== "") {
     searchParams.set("sessionId", sessionId);
   }
-  if (cwd) {
+  if (cwd !== undefined && cwd !== "") {
     searchParams.set("cwd", cwd);
   }
   const query = searchParams.toString();
@@ -80,11 +78,7 @@ const clearStoredSession = (cwd: string | undefined) => {
   localStorage.removeItem(getSessionIdStorageKey(cwd));
 };
 
-export const TerminalPanel: FC<TerminalPanelProps> = ({
-  resetToken = 0,
-  cwd,
-  onProcessExit,
-}) => {
+export const TerminalPanel: FC<TerminalPanelProps> = ({ resetToken = 0, cwd, onProcessExit }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const terminalRef = useRef<Terminal | null>(null);
   const fitRef = useRef<FitAddon | null>(null);

@@ -12,8 +12,6 @@ export const rightPanelBrowserUrlAtom = atom<string | null>(null);
 export const rightPanelCurrentUrlAtom = atom<string | null>(null);
 export const rightPanelInputUrlAtom = atom("");
 
-export const rightPanelIframeRefAtom = atom<
-  RefObject<HTMLIFrameElement | null>
->({
+export const rightPanelIframeRefAtom = atom<RefObject<HTMLIFrameElement | null>>({
   current: null,
 });

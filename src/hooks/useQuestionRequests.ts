@@ -16,22 +16,21 @@ export const useQuestionRequests = (sessionId?: string) => {
   const questionRequests = data?.questionRequests ?? [];
 
   // The latest pending request for this session (should be at most 1)
-  const currentQuestionRequest =
-    questionRequests.find((r) => r.sessionId === sessionId) ?? null;
+  const currentQuestionRequest = questionRequests.find((r) => r.sessionId === sessionId) ?? null;
 
   const handleQuestionResponse = useCallback(
     async (response: QuestionResponse) => {
       try {
-        const apiResponse = await honoClient.api["claude-code"][
-          "question-response"
-        ].$post({ json: response });
+        const apiResponse = await honoClient.api["claude-code"]["question-response"].$post({
+          json: response,
+        });
 
         if (!apiResponse.ok) {
           throw new Error("Failed to send question response");
         }
 
         // Consume the approval notification now that the user has responded
-        if (sessionId) {
+        if (sessionId !== undefined && sessionId !== "") {
           await honoClient.api.notifications[":sessionId"].consume.$post({
             param: { sessionId },
             json: { types: ["question_asked"] },

@@ -44,24 +44,18 @@ export const ccOptionsFormSchema = z.object({
   maxThinkingTokens: z.number().int().positive().optional(),
   maxBudgetUsd: z.number().nonnegative().optional(),
   effort: z.enum(["low", "medium", "high", "max"]).optional(),
-  permissionMode: z
-    .enum(["acceptEdits", "bypassPermissions", "default", "plan"])
-    .optional(),
+  permissionMode: z.enum(["acceptEdits", "bypassPermissions", "default", "plan"]).optional(),
 });
 
 export type CCOptionsForm = z.infer<typeof ccOptionsFormSchema>;
 
-const defaultSettingSources: Array<"user" | "project" | "local"> = [
-  "user",
-  "project",
-  "local",
-];
+const defaultSettingSources: Array<"user" | "project" | "local"> = ["user", "project", "local"];
 
 /**
  * Get default CC options for initial state
  * This ensures that settingSources has proper defaults even when Popover is not opened
  */
-export function getDefaultCCOptions(): CCOptionsSchema {
+export const getDefaultCCOptions = (): CCOptionsSchema => {
   return {
     settingSources: [...defaultSettingSources],
     permissionMode: "default",
@@ -70,15 +64,13 @@ export function getDefaultCCOptions(): CCOptionsSchema {
       preset: "claude_code",
     },
   };
-}
+};
 
 /**
  * Check if the given CC options differ from the default values
  * Used to determine whether to show the settings indicator
  */
-export function hasNonDefaultCCOptions(
-  options: CCOptionsSchema | undefined,
-): boolean {
+export const hasNonDefaultCCOptions = (options: CCOptionsSchema | undefined): boolean => {
   if (options === undefined) return false;
 
   const defaultOptions = getDefaultCCOptions();
@@ -87,21 +79,18 @@ export function hasNonDefaultCCOptions(
   const settingSourcesChanged =
     options.settingSources !== undefined &&
     (options.settingSources.length !== defaultOptions.settingSources?.length ||
-      !options.settingSources.every(
-        (s, i) => defaultOptions.settingSources?.[i] === s,
-      ));
+      !options.settingSources.every((s, i) => defaultOptions.settingSources?.[i] === s));
 
   // Check if any other field is set (non-default)
   const hasOtherSettings =
     options.model !== undefined ||
-    (options.disallowedTools !== undefined &&
-      options.disallowedTools.length > 0) ||
+    (options.disallowedTools !== undefined && options.disallowedTools.length > 0) ||
     (options.systemPrompt !== undefined &&
       // Treat preset without append as default
       !(
         typeof options.systemPrompt === "object" &&
         options.systemPrompt.type === "preset" &&
-        !options.systemPrompt.append
+        (options.systemPrompt.append === undefined || options.systemPrompt.append === "")
       )) ||
     (options.env !== undefined && Object.keys(options.env).length > 0) ||
     options.sandbox !== undefined ||
@@ -109,28 +98,24 @@ export function hasNonDefaultCCOptions(
     options.maxThinkingTokens !== undefined ||
     options.maxBudgetUsd !== undefined ||
     options.effort !== undefined ||
-    (options.permissionMode !== undefined &&
-      options.permissionMode !== "default");
+    (options.permissionMode !== undefined && options.permissionMode !== "default");
 
   return settingSourcesChanged || hasOtherSettings;
-}
+};
 
 /**
  * Transform frontend form data to backend schema
  */
-export function transformFormToSchema(
-  form: CCOptionsForm,
-): CCOptionsSchema | undefined {
+export const transformFormToSchema = (form: CCOptionsForm): CCOptionsSchema | undefined => {
   const hasValue = (value: unknown): boolean => {
     if (value === undefined) return false;
     if (Array.isArray(value)) return value.length > 0;
-    if (typeof value === "object" && value !== null)
-      return Object.keys(value).length > 0;
+    if (typeof value === "object" && value !== null) return Object.keys(value).length > 0;
     return true;
   };
 
   const parseAllowedDomains = (value: string | undefined) => {
-    if (!value) return undefined;
+    if (value === undefined || value === "") return undefined;
     const domains = value
       .split(",")
       .map((domain) => domain.trim())
@@ -139,13 +124,13 @@ export function transformFormToSchema(
   };
 
   const buildNetwork = (network: SandboxNetworkForm | undefined) => {
-    if (!network) return undefined;
+    if (network === undefined) return undefined;
 
     const allowedDomains = parseAllowedDomains(network.allowedDomains);
     const allowLocalBinding = network.allowLocalBinding;
 
     const result = {
-      ...(allowedDomains ? { allowedDomains } : {}),
+      ...(allowedDomains !== undefined ? { allowedDomains } : {}),
       ...(allowLocalBinding !== undefined ? { allowLocalBinding } : {}),
     };
 
@@ -153,7 +138,7 @@ export function transformFormToSchema(
   };
 
   const buildSandbox = (sandbox: SandboxForm | undefined) => {
-    if (!sandbox) return undefined;
+    if (sandbox === undefined) return undefined;
 
     const network = buildNetwork(sandbox.network);
     const result = {
@@ -164,7 +149,7 @@ export function transformFormToSchema(
       ...(sandbox.allowUnsandboxedCommands !== undefined
         ? { allowUnsandboxedCommands: sandbox.allowUnsandboxedCommands }
         : {}),
-      ...(network ? { network } : {}),
+      ...(network !== undefined ? { network } : {}),
     };
 
     return hasValue(result) ? result : undefined;
@@ -173,7 +158,11 @@ export function transformFormToSchema(
   const buildSystemPrompt = (
     systemPrompt: SystemPromptForm | undefined,
   ): CCOptionsSchema["systemPrompt"] | undefined => {
-    if (systemPrompt?.mode !== "preset" || !systemPrompt.append) {
+    if (
+      systemPrompt?.mode !== "preset" ||
+      systemPrompt.append === undefined ||
+      systemPrompt.append === ""
+    ) {
       return undefined;
     }
 
@@ -193,42 +182,32 @@ export function transformFormToSchema(
 
   const systemPrompt = buildSystemPrompt(form.systemPrompt);
   const sandbox = buildSandbox(form.sandbox);
-  const env = form.env && hasValue(form.env) ? form.env : undefined;
+  const env = form.env !== undefined && hasValue(form.env) ? form.env : undefined;
 
   const result: CCOptionsSchema = {
-    ...(form.model ? { model: form.model } : {}),
-    ...(form.disallowedTools?.length
+    ...(form.model !== undefined && form.model !== "" ? { model: form.model } : {}),
+    ...(form.disallowedTools !== undefined && form.disallowedTools.length > 0
       ? { disallowedTools: form.disallowedTools }
       : {}),
-    ...(systemPrompt ? { systemPrompt } : {}),
-    ...(env ? { env } : {}),
-    ...(sandbox ? { sandbox } : {}),
+    ...(systemPrompt !== undefined ? { systemPrompt } : {}),
+    ...(env !== undefined ? { env } : {}),
+    ...(sandbox !== undefined ? { sandbox } : {}),
     // Always include settingSources if defined (even empty array means explicit user choice)
-    ...(form.settingSources !== undefined
-      ? { settingSources: form.settingSources }
-      : {}),
+    ...(form.settingSources !== undefined ? { settingSources: form.settingSources } : {}),
     ...(form.maxTurns !== undefined ? { maxTurns: form.maxTurns } : {}),
-    ...(form.maxThinkingTokens !== undefined
-      ? { maxThinkingTokens: form.maxThinkingTokens }
-      : {}),
-    ...(form.maxBudgetUsd !== undefined
-      ? { maxBudgetUsd: form.maxBudgetUsd }
-      : {}),
+    ...(form.maxThinkingTokens !== undefined ? { maxThinkingTokens: form.maxThinkingTokens } : {}),
+    ...(form.maxBudgetUsd !== undefined ? { maxBudgetUsd: form.maxBudgetUsd } : {}),
     ...(form.effort !== undefined ? { effort: form.effort } : {}),
-    ...(form.permissionMode !== undefined
-      ? { permissionMode: form.permissionMode }
-      : {}),
+    ...(form.permissionMode !== undefined ? { permissionMode: form.permissionMode } : {}),
   };
 
   return hasValue(result) ? result : undefined;
-}
+};
 
 /**
  * Transform backend schema to frontend form data
  */
-export function transformSchemaToForm(
-  schema: CCOptionsSchema | undefined,
-): CCOptionsForm {
+export const transformSchemaToForm = (schema: CCOptionsSchema | undefined): CCOptionsForm => {
   if (!schema) {
     return {
       systemPrompt: { mode: "preset" },
@@ -241,12 +220,12 @@ export function transformSchemaToForm(
   };
 
   // Model
-  if (schema.model) {
+  if (schema.model !== undefined && schema.model !== "") {
     form.model = schema.model;
   }
 
   // Disallowed Tools
-  if (schema.disallowedTools) {
+  if (schema.disallowedTools !== undefined) {
     form.disallowedTools = schema.disallowedTools;
   }
 
@@ -261,12 +240,12 @@ export function transformSchemaToForm(
   }
 
   // Environment Variables
-  if (schema.env) {
+  if (schema.env !== undefined) {
     form.env = schema.env;
   }
 
   // Sandbox
-  if (schema.sandbox) {
+  if (schema.sandbox !== undefined) {
     const sandbox: SandboxForm = {};
 
     if (schema.sandbox.enabled !== undefined) {
@@ -274,21 +253,21 @@ export function transformSchemaToForm(
     }
 
     if (schema.sandbox.autoAllowBashIfSandboxed !== undefined) {
-      sandbox.autoAllowBashIfSandboxed =
-        schema.sandbox.autoAllowBashIfSandboxed;
+      sandbox.autoAllowBashIfSandboxed = schema.sandbox.autoAllowBashIfSandboxed;
     }
 
     if (schema.sandbox.allowUnsandboxedCommands !== undefined) {
-      sandbox.allowUnsandboxedCommands =
-        schema.sandbox.allowUnsandboxedCommands;
+      sandbox.allowUnsandboxedCommands = schema.sandbox.allowUnsandboxedCommands;
     }
 
-    if (schema.sandbox.network) {
+    if (schema.sandbox.network !== undefined) {
       const network: SandboxNetworkForm = {};
 
-      if (schema.sandbox.network.allowedDomains) {
-        network.allowedDomains =
-          schema.sandbox.network.allowedDomains.join(", ");
+      if (
+        schema.sandbox.network.allowedDomains !== undefined &&
+        schema.sandbox.network.allowedDomains.length > 0
+      ) {
+        network.allowedDomains = schema.sandbox.network.allowedDomains.join(", ");
       }
 
       if (schema.sandbox.network.allowLocalBinding !== undefined) {
@@ -302,7 +281,7 @@ export function transformSchemaToForm(
   }
 
   // Setting Sources
-  if (schema.settingSources) {
+  if (schema.settingSources !== undefined) {
     form.settingSources = schema.settingSources;
   }
 
@@ -332,4 +311,4 @@ export function transformSchemaToForm(
   }
 
   return form;
-}
+};

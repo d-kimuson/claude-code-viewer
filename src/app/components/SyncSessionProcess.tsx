@@ -12,7 +12,7 @@ export const SyncSessionProcess: FC<PropsWithChildren> = ({ children }) => {
     queryFn: sessionProcessesQuery.queryFn,
   });
 
-  useServerEventListener("sessionProcessChanged", async ({ processes }) => {
+  useServerEventListener("sessionProcessChanged", ({ processes }) => {
     setSessionProcesses(processes);
   });
 

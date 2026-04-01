@@ -6,20 +6,15 @@ import {
 import { Context, Deferred, Effect, Layer, Ref } from "effect";
 import { ulid } from "ulid";
 import { z } from "zod";
-import type {
-  QuestionRequest,
-  QuestionResponse,
-} from "../../../../types/question";
+import type { QuestionRequest, QuestionResponse } from "../../../../types/question";
 import type { InferEffect } from "../../../lib/effect/types";
 import { EventBus } from "../../events/services/EventBus";
 
 const LayerImpl = Effect.gen(function* () {
-  const pendingQuestionsRef = yield* Ref.make<Map<string, QuestionRequest>>(
+  const pendingQuestionsRef = yield* Ref.make<Map<string, QuestionRequest>>(new Map());
+  const deferredsRef = yield* Ref.make<Map<string, Deferred.Deferred<QuestionResponse, never>>>(
     new Map(),
   );
-  const deferredsRef = yield* Ref.make<
-    Map<string, Deferred.Deferred<QuestionResponse, never>>
-  >(new Map());
   const eventBus = yield* EventBus;
 
   const waitQuestionResponse = (request: QuestionRequest) =>
@@ -109,10 +104,7 @@ const LayerImpl = Effect.gen(function* () {
                 z.object({
                   label: z.string().describe("Display text (1-5 words)"),
                   description: z.string().describe("What this option means"),
-                  preview: z
-                    .string()
-                    .optional()
-                    .describe("Optional preview content"),
+                  preview: z.string().optional().describe("Optional preview content"),
                 }),
               )
               .min(2)
@@ -147,9 +139,7 @@ const LayerImpl = Effect.gen(function* () {
           timestamp: Date.now(),
         };
 
-        const response = await Effect.runPromise(
-          waitQuestionResponse(questionRequest),
-        );
+        const response = await Effect.runPromise(waitQuestionResponse(questionRequest));
 
         return {
           content: [
@@ -224,8 +214,9 @@ const LayerImpl = Effect.gen(function* () {
 
 export type ICCVAskUserQuestionService = InferEffect<typeof LayerImpl>;
 
-export class CCVAskUserQuestionService extends Context.Tag(
-  "CCVAskUserQuestionService",
-)<CCVAskUserQuestionService, ICCVAskUserQuestionService>() {
+export class CCVAskUserQuestionService extends Context.Tag("CCVAskUserQuestionService")<
+  CCVAskUserQuestionService,
+  ICCVAskUserQuestionService
+>() {
   static Live = Layer.effect(this, LayerImpl);
 }

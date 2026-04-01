@@ -69,10 +69,7 @@ describe("TasksService", () => {
     it("returns empty array when specific sessionId tasks directory does not exist", async () => {
       const program = Effect.gen(function* () {
         const tasksService = yield* TasksService;
-        return yield* tasksService.listTasks(
-          "/test/project",
-          "non-existent-session-id",
-        );
+        return yield* tasksService.listTasks("/test/project", "non-existent-session-id");
       });
 
       const result = await Effect.runPromise(

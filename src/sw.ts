@@ -51,6 +51,7 @@ type PushNotificationData = {
 self.addEventListener("push", (event) => {
   if (!event.data) return;
 
+  // oxlint-disable-next-line no-unsafe-type-assertion -- Push event data is typed by our server
   const data = event.data.json() as PushNotificationData;
 
   event.waitUntil(
@@ -66,8 +67,8 @@ self.addEventListener("push", (event) => {
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
 
-  const url =
-    (event.notification.data as { url?: string } | undefined)?.url ?? "/";
+  // oxlint-disable-next-line no-unsafe-type-assertion -- Notification data is set by our push handler
+  const url = (event.notification.data as { url?: string } | undefined)?.url ?? "/";
 
   event.waitUntil(
     self.clients.matchAll({ type: "window" }).then((clientList) => {

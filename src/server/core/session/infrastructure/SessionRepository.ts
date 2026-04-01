@@ -6,10 +6,7 @@ import { projects, sessions } from "../../../lib/db/schema";
 import type { InferEffect } from "../../../lib/effect/types";
 import { parseJsonl } from "../../claude-code/functions/parseJsonl";
 import { ApplicationContext } from "../../platform/services/ApplicationContext";
-import {
-  decodeProjectId,
-  validateProjectPath,
-} from "../../project/functions/id";
+import { decodeProjectId, validateProjectPath } from "../../project/functions/id";
 import { SyncService } from "../../sync/services/SyncService";
 import type { Session, SessionDetail } from "../../types";
 import { decodeSessionId, validateSessionId } from "../functions/id";
@@ -26,18 +23,14 @@ const LayerImpl = Effect.gen(function* () {
     Effect.gen(function* () {
       // Validate sessionId contains only safe characters
       if (!validateSessionId(sessionId)) {
-        return yield* Effect.fail(
-          new Error("Invalid session ID: contains unsafe characters"),
-        );
+        return yield* Effect.fail(new Error("Invalid session ID: contains unsafe characters"));
       }
 
       // Validate that the project path is within the Claude projects directory
       const projectPath = decodeProjectId(projectId);
       const { claudeProjectsDirPath } = yield* appContext.claudeCodePaths;
       if (!validateProjectPath(projectPath, claudeProjectsDirPath)) {
-        return yield* Effect.fail(
-          new Error("Invalid project path: outside allowed directory"),
-        );
+        return yield* Effect.fail(new Error("Invalid project path: outside allowed directory"));
       }
 
       const sessionPath = decodeSessionId(projectId, sessionId);
@@ -59,10 +52,7 @@ const LayerImpl = Effect.gen(function* () {
         const stat = yield* fs.stat(sessionPath);
 
         // Get session metadata
-        const meta = yield* sessionMetaService.getSessionMeta(
-          projectId,
-          sessionId,
-        );
+        const meta = yield* sessionMetaService.getSessionMeta(projectId, sessionId);
 
         const sessionDetail: SessionDetail = {
           id: sessionId,
@@ -95,9 +85,7 @@ const LayerImpl = Effect.gen(function* () {
       // Validate that the project path is within the Claude projects directory
       const { claudeProjectsDirPath } = yield* appContext.claudeCodePaths;
       if (!validateProjectPath(claudeProjectPath, claudeProjectsDirPath)) {
-        return yield* Effect.fail(
-          new Error("Invalid project path: outside allowed directory"),
-        );
+        return yield* Effect.fail(new Error("Invalid project path: outside allowed directory"));
       }
 
       // Ensure project is synced in DB
@@ -107,9 +95,7 @@ const LayerImpl = Effect.gen(function* () {
         .where(eq(projects.id, projectId))
         .get();
       if (!projectExists) {
-        yield* syncService
-          .syncProjectList(projectId)
-          .pipe(Effect.catchAll(() => Effect.void));
+        yield* syncService.syncProjectList(projectId).pipe(Effect.catchAll(() => Effect.void));
       }
 
       // Fetch all sessions for project ordered by lastModifiedAt DESC
@@ -138,10 +124,7 @@ const LayerImpl = Effect.gen(function* () {
       const sessionsResult: Session[] = yield* Effect.all(
         sessionsToReturn.map((row) =>
           Effect.gen(function* () {
-            const meta = yield* sessionMetaService.getSessionMeta(
-              projectId,
-              row.id,
-            );
+            const meta = yield* sessionMetaService.getSessionMeta(projectId, row.id);
             return {
               id: row.id,
               jsonlFilePath: row.filePath,

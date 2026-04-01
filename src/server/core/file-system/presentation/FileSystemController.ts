@@ -10,10 +10,7 @@ import { getFileContent } from "../functions/getFileContent";
 const LayerImpl = Effect.gen(function* () {
   const projectRepository = yield* ProjectRepository;
 
-  const getFileCompletionRoute = (options: {
-    projectId: string;
-    basePath: string;
-  }) =>
+  const getFileCompletionRoute = (options: { projectId: string; basePath: string }) =>
     Effect.gen(function* () {
       const { projectId, basePath } = options;
 
@@ -29,9 +26,7 @@ const LayerImpl = Effect.gen(function* () {
       const projectPath = project.meta.projectPath;
 
       try {
-        const result = yield* Effect.promise(() =>
-          getFileCompletion(projectPath, basePath),
-        );
+        const result = yield* Effect.promise(() => getFileCompletion(projectPath, basePath));
         return {
           response: result,
           status: 200,
@@ -61,11 +56,7 @@ const LayerImpl = Effect.gen(function* () {
           ? targetPath.slice(rootPath.length)
           : targetPath;
 
-        const result = await getDirectoryListing(
-          rootPath,
-          relativePath,
-          showHidden,
-        );
+        const result = await getDirectoryListing(rootPath, relativePath, showHidden);
 
         return {
           response: result,
@@ -80,10 +71,7 @@ const LayerImpl = Effect.gen(function* () {
       }
     });
 
-  const getFileContentRoute = (options: {
-    projectId: string;
-    filePath: string;
-  }) =>
+  const getFileContentRoute = (options: { projectId: string; filePath: string }) =>
     Effect.gen(function* () {
       const { projectId, filePath } = options;
 
@@ -94,8 +82,7 @@ const LayerImpl = Effect.gen(function* () {
           response: {
             success: false,
             error: "PROJECT_PATH_NOT_SET",
-            message:
-              "Project path is not configured. Cannot read files without a project root.",
+            message: "Project path is not configured. Cannot read files without a project root.",
             filePath,
           },
           status: 400,
@@ -104,9 +91,7 @@ const LayerImpl = Effect.gen(function* () {
 
       const projectPath = project.meta.projectPath;
 
-      const result = yield* Effect.promise(() =>
-        getFileContent(projectPath, filePath),
-      );
+      const result = yield* Effect.promise(() => getFileContent(projectPath, filePath));
 
       if (!result.success) {
         const statusCode = result.error === "NOT_FOUND" ? 404 : 400;

@@ -57,9 +57,7 @@ export const sessionDetailCapture = defineCapture({
       name: "session-tab-opened",
       setup: async (page) => {
         await ensureLeftPanelOpen(page);
-        const sessionsTabButtonMobile = page.locator(
-          '[data-testid="sessions-tab-button-mobile"]',
-        );
+        const sessionsTabButtonMobile = page.locator('[data-testid="sessions-tab-button-mobile"]');
         if (await sessionsTabButtonMobile.isVisible()) {
           await sessionsTabButtonMobile.click();
           await page.waitForTimeout(1000);
@@ -79,9 +77,7 @@ export const sessionDetailCapture = defineCapture({
 
         await ensureLeftPanelOpen(page);
         await waitForLoadingDone(page);
-        const settingsTabButtonMobile = page.locator(
-          '[data-testid="settings-tab-button-mobile"]',
-        );
+        const settingsTabButtonMobile = page.locator('[data-testid="settings-tab-button-mobile"]');
         if (await settingsTabButtonMobile.isVisible()) {
           await settingsTabButtonMobile.click();
           await waitForLoadingDone(page);
@@ -89,9 +85,7 @@ export const sessionDetailCapture = defineCapture({
           return;
         }
 
-        const settingsTabButton = page.locator(
-          '[data-testid="settings-tab-button"]',
-        );
+        const settingsTabButton = page.locator('[data-testid="settings-tab-button"]');
         if (await settingsTabButton.isVisible()) {
           await settingsTabButton.click();
           await waitForLoadingDone(page);
@@ -103,9 +97,7 @@ export const sessionDetailCapture = defineCapture({
     {
       name: "start-new-chat",
       setup: async (page) => {
-        const startNewChatButton = page.locator(
-          '[data-testid="start-new-chat-button"]',
-        );
+        const startNewChatButton = page.locator('[data-testid="start-new-chat-button"]');
         if (await startNewChatButton.isVisible()) {
           await startNewChatButton.click();
           await page.waitForTimeout(2000);
@@ -127,9 +119,7 @@ export const sessionDetailCapture = defineCapture({
     {
       name: "sidechain-task-modal",
       setup: async (page) => {
-        const sidechainTaskButton = page
-          .locator('[data-testid="task-modal-button"]')
-          .first();
+        const sidechainTaskButton = page.locator('[data-testid="task-modal-button"]').first();
         if (await sidechainTaskButton.isVisible()) {
           await sidechainTaskButton.click();
           await page.waitForSelector('[data-testid="task-modal"]');
@@ -145,9 +135,7 @@ export const sessionDetailCapture = defineCapture({
       name: "right-panel-git-tab-opened",
       setup: async (page) => {
         await ensureRightPanelOpen(page);
-        const gitTabButton = page.locator(
-          '[data-testid="right-panel-tab-git"]',
-        );
+        const gitTabButton = page.locator('[data-testid="right-panel-tab-git"]');
         if (await gitTabButton.isVisible()) {
           await gitTabButton.click();
           await page.waitForTimeout(1000);
@@ -159,17 +147,13 @@ export const sessionDetailCapture = defineCapture({
       name: "right-panel-file-diffs-opened",
       setup: async (page) => {
         await ensureRightPanelOpen(page);
-        const gitTabButton = page.locator(
-          '[data-testid="right-panel-tab-git"]',
-        );
+        const gitTabButton = page.locator('[data-testid="right-panel-tab-git"]');
         if (await gitTabButton.isVisible()) {
           await gitTabButton.click();
           await page.waitForTimeout(1000);
         }
 
-        const gitFileButton = page
-          .locator('[data-testid="git-file-button"]')
-          .first();
+        const gitFileButton = page.locator('[data-testid="git-file-button"]').first();
         if (await gitFileButton.isVisible()) {
           await gitFileButton.click();
           await page.waitForSelector('[data-testid="git-file-dialog"]', {
@@ -184,9 +168,7 @@ export const sessionDetailCapture = defineCapture({
       name: "right-panel-review-opened",
       setup: async (page) => {
         await ensureRightPanelOpen(page);
-        const reviewTabButton = page.locator(
-          '[data-testid="right-panel-tab-review"]',
-        );
+        const reviewTabButton = page.locator('[data-testid="right-panel-tab-review"]');
         if (await reviewTabButton.isVisible()) {
           await reviewTabButton.click();
           await page.waitForTimeout(1000);
@@ -198,9 +180,7 @@ export const sessionDetailCapture = defineCapture({
       name: "right-panel-browser-opened",
       setup: async (page) => {
         await ensureRightPanelOpen(page);
-        const browserTabButton = page.locator(
-          '[data-testid="right-panel-tab-browser"]',
-        );
+        const browserTabButton = page.locator('[data-testid="right-panel-tab-browser"]');
         if (await browserTabButton.isVisible()) {
           await browserTabButton.click();
           await page.waitForTimeout(1000);

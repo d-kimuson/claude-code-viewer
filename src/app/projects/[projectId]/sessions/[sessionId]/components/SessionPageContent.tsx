@@ -20,8 +20,8 @@ import { cn } from "@/lib/utils";
 import { useProject } from "../../../hooks/useProject";
 import { SessionPageMain } from "./SessionPageMain";
 import { MobileSidebar } from "./sessionSidebar/MobileSidebar";
-import { SessionSidebar } from "./sessionSidebar/SessionSidebar";
 import type { Tab } from "./sessionSidebar/schema";
+import { SessionSidebar } from "./sessionSidebar/SessionSidebar";
 
 /**
  * Outer shell: renders AppLayout immediately (no data fetching),
@@ -37,11 +37,7 @@ export const SessionPageContent: FC<{
   return (
     <AppLayout projectId={projectId} sessionId={sessionId}>
       <Suspense fallback={<Loading />}>
-        <SessionPageInner
-          projectId={projectId}
-          sessionId={sessionId}
-          tab={tab}
-        />
+        <SessionPageInner projectId={projectId} sessionId={sessionId} tab={tab} />
       </Suspense>
     </AppLayout>
   );
@@ -79,13 +75,10 @@ const SessionPageInner: FC<{
   const projectPath = project?.meta.projectPath ?? project?.claudeProjectPath;
   const projectName = project?.meta.projectName ?? "Untitled Project";
 
-  const title = projectName
-    ? `${projectName} - Claude Code Viewer`
-    : "Claude Code Viewer";
+  const title = projectName ? `${projectName} - Claude Code Viewer` : "Claude Code Viewer";
 
   // Right panel margin (when open, reserve space for fixed right panel)
-  const rightPanelMargin =
-    isRightPanelOpen && !isMobile ? `${rightPanelWidth}%` : "0";
+  const rightPanelMargin = isRightPanelOpen && !isMobile ? `${rightPanelWidth}%` : "0";
 
   const handleMobileSidebarOpen = useCallback(() => {
     setIsMobileSidebarOpen(true);
@@ -126,20 +119,12 @@ const SessionPageInner: FC<{
           "flex h-full overflow-hidden",
           isMobile && "transition-transform duration-300 ease-out",
         )}
-        style={
-          isMobile && isMobileSidebarOpen
-            ? { transform: "translateX(75vw)" }
-            : undefined
-        }
+        style={isMobile && isMobileSidebarOpen ? { transform: "translateX(75vw)" } : undefined}
       >
         {/* Left Sidebar - full height, higher priority than bottom panel */}
         <ResizableSidebar>
           <Suspense fallback={<Loading />}>
-            <SessionSidebar
-              currentSessionId={sessionId}
-              projectId={projectId}
-              initialTab={tab}
-            />
+            <SessionSidebar currentSessionId={sessionId} projectId={projectId} initialTab={tab} />
           </Suspense>
         </ResizableSidebar>
 
@@ -159,9 +144,7 @@ const SessionPageInner: FC<{
                 sessionId={sessionId}
                 projectPath={projectPath}
                 projectName={projectName}
-                onMobileMenuOpen={
-                  isMobile ? handleMobileSidebarOpen : undefined
-                }
+                onMobileMenuOpen={isMobile ? handleMobileSidebarOpen : undefined}
               />
             </Suspense>
           </div>
@@ -174,16 +157,11 @@ const SessionPageInner: FC<{
         <RightPanel
           projectId={projectId}
           sessionId={sessionId}
-          gitTabContent={
-            <GitTabContent projectId={projectId} sessionId={sessionId} />
-          }
+          gitTabContent={<GitTabContent projectId={projectId} sessionId={sessionId} />}
           filesToolsTabContent={
-            sessionId ? (
+            sessionId !== undefined && sessionId !== "" ? (
               <Suspense fallback={<Loading />}>
-                <FilesToolsTabContent
-                  projectId={projectId}
-                  sessionId={sessionId}
-                />
+                <FilesToolsTabContent projectId={projectId} sessionId={sessionId} />
               </Suspense>
             ) : (
               <EmptyFilesToolsTabContent />

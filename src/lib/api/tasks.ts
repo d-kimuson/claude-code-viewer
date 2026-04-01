@@ -1,14 +1,7 @@
-import type {
-  Task,
-  TaskCreate,
-  TaskUpdate,
-} from "../../server/core/tasks/schema";
+import type { Task, TaskCreate, TaskUpdate } from "../../server/core/tasks/schema";
 import { honoClient } from "./client";
 
-export const listTasks = async (
-  projectId: string,
-  sessionId?: string,
-): Promise<Task[]> => {
+export const listTasks = async (projectId: string, sessionId?: string): Promise<Task[]> => {
   const response = await honoClient.api.tasks.$get({
     query: { projectId, sessionId },
   });

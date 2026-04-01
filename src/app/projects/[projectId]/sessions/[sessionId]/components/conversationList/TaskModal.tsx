@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/react";
 import { useQuery } from "@tanstack/react-query";
 import { Eye, Loader2, MessageSquare, XCircle } from "lucide-react";
-import { type FC, useMemo, useState } from "react";
+import { type FC, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -28,12 +28,8 @@ type TaskModalProps = {
    * Used to directly fetch agent-${agentId}.jsonl file.
    */
   agentId: string | undefined;
-  getSidechainConversationByAgentId: (
-    agentId: string,
-  ) => SidechainConversation | undefined;
-  getSidechainConversationByPrompt: (
-    prompt: string,
-  ) => SidechainConversation | undefined;
+  getSidechainConversationByAgentId: (agentId: string) => SidechainConversation | undefined;
+  getSidechainConversationByPrompt: (prompt: string) => SidechainConversation | undefined;
   getSidechainConversations: (rootUuid: string) => SidechainConversation[];
   getToolResult: (toolUseId: string) => ToolResultContent | undefined;
 };
@@ -64,18 +60,13 @@ export const TaskModal: FC<TaskModalProps> = ({
 
   // Check local sidechain data (loaded from agent-*.jsonl files or embedded)
   const localConversation =
-    agentId !== undefined
-      ? getSidechainConversationByAgentId(agentId)
-      : undefined;
+    agentId !== undefined ? getSidechainConversationByAgentId(agentId) : undefined;
 
   // Fallback to prompt matching if agentId lookup failed
-  const legacyConversation =
-    localConversation ?? getSidechainConversationByPrompt(prompt);
+  const legacyConversation = localConversation ?? getSidechainConversationByPrompt(prompt);
 
   const localSidechainConversations =
-    legacyConversation !== undefined
-      ? getSidechainConversations(legacyConversation.uuid)
-      : [];
+    legacyConversation !== undefined ? getSidechainConversations(legacyConversation.uuid) : [];
   const hasLocalData = localSidechainConversations.length > 0;
 
   // Only fetch from API if:
@@ -112,16 +103,12 @@ export const TaskModal: FC<TaskModalProps> = ({
   // Determine loading/error states (only applicable when using API)
   const showLoading = shouldFetchFromApi && isLoading;
   const showError = shouldFetchFromApi && error !== null;
-  const showNoData =
-    !showLoading && !showError && conversations.length === 0 && isOpen;
-  const showConversations =
-    !showLoading && !showError && conversations.length > 0;
+  const showNoData = !showLoading && !showError && conversations.length === 0 && isOpen;
+  const showConversations = !showLoading && !showError && conversations.length > 0;
 
-  const firstConversation = useMemo(() => {
-    return conversations.find(
-      (c) => c.type === "user" || c.type === "assistant" || c.type === "system",
-    );
-  }, [conversations]);
+  const firstConversation = conversations.find(
+    (c) => c.type === "user" || c.type === "assistant" || c.type === "system",
+  );
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -188,7 +175,13 @@ export const TaskModal: FC<TaskModalProps> = ({
               <p className="text-sm text-destructive">
                 <Trans id="assistant.tool.error_loading_task" />
               </p>
-              <Button variant="outline" size="sm" onClick={() => refetch()}>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  void refetch();
+                }}
+              >
                 <Trans id="assistant.tool.retry" />
               </Button>
             </div>

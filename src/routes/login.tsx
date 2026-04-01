@@ -1,23 +1,13 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Eye, EyeOff, KeyRound, Loader2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { type ComponentProps, useEffect, useState } from "react";
 import { useAuth } from "../components/AuthProvider";
 import { Button } from "../components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "../components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 
-export const Route = createFileRoute("/login")({
-  component: LoginPage,
-});
-
-function LoginPage() {
+const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
@@ -28,29 +18,27 @@ function LoginPage() {
   useEffect(() => {
     // If auth is not enabled, redirect to projects
     if (!authEnabled) {
-      navigate({ to: "/projects" });
+      void navigate({ to: "/projects" });
     } else if (isAuthenticated) {
       // If already authenticated, redirect to projects
-      navigate({ to: "/projects" });
+      void navigate({ to: "/projects" });
     }
   }, [authEnabled, isAuthenticated, navigate]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit: NonNullable<ComponentProps<"form">["onSubmit"]> = (e) => {
     e.preventDefault();
     setError("");
     setIsSubmitting(true);
 
-    try {
-      await login(password);
-    } catch (error) {
-      setError(
-        error instanceof Error
-          ? error.message
-          : "Invalid password. Please try again.",
-      );
-    } finally {
-      setIsSubmitting(false);
-    }
+    void (async () => {
+      try {
+        await login(password);
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : "Invalid password. Please try again.");
+      } finally {
+        setIsSubmitting(false);
+      }
+    })();
   };
 
   return (
@@ -68,9 +56,7 @@ function LoginPage() {
             <KeyRound className="w-8 h-8 text-primary" />
           </div>
           <div className="space-y-2">
-            <CardTitle className="text-2xl font-bold tracking-tight">
-              Claude Code Viewer
-            </CardTitle>
+            <CardTitle className="text-2xl font-bold tracking-tight">Claude Code Viewer</CardTitle>
             <CardDescription className="text-muted-foreground">
               Enter your password to continue
             </CardDescription>
@@ -91,6 +77,7 @@ function LoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
                   className="pr-10 h-11 text-base"
+                  // oxlint-disable-next-line jsx-a11y/no-autofocus -- Login page primary input should be auto-focused
                   autoFocus
                   disabled={isSubmitting}
                 />
@@ -100,16 +87,12 @@ function LoginPage() {
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                   tabIndex={-1}
                 >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
             </div>
 
-            {error && (
+            {error !== "" && (
               <div className="text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-lg px-4 py-3 animate-in slide-in-from-top-1 duration-200">
                 {error}
               </div>
@@ -118,7 +101,7 @@ function LoginPage() {
             <Button
               type="submit"
               className="w-full h-11 text-base font-medium"
-              disabled={!password || isSubmitting}
+              disabled={password === "" || isSubmitting}
             >
               {isSubmitting ? (
                 <>
@@ -134,4 +117,8 @@ function LoginPage() {
       </Card>
     </div>
   );
-}
+};
+
+export const Route = createFileRoute("/login")({
+  component: LoginPage,
+});

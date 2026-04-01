@@ -43,8 +43,8 @@ export const schedulerJobSchema = z.object({
   schedule: scheduleSchema,
   message: messageConfigSchema,
   enabled: z.boolean(),
-  createdAt: z.string().datetime(),
-  lastRunAt: z.string().datetime().nullable(),
+  createdAt: z.iso.datetime(),
+  lastRunAt: z.iso.datetime().nullable(),
   lastRunStatus: jobStatusSchema.nullable(),
 });
 

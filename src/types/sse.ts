@@ -3,9 +3,11 @@ import type { PublicSessionProcess } from "./session-process";
 
 export type SSEEventDeclaration = {
   // biome-ignore lint/complexity/noBannedTypes: correct type
+  // oxlint-disable-next-line typescript/no-empty-object-type -- intentionally empty event payload
   connect: {};
 
   // biome-ignore lint/complexity/noBannedTypes: correct type
+  // oxlint-disable-next-line typescript/no-empty-object-type -- intentionally empty event payload
   heartbeat: {};
 
   sessionListChanged: {

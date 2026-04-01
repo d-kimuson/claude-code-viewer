@@ -1,42 +1,21 @@
-import {
-  Context,
-  Cron,
-  Data,
-  Duration,
-  Effect,
-  Fiber,
-  Layer,
-  Ref,
-  Schedule,
-} from "effect";
+import { Context, Cron, Data, Duration, Effect, Fiber, Layer, Ref, Schedule } from "effect";
 import { ulid } from "ulid";
 import type { InferEffect } from "../../../lib/effect/types";
 import { initializeConfig, readConfig, writeConfig } from "../config";
-import type {
-  NewSchedulerJob,
-  SchedulerConfig,
-  SchedulerJob,
-  UpdateSchedulerJob,
-} from "../schema";
+import type { NewSchedulerJob, SchedulerConfig, SchedulerJob, UpdateSchedulerJob } from "../schema";
 import { calculateReservedDelay, executeJob } from "./Job";
 
-class SchedulerJobNotFoundError extends Data.TaggedError(
-  "SchedulerJobNotFoundError",
-)<{
+class SchedulerJobNotFoundError extends Data.TaggedError("SchedulerJobNotFoundError")<{
   readonly jobId: string;
 }> {}
 
-class InvalidCronExpressionError extends Data.TaggedError(
-  "InvalidCronExpressionError",
-)<{
+class InvalidCronExpressionError extends Data.TaggedError("InvalidCronExpressionError")<{
   readonly expression: string;
   readonly cause: unknown;
 }> {}
 
 const LayerImpl = Effect.gen(function* () {
-  const fibersRef = yield* Ref.make<
-    Map<string, Fiber.RuntimeFiber<unknown, unknown>>
-  >(new Map());
+  const fibersRef = yield* Ref.make<Map<string, Fiber.RuntimeFiber<unknown, unknown>>>(new Map());
   const runningJobsRef = yield* Ref.make<Set<string>>(new Set());
 
   const startJob = (job: SchedulerJob) =>
@@ -71,9 +50,7 @@ const LayerImpl = Effect.gen(function* () {
           yield* Effect.repeat(runJobWithConcurrencyControl(job), cronSchedule);
         }).pipe(Effect.forkDaemon);
 
-        yield* Ref.update(fibersRef, (fibers) =>
-          new Map(fibers).set(job.id, fiber),
-        );
+        yield* Ref.update(fibersRef, (fibers) => new Map(fibers).set(job.id, fiber));
       } else if (job.schedule.type === "reserved") {
         // For reserved jobs, skip scheduling if already executed
         if (job.lastRunStatus !== null) {
@@ -83,24 +60,18 @@ const LayerImpl = Effect.gen(function* () {
         const delay = calculateReservedDelay(job, now);
         const delayDuration = Duration.millis(delay);
 
-        const fiber = yield* Effect.delay(
-          runJobWithConcurrencyControl(job),
-          delayDuration,
-        ).pipe(Effect.forkDaemon);
-
-        yield* Ref.update(fibersRef, (fibers) =>
-          new Map(fibers).set(job.id, fiber),
+        const fiber = yield* Effect.delay(runJobWithConcurrencyControl(job), delayDuration).pipe(
+          Effect.forkDaemon,
         );
+
+        yield* Ref.update(fibersRef, (fibers) => new Map(fibers).set(job.id, fiber));
       }
     });
 
   const runJobWithConcurrencyControl = (job: SchedulerJob) =>
     Effect.gen(function* () {
       // Check concurrency policy (only for cron jobs)
-      if (
-        job.schedule.type === "cron" &&
-        job.schedule.concurrencyPolicy === "skip"
-      ) {
+      if (job.schedule.type === "cron" && job.schedule.concurrencyPolicy === "skip") {
         const runningJobs = yield* Ref.get(runningJobsRef);
         if (runningJobs.has(job.id)) {
           return;
@@ -126,10 +97,7 @@ const LayerImpl = Effect.gen(function* () {
         // Delete reserved job after execution (skip fiber stop, just delete from config)
         yield* deleteJobFromConfig(job.id).pipe(
           Effect.catchAll((error) => {
-            console.error(
-              `[Scheduler] Failed to delete reserved job ${job.id}:`,
-              error,
-            );
+            console.error(`[Scheduler] Failed to delete reserved job ${job.id}:`, error);
             return Effect.void;
           }),
         );
@@ -140,10 +108,8 @@ const LayerImpl = Effect.gen(function* () {
       // For non-reserved jobs, update status
       const result = yield* executeJob(job).pipe(
         Effect.matchEffect({
-          onSuccess: () =>
-            updateJobStatus(job.id, "success", new Date().toISOString()),
-          onFailure: () =>
-            updateJobStatus(job.id, "failed", new Date().toISOString()),
+          onSuccess: () => updateJobStatus(job.id, "success", new Date().toISOString()),
+          onFailure: () => updateJobStatus(job.id, "failed", new Date().toISOString()),
         }),
       );
 
@@ -156,11 +122,7 @@ const LayerImpl = Effect.gen(function* () {
       return result;
     });
 
-  const updateJobStatus = (
-    jobId: string,
-    status: "success" | "failed",
-    runAt: string,
-  ) =>
+  const updateJobStatus = (jobId: string, status: "success" | "failed", runAt: string) =>
     Effect.gen(function* () {
       const config = yield* readConfig;
       const job = config.jobs.find((j) => j.id === jobId);
@@ -222,10 +184,8 @@ const LayerImpl = Effect.gen(function* () {
     Effect.gen(function* () {
       const config = yield* readConfig.pipe(
         Effect.catchTags({
-          ConfigFileNotFoundError: () =>
-            initializeConfig.pipe(Effect.map(() => ({ jobs: [] }))),
-          ConfigParseError: () =>
-            initializeConfig.pipe(Effect.map(() => ({ jobs: [] }))),
+          ConfigFileNotFoundError: () => initializeConfig.pipe(Effect.map(() => ({ jobs: [] }))),
+          ConfigParseError: () => initializeConfig.pipe(Effect.map(() => ({ jobs: [] }))),
         }),
       );
       return config.jobs;
@@ -235,10 +195,8 @@ const LayerImpl = Effect.gen(function* () {
     Effect.gen(function* () {
       const config = yield* readConfig.pipe(
         Effect.catchTags({
-          ConfigFileNotFoundError: () =>
-            initializeConfig.pipe(Effect.map(() => ({ jobs: [] }))),
-          ConfigParseError: () =>
-            initializeConfig.pipe(Effect.map(() => ({ jobs: [] }))),
+          ConfigFileNotFoundError: () => initializeConfig.pipe(Effect.map(() => ({ jobs: [] }))),
+          ConfigParseError: () => initializeConfig.pipe(Effect.map(() => ({ jobs: [] }))),
         }),
       );
       const job: SchedulerJob = {
@@ -266,10 +224,8 @@ const LayerImpl = Effect.gen(function* () {
     Effect.gen(function* () {
       const config = yield* readConfig.pipe(
         Effect.catchTags({
-          ConfigFileNotFoundError: () =>
-            initializeConfig.pipe(Effect.map(() => ({ jobs: [] }))),
-          ConfigParseError: () =>
-            initializeConfig.pipe(Effect.map(() => ({ jobs: [] }))),
+          ConfigFileNotFoundError: () => initializeConfig.pipe(Effect.map(() => ({ jobs: [] }))),
+          ConfigParseError: () => initializeConfig.pipe(Effect.map(() => ({ jobs: [] }))),
         }),
       );
       const job = config.jobs.find((j) => j.id === jobId);
@@ -302,10 +258,8 @@ const LayerImpl = Effect.gen(function* () {
     Effect.gen(function* () {
       const config = yield* readConfig.pipe(
         Effect.catchTags({
-          ConfigFileNotFoundError: () =>
-            initializeConfig.pipe(Effect.map(() => ({ jobs: [] }))),
-          ConfigParseError: () =>
-            initializeConfig.pipe(Effect.map(() => ({ jobs: [] }))),
+          ConfigFileNotFoundError: () => initializeConfig.pipe(Effect.map(() => ({ jobs: [] }))),
+          ConfigParseError: () => initializeConfig.pipe(Effect.map(() => ({ jobs: [] }))),
         }),
       );
       const job = config.jobs.find((j) => j.id === jobId);
@@ -325,10 +279,8 @@ const LayerImpl = Effect.gen(function* () {
     Effect.gen(function* () {
       const config = yield* readConfig.pipe(
         Effect.catchTags({
-          ConfigFileNotFoundError: () =>
-            initializeConfig.pipe(Effect.map(() => ({ jobs: [] }))),
-          ConfigParseError: () =>
-            initializeConfig.pipe(Effect.map(() => ({ jobs: [] }))),
+          ConfigFileNotFoundError: () => initializeConfig.pipe(Effect.map(() => ({ jobs: [] }))),
+          ConfigParseError: () => initializeConfig.pipe(Effect.map(() => ({ jobs: [] }))),
         }),
       );
       const job = config.jobs.find((j) => j.id === jobId);

@@ -5,9 +5,7 @@ import type { ExtendedConversation } from "../../types";
  * Extracts searchable text from a conversation entry.
  * Returns the user prompt or assistant response text.
  */
-export const extractSearchableText = (
-  conversation: ExtendedConversation,
-): string | null => {
+export const extractSearchableText = (conversation: ExtendedConversation): string | null => {
   if (conversation.type === "x-error") {
     return null;
   }
@@ -31,9 +29,7 @@ export const extractSearchableText = (
   return null;
 };
 
-const extractUserText = (
-  entry: Extract<Conversation, { type: "user" }>,
-): string => {
+const extractUserText = (entry: Extract<Conversation, { type: "user" }>): string => {
   const content = entry.message.content;
 
   if (typeof content === "string") {
@@ -50,9 +46,7 @@ const extractUserText = (
     .join(" ");
 };
 
-const extractAssistantText = (
-  entry: Extract<Conversation, { type: "assistant" }>,
-): string => {
+const extractAssistantText = (entry: Extract<Conversation, { type: "assistant" }>): string => {
   return entry.message.content
     .filter((item): item is { type: "text"; text: string } => {
       return item.type === "text" && "text" in item;

@@ -1,14 +1,13 @@
-import type { FC } from "react";
-import { useState } from "react";
+import { type FC, useState } from "react";
 import { useRightPanelActions } from "@/hooks/useRightPanel";
 
-interface MarkdownLinkProps {
+type MarkdownLinkProps = {
   href?: string;
   children: React.ReactNode;
-}
+};
 
-function isValidUrl(url: string | undefined): boolean {
-  if (!url) {
+const isValidUrl = (url: string | undefined): boolean => {
+  if (url === undefined || url === "") {
     return false;
   }
 
@@ -18,7 +17,7 @@ function isValidUrl(url: string | undefined): boolean {
   } catch {
     return false;
   }
-}
+};
 
 export const MarkdownLink: FC<MarkdownLinkProps> = ({ href, children }) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -29,7 +28,7 @@ export const MarkdownLink: FC<MarkdownLinkProps> = ({ href, children }) => {
   const handlePreviewClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (href) {
+    if (href !== undefined && href !== "") {
       openBrowser(href);
     }
   };

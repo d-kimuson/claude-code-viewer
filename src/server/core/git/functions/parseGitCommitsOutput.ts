@@ -14,7 +14,11 @@ export const parseGitCommitsOutput = (output: string) => {
     if (parts.length < 4) continue;
 
     const [sha, message, author, date] = parts;
-    if (!sha || !message || !author || !date) continue;
+    if (sha === undefined || message === undefined || author === undefined || date === undefined)
+      continue;
+    if (sha.trim() === "" || message.trim() === "" || author.trim() === "" || date.trim() === "") {
+      continue;
+    }
 
     commits.push({
       sha: sha.trim(),

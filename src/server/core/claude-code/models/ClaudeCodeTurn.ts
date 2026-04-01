@@ -68,9 +68,7 @@ export type FailedClaudeCodeTurnState = ClaudeCodeTurnStateBase & {
   error: unknown;
 };
 
-export type AliveClaudeCodeTurnState =
-  | PendingClaudeCodeTurnState
-  | RunningClaudeCodeTurnState;
+export type AliveClaudeCodeTurnState = PendingClaudeCodeTurnState | RunningClaudeCodeTurnState;
 
 export type ClaudeCodeTurnState =
   | AliveClaudeCodeTurnState

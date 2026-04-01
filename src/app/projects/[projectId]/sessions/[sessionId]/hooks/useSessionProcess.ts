@@ -7,9 +7,7 @@ export const useSessionProcess = () => {
 
   const getSessionProcess = useCallback(
     (sessionId: string) => {
-      const targetProcess = sessionProcesses.find(
-        (process) => process.sessionId === sessionId,
-      );
+      const targetProcess = sessionProcesses.find((process) => process.sessionId === sessionId);
 
       return targetProcess;
     },

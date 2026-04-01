@@ -18,7 +18,7 @@ export const adaptInternalEventToSSE = (
   const closeConnection = () => {
     connectionResolve?.();
     abortController.abort();
-    cleanUp?.();
+    void cleanUp?.();
   };
 
   rawStream.onAbort(() => {

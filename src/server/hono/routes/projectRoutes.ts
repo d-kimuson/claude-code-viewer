@@ -29,10 +29,7 @@ const projectRoutes = Effect.gen(function* () {
        * Projects
        */
       .get("/", async (c) => {
-        const response = await effectToResponse(
-          c,
-          projectController.getProjects(),
-        );
+        const response = await effectToResponse(c, projectController.getProjects());
         return response;
       })
       .get(
@@ -91,9 +88,7 @@ const projectRoutes = Effect.gen(function* () {
         const sessionId = c.req.param("sessionId");
         const response = await effectToResponse(
           c,
-          sessionController
-            .getSession({ projectId, sessionId })
-            .pipe(Effect.provide(runtime)),
+          sessionController.getSession({ projectId, sessionId }).pipe(Effect.provide(runtime)),
         );
         return response;
       })
@@ -113,9 +108,7 @@ const projectRoutes = Effect.gen(function* () {
         const sessionId = c.req.param("sessionId");
         const response = await effectToResponse(
           c,
-          sessionController
-            .deleteSession({ projectId, sessionId })
-            .pipe(Effect.provide(runtime)),
+          sessionController.deleteSession({ projectId, sessionId }).pipe(Effect.provide(runtime)),
         );
         return response;
       })
@@ -245,23 +238,19 @@ const projectRoutes = Effect.gen(function* () {
           return response;
         },
       )
-      .post(
-        "/:projectId/git/commit",
-        zValidator("json", CommitRequestSchema),
-        async (c) => {
-          const projectId = c.req.param("projectId");
-          const response = await effectToResponse(
-            c,
-            gitController
-              .commitFiles({
-                projectId,
-                ...c.req.valid("json"),
-              })
-              .pipe(Effect.provide(runtime)),
-          );
-          return response;
-        },
-      )
+      .post("/:projectId/git/commit", zValidator("json", CommitRequestSchema), async (c) => {
+        const projectId = c.req.param("projectId");
+        const response = await effectToResponse(
+          c,
+          gitController
+            .commitFiles({
+              projectId,
+              ...c.req.valid("json"),
+            })
+            .pipe(Effect.provide(runtime)),
+        );
+        return response;
+      })
       .post("/:projectId/git/push", async (c) => {
         const projectId = c.req.param("projectId");
         const response = await effectToResponse(

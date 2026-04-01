@@ -15,6 +15,18 @@ const sessionSearchSchema = z.object({
   rightPanelTab: rightPanelTabSchema.optional().default("explorer"),
 });
 
+const RouteComponent = () => {
+  const params = Route.useParams();
+  const search = Route.useSearch();
+  const { sessionId, tab } = search;
+
+  return (
+    <ProtectedRoute>
+      <SessionPageContent projectId={params.projectId} sessionId={sessionId} tab={tab} />
+    </ProtectedRoute>
+  );
+};
+
 export const Route = createFileRoute("/projects/$projectId/session")({
   validateSearch: sessionSearchSchema,
   component: RouteComponent,
@@ -25,19 +37,3 @@ export const Route = createFileRoute("/projects/$projectId/session")({
     />
   ),
 });
-
-function RouteComponent() {
-  const params = Route.useParams();
-  const search = Route.useSearch();
-  const { sessionId, tab } = search;
-
-  return (
-    <ProtectedRoute>
-      <SessionPageContent
-        projectId={params.projectId}
-        sessionId={sessionId}
-        tab={tab}
-      />
-    </ProtectedRoute>
-  );
-}

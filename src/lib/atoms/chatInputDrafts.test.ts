@@ -29,11 +29,7 @@ describe("chatInputDrafts", () => {
       "project-a:new-session": "existing",
     };
 
-    const result = updateChatInputDraftStore(
-      store,
-      "project-b:session-id:1234",
-      "draft text",
-    );
+    const result = updateChatInputDraftStore(store, "project-b:session-id:1234", "draft text");
 
     expect(result).toEqual({
       "project-a:new-session": "existing",
@@ -50,11 +46,7 @@ describe("chatInputDrafts", () => {
       "project-b:session-id:1234": "draft text",
     };
 
-    const result = updateChatInputDraftStore(
-      store,
-      "project-b:session-id:1234",
-      "",
-    );
+    const result = updateChatInputDraftStore(store, "project-b:session-id:1234", "");
 
     expect(result).toEqual({
       "project-a:new-session": "existing",

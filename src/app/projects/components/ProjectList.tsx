@@ -3,13 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { FolderIcon } from "lucide-react";
 import type { FC } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatLocaleDate } from "../../../lib/date/formatLocaleDate";
 import { useConfig } from "../../hooks/useConfig";
 import { useProjects } from "../hooks/useProjects";
@@ -45,7 +39,7 @@ export const ProjectList: FC = () => {
                 {project.meta.projectName ?? project.claudeProjectPath}
               </span>
             </CardTitle>
-            {project.meta.projectPath ? (
+            {project.meta.projectPath !== undefined && project.meta.projectPath !== "" ? (
               <CardDescription>{project.meta.projectPath}</CardDescription>
             ) : null}
           </CardHeader>
@@ -65,10 +59,7 @@ export const ProjectList: FC = () => {
           </CardContent>
           <CardContent className="pt-0">
             <Button asChild className="w-full">
-              <Link
-                to={"/projects/$projectId/session"}
-                params={{ projectId: project.id }}
-              >
+              <Link to={"/projects/$projectId/session"} params={{ projectId: project.id }}>
                 <Trans id="project_list.view_conversations" />
               </Link>
             </Button>

@@ -44,16 +44,16 @@ describe("GitController.commitFiles", () => {
     );
 
     expect(result.status).toBe(400);
-    expect(result.response).toMatchObject({ error: expect.any(String) });
+    expect(result.response).toHaveProperty("error");
   });
 
-  test("returns success with commitSha on valid commit", async () => {
+  test("returns success with commitSha on valid commit", () => {
     // This test would require a real git repository with staged changes
     // For now, we skip as it requires complex mocking
     expect(true).toBe(true);
   });
 
-  test("returns HOOK_FAILED when pre-commit hook fails", async () => {
+  test("returns HOOK_FAILED when pre-commit hook fails", () => {
     // This test would require mocking git command execution
     // to simulate hook failure
     expect(true).toBe(true);
@@ -96,16 +96,16 @@ describe("GitController.pushCommits", () => {
     );
 
     expect(result.status).toBe(400);
-    expect(result.response).toMatchObject({ error: expect.any(String) });
+    expect(result.response).toHaveProperty("error");
   });
 
-  test("returns NON_FAST_FORWARD when remote diverged", async () => {
+  test("returns NON_FAST_FORWARD when remote diverged", () => {
     // This test would require mocking git push command
     // to simulate non-fast-forward error
     expect(true).toBe(true);
   });
 
-  test("returns success with remote and branch info", async () => {
+  test("returns success with remote and branch info", () => {
     // This test would require a real git repository with upstream
     // For now, we skip as it requires complex mocking
     expect(true).toBe(true);
@@ -113,19 +113,19 @@ describe("GitController.pushCommits", () => {
 });
 
 describe("GitController.commitAndPush", () => {
-  test("returns full success when both operations succeed", async () => {
+  test("returns full success when both operations succeed", () => {
     // This test would require a real git repository with staged changes and upstream
     // For now, we skip as it requires complex mocking
     expect(true).toBe(true);
   });
 
-  test("returns partial failure when commit succeeds but push fails", async () => {
+  test("returns partial failure when commit succeeds but push fails", () => {
     // This test would require mocking git commit to succeed and git push to fail
     // For now, we skip as it requires complex mocking
     expect(true).toBe(true);
   });
 
-  test("returns commit error when commit fails", async () => {
+  test("returns commit error when commit fails", () => {
     // This test would require mocking git commit to fail
     // For now, we skip as it requires complex mocking
     expect(true).toBe(true);

@@ -7,14 +7,10 @@ import * as ClaudeCodeVersion from "./ClaudeCodeVersion";
 
 type AgentSdkQuery = typeof agentSdk.query;
 type AgentSdkPrompt = Parameters<AgentSdkQuery>[0]["prompt"];
-type AgentSdkQueryOptions = NonNullable<
-  Parameters<AgentSdkQuery>[0]["options"]
->;
+type AgentSdkQueryOptions = NonNullable<Parameters<AgentSdkQuery>[0]["options"]>;
 
 const npxCacheRegExp = /_npx[/\\].*node_modules[\\/]\.bin/;
-const localNodeModulesBinRegExp = new RegExp(
-  `${process.cwd()}/node_modules/.bin`,
-);
+const localNodeModulesBinRegExp = new RegExp(`${process.cwd()}/node_modules/.bin`);
 
 export const claudeCodePathPriority = (path: string): number => {
   if (npxCacheRegExp.test(path)) {
@@ -28,9 +24,7 @@ export const claudeCodePathPriority = (path: string): number => {
   return 2;
 };
 
-class ClaudeCodePathNotFoundError extends Data.TaggedError(
-  "ClaudeCodePathNotFoundError",
-)<{
+class ClaudeCodePathNotFoundError extends Data.TaggedError("ClaudeCodePathNotFoundError")<{
   message: string;
 }> {}
 
@@ -45,8 +39,7 @@ const resolveClaudeCodePath = Effect.gen(function* () {
   const ccvOptionsService = yield* CcvOptionsService;
 
   // Environment variable (highest priority)
-  const specifiedExecutablePath =
-    yield* ccvOptionsService.getCcvOptions("executable");
+  const specifiedExecutablePath = yield* ccvOptionsService.getCcvOptions("executable");
   if (specifiedExecutablePath !== undefined) {
     return path.resolve(specifiedExecutablePath);
   }
@@ -167,14 +160,11 @@ export const getAvailableFeatures = (
       : false,
 });
 
-export const query = (
-  prompt: AgentSdkPrompt,
-  options: AgentSdkQueryOptions,
-) => {
+export const query = (prompt: AgentSdkPrompt, options: AgentSdkQueryOptions) => {
   const {
     canUseTool,
     permissionMode,
-    hooks,
+    hooks: _hooks,
     systemPrompt,
     settingSources,
     ...baseOptions
@@ -189,10 +179,7 @@ export const query = (
       systemPrompt,
       settingSources,
       pathToClaudeCodeExecutable: claudeCodeExecutablePath,
-      disallowedTools: [
-        "AskUserQuestion",
-        ...(baseOptions.disallowedTools ?? []),
-      ], // Cannot answer from web interface instead of CLI
+      disallowedTools: ["AskUserQuestion", ...(baseOptions.disallowedTools ?? [])], // Cannot answer from web interface instead of CLI
       ...(availableFeatures.canUseTool
         ? { canUseTool, permissionMode }
         : {

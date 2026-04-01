@@ -14,12 +14,10 @@ export const DirectoryPicker: FC<DirectoryPickerProps> = ({ onPathChange }) => {
   const [currentPath, setCurrentPath] = useState<string | undefined>(undefined);
   const [showHidden, setShowHidden] = useState(false);
 
-  const { data, isLoading } = useQuery(
-    directoryListingQuery(currentPath, showHidden),
-  );
+  const { data, isLoading } = useQuery(directoryListingQuery(currentPath, showHidden));
 
   useEffect(() => {
-    if (data?.currentPath) {
+    if (data?.currentPath !== undefined && data.currentPath !== "") {
       onPathChange(data.currentPath);
     }
   }, [data?.currentPath, onPathChange]);
@@ -39,7 +37,7 @@ export const DirectoryPicker: FC<DirectoryPickerProps> = ({ onPathChange }) => {
       <div className="p-3 border-b bg-muted/50">
         <p className="text-sm font-medium">
           <Trans id="directory_picker.current" />{" "}
-          <span className="font-mono">{data?.currentPath || "~"}</span>
+          <span className="font-mono">{data?.currentPath ?? "~"}</span>
         </p>
       </div>
       <div className="p-3 border-b flex items-center gap-2">
@@ -61,12 +59,7 @@ export const DirectoryPicker: FC<DirectoryPickerProps> = ({ onPathChange }) => {
           <div className="divide-y">
             {data.entries
               .filter((entry) => entry.type === "directory")
-              .filter(
-                (entry) =>
-                  showHidden ||
-                  entry.name === ".." ||
-                  !entry.name.startsWith("."),
-              )
+              .filter((entry) => showHidden || entry.name === ".." || !entry.name.startsWith("."))
               .map((entry) => (
                 <button
                   key={entry.path}

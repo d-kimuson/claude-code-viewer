@@ -26,7 +26,7 @@ const tasksRoutes = Effect.gen(function* () {
       async (c) => {
         const { projectId, sessionId } = c.req.valid("query");
         const projectPath = decodeProjectId(projectId);
-        const status: 200 = 200;
+        const status = 200 as const;
 
         const response = await effectToResponse(
           c,
@@ -55,7 +55,7 @@ const tasksRoutes = Effect.gen(function* () {
         const { projectId, sessionId } = c.req.valid("query");
         const body = c.req.valid("json");
         const projectPath = decodeProjectId(projectId);
-        const status: 200 = 200;
+        const status = 200 as const;
 
         const response = await effectToResponse(
           c,
@@ -85,19 +85,17 @@ const tasksRoutes = Effect.gen(function* () {
         const { projectId, sessionId } = c.req.valid("query");
         const body = c.req.valid("json");
         const projectPath = decodeProjectId(projectId);
-        const status: 200 = 200;
+        const status = 200 as const;
 
         const response = await effectToResponse(
           c,
-          tasksController
-            .updateTask(projectPath, { ...body, taskId }, sessionId)
-            .pipe(
-              Effect.map((task) => ({
-                status,
-                response: task,
-              })),
-              Effect.provide(runtime),
-            ),
+          tasksController.updateTask(projectPath, { ...body, taskId }, sessionId).pipe(
+            Effect.map((task) => ({
+              status,
+              response: task,
+            })),
+            Effect.provide(runtime),
+          ),
         );
         return response;
       },

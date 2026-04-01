@@ -1,12 +1,8 @@
 import { Trans } from "@lingui/react";
 import { PanelBottomCloseIcon, RocketIcon, RotateCcwIcon } from "lucide-react";
-import type { FC } from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { type FC, useCallback, useEffect, useRef, useState } from "react";
 import { useDragResize } from "@/hooks/useDragResize";
-import {
-  useBottomPanelActions,
-  useBottomPanelState,
-} from "@/hooks/useLayoutPanels";
+import { useBottomPanelActions, useBottomPanelState } from "@/hooks/useLayoutPanels";
 import { TerminalPanel } from "./TerminalPanel";
 
 type BottomPanelProps = {
@@ -15,8 +11,7 @@ type BottomPanelProps = {
 
 export const BottomPanel: FC<BottomPanelProps> = ({ cwd }) => {
   const { isBottomPanelOpen, bottomPanelHeight } = useBottomPanelState();
-  const { setIsBottomPanelOpen, setBottomPanelHeight } =
-    useBottomPanelActions();
+  const { setIsBottomPanelOpen, setBottomPanelHeight } = useBottomPanelActions();
 
   const [terminalResetToken, setTerminalResetToken] = useState(0);
   const collapseTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -39,8 +34,7 @@ export const BottomPanel: FC<BottomPanelProps> = ({ cwd }) => {
 
   const handleResize = useCallback(
     (event: MouseEvent) => {
-      const newHeight =
-        ((window.innerHeight - event.clientY) / window.innerHeight) * 100;
+      const newHeight = ((window.innerHeight - event.clientY) / window.innerHeight) * 100;
       setBottomPanelHeight(newHeight);
     },
     [setBottomPanelHeight],
@@ -79,6 +73,7 @@ export const BottomPanel: FC<BottomPanelProps> = ({ cwd }) => {
       }}
     >
       {/* Resize handle */}
+      {/* oxlint-disable-next-line jsx-a11y/no-static-element-interactions -- Resize handle is mouse-only UI */}
       <div
         className="h-1 cursor-ns-resize hover:bg-primary/40 active:bg-primary transition-colors flex-shrink-0"
         style={{ pointerEvents: "auto" }}

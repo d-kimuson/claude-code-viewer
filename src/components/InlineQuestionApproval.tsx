@@ -1,10 +1,4 @@
-import {
-  AlertCircle,
-  ChevronLeft,
-  ChevronRight,
-  MessageSquareText,
-  Send,
-} from "lucide-react";
+import { AlertCircle, ChevronLeft, ChevronRight, MessageSquareText, Send } from "lucide-react";
 import { type FC, useRef, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -12,24 +6,17 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
-import type {
-  Question,
-  QuestionRequest,
-  QuestionResponse,
-} from "@/types/question";
+import type { Question, QuestionRequest, QuestionResponse } from "@/types/question";
 
-interface InlineQuestionApprovalProps {
+type InlineQuestionApprovalProps = {
   questionRequest: QuestionRequest | null;
   onResponse: (response: QuestionResponse) => Promise<void>;
-}
+};
 
 const CUSTOM_ANSWER_KEY = "__other__";
 
 /** Dot-style step indicator for multi-question flows */
-const StepIndicator: FC<{ current: number; total: number }> = ({
-  current,
-  total,
-}) => (
+const StepIndicator: FC<{ current: number; total: number }> = ({ current, total }) => (
   <div className="flex items-center gap-1.5">
     {Array.from({ length: total }, (_, i) => (
       <button
@@ -59,9 +46,7 @@ export const InlineQuestionApproval: FC<InlineQuestionApprovalProps> = ({
   const [annotations, setAnnotations] = useState<
     Record<string, { notes?: string; preview?: string }>
   >({});
-  const [selectedOptions, setSelectedOptions] = useState<
-    Record<string, Set<string>>
-  >({});
+  const [selectedOptions, setSelectedOptions] = useState<Record<string, Set<string>>>({});
   const [customTexts, setCustomTexts] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -93,10 +78,8 @@ export const InlineQuestionApproval: FC<InlineQuestionApprovalProps> = ({
     setSelectedOptions((prev) => ({ ...prev, [key]: newSelected }));
 
     // Find preview for selected option
-    const selectedOption = question.options.find(
-      (o) => o.label === optionLabel,
-    );
-    if (selectedOption?.preview) {
+    const selectedOption = question.options.find((o) => o.label === optionLabel);
+    if (selectedOption?.preview !== undefined && selectedOption.preview !== "") {
       setAnnotations((prev) => ({
         ...prev,
         [key]: { ...prev[key], preview: selectedOption.preview },
@@ -218,12 +201,11 @@ export const InlineQuestionApproval: FC<InlineQuestionApprovalProps> = ({
   const canProceed = isCurrentStepValid();
   const isFirstStep = currentStep === 0;
 
-  const isOptionSelected = (optionLabel: string): boolean =>
-    currentSelected.has(optionLabel);
+  const isOptionSelected = (optionLabel: string): boolean => currentSelected.has(optionLabel);
 
   // Find the currently focused/selected option's preview
   const selectedPreview = currentQuestion.options.find(
-    (o) => currentSelected.has(o.label) && o.preview,
+    (o) => currentSelected.has(o.label) && o.preview !== undefined && o.preview !== "",
   )?.preview;
 
   const otherSelected = isOptionSelected(CUSTOM_ANSWER_KEY);
@@ -238,24 +220,17 @@ export const InlineQuestionApproval: FC<InlineQuestionApprovalProps> = ({
               <div className="flex items-center justify-center size-6 rounded-md bg-primary/10 text-primary">
                 <MessageSquareText className="size-3.5" />
               </div>
-              <Badge
-                variant="outline"
-                className="text-[11px] font-medium tracking-wide uppercase"
-              >
+              <Badge variant="outline" className="text-[11px] font-medium tracking-wide uppercase">
                 {currentQuestion.header}
               </Badge>
             </div>
-            {totalSteps > 1 && (
-              <StepIndicator current={currentStep} total={totalSteps} />
-            )}
+            {totalSteps > 1 && <StepIndicator current={currentStep} total={totalSteps} />}
           </div>
         </div>
 
         <div className="p-4 space-y-3.5">
           {/* Question text */}
-          <p className="text-sm font-medium leading-relaxed">
-            {currentQuestion.question}
-          </p>
+          <p className="text-sm font-medium leading-relaxed">{currentQuestion.question}</p>
 
           {/* Options list */}
           <div className="space-y-1.5">
@@ -280,18 +255,12 @@ export const InlineQuestionApproval: FC<InlineQuestionApprovalProps> = ({
                 >
                   <div className="flex items-start gap-3">
                     {currentQuestion.multiSelect ? (
-                      <Checkbox
-                        checked={selected}
-                        className="mt-0.5"
-                        tabIndex={-1}
-                      />
+                      <Checkbox checked={selected} className="mt-0.5" tabIndex={-1} />
                     ) : (
                       <div
                         className={cn(
                           "mt-0.5 size-4 shrink-0 rounded-full border-2 transition-all duration-200 flex items-center justify-center",
-                          selected
-                            ? "border-primary bg-primary"
-                            : "border-muted-foreground/30",
+                          selected ? "border-primary bg-primary" : "border-muted-foreground/30",
                         )}
                       >
                         {selected && (
@@ -334,18 +303,12 @@ export const InlineQuestionApproval: FC<InlineQuestionApprovalProps> = ({
               >
                 <div className="flex items-start gap-3">
                   {currentQuestion.multiSelect ? (
-                    <Checkbox
-                      checked={otherSelected}
-                      className="mt-0.5"
-                      tabIndex={-1}
-                    />
+                    <Checkbox checked={otherSelected} className="mt-0.5" tabIndex={-1} />
                   ) : (
                     <div
                       className={cn(
                         "mt-0.5 size-4 shrink-0 rounded-full border-2 transition-all duration-200 flex items-center justify-center",
-                        otherSelected
-                          ? "border-primary bg-primary"
-                          : "border-muted-foreground/30",
+                        otherSelected ? "border-primary bg-primary" : "border-muted-foreground/30",
                       )}
                     >
                       {otherSelected && (
@@ -353,9 +316,7 @@ export const InlineQuestionApproval: FC<InlineQuestionApprovalProps> = ({
                       )}
                     </div>
                   )}
-                  <Label className="text-sm font-medium cursor-pointer leading-tight">
-                    Other
-                  </Label>
+                  <Label className="text-sm font-medium cursor-pointer leading-tight">Other</Label>
                 </div>
               </button>
 
@@ -363,9 +324,7 @@ export const InlineQuestionApproval: FC<InlineQuestionApprovalProps> = ({
               <div
                 className={cn(
                   "grid transition-all duration-250 ease-out",
-                  otherSelected
-                    ? "grid-rows-[1fr] opacity-100"
-                    : "grid-rows-[0fr] opacity-0",
+                  otherSelected ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0",
                 )}
               >
                 <div className="overflow-hidden">
@@ -374,9 +333,7 @@ export const InlineQuestionApproval: FC<InlineQuestionApprovalProps> = ({
                       ref={textareaRef}
                       placeholder="Type your response here..."
                       value={currentCustomText}
-                      onChange={(e) =>
-                        handleCustomTextChange(currentQuestion, e.target.value)
-                      }
+                      onChange={(e) => handleCustomTextChange(currentQuestion, e.target.value)}
                       className="min-h-[68px] text-sm resize-none"
                       rows={2}
                     />
@@ -387,7 +344,7 @@ export const InlineQuestionApproval: FC<InlineQuestionApprovalProps> = ({
           </div>
 
           {/* Preview area */}
-          {selectedPreview && (
+          {selectedPreview !== undefined && selectedPreview !== "" && (
             <div className="rounded-lg border border-border/60 bg-muted/30 overflow-hidden animate-in fade-in duration-200">
               <div className="px-3 py-1.5 border-b border-border/40 bg-muted/40">
                 <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
@@ -427,7 +384,7 @@ export const InlineQuestionApproval: FC<InlineQuestionApprovalProps> = ({
               {isLastStep ? (
                 <Button
                   size="sm"
-                  onClick={handleSubmit}
+                  onClick={() => void handleSubmit()}
                   disabled={!canProceed || isSubmitting}
                   className="gap-1.5 min-w-[5.5rem]"
                 >

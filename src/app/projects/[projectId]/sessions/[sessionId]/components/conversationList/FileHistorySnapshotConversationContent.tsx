@@ -1,10 +1,6 @@
 import { ChevronDown } from "lucide-react";
 import type { FC } from "react";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import type { FileHistorySnapshotEntry } from "@/lib/conversation-schema/entry/FileHIstorySnapshotEntrySchema";
 import { formatLocaleDate } from "../../../../../../../lib/date/formatLocaleDate";
 import { useConfig } from "../../../../../../hooks/useConfig";
@@ -12,9 +8,7 @@ import { useConfig } from "../../../../../../hooks/useConfig";
 export const FileHistorySnapshotConversationContent: FC<{
   conversation: FileHistorySnapshotEntry;
 }> = ({ conversation }) => {
-  const fileCount = Object.keys(
-    conversation.snapshot.trackedFileBackups,
-  ).length;
+  const fileCount = Object.keys(conversation.snapshot.trackedFileBackups).length;
   const { config } = useConfig();
 
   return (
@@ -43,25 +37,18 @@ export const FileHistorySnapshotConversationContent: FC<{
               <span className="font-mono">{conversation.messageId}</span>
             </div>
             <div className="text-xs">
-              <span className="text-muted-foreground">
-                Is Snapshot Update:{" "}
-              </span>
+              <span className="text-muted-foreground">Is Snapshot Update: </span>
               <span>{conversation.isSnapshotUpdate ? "Yes" : "No"}</span>
             </div>
             {fileCount > 0 && (
               <div className="text-xs">
                 <div className="text-muted-foreground mb-1">Tracked Files:</div>
                 <ul className="list-disc list-inside space-y-1">
-                  {Object.keys(conversation.snapshot.trackedFileBackups).map(
-                    (filePath) => (
-                      <li
-                        key={filePath}
-                        className="font-mono text-xs break-all"
-                      >
-                        {filePath}
-                      </li>
-                    ),
-                  )}
+                  {Object.keys(conversation.snapshot.trackedFileBackups).map((filePath) => (
+                    <li key={filePath} className="font-mono text-xs break-all">
+                      {filePath}
+                    </li>
+                  ))}
                 </ul>
               </div>
             )}

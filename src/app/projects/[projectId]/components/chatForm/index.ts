@@ -1,9 +1,6 @@
 export type { ChatInputProps, MessageInput } from "./ChatInput";
 export { ChatInput } from "./ChatInput";
-export {
-  ClaudeCodeSettingsForm,
-  ClaudeCodeSettingsPopover,
-} from "./ClaudeCodeSettingsForm";
+export { ClaudeCodeSettingsForm, ClaudeCodeSettingsPopover } from "./ClaudeCodeSettingsForm";
 export type { CommandCompletionRef } from "./CommandCompletion";
 export { CommandCompletion } from "./CommandCompletion";
 export type { FileCompletionRef } from "./FileCompletion";

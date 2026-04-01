@@ -1,9 +1,6 @@
 import { useStore } from "jotai";
 import { useEffect, useRef } from "react";
-import {
-  rightPanelActiveTabAtom,
-  rightPanelOpenAtom,
-} from "@/lib/atoms/rightPanel";
+import { rightPanelActiveTabAtom, rightPanelOpenAtom } from "@/lib/atoms/rightPanel";
 import { Route } from "@/routes/projects/$projectId/session";
 import { getIsMobileSync } from "./getIsMobileSync";
 import { resolveRightPanelOpen } from "./resolveRightPanelOpen";
@@ -38,14 +35,9 @@ export const useSyncRightPanelWithSearchParams = () => {
 
     // For initial mount, use sync check to avoid flicker
     // For subsequent updates (e.g., browser back/forward), use current isMobile value
-    const effectiveIsMobile = hasInitializedRef.current
-      ? isMobile
-      : getIsMobileSync();
+    const effectiveIsMobile = hasInitializedRef.current ? isMobile : getIsMobileSync();
 
-    const effectiveOpen = resolveRightPanelOpen(
-      search.rightPanel,
-      effectiveIsMobile,
-    );
+    const effectiveOpen = resolveRightPanelOpen(search.rightPanel, effectiveIsMobile);
     store.set(rightPanelOpenAtom, effectiveOpen);
     store.set(rightPanelActiveTabAtom, search.rightPanelTab);
 
@@ -59,7 +51,7 @@ export const useSyncRightPanelWithSearchParams = () => {
       if (isSyncingFromUrl.current) return;
       isSyncingFromAtom.current = true;
       const isOpen = store.get(rightPanelOpenAtom);
-      navigate({
+      void navigate({
         search: (prev) => ({ ...prev, rightPanel: isOpen }),
         replace: true,
       });
@@ -73,7 +65,7 @@ export const useSyncRightPanelWithSearchParams = () => {
       if (isSyncingFromUrl.current) return;
       isSyncingFromAtom.current = true;
       const tab = store.get(rightPanelActiveTabAtom);
-      navigate({
+      void navigate({
         search: (prev) => ({ ...prev, rightPanelTab: tab }),
         replace: true,
       });

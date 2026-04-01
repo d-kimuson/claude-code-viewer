@@ -1,11 +1,7 @@
-import type { FC, ReactNode } from "react";
-import { useCallback, useEffect } from "react";
+import { type FC, type ReactNode, useCallback, useEffect } from "react";
 import { useDragResize } from "@/hooks/useDragResize";
 import { useIsMobile } from "@/hooks/useIsMobile";
-import {
-  useLeftPanelActions,
-  useLeftPanelState,
-} from "@/hooks/useLayoutPanels";
+import { useLeftPanelActions, useLeftPanelState } from "@/hooks/useLayoutPanels";
 import { cn } from "@/lib/utils";
 
 // Desktop icon menu pixel width (must match --sidebar-icon-menu-width in styles.css)
@@ -13,15 +9,12 @@ const ICON_MENU_WIDTH_PX = 48;
 // Minimum width for content area
 const MIN_CONTENT_WIDTH = 200;
 
-interface ResizableSidebarProps {
+type ResizableSidebarProps = {
   children: ReactNode;
   className?: string;
-}
+};
 
-export const ResizableSidebar: FC<ResizableSidebarProps> = ({
-  children,
-  className,
-}) => {
+export const ResizableSidebar: FC<ResizableSidebarProps> = ({ children, className }) => {
   const { isLeftPanelOpen, leftPanelWidth } = useLeftPanelState();
   const { setLeftPanelWidth } = useLeftPanelActions();
   const isMobile = useIsMobile();
@@ -63,9 +56,7 @@ export const ResizableSidebar: FC<ResizableSidebarProps> = ({
 
   // When content is hidden, only show icon menu (48px)
   // When content is shown, use percentage width with min/max constraints
-  const sidebarWidth = isLeftPanelOpen
-    ? `${leftPanelWidth}%`
-    : `${ICON_MENU_WIDTH_PX}px`;
+  const sidebarWidth = isLeftPanelOpen ? `${leftPanelWidth}%` : `${ICON_MENU_WIDTH_PX}px`;
 
   const minWidth = isLeftPanelOpen
     ? `${ICON_MENU_WIDTH_PX + MIN_CONTENT_WIDTH}px`
@@ -89,6 +80,7 @@ export const ResizableSidebar: FC<ResizableSidebarProps> = ({
       {/* Resize handle - only show when content is visible */}
       {isLeftPanelOpen && (
         <div
+          role="separator"
           className="absolute right-0 top-0 bottom-0 w-1.5 cursor-ew-resize hover:bg-primary/40 active:bg-primary transition-colors z-10"
           style={{ pointerEvents: "auto" }}
           onMouseDown={handleMouseDown}

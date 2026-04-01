@@ -2,18 +2,12 @@ import { Trans } from "@lingui/react";
 import { FileQuestion, Home } from "lucide-react";
 import type { FC, ReactNode } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
-interface NotFoundProps {
+type NotFoundProps = {
   message?: ReactNode;
   description?: ReactNode;
-}
+};
 
 export const NotFound: FC<NotFoundProps> = ({
   message = <Trans id="notfound.default.title" />,

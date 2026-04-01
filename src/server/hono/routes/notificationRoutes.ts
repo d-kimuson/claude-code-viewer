@@ -19,10 +19,7 @@ const notificationRoutes = Effect.gen(function* () {
 
   return new Hono<HonoContext>()
     .get("/", async (c) => {
-      const response = await effectToResponse(
-        c,
-        notificationController.getNotifications(),
-      );
+      const response = await effectToResponse(c, notificationController.getNotifications());
       return response;
     })
     .post(
@@ -58,24 +55,17 @@ const notificationRoutes = Effect.gen(function* () {
       },
     )
     .get("/vapid-public-key", async (c) => {
-      const response = await effectToResponse(
-        c,
-        notificationController.getVapidPublicKey(),
-      );
+      const response = await effectToResponse(c, notificationController.getVapidPublicKey());
       return response;
     })
-    .post(
-      "/push-subscription",
-      zValidator("json", pushSubscriptionSchema),
-      async (c) => {
-        const subscription = c.req.valid("json");
-        const response = await effectToResponse(
-          c,
-          notificationController.subscribePush({ subscription }),
-        );
-        return response;
-      },
-    );
+    .post("/push-subscription", zValidator("json", pushSubscriptionSchema), async (c) => {
+      const subscription = c.req.valid("json");
+      const response = await effectToResponse(
+        c,
+        notificationController.subscribePush({ subscription }),
+      );
+      return response;
+    });
 });
 
 export { notificationRoutes };

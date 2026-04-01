@@ -25,10 +25,7 @@ const formatJsonWithNewlines = (obj: unknown): string => {
   const jsonString = JSON.stringify(obj, null, 2);
 
   // Replace escaped newlines, tabs, and carriage returns with actual characters
-  return jsonString
-    .replace(/\\n/g, "\n")
-    .replace(/\\t/g, "\t")
-    .replace(/\\r/g, "\r");
+  return jsonString.replace(/\\n/g, "\n").replace(/\\t/g, "\t").replace(/\\r/g, "\r");
 };
 
 /**
@@ -57,12 +54,14 @@ const renderMarkdown = (content: string): string => {
   const codeBlocks: string[] = [];
   let processedContent = content.replace(
     /```(\w+)?\n([\s\S]*?)```/g,
-    (_match, lang, code) => {
+    (_match, langRaw, codeRaw) => {
+      const lang = typeof langRaw === "string" ? langRaw : undefined;
+      const code = typeof codeRaw === "string" ? codeRaw : "";
       const placeholder = `__CODE_BLOCK_${codeBlocks.length}__`;
       codeBlocks.push(`
     <div class="code-block">
-      ${lang ? `<div class="code-header"><span class="code-lang">${escapeHtml(lang.toUpperCase())}</span></div>` : ""}
-      <pre><code class="language-${escapeHtml(lang || "text")}">${escapeHtml(code.trim())}</code></pre>
+      ${lang !== undefined ? `<div class="code-header"><span class="code-lang">${escapeHtml(lang.toUpperCase())}</span></div>` : ""}
+      <pre><code class="language-${escapeHtml(lang ?? "text")}">${escapeHtml(code.trim())}</code></pre>
     </div>
   `);
       return placeholder;
@@ -70,64 +69,56 @@ const renderMarkdown = (content: string): string => {
   );
 
   // Process tables (before escaping HTML)
-  processedContent = processedContent.replace(
-    /(?:^\|.+\|$\n?)+/gm,
-    (tableBlock) => {
-      const rows = tableBlock.trim().split("\n");
-      if (rows.length < 2) return escapeHtml(tableBlock);
+  processedContent = processedContent.replace(/(?:^\|.+\|$\n?)+/gm, (tableBlock) => {
+    const rows = tableBlock.trim().split("\n");
+    if (rows.length < 2) return escapeHtml(tableBlock);
 
-      const headerRow = rows[0];
-      const separatorRow = rows[1];
+    const headerRow = rows[0];
+    const separatorRow = rows[1];
 
-      // Check if second row is a separator (contains only |, -, :, and spaces)
-      if (
-        !headerRow ||
-        !separatorRow ||
-        !/^\|[\s\-:|]+\|$/.test(separatorRow)
-      ) {
-        return escapeHtml(tableBlock);
+    // Check if second row is a separator (contains only |, -, :, and spaces)
+    if (
+      headerRow === undefined ||
+      separatorRow === undefined ||
+      !/^\|[\s\-:|]+\|$/.test(separatorRow)
+    ) {
+      return escapeHtml(tableBlock);
+    }
+
+    const parseRow = (row: string): string[] =>
+      row
+        .split("|")
+        .slice(1, -1)
+        .map((cell) => cell.trim());
+
+    const headerCells = parseRow(headerRow);
+    const dataRows = rows.slice(2);
+
+    let tableHtml = '<table class="markdown-table"><thead><tr>';
+    for (const cell of headerCells) {
+      tableHtml += `<th>${escapeHtml(cell)}</th>`;
+    }
+    tableHtml += "</tr></thead><tbody>";
+
+    for (const row of dataRows) {
+      const cells = parseRow(row);
+      tableHtml += "<tr>";
+      for (const cell of cells) {
+        tableHtml += `<td>${escapeHtml(cell)}</td>`;
       }
+      tableHtml += "</tr>";
+    }
+    tableHtml += "</tbody></table>";
 
-      const parseRow = (row: string): string[] =>
-        row
-          .split("|")
-          .slice(1, -1)
-          .map((cell) => cell.trim());
-
-      const headerCells = parseRow(headerRow);
-      const dataRows = rows.slice(2);
-
-      let tableHtml = '<table class="markdown-table"><thead><tr>';
-      for (const cell of headerCells) {
-        tableHtml += `<th>${escapeHtml(cell)}</th>`;
-      }
-      tableHtml += "</tr></thead><tbody>";
-
-      for (const row of dataRows) {
-        const cells = parseRow(row);
-        tableHtml += "<tr>";
-        for (const cell of cells) {
-          tableHtml += `<td>${escapeHtml(cell)}</td>`;
-        }
-        tableHtml += "</tr>";
-      }
-      tableHtml += "</tbody></table>";
-
-      return tableHtml;
-    },
-  );
+    return tableHtml;
+  });
 
   // Escape HTML for remaining content (except already processed tables)
   // We need to escape only non-processed parts
   processedContent = processedContent
-    .split(
-      /(<table class="markdown-table">[\s\S]*?<\/table>|__CODE_BLOCK_\d+__)/,
-    )
+    .split(/(<table class="markdown-table">[\s\S]*?<\/table>|__CODE_BLOCK_\d+__)/)
     .map((part) => {
-      if (
-        part.startsWith('<table class="markdown-table">') ||
-        /^__CODE_BLOCK_\d+__$/.test(part)
-      ) {
+      if (part.startsWith('<table class="markdown-table">') || /^__CODE_BLOCK_\d+__$/.test(part)) {
         return part;
       }
       return escapeHtml(part);
@@ -135,17 +126,14 @@ const renderMarkdown = (content: string): string => {
     .join("");
 
   // Blockquotes (multi-line support)
-  processedContent = processedContent.replace(
-    /(?:^&gt; .+$\n?)+/gm,
-    (quoteBlock) => {
-      const lines = quoteBlock
-        .split("\n")
-        .filter((l) => l.trim())
-        .map((l) => l.replace(/^&gt; /, ""))
-        .join("<br>");
-      return `<blockquote class="markdown-blockquote">${lines}</blockquote>`;
-    },
-  );
+  processedContent = processedContent.replace(/(?:^&gt; .+$\n?)+/gm, (quoteBlock) => {
+    const lines = quoteBlock
+      .split("\n")
+      .filter((l) => l.trim())
+      .map((l) => l.replace(/^&gt; /, ""))
+      .join("<br>");
+    return `<blockquote class="markdown-blockquote">${lines}</blockquote>`;
+  });
 
   // Horizontal rule
   processedContent = processedContent.replace(
@@ -154,74 +142,56 @@ const renderMarkdown = (content: string): string => {
   );
 
   // Task lists (must be before regular lists)
-  processedContent = processedContent.replace(
-    /(?:^- \[([ xX])\] .+$\n?)+/gm,
-    (listBlock) => {
-      const items = listBlock
-        .trim()
-        .split("\n")
-        .map((line) => {
-          const match = line.match(/^- \[([ xX])\] (.+)$/);
-          if (match?.[1] !== undefined && match[2] !== undefined) {
-            const checked = match[1].toLowerCase() === "x";
-            return `<li class="task-item"><input type="checkbox" class="task-checkbox" ${checked ? "checked" : ""} disabled>${match[2]}</li>`;
-          }
-          return "";
-        })
-        .join("");
-      return `<ul class="markdown-task-list">${items}</ul>`;
-    },
-  );
+  processedContent = processedContent.replace(/(?:^- \[([ xX])\] .+$\n?)+/gm, (listBlock) => {
+    const items = listBlock
+      .trim()
+      .split("\n")
+      .map((line) => {
+        const match = line.match(/^- \[([ xX])\] (.+)$/);
+        if (match?.[1] !== undefined && match[2] !== undefined) {
+          const checked = match[1].toLowerCase() === "x";
+          return `<li class="task-item"><input type="checkbox" class="task-checkbox" ${checked ? "checked" : ""} disabled>${match[2]}</li>`;
+        }
+        return "";
+      })
+      .join("");
+    return `<ul class="markdown-task-list">${items}</ul>`;
+  });
 
   // Unordered lists
-  processedContent = processedContent.replace(
-    /(?:^[-*+] .+$\n?)+/gm,
-    (listBlock) => {
-      const items = listBlock
-        .trim()
-        .split("\n")
-        .map((line) => {
-          const match = line.match(/^[-*+] (.+)$/);
-          return match ? `<li>${match[1]}</li>` : "";
-        })
-        .join("");
-      return `<ul class="markdown-ul">${items}</ul>`;
-    },
-  );
+  processedContent = processedContent.replace(/(?:^[-*+] .+$\n?)+/gm, (listBlock) => {
+    const items = listBlock
+      .trim()
+      .split("\n")
+      .map((line) => {
+        const match = line.match(/^[-*+] (.+)$/);
+        return match ? `<li>${match[1]}</li>` : "";
+      })
+      .join("");
+    return `<ul class="markdown-ul">${items}</ul>`;
+  });
 
   // Ordered lists
-  processedContent = processedContent.replace(
-    /(?:^\d+\. .+$\n?)+/gm,
-    (listBlock) => {
-      const items = listBlock
-        .trim()
-        .split("\n")
-        .map((line) => {
-          const match = line.match(/^\d+\. (.+)$/);
-          return match ? `<li>${match[1]}</li>` : "";
-        })
-        .join("");
-      return `<ol class="markdown-ol">${items}</ol>`;
-    },
-  );
+  processedContent = processedContent.replace(/(?:^\d+\. .+$\n?)+/gm, (listBlock) => {
+    const items = listBlock
+      .trim()
+      .split("\n")
+      .map((line) => {
+        const match = line.match(/^\d+\. (.+)$/);
+        return match ? `<li>${match[1]}</li>` : "";
+      })
+      .join("");
+    return `<ol class="markdown-ol">${items}</ol>`;
+  });
 
   // Strikethrough
-  processedContent = processedContent.replace(
-    /~~(.+?)~~/g,
-    '<del class="markdown-del">$1</del>',
-  );
+  processedContent = processedContent.replace(/~~(.+?)~~/g, '<del class="markdown-del">$1</del>');
 
   // Inline code
-  processedContent = processedContent.replace(
-    /`([^`]+)`/g,
-    '<code class="inline-code">$1</code>',
-  );
+  processedContent = processedContent.replace(/`([^`]+)`/g, '<code class="inline-code">$1</code>');
 
   // Bold
-  processedContent = processedContent.replace(
-    /\*\*(.+?)\*\*/g,
-    "<strong>$1</strong>",
-  );
+  processedContent = processedContent.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
 
   // Italic (avoiding conflict with bold)
   processedContent = processedContent.replace(
@@ -230,18 +200,9 @@ const renderMarkdown = (content: string): string => {
   );
 
   // Headers
-  processedContent = processedContent.replace(
-    /^### (.+)$/gm,
-    '<h3 class="markdown-h3">$1</h3>',
-  );
-  processedContent = processedContent.replace(
-    /^## (.+)$/gm,
-    '<h2 class="markdown-h2">$1</h2>',
-  );
-  processedContent = processedContent.replace(
-    /^# (.+)$/gm,
-    '<h1 class="markdown-h1">$1</h1>',
-  );
+  processedContent = processedContent.replace(/^### (.+)$/gm, '<h3 class="markdown-h3">$1</h3>');
+  processedContent = processedContent.replace(/^## (.+)$/gm, '<h2 class="markdown-h2">$1</h2>');
+  processedContent = processedContent.replace(/^# (.+)$/gm, '<h1 class="markdown-h1">$1</h1>');
 
   // Links (already escaped, so we look for escaped version)
   processedContent = processedContent.replace(
@@ -280,10 +241,7 @@ const renderMarkdown = (content: string): string => {
   for (let i = 0; i < codeBlocks.length; i++) {
     const codeBlock = codeBlocks[i];
     if (codeBlock !== undefined) {
-      processedContent = processedContent.replace(
-        `__CODE_BLOCK_${i}__`,
-        codeBlock,
-      );
+      processedContent = processedContent.replace(`__CODE_BLOCK_${i}__`, codeBlock);
     }
   }
 
@@ -293,9 +251,7 @@ const renderMarkdown = (content: string): string => {
 /**
  * Renders a user message entry
  */
-const renderUserEntry = (
-  entry: Extract<Conversation, { type: "user" }>,
-): string => {
+const renderUserEntry = (entry: Extract<Conversation, { type: "user" }>): string => {
   const contentArray = Array.isArray(entry.message.content)
     ? entry.message.content
     : [entry.message.content];
@@ -394,15 +350,9 @@ type SidechainData = {
     Array<Extract<Conversation, { type: "user" | "assistant" | "system" }>>
   >;
   // Map from prompt string to root conversation
-  promptToRoot: Map<
-    string,
-    Extract<Conversation, { type: "user" | "assistant" | "system" }>
-  >;
+  promptToRoot: Map<string, Extract<Conversation, { type: "user" | "assistant" | "system" }>>;
   // Map from agentId to root conversation
-  agentIdToRoot: Map<
-    string,
-    Extract<Conversation, { type: "user" | "assistant" | "system" }>
-  >;
+  agentIdToRoot: Map<string, Extract<Conversation, { type: "user" | "assistant" | "system" }>>;
   // Map from tool_use_id to agentId (extracted from toolUseResult)
   toolUseIdToAgentId: Map<string, string>;
 };
@@ -410,9 +360,7 @@ type SidechainData = {
 /**
  * Type guard to check if toolUseResult contains agentId
  */
-const hasAgentId = (
-  toolUseResult: unknown,
-): toolUseResult is { agentId: string } => {
+const hasAgentId = (toolUseResult: unknown): toolUseResult is { agentId: string } => {
   return (
     typeof toolUseResult === "object" &&
     toolUseResult !== null &&
@@ -424,10 +372,9 @@ const hasAgentId = (
 /**
  * Builds sidechain data structures matching frontend useSidechain logic
  */
-const buildSidechainData = (
-  conversations: Array<Conversation>,
-): SidechainData => {
+const buildSidechainData = (conversations: Array<Conversation>): SidechainData => {
   // Filter sidechain conversations
+  // oxlint-disable-next-line typescript-eslint/no-unsafe-type-assertion -- type narrowing via filter conditions is safe here
   const sidechainConversations = conversations.filter(
     (conv) =>
       conv.type !== "summary" &&
@@ -442,9 +389,7 @@ const buildSidechainData = (
   ) as Array<Extract<Conversation, { type: "user" | "assistant" | "system" }>>;
 
   // Build uuid -> conversation map for parent lookup
-  const uuidMap = new Map(
-    sidechainConversations.map((conv) => [conv.uuid, conv] as const),
-  );
+  const uuidMap = new Map(sidechainConversations.map((conv) => [conv.uuid, conv] as const));
 
   // Find root conversation for each sidechain conversation
   const getRootConversation = (
@@ -477,10 +422,7 @@ const buildSidechainData = (
 
   // Sort each group by timestamp to ensure correct order
   for (const [, convs] of groupsByRootUuid) {
-    convs.sort(
-      (a, b) =>
-        new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
-    );
+    convs.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
   }
 
   // Build prompt -> root mapping (for root user messages with string content)
@@ -616,19 +558,11 @@ const renderSidechainEntry = (
 
           // Check if this is a nested Task tool (recursive subagent)
           if (msg.name === "Task" || msg.name === "Agent") {
-            return renderTaskTool(
-              msg.id,
-              msg.input,
-              toolResult,
-              sidechainData,
-              toolResultMap,
-            );
+            return renderTaskTool(msg.id, msg.input, toolResult, sidechainData, toolResultMap);
           }
 
           const inputKeys = Object.keys(msg.input).length;
-          const toolResultHtml = toolResult
-            ? renderToolResultContent(toolResult)
-            : "";
+          const toolResultHtml = toolResult ? renderToolResultContent(toolResult) : "";
 
           return `
             <div class="tool-use-block collapsible collapsed">
@@ -671,9 +605,7 @@ const renderSidechainEntry = (
 
   if (entry.type === "system") {
     const content =
-      "content" in entry && typeof entry.content === "string"
-        ? entry.content
-        : "System message";
+      "content" in entry && typeof entry.content === "string" ? entry.content : "System message";
     return `
       <div class="sidechain-entry sidechain-system-entry">
         <div class="sidechain-entry-header">
@@ -700,8 +632,7 @@ const renderTaskTool = (
   toolResultMap: ToolResultMap,
 ): string => {
   const prompt = typeof input.prompt === "string" ? input.prompt : "";
-  const truncatedPrompt =
-    prompt.length > 200 ? `${prompt.slice(0, 200)}...` : prompt;
+  const truncatedPrompt = prompt.length > 200 ? `${prompt.slice(0, 200)}...` : prompt;
 
   // Find sidechain conversations using the new data structure
   let sidechainConversations: Array<
@@ -710,7 +641,7 @@ const renderTaskTool = (
 
   // 1. Try to find by agentId (from tool use result)
   const agentId = sidechainData.toolUseIdToAgentId.get(toolId);
-  if (agentId) {
+  if (agentId !== undefined && agentId !== "") {
     const rootByAgentId = sidechainData.agentIdToRoot.get(agentId);
     if (rootByAgentId) {
       const convs = sidechainData.groupsByRootUuid.get(rootByAgentId.uuid);
@@ -748,9 +679,7 @@ const renderTaskTool = (
         </div>
         <div class="sidechain-content collapsible-content">
           ${sidechainConversations
-            .map((conv) =>
-              renderSidechainEntry(conv, toolResultMap, sidechainData),
-            )
+            .map((conv) => renderSidechainEntry(conv, toolResultMap, sidechainData))
             .filter((html) => html !== "")
             .join("\n")}
         </div>
@@ -827,19 +756,11 @@ const renderAssistantEntry = (
 
         // Special rendering for Task tool
         if (msg.name === "Task" || msg.name === "Agent") {
-          return renderTaskTool(
-            msg.id,
-            msg.input,
-            toolResult,
-            sidechainData,
-            toolResultMap,
-          );
+          return renderTaskTool(msg.id, msg.input, toolResult, sidechainData, toolResultMap);
         }
 
         const inputKeys = Object.keys(msg.input).length;
-        const toolResultHtml = toolResult
-          ? renderToolResultContent(toolResult)
-          : "";
+        const toolResultHtml = toolResult ? renderToolResultContent(toolResult) : "";
 
         return `
           <div class="tool-use-block collapsible">
@@ -885,9 +806,7 @@ const renderAssistantEntry = (
 /**
  * Gets the content to display for a system entry
  */
-const getSystemEntryContent = (
-  entry: Extract<Conversation, { type: "system" }>,
-): string => {
+const getSystemEntryContent = (entry: Extract<Conversation, { type: "system" }>): string => {
   if ("content" in entry && typeof entry.content === "string") {
     return entry.content;
   }
@@ -901,9 +820,7 @@ const getSystemEntryContent = (
 /**
  * Renders a system message entry
  */
-const renderSystemEntry = (
-  entry: Extract<Conversation, { type: "system" }>,
-): string => {
+const renderSystemEntry = (entry: Extract<Conversation, { type: "system" }>): string => {
   const content = getSystemEntryContent(entry);
   return `
     <div class="conversation-entry system-entry">
@@ -925,15 +842,11 @@ const groupConsecutiveAssistantMessages = (
   conversations: SessionDetail["conversations"],
 ): Array<{
   type: "grouped" | "single";
-  entries: Array<
-    Extract<Conversation, { type: "assistant" | "user" | "system" }>
-  >;
+  entries: Array<Extract<Conversation, { type: "assistant" | "user" | "system" }>>;
 }> => {
   const grouped: Array<{
     type: "grouped" | "single";
-    entries: Array<
-      Extract<Conversation, { type: "assistant" | "user" | "system" }>
-    >;
+    entries: Array<Extract<Conversation, { type: "assistant" | "user" | "system" }>>;
   }> = [];
 
   let currentGroup: Array<Extract<Conversation, { type: "assistant" }>> = [];
@@ -1016,19 +929,11 @@ const renderGroupedAssistantEntries = (
 
         // Special rendering for Task tool
         if (msg.name === "Task" || msg.name === "Agent") {
-          return renderTaskTool(
-            msg.id,
-            msg.input,
-            toolResult,
-            sidechainData,
-            toolResultMap,
-          );
+          return renderTaskTool(msg.id, msg.input, toolResult, sidechainData, toolResultMap);
         }
 
         const inputKeys = Object.keys(msg.input).length;
-        const toolResultHtml = toolResult
-          ? renderToolResultContent(toolResult)
-          : "";
+        const toolResultHtml = toolResult ? renderToolResultContent(toolResult) : "";
 
         return `
           <div class="tool-use-block collapsible">
@@ -1120,9 +1025,7 @@ export const generateSessionHtml = (
     }
 
     // Determine missing agentIds
-    const missingAgentIds = Array.from(agentIds).filter(
-      (id) => !existingAgentIds.has(id),
-    );
+    const missingAgentIds = Array.from(agentIds).filter((id) => !existingAgentIds.has(id));
 
     // Load missing agent sessions
     const loadedConversations: Conversation[] = [];
@@ -1131,11 +1034,7 @@ export const generateSessionHtml = (
       // Load concurrently
       const loadedSessions = yield* Effect.all(
         missingAgentIds.map((agentId) =>
-          agentSessionRepo.getAgentSessionByAgentId(
-            projectId,
-            agentId,
-            session.id,
-          ),
+          agentSessionRepo.getAgentSessionByAgentId(projectId, agentId, session.id),
         ),
         { concurrency: 5 },
       );
@@ -1145,9 +1044,7 @@ export const generateSessionHtml = (
           // Verify items are valid conversations (filter out unknowns if any)
           const validConvs = sess.filter(
             (c): c is Conversation =>
-              c.type === "user" ||
-              c.type === "assistant" ||
-              c.type === "system",
+              c.type === "user" || c.type === "assistant" || c.type === "system",
           );
           loadedConversations.push(
             ...validConvs.map((c) => ({
@@ -1161,9 +1058,7 @@ export const generateSessionHtml = (
 
     // Combine all conversations for data building
     const allConversations = [
-      ...session.conversations.filter(
-        (conv): conv is Conversation => conv.type !== "x-error",
-      ),
+      ...session.conversations.filter((conv): conv is Conversation => conv.type !== "x-error"),
       ...loadedConversations,
     ];
 
@@ -1198,13 +1093,11 @@ export const generateSessionHtml = (
     const conversationsHtml = grouped
       .map((group) => {
         if (group.type === "grouped") {
-          return renderGroupedAssistantEntries(
-            group.entries as Array<
-              Extract<Conversation, { type: "assistant" }>
-            >,
-            toolResultMap,
-            sidechainData,
+          const assistantEntries = group.entries.filter(
+            (entry): entry is Extract<Conversation, { type: "assistant" }> =>
+              entry.type === "assistant",
           );
+          return renderGroupedAssistantEntries(assistantEntries, toolResultMap, sidechainData);
         }
 
         const conv = group.entries[0];

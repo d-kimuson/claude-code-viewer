@@ -7,10 +7,10 @@ import { RateLimitAutoScheduleService } from "../core/rate-limit/services/RateLi
 import { SessionMetaService } from "../core/session/services/SessionMetaService";
 import { SyncService } from "../core/sync/services/SyncService";
 
-interface InitializeServiceInterface {
+type InitializeServiceInterface = {
   readonly startInitialization: () => Effect.Effect<void>;
   readonly stopCleanup: () => Effect.Effect<void>;
-}
+};
 
 export class InitializeService extends Context.Tag("InitializeService")<
   InitializeService,
@@ -28,9 +28,7 @@ export class InitializeService extends Context.Tag("InitializeService")<
 
       // 状態管理用の Ref
       const listenersRef = yield* Ref.make<{
-        sessionChanged?:
-          | ((event: InternalEventDeclaration["sessionChanged"]) => void)
-          | null;
+        sessionChanged?: ((event: InternalEventDeclaration["sessionChanged"]) => void) | null;
         sessionListChanged?:
           | ((event: InternalEventDeclaration["sessionListChanged"]) => void)
           | null;
@@ -65,32 +63,18 @@ export class InitializeService extends Context.Tag("InitializeService")<
           console.log("after starting heartbeat fork");
 
           // sessionChanged イベントのリスナーを登録
-          const onSessionChanged = (
-            event: InternalEventDeclaration["sessionChanged"],
-          ) => {
-            Effect.runFork(
-              projectMetaService.invalidateProject(event.projectId),
-            );
+          const onSessionChanged = (event: InternalEventDeclaration["sessionChanged"]) => {
+            Effect.runFork(projectMetaService.invalidateProject(event.projectId));
 
-            Effect.runFork(
-              sessionMetaService.invalidateSession(
-                event.projectId,
-                event.sessionId,
-              ),
-            );
+            Effect.runFork(sessionMetaService.invalidateSession(event.projectId, event.sessionId));
           };
 
           // sessionListChanged イベントのリスナーを登録
-          const onSessionListChanged = (
-            event: InternalEventDeclaration["sessionListChanged"],
-          ) => {
+          const onSessionListChanged = (event: InternalEventDeclaration["sessionListChanged"]) => {
             Effect.runFork(
               syncService.syncProjectList(event.projectId).pipe(
                 Effect.catchAll((e) => {
-                  console.error(
-                    "[InitializeService] syncProjectList failed:",
-                    e,
-                  );
+                  console.error("[InitializeService] syncProjectList failed:", e);
                   return Effect.void;
                 }),
               ),
@@ -103,7 +87,7 @@ export class InitializeService extends Context.Tag("InitializeService")<
           });
           yield* eventBus.on("sessionChanged", onSessionChanged);
           yield* eventBus.on("sessionListChanged", onSessionListChanged);
-        }).pipe(Effect.withSpan("start-initialization")) as Effect.Effect<void>;
+        }).pipe(Effect.withSpan("start-initialization"));
       };
 
       const stopCleanup = (): Effect.Effect<void> =>
@@ -113,10 +97,7 @@ export class InitializeService extends Context.Tag("InitializeService")<
             yield* eventBus.off("sessionChanged", listeners.sessionChanged);
           }
           if (listeners.sessionListChanged) {
-            yield* eventBus.off(
-              "sessionListChanged",
-              listeners.sessionListChanged,
-            );
+            yield* eventBus.off("sessionListChanged", listeners.sessionListChanged);
           }
 
           yield* Ref.set(listenersRef, {});

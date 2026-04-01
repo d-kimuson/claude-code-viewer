@@ -2,14 +2,14 @@ defaults:
   changed: untracked,unstaged,staged,branch:main
   target: all
 checks:
-  - name: biome-format
-    match: \.((m|c)?(j|t)sx?|json|jsonc|css)$
+  - name: oxfmt
+    match: \.((m|c)?(j|t)sx?|json|jsonc)$
     group: format
-    command: pnpm exec biome format --write {{ ctx.CHANGED_FILES }}
-  - name: biome-check
-    match: \.((m|c)?(j|t)sx?|json|jsonc|css)$
+    command: pnpm exec oxfmt --ignore-path .gitignore --no-error-on-unmatched-pattern {{ ctx.CHANGED_FILES }}
+  - name: oxlint
+    match: \.((m|c)?(j|t)sx?|json|jsonc)$
     group: lint
-    command: pnpm exec biome check --write {{ ctx.CHANGED_FILES }}
+    command: pnpm exec oxlint --ignore-path .gitignore --fix {{ ctx.CHANGED_FILES }}
   - name: typecheck
     match: \.(m|c)?tsx?$
     group: typecheck

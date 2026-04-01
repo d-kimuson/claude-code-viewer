@@ -10,16 +10,15 @@ const sseRoutes = Effect.gen(function* () {
   const sseController = yield* SSEController;
   const runtime = yield* getHonoRuntime;
 
-  return new Hono<HonoContext>().get("/", async (c) => {
+  return new Hono<HonoContext>().get("/", (c) => {
     return streamSSE(
       c,
       async (rawStream) => {
         await Runtime.runPromise(runtime)(
-          sseController
-            .handleSSE(rawStream)
-            .pipe(Effect.provide(TypeSafeSSE.make(rawStream))),
+          sseController.handleSSE(rawStream).pipe(Effect.provide(TypeSafeSSE.make(rawStream))),
         );
       },
+      // oxlint-disable-next-line typescript/require-await -- streamSSE error callback requires Promise<void> return type
       async (err) => {
         console.error("Streaming error:", err);
       },

@@ -1,0 +1,372 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": [
+    "unicorn",
+    "typescript",
+    "oxc",
+    "import",
+    "jsdoc",
+    "promise",
+    "node",
+    "jest",
+    "react",
+    "jsx-a11y"
+  ],
+  "categories": {},
+  "rules": {
+    /* Correctness (違反するとそのままランタイムエラーになるような無条件適用しやすいルール群) */
+    // default rules
+    "constructor-super": "error",
+    "for-direction": "error",
+    "no-async-promise-executor": "error",
+    "no-caller": "error",
+    "no-class-assign": "error",
+    "no-compare-neg-zero": "error",
+    "no-cond-assign": "error",
+    "no-const-assign": "error",
+    "no-constant-binary-expression": "error",
+    "no-constant-condition": "error",
+    "no-control-regex": "error",
+    "no-debugger": "error",
+    "no-delete-var": "error",
+    "no-dupe-class-members": "error",
+    "no-dupe-else-if": "error",
+    "no-dupe-keys": "error",
+    "no-duplicate-case": "error",
+    "no-empty-character-class": "error",
+    "no-empty-pattern": "error",
+    "no-empty-static-block": "error",
+    "no-eval": "error",
+    "no-ex-assign": "error",
+    "no-extra-boolean-cast": "error",
+    "no-func-assign": "error",
+    "no-global-assign": "error",
+    "no-import-assign": "error",
+    "no-invalid-regexp": "error",
+    "no-irregular-whitespace": "error",
+    "no-loss-of-precision": "error",
+    "no-new-native-nonconstructor": "error",
+    "no-nonoctal-decimal-escape": "error",
+    "no-obj-calls": "error",
+    "no-self-assign": "error",
+    "no-setter-return": "error",
+    "no-shadow-restricted-names": "error",
+    "no-sparse-arrays": "error",
+    "no-this-before-super": "error",
+    "no-unassigned-vars": "error",
+    "no-unsafe-finally": "error",
+    "no-unsafe-negation": "error",
+    "no-unsafe-optional-chaining": "error",
+    "no-unused-expressions": "error",
+    "no-unused-labels": "error",
+    "no-unused-private-class-members": "error",
+    "no-unused-vars": "error",
+    "no-useless-backreference": "error",
+    "no-useless-catch": "error",
+    "no-useless-escape": "error",
+    "no-useless-rename": "error",
+    "no-with": "error",
+    "require-yield": "error",
+    "use-isnan": "error",
+    "valid-typeof": "error",
+
+    "oxc/bad-array-method-on-arguments": "error",
+    "oxc/bad-char-at-comparison": "error",
+    "oxc/bad-comparison-sequence": "error",
+    "oxc/bad-min-max-func": "error",
+    "oxc/bad-object-literal-comparison": "error",
+    "oxc/bad-replace-all-arg": "error",
+    "oxc/const-comparisons": "error",
+    "oxc/double-comparisons": "error",
+    "oxc/erasing-op": "error",
+    "oxc/missing-throw": "error",
+    "oxc/number-arg-out-of-range": "error",
+    "oxc/only-used-in-recursion": "error",
+    "oxc/uninvoked-array-callback": "error",
+
+    "typescript/await-thenable": "error",
+    "typescript/no-array-delete": "error",
+    "typescript/no-base-to-string": "error",
+    "typescript/no-duplicate-enum-values": "error",
+    "typescript/no-duplicate-type-constituents": "error",
+    "typescript/no-extra-non-null-assertion": "error",
+    "typescript/no-floating-promises": "error",
+    "typescript/no-for-in-array": "error",
+    "typescript/no-implied-eval": "error",
+    "typescript/no-meaningless-void-operator": "error",
+    "typescript/no-misused-new": "error",
+    "typescript/no-misused-spread": "error",
+    "typescript/no-non-null-asserted-optional-chain": "error",
+    "typescript/no-redundant-type-constituents": "error",
+    "typescript/no-this-alias": "error",
+    "typescript/no-unnecessary-parameter-property-assignment": "error",
+    "typescript/no-unsafe-declaration-merging": "error",
+    "typescript/no-unsafe-unary-minus": "error",
+    "typescript/no-useless-empty-export": "error",
+    "typescript/no-wrapper-object-types": "error",
+    "typescript/prefer-as-const": "error",
+    "typescript/require-array-sort-compare": "error",
+    "typescript/restrict-template-expressions": "error",
+    "typescript/triple-slash-reference": "error",
+    "typescript/unbound-method": "error",
+
+    "unicorn/no-await-in-promise-methods": "error",
+    "unicorn/no-empty-file": "error",
+    "unicorn/no-invalid-fetch-options": "error",
+    "unicorn/no-invalid-remove-event-listener": "error",
+    "unicorn/no-new-array": "error",
+    "unicorn/no-single-promise-in-promise-methods": "error",
+    "unicorn/no-thenable": "error",
+    "unicorn/no-unnecessary-await": "error",
+    "unicorn/no-useless-fallback-in-spread": "error",
+    "unicorn/no-useless-length-check": "error",
+    "unicorn/no-useless-spread": "error",
+    "unicorn/prefer-set-size": "error",
+    "unicorn/prefer-string-starts-ends-with": "error",
+
+    // customized rules
+    "import/default": "off", // 存在しない default import の検出は型チェックに委譲
+    "import/namespace": "off", // 存在しない named import の検出は型チェックに委譲
+
+    "jsdoc/check-property-names": "error", // JSDoc の property 名重複を検出
+    "jsdoc/check-tag-names": "error", // 不正な JSDoc タグ名を検出
+    "jsdoc/implements-on-classes": "off", // @implements の使用制約はプロジェクト依存
+    "jsdoc/no-defaults": "error", // @default とデフォルト引数の重複を防止
+    // JSDoc での型付けはしないので
+    "jsdoc/require-property": "off", // property 強制
+    "jsdoc/require-property-description": "off", // property description 強制
+    "jsdoc/require-property-name": "off", // property name 強制
+    "jsdoc/require-property-type": "off", // property type 強制
+    "jsdoc/require-yields": "off", // yield 強制
+
+    "promise/no-callback-in-promise": "error", // Promise 内コールバックスタイをを直接書く
+    "promise/no-new-statics": "off", // new Promise.resolve の検出は型チェックに委譲
+    "promise/valid-params": "off", // Promise 引数の検証は型チェックに委譲
+
+    /* Perf */
+    "unicorn/prefer-array-find": "error", // 単一要素の検索には find を使用
+
+    /* Restriction */
+    "default-case": "error", // switch 文に default case を強制
+    "no-var": "error", // var の使用を禁止
+
+    "typescript/no-explicit-any": "error", // any 型の使用を禁止
+    "typescript/no-non-null-assertion": "error", // non-null assertion operator の使用を禁止
+    "typescript/use-unknown-in-catch-callback-variable": "error", // catch 節では unknown 型を使用
+    "typescript/no-empty-object-type": "error", // 空オブジェクト型 {} の使用を禁止
+    "typescript/no-import-type-side-effects": "off", // 副作用を持つ type import を防止, typescript/consistent-type-imports に寄せる
+
+    "unicorn/prefer-node-protocol": "error", // Node.js 組み込みモジュールは node: プロトコルで import
+
+    "node/no-process-env": "error", // process.env への直接アクセスを禁止（腐敗防止層を使用）
+
+    /* Suspicious */
+    "import/no-empty-named-blocks": "error", // 空の named import ブロックを検出
+
+    "promise/no-multiple-resolved": "error", // Promise の複数回 resolve/reject を検出
+
+    "typescript/no-unnecessary-template-expression": "error", // 不要なテンプレートリテラルを検出
+    "typescript/no-unnecessary-type-assertion": "error", // 不要な型アサーションを検出
+    "typescript/no-unsafe-type-assertion": "error", // 安全でない型アサーションを禁止
+
+    /* Pedantic */
+    "eqeqeq": "error", // 厳格等価演算子 === の使用を強制
+
+    "typescript/ban-ts-comment": [
+      "error",
+      {
+        "ts-ignore": true,
+        "ts-expect-error": "allow-with-description",
+        "ts-nocheck": "allow-with-description",
+        "ts-check": false,
+        "minimumDescriptionLength": 2
+      }
+    ], // TypeScript コメントディレクティブに理由の記述を強制
+    "typescript/prefer-ts-expect-error": "error", // ts-ignore より ts-expect-error を優先（不要になった際の検出のため）
+    "typescript/no-deprecated": "error", // 非推奨 API の使用を検出
+    "typescript/no-misused-promises": "error", // Promise の誤用を検出
+    "typescript/prefer-nullish-coalescing": "error", // null/undefined チェックには nullish coalescing を使用
+    "typescript/require-await": "error", // async 関数には await を含めることを強制
+    "typescript/switch-exhaustiveness-check": "error", // switch 文の網羅性をチェック
+    "typescript/strict-boolean-expressions": "error", // 条件式での truthy/falsy の暗黙的変換を禁止
+    "typescript/restrict-plus-operands": "error", // + 演算子のオペランド型を制限
+    "typescript/no-unsafe-assignment": "error", // any 型からの代入を検出
+    "typescript/no-unsafe-member-access": "error", // any 型のメンバーアクセスを検出
+    "typescript/no-unsafe-call": "error", // any 型の関数呼び出しを検出
+    "typescript/no-unsafe-return": "error", // any 型の return を検出
+    "typescript/no-unsafe-argument": "error", // any 型の引数渡しを検出
+
+    /* Style */
+    "func-style": ["error", "expression"], // 関数宣言よりアロー関数式を優先
+    "no-duplicate-imports": "error", // 同一モジュールからの import を統合
+    "sort-imports": "off", // 自動修正対応してない・不安定・oxcfmt の experimentalSortImports でソートできるため無効
+
+    "import/consistent-type-specifier-style": "off", // type import は inline スタイルを使用, typescript/consistent-type-imports に寄せる
+
+    "typescript/prefer-for-of": "error", // インデックスアクセス不要な場合は for-of を使用
+    "typescript/consistent-type-imports": [
+      "error",
+      { "prefer": "type-imports", "fixStyle": "inline-type-imports" }
+    ], // 型 import は type キーワードを使用
+    "typescript/consistent-type-definitions": ["error", "type"] // 型定義は type を使用（interface より優先）
+
+    /* Project-Specific Custom Restrictions (from CLAUDE.md guidelines) */
+    // `as` type casting は typescript/no-unsafe-type-assertion で検出
+    // consistent-type-assertions は as const / as never も禁止してしまうため使用しない
+  },
+  "overrides": [
+    {
+      "files": ["**/*.{test,spec}.?([mc])[jt]s?(x)"],
+      "rules": {
+        "jest/expect-expect": "error", // テスト関数に expect の呼び出しを強制
+        "jest/no-conditional-expect": "error", // 条件分岐内での expect を禁止
+        "jest/no-disabled-tests": "off", // test.skip の使用はプロジェクト運用に依存
+        "jest/no-export": "error", // テストファイルからの export を禁止
+        "jest/no-focused-tests": "error", // test.only の使用を禁止（コミット防止）
+        "jest/no-standalone-expect": "error", // test/it ブロック外での expect を禁止
+        "jest/require-to-throw-message": "off", // エラーメッセージの検証強制はプロジェクト依存
+        "jest/valid-describe-callback": "error", // describe コールバックの制約（非同期禁止等）を検証
+        "jest/valid-expect": "error", // expect 後のアサーションメソッド呼び出しを強制
+        "jest/valid-title": "error" // test/describe のタイトルが空文字でないことを検証
+
+        // テストコードでも unsafe な `as` は禁止（CLAUDE.md: in ANY context including test code）
+        // typescript/no-unsafe-type-assertion はグローバルで error 設定済み
+      }
+    },
+    {
+      "files": ["**/*.?([mc])[jt]sx"],
+      "rules": {
+        /* React Correctness */
+        "react/rules-of-hooks": "error", // Hooks の呼び出し規約を強制（条件分岐内・ループ内での呼び出しを禁止）
+        "react/exhaustive-deps": "error", // useEffect/useCallback 等の依存配列の完全性を検証
+        "react/jsx-key": "error", // 配列要素のレンダリング時に key を強制
+        "react/jsx-no-duplicate-props": "error", // JSX での props の重複を検出
+        "react/jsx-no-undef": "error", // 未定義のコンポーネントやJSX要素の参照を検出
+        "react/jsx-no-target-blank": "error", // target="_blank" 使用時の security リスクを検出
+        "react/no-string-refs": "error", // 古い string ref の使用を禁止
+        "react/no-danger-with-children": "error", // dangerouslySetInnerHTML と children の同時使用を禁止
+        "react/void-dom-elements-no-children": "error", // void 要素（img/br等）に children を持たせることを禁止
+        "react/no-direct-mutation-state": "error", // state の直接変更を禁止
+
+        /* React Style */
+        "react/jsx-no-useless-fragment": "error", // 不要な Fragment の使用を検出
+        "react/jsx-fragments": "error", // Fragment の記法を統一（shorthand <> 推奨）
+        "react/no-array-index-key": "error", // 配列の index を key として使用することを検出
+
+        /* JSX A11y */
+        "jsx_a11y/alt-text": "off", // image の alt-text 強制
+        "jsx-a11y/anchor-has-content": "error", // anchor 要素にコンテンツを強制
+        "jsx-a11y/anchor-is-valid": "error", // 有効な anchor 要素の使用を強制
+        "jsx-a11y/aria-activedescendant-has-tabindex": "error", // aria-activedescendant を持つ要素に tabindex を強制
+        "jsx-a11y/aria-props": "error", // 有効な ARIA 属性名のみ許可
+        "jsx-a11y/aria-role": "error", // 有効な ARIA role のみ許可
+        "jsx-a11y/aria-unsupported-elements": "error", // ARIA 非対応要素への ARIA 属性を禁止
+        "jsx-a11y/autocomplete-valid": "error", // 有効な autocomplete 属性値を強制
+        "jsx-a11y/click-events-have-key-events": "off", // 過剰なので無効. 必要性が高いプロジェクトでは有効にしても良いかも
+        "jsx-a11y/heading-has-content": "error", // 見出し要素にコンテンツを強制
+        "jsx-a11y/html-has-lang": "error", // html 要素に lang 属性を強制
+        "jsx-a11y/iframe-has-title": "error", // iframe 要素に title 属性を強制
+        "jsx-a11y/img-redundant-alt": "off", // 日本語が多いので検知できない
+        "jsx-a11y/label-has-associated-control": "error", // label 要素と関連コントロールの紐付けを強制
+        "jsx-a11y/lang": "error", // 有効な BCP 47 言語タグを強制
+        "jsx-a11y/media-has-caption": "error", // メディア要素のキャプション強制
+        "jsx-a11y/mouse-events-have-key-events": "off", // 過剰なので無効. 必要性が高いプロジェクトでは有効にしても良いかも
+        "jsx-a11y/no-access-key": "error", // accessKey 禁止
+        "jsx-a11y/no-aria-hidden-on-focusable": "error", // フォーカス可能要素への aria-hidden を禁止
+        "jsx-a11y/no-autofocus": "error", // autoFocus 禁止
+        "jsx-a11y/no-distracting-elements": "error", // marquee/blink 等の注意散漫要素を禁止
+        "jsx-a11y/no-noninteractive-tabindex": "error", // 非インタラクティブ要素への tabindex 制約
+        "jsx-a11y/no-redundant-roles": "error", // 暗黙の role と重複する明示的 role を禁止
+        "jsx-a11y/prefer-tag-over-role": "error", // セマンティック HTML の優先
+        "jsx-a11y/role-has-required-aria-props": "error", // role に必要な ARIA 属性を強制
+        "jsx-a11y/role-supports-aria-props": "error", // role がサポートする ARIA 属性のみ許可
+        "jsx-a11y/scope": "error", // scope 属性の使用を th 要素に限定
+        "jsx-a11y/tabindex-no-positive": "error" // 正の tabindex 値を禁止
+      }
+    },
+    {
+      "files": ["e2e/**"],
+      "rules": {
+        "no-unused-vars": "off",
+        "typescript/no-explicit-any": "off",
+        "typescript/no-unsafe-assignment": "off",
+        "typescript/no-unsafe-member-access": "off",
+        "typescript/no-unsafe-call": "off",
+        "typescript/no-unsafe-return": "off",
+        "typescript/no-unsafe-argument": "off",
+        "node/no-process-env": "off"
+      }
+    },
+    {
+      "files": ["scripts/**"],
+      "rules": {
+        "typescript/no-unsafe-assignment": "off",
+        "typescript/no-unsafe-member-access": "off",
+        "typescript/no-unsafe-call": "off",
+        "typescript/no-unsafe-argument": "off",
+        "typescript/strict-boolean-expressions": "off",
+        "typescript/use-unknown-in-catch-callback-variable": "off"
+      }
+    },
+    {
+      "files": ["**/*.config.ts", "**/*.config.js", "**/*.config.mjs"],
+      "rules": {
+        "node/no-process-env": "off"
+      }
+    }
+  ],
+  "settings": {
+    "jsx-a11y": {
+      "polymorphicPropName": null,
+      "components": {},
+      "attributes": {}
+    },
+    "next": {
+      "rootDir": []
+    },
+    "react": {
+      "formComponents": [],
+      "linkComponents": []
+    },
+    "jsdoc": {
+      "ignorePrivate": false,
+      "ignoreInternal": false,
+      "ignoreReplacesDocs": true,
+      "overrideReplacesDocs": true,
+      "augmentsExtendsReplacesDocs": false,
+      "implementsReplacesDocs": false,
+      "exemptDestructuredRootsFromChecks": false,
+      "tagNamePreference": {}
+    },
+    "vitest": {
+      "typecheck": false
+    }
+  },
+  "env": {
+    "builtin": true
+  },
+  "globals": {},
+  "ignorePatterns": [
+    "**/dist/**",
+    "**/build/**",
+    "**/out/**",
+    "**/.next/**",
+    "**/.turbo/**",
+    "**/.cache/**",
+    "**/.vite/**",
+    "**/*.generated.*",
+    "**/generated/**",
+    "**/*.tsbuildinfo",
+    "src/lib/$path.ts",
+    "src/lib/i18n/locales/*/messages.ts",
+    "src/lib/i18n/locales/*/messages.json",
+    "src/routeTree.gen.ts"
+  ],
+  "options": {
+    "typeCheck": false,
+    "typeAware": true,
+    "reportUnusedDisableDirectives": "deny",
+    "maxWarnings": 10,
+    "denyWarnings": false
+  }
+}

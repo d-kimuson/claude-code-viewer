@@ -6,7 +6,7 @@ import type * as CCSessionProcess from "../../claude-code/models/CCSessionProces
 
 export type InternalEventDeclaration = {
   // biome-ignore lint/complexity/noBannedTypes: correct type
-  heartbeat: {};
+  heartbeat: Record<string, never>;
 
   sessionListChanged: {
     projectId: string;

@@ -3,17 +3,14 @@ import type { SSEStreamingApi } from "hono/streaming";
 import { ulid } from "ulid";
 import type { SSEEventDeclaration } from "../../../../types/sse";
 
-interface TypeSafeSSEService {
+type TypeSafeSSEService = {
   readonly writeSSE: <EventName extends keyof SSEEventDeclaration>(
     event: EventName,
     data: SSEEventDeclaration[EventName],
   ) => Effect.Effect<void, Error>;
-}
+};
 
-export class TypeSafeSSE extends Context.Tag("TypeSafeSSE")<
-  TypeSafeSSE,
-  TypeSafeSSEService
->() {
+export class TypeSafeSSE extends Context.Tag("TypeSafeSSE")<TypeSafeSSE, TypeSafeSSEService>() {
   static make = (stream: SSEStreamingApi) =>
     Layer.succeed(this, {
       writeSSE: <EventName extends keyof SSEEventDeclaration>(

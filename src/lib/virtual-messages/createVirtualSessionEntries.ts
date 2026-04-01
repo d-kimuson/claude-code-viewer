@@ -10,10 +10,7 @@ export const createVirtualSessionEntries = (
   existingSessionIds: ReadonlySet<string>,
 ) =>
   [...virtualMessages.values()]
-    .filter(
-      (vm) =>
-        vm.projectId === projectId && !existingSessionIds.has(vm.sessionId),
-    )
+    .filter((vm) => vm.projectId === projectId && !existingSessionIds.has(vm.sessionId))
     .map((vm) => ({
       id: vm.sessionId,
       jsonlFilePath: "",

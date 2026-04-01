@@ -28,9 +28,7 @@ const LayerImpl = Effect.gen(function* () {
       const absoluteCwd = path.resolve(cwd);
 
       if (!(yield* fs.exists(absoluteCwd))) {
-        return yield* Effect.fail(
-          new NotARepositoryError({ cwd: absoluteCwd }),
-        );
+        return yield* Effect.fail(new NotARepositoryError({ cwd: absoluteCwd }));
       }
 
       // Git will search parent directories for .git, so we don't need to check explicitly
@@ -64,10 +62,9 @@ const LayerImpl = Effect.gen(function* () {
 
   const getCurrentBranch = (cwd: string) =>
     Effect.gen(function* () {
-      const currentBranch = yield* execGitCommand(
-        ["branch", "--show-current"],
-        cwd,
-      ).pipe(Effect.map((result) => result.trim()));
+      const currentBranch = yield* execGitCommand(["branch", "--show-current"], cwd).pipe(
+        Effect.map((result) => result.trim()),
+      );
 
       if (currentBranch === "") {
         return yield* Effect.fail(new DetachedHeadError({ cwd }));
@@ -78,9 +75,7 @@ const LayerImpl = Effect.gen(function* () {
 
   const branchExists = (cwd: string, branchName: string) =>
     Effect.gen(function* () {
-      const result = yield* Effect.either(
-        execGitCommand(["branch", "--exists", branchName], cwd),
-      );
+      const result = yield* Effect.either(execGitCommand(["branch", "--exists", branchName], cwd));
 
       if (Either.isLeft(result)) {
         return false;
@@ -92,14 +87,7 @@ const LayerImpl = Effect.gen(function* () {
   const getCommits = (cwd: string) =>
     Effect.gen(function* () {
       const result = yield* execGitCommand(
-        [
-          "log",
-          "--oneline",
-          "-n",
-          "20",
-          "--format=%H|%s|%an|%ad",
-          "--date=iso",
-        ],
+        ["log", "--oneline", "-n", "20", "--format=%H|%s|%an|%ad", "--date=iso"],
         cwd,
       );
       return parseGitCommitsOutput(result);
@@ -132,39 +120,23 @@ const LayerImpl = Effect.gen(function* () {
         );
       }
 
-      console.log(
-        "[GitService.commit] Committing with message:",
-        trimmedMessage,
-        "in",
-        cwd,
-      );
-      const result = yield* execGitCommand(
-        ["commit", "-m", trimmedMessage],
-        cwd,
-      );
+      console.log("[GitService.commit] Committing with message:", trimmedMessage, "in", cwd);
+      const result = yield* execGitCommand(["commit", "-m", trimmedMessage], cwd);
       console.log("[GitService.commit] Commit result:", result);
 
       // Parse commit SHA from output
       // Git commit output format: "[branch SHA] commit message"
       const shaMatch = result.match(/\[.+\s+([a-f0-9]+)\]/);
       console.log("[GitService.commit] SHA match:", shaMatch);
-      if (shaMatch?.[1]) {
-        console.log(
-          "[GitService.commit] Returning SHA from match:",
-          shaMatch[1],
-        );
+      if (shaMatch?.[1] !== undefined && shaMatch[1] !== "") {
+        console.log("[GitService.commit] Returning SHA from match:", shaMatch[1]);
         return shaMatch[1];
       }
 
       // Fallback: Get SHA from git log
-      console.log(
-        "[GitService.commit] No SHA match, falling back to rev-parse HEAD",
-      );
+      console.log("[GitService.commit] No SHA match, falling back to rev-parse HEAD");
       const sha = yield* execGitCommand(["rev-parse", "HEAD"], cwd);
-      console.log(
-        "[GitService.commit] Returning SHA from rev-parse:",
-        sha.trim(),
-      );
+      console.log("[GitService.commit] Returning SHA from rev-parse:", sha.trim());
       return sha.trim();
     });
 
@@ -246,16 +218,9 @@ const LayerImpl = Effect.gen(function* () {
         .filter((line) => line !== "");
     });
 
-  const compareCommitHash = (
-    cwd: string,
-    targetHash: string,
-    compareHash: string,
-  ) =>
+  const compareCommitHash = (cwd: string, targetHash: string, compareHash: string) =>
     Effect.gen(function* () {
-      const aheadResult = yield* execGitCommand(
-        ["rev-list", `${targetHash}..${compareHash}`],
-        cwd,
-      );
+      const aheadResult = yield* execGitCommand(["rev-list", `${targetHash}..${compareHash}`], cwd);
       const aheadCounts = aheadResult
         .split("\n")
         .map((line) => line.trim())
@@ -285,22 +250,11 @@ const LayerImpl = Effect.gen(function* () {
       return "un-related" as const;
     });
 
-  const getCommitsWithParent = (
-    cwd: string,
-    options: { offset: number; limit: number },
-  ) =>
+  const getCommitsWithParent = (cwd: string, options: { offset: number; limit: number }) =>
     Effect.gen(function* () {
       const { offset, limit } = options;
       const result = yield* execGitCommand(
-        [
-          "log",
-          "-n",
-          String(limit),
-          "--skip",
-          String(offset),
-          "--graph",
-          "--pretty=format:%h %p",
-        ],
+        ["log", "-n", String(limit), "--skip", String(offset), "--graph", "--pretty=format:%h %p"],
         cwd,
       );
 
@@ -313,7 +267,12 @@ const LayerImpl = Effect.gen(function* () {
 
       for (const line of lines) {
         const match = /^\* (?<current>.+) (?<parent>.+)$/.exec(line);
-        if (match?.groups?.current && match.groups.parent) {
+        if (
+          match?.groups?.current !== undefined &&
+          match.groups.current !== "" &&
+          match.groups.parent !== undefined &&
+          match.groups.parent !== ""
+        ) {
           commits.push({
             current: match.groups.current,
             parent: match.groups.parent,
@@ -333,29 +292,20 @@ const LayerImpl = Effect.gen(function* () {
         const commits = yield* getCommitsWithParent(cwd, { offset, limit });
 
         for (const commit of commits) {
-          const branchNames = yield* getBranchNamesByCommitHash(
-            cwd,
-            commit.current,
-          );
+          const branchNames = yield* getBranchNamesByCommitHash(cwd, commit.current);
 
           if (!branchNames.includes(targetBranch)) {
             continue;
           }
 
-          const otherBranchNames = branchNames.filter(
-            (branchName) => branchName !== targetBranch,
-          );
+          const otherBranchNames = branchNames.filter((branchName) => branchName !== targetBranch);
 
           if (otherBranchNames.length === 0) {
             continue;
           }
 
           for (const branchName of otherBranchNames) {
-            const comparison = yield* compareCommitHash(
-              cwd,
-              targetBranch,
-              branchName,
-            );
+            const comparison = yield* compareCommitHash(cwd, targetBranch, branchName);
 
             if (comparison === "behind") {
               return { branch: branchName, hash: commit.current };
@@ -369,19 +319,10 @@ const LayerImpl = Effect.gen(function* () {
       return null;
     });
 
-  const getCommitsBetweenBranches = (
-    cwd: string,
-    baseBranch: string,
-    targetBranch: string,
-  ) =>
+  const getCommitsBetweenBranches = (cwd: string, baseBranch: string, targetBranch: string) =>
     Effect.gen(function* () {
       const result = yield* execGitCommand(
-        [
-          "log",
-          `${baseBranch}..${targetBranch}`,
-          "--format=%H|%s|%an|%ad",
-          "--date=iso",
-        ],
+        ["log", `${baseBranch}..${targetBranch}`, "--format=%H|%s|%an|%ad", "--date=iso"],
         cwd,
       );
 
@@ -414,9 +355,6 @@ const LayerImpl = Effect.gen(function* () {
 
 export type IGitService = InferEffect<typeof LayerImpl>;
 
-export class GitService extends Context.Tag("GitService")<
-  GitService,
-  IGitService
->() {
+export class GitService extends Context.Tag("GitService")<GitService, IGitService>() {
   static Live = Layer.effect(this, LayerImpl);
 }

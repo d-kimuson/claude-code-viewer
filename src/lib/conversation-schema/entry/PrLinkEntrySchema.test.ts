@@ -12,14 +12,11 @@ describe("PrLinkEntrySchema", () => {
       timestamp: "2026-03-30T19:16:39.642Z",
     });
     expect(result.success).toBe(true);
-    if (result.success) {
-      expect(result.data.type).toBe("pr-link");
-      expect(result.data.prNumber).toBe(167);
-      expect(result.data.prUrl).toBe(
-        "https://github.com/d-kimuson/claude-code-viewer/pull/167",
-      );
-      expect(result.data.prRepository).toBe("d-kimuson/claude-code-viewer");
-    }
+    const data = result.success ? result.data : undefined;
+    expect(data?.type).toBe("pr-link");
+    expect(data?.prNumber).toBe(167);
+    expect(data?.prUrl).toBe("https://github.com/d-kimuson/claude-code-viewer/pull/167");
+    expect(data?.prRepository).toBe("d-kimuson/claude-code-viewer");
   });
 
   test("rejects missing sessionId", () => {

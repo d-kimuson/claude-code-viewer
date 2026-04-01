@@ -13,7 +13,7 @@ const importMessages = async (locale: SupportedLocale) => {
       return import("./locales/zh_CN/messages");
     default:
       locale satisfies never;
-      throw new Error(`Unsupported locale: ${locale}`);
+      throw new Error(`Unsupported locale: ${String(locale)}`);
   }
 };
 

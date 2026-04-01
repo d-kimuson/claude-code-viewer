@@ -1,9 +1,6 @@
 import { createStore } from "jotai";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import {
-  rightPanelActiveTabAtom,
-  rightPanelOpenAtom,
-} from "../lib/atoms/rightPanel";
+import { rightPanelActiveTabAtom, rightPanelOpenAtom } from "../lib/atoms/rightPanel";
 
 /**
  * Integration tests for useSyncRightPanelWithSearchParams hook.
@@ -52,8 +49,7 @@ describe("useSyncRightPanelWithSearchParams", () => {
         const isMobile = false;
 
         // Apply the same logic as the hook
-        const effectiveOpen =
-          urlRightPanel !== undefined ? urlRightPanel : !isMobile;
+        const effectiveOpen = urlRightPanel ?? !isMobile;
         store.set(rightPanelOpenAtom, effectiveOpen);
 
         expect(store.get(rightPanelOpenAtom)).toBe(true);
@@ -68,8 +64,7 @@ describe("useSyncRightPanelWithSearchParams", () => {
         const isMobile = true;
 
         // Apply the same logic as the hook
-        const effectiveOpen =
-          urlRightPanel !== undefined ? urlRightPanel : !isMobile;
+        const effectiveOpen = urlRightPanel ?? !isMobile;
         store.set(rightPanelOpenAtom, effectiveOpen);
 
         expect(store.get(rightPanelOpenAtom)).toBe(false);
@@ -83,8 +78,7 @@ describe("useSyncRightPanelWithSearchParams", () => {
         const urlRightPanel = true;
         const isMobile = false;
 
-        const effectiveOpen =
-          urlRightPanel !== undefined ? urlRightPanel : !isMobile;
+        const effectiveOpen = urlRightPanel ?? !isMobile;
         store.set(rightPanelOpenAtom, effectiveOpen);
 
         expect(store.get(rightPanelOpenAtom)).toBe(true);
@@ -96,8 +90,7 @@ describe("useSyncRightPanelWithSearchParams", () => {
         const urlRightPanel = false;
         const isMobile = false;
 
-        const effectiveOpen =
-          urlRightPanel !== undefined ? urlRightPanel : !isMobile;
+        const effectiveOpen = urlRightPanel ?? !isMobile;
         store.set(rightPanelOpenAtom, effectiveOpen);
 
         expect(store.get(rightPanelOpenAtom)).toBe(false);
@@ -109,8 +102,7 @@ describe("useSyncRightPanelWithSearchParams", () => {
         const urlRightPanel = true;
         const isMobile = true;
 
-        const effectiveOpen =
-          urlRightPanel !== undefined ? urlRightPanel : !isMobile;
+        const effectiveOpen = urlRightPanel ?? !isMobile;
         store.set(rightPanelOpenAtom, effectiveOpen);
 
         expect(store.get(rightPanelOpenAtom)).toBe(true);
@@ -122,8 +114,7 @@ describe("useSyncRightPanelWithSearchParams", () => {
         const urlRightPanel = false;
         const isMobile = true;
 
-        const effectiveOpen =
-          urlRightPanel !== undefined ? urlRightPanel : !isMobile;
+        const effectiveOpen = urlRightPanel ?? !isMobile;
         store.set(rightPanelOpenAtom, effectiveOpen);
 
         expect(store.get(rightPanelOpenAtom)).toBe(false);
@@ -226,8 +217,7 @@ describe("useSyncRightPanelWithSearchParams", () => {
       vi.stubGlobal("window", { innerWidth: 1024 });
       const urlRightPanel = undefined;
       const isMobile = false;
-      const effectiveOpen =
-        urlRightPanel !== undefined ? urlRightPanel : !isMobile;
+      const effectiveOpen = urlRightPanel ?? !isMobile;
       store.set(rightPanelOpenAtom, effectiveOpen);
       expect(store.get(rightPanelOpenAtom)).toBe(true);
 
@@ -235,10 +225,7 @@ describe("useSyncRightPanelWithSearchParams", () => {
       vi.stubGlobal("window", { innerWidth: 375 });
       const mobileUrlRightPanel = undefined;
       const isMobileDevice = true;
-      const mobileEffectiveOpen =
-        mobileUrlRightPanel !== undefined
-          ? mobileUrlRightPanel
-          : !isMobileDevice;
+      const mobileEffectiveOpen = mobileUrlRightPanel ?? !isMobileDevice;
       store.set(rightPanelOpenAtom, mobileEffectiveOpen);
       expect(store.get(rightPanelOpenAtom)).toBe(false);
     });

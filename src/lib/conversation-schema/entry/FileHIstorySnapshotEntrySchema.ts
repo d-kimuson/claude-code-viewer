@@ -14,6 +14,4 @@ export const FileHistorySnapshotEntrySchema = z.object({
   isSnapshotUpdate: z.boolean(),
 });
 
-export type FileHistorySnapshotEntry = z.infer<
-  typeof FileHistorySnapshotEntrySchema
->;
+export type FileHistorySnapshotEntry = z.infer<typeof FileHistorySnapshotEntrySchema>;

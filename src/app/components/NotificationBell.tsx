@@ -2,32 +2,23 @@ import { Trans } from "@lingui/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { BellIcon, CheckIcon } from "lucide-react";
-import { type FC, useEffect, useRef } from "react";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { type FC, useEffect, useMemo, useRef } from "react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { honoClient } from "@/lib/api/client";
 import { notificationsQuery } from "@/lib/api/queries";
 import { cn } from "@/lib/utils";
 import { formatLocaleDate } from "../../lib/date/formatLocaleDate";
 
-interface NotificationBellProps {
+type NotificationBellProps = {
   sessionId?: string;
-}
+};
 
 export const NotificationBell: FC<NotificationBellProps> = ({ sessionId }) => {
   const queryClient = useQueryClient();
 
   const { data } = useQuery(notificationsQuery);
-  const notifications = data?.notifications ?? [];
+  const notifications = useMemo(() => data?.notifications ?? [], [data?.notifications]);
 
   const consumeMutation = useMutation({
     mutationFn: async (targetSessionId: string) => {
@@ -37,7 +28,7 @@ export const NotificationBell: FC<NotificationBellProps> = ({ sessionId }) => {
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: notificationsQuery.queryKey,
       });
     },
@@ -46,7 +37,7 @@ export const NotificationBell: FC<NotificationBellProps> = ({ sessionId }) => {
   // Auto-consume notifications when the target session is opened
   const consumedSessionRef = useRef<string | null>(null);
   useEffect(() => {
-    if (!sessionId) return;
+    if (sessionId === undefined || sessionId === "") return;
     if (consumedSessionRef.current === sessionId) return;
 
     const hasNotification = notifications.some(
@@ -102,9 +93,7 @@ export const NotificationBell: FC<NotificationBellProps> = ({ sessionId }) => {
             <p className="text-sm font-medium">
               <Trans id="notification.title" />
             </p>
-            {count > 0 && (
-              <span className="text-xs text-muted-foreground">{count}</span>
-            )}
+            {count > 0 && <span className="text-xs text-muted-foreground">{count}</span>}
           </div>
 
           <div className="max-h-[300px] overflow-y-auto">
@@ -122,10 +111,7 @@ export const NotificationBell: FC<NotificationBellProps> = ({ sessionId }) => {
                     key={notification.id}
                     to="/projects/$projectId/session"
                     params={{ projectId: notification.projectId }}
-                    search={(prev) => ({
-                      ...prev,
-                      sessionId: notification.sessionId,
-                    })}
+                    search={{ sessionId: notification.sessionId }}
                     className="flex items-start gap-2.5 rounded-md p-2 text-sm transition-colors hover:bg-muted/50"
                   >
                     <div className="mt-0.5 h-2 w-2 rounded-full bg-primary flex-shrink-0" />

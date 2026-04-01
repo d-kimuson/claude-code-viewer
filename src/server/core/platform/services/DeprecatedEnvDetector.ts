@@ -29,6 +29,7 @@ const DEPRECATED_ENVS: Record<string, DeprecatedEnvConfig> = {
 
 const getOptionalEnv = (key: string): string | undefined => {
   // biome-ignore lint/style/noProcessEnv: allow only here
+  // oxlint-disable-next-line node/no-process-env -- configuration boundary
   return process.env[key] ?? undefined;
 };
 
@@ -43,18 +44,20 @@ const detectDeprecatedEnvs = (): DeprecationWarning[] => {
           type: "removed",
           envKey,
           message: `Environment variable ${envKey} has been removed.`,
-          suggestion: config.newEnv
-            ? `Please use ${config.newEnv} environment variable or ${config.cliOption} CLI option instead.`
-            : `Please use ${config.cliOption} CLI option instead.`,
+          suggestion:
+            config.newEnv !== null
+              ? `Please use ${config.newEnv} environment variable or ${config.cliOption} CLI option instead.`
+              : `Please use ${config.cliOption} CLI option instead.`,
         });
       } else {
         warnings.push({
           type: "deprecated",
           envKey,
           message: `Environment variable ${envKey} is deprecated and will be removed in a future release.`,
-          suggestion: config.newEnv
-            ? `Please migrate to ${config.newEnv} environment variable or ${config.cliOption} CLI option.`
-            : `Please use ${config.cliOption} CLI option instead.`,
+          suggestion:
+            config.newEnv !== null
+              ? `Please migrate to ${config.newEnv} environment variable or ${config.cliOption} CLI option.`
+              : `Please use ${config.cliOption} CLI option instead.`,
         });
       }
     }
@@ -89,9 +92,7 @@ export const checkDeprecatedEnvs = Effect.gen(function* () {
   }
 
   yield* Console.log("For more details, see:");
-  yield* Console.log(
-    "  https://github.com/d-kimuson/claude-code-viewer#configuration",
-  );
+  yield* Console.log("  https://github.com/d-kimuson/claude-code-viewer#configuration");
   yield* Console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
   yield* Console.log("");
 

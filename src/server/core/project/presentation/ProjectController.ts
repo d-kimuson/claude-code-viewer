@@ -74,19 +74,11 @@ const LayerImpl = Effect.gen(function* () {
               : session.id;
 
           const existingSession = sessionMap.get(title);
-          if (existingSession) {
+          if (existingSession !== undefined) {
             // Keep the session with the latest modification date
-            if (session.lastModifiedAt && existingSession.lastModifiedAt) {
-              if (session.lastModifiedAt > existingSession.lastModifiedAt) {
-                sessionMap.set(title, session);
-              }
-            } else if (
-              session.lastModifiedAt &&
-              !existingSession.lastModifiedAt
-            ) {
+            if (session.lastModifiedAt > existingSession.lastModifiedAt) {
               sessionMap.set(title, session);
             }
-            // If no modification dates, keep the existing one
           } else {
             sessionMap.set(title, session);
           }
@@ -129,8 +121,7 @@ const LayerImpl = Effect.gen(function* () {
       // if it doesn't exist when running /init command
       const claudeProjectFilePath = yield* computeClaudeProjectFilePath({
         projectPath,
-        claudeProjectsDirPath: (yield* context.claudeCodePaths)
-          .claudeProjectsDirPath,
+        claudeProjectsDirPath: (yield* context.claudeCodePaths).claudeProjectsDirPath,
       });
       const projectId = encodeProjectId(claudeProjectFilePath);
 

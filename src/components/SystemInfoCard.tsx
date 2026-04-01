@@ -5,31 +5,20 @@ import { type FC, type ReactNode, useState } from "react";
 import { useFeatureFlags } from "@/hooks/useFeatureFlags";
 import { claudeCodeMetaQuery, systemVersionQuery } from "@/lib/api/queries";
 import { Badge } from "./ui/badge";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "./ui/collapsible";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "./ui/tooltip";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/collapsible";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 
-interface FeatureInfo {
+type FeatureInfo = {
   title: ReactNode;
   description: ReactNode;
-}
+};
 
 const getFeatureInfo = (featureName: string): FeatureInfo => {
   switch (featureName) {
     case "tool-approval":
       return {
         title: <Trans id="system_info.feature.tool_approval.title" />,
-        description: (
-          <Trans id="system_info.feature.tool_approval.description" />
-        ),
+        description: <Trans id="system_info.feature.tool_approval.description" />,
       };
     case "agent-sdk":
       return {
@@ -39,23 +28,17 @@ const getFeatureInfo = (featureName: string): FeatureInfo => {
     case "sidechain-separation":
       return {
         title: <Trans id="system_info.feature.sidechain_separation.title" />,
-        description: (
-          <Trans id="system_info.feature.sidechain_separation.description" />
-        ),
+        description: <Trans id="system_info.feature.sidechain_separation.description" />,
       };
     case "uuid-on-sdk-message":
       return {
         title: <Trans id="system_info.feature.uuid_on_sdk_message.title" />,
-        description: (
-          <Trans id="system_info.feature.uuid_on_sdk_message.description" />
-        ),
+        description: <Trans id="system_info.feature.uuid_on_sdk_message.description" />,
       };
     case "run-skills-directly":
       return {
         title: <Trans id="system_info.feature.run_skills_directly.title" />,
-        description: (
-          <Trans id="system_info.feature.run_skills_directly.description" />
-        ),
+        description: <Trans id="system_info.feature.run_skills_directly.description" />,
       };
     default:
       return {
@@ -129,9 +112,7 @@ export const SystemInfoCard: FC = () => {
                 <Trans id="system_info.version_label" />
               </span>
               <Badge variant="secondary" className="text-xs font-mono">
-                {claudeCodeMetaData?.version || (
-                  <Trans id="system_info.unknown" />
-                )}
+                {claudeCodeMetaData?.version ?? <Trans id="system_info.unknown" />}
               </Badge>
             </div>
           </div>
@@ -175,10 +156,7 @@ export const SystemInfoCard: FC = () => {
                               {featureInfo.title}
                             </span>
                           </TooltipTrigger>
-                          <TooltipContent
-                            side="right"
-                            className="max-w-xs text-xs"
-                          >
+                          <TooltipContent side="right" className="max-w-xs text-xs">
                             {featureInfo.description}
                           </TooltipContent>
                         </Tooltip>

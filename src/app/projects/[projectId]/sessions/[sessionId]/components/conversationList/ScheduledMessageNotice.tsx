@@ -8,9 +8,7 @@ type ScheduledMessageNoticeProps = {
   scheduledJobs: SchedulerJob[];
 };
 
-export const ScheduledMessageNotice: FC<ScheduledMessageNoticeProps> = ({
-  scheduledJobs,
-}) => {
+export const ScheduledMessageNotice: FC<ScheduledMessageNoticeProps> = ({ scheduledJobs }) => {
   const { i18n } = useLingui();
 
   if (scheduledJobs.length === 0) {
@@ -33,9 +31,7 @@ export const ScheduledMessageNotice: FC<ScheduledMessageNoticeProps> = ({
                 return null;
               }
 
-              const scheduledTime = new Date(
-                job.schedule.reservedExecutionTime,
-              );
+              const scheduledTime = new Date(job.schedule.reservedExecutionTime);
               const formattedTime = i18n.date(scheduledTime, {
                 year: "numeric",
                 month: "2-digit",
@@ -63,8 +59,7 @@ export const ScheduledMessageNotice: FC<ScheduledMessageNoticeProps> = ({
                     )}
                   </div>
                   <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-2">
-                    <Trans id="session.scheduled_messages.message_label" />:{" "}
-                    {job.message.content}
+                    <Trans id="session.scheduled_messages.message_label" />: {job.message.content}
                   </p>
                 </div>
               );

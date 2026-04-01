@@ -13,11 +13,7 @@ export type FileCompletionResult = {
   projectPath: string;
 };
 
-export const useFileCompletion = (
-  projectId: string,
-  basePath: string,
-  enabled = true,
-) => {
+export const useFileCompletion = (projectId: string, basePath: string, enabled = true) => {
   return useQuery({
     queryKey: fileCompletionQuery(projectId, basePath).queryKey,
     queryFn: fileCompletionQuery(projectId, basePath).queryFn,

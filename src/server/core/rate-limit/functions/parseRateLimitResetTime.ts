@@ -12,8 +12,7 @@
 export const parseRateLimitResetTime = (resetTimeText: string): string => {
   // Pattern to match: "resets <time> (<timezone>)"
   // Time formats: "8pm", "8PM", "8 pm", "8:30pm", "3:00 AM", "12am", "12pm"
-  const pattern =
-    /resets\s+(\d{1,2})(?::(\d{2}))?\s*(am|pm|AM|PM)\s*\(([^)]+)\)/i;
+  const pattern = /resets\s+(\d{1,2})(?::(\d{2}))?\s*(am|pm|AM|PM)\s*\(([^)]+)\)/i;
   const match = pattern.exec(resetTimeText);
 
   if (!match) {
@@ -25,17 +24,12 @@ export const parseRateLimitResetTime = (resetTimeText: string): string => {
   const meridiem = match[3];
   const timezone = match[4];
 
-  if (
-    hoursStr === undefined ||
-    meridiem === undefined ||
-    timezone === undefined
-  ) {
+  if (hoursStr === undefined || meridiem === undefined || timezone === undefined) {
     return getFallbackTime();
   }
 
   const hours = Number.parseInt(hoursStr, 10);
-  const minutes =
-    minutesStr !== undefined ? Number.parseInt(minutesStr, 10) : 0;
+  const minutes = minutesStr !== undefined ? Number.parseInt(minutesStr, 10) : 0;
 
   if (Number.isNaN(hours) || Number.isNaN(minutes)) {
     return getFallbackTime();
@@ -103,14 +97,8 @@ const getTimezoneOffsetMinutes = (timezone: string, date: Date): number => {
     parts: Intl.DateTimeFormatPart[],
   ): { day: number; hour: number; minute: number } => ({
     day: Number.parseInt(parts.find((p) => p.type === "day")?.value ?? "0", 10),
-    hour: Number.parseInt(
-      parts.find((p) => p.type === "hour")?.value ?? "0",
-      10,
-    ),
-    minute: Number.parseInt(
-      parts.find((p) => p.type === "minute")?.value ?? "0",
-      10,
-    ),
+    hour: Number.parseInt(parts.find((p) => p.type === "hour")?.value ?? "0", 10),
+    minute: Number.parseInt(parts.find((p) => p.type === "minute")?.value ?? "0", 10),
   });
 
   const utc = extractDateTime(utcParts);
@@ -123,8 +111,7 @@ const getTimezoneOffsetMinutes = (timezone: string, date: Date): number => {
   if (dayDiff > 15) dayDiff -= 31; // Crossed month boundary backwards
   if (dayDiff < -15) dayDiff += 31; // Crossed month boundary forwards
 
-  const offsetMinutes =
-    dayDiff * 24 * 60 + (tz.hour - utc.hour) * 60 + (tz.minute - utc.minute);
+  const offsetMinutes = dayDiff * 24 * 60 + (tz.hour - utc.hour) * 60 + (tz.minute - utc.minute);
 
   return offsetMinutes;
 };
@@ -133,11 +120,7 @@ const getTimezoneOffsetMinutes = (timezone: string, date: Date): number => {
  * Creates a Date object for the given time in the specified timezone.
  * If the resulting time is in the past, it adjusts to the next day.
  */
-const createDateInTimezone = (
-  hours: number,
-  minutes: number,
-  timezone: string,
-): Date | null => {
+const createDateInTimezone = (hours: number, minutes: number, timezone: string): Date | null => {
   const now = new Date();
 
   try {
@@ -163,7 +146,7 @@ const createDateInTimezone = (
     const month = parts.find((p) => p.type === "month")?.value;
     const day = parts.find((p) => p.type === "day")?.value;
 
-    if (!year || !month || !day) {
+    if (year === undefined || month === undefined || day === undefined) {
       return null;
     }
 
@@ -176,9 +159,7 @@ const createDateInTimezone = (
     const baseDate = new Date(`${year}-${month}-${day}T00:00:00.000Z`);
 
     // Add the UTC minutes
-    const resetDate = new Date(
-      baseDate.getTime() + totalUtcMinutes * 60 * 1000,
-    );
+    const resetDate = new Date(baseDate.getTime() + totalUtcMinutes * 60 * 1000);
 
     // If the reset time is in the past or equal to now, add one day
     if (resetDate.getTime() <= now.getTime()) {

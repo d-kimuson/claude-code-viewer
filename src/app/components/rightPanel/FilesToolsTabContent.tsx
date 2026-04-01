@@ -26,11 +26,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { agentSessionListQuery, agentSessionQuery } from "@/lib/api/queries";
 import { extractAllEditedFiles, extractToolCalls } from "@/lib/file-viewer";
 import { extractLatestTodos } from "@/lib/todo-viewer";
@@ -40,10 +36,10 @@ import { FileContentDialog } from "../../projects/[projectId]/sessions/[sessionI
 import { useSession } from "../../projects/[projectId]/sessions/[sessionId]/hooks/useSession";
 import { CollapsibleTodoSection } from "./common/CollapsibleTodoSection";
 
-interface FilesToolsTabContentProps {
+type FilesToolsTabContentProps = {
   projectId: string;
   sessionId: string;
-}
+};
 
 type GroupedFiles = {
   internal: readonly {
@@ -58,15 +54,14 @@ type GroupedFiles = {
   }[];
 };
 
-const sortByDisplayPath = <T extends { displayPath: string }>(
-  files: T[],
-): T[] => files.toSorted((a, b) => a.displayPath.localeCompare(b.displayPath));
+const sortByDisplayPath = <T extends { displayPath: string }>(files: T[]): T[] =>
+  files.toSorted((a, b) => a.displayPath.localeCompare(b.displayPath));
 
 const groupFilesByProject = (
   files: readonly { filePath: string; toolName: string }[],
   cwd: string | undefined,
 ): GroupedFiles => {
-  if (!cwd) {
+  if (cwd === undefined || cwd === "") {
     const external = files.map((f) => ({
       ...f,
       displayPath: f.filePath,
@@ -114,7 +109,7 @@ const groupFilesByProject = (
   };
 };
 
-interface CollapsibleSectionProps {
+type CollapsibleSectionProps = {
   title: React.ReactNode;
   count: number;
   defaultOpen?: boolean; // defaults to false (collapsed)
@@ -122,7 +117,7 @@ interface CollapsibleSectionProps {
   icon?: React.ReactNode;
   /** sticky top position in pixels (for stacking multiple sticky headers) */
   stickyTop?: number;
-}
+};
 
 const CollapsibleSection: FC<CollapsibleSectionProps> = ({
   title,
@@ -151,13 +146,9 @@ const CollapsibleSection: FC<CollapsibleSectionProps> = ({
         )}
         {icon}
         <span className="flex-1 text-left">{title}</span>
-        <span className="text-[10px] bg-muted px-1.5 py-0.5 rounded-full">
-          {count}
-        </span>
+        <span className="text-[10px] bg-muted px-1.5 py-0.5 rounded-full">{count}</span>
       </button>
-      {isOpen && (
-        <div className="px-1 pb-2 border-b border-border/40">{children}</div>
-      )}
+      {isOpen && <div className="px-1 pb-2 border-b border-border/40">{children}</div>}
     </>
   );
 };
@@ -182,26 +173,19 @@ const FileListItem: FC<{
   return (
     <div className="flex items-center gap-2 px-2 py-1.5 text-xs font-normal hover:bg-accent rounded-md transition-colors">
       <div className="flex items-center gap-2 flex-1 min-w-0">
-        {isExternal ? (
+        {isExternal === true ? (
           <ExternalLinkIcon className="h-3.5 w-3.5 flex-shrink-0 text-muted-foreground" />
         ) : (
           <FileIcon className="h-3.5 w-3.5 flex-shrink-0 text-muted-foreground" />
         )}
-        <span className="truncate text-left flex-1 font-mono text-xs">
-          {displayPath}
-        </span>
+        <span className="truncate text-left flex-1 font-mono text-xs">{displayPath}</span>
         <span className="text-[10px] text-muted-foreground/70 flex-shrink-0 bg-muted/50 px-1.5 py-0.5 rounded">
           {toolName}
         </span>
       </div>
       <div className="flex items-center gap-1 flex-shrink-0">
         <FileContentDialog projectId={projectId} filePaths={[filePath]}>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-6 w-6 p-0"
-            aria-label="Open file"
-          >
+          <Button variant="ghost" size="sm" className="h-6 w-6 p-0" aria-label="Open file">
             <Eye className="h-3.5 w-3.5 text-muted-foreground" />
           </Button>
         </FileContentDialog>
@@ -209,7 +193,7 @@ const FileListItem: FC<{
           variant="ghost"
           size="sm"
           className="h-6 w-6 p-0"
-          onClick={handleCopyPath}
+          onClick={() => void handleCopyPath()}
           aria-label="Copy file path"
         >
           <CopyIcon className="h-3.5 w-3.5 text-muted-foreground" />
@@ -242,9 +226,7 @@ const ToolCallItem: FC<{
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
           <span className="font-medium text-foreground">{name}</span>
-          <span className="text-[10px] text-muted-foreground">
-            {formattedTime}
-          </span>
+          <span className="text-[10px] text-muted-foreground">{formattedTime}</span>
         </div>
         {inputSummary && (
           <p className="text-[10px] text-muted-foreground truncate mt-0.5 font-mono">
@@ -285,13 +267,9 @@ const StaticCollapsibleSection: FC<CollapsibleSectionProps> = ({
         <ChevronDownIcon className="w-3.5 h-3.5" />
         {icon}
         <span className="flex-1 text-left">{title}</span>
-        <span className="text-[10px] bg-muted px-1.5 py-0.5 rounded-full">
-          {count}
-        </span>
+        <span className="text-[10px] bg-muted px-1.5 py-0.5 rounded-full">{count}</span>
       </div>
-      {defaultOpen && (
-        <div className="px-1 pb-2 border-b border-border/40">{children}</div>
-      )}
+      {defaultOpen && <div className="px-1 pb-2 border-b border-border/40">{children}</div>}
     </>
   );
 };
@@ -364,7 +342,7 @@ const AgentSessionDialog: FC<{
               <p className="text-sm text-destructive">
                 <Trans id="assistant.tool.error_loading_task" />
               </p>
-              <Button variant="outline" size="sm" onClick={() => refetch()}>
+              <Button variant="outline" size="sm" onClick={() => void refetch()}>
                 <Trans id="assistant.tool.retry" />
               </Button>
             </div>
@@ -400,8 +378,7 @@ const AgentSessionItem: FC<{
   onClick: () => void;
 }> = ({ agentId, firstMessage, onClick }) => {
   const displayText = firstMessage ?? `Agent ${agentId.slice(0, 8)}`;
-  const truncated =
-    displayText.length > 80 ? `${displayText.slice(0, 80)}...` : displayText;
+  const truncated = displayText.length > 80 ? `${displayText.slice(0, 80)}...` : displayText;
 
   return (
     <Button
@@ -473,20 +450,19 @@ export const EmptyFilesToolsTabContent: FC = () => {
   );
 };
 
-export const FilesToolsTabContent: FC<FilesToolsTabContentProps> = ({
-  projectId,
-  sessionId,
-}) => {
+export const FilesToolsTabContent: FC<FilesToolsTabContentProps> = ({ projectId, sessionId }) => {
   const { conversations } = useSession(projectId, sessionId);
   const [selectedTools, setSelectedTools] = useState<Set<string>>(new Set());
   const [openAgentId, setOpenAgentId] = useState<string | null>(null);
 
   // Agent sessions
-  const { data: agentSessionsData, isPending: isAgentSessionsPending } =
-    useQuery({
-      ...agentSessionListQuery(projectId, sessionId),
-    });
-  const agentSessions = agentSessionsData?.agentSessions ?? [];
+  const { data: agentSessionsData, isPending: isAgentSessionsPending } = useQuery({
+    ...agentSessionListQuery(projectId, sessionId),
+  });
+  const agentSessions = useMemo(
+    () => agentSessionsData?.agentSessions ?? [],
+    [agentSessionsData?.agentSessions],
+  );
   const hasAgentSessions = agentSessions.length > 0;
 
   const openAgentTitle = useMemo(() => {
@@ -504,16 +480,10 @@ export const FilesToolsTabContent: FC<FilesToolsTabContentProps> = ({
   }, []);
 
   // Edited files
-  const editedFiles = useMemo(
-    () => extractAllEditedFiles(conversations),
-    [conversations],
-  );
+  const editedFiles = useMemo(() => extractAllEditedFiles(conversations), [conversations]);
 
   // Tool calls
-  const toolCalls = useMemo(
-    () => extractToolCalls(conversations),
-    [conversations],
-  );
+  const toolCalls = useMemo(() => extractToolCalls(conversations), [conversations]);
 
   // Get unique tool names for filter
   const uniqueToolNames = useMemo(() => {
@@ -536,19 +506,12 @@ export const FilesToolsTabContent: FC<FilesToolsTabContentProps> = ({
     return undefined;
   }, [conversations]);
 
-  const groupedFiles = useMemo(
-    () => groupFilesByProject(editedFiles, cwd),
-    [editedFiles, cwd],
-  );
+  const groupedFiles = useMemo(() => groupFilesByProject(editedFiles, cwd), [editedFiles, cwd]);
 
   // Todo items
-  const latestTodos = useMemo(
-    () => extractLatestTodos(conversations),
-    [conversations],
-  );
+  const latestTodos = useMemo(() => extractLatestTodos(conversations), [conversations]);
 
-  const hasEditedFiles =
-    groupedFiles.internal.length > 0 || groupedFiles.external.length > 0;
+  const hasEditedFiles = groupedFiles.internal.length > 0 || groupedFiles.external.length > 0;
   const hasToolCalls = filteredToolCalls.length > 0;
 
   const handleToggleTool = (toolName: string) => {

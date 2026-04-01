@@ -11,39 +11,34 @@ import {
 import { type FC, memo, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
-import type { ReviewComment } from "@/lib/atoms/reviewComments";
-import { useReviewComments } from "@/lib/atoms/reviewComments";
+import { useReviewComments, type ReviewComment } from "@/lib/atoms/reviewComments";
 import { cn } from "@/lib/utils";
 import type { DiffHunk, DiffLine, FileDiff } from "./types";
 
-interface ReviewProps {
+type ReviewProps = {
   filename: string;
   reviewSessionId: string;
-}
+};
 
-interface DiffViewerProps {
+type DiffViewerProps = {
   fileDiff: FileDiff;
   className?: string;
   filename?: string;
   reviewSessionId?: string;
-}
+};
 
-interface DiffHunkProps {
+type DiffHunkProps = {
   hunk: DiffHunk;
-}
+};
 
-interface DiffContentRowsProps {
+type DiffContentRowsProps = {
   hunks: FileDiff["hunks"];
   reviewProps?: ReviewProps;
   commentsByLine?: ReadonlyMap<number, readonly ReviewComment[]>;
   onRemoveComment?: (id: string) => void;
-}
+};
 
 const diffMonoClass =
   '[font-family:"Fira_Code","Fira_Mono",Menlo,Consolas,"DejaVu_Sans_Mono",monospace]';
@@ -66,14 +61,13 @@ const getStickyCellClasses = (type: DiffHunk["lines"][number]["type"]) => {
   });
 };
 
-const getLineNumber = (line: DiffLine): number =>
-  line.newLineNumber ?? line.oldLineNumber ?? 0;
+const getLineNumber = (line: DiffLine): number => line.newLineNumber ?? line.oldLineNumber ?? 0;
 
-interface CommentFormProps {
+type CommentFormProps = {
   reviewProps: ReviewProps;
   line: DiffLine;
   onClose: () => void;
-}
+};
 
 const CommentForm: FC<CommentFormProps> = ({ reviewProps, line, onClose }) => {
   const [content, setContent] = useState("");
@@ -107,7 +101,6 @@ const CommentForm: FC<CommentFormProps> = ({ reviewProps, line, onClose }) => {
         onKeyDown={handleKeyDown}
         placeholder={i18n._("review.comment.placeholder")}
         className="min-h-[72px] border-0 bg-transparent px-2.5 text-[13px] leading-relaxed shadow-none ring-0 placeholder:text-muted-foreground/50 focus-visible:ring-0"
-        autoFocus
       />
       <div className="flex items-center justify-between border-t border-border/40 pt-2">
         <span className="text-[10px] text-muted-foreground/50">⌘ + Enter</span>
@@ -135,12 +128,12 @@ const CommentForm: FC<CommentFormProps> = ({ reviewProps, line, onClose }) => {
   );
 };
 
-interface CommentButtonProps {
+type CommentButtonProps = {
   reviewProps: ReviewProps;
   line: DiffLine;
   lineComments: readonly ReviewComment[];
   onRemoveComment: (id: string) => void;
-}
+};
 
 const ExistingComment: FC<{
   comment: ReviewComment;
@@ -148,9 +141,7 @@ const ExistingComment: FC<{
 }> = ({ comment, onRemove }) => {
   return (
     <div className="group/comment relative rounded-md border border-border/50 bg-muted/30 px-2.5 py-2 transition-colors hover:border-border">
-      <p className="pr-5 text-[13px] leading-relaxed text-foreground/90">
-        {comment.content}
-      </p>
+      <p className="pr-5 text-[13px] leading-relaxed text-foreground/90">{comment.content}</p>
       <button
         type="button"
         onClick={() => onRemove(comment.id)}
@@ -200,20 +191,12 @@ const CommentButton: FC<CommentButtonProps> = ({
         {hasComments && (
           <div className="space-y-1.5 border-b border-border/40 bg-muted/20 p-3">
             {lineComments.map((comment) => (
-              <ExistingComment
-                key={comment.id}
-                comment={comment}
-                onRemove={onRemoveComment}
-              />
+              <ExistingComment key={comment.id} comment={comment} onRemove={onRemoveComment} />
             ))}
           </div>
         )}
         <div className="p-3">
-          <CommentForm
-            reviewProps={reviewProps}
-            line={line}
-            onClose={() => setOpen(false)}
-          />
+          <CommentForm reviewProps={reviewProps} line={line} onClose={() => setOpen(false)} />
         </div>
       </PopoverContent>
     </Popover>
@@ -234,26 +217,20 @@ const DiffHunkComponent: FC<DiffHunkProps> = ({ hunk }) => {
               {
                 "border-green-200 border-l-green-400 dark:border-green-800/50":
                   line.type === "added",
-                "border-red-200 border-l-red-400 dark:border-red-800/50":
-                  line.type === "deleted",
-                "border-blue-200 border-l-blue-400 dark:border-blue-800/50":
-                  line.type === "hunk",
+                "border-red-200 border-l-red-400 dark:border-red-800/50": line.type === "deleted",
+                "border-blue-200 border-l-blue-400 dark:border-blue-800/50": line.type === "hunk",
                 "border-gray-200 border-l-transparent dark:border-gray-700":
                   line.type === "unchanged" || line.type === "context",
               },
             )}
           >
             <div className="border-r px-1 py-0.5 text-right text-xs leading-tight tabular-nums border-gray-200 dark:border-gray-700">
-              {line.type !== "added" &&
-              line.type !== "hunk" &&
-              line.oldLineNumber
+              {line.type !== "added" && line.type !== "hunk" && line.oldLineNumber !== undefined
                 ? line.oldLineNumber
                 : "\u00A0"}
             </div>
             <div className="px-1 py-0.5 text-right text-xs leading-tight tabular-nums">
-              {line.type !== "deleted" &&
-              line.type !== "hunk" &&
-              line.newLineNumber
+              {line.type !== "deleted" && line.type !== "hunk" && line.newLineNumber !== undefined
                 ? line.newLineNumber
                 : "\u00A0"}
             </div>
@@ -295,7 +272,7 @@ const DiffContentRows: FC<DiffContentRowsProps> = ({
                     "border-gray-100 border-l-transparent dark:border-gray-800":
                       line.type === "unchanged" || line.type === "context",
                   },
-                  reviewProps != null && line.type !== "hunk" && "group",
+                  reviewProps !== undefined && line.type !== "hunk" && "group",
                 )}
               >
                 <div
@@ -305,9 +282,9 @@ const DiffContentRows: FC<DiffContentRowsProps> = ({
                     diffMonoClass,
                   )}
                 >
-                  {reviewProps != null &&
+                  {reviewProps !== undefined &&
                     line.type !== "hunk" &&
-                    onRemoveComment != null && (
+                    onRemoveComment !== undefined && (
                       <CommentButton
                         reviewProps={reviewProps}
                         line={line}
@@ -318,11 +295,9 @@ const DiffContentRows: FC<DiffContentRowsProps> = ({
                   <span
                     data-slot="diff-sign"
                     className={cn("absolute left-2 top-0.5 w-4 text-center", {
-                      "text-green-600 dark:text-green-400":
-                        line.type === "added",
+                      "text-green-600 dark:text-green-400": line.type === "added",
                       "text-red-600 dark:text-red-400": line.type === "deleted",
-                      "font-medium text-blue-600 dark:text-blue-400":
-                        line.type === "hunk",
+                      "font-medium text-blue-600 dark:text-blue-400": line.type === "hunk",
                       "text-gray-400 dark:text-gray-600":
                         line.type === "unchanged" || line.type === "context",
                     })}
@@ -335,9 +310,7 @@ const DiffContentRows: FC<DiffContentRowsProps> = ({
                           ? "@"
                           : "\u00A0"}
                   </span>
-                  <span className="inline-block w-max min-w-full pr-4">
-                    {line.content || " "}
-                  </span>
+                  <span className="inline-block w-max min-w-full pr-4">{line.content || " "}</span>
                 </div>
               </div>
             );
@@ -348,27 +321,19 @@ const DiffContentRows: FC<DiffContentRowsProps> = ({
   );
 };
 
-interface DiffBodyProps {
+type DiffBodyProps = {
   hunks: FileDiff["hunks"];
   reviewProps?: ReviewProps;
   commentsByLine?: ReadonlyMap<number, readonly ReviewComment[]>;
   onRemoveComment?: (id: string) => void;
-}
+};
 
-const DiffBody: FC<DiffBodyProps> = ({
-  hunks,
-  reviewProps,
-  commentsByLine,
-  onRemoveComment,
-}) => {
+const DiffBody: FC<DiffBodyProps> = ({ hunks, reviewProps, commentsByLine, onRemoveComment }) => {
   return (
     <div className="relative flex">
       <div className="w-20 shrink-0">
         {hunks.map((hunk) => (
-          <DiffHunkComponent
-            key={`${hunk.oldStart}-${hunk.newStart}`}
-            hunk={hunk}
-          />
+          <DiffHunkComponent key={`${hunk.oldStart}-${hunk.newStart}`} hunk={hunk} />
         ))}
       </div>
       <div className="min-w-0 flex-1 overflow-x-auto">
@@ -385,24 +350,17 @@ const DiffBody: FC<DiffBodyProps> = ({
   );
 };
 
-interface FileHeaderProps {
+type FileHeaderProps = {
   fileDiff: FileDiff;
   isCollapsed: boolean;
   onToggleCollapse: () => void;
-}
+};
 
-const FileHeader: FC<FileHeaderProps> = ({
-  fileDiff,
-  isCollapsed,
-  onToggleCollapse,
-}) => {
+const FileHeader: FC<FileHeaderProps> = ({ fileDiff, isCollapsed, onToggleCollapse }) => {
   const getFileStatusIcon = () => {
-    if (fileDiff.isNew)
-      return <span className="text-green-600 dark:text-green-400">A</span>;
-    if (fileDiff.isDeleted)
-      return <span className="text-red-600 dark:text-red-400">D</span>;
-    if (fileDiff.isRenamed)
-      return <span className="text-blue-600 dark:text-blue-400">R</span>;
+    if (fileDiff.isNew) return <span className="text-green-600 dark:text-green-400">A</span>;
+    if (fileDiff.isDeleted) return <span className="text-red-600 dark:text-red-400">D</span>;
+    if (fileDiff.isRenamed) return <span className="text-blue-600 dark:text-blue-400">R</span>;
     return <span className="text-gray-600 dark:text-gray-400">M</span>;
   };
 
@@ -446,18 +404,16 @@ const FileHeader: FC<FileHeaderProps> = ({
         </span>
         <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400 flex-shrink-0">
           {fileDiff.linesAdded > 0 && (
-            <span className="text-green-600 dark:text-green-400">
-              +{fileDiff.linesAdded}
-            </span>
+            <span className="text-green-600 dark:text-green-400">+{fileDiff.linesAdded}</span>
           )}
           {fileDiff.linesDeleted > 0 && (
-            <span className="text-red-600 dark:text-red-400">
-              -{fileDiff.linesDeleted}
-            </span>
+            <span className="text-red-600 dark:text-red-400">-{fileDiff.linesDeleted}</span>
           )}
         </div>
         <Button
-          onClick={handleCopyFilename}
+          onClick={(event) => {
+            void handleCopyFilename(event);
+          }}
           variant="ghost"
           size="sm"
           className="flex-shrink-0 p-1 h-5 w-5 hover:bg-gray-200 dark:hover:bg-gray-600"
@@ -474,21 +430,17 @@ const FileHeader: FC<FileHeaderProps> = ({
   );
 };
 
-const useCommentsByLine = (
-  reviewSessionId: string | undefined,
-  filename: string | undefined,
-) => {
+const useCommentsByLine = (reviewSessionId: string | undefined, filename: string | undefined) => {
   const sessionId = reviewSessionId ?? "";
-  const { comments, addComment, removeComment, clearComments } =
-    useReviewComments(sessionId);
+  const { comments, addComment, removeComment, clearComments } = useReviewComments(sessionId);
 
   const commentsByLine = useMemo(() => {
-    if (filename == null) return new Map<number, readonly ReviewComment[]>();
+    if (filename === undefined) return new Map<number, readonly ReviewComment[]>();
     const map = new Map<number, ReviewComment[]>();
     for (const comment of comments) {
       if (comment.filename !== filename) continue;
       const existing = map.get(comment.lineNumber);
-      if (existing != null) {
+      if (existing !== undefined) {
         existing.push(comment);
       } else {
         map.set(comment.lineNumber, [comment]);
@@ -503,11 +455,8 @@ const useCommentsByLine = (
 export const DiffViewer: FC<DiffViewerProps> = memo(
   ({ fileDiff, className, filename, reviewSessionId }) => {
     const [isCollapsed, setIsCollapsed] = useState(false);
-    const commentModeEnabled = filename != null && reviewSessionId != null;
-    const { commentsByLine, removeComment } = useCommentsByLine(
-      reviewSessionId,
-      filename,
-    );
+    const commentModeEnabled = filename !== undefined && reviewSessionId !== undefined;
+    const { commentsByLine, removeComment } = useCommentsByLine(reviewSessionId, filename);
 
     const reviewProps: ReviewProps | undefined = commentModeEnabled
       ? { filename, reviewSessionId }

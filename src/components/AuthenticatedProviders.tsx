@@ -6,9 +6,9 @@ import { SSEProvider } from "../lib/sse/components/SSEProvider";
 import { useAuth } from "./AuthProvider";
 import { SearchProvider } from "./SearchProvider";
 
-interface AuthenticatedProvidersProps {
+type AuthenticatedProvidersProps = {
   children: ReactNode;
-}
+};
 
 const PushSubscriptionInit: FC<PropsWithChildren> = ({ children }) => {
   usePushSubscription();
@@ -19,9 +19,7 @@ const PushSubscriptionInit: FC<PropsWithChildren> = ({ children }) => {
  * Wraps children with SSE providers only when authenticated.
  * This prevents SSE connections and API calls when the user is not logged in.
  */
-export function AuthenticatedProviders({
-  children,
-}: AuthenticatedProvidersProps) {
+export const AuthenticatedProviders = ({ children }: AuthenticatedProvidersProps) => {
   const { isAuthenticated } = useAuth();
 
   // When not authenticated or still loading, render children without SSE providers
@@ -41,4 +39,4 @@ export function AuthenticatedProviders({
       </SSEEventListeners>
     </SSEProvider>
   );
-}
+};

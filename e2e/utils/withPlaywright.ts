@@ -45,11 +45,7 @@ export const withPlaywright = async <T>(
   cb: (ctx: PlaywrightContext) => Promise<T>,
   options?: Partial<BrowserOptions>,
 ) => {
-  const {
-    browserType = chromium,
-    contextOptions = {},
-    launchOptions = {},
-  } = options ?? {};
+  const { browserType = chromium, contextOptions = {}, launchOptions = {} } = options ?? {};
 
   const { browser, context } = await useBrowser({
     browserType,

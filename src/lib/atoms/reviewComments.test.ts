@@ -8,9 +8,7 @@ import {
   sanitizeReviewCommentStore,
 } from "./reviewComments";
 
-const makeComment = (
-  overrides: Partial<ReviewComment> = {},
-): ReviewComment => ({
+const makeComment = (overrides: Partial<ReviewComment> = {}): ReviewComment => ({
   id: "comment-1",
   filename: "src/app/Example.tsx",
   lineNumber: 10,
@@ -91,10 +89,7 @@ describe("addCommentToStore", () => {
 describe("removeCommentFromStore", () => {
   it("removes a comment by id", () => {
     const store = {
-      "session-1": [
-        makeComment({ id: "comment-1" }),
-        makeComment({ id: "comment-2" }),
-      ],
+      "session-1": [makeComment({ id: "comment-1" }), makeComment({ id: "comment-2" })],
     };
 
     const result = removeCommentFromStore(store, "session-1", "comment-1");
@@ -144,9 +139,7 @@ describe("clearCommentsFromStore", () => {
 
 describe("formatReviewMarkdown", () => {
   it("returns header only for empty comments", () => {
-    expect(formatReviewMarkdown([], "abc123", "def456")).toBe(
-      "## Review: abc123 vs def456",
-    );
+    expect(formatReviewMarkdown([], "abc123", "def456")).toBe("## Review: abc123 vs def456");
   });
 
   it("formats a single comment", () => {
@@ -154,12 +147,7 @@ describe("formatReviewMarkdown", () => {
     const result = formatReviewMarkdown(comments, "abc", "def");
 
     expect(result).toBe(
-      [
-        "## Review: abc vs def",
-        "",
-        "### src/foo.ts (L42)",
-        "This looks good",
-      ].join("\n"),
+      ["## Review: abc vs def", "", "### src/foo.ts (L42)", "This looks good"].join("\n"),
     );
   });
 

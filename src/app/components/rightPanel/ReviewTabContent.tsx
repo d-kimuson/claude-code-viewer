@@ -8,8 +8,7 @@ import {
   RefreshCcwIcon,
   Trash2Icon,
 } from "lucide-react";
-import type { FC } from "react";
-import { useCallback, useEffect, useId, useState } from "react";
+import { type FC, useCallback, useEffect, useId, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,10 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useChatInputDraft } from "@/lib/atoms/chatInputDrafts";
-import {
-  formatReviewMarkdown,
-  useReviewComments,
-} from "@/lib/atoms/reviewComments";
+import { formatReviewMarkdown, useReviewComments } from "@/lib/atoms/reviewComments";
 import { cn } from "@/lib/utils";
 import { DiffViewer } from "../../projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffViewer";
 import type { GitRef } from "../../projects/[projectId]/sessions/[sessionId]/components/diffModal/types";
@@ -34,16 +30,16 @@ import {
 import { CollapsibleTodoSection } from "./common/CollapsibleTodoSection";
 import { ReviewTodoSection } from "./ReviewTodoSection";
 
-interface ReviewTabContentProps {
+type ReviewTabContentProps = {
   projectId: string;
   sessionId?: string;
-}
+};
 
-interface DiffSummary {
+type DiffSummary = {
   filesChanged: number;
   insertions: number;
   deletions: number;
-}
+};
 
 const DiffSummaryComponent: FC<{
   summary: DiffSummary;
@@ -70,9 +66,7 @@ const DiffSummaryComponent: FC<{
             </span>
           )}
           {summary.deletions > 0 && (
-            <span className="text-red-600 dark:text-red-400 font-medium">
-              -{summary.deletions}
-            </span>
+            <span className="text-red-600 dark:text-red-400 font-medium">-{summary.deletions}</span>
           )}
         </div>
       </div>
@@ -80,19 +74,14 @@ const DiffSummaryComponent: FC<{
   );
 };
 
-interface RefSelectorProps {
+type RefSelectorProps = {
   label: string;
   value: string;
   onValueChange: (value: GitRef["name"]) => void;
   refs: GitRef[];
-}
+};
 
-const RefSelector: FC<RefSelectorProps> = ({
-  label,
-  value,
-  onValueChange,
-  refs,
-}) => {
+const RefSelector: FC<RefSelectorProps> = ({ label, value, onValueChange, refs }) => {
   const id = useId();
   const getRefIcon = (type: GitRef["type"]) => {
     switch (type) {
@@ -100,6 +89,8 @@ const RefSelector: FC<RefSelectorProps> = ({
         return <GitBranch className="h-4 w-4" />;
       case "commit":
         return <span className="text-xs">📝</span>;
+      case "head":
+        return <GitBranch className="h-4 w-4" />;
       case "working":
         return <span className="text-xs">🚧</span>;
       default:
@@ -109,10 +100,7 @@ const RefSelector: FC<RefSelectorProps> = ({
 
   return (
     <div className="space-y-1">
-      <label
-        htmlFor={id}
-        className="text-xs font-medium text-gray-700 dark:text-gray-300"
-      >
+      <label htmlFor={id} className="text-xs font-medium text-gray-700 dark:text-gray-300">
         {label}
       </label>
       <Select value={value} onValueChange={onValueChange}>
@@ -125,7 +113,7 @@ const RefSelector: FC<RefSelectorProps> = ({
               <div className="flex items-center gap-2">
                 {getRefIcon(ref.type)}
                 <span>{ref.displayName}</span>
-                {ref.sha && (
+                {ref.sha !== undefined && ref.sha !== "" && (
                   <span className="text-[10px] text-gray-500 dark:text-gray-400 font-mono">
                     {ref.sha.substring(0, 7)}
                   </span>
@@ -139,10 +127,7 @@ const RefSelector: FC<RefSelectorProps> = ({
   );
 };
 
-export const ReviewTabContent: FC<ReviewTabContentProps> = ({
-  projectId,
-  sessionId,
-}) => {
+export const ReviewTabContent: FC<ReviewTabContentProps> = ({ projectId, sessionId }) => {
   const { i18n } = useLingui();
   const [compareFrom, setCompareFrom] = useState("HEAD");
   const [compareTo, setCompareTo] = useState("working");
@@ -155,60 +140,72 @@ export const ReviewTabContent: FC<ReviewTabContentProps> = ({
   });
 
   // API hooks
-  const { data: revisionsData, isLoading: isLoadingRevisions } =
-    useGitCurrentRevisions(projectId);
+  const { data: revisionsData, isLoading: isLoadingRevisions } = useGitCurrentRevisions(projectId);
   const {
     mutate: getDiff,
     data: diffData,
     isPending: isDiffLoading,
     error: diffError,
   } = useGitDiff();
+  const revisionDetails = revisionsData?.success === true ? revisionsData.data : undefined;
+  const diffResult = diffData?.success === true ? diffData.data : undefined;
+  const createBranchRef = (name: string, displayName: string, sha: string): GitRef => ({
+    name: `branch:${name}`,
+    type: "branch",
+    displayName,
+    sha,
+  });
+  const createCommitRef = (sha: string, displayName: string): GitRef => ({
+    name: `commit:${sha}`,
+    type: "commit",
+    displayName,
+    sha,
+  });
 
   // Transform revisions data to GitRef format
   const gitRefs: GitRef[] =
-    revisionsData?.success && revisionsData.data
+    revisionDetails !== undefined
       ? [
           {
-            name: "working" as const,
-            type: "working" as const,
+            name: "working",
+            type: "working",
             displayName: i18n._("Uncommitted changes"),
           },
           {
-            name: "HEAD" as const,
-            type: "commit" as const,
+            name: "HEAD",
+            type: "head",
             displayName: "HEAD",
+            ...(revisionDetails.head !== null ? { sha: revisionDetails.head } : {}),
           },
-          ...(revisionsData.data.baseBranch
+          ...(revisionDetails.baseBranch !== null
             ? [
-                {
-                  name: `branch:${revisionsData.data.baseBranch.name}` as const,
-                  type: "branch" as const,
-                  displayName: `${revisionsData.data.baseBranch.name} (base)`,
-                  sha: revisionsData.data.baseBranch.commit,
-                },
+                createBranchRef(
+                  revisionDetails.baseBranch.name,
+                  `${revisionDetails.baseBranch.name} (base)`,
+                  revisionDetails.baseBranch.commit,
+                ),
               ]
             : []),
-          ...(revisionsData.data.currentBranch
+          ...(revisionDetails.currentBranch !== null
             ? [
-                {
-                  name: `branch:${revisionsData.data.currentBranch.name}` as const,
-                  type: "branch" as const,
-                  displayName: `${revisionsData.data.currentBranch.name} (current)`,
-                  sha: revisionsData.data.currentBranch.commit,
-                },
+                createBranchRef(
+                  revisionDetails.currentBranch.name,
+                  `${revisionDetails.currentBranch.name} (current)`,
+                  revisionDetails.currentBranch.commit,
+                ),
               ]
             : []),
-          ...revisionsData.data.commits.map((commit) => ({
-            name: `commit:${commit.sha}` as const,
-            type: "commit" as const,
-            displayName: `${commit.message.substring(0, 50)}${commit.message.length > 50 ? "..." : ""}`,
-            sha: commit.sha,
-          })),
+          ...revisionDetails.commits.map((commit) =>
+            createCommitRef(
+              commit.sha,
+              `${commit.message.substring(0, 50)}${commit.message.length > 50 ? "..." : ""}`,
+            ),
+          ),
         ]
       : [];
 
   const loadDiff = useCallback(() => {
-    if (compareFrom && compareTo && compareFrom !== compareTo) {
+    if (compareFrom.length > 0 && compareTo.length > 0 && compareFrom !== compareTo) {
       getDiff({
         projectId,
         fromRef: compareFrom,
@@ -218,7 +215,7 @@ export const ReviewTabContent: FC<ReviewTabContentProps> = ({
   }, [compareFrom, compareTo, getDiff, projectId]);
 
   useEffect(() => {
-    if (compareFrom && compareTo) {
+    if (compareFrom.length > 0 && compareTo.length > 0) {
       loadDiff();
     }
   }, [compareFrom, compareTo, loadDiff]);
@@ -241,7 +238,7 @@ export const ReviewTabContent: FC<ReviewTabContentProps> = ({
         <div className="flex-1 flex items-center justify-center">
           <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
         </div>
-        {sessionId ? (
+        {sessionId !== undefined && sessionId !== "" ? (
           <ReviewTodoSection projectId={projectId} sessionId={sessionId} />
         ) : (
           <CollapsibleTodoSection todos={null} />
@@ -296,13 +293,11 @@ export const ReviewTabContent: FC<ReviewTabContentProps> = ({
       <div className="flex-1 min-h-0 overflow-y-auto">
         {diffError && (
           <div className="m-3 bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800 rounded-lg p-3">
-            <p className="text-red-600 dark:text-red-400 text-xs">
-              {diffError.message}
-            </p>
+            <p className="text-red-600 dark:text-red-400 text-xs">{diffError.message}</p>
           </div>
         )}
 
-        {!diffData?.success && !isDiffLoading && !diffError && (
+        {diffResult === undefined && !isDiffLoading && diffError === null && (
           <div className="flex-1 flex items-center justify-center p-8">
             <div className="text-center space-y-3">
               <div className="w-12 h-12 mx-auto rounded-xl bg-muted/30 flex items-center justify-center">
@@ -317,7 +312,7 @@ export const ReviewTabContent: FC<ReviewTabContentProps> = ({
           </div>
         )}
 
-        {diffData?.success && (
+        {diffResult !== undefined && (
           <div>
             {/* Review Actions bar - sticky */}
             <div className="sticky top-0 z-10 flex items-center justify-between border-b border-border/40 bg-background/95 px-3 py-2 backdrop-blur-sm">
@@ -355,15 +350,15 @@ export const ReviewTabContent: FC<ReviewTabContentProps> = ({
             <div className="p-3 space-y-3">
               <DiffSummaryComponent
                 summary={{
-                  filesChanged: diffData.data.files.length,
-                  insertions: diffData.data.summary.totalAdditions,
-                  deletions: diffData.data.summary.totalDeletions,
+                  filesChanged: diffResult.files.length,
+                  insertions: diffResult.summary.totalAdditions,
+                  deletions: diffResult.summary.totalDeletions,
                 }}
               />
 
               {/* Diff viewer */}
               <div className="space-y-2">
-                {diffData.data.diffs.map((diff) => (
+                {diffResult.diffs.map((diff) => (
                   <DiffViewer
                     key={diff.file.filePath}
                     fileDiff={{
@@ -399,7 +394,7 @@ export const ReviewTabContent: FC<ReviewTabContentProps> = ({
       </div>
 
       {/* Todo Checklist Section - Fixed at bottom */}
-      {sessionId ? (
+      {sessionId !== undefined && sessionId !== "" ? (
         <ReviewTodoSection projectId={projectId} sessionId={sessionId} />
       ) : (
         <CollapsibleTodoSection todos={null} />

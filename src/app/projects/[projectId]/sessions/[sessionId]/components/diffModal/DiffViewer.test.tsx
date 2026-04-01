@@ -1,7 +1,4 @@
-/// <reference types="vitest" />
-/**
- * @vitest-environment jsdom
- */
+// @vitest-environment jsdom
 
 import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
@@ -41,8 +38,7 @@ describe("DiffViewer", () => {
           {
             type: "added",
             newLineNumber: 1,
-            content:
-              "after-with-a-very-long-line-that-should-expand-the-scrollable-surface",
+            content: "after-with-a-very-long-line-that-should-expand-the-scrollable-surface",
           },
         ],
       },
@@ -59,8 +55,7 @@ describe("DiffViewer", () => {
           {
             type: "added",
             newLineNumber: 11,
-            content:
-              "const secondHunk = 'also-needs-the-same-horizontal-scroll-surface';",
+            content: "const secondHunk = 'also-needs-the-same-horizontal-scroll-surface';",
           },
         ],
       },
@@ -92,9 +87,7 @@ describe("DiffViewer", () => {
     const scrollSurface = container?.querySelector(".inline-block.min-w-full");
     const scrollContainers = container?.querySelectorAll(".overflow-x-auto");
     const rows = container?.querySelectorAll("[data-slot='diff-row']");
-    const contentRows = container?.querySelectorAll(
-      "[data-slot='diff-row-content']",
-    );
+    const contentRows = container?.querySelectorAll("[data-slot='diff-row-content']");
     const gutter = container?.querySelector(".w-20.shrink-0");
     const contentText = contentRows?.[1]?.querySelector("span:last-child");
 

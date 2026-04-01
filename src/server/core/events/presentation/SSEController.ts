@@ -26,9 +26,7 @@ const LayerImpl = Effect.gen(function* () {
         );
       };
 
-      const onSessionListChanged = (
-        event: InternalEventDeclaration["sessionListChanged"],
-      ) => {
+      const onSessionListChanged = (event: InternalEventDeclaration["sessionListChanged"]) => {
         Effect.runFork(
           typeSafeSSE.writeSSE("sessionListChanged", {
             projectId: event.projectId,
@@ -36,9 +34,7 @@ const LayerImpl = Effect.gen(function* () {
         );
       };
 
-      const onSessionChanged = (
-        event: InternalEventDeclaration["sessionChanged"],
-      ) => {
+      const onSessionChanged = (event: InternalEventDeclaration["sessionChanged"]) => {
         Effect.runFork(
           typeSafeSSE.writeSSE("sessionChanged", {
             projectId: event.projectId,
@@ -47,9 +43,7 @@ const LayerImpl = Effect.gen(function* () {
         );
       };
 
-      const onAgentSessionChanged = (
-        event: InternalEventDeclaration["agentSessionChanged"],
-      ) => {
+      const onAgentSessionChanged = (event: InternalEventDeclaration["agentSessionChanged"]) => {
         Effect.runFork(
           typeSafeSSE.writeSSE("agentSessionChanged", {
             projectId: event.projectId,
@@ -68,9 +62,7 @@ const LayerImpl = Effect.gen(function* () {
         );
       };
 
-      const onPermissionRequested = (
-        event: InternalEventDeclaration["permissionRequested"],
-      ) => {
+      const onPermissionRequested = (event: InternalEventDeclaration["permissionRequested"]) => {
         Effect.runFork(
           typeSafeSSE.writeSSE("permissionRequested", {
             sessionId: event.permissionRequest.sessionId,
@@ -78,9 +70,7 @@ const LayerImpl = Effect.gen(function* () {
         );
       };
 
-      const onPermissionResolved = (
-        event: InternalEventDeclaration["permissionResolved"],
-      ) => {
+      const onPermissionResolved = (event: InternalEventDeclaration["permissionResolved"]) => {
         Effect.runFork(
           typeSafeSSE.writeSSE("permissionResolved", {
             sessionId: event.sessionId,
@@ -88,9 +78,7 @@ const LayerImpl = Effect.gen(function* () {
         );
       };
 
-      const onQuestionRequested = (
-        event: InternalEventDeclaration["questionRequested"],
-      ) => {
+      const onQuestionRequested = (event: InternalEventDeclaration["questionRequested"]) => {
         Effect.runFork(
           typeSafeSSE.writeSSE("questionRequested", {
             sessionId: event.questionRequest.sessionId,
@@ -98,9 +86,7 @@ const LayerImpl = Effect.gen(function* () {
         );
       };
 
-      const onQuestionResolved = (
-        event: InternalEventDeclaration["questionResolved"],
-      ) => {
+      const onQuestionResolved = (event: InternalEventDeclaration["questionResolved"]) => {
         Effect.runFork(
           typeSafeSSE.writeSSE("questionResolved", {
             sessionId: event.sessionId,
@@ -108,9 +94,7 @@ const LayerImpl = Effect.gen(function* () {
         );
       };
 
-      const onNotificationCreated = (
-        event: InternalEventDeclaration["notificationCreated"],
-      ) => {
+      const onNotificationCreated = (event: InternalEventDeclaration["notificationCreated"]) => {
         Effect.runFork(
           typeSafeSSE.writeSSE("notificationCreated", {
             notification: event.notification,
@@ -118,9 +102,7 @@ const LayerImpl = Effect.gen(function* () {
         );
       };
 
-      const onNotificationConsumed = (
-        event: InternalEventDeclaration["notificationConsumed"],
-      ) => {
+      const onNotificationConsumed = (event: InternalEventDeclaration["notificationConsumed"]) => {
         Effect.runFork(
           typeSafeSSE.writeSSE("notificationConsumed", {
             sessionId: event.sessionId,
@@ -148,20 +130,14 @@ const LayerImpl = Effect.gen(function* () {
               yield* eventBus.off("sessionListChanged", onSessionListChanged);
               yield* eventBus.off("sessionChanged", onSessionChanged);
               yield* eventBus.off("agentSessionChanged", onAgentSessionChanged);
-              yield* eventBus.off(
-                "sessionProcessChanged",
-                onSessionProcessChanged,
-              );
+              yield* eventBus.off("sessionProcessChanged", onSessionProcessChanged);
               yield* eventBus.off("heartbeat", onHeartbeat);
               yield* eventBus.off("permissionRequested", onPermissionRequested);
               yield* eventBus.off("permissionResolved", onPermissionResolved);
               yield* eventBus.off("questionRequested", onQuestionRequested);
               yield* eventBus.off("questionResolved", onQuestionResolved);
               yield* eventBus.off("notificationCreated", onNotificationCreated);
-              yield* eventBus.off(
-                "notificationConsumed",
-                onNotificationConsumed,
-              );
+              yield* eventBus.off("notificationConsumed", onNotificationConsumed);
             }),
           );
         },
@@ -176,9 +152,6 @@ const LayerImpl = Effect.gen(function* () {
 });
 
 export type ISSEController = InferEffect<typeof LayerImpl>;
-export class SSEController extends Context.Tag("SSEController")<
-  SSEController,
-  ISSEController
->() {
+export class SSEController extends Context.Tag("SSEController")<SSEController, ISSEController>() {
   static Live = Layer.effect(this, LayerImpl);
 }

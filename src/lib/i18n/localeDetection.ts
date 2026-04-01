@@ -3,7 +3,7 @@ import type { SupportedLocale } from "./schema";
 export const DEFAULT_LOCALE: SupportedLocale = "en";
 
 const normalizeTag = (tag?: string): SupportedLocale | undefined => {
-  if (!tag) {
+  if (tag === undefined || tag === "") {
     return undefined;
   }
 
@@ -30,7 +30,7 @@ const normalizeTag = (tag?: string): SupportedLocale | undefined => {
 export const detectLocaleFromAcceptLanguage = (
   header: string | undefined,
 ): SupportedLocale | undefined => {
-  if (!header) {
+  if (header === undefined || header === "") {
     return undefined;
   }
 
@@ -40,10 +40,8 @@ export const detectLocaleFromAcceptLanguage = (
     .split(",")
     .map((part, index) => {
       const [rawTag, ...params] = part.trim().split(";");
-      const qParam = params
-        .map((param) => param.trim())
-        .find((param) => param.startsWith("q="));
-      const quality = qParam ? Number.parseFloat(qParam.slice(2)) : 1;
+      const qParam = params.map((param) => param.trim()).find((param) => param.startsWith("q="));
+      const quality = qParam !== undefined ? Number.parseFloat(qParam.slice(2)) : 1;
 
       return {
         tag: rawTag,
@@ -73,15 +71,13 @@ export const detectLocaleFromAcceptLanguage = (
 
 type NavigatorLike = Pick<Navigator, "language" | "languages">;
 
-export const detectLocaleFromNavigator = (
-  nav?: NavigatorLike,
-): SupportedLocale | undefined => {
+export const detectLocaleFromNavigator = (nav?: NavigatorLike): SupportedLocale | undefined => {
   if (!nav) {
     return undefined;
   }
 
   let languages: readonly string[];
-  if (nav.languages && nav.languages.length > 0) {
+  if (nav.languages.length > 0) {
     languages = nav.languages;
   } else if (nav.language) {
     languages = [nav.language];
@@ -103,8 +99,8 @@ export const resolvePreferredLocale = (
   options: { acceptLanguageHeader?: string; navigator?: NavigatorLike } = {},
 ): SupportedLocale => {
   return (
-    detectLocaleFromAcceptLanguage(options.acceptLanguageHeader) ||
-    detectLocaleFromNavigator(options.navigator) ||
+    detectLocaleFromAcceptLanguage(options.acceptLanguageHeader) ??
+    detectLocaleFromNavigator(options.navigator) ??
     DEFAULT_LOCALE
   );
 };

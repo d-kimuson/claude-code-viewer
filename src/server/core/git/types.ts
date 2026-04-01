@@ -64,11 +64,7 @@ export type GitStatus = {
 };
 
 export type GitError = {
-  code:
-    | "NOT_A_REPOSITORY"
-    | "BRANCH_NOT_FOUND"
-    | "COMMAND_FAILED"
-    | "PARSE_ERROR";
+  code: "NOT_A_REPOSITORY" | "BRANCH_NOT_FOUND" | "COMMAND_FAILED" | "PARSE_ERROR";
   message: string;
   command?: string;
   stderr?: string;

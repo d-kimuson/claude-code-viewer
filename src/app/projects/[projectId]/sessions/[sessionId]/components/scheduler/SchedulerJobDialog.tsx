@@ -22,13 +22,10 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import type {
-  NewSchedulerJob,
-  SchedulerJob,
-} from "@/server/core/scheduler/schema";
+import type { NewSchedulerJob, SchedulerJob } from "@/server/core/scheduler/schema";
 import { CronExpressionBuilder } from "./CronExpressionBuilder";
 
-export interface SchedulerJobDialogProps {
+export type SchedulerJobDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   job: SchedulerJob | null;
@@ -36,7 +33,7 @@ export interface SchedulerJobDialogProps {
   currentSessionId: string;
   onSubmit: (job: NewSchedulerJob) => void;
   isSubmitting?: boolean;
-}
+};
 
 export const SchedulerJobDialog: FC<SchedulerJobDialogProps> = ({
   open,
@@ -58,9 +55,7 @@ export const SchedulerJobDialog: FC<SchedulerJobDialogProps> = ({
   });
   const [messageContent, setMessageContent] = useState("");
   const [enabled, setEnabled] = useState(true);
-  const [concurrencyPolicy, setConcurrencyPolicy] = useState<"skip" | "run">(
-    "skip",
-  );
+  const [concurrencyPolicy, setConcurrencyPolicy] = useState<"skip" | "run">("skip");
 
   // Message completion hook
   const completion = useMessageCompletion();
@@ -121,9 +116,7 @@ export const SchedulerJobDialog: FC<SchedulerJobDialogProps> = ({
               reservedExecutionTime: (() => {
                 // datetime-local format: "YYYY-MM-DDTHH:mm"
                 // Parse as local time and convert to ISO string (UTC)
-                const match = reservedDateTime.match(
-                  /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/,
-                );
+                const match = reservedDateTime.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/);
                 if (!match) {
                   throw new Error("Invalid datetime format");
                 }
@@ -132,13 +125,7 @@ export const SchedulerJobDialog: FC<SchedulerJobDialogProps> = ({
                 const day = Number(match[3]);
                 const hours = Number(match[4]);
                 const minutes = Number(match[5]);
-                const localDate = new Date(
-                  year,
-                  month - 1,
-                  day,
-                  hours,
-                  minutes,
-                );
+                const localDate = new Date(year, month - 1, day, hours, minutes);
                 return localDate.toISOString();
               })(),
             },
@@ -214,9 +201,7 @@ export const SchedulerJobDialog: FC<SchedulerJobDialogProps> = ({
             </Label>
             <Select
               value={scheduleType}
-              onValueChange={(value: "cron" | "reserved") =>
-                setScheduleType(value)
-              }
+              onValueChange={(value: "cron" | "reserved") => setScheduleType(value)}
               disabled={isSubmitting}
             >
               <SelectTrigger>
@@ -235,10 +220,7 @@ export const SchedulerJobDialog: FC<SchedulerJobDialogProps> = ({
 
           {/* Schedule Configuration */}
           {scheduleType === "cron" ? (
-            <CronExpressionBuilder
-              value={cronExpression}
-              onChange={setCronExpression}
-            />
+            <CronExpressionBuilder value={cronExpression} onChange={setCronExpression} />
           ) : (
             <div className="space-y-2">
               <Label htmlFor="reserved-datetime">
@@ -267,29 +249,20 @@ export const SchedulerJobDialog: FC<SchedulerJobDialogProps> = ({
                 ref={completion.textareaRef}
                 id="message-content"
                 value={messageContent}
-                onChange={(e) =>
-                  completion.handleChange(e.target.value, setMessageContent)
-                }
+                onChange={(e) => completion.handleChange(e.target.value, setMessageContent)}
                 onKeyDown={(e) => completion.handleKeyDown(e)}
                 placeholder={i18n._({
                   id: "scheduler.form.message.placeholder",
-                  message:
-                    "Type message to send to Claude Code... (/ for commands, @ for files)",
+                  message: "Type message to send to Claude Code... (/ for commands, @ for files)",
                 })}
                 rows={4}
                 disabled={isSubmitting}
                 className="resize-none"
                 aria-label={i18n._({
                   id: "scheduler.form.message.aria_label",
-                  message:
-                    "Message input with completion support (/ for commands, @ for files)",
+                  message: "Message input with completion support (/ for commands, @ for files)",
                 })}
-                aria-expanded={
-                  messageContent.startsWith("/") || messageContent.includes("@")
-                }
-                aria-haspopup="listbox"
-                role="combobox"
-                aria-autocomplete="list"
+                aria-expanded={messageContent.startsWith("/") || messageContent.includes("@")}
               />
               <InlineCompletion
                 projectId={projectId}
@@ -299,9 +272,7 @@ export const SchedulerJobDialog: FC<SchedulerJobDialogProps> = ({
                 handleCommandSelect={(cmd) =>
                   completion.handleCommandSelect(cmd, setMessageContent)
                 }
-                handleFileSelect={(file) =>
-                  completion.handleFileSelect(file, setMessageContent)
-                }
+                handleFileSelect={(file) => completion.handleFileSelect(file, setMessageContent)}
                 cursorPosition={completion.cursorPosition}
               />
             </div>
@@ -318,9 +289,7 @@ export const SchedulerJobDialog: FC<SchedulerJobDialogProps> = ({
               </Label>
               <Select
                 value={concurrencyPolicy}
-                onValueChange={(value: "skip" | "run") =>
-                  setConcurrencyPolicy(value)
-                }
+                onValueChange={(value: "skip" | "run") => setConcurrencyPolicy(value)}
                 disabled={isSubmitting}
               >
                 <SelectTrigger>
@@ -340,17 +309,10 @@ export const SchedulerJobDialog: FC<SchedulerJobDialogProps> = ({
         </div>
 
         <DialogFooter>
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={isSubmitting}
-          >
+          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={isSubmitting}>
             <Trans id="common.cancel" />
           </Button>
-          <Button
-            onClick={handleSubmit}
-            disabled={!isFormValid || isSubmitting}
-          >
+          <Button onClick={handleSubmit} disabled={!isFormValid || isSubmitting}>
             {isSubmitting ? (
               <Trans id="common.saving" />
             ) : job ? (

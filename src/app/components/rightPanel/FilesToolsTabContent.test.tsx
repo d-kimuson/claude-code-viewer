@@ -1,15 +1,9 @@
-/// <reference types="vitest" />
-/**
- * @vitest-environment jsdom
- */
+// @vitest-environment jsdom
 
 import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import {
-  EmptyFilesToolsTabContent,
-  FilesToolsTabContent,
-} from "./FilesToolsTabContent";
+import { EmptyFilesToolsTabContent, FilesToolsTabContent } from "./FilesToolsTabContent";
 
 type QueryState = {
   data?: {
@@ -50,37 +44,30 @@ vi.mock("@tanstack/react-query", () => ({
 vi.mock("@/lib/api/queries", () => ({
   agentSessionListQuery: () => ({
     queryKey: ["agent-sessions"],
-    queryFn: async () => ({
+    queryFn: () => ({
       agentSessions: [],
     }),
   }),
   agentSessionQuery: () => ({
     queryKey: ["agent-session"],
-    queryFn: async () => ({
+    queryFn: () => ({
       conversations: [],
     }),
   }),
 }));
 
 vi.mock("@/lib/file-viewer", () => ({
-  extractAllEditedFiles: (conversations: unknown) =>
-    mockExtractAllEditedFiles(conversations),
-  extractToolCalls: (conversations: unknown) =>
-    mockExtractToolCalls(conversations),
+  extractAllEditedFiles: (conversations: unknown) => mockExtractAllEditedFiles(conversations),
+  extractToolCalls: (conversations: unknown) => mockExtractToolCalls(conversations),
 }));
 
 vi.mock("@/lib/todo-viewer", () => ({
-  extractLatestTodos: (conversations: unknown) =>
-    mockExtractLatestTodos(conversations),
+  extractLatestTodos: (conversations: unknown) => mockExtractLatestTodos(conversations),
 }));
 
-vi.mock(
-  "../../projects/[projectId]/sessions/[sessionId]/hooks/useSession",
-  () => ({
-    useSession: (projectId: string, sessionId: string) =>
-      mockUseSession(projectId, sessionId),
-  }),
-);
+vi.mock("../../projects/[projectId]/sessions/[sessionId]/hooks/useSession", () => ({
+  useSession: (projectId: string, sessionId: string) => mockUseSession(projectId, sessionId),
+}));
 
 vi.mock(
   "../../projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList",
@@ -92,9 +79,7 @@ vi.mock(
 vi.mock(
   "../../projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog",
   () => ({
-    FileContentDialog: ({ children }: { children: React.ReactNode }) => (
-      <div>{children}</div>
-    ),
+    FileContentDialog: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   }),
 );
 
@@ -103,10 +88,7 @@ vi.mock("./common/CollapsibleTodoSection", () => ({
 }));
 
 vi.mock("@/components/ui/button", () => ({
-  Button: ({
-    children,
-    ...props
-  }: React.ButtonHTMLAttributes<HTMLButtonElement>) => (
+  Button: ({ children, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) => (
     <button type="button" {...props}>
       {children}
     </button>
@@ -118,33 +100,17 @@ vi.mock("@/components/ui/checkbox", () => ({
 }));
 
 vi.mock("@/components/ui/dialog", () => ({
-  Dialog: ({ children }: { children: React.ReactNode }) => (
-    <div>{children}</div>
-  ),
-  DialogContent: ({ children }: { children: React.ReactNode }) => (
-    <div>{children}</div>
-  ),
-  DialogDescription: ({ children }: { children: React.ReactNode }) => (
-    <div>{children}</div>
-  ),
-  DialogHeader: ({ children }: { children: React.ReactNode }) => (
-    <div>{children}</div>
-  ),
-  DialogTitle: ({ children }: { children: React.ReactNode }) => (
-    <div>{children}</div>
-  ),
+  Dialog: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  DialogContent: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  DialogDescription: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  DialogHeader: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  DialogTitle: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
 vi.mock("@/components/ui/popover", () => ({
-  Popover: ({ children }: { children: React.ReactNode }) => (
-    <div>{children}</div>
-  ),
-  PopoverContent: ({ children }: { children: React.ReactNode }) => (
-    <div>{children}</div>
-  ),
-  PopoverTrigger: ({ children }: { children: React.ReactNode }) => (
-    <div>{children}</div>
-  ),
+  Popover: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  PopoverContent: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  PopoverTrigger: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
 describe("FilesToolsTabContent", () => {
@@ -157,12 +123,7 @@ describe("FilesToolsTabContent", () => {
     root = createRoot(container);
 
     act(() => {
-      root?.render(
-        <FilesToolsTabContent
-          projectId="test-project"
-          sessionId="test-session"
-        />,
-      );
+      root?.render(<FilesToolsTabContent projectId="test-project" sessionId="test-session" />);
     });
   };
 

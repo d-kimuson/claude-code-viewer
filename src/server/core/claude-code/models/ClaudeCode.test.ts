@@ -8,9 +8,7 @@ describe("ClaudeCode.claudeCodePathPriority", () => {
   describe("should return 0 for npx cache paths (lowest priority)", () => {
     it("detects _npx cache path (Linux/macOS)", () => {
       expect(
-        ClaudeCode.claudeCodePathPriority(
-          "/home/user/.npm/_npx/abc123/node_modules/.bin/claude",
-        ),
+        ClaudeCode.claudeCodePathPriority("/home/user/.npm/_npx/abc123/node_modules/.bin/claude"),
       ).toBe(0);
     });
 
@@ -24,17 +22,13 @@ describe("ClaudeCode.claudeCodePathPriority", () => {
 
     it("detects _npx cache path with custom npm cache dir", () => {
       expect(
-        ClaudeCode.claudeCodePathPriority(
-          "/custom/cache/_npx/abc123/node_modules/.bin/claude",
-        ),
+        ClaudeCode.claudeCodePathPriority("/custom/cache/_npx/abc123/node_modules/.bin/claude"),
       ).toBe(0);
     });
 
     it("detects deeply nested _npx cache path", () => {
       expect(
-        ClaudeCode.claudeCodePathPriority(
-          "/var/cache/npm/_npx/some-hash/node_modules/.bin/claude",
-        ),
+        ClaudeCode.claudeCodePathPriority("/var/cache/npm/_npx/some-hash/node_modules/.bin/claude"),
       ).toBe(0);
     });
   });
@@ -48,60 +42,44 @@ describe("ClaudeCode.claudeCodePathPriority", () => {
 
   describe("should return 2 for legitimate claude paths (highest priority)", () => {
     it("prioritizes global npm bin path (Linux/macOS)", () => {
-      expect(ClaudeCode.claudeCodePathPriority("/usr/local/bin/claude")).toBe(
-        2,
-      );
+      expect(ClaudeCode.claudeCodePathPriority("/usr/local/bin/claude")).toBe(2);
     });
 
     it("prioritizes Homebrew path (macOS)", () => {
-      expect(
-        ClaudeCode.claudeCodePathPriority("/opt/homebrew/bin/claude"),
-      ).toBe(2);
+      expect(ClaudeCode.claudeCodePathPriority("/opt/homebrew/bin/claude")).toBe(2);
     });
 
     it("prioritizes user local bin path", () => {
-      expect(
-        ClaudeCode.claudeCodePathPriority("/home/user/.local/bin/claude"),
-      ).toBe(2);
+      expect(ClaudeCode.claudeCodePathPriority("/home/user/.local/bin/claude")).toBe(2);
     });
 
     it("prioritizes nvm global path", () => {
       expect(
-        ClaudeCode.claudeCodePathPriority(
-          "/home/user/.nvm/versions/node/v20.0.0/bin/claude",
-        ),
+        ClaudeCode.claudeCodePathPriority("/home/user/.nvm/versions/node/v20.0.0/bin/claude"),
       ).toBe(2);
     });
 
     it("prioritizes Windows global npm path", () => {
       expect(
-        ClaudeCode.claudeCodePathPriority(
-          "C:\\Users\\user\\AppData\\Roaming\\npm\\claude",
-        ),
+        ClaudeCode.claudeCodePathPriority("C:\\Users\\user\\AppData\\Roaming\\npm\\claude"),
       ).toBe(2);
     });
 
     it("prioritizes non-current-project node_modules/.bin", () => {
       expect(
-        ClaudeCode.claudeCodePathPriority(
-          "/some/other/project/node_modules/.bin/claude",
-        ),
+        ClaudeCode.claudeCodePathPriority("/some/other/project/node_modules/.bin/claude"),
       ).toBe(2);
     });
 
     it("prioritizes non-current-project node_modules/.bin (Windows style)", () => {
       expect(
-        ClaudeCode.claudeCodePathPriority(
-          "C:\\some\\other\\project\\node_modules\\.bin\\claude",
-        ),
+        ClaudeCode.claudeCodePathPriority("C:\\some\\other\\project\\node_modules\\.bin\\claude"),
       ).toBe(2);
     });
 
     it("prioritizes nested project node_modules/.bin", () => {
       expect(
-        ClaudeCode.claudeCodePathPriority(
-          "/project/packages/foo/node_modules/.bin/claude",
-        ),
+        ClaudeCode.claudeCodePathPriority("/project/packages/foo/node_modules/.bin/claude"),
       ).toBe(2);
     });
   });
@@ -230,9 +208,7 @@ describe("ClaudeCode.Config", () => {
       );
 
       // プロジェクトローカルの node_modules/.bin はユーザーが意図的に PATH を通している可能性があるので使用する
-      expect(config.claudeCodeExecutablePath).toBe(
-        "/some/project/node_modules/.bin/claude",
-      );
+      expect(config.claudeCodeExecutablePath).toBe("/some/project/node_modules/.bin/claude");
       expect(config.claudeCodeVersion).toStrictEqual({
         major: 2,
         minor: 0,

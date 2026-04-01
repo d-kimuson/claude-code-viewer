@@ -11,9 +11,7 @@ const AssistantMessageContentSchema = z.union([
   ToolResultContentSchema,
 ]);
 
-export type AssistantMessageContent = z.infer<
-  typeof AssistantMessageContentSchema
->;
+export type AssistantMessageContent = z.infer<typeof AssistantMessageContentSchema>;
 
 export const AssistantMessageSchema = z.object({
   id: z.string(),

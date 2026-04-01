@@ -3,19 +3,15 @@ import { Loader2 } from "lucide-react";
 import { useEffect } from "react";
 import { useAuth } from "../components/AuthProvider";
 
-export const Route = createFileRoute("/")({
-  component: RouteComponent,
-});
-
-function RouteComponent() {
+const RouteComponent = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate({ to: "/projects" });
+      void navigate({ to: "/projects" });
     } else {
-      navigate({ to: "/login" });
+      void navigate({ to: "/login" });
     }
   }, [isAuthenticated, navigate]);
 
@@ -24,4 +20,8 @@ function RouteComponent() {
       <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
     </div>
   );
-}
+};
+
+export const Route = createFileRoute("/")({
+  component: RouteComponent,
+});

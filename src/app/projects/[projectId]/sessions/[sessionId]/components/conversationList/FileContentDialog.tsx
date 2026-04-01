@@ -3,10 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { AlertCircle, Eye, FileCode, Loader2 } from "lucide-react";
 import { type FC, type ReactNode, useState } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import {
-  oneDark,
-  oneLight,
-} from "react-syntax-highlighter/dist/esm/styles/prism";
+import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -72,10 +69,7 @@ export const FileContentDialog: FC<FileContentDialogProps> = ({
 
   // Determine language for syntax highlighting
   // Use API-provided language if available, otherwise detect from path
-  const language =
-    data?.success === true
-      ? data.language
-      : detectLanguage(selectedFilePath ?? "");
+  const language = data?.success === true ? data.language : detectLanguage(selectedFilePath ?? "");
 
   // Check if there are multiple files
   const hasMultipleFiles = filePaths.length > 1;
@@ -111,10 +105,7 @@ export const FileContentDialog: FC<FileContentDialogProps> = ({
               <DialogTitle className="text-lg font-semibold leading-tight mb-1 pr-8 break-all">
                 {fileName}
               </DialogTitle>
-              <DialogDescription
-                className="text-xs flex items-center gap-2 flex-wrap"
-                asChild
-              >
+              <DialogDescription className="text-xs flex items-center gap-2 flex-wrap" asChild>
                 <div>
                   {hasMultipleFiles ? (
                     <Select
@@ -169,7 +160,13 @@ export const FileContentDialog: FC<FileContentDialogProps> = ({
               <p className="text-sm text-destructive text-center">
                 <Trans id="assistant.tool.error_loading_file" />
               </p>
-              <Button variant="outline" size="sm" onClick={() => refetch()}>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  void refetch();
+                }}
+              >
                 <Trans id="assistant.tool.retry" />
               </Button>
             </div>
@@ -178,23 +175,13 @@ export const FileContentDialog: FC<FileContentDialogProps> = ({
             <div className="flex flex-col items-center justify-center h-full gap-4 px-6">
               <AlertCircle className="h-8 w-8 text-destructive" />
               <p className="text-sm text-destructive text-center">
-                {data.error === "NOT_FOUND" && (
-                  <Trans id="assistant.tool.file_not_found" />
-                )}
-                {data.error === "BINARY_FILE" && (
-                  <Trans id="assistant.tool.binary_file" />
-                )}
-                {data.error === "INVALID_PATH" && (
-                  <Trans id="assistant.tool.invalid_path" />
-                )}
-                {data.error === "READ_ERROR" && (
-                  <Trans id="assistant.tool.read_error" />
-                )}
+                {data.error === "NOT_FOUND" && <Trans id="assistant.tool.file_not_found" />}
+                {data.error === "BINARY_FILE" && <Trans id="assistant.tool.binary_file" />}
+                {data.error === "INVALID_PATH" && <Trans id="assistant.tool.invalid_path" />}
+                {data.error === "READ_ERROR" && <Trans id="assistant.tool.read_error" />}
               </p>
               {data.message && (
-                <p className="text-xs text-muted-foreground text-center max-w-md">
-                  {data.message}
-                </p>
+                <p className="text-xs text-muted-foreground text-center max-w-md">{data.message}</p>
               )}
             </div>
           )}

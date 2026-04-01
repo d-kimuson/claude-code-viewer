@@ -8,9 +8,7 @@ describe("isRegularSessionFile", () => {
     });
 
     it("handles UUID-like session ID", () => {
-      expect(
-        isRegularSessionFile("550e8400-e29b-41d4-a716-446655440000.jsonl"),
-      ).toBe(true);
+      expect(isRegularSessionFile("550e8400-e29b-41d4-a716-446655440000.jsonl")).toBe(true);
     });
 
     it("handles session ID with numbers", () => {
@@ -28,11 +26,7 @@ describe("isRegularSessionFile", () => {
     });
 
     it("excludes agent- prefixed files with UUID-like hash", () => {
-      expect(
-        isRegularSessionFile(
-          "agent-550e8400-e29b-41d4-a716-446655440000.jsonl",
-        ),
-      ).toBe(false);
+      expect(isRegularSessionFile("agent-550e8400-e29b-41d4-a716-446655440000.jsonl")).toBe(false);
     });
   });
 

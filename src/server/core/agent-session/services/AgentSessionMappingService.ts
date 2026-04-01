@@ -42,7 +42,7 @@ const LayerImpl = Effect.gen(function* () {
         }
 
         try {
-          const parsed = JSON.parse(firstLine);
+          const parsed: unknown = JSON.parse(firstLine);
           const userEntry = UserEntrySchema.safeParse(parsed);
 
           if (!userEntry.success) {
@@ -66,10 +66,7 @@ const LayerImpl = Effect.gen(function* () {
             if (firstContent !== undefined) {
               if (typeof firstContent === "string") {
                 prompt = firstContent;
-              } else if (
-                "type" in firstContent &&
-                firstContent.type === "text"
-              ) {
+              } else if ("type" in firstContent && firstContent.type === "text") {
                 prompt = firstContent.text;
               }
             }
@@ -149,9 +146,7 @@ const LayerImpl = Effect.gen(function* () {
   };
 });
 
-export class AgentSessionMappingService extends Context.Tag(
-  "AgentSessionMappingService",
-)<
+export class AgentSessionMappingService extends Context.Tag("AgentSessionMappingService")<
   AgentSessionMappingService,
   {
     readonly getAgentFilePath: (
@@ -160,14 +155,10 @@ export class AgentSessionMappingService extends Context.Tag(
       prompt: string,
     ) => Effect.Effect<string | null, Error>;
     readonly invalidateSession: (sessionId: string) => Effect.Effect<void>;
-    readonly invalidateAgentFile: (
-      agentSessionId: string,
-    ) => Effect.Effect<void>;
+    readonly invalidateAgentFile: (agentSessionId: string) => Effect.Effect<void>;
   }
 >() {
   static Live = Layer.effect(this, LayerImpl);
 }
 
-export type IAgentSessionMappingService = Context.Tag.Service<
-  typeof AgentSessionMappingService
->;
+export type IAgentSessionMappingService = Context.Tag.Service<typeof AgentSessionMappingService>;

@@ -82,5 +82,4 @@ export const MODEL_PRICING: Record<ModelName, ModelPricing> = {
  * Default pricing for unknown models
  * Uses Claude 3.5 Sonnet pricing as a safe default
  */
-export const DEFAULT_MODEL_PRICING: ModelPricing =
-  MODEL_PRICING["claude-3.5-sonnet"];
+export const DEFAULT_MODEL_PRICING: ModelPricing = MODEL_PRICING["claude-3.5-sonnet"];

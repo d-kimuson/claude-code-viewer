@@ -37,8 +37,7 @@ export const ResumeChat: FC<ResumeChatProps> = ({
     if (behavior === "enter-send") {
       return i18n._({
         id: "chat.placeholder.resume.enter",
-        message:
-          "Type your message... (Start with / for commands, @ for files, Enter to send)",
+        message: "Type your message... (Start with / for commands, @ for files, Enter to send)",
       });
     }
     if (behavior === "command-enter-send") {
@@ -50,8 +49,7 @@ export const ResumeChat: FC<ResumeChatProps> = ({
     }
     return i18n._({
       id: "chat.placeholder.resume.shift_enter",
-      message:
-        "Type your message... (Start with / for commands, @ for files, Shift+Enter to send)",
+      message: "Type your message... (Start with / for commands, @ for files, Shift+Enter to send)",
     });
   };
 

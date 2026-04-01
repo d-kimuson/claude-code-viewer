@@ -1,8 +1,7 @@
 import z from "zod";
 
 const sessionFileRegExp = /(?<projectId>.*?)\/(?<sessionId>.*?)\.jsonl$/;
-const agentFileRegExp =
-  /(?<projectId>.*?)\/agent-(?<agentSessionId>.*?)\.jsonl$/;
+const agentFileRegExp = /(?<projectId>.*?)\/agent-(?<agentSessionId>.*?)\.jsonl$/;
 
 const sessionFileGroupSchema = z.object({
   projectId: z.string(),

@@ -9,9 +9,9 @@ export type NotificationSoundType = "none" | "beep" | "chime" | "ping" | "pop";
 /**
  * Notification settings stored in localStorage
  */
-export interface NotificationSettings {
+export type NotificationSettings = {
   soundType: NotificationSoundType;
-}
+};
 
 const defaultSettings: NotificationSettings = {
   soundType: "none",

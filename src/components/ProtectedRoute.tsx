@@ -2,17 +2,17 @@ import { useNavigate } from "@tanstack/react-router";
 import { type ReactNode, useEffect } from "react";
 import { useAuth } from "./AuthProvider";
 
-interface ProtectedRouteProps {
+type ProtectedRouteProps = {
   children: ReactNode;
-}
+};
 
-export function ProtectedRoute({ children }: ProtectedRouteProps) {
+export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!isAuthenticated) {
-      navigate({ to: "/login" });
+      void navigate({ to: "/login" });
     }
   }, [isAuthenticated, navigate]);
 
@@ -21,4 +21,4 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
   }
 
   return <>{children}</>;
-}
+};

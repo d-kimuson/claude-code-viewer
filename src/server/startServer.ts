@@ -51,6 +51,7 @@ import { setupTerminalWebSocket } from "./terminal/terminalWebSocket";
 
 export const startServer = async (options: CliOptions) => {
   // biome-ignore lint/style/noProcessEnv: allow only here
+  // oxlint-disable-next-line node/no-process-env -- configuration boundary
   const isDevelopment = isDevelopmentEnv(process.env.CCV_ENV);
   const apiOnly = options.apiOnly === true;
 
@@ -92,17 +93,19 @@ export const startServer = async (options: CliOptions) => {
 
   const port = isDevelopment
     ? // biome-ignore lint/style/noProcessEnv: allow only here
+      // oxlint-disable-next-line node/no-process-env -- configuration boundary
       (process.env.DEV_BE_PORT ?? "3401")
     : // biome-ignore lint/style/noProcessEnv: allow only here
+      // oxlint-disable-next-line node/no-process-env -- configuration boundary
       (options.port ?? process.env.PORT ?? "3000");
 
   // biome-ignore lint/style/noProcessEnv: allow only here
+  // oxlint-disable-next-line node/no-process-env -- configuration boundary
   const hostname = options.hostname ?? process.env.HOSTNAME ?? "localhost";
 
   server.listen(parseInt(port, 10), hostname, () => {
     const info = server.address();
-    const serverPort =
-      typeof info === "object" && info !== null ? info.port : port;
+    const serverPort = typeof info === "object" && info !== null ? info.port : port;
     const mode = apiOnly ? " (API-only mode)" : "";
     console.log(`Server is running on http://${hostname}:${serverPort}${mode}`);
   });
@@ -110,18 +113,14 @@ export const startServer = async (options: CliOptions) => {
 
 const PlatformLayer = Layer.mergeAll(platformLayer, NodeContext.layer);
 
-const InfraBasics = Layer.mergeAll(
-  ProjectMetaService.Live,
-  SessionMetaService.Live,
-).pipe(
+const InfraBasics = Layer.mergeAll(ProjectMetaService.Live, SessionMetaService.Live).pipe(
   Layer.provideMerge(SyncService.Live),
   Layer.provideMerge(DrizzleService.Live),
 );
 
-const InfraRepos = Layer.mergeAll(
-  ProjectRepository.Live,
-  SessionRepository.Live,
-).pipe(Layer.provideMerge(InfraBasics));
+const InfraRepos = Layer.mergeAll(ProjectRepository.Live, SessionRepository.Live).pipe(
+  Layer.provideMerge(InfraBasics),
+);
 
 const InfraLayer = AgentSessionLayer.pipe(Layer.provideMerge(InfraRepos));
 
@@ -138,9 +137,7 @@ const DomainBase = Layer.mergeAll(
   TasksService.Live,
 );
 
-const DomainLayer = ClaudeCodeLifeCycleService.Live.pipe(
-  Layer.provideMerge(DomainBase),
-);
+const DomainLayer = ClaudeCodeLifeCycleService.Live.pipe(Layer.provideMerge(DomainBase));
 
 const AppServices = Layer.mergeAll(
   FileWatcherService.Live,
@@ -149,9 +146,7 @@ const AppServices = Layer.mergeAll(
   TerminalService.Live,
 );
 
-const ApplicationLayer = InitializeService.Live.pipe(
-  Layer.provideMerge(AppServices),
-);
+const ApplicationLayer = InitializeService.Live.pipe(Layer.provideMerge(AppServices));
 
 const PresentationLayer = Layer.mergeAll(
   ProjectController.Live,

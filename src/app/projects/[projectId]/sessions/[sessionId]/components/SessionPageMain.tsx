@@ -13,26 +13,14 @@ import {
   PauseIcon,
   TrashIcon,
 } from "lucide-react";
-import {
-  type FC,
-  type ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { type FC, type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useConfig } from "@/app/hooks/useConfig";
 import { getDefaultCCOptions } from "@/app/projects/[projectId]/components/chatForm/ccOptionsFormSchema";
 import { InlineApprovalPanel } from "@/components/InlineApprovalPanel";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { usePermissionRequests } from "@/hooks/usePermissionRequests";
 import { useQuestionRequests } from "@/hooks/useQuestionRequests";
 import { useSchedulerJobs } from "@/hooks/useScheduler";
@@ -71,7 +59,7 @@ type SessionPageMainProps = {
 type SessionData = ReturnType<typeof useSession>;
 
 export const SessionPageMain: FC<SessionPageMainProps> = (props) => {
-  if (!props.sessionId) {
+  if (props.sessionId === undefined || props.sessionId === "") {
     return (
       <SessionPageMainContent
         {...props}
@@ -84,9 +72,7 @@ export const SessionPageMain: FC<SessionPageMainProps> = (props) => {
   return <SessionPageMainWithData {...props} sessionId={props.sessionId} />;
 };
 
-const SessionPageMainWithData: FC<
-  SessionPageMainProps & { sessionId: string }
-> = (props) => {
+const SessionPageMainWithData: FC<SessionPageMainProps & { sessionId: string }> = (props) => {
   const sessionData = useSession(props.projectId, props.sessionId);
   return (
     <SessionPageMainContent
@@ -103,28 +89,21 @@ const SessionPageMainContent: FC<
     sessionId?: string;
     sessionData: SessionData | null;
   }
-> = ({
-  projectId,
-  sessionId,
-  projectPath,
-  projectName,
-  sessionData,
-  onMobileMenuOpen,
-}) => {
+> = ({ projectId, sessionId, projectPath, projectName, sessionData, onMobileMenuOpen }) => {
   const navigate = useNavigate();
-  const conversations = sessionData?.conversations ?? [];
+  const conversations = sessionData?.conversations;
+  const conversationCount = conversations?.length ?? 0;
+  const hasSessionId = sessionId !== undefined && sessionId !== "";
+  const hasProjectPath = projectPath !== undefined && projectPath !== "";
   const emptyToolResult: SessionData["getToolResult"] = () => undefined;
   const getToolResult = sessionData?.getToolResult ?? emptyToolResult;
-  const isExistingSession =
-    Boolean(sessionId) && sessionData !== null && sessionData !== undefined;
-  const { currentPermissionRequest, onPermissionResponse } =
-    usePermissionRequests(sessionId);
-  const { currentQuestionRequest, onQuestionResponse } =
-    useQuestionRequests(sessionId);
+  const isExistingSession = hasSessionId && sessionData !== null && sessionData !== undefined;
+  const { currentPermissionRequest, onPermissionResponse } = usePermissionRequests(sessionId);
+  const { currentQuestionRequest, onQuestionResponse } = useQuestionRequests(sessionId);
   const { data: revisionsData } = useGitCurrentRevisions(projectId);
-  const currentBranch = revisionsData?.success
-    ? revisionsData.data.currentBranch?.name
-    : undefined;
+  const currentBranch =
+    revisionsData?.success === true ? revisionsData.data.currentBranch?.name : undefined;
+  const hasCurrentBranch = currentBranch !== undefined && currentBranch !== "";
   const exportSession = useExportSession();
   const { data: allSchedulerJobs } = useSchedulerJobs();
   const { data: projectData } = useProject(projectId);
@@ -134,19 +113,17 @@ const SessionPageMainContent: FC<
 
   // CC Options state - lifted here to share between ChatActionMenu and ChatInput
   const [savedOptions, setSavedOptions] = useProjectSessionOptions(projectId);
-  const [ccOptions, setCCOptions] = useState<CCOptionsSchema | undefined>(
-    () => ({
-      ...getDefaultCCOptions(),
-      ...(savedOptions.model ? { model: savedOptions.model } : {}),
-      ...(savedOptions.effort ? { effort: savedOptions.effort } : {}),
-      ...(savedOptions.permissionMode
-        ? { permissionMode: savedOptions.permissionMode }
-        : {}),
-      ...(savedOptions.useSystemPromptPreset === false
-        ? { systemPrompt: undefined }
-        : {}),
-    }),
-  );
+  const [ccOptions, setCCOptions] = useState<CCOptionsSchema | undefined>(() => ({
+    ...getDefaultCCOptions(),
+    ...(savedOptions.model !== undefined && savedOptions.model !== ""
+      ? { model: savedOptions.model }
+      : {}),
+    ...(savedOptions.effort !== undefined ? { effort: savedOptions.effort } : {}),
+    ...(savedOptions.permissionMode !== undefined
+      ? { permissionMode: savedOptions.permissionMode }
+      : {}),
+    ...(savedOptions.useSystemPromptPreset === false ? { systemPrompt: undefined } : {}),
+  }));
   const handleCCOptionsChange = useCallback(
     (next: CCOptionsSchema | undefined) => {
       setCCOptions(next);
@@ -164,17 +141,13 @@ const SessionPageMainContent: FC<
   const sessions = useMemo(() => {
     const serverSessions = projectData.pages.flatMap((page) => page.sessions);
     const existingIds = new Set(serverSessions.map((s) => s.id));
-    const virtualSessions = createVirtualSessionEntries(
-      virtualMessages,
-      projectId,
-      existingIds,
-    );
+    const virtualSessions = createVirtualSessionEntries(virtualMessages, projectId, existingIds);
     return [...serverSessions, ...virtualSessions];
   }, [projectData.pages, projectId, virtualMessages]);
 
   const hasLocalCommandOutput = useMemo(
     () =>
-      conversations.some((conversation) => {
+      (conversations ?? []).some((conversation) => {
         if (conversation.type !== "user") {
           return false;
         }
@@ -183,10 +156,7 @@ const SessionPageMainContent: FC<
           return false;
         }
 
-        return (
-          parseUserMessage(conversation.message.content).kind ===
-          "local-command"
-        );
+        return parseUserMessage(conversation.message.content).kind === "local-command";
       }),
     [conversations],
   );
@@ -194,12 +164,8 @@ const SessionPageMainContent: FC<
   const sortedSessions = useMemo(
     () =>
       [...sessions].sort((a, b) => {
-        const aProcess = sessionProcesses.find(
-          (process) => process.sessionId === a.id,
-        );
-        const bProcess = sessionProcesses.find(
-          (process) => process.sessionId === b.id,
-        );
+        const aProcess = sessionProcesses.find((process) => process.sessionId === a.id);
+        const bProcess = sessionProcesses.find((process) => process.sessionId === b.id);
 
         const aStatus = aProcess?.status;
         const bStatus = bProcess?.status;
@@ -217,12 +183,8 @@ const SessionPageMainContent: FC<
           return aPriority - bPriority;
         }
 
-        const aTime = a.lastModifiedAt
-          ? new Date(a.lastModifiedAt).getTime()
-          : 0;
-        const bTime = b.lastModifiedAt
-          ? new Date(b.lastModifiedAt).getTime()
-          : 0;
+        const aTime = a.lastModifiedAt ? new Date(a.lastModifiedAt).getTime() : 0;
+        const bTime = b.lastModifiedAt ? new Date(b.lastModifiedAt).getTime() : 0;
         return bTime - aTime;
       }),
     [sessions, sessionProcesses],
@@ -230,9 +192,9 @@ const SessionPageMainContent: FC<
 
   const sessionProcess = useSessionProcess();
   const relatedSessionProcess = useMemo(() => {
-    if (!sessionId) return undefined;
+    if (!hasSessionId) return undefined;
     return sessionProcess.getSessionProcess(sessionId);
-  }, [sessionProcess, sessionId]);
+  }, [hasSessionId, sessionId, sessionProcess]);
 
   const enableCCOptions = !relatedSessionProcess;
 
@@ -246,7 +208,7 @@ const SessionPageMainContent: FC<
 
   // Filter scheduler jobs related to this session
   const sessionScheduledJobs = useMemo(() => {
-    if (!sessionId || !allSchedulerJobs) return [];
+    if (!hasSessionId || allSchedulerJobs === undefined) return [];
     return allSchedulerJobs.filter(
       (job) =>
         job.message.baseSession?.sessionId === sessionId &&
@@ -254,10 +216,9 @@ const SessionPageMainContent: FC<
         job.schedule.type === "reserved" &&
         job.lastRunStatus === null, // Only show jobs that haven't been executed yet
     );
-  }, [allSchedulerJobs, sessionId, projectId]);
+  }, [allSchedulerJobs, hasSessionId, projectId, sessionId]);
 
-  const [previousConversationLength, setPreviousConversationLength] =
-    useState(0);
+  const [previousConversationLength, setPreviousConversationLength] = useState(0);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
@@ -289,11 +250,8 @@ const SessionPageMainContent: FC<
 
   useEffect(() => {
     if (!isExistingSession) return;
-    if (
-      effectiveSessionStatus === "running" &&
-      conversations.length !== previousConversationLength
-    ) {
-      setPreviousConversationLength(conversations.length);
+    if (effectiveSessionStatus === "running" && conversationCount !== previousConversationLength) {
+      setPreviousConversationLength(conversationCount);
       const scrollContainer = scrollContainerRef.current;
       if (scrollContainer) {
         scrollContainer.scrollTo({
@@ -302,12 +260,7 @@ const SessionPageMainContent: FC<
         });
       }
     }
-  }, [
-    conversations,
-    isExistingSession,
-    effectiveSessionStatus,
-    previousConversationLength,
-  ]);
+  }, [conversationCount, isExistingSession, effectiveSessionStatus, previousConversationLength]);
 
   const handleScrollToTop = () => {
     const scrollContainer = scrollContainerRef.current;
@@ -336,10 +289,9 @@ const SessionPageMainContent: FC<
   );
 
   const handleExportJsonl = () => {
-    if (!sessionData || !sessionId) return;
+    if (sessionData === null || sessionData === undefined || !hasSessionId) return;
 
-    const safeSessionId =
-      sessionId.replace(/[^a-zA-Z0-9._-]/g, "_") || "unknown";
+    const safeSessionId = sessionId.replace(/[^a-zA-Z0-9._-]/g, "_") || "unknown";
     const jsonl = sessionData.conversations
       .map((conversation) => {
         if (conversation.type === "x-error") {
@@ -370,7 +322,7 @@ const SessionPageMainContent: FC<
 
   const handleCopySessionFilePath = async () => {
     const sessionFilePath = sessionData?.session.jsonlFilePath;
-    if (!sessionFilePath) return;
+    if (sessionFilePath === undefined || sessionFilePath === "") return;
 
     try {
       await navigator.clipboard.writeText(sessionFilePath);
@@ -384,7 +336,7 @@ const SessionPageMainContent: FC<
   let headerTitle: ReactNode = projectName ?? projectId;
   if (!isExistingSession) {
     headerTitle = <Trans id="chat.modal.title" />;
-  } else if (sessionData && sessionId) {
+  } else if (hasSessionId) {
     headerTitle = sessionTitle;
   }
 
@@ -409,10 +361,7 @@ const SessionPageMainContent: FC<
               {statusBadge && (
                 <Badge
                   variant="secondary"
-                  className={cn(
-                    "h-5 text-[10px] px-1.5 flex-shrink-0",
-                    statusBadge.className,
-                  )}
+                  className={cn("h-5 text-[10px] px-1.5 flex-shrink-0", statusBadge.className)}
                 >
                   {statusBadge.icon === "running" ? (
                     <LoaderIcon className="w-2.5 h-2.5 mr-0.5 animate-spin" />
@@ -426,7 +375,7 @@ const SessionPageMainContent: FC<
                 {headerTitle}
               </h1>
             </div>
-            {isExistingSession && sessionId && (
+            {isExistingSession && (
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
@@ -449,9 +398,7 @@ const SessionPageMainContent: FC<
                           variant="ghost"
                           size="sm"
                           className="justify-start"
-                          onClick={() =>
-                            exportSession.mutate({ projectId, sessionId })
-                          }
+                          onClick={() => exportSession.mutate({ projectId, sessionId })}
                           disabled={exportSession.isPending}
                         >
                           <DownloadIcon
@@ -468,17 +415,20 @@ const SessionPageMainContent: FC<
                           <DownloadIcon className="w-4 h-4 mr-2" />
                           <Trans id="session.menu.export_jsonl" />
                         </Button>
-                        {sessionData?.session.jsonlFilePath && (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="justify-start"
-                            onClick={handleCopySessionFilePath}
-                          >
-                            <CopyIcon className="w-4 h-4 mr-2" />
-                            <Trans id="session.menu.copy_session_path" />
-                          </Button>
-                        )}
+                        {sessionData?.session.jsonlFilePath !== undefined &&
+                          sessionData.session.jsonlFilePath !== "" && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="justify-start"
+                              onClick={() => {
+                                void handleCopySessionFilePath();
+                              }}
+                            >
+                              <CopyIcon className="w-4 h-4 mr-2" />
+                              <Trans id="session.menu.copy_session_path" />
+                            </Button>
+                          )}
                         <Button
                           variant="ghost"
                           size="sm"
@@ -496,7 +446,7 @@ const SessionPageMainContent: FC<
                         <Trans id="control.metadata" />
                       </h3>
                       <div className="space-y-2">
-                        {projectPath && (
+                        {hasProjectPath && (
                           <div className="flex flex-col gap-1">
                             <span className="text-xs text-muted-foreground">
                               <Trans id="control.project_path" />
@@ -509,7 +459,7 @@ const SessionPageMainContent: FC<
                             </Badge>
                           </div>
                         )}
-                        {currentBranch && (
+                        {hasCurrentBranch && (
                           <div className="flex flex-col gap-1">
                             <span className="text-xs text-muted-foreground">
                               <Trans id="control.branch" />
@@ -523,7 +473,7 @@ const SessionPageMainContent: FC<
                             </Badge>
                           </div>
                         )}
-                        {sessionId && isExistingSession && (
+                        {isExistingSession && (
                           <div className="flex flex-col gap-1">
                             <span className="text-xs text-muted-foreground">
                               <Trans id="control.session_id" />
@@ -536,7 +486,7 @@ const SessionPageMainContent: FC<
                             </Badge>
                           </div>
                         )}
-                        {isExistingSession && sessionData && (
+                        {isExistingSession && (
                           <div className="flex flex-col gap-1">
                             <span className="text-xs text-muted-foreground">
                               <Trans id="control.model" />
@@ -549,7 +499,7 @@ const SessionPageMainContent: FC<
                             </Badge>
                           </div>
                         )}
-                        {isExistingSession && sessionData && (
+                        {isExistingSession && (
                           <div className="flex flex-col gap-1">
                             <span className="text-xs text-muted-foreground">
                               <Trans id="session.cost.label" />
@@ -560,9 +510,7 @@ const SessionPageMainContent: FC<
                                 className="h-7 text-xs flex items-center w-fit font-semibold"
                               >
                                 <Trans id="session.cost.total" />: $
-                                {sessionData.session.meta.cost.totalUsd.toFixed(
-                                  3,
-                                )}
+                                {sessionData.session.meta.cost.totalUsd.toFixed(3)}
                               </Badge>
                               <div className="text-xs space-y-1 pl-2">
                                 <div className="flex justify-between gap-4">
@@ -641,7 +589,7 @@ const SessionPageMainContent: FC<
         >
           <main className="w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 relative min-w-0 pb-4">
             <ConversationList
-              conversations={isExistingSession ? conversations : []}
+              conversations={isExistingSession ? (conversations ?? []) : []}
               getToolResult={getToolResult}
               projectId={projectId}
               sessionId={sessionId ?? ""}
@@ -688,19 +636,14 @@ const SessionPageMainContent: FC<
                             key={session.id}
                             to="/projects/$projectId/session"
                             params={{ projectId }}
-                            search={(prev) => ({
-                              ...prev,
-                              sessionId: session.id,
-                            })}
+                            search={{ sessionId: session.id }}
                             className={cn(
                               "block p-3 rounded-lg transition-colors border",
                               "border-border/40 hover:bg-muted/50 hover:border-primary/30",
                             )}
                           >
                             <div className="flex items-start justify-between gap-2 mb-1">
-                              <h4 className="text-sm font-medium line-clamp-1 flex-1">
-                                {title}
-                              </h4>
+                              <h4 className="text-sm font-medium line-clamp-1 flex-1">{title}</h4>
                               {(isRunning || isPaused) && (
                                 <Badge
                                   variant="secondary"
@@ -780,14 +723,14 @@ const SessionPageMainContent: FC<
         </div>
 
         <div className="flex-shrink-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-          {isExistingSession && sessionId && relatedSessionProcess ? (
+          {isExistingSession && relatedSessionProcess ? (
             <ContinueChat
               projectId={projectId}
               sessionId={sessionId}
               sessionProcessId={relatedSessionProcess.id}
               sessionProcessStatus={effectiveSessionStatus}
             />
-          ) : isExistingSession && sessionId ? (
+          ) : isExistingSession ? (
             <ResumeChat
               projectId={projectId}
               sessionId={sessionId}
@@ -804,7 +747,7 @@ const SessionPageMainContent: FC<
         </div>
       </div>
 
-      {isExistingSession && sessionId && (
+      {isExistingSession && (
         <DeleteSessionDialog
           open={isDeleteDialogOpen}
           onOpenChange={setIsDeleteDialogOpen}
@@ -812,14 +755,10 @@ const SessionPageMainContent: FC<
           sessionId={sessionId}
           sessionTitle={sessionTitle}
           onSuccess={() => {
-            navigate({
+            void navigate({
               to: "/projects/$projectId/session",
               params: { projectId },
-              search: (prev) => ({
-                ...prev,
-                sessionId: undefined,
-                tab: "sessions" as const,
-              }),
+              search: { tab: "sessions" },
             });
           }}
         />

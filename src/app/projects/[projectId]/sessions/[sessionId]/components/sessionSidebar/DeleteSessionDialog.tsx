@@ -73,25 +73,14 @@ export const DeleteSessionDialog: FC<DeleteSessionDialogProps> = ({
             <Trans id="session.delete_dialog.title" />
           </DialogTitle>
           <DialogDescription className="break-words line-clamp-10">
-            <Trans
-              id="session.delete_dialog.description"
-              values={{ title: sessionTitle }}
-            />
+            <Trans id="session.delete_dialog.description" values={{ title: sessionTitle }} />
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button
-            variant="outline"
-            onClick={handleCancel}
-            disabled={deleteSession.isPending}
-          >
+          <Button variant="outline" onClick={handleCancel} disabled={deleteSession.isPending}>
             <Trans id="common.cancel" />
           </Button>
-          <Button
-            variant="destructive"
-            onClick={handleDelete}
-            disabled={deleteSession.isPending}
-          >
+          <Button variant="destructive" onClick={handleDelete} disabled={deleteSession.isPending}>
             {deleteSession.isPending ? (
               <Trans id="common.deleting" />
             ) : (

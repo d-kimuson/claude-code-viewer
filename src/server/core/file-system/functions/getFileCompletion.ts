@@ -25,9 +25,7 @@ export const getFileCompletion = async (
   basePath = "/",
 ): Promise<FileCompletionResult> => {
   // Normalize basePath to prevent directory traversal
-  const normalizedBasePath = basePath.startsWith("/")
-    ? basePath.slice(1)
-    : basePath;
+  const normalizedBasePath = basePath.startsWith("/") ? basePath.slice(1) : basePath;
   const targetPath = resolve(projectPath, normalizedBasePath);
 
   // Security check: ensure target path is within project directory

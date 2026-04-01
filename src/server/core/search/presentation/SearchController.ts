@@ -6,11 +6,7 @@ import { SearchService } from "../services/SearchService";
 const LayerImpl = Effect.gen(function* () {
   const searchService = yield* SearchService;
 
-  const search = (options: {
-    query: string;
-    limit?: number;
-    projectId?: string;
-  }) =>
+  const search = (options: { query: string; limit?: number; projectId?: string }) =>
     Effect.gen(function* () {
       const { query, limit, projectId } = options;
 
@@ -23,11 +19,7 @@ const LayerImpl = Effect.gen(function* () {
         } as const satisfies ControllerResponse;
       }
 
-      const { results } = yield* searchService.search(
-        query.trim(),
-        limit,
-        projectId,
-      );
+      const { results } = yield* searchService.search(query.trim(), limit, projectId);
 
       return {
         status: 200,

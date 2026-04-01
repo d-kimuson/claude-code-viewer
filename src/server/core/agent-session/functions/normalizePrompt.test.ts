@@ -40,9 +40,7 @@ describe("normalizePrompt", () => {
       Run the test suite
       and generate a coverage report
     `;
-    expect(normalizePrompt(prompt)).toBe(
-      "run the test suite and generate a coverage report",
-    );
+    expect(normalizePrompt(prompt)).toBe("run the test suite and generate a coverage report");
   });
 
   it("should produce consistent output for similar prompts", () => {

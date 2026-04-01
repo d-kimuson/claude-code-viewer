@@ -21,13 +21,10 @@ export const useExportSession = () => {
       return data;
     },
     onSuccess: (data, variables) => {
-      const safeSessionId =
-        variables.sessionId.replace(/[^a-zA-Z0-9._-]/g, "_") || "unknown";
-      const file = new File(
-        [data.html],
-        `ccv-html-export-${safeSessionId}.html`,
-        { type: "text/html" },
-      );
+      const safeSessionId = variables.sessionId.replace(/[^a-zA-Z0-9._-]/g, "_") || "unknown";
+      const file = new File([data.html], `ccv-html-export-${safeSessionId}.html`, {
+        type: "text/html",
+      });
       const url = URL.createObjectURL(file);
       const link = document.createElement("a");
       link.href = url;

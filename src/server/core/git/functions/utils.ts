@@ -2,7 +2,6 @@ import { execFile } from "node:child_process";
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 import { promisify } from "node:util";
-
 import type { GitError, GitResult } from "../types";
 
 const execFileAsync = promisify(execFile);
@@ -10,10 +9,10 @@ const execFileAsync = promisify(execFile);
 /**
  * Execute a git command in the specified directory
  */
-export async function executeGitCommand(
+export const executeGitCommand = async (
   args: string[],
   cwd: string,
-): Promise<GitResult<string>> {
+): Promise<GitResult<string>> => {
   try {
     // Check if the directory exists
     if (!existsSync(cwd)) {
@@ -40,16 +39,19 @@ export async function executeGitCommand(
       data: stdout,
     };
   } catch (error: unknown) {
-    const err = error as { code?: string; stderr?: string; message?: string };
+    const err = error instanceof Object ? error : {};
+    const errMessage =
+      "message" in err && typeof err.message === "string" ? err.message : undefined;
+    const errStderr = "stderr" in err && typeof err.stderr === "string" ? err.stderr : undefined;
 
     let errorCode: GitError["code"] = "COMMAND_FAILED";
-    let errorMessage = err.message || "Unknown git command error";
+    let errorMessage = errMessage ?? "Unknown git command error";
 
-    if (err.stderr) {
-      if (err.stderr.includes("not a git repository")) {
+    if (errStderr !== undefined) {
+      if (errStderr.includes("not a git repository")) {
         errorCode = "NOT_A_REPOSITORY";
         errorMessage = "Not a git repository";
-      } else if (err.stderr.includes("unknown revision")) {
+      } else if (errStderr.includes("unknown revision")) {
         errorCode = "BRANCH_NOT_FOUND";
         errorMessage = "Branch or commit not found";
       }
@@ -61,46 +63,49 @@ export async function executeGitCommand(
         code: errorCode,
         message: errorMessage,
         command: `git ${args.join(" ")}`,
-        stderr: err.stderr,
+        stderr: errStderr,
       },
     };
   }
-}
+};
 
 /**
  * Check if a directory is a git repository
  */
-export function isGitRepository(cwd: string): boolean {
+export const isGitRepository = (cwd: string): boolean => {
   return existsSync(cwd) && existsSync(resolve(cwd, ".git"));
-}
+};
 
 /**
  * Remove ANSI color codes from a string
  */
-export function stripAnsiColors(text: string): string {
+export const stripAnsiColors = (text: string): string => {
   // ANSI escape sequence pattern: \x1B[...m
   // biome-ignore lint/suspicious/noControlCharactersInRegex: this is a valid regex
+  // oxlint-disable-next-line no-control-regex -- intentional ANSI escape sequence matching
   return text.replace(/\x1B\[[0-9;]*m/g, "");
-}
+};
 
 /**
  * Safely parse git command output that might be empty
  */
-export function parseLines(output: string): string[] {
+export const parseLines = (output: string): string[] => {
   return output
     .trim()
     .split("\n")
     .filter((line) => line.trim() !== "");
-}
+};
 
 /**
  * Parse git status porcelain output
  */
-export function parseStatusLine(line: string): {
+export const parseStatusLine = (
+  line: string,
+): {
   status: string;
   filePath: string;
   oldPath?: string;
-} {
+} => {
   const status = line.slice(0, 2);
   const filePath = line.slice(3);
 
@@ -109,20 +114,20 @@ export function parseStatusLine(line: string): {
     const parts = filePath.split(" -> ");
     return {
       status,
-      filePath: parts[1] || filePath,
+      filePath: parts[1] ?? filePath,
       oldPath: parts[0],
     };
   }
 
   return { status, filePath };
-}
+};
 
 /**
  * Convert git status code to readable status
  */
-export function getFileStatus(
+export const getFileStatus = (
   statusCode: string,
-): "added" | "modified" | "deleted" | "renamed" | "copied" {
+): "added" | "modified" | "deleted" | "renamed" | "copied" => {
   const firstChar = statusCode[0];
 
   switch (firstChar) {
@@ -136,7 +141,9 @@ export function getFileStatus(
       return "renamed";
     case "C":
       return "copied";
+    case undefined:
+      return "modified";
     default:
       return "modified";
   }
-}
+};

@@ -1,16 +1,16 @@
-import { useCallback, useRef, useState } from "react";
+import { type KeyboardEvent, type RefObject, useCallback, useRef, useState } from "react";
 import type { CommandCompletionRef } from "./CommandCompletion";
 import type { FileCompletionRef } from "./FileCompletion";
 
-export interface UseMessageCompletionResult {
+export type UseMessageCompletionResult = {
   cursorPosition: {
     relative: { top: number; left: number };
     absolute: { top: number; left: number };
   };
-  containerRef: React.RefObject<HTMLDivElement | null>;
-  textareaRef: React.RefObject<HTMLTextAreaElement | null>;
-  commandCompletionRef: React.RefObject<CommandCompletionRef | null>;
-  fileCompletionRef: React.RefObject<FileCompletionRef | null>;
+  containerRef: RefObject<HTMLDivElement | null>;
+  textareaRef: RefObject<HTMLTextAreaElement | null>;
+  commandCompletionRef: RefObject<CommandCompletionRef | null>;
+  fileCompletionRef: RefObject<FileCompletionRef | null>;
   getCursorPosition: () =>
     | {
         relative: { top: number; left: number };
@@ -18,21 +18,15 @@ export interface UseMessageCompletionResult {
       }
     | undefined;
   handleChange: (value: string, onChange: (value: string) => void) => void;
-  handleKeyDown: (e: React.KeyboardEvent<HTMLTextAreaElement>) => boolean;
-  handleCommandSelect: (
-    command: string,
-    onSelect: (command: string) => void,
-  ) => void;
-  handleFileSelect: (
-    filePath: string,
-    onSelect: (filePath: string) => void,
-  ) => void;
-}
+  handleKeyDown: (e: KeyboardEvent<HTMLTextAreaElement>) => boolean;
+  handleCommandSelect: (command: string, onSelect: (command: string) => void) => void;
+  handleFileSelect: (filePath: string, onSelect: (filePath: string) => void) => void;
+};
 
 /**
  * Message input with command and file completion support
  */
-export function useMessageCompletion(): UseMessageCompletionResult {
+export const useMessageCompletion = (): UseMessageCompletionResult => {
   const [cursorPosition, setCursorPosition] = useState<{
     relative: { top: number; left: number };
     absolute: { top: number; left: number };
@@ -115,20 +109,17 @@ export function useMessageCompletion(): UseMessageCompletionResult {
     [getCursorPosition],
   );
 
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLTextAreaElement>): boolean => {
-      if (fileCompletionRef.current?.handleKeyDown(e)) {
-        return true;
-      }
+  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLTextAreaElement>): boolean => {
+    if (fileCompletionRef.current?.handleKeyDown(e) === true) {
+      return true;
+    }
 
-      if (commandCompletionRef.current?.handleKeyDown(e)) {
-        return true;
-      }
+    if (commandCompletionRef.current?.handleKeyDown(e) === true) {
+      return true;
+    }
 
-      return false;
-    },
-    [],
-  );
+    return false;
+  }, []);
 
   const handleCommandSelect = useCallback(
     (command: string, onSelect: (command: string) => void) => {
@@ -138,13 +129,10 @@ export function useMessageCompletion(): UseMessageCompletionResult {
     [],
   );
 
-  const handleFileSelect = useCallback(
-    (filePath: string, onSelect: (filePath: string) => void) => {
-      onSelect(filePath);
-      textareaRef.current?.focus();
-    },
-    [],
-  );
+  const handleFileSelect = useCallback((filePath: string, onSelect: (filePath: string) => void) => {
+    onSelect(filePath);
+    textareaRef.current?.focus();
+  }, []);
 
   return {
     cursorPosition,
@@ -158,4 +146,4 @@ export function useMessageCompletion(): UseMessageCompletionResult {
     handleCommandSelect,
     handleFileSelect,
   };
-}
+};

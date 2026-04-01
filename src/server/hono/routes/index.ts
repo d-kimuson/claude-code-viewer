@@ -4,10 +4,7 @@ import { setCookie } from "hono/cookie";
 import { createMiddleware } from "hono/factory";
 import prexit from "prexit";
 import packageJson from "../../../../package.json" with { type: "json" };
-import {
-  CcvOptionsService,
-  type CliOptions,
-} from "../../core/platform/services/CcvOptionsService";
+import { CcvOptionsService, type CliOptions } from "../../core/platform/services/CcvOptionsService";
 import { EnvService } from "../../core/platform/services/EnvService";
 import { UserConfigService } from "../../core/platform/services/UserConfigService";
 import { userConfigSchema } from "../../lib/config/config";
@@ -61,8 +58,7 @@ export const routes = (app: HonoAppType, options: CliOptions) =>
     const initializeService = yield* InitializeService;
 
     const { authRequiredMiddleware } = yield* AuthMiddleware;
-    const apiOnly =
-      (yield* ccvOptionsService.getCcvOptions("apiOnly")) === true;
+    const apiOnly = (yield* ccvOptionsService.getCcvOptions("apiOnly")) === true;
     const apiOnlyMiddleware = createApiOnlyMiddleware(apiOnly);
 
     const runtime = yield* getHonoRuntime;
@@ -94,7 +90,7 @@ export const routes = (app: HonoAppType, options: CliOptions) =>
         /**
          * Auth un-necessary Routes
          */
-        .get("/api/version", async (c) => {
+        .get("/api/version", (c) => {
           return c.json({
             version: packageJson.version,
           });
@@ -107,12 +103,12 @@ export const routes = (app: HonoAppType, options: CliOptions) =>
         /**
          * Private Routes
          */
-        .get("/api/config", async (c) => {
+        .get("/api/config", (c) => {
           return c.json({
             config: c.get("userConfig"),
           });
         })
-        .put("/api/config", zValidator("json", userConfigSchema), async (c) => {
+        .put("/api/config", zValidator("json", userConfigSchema), (c) => {
           const { ...config } = c.req.valid("json");
 
           setCookie(c, "ccv-config", JSON.stringify(config));
@@ -136,6 +132,4 @@ export const routes = (app: HonoAppType, options: CliOptions) =>
   });
 
 export type RouteType =
-  ReturnType<typeof routes> extends Effect.Effect<infer A, unknown, unknown>
-    ? A
-    : never;
+  ReturnType<typeof routes> extends Effect.Effect<infer A, unknown, unknown> ? A : never;

@@ -7,10 +7,7 @@ export const testSessionMetaServiceLayer = (options?: {
   meta?: SessionMeta;
   invalidateSession?: () => Effect.Effect<void>;
 }) => {
-  const {
-    meta = createMockSessionMeta(),
-    invalidateSession = () => Effect.void,
-  } = options ?? {};
+  const { meta = createMockSessionMeta(), invalidateSession = () => Effect.void } = options ?? {};
 
   return Layer.mock(SessionMetaService, {
     getSessionMeta: () => Effect.succeed(meta),

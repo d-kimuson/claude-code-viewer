@@ -2,8 +2,7 @@ import { eq } from "drizzle-orm";
 import { Context, Effect, Layer } from "effect";
 import { z } from "zod";
 import { DrizzleService } from "../../../lib/db/DrizzleService";
-import type { SessionRow } from "../../../lib/db/schema";
-import { sessions } from "../../../lib/db/schema";
+import { type SessionRow, sessions } from "../../../lib/db/schema";
 import { parsedUserMessageSchema } from "../../claude-code/functions/parseUserMessage";
 import { SyncService } from "../../sync/services/SyncService";
 import type { SessionMeta } from "../../types";
@@ -49,9 +48,7 @@ const defaultTokenUsage = {
 const rowToSessionMeta = (row: SessionRow): SessionMeta => {
   const firstUserMessage =
     row.firstUserMessageJson !== null
-      ? parsedUserMessageOrNullSchema.parse(
-          JSON.parse(row.firstUserMessageJson),
-        )
+      ? parsedUserMessageOrNullSchema.parse(JSON.parse(row.firstUserMessageJson))
       : null;
 
   const breakdown =
@@ -64,10 +61,7 @@ const rowToSessionMeta = (row: SessionRow): SessionMeta => {
       ? tokenUsageSchema.parse(JSON.parse(row.tokenUsageJson))
       : defaultTokenUsage;
 
-  const prLinks =
-    row.prLinksJson !== null
-      ? prLinksSchema.parse(JSON.parse(row.prLinksJson))
-      : [];
+  const prLinks = row.prLinksJson !== null ? prLinksSchema.parse(JSON.parse(row.prLinksJson)) : [];
 
   return {
     messageCount: row.messageCount,
@@ -90,10 +84,7 @@ export class SessionMetaService extends Context.Tag("SessionMetaService")<
       projectId: string,
       sessionId: string,
     ) => Effect.Effect<SessionMeta, Error>;
-    readonly invalidateSession: (
-      projectId: string,
-      sessionId: string,
-    ) => Effect.Effect<void>;
+    readonly invalidateSession: (projectId: string, sessionId: string) => Effect.Effect<void>;
   }
 >() {
   static Live = Layer.effect(
@@ -107,11 +98,7 @@ export class SessionMetaService extends Context.Tag("SessionMetaService")<
         sessionId: string,
       ): Effect.Effect<SessionMeta, Error> =>
         Effect.gen(function* () {
-          const row = db
-            .select()
-            .from(sessions)
-            .where(eq(sessions.id, sessionId))
-            .get();
+          const row = db.select().from(sessions).where(eq(sessions.id, sessionId)).get();
 
           if (row === undefined) {
             // Not in DB yet — sync and retry
@@ -119,16 +106,10 @@ export class SessionMetaService extends Context.Tag("SessionMetaService")<
               .syncSession(projectId, sessionId)
               .pipe(Effect.catchAll(() => Effect.void));
 
-            const retryRow = db
-              .select()
-              .from(sessions)
-              .where(eq(sessions.id, sessionId))
-              .get();
+            const retryRow = db.select().from(sessions).where(eq(sessions.id, sessionId)).get();
 
             if (retryRow === undefined) {
-              return yield* Effect.fail(
-                new Error(`Session not found: ${sessionId}`),
-              );
+              return yield* Effect.fail(new Error(`Session not found: ${sessionId}`));
             }
 
             return rowToSessionMeta(retryRow);
@@ -137,13 +118,8 @@ export class SessionMetaService extends Context.Tag("SessionMetaService")<
           return rowToSessionMeta(row);
         });
 
-      const invalidateSession = (
-        projectId: string,
-        sessionId: string,
-      ): Effect.Effect<void> =>
-        syncService
-          .syncSession(projectId, sessionId)
-          .pipe(Effect.catchAll(() => Effect.void));
+      const invalidateSession = (projectId: string, sessionId: string): Effect.Effect<void> =>
+        syncService.syncSession(projectId, sessionId).pipe(Effect.catchAll(() => Effect.void));
 
       return {
         getSessionMeta,
@@ -153,6 +129,4 @@ export class SessionMetaService extends Context.Tag("SessionMetaService")<
   );
 }
 
-export type ISessionMetaService = Context.Tag.Service<
-  typeof SessionMetaService
->;
+export type ISessionMetaService = Context.Tag.Service<typeof SessionMetaService>;

@@ -30,9 +30,7 @@ export const useDeleteSession = () => {
       projectId: string;
       sessionId: string;
     }): Promise<{ success: true }> => {
-      const response = await honoClient.api.projects[":projectId"].sessions[
-        ":sessionId"
-      ].$delete({
+      const response = await honoClient.api.projects[":projectId"].sessions[":sessionId"].$delete({
         param: { projectId, sessionId },
       });
 

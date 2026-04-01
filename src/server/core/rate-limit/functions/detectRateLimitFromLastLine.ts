@@ -1,5 +1,4 @@
-import type { RateLimitDetectionResult } from "../schema";
-import { RateLimitEntrySchema } from "../schema";
+import { type RateLimitDetectionResult, RateLimitEntrySchema } from "../schema";
 
 /**
  * Detects if a JSON line represents a rate limit error from Claude Code.
@@ -11,9 +10,7 @@ import { RateLimitEntrySchema } from "../schema";
  * @param jsonLine - A single line of JSON from a Claude Code session JSONL file
  * @returns Detection result with session info if rate limit detected
  */
-export const detectRateLimitFromLastLine = (
-  jsonLine: string,
-): RateLimitDetectionResult => {
+export const detectRateLimitFromLastLine = (jsonLine: string): RateLimitDetectionResult => {
   const trimmed = jsonLine.trim();
   if (trimmed === "") {
     return { detected: false };

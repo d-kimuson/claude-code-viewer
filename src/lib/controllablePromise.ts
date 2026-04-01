@@ -9,6 +9,7 @@ export const controllablePromise = <T>(): ControllablePromise<T> => {
   let promiseResolve: ((value: T) => void) | undefined;
   let promiseReject: ((reason?: unknown) => void) | undefined;
 
+  // oxlint-disable-next-line no-unsafe-type-assertion -- Partially initialized, fields set before return
   const promiseRef = {
     status: "pending",
   } as ControllablePromise<T>;

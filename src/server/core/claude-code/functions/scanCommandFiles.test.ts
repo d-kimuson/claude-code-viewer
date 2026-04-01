@@ -13,18 +13,12 @@ const testLayer = Layer.provide(NodeContext.layer, testPlatformLayer());
 
 describe("pathToCommandName", () => {
   it("should convert flat file path to command name", () => {
-    const result = pathToCommandName(
-      "/base/commands/impl.md",
-      "/base/commands",
-    );
+    const result = pathToCommandName("/base/commands/impl.md", "/base/commands");
     expect(result).toBe("impl");
   });
 
   it("should convert subdirectory file path to colon-separated command name", () => {
-    const result = pathToCommandName(
-      "/base/commands/frontend/impl.md",
-      "/base/commands",
-    );
+    const result = pathToCommandName("/base/commands/frontend/impl.md", "/base/commands");
     expect(result).toBe("frontend:impl");
   });
 
@@ -37,18 +31,12 @@ describe("pathToCommandName", () => {
   });
 
   it("should remove .md extension", () => {
-    const result = pathToCommandName(
-      "/base/commands/test.md",
-      "/base/commands",
-    );
+    const result = pathToCommandName("/base/commands/test.md", "/base/commands");
     expect(result).toBe("test");
   });
 
   it("should handle paths with trailing slash in base path", () => {
-    const result = pathToCommandName(
-      "/base/commands/frontend/impl.md",
-      "/base/commands/",
-    );
+    const result = pathToCommandName("/base/commands/frontend/impl.md", "/base/commands/");
     expect(result).toBe("frontend:impl");
   });
 });
@@ -122,10 +110,7 @@ describe("scanCommandFilesRecursively", () => {
         yield* fs.makeDirectory(`${testDir}/frontend/components/buttons`, {
           recursive: true,
         });
-        yield* fs.writeFileString(
-          `${testDir}/frontend/components/buttons/primary.md`,
-          "content",
-        );
+        yield* fs.writeFileString(`${testDir}/frontend/components/buttons/primary.md`, "content");
       }).pipe(Effect.provide(testLayer)),
     );
 
@@ -141,9 +126,7 @@ describe("scanCommandFilesRecursively", () => {
     const nonExistentDir = `${testDir}/non-existent`;
 
     const result = await Effect.runPromise(
-      scanCommandFilesRecursively(nonExistentDir).pipe(
-        Effect.provide(testLayer),
-      ),
+      scanCommandFilesRecursively(nonExistentDir).pipe(Effect.provide(testLayer)),
     );
 
     expect(result).toEqual([]);
@@ -242,10 +225,7 @@ describe("scanSkillFilesRecursively", () => {
           recursive: true,
         });
         yield* fs.writeFileString(`${testDir}/typescript/SKILL.md`, "content");
-        yield* fs.writeFileString(
-          `${testDir}/frontend/design/SKILL.md`,
-          "content",
-        );
+        yield* fs.writeFileString(`${testDir}/frontend/design/SKILL.md`, "content");
       }).pipe(Effect.provide(testLayer)),
     );
 
@@ -317,10 +297,7 @@ describe("scanSkillFilesRecursively", () => {
           recursive: true,
         });
         yield* fs.writeFileString(`${testDir}/with-skill/SKILL.md`, "content");
-        yield* fs.writeFileString(
-          `${testDir}/without-skill/README.md`,
-          "content",
-        );
+        yield* fs.writeFileString(`${testDir}/without-skill/README.md`, "content");
       }).pipe(Effect.provide(testLayer)),
     );
 
@@ -346,14 +323,8 @@ describe("scanSkillFilesRecursively", () => {
           recursive: true,
         });
         yield* fs.writeFileString(`${testDir}/skill1/SKILL.md`, "content");
-        yield* fs.writeFileString(
-          `${testDir}/parent/skill2/SKILL.md`,
-          "content",
-        );
-        yield* fs.writeFileString(
-          `${testDir}/parent/child/skill3/SKILL.md`,
-          "content",
-        );
+        yield* fs.writeFileString(`${testDir}/parent/skill2/SKILL.md`, "content");
+        yield* fs.writeFileString(`${testDir}/parent/child/skill3/SKILL.md`, "content");
       }).pipe(Effect.provide(testLayer)),
     );
 

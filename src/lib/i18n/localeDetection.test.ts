@@ -10,15 +10,13 @@ import type { SupportedLocale } from "./schema";
 describe("localeDetection", () => {
   describe("detectLocaleFromAcceptLanguage", () => {
     it("returns zh_CN when Chinese is preferred", () => {
-      expect(
-        detectLocaleFromAcceptLanguage("zh-CN,zh;q=0.9,en-US;q=0.8"),
-      ).toBe<SupportedLocale>("zh_CN");
+      expect(detectLocaleFromAcceptLanguage("zh-CN,zh;q=0.9,en-US;q=0.8")).toBe<SupportedLocale>(
+        "zh_CN",
+      );
     });
 
     it("honors quality values", () => {
-      expect(
-        detectLocaleFromAcceptLanguage("ja-JP;q=0.8,en-US;q=0.9"),
-      ).toBe<SupportedLocale>("en");
+      expect(detectLocaleFromAcceptLanguage("ja-JP;q=0.8,en-US;q=0.9")).toBe<SupportedLocale>("en");
     });
 
     it("returns undefined when header is missing", () => {

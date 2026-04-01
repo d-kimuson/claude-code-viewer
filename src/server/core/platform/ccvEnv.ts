@@ -1,2 +1,1 @@
-export const isDevelopmentEnv = (ccvEnv: string | undefined): boolean =>
-  ccvEnv === "development";
+export const isDevelopmentEnv = (ccvEnv: string | undefined): boolean => ccvEnv === "development";

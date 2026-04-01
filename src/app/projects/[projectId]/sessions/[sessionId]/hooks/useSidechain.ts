@@ -1,8 +1,5 @@
 import { useCallback, useMemo } from "react";
-import type {
-  Conversation,
-  SidechainConversation,
-} from "@/lib/conversation-schema";
+import type { Conversation, SidechainConversation } from "@/lib/conversation-schema";
 import {
   SUBAGENT_TOOL_NAMES,
   taskToolInputSchema,
@@ -34,27 +31,28 @@ export const useSidechain = (conversations: Conversation[]) => {
   }, [sidechainConversations]);
 
   const conversationPromptMap = useMemo(() => {
-    return new Map<string, SidechainConversation>(
-      sidechainConversations
-        .filter((conv) => conv.type === "user")
-        .filter(
-          (conv) =>
-            conv.parentUuid === null &&
-            typeof conv.message.content === "string",
-        )
-        .map((conv) => [conv.message.content as string, conv] as const),
-    );
+    const entries: Array<readonly [string, SidechainConversation]> = [];
+
+    for (const conv of sidechainConversations) {
+      if (conv.type !== "user" || conv.parentUuid !== null) {
+        continue;
+      }
+
+      if (typeof conv.message.content !== "string") {
+        continue;
+      }
+
+      entries.push([conv.message.content, conv] as const);
+    }
+
+    return new Map<string, SidechainConversation>(entries);
   }, [sidechainConversations]);
 
   const taskToolCallPromptSet = useMemo(() => {
     return new Set<string>(
       conversations
         .filter((conv) => conv.type === "assistant")
-        .flatMap((conv) => [
-          ...conv.message.content.filter(
-            (content) => content.type === "tool_use",
-          ),
-        ])
+        .flatMap((conv) => conv.message.content.filter((content) => content.type === "tool_use"))
         .flatMap((content) => {
           if (!SUBAGENT_TOOL_NAMES.has(content.name)) {
             return [];
@@ -136,19 +134,21 @@ export const useSidechain = (conversations: Conversation[]) => {
   );
 
   const conversationAgentIdMap = useMemo(() => {
-    return new Map<string, SidechainConversation>(
-      sidechainConversations
-        .filter(
-          (conv) =>
-            conv.type === "user" ||
-            conv.type === "system" ||
-            conv.type === "assistant",
-        )
-        .filter(
-          (conv) => conv.parentUuid === null && conv.agentId !== undefined,
-        )
-        .map((conv) => [conv.agentId as string, conv] as const),
-    );
+    const entries: Array<readonly [string, SidechainConversation]> = [];
+
+    for (const conv of sidechainConversations) {
+      if (conv.type !== "user" && conv.type !== "system" && conv.type !== "assistant") {
+        continue;
+      }
+
+      if (conv.parentUuid !== null || conv.agentId === undefined) {
+        continue;
+      }
+
+      entries.push([conv.agentId, conv] as const);
+    }
+
+    return new Map<string, SidechainConversation>(entries);
   }, [sidechainConversations]);
 
   const getSidechainConversationByAgentId = useCallback(

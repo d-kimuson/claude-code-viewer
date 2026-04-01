@@ -8,20 +8,11 @@ import {
   RefreshCwIcon,
   XIcon,
 } from "lucide-react";
-import type { FC, ReactNode } from "react";
-import { useCallback, useEffect, useRef } from "react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { type FC, type ReactNode, useCallback, useEffect, useRef } from "react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useDragResize } from "@/hooks/useDragResize";
 import { useIsMobile } from "@/hooks/useIsMobile";
-import {
-  rightPanelIframeRefAtom,
-  rightPanelResizingAtom,
-} from "@/lib/atoms/rightPanel";
+import { rightPanelIframeRefAtom, rightPanelResizingAtom } from "@/lib/atoms/rightPanel";
 import { cn } from "@/lib/utils";
 import {
   type RightPanelTab,
@@ -29,19 +20,19 @@ import {
   useRightPanelState,
 } from "../../hooks/useRightPanel";
 
-interface RightPanelProps {
+type RightPanelProps = {
   projectId: string;
   sessionId?: string;
   gitTabContent?: ReactNode;
   filesToolsTabContent?: ReactNode;
   reviewTabContent?: ReactNode;
-}
+};
 
-interface TabConfig {
+type TabConfig = {
   id: RightPanelTab;
   icon: typeof GlobeIcon;
   label: ReactNode;
-}
+};
 
 const tabs: TabConfig[] = [
   {
@@ -67,8 +58,7 @@ export const RightPanel: FC<RightPanelProps> = ({
   filesToolsTabContent,
   reviewTabContent,
 }) => {
-  const { isOpen, activeTab, width, browserUrl, inputUrl } =
-    useRightPanelState();
+  const { isOpen, activeTab, width, browserUrl, inputUrl } = useRightPanelState();
   const {
     closePanel,
     setActiveTab,
@@ -88,7 +78,7 @@ export const RightPanel: FC<RightPanelProps> = ({
   }, [setIframeRef]);
 
   useEffect(() => {
-    if (!browserUrl || !isOpen) {
+    if (browserUrl === null || browserUrl === "" || !isOpen) {
       lastTrackedUrlRef.current = null;
       return;
     }
@@ -97,7 +87,7 @@ export const RightPanel: FC<RightPanelProps> = ({
       try {
         const iframe = iframeRef.current;
         const href = iframe?.contentWindow?.location.href;
-        if (!href || href === "about:blank") {
+        if (href === undefined || href === "" || href === "about:blank") {
           return;
         }
         if (href !== lastTrackedUrlRef.current) {
@@ -115,8 +105,7 @@ export const RightPanel: FC<RightPanelProps> = ({
 
   const handleResize = useCallback(
     (event: MouseEvent) => {
-      const newWidth =
-        ((window.innerWidth - event.clientX) / window.innerWidth) * 100;
+      const newWidth = ((window.innerWidth - event.clientX) / window.innerWidth) * 100;
       setWidth(newWidth);
     },
     [setWidth],
@@ -177,9 +166,7 @@ export const RightPanel: FC<RightPanelProps> = ({
       {/* Mobile header */}
       {isMobile && (
         <div className="flex items-center justify-between px-3 py-2 border-b border-border/60 bg-muted/10">
-          <div className="text-xs font-medium text-muted-foreground">
-            {activeTabLabel}
-          </div>
+          <div className="text-xs font-medium text-muted-foreground">{activeTabLabel}</div>
           <button
             type="button"
             onClick={closePanel}
@@ -193,6 +180,7 @@ export const RightPanel: FC<RightPanelProps> = ({
 
       {/* Resize handle */}
       {!isMobile && (
+        // oxlint-disable-next-line jsx-a11y/no-static-element-interactions -- Resize handle is mouse-only UI
         <div
           className="absolute left-0 top-0 bottom-0 w-1.5 cursor-ew-resize hover:bg-primary/40 active:bg-primary transition-colors z-10"
           style={{ pointerEvents: "auto" }}
@@ -231,11 +219,7 @@ export const RightPanel: FC<RightPanelProps> = ({
                   data-testid={`right-panel-tab-${tab.id}`}
                 >
                   <Icon className={cn(isMobile ? "w-4 h-4" : "w-3.5 h-3.5")} />
-                  {isMobile && (
-                    <span className="text-[10px] leading-none">
-                      {tab.label}
-                    </span>
-                  )}
+                  {isMobile && <span className="text-[10px] leading-none">{tab.label}</span>}
                 </button>
               );
 
@@ -256,15 +240,11 @@ export const RightPanel: FC<RightPanelProps> = ({
 
       {/* Tab content */}
       <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
-        {activeTab === "git" && (
-          <div className="flex-1 overflow-auto">{gitTabContent}</div>
-        )}
+        {activeTab === "git" && <div className="flex-1 overflow-auto">{gitTabContent}</div>}
         {activeTab === "explorer" && (
           <div className="flex-1 overflow-auto">{filesToolsTabContent}</div>
         )}
-        {activeTab === "review" && (
-          <div className="flex-1 overflow-auto">{reviewTabContent}</div>
-        )}
+        {activeTab === "review" && <div className="flex-1 overflow-auto">{reviewTabContent}</div>}
         {activeTab === "browser" && (
           <BrowserTabContent
             browserUrl={browserUrl}
@@ -280,14 +260,14 @@ export const RightPanel: FC<RightPanelProps> = ({
   );
 };
 
-interface BrowserTabContentProps {
+type BrowserTabContentProps = {
   browserUrl: string | null;
   inputUrl: string;
   setInputUrl: (url: string) => void;
   onReload: () => void;
   onUrlKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   iframeRef: React.RefObject<HTMLIFrameElement | null>;
-}
+};
 
 const BrowserTabContent: FC<BrowserTabContentProps> = ({
   browserUrl,
@@ -320,7 +300,7 @@ const BrowserTabContent: FC<BrowserTabContentProps> = ({
       </div>
 
       {/* Browser content */}
-      {browserUrl ? (
+      {browserUrl !== null && browserUrl !== "" ? (
         <iframe
           ref={iframeRef}
           src={browserUrl}

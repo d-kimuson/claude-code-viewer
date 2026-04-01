@@ -13,8 +13,7 @@ const LayerImpl = Effect.gen(function* () {
 
   const getSessionProcesses = () =>
     Effect.gen(function* () {
-      const publicSessionProcesses =
-        yield* claudeCodeLifeCycleService.getPublicSessionProcesses();
+      const publicSessionProcesses = yield* claudeCodeLifeCycleService.getPublicSessionProcesses();
 
       return {
         response: {

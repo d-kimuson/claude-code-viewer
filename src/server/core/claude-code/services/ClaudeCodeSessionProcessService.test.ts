@@ -1,7 +1,3 @@
-import type {
-  SDKResultMessage,
-  SDKSystemMessage,
-} from "@anthropic-ai/claude-agent-sdk";
 import { Effect } from "effect";
 import { describe, expect, it } from "vitest";
 import { testPlatformLayer } from "../../../../testing/layers/testPlatformLayer";
@@ -47,18 +43,14 @@ const createMockContinueTaskDef = (
 // Helper function to create mock init context
 const createMockInitContext = (sessionId: string): InitMessageContext => ({
   initMessage: {
-    type: "system",
     session_id: sessionId,
-  } as SDKSystemMessage,
+  },
 });
 
 // Helper function to create mock result message
-const createMockResultMessage = (sessionId: string): SDKResultMessage =>
-  ({
-    type: "result",
-    session_id: sessionId,
-    result: {},
-  }) as SDKResultMessage;
+const createMockResultMessage = (sessionId: string) => ({
+  session_id: sessionId,
+});
 
 describe("ClaudeCodeSessionProcessService", () => {
   describe("startSessionProcess", () => {
@@ -152,9 +144,7 @@ describe("ClaudeCodeSessionProcessService", () => {
       const program = Effect.gen(function* () {
         const service = yield* ClaudeCodeSessionProcessService;
 
-        const result = yield* Effect.flip(
-          service.getSessionProcess("non-existent"),
-        );
+        const result = yield* Effect.flip(service.getSessionProcess("non-existent"));
 
         return result;
       });
@@ -265,11 +255,7 @@ describe("ClaudeCodeSessionProcessService", () => {
         });
 
         // Continue the paused process
-        const continueTaskDef = createMockContinueTaskDef(
-          "task-2",
-          "session-1",
-          "session-1",
-        );
+        const continueTaskDef = createMockContinueTaskDef("task-2", "session-1", "session-1");
 
         const result = yield* service.continueSessionProcess({
           sessionProcessId: "process-1",
@@ -303,11 +289,7 @@ describe("ClaudeCodeSessionProcessService", () => {
           turnDef,
         });
 
-        const continueTaskDef = createMockContinueTaskDef(
-          "task-2",
-          "session-1",
-          "session-1",
-        );
+        const continueTaskDef = createMockContinueTaskDef("task-2", "session-1", "session-1");
 
         const result = yield* Effect.flip(
           service.continueSessionProcess({
@@ -336,11 +318,7 @@ describe("ClaudeCodeSessionProcessService", () => {
       const program = Effect.gen(function* () {
         const service = yield* ClaudeCodeSessionProcessService;
 
-        const continueTaskDef = createMockContinueTaskDef(
-          "task-1",
-          "session-1",
-          "session-1",
-        );
+        const continueTaskDef = createMockContinueTaskDef("task-1", "session-1", "session-1");
 
         const result = yield* Effect.flip(
           service.continueSessionProcess({
@@ -638,13 +616,12 @@ describe("ClaudeCodeSessionProcessService", () => {
         ),
       );
 
-      const completedTask = process.tasks.find(
-        (t) => t.def.turnId === "task-1",
-      );
+      const completedTask = process.tasks.find((t) => t.def.turnId === "task-1");
       expect(completedTask?.status).toBe("completed");
-      if (completedTask?.status === "completed") {
-        expect(completedTask.sessionId).toBe("session-1");
+      if (completedTask?.status !== "completed") {
+        throw new Error("Expected completed task");
       }
+      expect(completedTask.sessionId).toBe("session-1");
     });
 
     it("fails with IllegalStateChangeError when not in initialized or file_created state", async () => {
@@ -778,9 +755,10 @@ describe("ClaudeCodeSessionProcessService", () => {
       );
 
       expect(result.task?.status).toBe("failed");
-      if (result.task?.status === "failed") {
-        expect(result.task.error).toBeInstanceOf(Error);
+      if (result.task?.status !== "failed") {
+        throw new Error("Expected failed task");
       }
+      expect(result.task.error).toBeInstanceOf(Error);
     });
   });
 
@@ -914,11 +892,7 @@ describe("ClaudeCodeSessionProcessService", () => {
         });
 
         // Continue with second task
-        const turnDef2 = createMockContinueTaskDef(
-          "task-2",
-          "session-1",
-          "session-1",
-        );
+        const turnDef2 = createMockContinueTaskDef("task-2", "session-1", "session-1");
 
         const continueResult = yield* service.continueSessionProcess({
           sessionProcessId: "process-1",
@@ -952,9 +926,7 @@ describe("ClaudeCodeSessionProcessService", () => {
 
       expect(result.sessionProcess.type).toBe("paused");
       expect(result.sessionProcess.tasks).toHaveLength(2);
-      expect(
-        result.sessionProcess.tasks.filter((t) => t.status === "completed"),
-      ).toHaveLength(2);
+      expect(result.sessionProcess.tasks.filter((t) => t.status === "completed")).toHaveLength(2);
     });
   });
 });

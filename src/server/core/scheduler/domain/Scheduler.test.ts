@@ -1,3 +1,4 @@
+/* oxlint-disable typescript-eslint/no-unsafe-type-assertion -- test mocks use `as never` for partial implementations */
 import { mkdir, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -17,27 +18,21 @@ import { SchedulerService } from "./Scheduler";
 describe("SchedulerService", () => {
   let testDir: string;
 
-  const mockSessionProcessService = Layer.succeed(
-    ClaudeCodeSessionProcessService,
-    {
-      startSessionProcess: () =>
-        Effect.succeed({ sessionProcess: {} as never, task: {} as never }),
-      continueSessionProcess: () =>
-        Effect.succeed({ sessionProcess: {} as never, task: {} as never }),
-      updateRawUserMessage: () =>
-        Effect.succeed({ sessionProcess: {} as never }),
-      toInitializedState: () => Effect.succeed({ sessionProcess: {} as never }),
-      toFileCreatedState: () => Effect.succeed({ sessionProcess: {} as never }),
-      toPausedState: () => Effect.succeed({ sessionProcess: {} as never }),
-      toCompletedState: () =>
-        Effect.succeed({ sessionProcess: {} as never, task: undefined }),
-      dangerouslyChangeProcessState: () => Effect.succeed({} as never),
-      getSessionProcesses: () => Effect.succeed([]),
-      getSessionProcess: () => Effect.succeed({} as never),
-      getTask: () => Effect.succeed({} as never),
-      changeTurnState: () => Effect.succeed({} as never),
-    },
-  );
+  const mockSessionProcessService = Layer.succeed(ClaudeCodeSessionProcessService, {
+    startSessionProcess: () => Effect.succeed({ sessionProcess: {} as never, task: {} as never }),
+    continueSessionProcess: () =>
+      Effect.succeed({ sessionProcess: {} as never, task: {} as never }),
+    updateRawUserMessage: () => Effect.succeed({ sessionProcess: {} as never }),
+    toInitializedState: () => Effect.succeed({ sessionProcess: {} as never }),
+    toFileCreatedState: () => Effect.succeed({ sessionProcess: {} as never }),
+    toPausedState: () => Effect.succeed({ sessionProcess: {} as never }),
+    toCompletedState: () => Effect.succeed({ sessionProcess: {} as never, task: undefined }),
+    dangerouslyChangeProcessState: () => Effect.succeed({} as never),
+    getSessionProcesses: () => Effect.succeed([]),
+    getSessionProcess: () => Effect.succeed({} as never),
+    getTask: () => Effect.succeed({} as never),
+    changeTurnState: () => Effect.succeed({} as never),
+  });
 
   const mockLifeCycleService = Layer.succeed(ClaudeCodeLifeCycleService, {
     startTask: () => Effect.void,
@@ -70,8 +65,11 @@ describe("SchedulerService", () => {
 
   let testConfigBaseDir: Layer.Layer<SchedulerConfigBaseDir>;
   let testLayer: Layer.Layer<
+    // oxlint-disable-next-line typescript-eslint/consistent-type-imports -- type-only import() needed for Layer type parameter
     | import("@effect/platform").FileSystem.FileSystem
+    // oxlint-disable-next-line typescript-eslint/consistent-type-imports -- type-only import() needed for Layer type parameter
     | import("@effect/platform").Path.Path
+    // oxlint-disable-next-line typescript-eslint/consistent-type-imports -- type-only import() needed for Layer type parameter
     | import("@effect/platform-node").NodeContext.NodeContext
     | ClaudeCodeSessionProcessService
     | ClaudeCodeLifeCycleService

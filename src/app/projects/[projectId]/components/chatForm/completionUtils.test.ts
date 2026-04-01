@@ -46,12 +46,8 @@ describe("isInCompletionContext", () => {
     });
 
     it("should return false when @ appears in middle with completed paths", () => {
-      expect(isInCompletionContext("read @file1.ts and @file2.ts ")).toBe(
-        false,
-      );
-      expect(isInCompletionContext("@completed.ts then some other text")).toBe(
-        false,
-      );
+      expect(isInCompletionContext("read @file1.ts and @file2.ts ")).toBe(false);
+      expect(isInCompletionContext("@completed.ts then some other text")).toBe(false);
     });
   });
 

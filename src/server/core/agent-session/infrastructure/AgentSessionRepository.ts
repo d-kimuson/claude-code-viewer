@@ -1,5 +1,6 @@
 import { FileSystem, Path } from "@effect/platform";
 import { Context, Effect, Layer } from "effect";
+import { z } from "zod";
 import { parseJsonl } from "../../claude-code/functions/parseJsonl";
 import { decodeProjectId } from "../../project/functions/id";
 import { extractFirstUserText } from "../../session/functions/extractFirstUserText";
@@ -23,13 +24,8 @@ const LayerImpl = Effect.gen(function* () {
       const projectPath = decodeProjectId(projectId);
 
       // Try new path if sessionId is provided
-      if (sessionId) {
-        const newPath = path.resolve(
-          projectPath,
-          sessionId,
-          "subagents",
-          `agent-${agentId}.jsonl`,
-        );
+      if (sessionId !== undefined && sessionId !== "") {
+        const newPath = path.resolve(projectPath, sessionId, "subagents", `agent-${agentId}.jsonl`);
 
         if (yield* fs.exists(newPath)) {
           const content = yield* fs.readFileString(newPath);
@@ -68,24 +64,19 @@ const LayerImpl = Effect.gen(function* () {
         return match ? (match[1] ?? null) : null;
       };
 
-      const processFile = (
-        filePath: string,
-        filename: string,
-      ): Effect.Effect<void, Error> =>
+      const processFile = (filePath: string, filename: string): Effect.Effect<void, Error> =>
         Effect.gen(function* () {
           const agentId = extractAgentId(filename);
           if (agentId === null) return;
 
           const content = yield* fs.readFileString(filePath);
           const firstLine = content.split("\n")[0];
-          if (!firstLine || firstLine.trim() === "") return;
+          if (firstLine === undefined || firstLine.trim() === "") return;
 
           try {
             const conversations = parseJsonl(firstLine);
             const firstConv = conversations[0];
-            const firstMessage = firstConv
-              ? extractFirstUserText(firstConv)
-              : null;
+            const firstMessage = firstConv ? extractFirstUserText(firstConv) : null;
             results.push({ agentId, firstMessage });
           } catch {
             results.push({ agentId, firstMessage: null });
@@ -101,9 +92,7 @@ const LayerImpl = Effect.gen(function* () {
           .readDirectory(subagentsDir)
           .pipe(Effect.catchAll(() => Effect.succeed([] as string[])));
 
-        const agentFiles = entries.filter(
-          (f) => f.startsWith("agent-") && f.endsWith(".jsonl"),
-        );
+        const agentFiles = entries.filter((f) => f.startsWith("agent-") && f.endsWith(".jsonl"));
 
         for (const filename of agentFiles) {
           yield* processFile(path.join(subagentsDir, filename), filename).pipe(
@@ -128,19 +117,13 @@ const LayerImpl = Effect.gen(function* () {
           .readFileString(filePath)
           .pipe(Effect.catchAll(() => Effect.succeed("")));
         const firstLine = content.split("\n")[0];
-        if (!firstLine || firstLine.trim() === "") continue;
+        if (firstLine === undefined || firstLine.trim() === "") continue;
 
         try {
-          const parsed = JSON.parse(firstLine);
-          if (
-            typeof parsed === "object" &&
-            parsed !== null &&
-            "sessionId" in parsed &&
-            parsed.sessionId === sessionId
-          ) {
-            yield* processFile(filePath, filename).pipe(
-              Effect.catchAll(() => Effect.void),
-            );
+          const parsed: unknown = JSON.parse(firstLine);
+          const sessionIdResult = z.object({ sessionId: z.string() }).safeParse(parsed);
+          if (sessionIdResult.success && sessionIdResult.data.sessionId === sessionId) {
+            yield* processFile(filePath, filename).pipe(Effect.catchAll(() => Effect.void));
           }
         } catch {
           // skip invalid files
@@ -156,9 +139,7 @@ const LayerImpl = Effect.gen(function* () {
   };
 });
 
-export class AgentSessionRepository extends Context.Tag(
-  "AgentSessionRepository",
-)<
+export class AgentSessionRepository extends Context.Tag("AgentSessionRepository")<
   AgentSessionRepository,
   {
     readonly getAgentSessionByAgentId: (
@@ -169,15 +150,10 @@ export class AgentSessionRepository extends Context.Tag(
     readonly listAgentSessionsForSession: (
       projectId: string,
       sessionId: string,
-    ) => Effect.Effect<
-      { agentId: string; firstMessage: string | null }[],
-      Error
-    >;
+    ) => Effect.Effect<{ agentId: string; firstMessage: string | null }[], Error>;
   }
 >() {
   static Live = Layer.effect(this, LayerImpl);
 }
 
-export type IAgentSessionRepository = Context.Tag.Service<
-  typeof AgentSessionRepository
->;
+export type IAgentSessionRepository = Context.Tag.Service<typeof AgentSessionRepository>;

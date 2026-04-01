@@ -9,7 +9,7 @@ import {
   Loader2,
   PlusIcon,
 } from "lucide-react";
-import { type FC, useState } from "react";
+import { type ComponentProps, type FC, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -28,10 +28,10 @@ import { createTask, listTasks, updateTask } from "@/lib/api/tasks";
 import { cn } from "@/lib/utils";
 import type { Task, TaskStatus, TaskUpdate } from "@/server/core/tasks/schema";
 
-interface TasksTabProps {
+type TasksTabProps = {
   projectId: string;
   sessionId?: string;
-}
+};
 
 const StatusIndicator: FC<{
   status: TaskStatus;
@@ -50,8 +50,7 @@ const StatusIndicator: FC<{
           "bg-blue-500/20 text-blue-600 dark:text-blue-400 hover:bg-blue-500/30",
         status === "pending" &&
           "bg-gray-500/10 text-gray-500 dark:text-gray-400 hover:bg-gray-500/20",
-        status === "failed" &&
-          "bg-red-500/20 text-red-600 dark:text-red-400 hover:bg-red-500/30",
+        status === "failed" && "bg-red-500/20 text-red-600 dark:text-red-400 hover:bg-red-500/30",
       )}
     >
       {status === "completed" && <CheckCircle2 className="w-4 h-4" />}
@@ -81,15 +80,11 @@ const TaskItem: FC<{
         isInProgress &&
           "bg-blue-50/80 dark:bg-blue-950/50 border-blue-400/60 dark:border-blue-600/60",
         isCompleted && "opacity-60 bg-sidebar/20",
-        isFailed &&
-          "border-red-400/60 bg-red-50/30 dark:bg-red-950/30 dark:border-red-700/60",
+        isFailed && "border-red-400/60 bg-red-50/30 dark:bg-red-950/30 dark:border-red-700/60",
       )}
     >
       <div className="flex items-start gap-3">
-        <StatusIndicator
-          status={task.status}
-          onClick={() => onToggleStatus(task)}
-        />
+        <StatusIndicator status={task.status} onClick={() => onToggleStatus(task)} />
 
         <div className="flex-1 min-w-0 space-y-1">
           {/* Title row with ID badge */}
@@ -108,27 +103,25 @@ const TaskItem: FC<{
           </div>
 
           {/* Description if exists */}
-          {task.description && (
+          {task.description !== undefined && task.description !== "" && (
             <p className="text-xs text-sidebar-foreground/60 line-clamp-2 leading-relaxed">
               {task.description}
             </p>
           )}
 
           {/* Blocked by badges */}
-          {task.blockedBy &&
-            task.blockedBy.length > 0 &&
-            task.status !== "completed" && (
-              <div className="flex flex-wrap gap-1 mt-1.5">
-                {task.blockedBy.map((id) => (
-                  <span
-                    key={id}
-                    className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800/50"
-                  >
-                    <AlertTriangle className="w-2.5 h-2.5" />#{id}
-                  </span>
-                ))}
-              </div>
-            )}
+          {task.blockedBy && task.blockedBy.length > 0 && task.status !== "completed" && (
+            <div className="flex flex-wrap gap-1 mt-1.5">
+              {task.blockedBy.map((id) => (
+                <span
+                  key={id}
+                  className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800/50"
+                >
+                  <AlertTriangle className="w-2.5 h-2.5" />#{id}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -141,12 +134,8 @@ const EmptyState: FC = () => {
       <div className="w-12 h-12 rounded-full bg-sidebar-accent/50 flex items-center justify-center mb-4">
         <ListTodo className="w-6 h-6 text-sidebar-foreground/40" />
       </div>
-      <p className="text-sm font-medium text-sidebar-foreground/70">
-        No tasks yet
-      </p>
-      <p className="text-xs text-sidebar-foreground/50 mt-1">
-        Tasks will appear here when created
-      </p>
+      <p className="text-sm font-medium text-sidebar-foreground/70">No tasks yet</p>
+      <p className="text-xs text-sidebar-foreground/50 mt-1">Tasks will appear here when created</p>
     </div>
   );
 };
@@ -168,12 +157,8 @@ const ErrorState: FC = () => {
       <div className="w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center mb-4">
         <AlertCircle className="w-6 h-6 text-red-500" />
       </div>
-      <p className="text-sm font-medium text-red-600 dark:text-red-400">
-        Failed to load tasks
-      </p>
-      <p className="text-xs text-sidebar-foreground/50 mt-1">
-        Please try again later
-      </p>
+      <p className="text-sm font-medium text-red-600 dark:text-red-400">Failed to load tasks</p>
+      <p className="text-xs text-sidebar-foreground/50 mt-1">Please try again later</p>
     </div>
   );
 };
@@ -199,7 +184,7 @@ export const TasksTab: FC<TasksTabProps> = ({ projectId, sessionId }) => {
     mutationFn: (data: { subject: string; description?: string }) =>
       createTask(projectId, data, sessionId),
     onSuccess: () => {
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: ["tasks", projectId, sessionId],
       });
       setIsCreateOpen(false);
@@ -214,7 +199,7 @@ export const TasksTab: FC<TasksTabProps> = ({ projectId, sessionId }) => {
     mutationFn: (data: { taskId: string; update: Partial<TaskUpdate> }) =>
       updateTask(projectId, data.taskId, data.update, sessionId),
     onSuccess: () => {
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: ["tasks", projectId, sessionId],
       });
     },
@@ -227,8 +212,7 @@ export const TasksTab: FC<TasksTabProps> = ({ projectId, sessionId }) => {
     let newStatus: TaskStatus = "pending";
     if (task.status === "pending") newStatus = "in_progress";
     else if (task.status === "in_progress") newStatus = "completed";
-    else if (task.status === "completed" || task.status === "failed")
-      newStatus = "pending";
+    else if (task.status === "completed" || task.status === "failed") newStatus = "pending";
 
     updateMutation.mutate({
       taskId: task.id,
@@ -236,9 +220,9 @@ export const TasksTab: FC<TasksTabProps> = ({ projectId, sessionId }) => {
     });
   };
 
-  const handleCreate = (e: React.FormEvent) => {
+  const handleCreate: NonNullable<ComponentProps<"form">["onSubmit"]> = (e) => {
     e.preventDefault();
-    if (!subject.trim()) return;
+    if (subject.trim().length === 0) return;
     createMutation.mutate({ subject, description });
   };
 
@@ -263,9 +247,7 @@ export const TasksTab: FC<TasksTabProps> = ({ projectId, sessionId }) => {
             <DialogContent className="sm:max-w-md">
               <DialogHeader>
                 <DialogTitle>Create New Task</DialogTitle>
-                <DialogDescription>
-                  Add a new task to track your progress.
-                </DialogDescription>
+                <DialogDescription>Add a new task to track your progress.</DialogDescription>
               </DialogHeader>
               <form onSubmit={handleCreate} className="space-y-4 mt-2">
                 <div className="space-y-2">
@@ -291,7 +273,7 @@ export const TasksTab: FC<TasksTabProps> = ({ projectId, sessionId }) => {
                 <DialogFooter>
                   <Button
                     type="submit"
-                    disabled={createMutation.isPending || !subject.trim()}
+                    disabled={createMutation.isPending || subject.trim().length === 0}
                     className="w-full sm:w-auto"
                   >
                     {createMutation.isPending ? (
@@ -321,11 +303,7 @@ export const TasksTab: FC<TasksTabProps> = ({ projectId, sessionId }) => {
         {!isLoading &&
           !error &&
           tasks?.map((task) => (
-            <TaskItem
-              key={task.id}
-              task={task}
-              onToggleStatus={handleToggleStatus}
-            />
+            <TaskItem key={task.id} task={task} onToggleStatus={handleToggleStatus} />
           ))}
       </div>
     </div>

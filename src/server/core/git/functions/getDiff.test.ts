@@ -13,6 +13,22 @@ vi.mock("./utils", async (importOriginal) => {
 
 vi.mock("node:fs/promises");
 
+const expectSuccessResult = (result: Awaited<ReturnType<typeof getDiff>>) => {
+  expect(result.success).toBe(true);
+  if (result.success !== true) {
+    throw new Error("Expected successful diff result");
+  }
+  return result;
+};
+
+const expectErrorResult = (result: Awaited<ReturnType<typeof getDiff>>) => {
+  expect(result.success).toBe(false);
+  if (result.success !== false) {
+    throw new Error("Expected failed diff result");
+  }
+  return result;
+};
+
 describe("getDiff", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -56,25 +72,22 @@ index 0000000..ghi789
           data: mockDiffOutput,
         });
 
-      const result = await getDiff(mockCwd, fromRef, toRef);
+      const result = expectSuccessResult(await getDiff(mockCwd, fromRef, toRef));
 
-      expect(result.success).toBe(true);
-      if (result.success) {
-        expect(result.data.files).toHaveLength(2);
-        expect(result.data.files[0]?.filePath).toBe("src/file1.ts");
-        expect(result.data.files[0]?.status).toBe("modified");
-        expect(result.data.files[0]?.additions).toBe(5);
-        expect(result.data.files[0]?.deletions).toBe(2);
+      expect(result.data.files).toHaveLength(2);
+      expect(result.data.files[0]?.filePath).toBe("src/file1.ts");
+      expect(result.data.files[0]?.status).toBe("modified");
+      expect(result.data.files[0]?.additions).toBe(5);
+      expect(result.data.files[0]?.deletions).toBe(2);
 
-        expect(result.data.files[1]?.filePath).toBe("src/file2.ts");
-        expect(result.data.files[1]?.status).toBe("added");
-        expect(result.data.files[1]?.additions).toBe(10);
-        expect(result.data.files[1]?.deletions).toBe(0);
+      expect(result.data.files[1]?.filePath).toBe("src/file2.ts");
+      expect(result.data.files[1]?.status).toBe("added");
+      expect(result.data.files[1]?.additions).toBe(10);
+      expect(result.data.files[1]?.deletions).toBe(0);
 
-        expect(result.data.summary.totalFiles).toBe(2);
-        expect(result.data.summary.totalAdditions).toBe(15);
-        expect(result.data.summary.totalDeletions).toBe(2);
-      }
+      expect(result.data.summary.totalFiles).toBe(2);
+      expect(result.data.summary.totalAdditions).toBe(15);
+      expect(result.data.summary.totalDeletions).toBe(2);
 
       expect(utils.executeGitCommand).toHaveBeenCalledWith(
         ["diff", "--numstat", "main", "feature", "--"],
@@ -120,18 +133,12 @@ M  src/modified.ts
           data: mockStatusOutput,
         });
 
-      const result = await getDiff(mockCwd, fromRef, toRef);
+      const result = expectSuccessResult(await getDiff(mockCwd, fromRef, toRef));
 
-      expect(result.success).toBe(true);
-      if (result.success) {
-        // modified file + untracked file
-        expect(result.data.files.length).toBeGreaterThanOrEqual(1);
-        const modifiedFile = result.data.files.find(
-          (f) => f.filePath === "src/modified.ts",
-        );
-        expect(modifiedFile).toBeDefined();
-        expect(modifiedFile?.status).toBe("modified");
-      }
+      expect(result.data.files.length).toBeGreaterThanOrEqual(1);
+      const modifiedFile = result.data.files.find((f) => f.filePath === "src/modified.ts");
+      expect(modifiedFile).toBeDefined();
+      expect(modifiedFile?.status).toBe("modified");
     });
 
     it("同一refの場合は空の結果を返す", async () => {
@@ -139,16 +146,13 @@ M  src/modified.ts
       const fromRef = "base:main";
       const toRef = "compare:main";
 
-      const result = await getDiff(mockCwd, fromRef, toRef);
+      const result = expectSuccessResult(await getDiff(mockCwd, fromRef, toRef));
 
-      expect(result.success).toBe(true);
-      if (result.success) {
-        expect(result.data.files).toHaveLength(0);
-        expect(result.data.diffs).toHaveLength(0);
-        expect(result.data.summary.totalFiles).toBe(0);
-        expect(result.data.summary.totalAdditions).toBe(0);
-        expect(result.data.summary.totalDeletions).toBe(0);
-      }
+      expect(result.data.files).toHaveLength(0);
+      expect(result.data.diffs).toHaveLength(0);
+      expect(result.data.summary.totalFiles).toBe(0);
+      expect(result.data.summary.totalAdditions).toBe(0);
+      expect(result.data.summary.totalDeletions).toBe(0);
 
       expect(utils.executeGitCommand).not.toHaveBeenCalled();
     });
@@ -186,16 +190,13 @@ index abc123..0000000 100644
           data: mockDiffOutput,
         });
 
-      const result = await getDiff(mockCwd, fromRef, toRef);
+      const result = expectSuccessResult(await getDiff(mockCwd, fromRef, toRef));
 
-      expect(result.success).toBe(true);
-      if (result.success) {
-        expect(result.data.files).toHaveLength(1);
-        expect(result.data.files[0]?.filePath).toBe("src/deleted.ts");
-        expect(result.data.files[0]?.status).toBe("deleted");
-        expect(result.data.files[0]?.additions).toBe(0);
-        expect(result.data.files[0]?.deletions).toBe(10);
-      }
+      expect(result.data.files).toHaveLength(1);
+      expect(result.data.files[0]?.filePath).toBe("src/deleted.ts");
+      expect(result.data.files[0]?.status).toBe("deleted");
+      expect(result.data.files[0]?.additions).toBe(0);
+      expect(result.data.files[0]?.deletions).toBe(10);
     });
 
     it.skip("名前変更されたファイルを処理できる", async () => {
@@ -220,15 +221,12 @@ index abc123..abc123 100644`;
           data: mockDiffOutput,
         });
 
-      const result = await getDiff(mockCwd, fromRef, toRef);
+      const result = expectSuccessResult(await getDiff(mockCwd, fromRef, toRef));
 
-      expect(result.success).toBe(true);
-      if (result.success) {
-        expect(result.data.files).toHaveLength(1);
-        expect(result.data.files[0]?.status).toBe("renamed");
-        expect(result.data.files[0]?.filePath).toBe("new-name.ts");
-        expect(result.data.files[0]?.oldPath).toBe("old-name.ts");
-      }
+      expect(result.data.files).toHaveLength(1);
+      expect(result.data.files[0]?.status).toBe("renamed");
+      expect(result.data.files[0]?.filePath).toBe("new-name.ts");
+      expect(result.data.files[0]?.oldPath).toBe("old-name.ts");
     });
 
     it("空のdiffを処理できる", async () => {
@@ -249,14 +247,11 @@ index abc123..abc123 100644`;
           data: mockDiffOutput,
         });
 
-      const result = await getDiff(mockCwd, fromRef, toRef);
+      const result = expectSuccessResult(await getDiff(mockCwd, fromRef, toRef));
 
-      expect(result.success).toBe(true);
-      if (result.success) {
-        expect(result.data.files).toHaveLength(0);
-        expect(result.data.diffs).toHaveLength(0);
-        expect(result.data.summary.totalFiles).toBe(0);
-      }
+      expect(result.data.files).toHaveLength(0);
+      expect(result.data.diffs).toHaveLength(0);
+      expect(result.data.summary.totalFiles).toBe(0);
     });
   });
 
@@ -275,13 +270,10 @@ index abc123..abc123 100644`;
         },
       });
 
-      const result = await getDiff(mockCwd, fromRef, toRef);
+      const result = expectErrorResult(await getDiff(mockCwd, fromRef, toRef));
 
-      expect(result.success).toBe(false);
-      if (!result.success) {
-        expect(result.error.code).toBe("NOT_A_REPOSITORY");
-        expect(result.error.message).toContain("Directory does not exist");
-      }
+      expect(result.error.code).toBe("NOT_A_REPOSITORY");
+      expect(result.error.message).toContain("Directory does not exist");
     });
 
     it("Gitリポジトリでない場合", async () => {
@@ -298,13 +290,10 @@ index abc123..abc123 100644`;
         },
       });
 
-      const result = await getDiff(mockCwd, fromRef, toRef);
+      const result = expectErrorResult(await getDiff(mockCwd, fromRef, toRef));
 
-      expect(result.success).toBe(false);
-      if (!result.success) {
-        expect(result.error.code).toBe("NOT_A_REPOSITORY");
-        expect(result.error.message).toContain("Not a git repository");
-      }
+      expect(result.error.code).toBe("NOT_A_REPOSITORY");
+      expect(result.error.message).toContain("Not a git repository");
     });
 
     it("ブランチが見つからない場合", async () => {
@@ -323,13 +312,10 @@ index abc123..abc123 100644`;
         },
       });
 
-      const result = await getDiff(mockCwd, fromRef, toRef);
+      const result = expectErrorResult(await getDiff(mockCwd, fromRef, toRef));
 
-      expect(result.success).toBe(false);
-      if (!result.success) {
-        expect(result.error.code).toBe("BRANCH_NOT_FOUND");
-        expect(result.error.message).toBe("Branch or commit not found");
-      }
+      expect(result.error.code).toBe("BRANCH_NOT_FOUND");
+      expect(result.error.message).toBe("Branch or commit not found");
     });
 
     it("numstatコマンドが失敗した場合", async () => {
@@ -347,12 +333,9 @@ index abc123..abc123 100644`;
         },
       });
 
-      const result = await getDiff(mockCwd, fromRef, toRef);
+      const result = expectErrorResult(await getDiff(mockCwd, fromRef, toRef));
 
-      expect(result.success).toBe(false);
-      if (!result.success) {
-        expect(result.error.code).toBe("COMMAND_FAILED");
-      }
+      expect(result.error.code).toBe("COMMAND_FAILED");
     });
 
     it("無効なfromRefの場合", async () => {
@@ -360,9 +343,7 @@ index abc123..abc123 100644`;
       const fromRef = "invalidref";
       const toRef = "compare:feature";
 
-      await expect(getDiff(mockCwd, fromRef, toRef)).rejects.toThrow(
-        "Invalid ref text",
-      );
+      await expect(getDiff(mockCwd, fromRef, toRef)).rejects.toThrow("Invalid ref text");
     });
   });
 
@@ -390,13 +371,10 @@ index abc123..def456 100644
           data: mockDiffOutput,
         });
 
-      const result = await getDiff(mockCwd, fromRef, toRef);
+      const result = expectSuccessResult(await getDiff(mockCwd, fromRef, toRef));
 
-      expect(result.success).toBe(true);
-      if (result.success) {
-        expect(result.data.files).toHaveLength(1);
-        expect(result.data.files[0]?.filePath).toBe("src/file.ts");
-      }
+      expect(result.data.files).toHaveLength(1);
+      expect(result.data.files[0]?.filePath).toBe("src/file.ts");
 
       // Verify that git commands are executed in the subdirectory
       expect(utils.executeGitCommand).toHaveBeenCalledWith(
@@ -436,14 +414,11 @@ index abc123..def456 100644
           data: mockDiffOutput,
         });
 
-      const result = await getDiff(mockCwd, fromRef, toRef);
+      const result = expectSuccessResult(await getDiff(mockCwd, fromRef, toRef));
 
-      expect(result.success).toBe(true);
-      if (result.success) {
-        expect(result.data.files).toHaveLength(2);
-        expect(result.data.files[0]?.filePath).toBe("src/file with spaces.ts");
-        expect(result.data.files[1]?.filePath).toBe("src/日本語ファイル.ts");
-      }
+      expect(result.data.files).toHaveLength(2);
+      expect(result.data.files[0]?.filePath).toBe("src/file with spaces.ts");
+      expect(result.data.files[1]?.filePath).toBe("src/日本語ファイル.ts");
     });
 
     it("バイナリファイルの変更を処理できる", async () => {
@@ -466,15 +441,12 @@ Binary files a/image.png and b/image.png differ`;
           data: mockDiffOutput,
         });
 
-      const result = await getDiff(mockCwd, fromRef, toRef);
+      const result = expectSuccessResult(await getDiff(mockCwd, fromRef, toRef));
 
-      expect(result.success).toBe(true);
-      if (result.success) {
-        expect(result.data.files).toHaveLength(1);
-        expect(result.data.files[0]?.filePath).toBe("image.png");
-        expect(result.data.files[0]?.additions).toBe(0);
-        expect(result.data.files[0]?.deletions).toBe(0);
-      }
+      expect(result.data.files).toHaveLength(1);
+      expect(result.data.files[0]?.filePath).toBe("image.png");
+      expect(result.data.files[0]?.additions).toBe(0);
+      expect(result.data.files[0]?.deletions).toBe(0);
     });
 
     it("大量のファイル変更を処理できる", async () => {
@@ -482,10 +454,9 @@ Binary files a/image.png and b/image.png differ`;
       const fromRef = "base:main";
       const toRef = "compare:feature";
 
-      const mockNumstatOutput = Array.from(
-        { length: 100 },
-        (_, i) => `1\t1\tfile${i}.ts`,
-      ).join("\n");
+      const mockNumstatOutput = Array.from({ length: 100 }, (_, i) => `1\t1\tfile${i}.ts`).join(
+        "\n",
+      );
       const mockDiffOutput = Array.from(
         { length: 100 },
         (_, i) => `diff --git a/file${i}.ts b/file${i}.ts
@@ -507,15 +478,12 @@ index abc123..def456 100644
           data: mockDiffOutput,
         });
 
-      const result = await getDiff(mockCwd, fromRef, toRef);
+      const result = expectSuccessResult(await getDiff(mockCwd, fromRef, toRef));
 
-      expect(result.success).toBe(true);
-      if (result.success) {
-        expect(result.data.files).toHaveLength(100);
-        expect(result.data.summary.totalFiles).toBe(100);
-        expect(result.data.summary.totalAdditions).toBe(100);
-        expect(result.data.summary.totalDeletions).toBe(100);
-      }
+      expect(result.data.files).toHaveLength(100);
+      expect(result.data.summary.totalFiles).toBe(100);
+      expect(result.data.summary.totalAdditions).toBe(100);
+      expect(result.data.summary.totalDeletions).toBe(100);
     });
   });
 });
@@ -548,12 +516,9 @@ index abc123..def456 100644
         data: mockDiffOutput,
       });
 
-    const result = await compareBranches(mockCwd, baseBranch, targetBranch);
+    const result = expectSuccessResult(await compareBranches(mockCwd, baseBranch, targetBranch));
 
-    expect(result.success).toBe(true);
-    if (result.success) {
-      expect(result.data.files).toHaveLength(1);
-      expect(result.data.files[0]?.filePath).toBe("file.ts");
-    }
+    expect(result.data.files).toHaveLength(1);
+    expect(result.data.files[0]?.filePath).toBe("file.ts");
   });
 });

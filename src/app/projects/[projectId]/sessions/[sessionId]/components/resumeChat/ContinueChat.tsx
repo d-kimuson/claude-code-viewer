@@ -14,10 +14,7 @@ export const ContinueChat: FC<{
   sessionProcessStatus?: "running" | "paused";
 }> = ({ projectId, sessionId, sessionProcessId, sessionProcessStatus }) => {
   const { i18n } = useLingui();
-  const continueSessionProcess = useContinueSessionProcessMutation(
-    projectId,
-    sessionId,
-  );
+  const continueSessionProcess = useContinueSessionProcessMutation(projectId, sessionId);
   const { config } = useConfig();
 
   const handleSubmit = async (input: MessageInput) => {
@@ -29,8 +26,7 @@ export const ContinueChat: FC<{
     if (behavior === "enter-send") {
       return i18n._({
         id: "chat.placeholder.continue.enter",
-        message:
-          "Type your message... (Start with / for commands, @ for files, Enter to send)",
+        message: "Type your message... (Start with / for commands, @ for files, Enter to send)",
       });
     }
     if (behavior === "command-enter-send") {
@@ -42,8 +38,7 @@ export const ContinueChat: FC<{
     }
     return i18n._({
       id: "chat.placeholder.continue.shift_enter",
-      message:
-        "Type your message... (Start with / for commands, @ for files, Shift+Enter to send)",
+      message: "Type your message... (Start with / for commands, @ for files, Shift+Enter to send)",
     });
   };
 
@@ -54,8 +49,7 @@ export const ContinueChat: FC<{
     if (behavior === "enter-send") {
       return i18n._({
         id: "chat.placeholder.running.enter",
-        message:
-          "Claude is running… type your next message and send when ready (Enter to send)",
+        message: "Claude is running… type your next message and send when ready (Enter to send)",
       });
     }
     if (behavior === "command-enter-send") {

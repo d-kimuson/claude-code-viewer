@@ -1,24 +1,19 @@
-import type { FC, RefObject } from "react";
-import { useMemo } from "react";
-import {
-  CommandCompletion,
-  type CommandCompletionRef,
-} from "./CommandCompletion";
+import { type FC, type RefObject, useMemo } from "react";
+import { CommandCompletion, type CommandCompletionRef } from "./CommandCompletion";
 import { FileCompletion, type FileCompletionRef } from "./FileCompletion";
 
-interface PositionStyle {
+type PositionStyle = {
   top: number;
   left: number;
   placement: "above" | "below";
-}
+};
 
 const calculateOptimalPosition = (
   relativeCursorPosition: { top: number; left: number },
   absoluteCursorPosition: { top: number; left: number },
   itemCount: number,
 ): PositionStyle => {
-  const viewportHeight =
-    typeof window !== "undefined" ? window.innerHeight : 800;
+  const viewportHeight = typeof window !== "undefined" ? window.innerHeight : 800;
   const viewportCenter = viewportHeight / 2;
 
   // Calculate dynamic height based on item count
@@ -28,8 +23,7 @@ const calculateOptimalPosition = (
   const padding = 12;
   const maxItems = 5;
   const visibleItems = Math.min(itemCount, maxItems);
-  const estimatedCompletionHeight =
-    headerHeight + itemHeight * visibleItems + padding;
+  const estimatedCompletionHeight = headerHeight + itemHeight * visibleItems + padding;
 
   // Determine preferred placement based on viewport position
   const isInUpperHalf = absoluteCursorPosition.top < viewportCenter;
@@ -62,13 +56,9 @@ const calculateOptimalPosition = (
 
   // Ensure left position stays within viewport bounds
   const estimatedCompletionWidth = 512; // Current w-lg width
-  const viewportWidth =
-    typeof window !== "undefined" ? window.innerWidth : 1200;
+  const viewportWidth = typeof window !== "undefined" ? window.innerWidth : 1200;
   const maxLeft = viewportWidth - estimatedCompletionWidth - 16;
-  const adjustedLeft = Math.max(
-    16,
-    Math.min(relativeCursorPosition.left - 16, maxLeft),
-  );
+  const adjustedLeft = Math.max(16, Math.min(relativeCursorPosition.left - 16, maxLeft));
 
   return {
     top,
@@ -98,11 +88,7 @@ export const InlineCompletion: FC<{
   cursorPosition,
 }) => {
   const position = useMemo(() => {
-    return calculateOptimalPosition(
-      cursorPosition.relative,
-      cursorPosition.absolute,
-      5,
-    );
+    return calculateOptimalPosition(cursorPosition.relative, cursorPosition.absolute, 5);
   }, [cursorPosition]);
 
   return (
@@ -111,10 +97,7 @@ export const InlineCompletion: FC<{
       style={{
         top: position.top,
         left: position.left,
-        maxWidth:
-          typeof window !== "undefined"
-            ? Math.min(512, window.innerWidth * 0.8)
-            : 512,
+        maxWidth: typeof window !== "undefined" ? Math.min(512, window.innerWidth * 0.8) : 512,
       }}
     >
       <CommandCompletion

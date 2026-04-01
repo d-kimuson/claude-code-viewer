@@ -20,23 +20,15 @@ const LayerImpl = Effect.gen(function* () {
       .getCcvOptions("claudeDir")
       .pipe(
         Effect.map((envVar) =>
-          envVar === undefined
-            ? path.resolve(homedir(), ".claude")
-            : path.resolve(envVar),
+          envVar === undefined ? path.resolve(homedir(), ".claude") : path.resolve(envVar),
         ),
       );
 
     return {
       globalClaudeDirectoryPath,
-      claudeCommandsDirPath: path.resolve(
-        globalClaudeDirectoryPath,
-        "commands",
-      ),
+      claudeCommandsDirPath: path.resolve(globalClaudeDirectoryPath, "commands"),
       claudeSkillsDirPath: path.resolve(globalClaudeDirectoryPath, "skills"),
-      claudeProjectsDirPath: path.resolve(
-        globalClaudeDirectoryPath,
-        "projects",
-      ),
+      claudeProjectsDirPath: path.resolve(globalClaudeDirectoryPath, "projects"),
     } as const satisfies ClaudeCodePaths;
   });
 

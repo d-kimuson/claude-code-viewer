@@ -7,10 +7,7 @@ import { CCVAskUserQuestionController } from "../../core/claude-code/presentatio
 import { ClaudeCodeController } from "../../core/claude-code/presentation/ClaudeCodeController";
 import { ClaudeCodePermissionController } from "../../core/claude-code/presentation/ClaudeCodePermissionController";
 import { ClaudeCodeSessionProcessController } from "../../core/claude-code/presentation/ClaudeCodeSessionProcessController";
-import {
-  ccOptionsSchema,
-  userMessageInputSchema,
-} from "../../core/claude-code/schema";
+import { ccOptionsSchema, userMessageInputSchema } from "../../core/claude-code/schema";
 import { ClaudeCodeLifeCycleService } from "../../core/claude-code/services/ClaudeCodeLifeCycleService";
 import { effectToResponse } from "../../lib/effect/toEffectResponse";
 import type { HonoContext } from "../app";
@@ -23,16 +20,10 @@ const normalizeUserMessageInput = (
     type: image.type,
     source: image.source,
   }));
-  const documents = input.documents?.map((document) => {
-    if (!document.source) {
-      throw new Error("Document source is required");
-    }
-
-    return {
-      type: document.type,
-      source: document.source,
-    };
-  });
+  const documents = input.documents?.map((document) => ({
+    type: document.type,
+    source: document.source,
+  }));
 
   return {
     text: input.text,
@@ -43,8 +34,7 @@ const normalizeUserMessageInput = (
 
 const claudeCodeRoutes = Effect.gen(function* () {
   const claudeCodeController = yield* ClaudeCodeController;
-  const claudeCodeSessionProcessController =
-    yield* ClaudeCodeSessionProcessController;
+  const claudeCodeSessionProcessController = yield* ClaudeCodeSessionProcessController;
   const ccvAskUserQuestionController = yield* CCVAskUserQuestionController;
   const claudeCodePermissionController = yield* ClaudeCodePermissionController;
   const claudeCodeLifeCycleService = yield* ClaudeCodeLifeCycleService;
@@ -61,9 +51,7 @@ const claudeCodeRoutes = Effect.gen(function* () {
     .get("/features", async (c) => {
       const response = await effectToResponse(
         c,
-        claudeCodeController
-          .getAvailableFeatures()
-          .pipe(Effect.provide(runtime)),
+        claudeCodeController.getAvailableFeatures().pipe(Effect.provide(runtime)),
       );
       return response;
     })
@@ -80,7 +68,7 @@ const claudeCodeRoutes = Effect.gen(function* () {
         "json",
         z.object({
           projectId: z.string(),
-          sessionId: z.string().uuid().optional(),
+          sessionId: z.uuid().optional(),
           input: userMessageInputSchema,
           baseSession: z.union([
             z.undefined(),
@@ -136,11 +124,9 @@ const claudeCodeRoutes = Effect.gen(function* () {
     .post(
       "/session-processes/:sessionProcessId/abort",
       zValidator("json", z.object({ projectId: z.string() })),
-      async (c) => {
+      (c) => {
         const { sessionProcessId } = c.req.param();
-        void Effect.runFork(
-          claudeCodeLifeCycleService.abortTask(sessionProcessId),
-        );
+        void Effect.runFork(claudeCodeLifeCycleService.abortTask(sessionProcessId));
         return c.json({ message: "Task aborted" });
       },
     )

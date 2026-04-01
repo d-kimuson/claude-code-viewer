@@ -9,9 +9,7 @@ const LayerImpl = Effect.gen(function* () {
 
   const questionResponse = (options: { questionResponse: QuestionResponse }) =>
     Effect.sync(() => {
-      Effect.runFork(
-        ccvAskUserQuestionService.respondToQuestion(options.questionResponse),
-      );
+      Effect.runFork(ccvAskUserQuestionService.respondToQuestion(options.questionResponse));
 
       return {
         status: 200,
@@ -23,8 +21,7 @@ const LayerImpl = Effect.gen(function* () {
 
   const getPendingQuestionRequests = () =>
     Effect.gen(function* () {
-      const questionRequests =
-        yield* ccvAskUserQuestionService.getPendingQuestionRequests;
+      const questionRequests = yield* ccvAskUserQuestionService.getPendingQuestionRequests;
 
       return {
         status: 200,
@@ -41,8 +38,9 @@ const LayerImpl = Effect.gen(function* () {
 });
 
 export type ICCVAskUserQuestionController = InferEffect<typeof LayerImpl>;
-export class CCVAskUserQuestionController extends Context.Tag(
-  "CCVAskUserQuestionController",
-)<CCVAskUserQuestionController, ICCVAskUserQuestionController>() {
+export class CCVAskUserQuestionController extends Context.Tag("CCVAskUserQuestionController")<
+  CCVAskUserQuestionController,
+  ICCVAskUserQuestionController
+>() {
   static Live = Layer.effect(this, LayerImpl);
 }

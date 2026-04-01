@@ -9,8 +9,7 @@ const LayerImpl = Effect.gen(function* () {
 
   const getFlags = () =>
     Effect.gen(function* () {
-      const claudeCodeFeatures =
-        yield* claudeCodeService.getAvailableFeatures();
+      const claudeCodeFeatures = yield* claudeCodeService.getAvailableFeatures();
 
       return {
         response: {

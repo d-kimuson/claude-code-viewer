@@ -30,22 +30,18 @@ export const parseCommandFrontmatter = (
 ): { description: string | null; argumentHint: string | null } => {
   // Match YAML frontmatter between --- delimiters
   const frontmatterMatch = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
-  if (!frontmatterMatch?.[1]) {
+  if (frontmatterMatch?.[1] === undefined || frontmatterMatch[1] === "") {
     return { description: null, argumentHint: null };
   }
 
   const frontmatter = frontmatterMatch[1];
 
   // Extract description field (supports both quoted and unquoted values)
-  const descriptionMatch = frontmatter.match(
-    /^description:\s*['"]?([^'"\n]+)['"]?\s*$/m,
-  );
+  const descriptionMatch = frontmatter.match(/^description:\s*['"]?([^'"\n]+)['"]?\s*$/m);
   const description = descriptionMatch?.[1]?.trim() ?? null;
 
   // Extract argument-hint field
-  const argumentHintMatch = frontmatter.match(
-    /^argument-hint:\s*['"]?([^'"\n]+)['"]?\s*$/m,
-  );
+  const argumentHintMatch = frontmatter.match(/^argument-hint:\s*['"]?([^'"\n]+)['"]?\s*$/m);
   const argumentHint = argumentHintMatch?.[1]?.trim() ?? null;
 
   return { description, argumentHint };
@@ -63,14 +59,9 @@ export const parseCommandFrontmatter = (
  * pathToCommandName("/base/commands/impl.md", "/base/commands") // => "impl"
  * pathToCommandName("/base/commands/frontend/impl.md", "/base/commands") // => "frontend:impl"
  */
-export const pathToCommandName = (
-  filePath: string,
-  baseDir: string,
-): string => {
+export const pathToCommandName = (filePath: string, baseDir: string): string => {
   // Normalize base directory by removing trailing slash
-  const normalizedBaseDir = baseDir.endsWith("/")
-    ? baseDir.slice(0, -1)
-    : baseDir;
+  const normalizedBaseDir = baseDir.endsWith("/") ? baseDir.slice(0, -1) : baseDir;
 
   // Get relative path from base directory
   const relativePath = filePath.startsWith(normalizedBaseDir)
@@ -107,11 +98,7 @@ export const scanCommandFilesRecursively = (
     // Helper function to recursively scan directories
     const scanDirectory = (
       currentPath: string,
-    ): Effect.Effect<
-      string[],
-      PlatformError,
-      FileSystem.FileSystem | Path.Path
-    > =>
+    ): Effect.Effect<string[], PlatformError, FileSystem.FileSystem | Path.Path> =>
       Effect.gen(function* () {
         // Check if directory exists
         const exists = yield* fs.exists(currentPath);
@@ -185,11 +172,7 @@ export const scanCommandFilesWithMetadata = (
     // Helper function to recursively scan directories
     const scanDirectory = (
       currentPath: string,
-    ): Effect.Effect<
-      CommandInfo[],
-      PlatformError,
-      FileSystem.FileSystem | Path.Path
-    > =>
+    ): Effect.Effect<CommandInfo[], PlatformError, FileSystem.FileSystem | Path.Path> =>
       Effect.gen(function* () {
         // Check if directory exists
         const exists = yield* fs.exists(currentPath);
@@ -220,8 +203,7 @@ export const scanCommandFilesWithMetadata = (
               if (info.type === "File" && item.endsWith(".md")) {
                 // Read file content and parse frontmatter
                 const content = yield* fs.readFileString(itemPath);
-                const { description, argumentHint } =
-                  parseCommandFrontmatter(content);
+                const { description, argumentHint } = parseCommandFrontmatter(content);
                 const name = pathToCommandName(itemPath, dirPath);
 
                 return [{ name, description, argumentHint }] as CommandInfo[];
@@ -275,11 +257,7 @@ export const scanSkillFilesRecursively = (
     const scanDirectory = (
       currentPath: string,
       relativePath: string,
-    ): Effect.Effect<
-      string[],
-      PlatformError,
-      FileSystem.FileSystem | Path.Path
-    > =>
+    ): Effect.Effect<string[], PlatformError, FileSystem.FileSystem | Path.Path> =>
       Effect.gen(function* () {
         // Check if directory exists
         const exists = yield* fs.exists(currentPath);
@@ -319,9 +297,7 @@ export const scanSkillFilesRecursively = (
 
               if (info.type === "Directory") {
                 // Recursively scan subdirectory
-                const newRelativePath = relativePath
-                  ? `${relativePath}/${item}`
-                  : item;
+                const newRelativePath = relativePath ? `${relativePath}/${item}` : item;
                 return yield* scanDirectory(itemPath, newRelativePath);
               }
               return [];
@@ -369,11 +345,7 @@ export const scanSkillFilesWithMetadata = (
     const scanDirectory = (
       currentPath: string,
       relativePath: string,
-    ): Effect.Effect<
-      CommandInfo[],
-      PlatformError,
-      FileSystem.FileSystem | Path.Path
-    > =>
+    ): Effect.Effect<CommandInfo[], PlatformError, FileSystem.FileSystem | Path.Path> =>
       Effect.gen(function* () {
         // Check if directory exists
         const exists = yield* fs.exists(currentPath);
@@ -393,8 +365,7 @@ export const scanSkillFilesWithMetadata = (
           if (skillName) {
             // Read file content and parse frontmatter
             const content = yield* fs.readFileString(skillFilePath);
-            const { description, argumentHint } =
-              parseCommandFrontmatter(content);
+            const { description, argumentHint } = parseCommandFrontmatter(content);
             skills.push({ name: skillName, description, argumentHint });
           }
         }
@@ -417,9 +388,7 @@ export const scanSkillFilesWithMetadata = (
 
               if (info.type === "Directory") {
                 // Recursively scan subdirectory
-                const newRelativePath = relativePath
-                  ? `${relativePath}/${item}`
-                  : item;
+                const newRelativePath = relativePath ? `${relativePath}/${item}` : item;
                 return yield* scanDirectory(itemPath, newRelativePath);
               }
               return [];

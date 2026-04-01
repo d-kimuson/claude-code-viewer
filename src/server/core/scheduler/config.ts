@@ -3,9 +3,7 @@ import { FileSystem, Path } from "@effect/platform";
 import { Context, Data, Effect, Layer } from "effect";
 import { type SchedulerConfig, schedulerConfigSchema } from "./schema";
 
-class ConfigFileNotFoundError extends Data.TaggedError(
-  "ConfigFileNotFoundError",
-)<{
+class ConfigFileNotFoundError extends Data.TaggedError("ConfigFileNotFoundError")<{
   readonly path: string;
 }> {}
 
@@ -18,9 +16,10 @@ const CONFIG_DIR = "scheduler";
 const CONFIG_FILE = "schedules.json";
 
 // Service to provide base directory (for testing)
-export class SchedulerConfigBaseDir extends Context.Tag(
-  "SchedulerConfigBaseDir",
-)<SchedulerConfigBaseDir, string>() {
+export class SchedulerConfigBaseDir extends Context.Tag("SchedulerConfigBaseDir")<
+  SchedulerConfigBaseDir,
+  string
+>() {
   static Live = Layer.succeed(this, `${homedir()}/.claude-code-viewer`);
 }
 
@@ -36,15 +35,13 @@ export const readConfig = Effect.gen(function* () {
 
   const exists = yield* fs.exists(configPath);
   if (!exists) {
-    return yield* Effect.fail(
-      new ConfigFileNotFoundError({ path: configPath }),
-    );
+    return yield* Effect.fail(new ConfigFileNotFoundError({ path: configPath }));
   }
 
   const content = yield* fs.readFileString(configPath);
 
-  const jsonResult = yield* Effect.try({
-    try: () => JSON.parse(content),
+  const jsonResult: unknown = yield* Effect.try({
+    try: (): unknown => JSON.parse(content),
     catch: (error) =>
       new ConfigParseError({
         path: configPath,

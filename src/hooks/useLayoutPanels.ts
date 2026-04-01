@@ -7,7 +7,7 @@ import {
   leftPanelWidthAtom,
 } from "@/lib/atoms/layoutPanels";
 
-export interface LayoutPanelsContextValue {
+export type LayoutPanelsContextValue = {
   // Left sidebar
   isLeftPanelOpen: boolean;
   leftPanelWidth: number; // percentage
@@ -22,10 +22,9 @@ export interface LayoutPanelsContextValue {
   setBottomPanelHeight: (height: number) => void;
 
   // Right panel is managed by useRightPanel
-}
+};
 
-const clampValue = (value: number, min: number, max: number) =>
-  Math.min(max, Math.max(min, value));
+const clampValue = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
 export const useLeftPanelState = () => {
   const isLeftPanelOpen = useAtomValue(leftPanelOpenAtom);
@@ -85,10 +84,8 @@ export const useBottomPanelActions = () => {
 export const useLayoutPanels = (): LayoutPanelsContextValue => {
   const { isLeftPanelOpen, leftPanelWidth } = useLeftPanelState();
   const { isBottomPanelOpen, bottomPanelHeight } = useBottomPanelState();
-  const { setIsLeftPanelOpen, toggleLeftPanel, setLeftPanelWidth } =
-    useLeftPanelActions();
-  const { setIsBottomPanelOpen, setBottomPanelHeight } =
-    useBottomPanelActions();
+  const { setIsLeftPanelOpen, toggleLeftPanel, setLeftPanelWidth } = useLeftPanelActions();
+  const { setIsBottomPanelOpen, setBottomPanelHeight } = useBottomPanelActions();
 
   return {
     isLeftPanelOpen,

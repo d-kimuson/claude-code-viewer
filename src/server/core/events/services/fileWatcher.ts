@@ -6,10 +6,10 @@ import { encodeProjectIdFromSessionFilePath } from "../../project/functions/id";
 import { parseSessionFilePath } from "../functions/parseSessionFilePath";
 import { EventBus } from "./EventBus";
 
-interface FileWatcherServiceInterface {
+type FileWatcherServiceInterface = {
   readonly startWatching: () => Effect.Effect<void>;
   readonly stop: () => Effect.Effect<void>;
-}
+};
 
 export class FileWatcherService extends Context.Tag("FileWatcherService")<
   FileWatcherService,
@@ -24,12 +24,10 @@ export class FileWatcherService extends Context.Tag("FileWatcherService")<
 
       const isWatchingRef = yield* Ref.make(false);
       const watcherRef = yield* Ref.make<FSWatcher | null>(null);
-      const projectWatchersRef = yield* Ref.make<Map<string, FSWatcher>>(
+      const projectWatchersRef = yield* Ref.make<Map<string, FSWatcher>>(new Map());
+      const debounceTimersRef = yield* Ref.make<Map<string, ReturnType<typeof setTimeout>>>(
         new Map(),
       );
-      const debounceTimersRef = yield* Ref.make<
-        Map<string, ReturnType<typeof setTimeout>>
-      >(new Map());
 
       const startWatching = (): Effect.Effect<void> =>
         Effect.gen(function* () {
@@ -42,27 +40,20 @@ export class FileWatcherService extends Context.Tag("FileWatcherService")<
 
           yield* Effect.tryPromise({
             try: async () => {
-              console.log(
-                "Starting file watcher on:",
-                claudeCodePaths.claudeProjectsDirPath,
-              );
+              console.log("Starting file watcher on:", claudeCodePaths.claudeProjectsDirPath);
 
               const watcher = watch(
                 claudeCodePaths.claudeProjectsDirPath,
                 { persistent: false, recursive: true },
                 (_eventType, filename) => {
-                  if (!filename) return;
+                  if (filename === undefined || filename === null || filename === "") return;
 
                   const fileMatch = parseSessionFilePath(filename);
                   if (fileMatch === null) return;
 
                   // Build full path to get encoded projectId
-                  const fullPath = path.join(
-                    claudeCodePaths.claudeProjectsDirPath,
-                    filename,
-                  );
-                  const encodedProjectId =
-                    encodeProjectIdFromSessionFilePath(fullPath);
+                  const fullPath = path.join(claudeCodePaths.claudeProjectsDirPath, filename);
+                  const encodedProjectId = encodeProjectIdFromSessionFilePath(fullPath);
 
                   // Determine debounce key based on file type
                   const debounceKey =
@@ -70,7 +61,7 @@ export class FileWatcherService extends Context.Tag("FileWatcherService")<
                       ? `${encodedProjectId}/agent-${fileMatch.agentSessionId}`
                       : `${encodedProjectId}/${fileMatch.sessionId}`;
 
-                  Effect.runPromise(
+                  void Effect.runPromise(
                     Effect.gen(function* () {
                       const timers = yield* Ref.get(debounceTimersRef);
                       const existingTimer = timers.get(debounceKey);
@@ -103,10 +94,9 @@ export class FileWatcherService extends Context.Tag("FileWatcherService")<
                           );
                         }
 
-                        Effect.runPromise(
+                        void Effect.runPromise(
                           Effect.gen(function* () {
-                            const currentTimers =
-                              yield* Ref.get(debounceTimersRef);
+                            const currentTimers = yield* Ref.get(debounceTimersRef);
                             currentTimers.delete(debounceKey);
                             yield* Ref.set(debounceTimersRef, currentTimers);
                           }),
@@ -125,9 +115,7 @@ export class FileWatcherService extends Context.Tag("FileWatcherService")<
             },
             catch: (error) => {
               console.error("Failed to start file watching:", error);
-              return new Error(
-                `Failed to start file watching: ${String(error)}`,
-              );
+              return new Error(`Failed to start file watching: ${String(error)}`);
             },
           }).pipe(
             // エラーが発生しても続行する

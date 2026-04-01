@@ -71,6 +71,7 @@ pnpm dev
 ```
 
 This command starts both servers in parallel using `npm-run-all2`:
+
 - Frontend: Vite development server (port 3400 by default, configurable via `DEV_FE_PORT`)
 - Backend: Node server with tsx watch (port 3401 by default, configurable via `DEV_BE_PORT`)
 
@@ -89,12 +90,14 @@ pnpm start
 ```
 
 **Build Process** (`./scripts/build.sh`):
+
 1. Clean `dist/` directory
 2. Compile i18n files (`lingui:compile`)
 3. Build frontend with Vite → `dist/static/`
 4. Bundle backend with esbuild → `dist/main.js` (ESM format, external dependencies excluded)
 
 **Build Output Structure**:
+
 ```
 dist/
 ├── main.js          # Backend server bundle + CLI entry point
@@ -108,26 +111,28 @@ The production server serves static files and handles API requests on a single p
 
 ## Quality Assurance
 
-### Code Formatter & Linter: Biome
+### Code Formatter & Linter: oxlint + oxfmt
 
-[Biome](https://biomejs.dev/) is used as the formatter and linter.
+[oxc](https://oxc.rs/) tools (oxlint for linting, oxfmt for formatting) are used.
 
 **Commands**:
 
 ```bash
-# Auto-fix issues (format + lint with unsafe fixes)
+# Auto-fix issues (lint fix + format)
 pnpm fix
 
-# Check only (format + lint check, run in CI)
+# Check only (lint + format check, run in CI)
 pnpm lint
 ```
 
-**Configuration**: `/biome.json`
-- Recommended rules enabled
-- `noProcessEnv` set to error level
-- e2e and config files excluded from checks
+**Configuration**: `/.oxlintrc.json` (linting), `/.oxfmtrc.json` (formatting)
 
-**CI Requirement**: Passing Biome checks is mandatory for PR merges.
+- Strict type-aware rules enabled (Effect-TS, React, JSX A11y, etc.)
+- `no-process-env` set to error level
+- `no-unsafe-type-assertion` enforces the no-`as` casting rule
+- e2e and config files have relaxed rules
+
+**CI Requirement**: Passing oxlint + oxfmt checks is mandatory for PR merges.
 
 ### Unit Tests: Vitest
 
@@ -144,6 +149,7 @@ pnpm test:watch
 ```
 
 **Configuration**:
+
 - Global mode enabled
 - Setup file: `src/testing/setup/vitest.setup.ts`
 

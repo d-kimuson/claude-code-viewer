@@ -39,19 +39,12 @@ export const parseUserMessage = (content: string): ParsedUserMessage => {
     };
   }
 
-  const commandName = matches.find(
-    (match) => match.tag === "command-name",
-  )?.content;
-  const commandArgs = matches.find(
-    (match) => match.tag === "command-args",
-  )?.content;
-  const commandMessage = matches.find(
-    (match) => match.tag === "command-message",
-  )?.content;
-  const localCommandStdout = matches.find(
-    (match) => match.tag === "local-command-stdout",
-  )?.content;
+  const commandName = matches.find((match) => match.tag === "command-name")?.content;
+  const commandArgs = matches.find((match) => match.tag === "command-args")?.content;
+  const commandMessage = matches.find((match) => match.tag === "command-message")?.content;
+  const localCommandStdout = matches.find((match) => match.tag === "local-command-stdout")?.content;
 
+  // oxlint-disable-next-line typescript-eslint/switch-exhaustiveness-check -- switch(true) pattern with default case
   switch (true) {
     case commandName !== undefined:
       return {

@@ -3,13 +3,7 @@ import { atomWithStorage, createJSONStorage } from "jotai/utils";
 import { useCallback, useMemo } from "react";
 import { z } from "zod";
 
-const lineTypeSchema = z.enum([
-  "added",
-  "deleted",
-  "unchanged",
-  "hunk",
-  "context",
-]);
+const lineTypeSchema = z.enum(["added", "deleted", "unchanged", "hunk", "context"]);
 
 const reviewCommentSchema = z.object({
   id: z.string(),
@@ -22,10 +16,7 @@ const reviewCommentSchema = z.object({
 
 export type ReviewComment = z.infer<typeof reviewCommentSchema>;
 
-const reviewCommentStoreSchema = z.record(
-  z.string(),
-  z.array(reviewCommentSchema),
-);
+const reviewCommentStoreSchema = z.record(z.string(), z.array(reviewCommentSchema));
 
 export type ReviewCommentStore = z.infer<typeof reviewCommentStoreSchema>;
 
@@ -77,12 +68,8 @@ const baseStorage = createJSONStorage<ReviewCommentStore>(() => localStorage);
 
 const reviewCommentStorage = {
   getItem: (key: string, initialValue: ReviewCommentStore) =>
-    sanitizeReviewCommentStore(
-      baseStorage.getItem(key, initialValue),
-      initialValue,
-    ),
-  setItem: (key: string, newValue: ReviewCommentStore) =>
-    baseStorage.setItem(key, newValue),
+    sanitizeReviewCommentStore(baseStorage.getItem(key, initialValue), initialValue),
+  setItem: (key: string, newValue: ReviewCommentStore) => baseStorage.setItem(key, newValue),
   removeItem: (key: string) => baseStorage.removeItem(key),
 };
 
@@ -145,12 +132,8 @@ export const formatReviewMarkdown = (
 
   const sections = sortedFilenames.flatMap((filename) => {
     const fileComments = grouped.get(filename) ?? [];
-    const sorted = [...fileComments].sort(
-      (a, b) => a.lineNumber - b.lineNumber,
-    );
-    return sorted.map(
-      (c) => `### ${c.filename} (L${c.lineNumber})\n${c.content}`,
-    );
+    const sorted = [...fileComments].sort((a, b) => a.lineNumber - b.lineNumber);
+    return sorted.map((c) => `### ${c.filename} (L${c.lineNumber})\n${c.content}`);
   });
 
   return `## Review: ${compareFrom} vs ${compareTo}\n\n${sections.join("\n\n")}`;

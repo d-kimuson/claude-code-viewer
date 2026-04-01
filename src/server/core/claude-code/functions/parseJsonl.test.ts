@@ -1,6 +1,69 @@
 import { describe, expect, it } from "vitest";
-import type { ErrorJsonl } from "../../types";
+import type { ErrorJsonl, ExtendedConversation } from "../../types";
 import { parseJsonl } from "./parseJsonl";
+
+type UserEntry = Extract<ExtendedConversation, { type: "user" }>;
+type SummaryEntry = Extract<ExtendedConversation, { type: "summary" }>;
+type CustomTitleEntry = Extract<ExtendedConversation, { type: "custom-title" }>;
+type AgentNameEntry = Extract<ExtendedConversation, { type: "agent-name" }>;
+type PrLinkEntry = Extract<ExtendedConversation, { type: "pr-link" }>;
+type LastPromptEntry = Extract<ExtendedConversation, { type: "last-prompt" }>;
+
+const expectUserEntry = (entry: ExtendedConversation | undefined): UserEntry => {
+  expect(entry?.type).toBe("user");
+  if (entry?.type !== "user") {
+    throw new Error("Expected user entry");
+  }
+  return entry;
+};
+
+const expectSummaryEntry = (entry: ExtendedConversation | undefined): SummaryEntry => {
+  expect(entry?.type).toBe("summary");
+  if (entry?.type !== "summary") {
+    throw new Error("Expected summary entry");
+  }
+  return entry;
+};
+
+const expectCustomTitleEntry = (entry: ExtendedConversation | undefined): CustomTitleEntry => {
+  expect(entry?.type).toBe("custom-title");
+  if (entry?.type !== "custom-title") {
+    throw new Error("Expected custom-title entry");
+  }
+  return entry;
+};
+
+const expectAgentNameEntry = (entry: ExtendedConversation | undefined): AgentNameEntry => {
+  expect(entry?.type).toBe("agent-name");
+  if (entry?.type !== "agent-name") {
+    throw new Error("Expected agent-name entry");
+  }
+  return entry;
+};
+
+const expectPrLinkEntry = (entry: ExtendedConversation | undefined): PrLinkEntry => {
+  expect(entry?.type).toBe("pr-link");
+  if (entry?.type !== "pr-link") {
+    throw new Error("Expected pr-link entry");
+  }
+  return entry;
+};
+
+const expectLastPromptEntry = (entry: ExtendedConversation | undefined): LastPromptEntry => {
+  expect(entry?.type).toBe("last-prompt");
+  if (entry?.type !== "last-prompt") {
+    throw new Error("Expected last-prompt entry");
+  }
+  return entry;
+};
+
+const expectErrorEntry = (entry: ExtendedConversation | undefined): ErrorJsonl => {
+  expect(entry?.type).toBe("x-error");
+  if (entry?.type !== "x-error") {
+    throw new Error("Expected x-error entry");
+  }
+  return entry;
+};
 
 describe("parseJsonl", () => {
   describe("正常系: 有効なJSONLをパースできる", () => {
@@ -22,10 +85,8 @@ describe("parseJsonl", () => {
 
       expect(result).toHaveLength(1);
       expect(result[0]).toHaveProperty("type", "user");
-      const entry = result[0];
-      if (entry && entry.type === "user") {
-        expect(entry.message.content).toBe("Hello");
-      }
+      const entry = expectUserEntry(result[0]);
+      expect(entry.message.content).toBe("Hello");
     });
 
     it("単一のSummaryエントリをパースできる", () => {
@@ -39,10 +100,8 @@ describe("parseJsonl", () => {
 
       expect(result).toHaveLength(1);
       expect(result[0]).toHaveProperty("type", "summary");
-      const entry = result[0];
-      if (entry && entry.type === "summary") {
-        expect(entry.summary).toBe("This is a summary");
-      }
+      const entry = expectSummaryEntry(result[0]);
+      expect(entry.summary).toBe("This is a summary");
     });
 
     it("複数のエントリをパースできる", () => {
@@ -82,7 +141,7 @@ describe("parseJsonl", () => {
       const result = parseJsonl(jsonl);
 
       expect(result).toHaveLength(1);
-      const errorEntry = result[0] as ErrorJsonl;
+      const errorEntry = expectErrorEntry(result[0]);
       expect(errorEntry.type).toBe("x-error");
       expect(errorEntry.lineNumber).toBe(1);
     });
@@ -96,7 +155,7 @@ describe("parseJsonl", () => {
       const result = parseJsonl(jsonl);
 
       expect(result).toHaveLength(1);
-      const errorEntry = result[0] as ErrorJsonl;
+      const errorEntry = expectErrorEntry(result[0]);
       expect(errorEntry.type).toBe("x-error");
       expect(errorEntry.lineNumber).toBe(1);
     });
@@ -111,7 +170,7 @@ describe("parseJsonl", () => {
       const result = parseJsonl(jsonl);
 
       expect(result).toHaveLength(1);
-      const errorEntry = result[0] as ErrorJsonl;
+      const errorEntry = expectErrorEntry(result[0]);
       expect(errorEntry.type).toBe("x-error");
       expect(errorEntry.lineNumber).toBe(1);
     });
@@ -145,7 +204,7 @@ describe("parseJsonl", () => {
       expect(result[1]).toHaveProperty("type", "x-error");
       expect(result[2]).toHaveProperty("type", "summary");
 
-      const errorEntry = result[1] as ErrorJsonl;
+      const errorEntry = expectErrorEntry(result[1]);
       expect(errorEntry.lineNumber).toBe(2);
     });
   });
@@ -260,10 +319,7 @@ describe("parseJsonl", () => {
           cwd: "/test",
           sessionId: "session-1",
           version: "1.0.0",
-          parentUuid:
-            i > 0
-              ? `550e8400-e29b-41d4-a716-${String(i - 1).padStart(12, "0")}`
-              : null,
+          parentUuid: i > 0 ? `550e8400-e29b-41d4-a716-${String(i - 1).padStart(12, "0")}` : null,
         });
       });
 
@@ -309,22 +365,20 @@ describe("parseJsonl", () => {
       const result = parseJsonl(jsonl);
 
       expect(result).toHaveLength(4);
-      expect((result[1] as ErrorJsonl).lineNumber).toBe(2);
-      expect((result[1] as ErrorJsonl).type).toBe("x-error");
-      expect((result[3] as ErrorJsonl).lineNumber).toBe(4);
-      expect((result[3] as ErrorJsonl).type).toBe("x-error");
+      expect(expectErrorEntry(result[1]).lineNumber).toBe(2);
+      expect(expectErrorEntry(result[1]).type).toBe("x-error");
+      expect(expectErrorEntry(result[3]).lineNumber).toBe(4);
+      expect(expectErrorEntry(result[3]).type).toBe("x-error");
     });
 
     it("空行フィルタ後の行番号が正確に記録される", () => {
-      const jsonl = ["", "", JSON.stringify({ type: "invalid-schema" })].join(
-        "\n",
-      );
+      const jsonl = ["", "", JSON.stringify({ type: "invalid-schema" })].join("\n");
 
       const result = parseJsonl(jsonl);
 
       expect(result).toHaveLength(1);
       // 空行がフィルタされた後のインデックスは0だが、lineNumberは1として記録される
-      expect((result[0] as ErrorJsonl).lineNumber).toBe(1);
+      expect(expectErrorEntry(result[0]).lineNumber).toBe(1);
     });
   });
 
@@ -340,11 +394,9 @@ describe("parseJsonl", () => {
 
       expect(result).toHaveLength(1);
       expect(result[0]).toHaveProperty("type", "custom-title");
-      const entry = result[0];
-      if (entry && entry.type === "custom-title") {
-        expect(entry.customTitle).toBe("My Custom Name");
-        expect(entry.sessionId).toBe("abc-123");
-      }
+      const entry = expectCustomTitleEntry(result[0]);
+      expect(entry.customTitle).toBe("My Custom Name");
+      expect(entry.sessionId).toBe("abc-123");
     });
 
     it("agent-name entry parses correctly", () => {
@@ -358,11 +410,9 @@ describe("parseJsonl", () => {
 
       expect(result).toHaveLength(1);
       expect(result[0]).toHaveProperty("type", "agent-name");
-      const entry = result[0];
-      if (entry && entry.type === "agent-name") {
-        expect(entry.agentName).toBe("claude-code-agent");
-        expect(entry.sessionId).toBe("abc-123");
-      }
+      const entry = expectAgentNameEntry(result[0]);
+      expect(entry.agentName).toBe("claude-code-agent");
+      expect(entry.sessionId).toBe("abc-123");
     });
 
     it("both types mixed with regular entries parse without x-error", () => {
@@ -423,14 +473,10 @@ describe("parseJsonl", () => {
 
       expect(result).toHaveLength(1);
       expect(result[0]).toHaveProperty("type", "pr-link");
-      const entry = result[0];
-      if (entry && entry.type === "pr-link") {
-        expect(entry.prNumber).toBe(167);
-        expect(entry.prUrl).toBe(
-          "https://github.com/d-kimuson/claude-code-viewer/pull/167",
-        );
-        expect(entry.prRepository).toBe("d-kimuson/claude-code-viewer");
-      }
+      const entry = expectPrLinkEntry(result[0]);
+      expect(entry.prNumber).toBe(167);
+      expect(entry.prUrl).toBe("https://github.com/d-kimuson/claude-code-viewer/pull/167");
+      expect(entry.prRepository).toBe("d-kimuson/claude-code-viewer");
     });
 
     it("last-prompt entry parses correctly", () => {
@@ -444,12 +490,8 @@ describe("parseJsonl", () => {
 
       expect(result).toHaveLength(1);
       expect(result[0]).toHaveProperty("type", "last-prompt");
-      const entry = result[0];
-      if (entry && entry.type === "last-prompt") {
-        expect(entry.lastPrompt).toBe(
-          "Read docs/2026-03-12-phase-2-raise-only-hires.md...",
-        );
-      }
+      const entry = expectLastPromptEntry(result[0]);
+      expect(entry.lastPrompt).toBe("Read docs/2026-03-12-phase-2-raise-only-hires.md...");
     });
 
     it("pr-link and last-prompt mixed with regular entries parse without x-error", () => {
@@ -518,12 +560,10 @@ describe("parseJsonl", () => {
       const result = parseJsonl(jsonl);
 
       expect(result).toHaveLength(1);
-      const entry = result[0];
-      if (entry && entry.type === "user") {
-        expect(entry.isSidechain).toBe(true);
-        expect(entry.parentUuid).toBe("550e8400-e29b-41d4-a716-446655440099");
-        expect(entry.gitBranch).toBe("main");
-      }
+      const entry = expectUserEntry(result[0]);
+      expect(entry.isSidechain).toBe(true);
+      expect(entry.parentUuid).toBe("550e8400-e29b-41d4-a716-446655440099");
+      expect(entry.gitBranch).toBe("main");
     });
 
     it("nullableフィールドがnullのエントリをパースできる", () => {
@@ -543,10 +583,8 @@ describe("parseJsonl", () => {
       const result = parseJsonl(jsonl);
 
       expect(result).toHaveLength(1);
-      const entry = result[0];
-      if (entry && entry.type === "user") {
-        expect(entry.parentUuid).toBeNull();
-      }
+      const entry = expectUserEntry(result[0]);
+      expect(entry.parentUuid).toBeNull();
     });
   });
 });

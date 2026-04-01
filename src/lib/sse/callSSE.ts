@@ -3,9 +3,7 @@ import type { SSEEventMap } from "../../types/sse";
 export const callSSE = (options?: { onOpen?: (event: Event) => void }) => {
   const { onOpen } = options ?? {};
 
-  const eventSource = new EventSource(
-    new URL("/api/sse", window.location.origin).href,
-  );
+  const eventSource = new EventSource(new URL("/api/sse", window.location.origin).href);
 
   const handleOnOpen = (event: Event) => {
     console.log("SSE connection opened", event);
@@ -20,7 +18,8 @@ export const callSSE = (options?: { onOpen?: (event: Event) => void }) => {
   ) => {
     const callbackFn = (event: MessageEvent) => {
       try {
-        const sseEvent: SSEEventMap[EventName] = JSON.parse(event.data);
+        // oxlint-disable-next-line no-unsafe-assignment -- JSON.parse returns unknown-typed data, validated by downstream consumers
+        const sseEvent: SSEEventMap[EventName] = JSON.parse(String(event.data));
         listener(sseEvent);
       } catch (error) {
         console.error("Failed to parse SSE event data:", error);

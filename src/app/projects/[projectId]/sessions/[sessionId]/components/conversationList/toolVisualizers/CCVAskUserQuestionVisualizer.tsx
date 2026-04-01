@@ -1,11 +1,7 @@
 import { ChevronDown } from "lucide-react";
 import { type FC, useMemo } from "react";
 import { z } from "zod";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import type { ToolVisualizerProps } from "./types";
 
 const optionSchema = z.object({
@@ -69,10 +65,7 @@ const parseAnswers = (output: unknown): Record<string, string> => {
   return {};
 };
 
-export const CCVAskUserQuestionVisualizer: FC<ToolVisualizerProps> = ({
-  input,
-  output,
-}) => {
+export const CCVAskUserQuestionVisualizer: FC<ToolVisualizerProps> = ({ input, output }) => {
   const answers = useMemo(() => parseAnswers(output), [output]);
   const parsedInput = inputSchema.safeParse(input);
   if (!parsedInput.success) return null;
@@ -93,10 +86,8 @@ export const CCVAskUserQuestionVisualizer: FC<ToolVisualizerProps> = ({
                 <span className="text-xs font-medium px-1.5 py-0.5 rounded bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300">
                   {question.header}
                 </span>
-                {question.multiSelect && (
-                  <span className="text-xs text-muted-foreground">
-                    (multiple)
-                  </span>
+                {question.multiSelect === true && (
+                  <span className="text-xs text-muted-foreground">(multiple)</span>
                 )}
               </div>
               <p className="text-sm mt-1">{question.question}</p>
@@ -128,10 +119,8 @@ export const CCVAskUserQuestionVisualizer: FC<ToolVisualizerProps> = ({
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-muted-foreground mt-0.5">
-                      {option.description}
-                    </p>
-                    {option.preview && (
+                    <p className="text-xs text-muted-foreground mt-0.5">{option.description}</p>
+                    {option.preview !== undefined && option.preview !== "" && (
                       <Collapsible>
                         <CollapsibleTrigger className="flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400 mt-1 hover:underline group">
                           Preview
@@ -150,7 +139,7 @@ export const CCVAskUserQuestionVisualizer: FC<ToolVisualizerProps> = ({
             </div>
 
             {/* Waiting for answer indicator */}
-            {!answer && output === undefined && (
+            {(answer === undefined || answer === "") && output === undefined && (
               <div className="px-3 py-2 text-xs text-muted-foreground animate-pulse border-t border-gray-200 dark:border-gray-700">
                 Waiting for answer...
               </div>

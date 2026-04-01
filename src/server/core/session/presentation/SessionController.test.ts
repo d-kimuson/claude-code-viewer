@@ -20,12 +20,7 @@ describe("SessionController", () => {
         data: InternalEventDeclaration[EventName],
       ) => void;
     }) => {
-      const {
-        fileExists = true,
-        removeSuccess = true,
-        onRemove,
-        onEmit,
-      } = options;
+      const { fileExists = true, removeSuccess = true, onRemove, onEmit } = options;
 
       const projectPath = "/test/project";
       const projectId = Buffer.from(projectPath).toString("base64url");
@@ -33,8 +28,7 @@ describe("SessionController", () => {
       const sessionPath = `${projectPath}/${sessionId}.jsonl`;
 
       const fileSystemLayer = testFileSystemLayer({
-        exists: (path: string) =>
-          Effect.succeed(path === sessionPath && fileExists),
+        exists: (path: string) => Effect.succeed(path === sessionPath && fileExists),
         remove: (path: string) => {
           onRemove?.(path);
           if (removeSuccess) {
@@ -56,13 +50,10 @@ describe("SessionController", () => {
         getSessions: () => Effect.succeed({ sessions: [] }),
       });
 
-      const agentSessionRepositoryLayer = Layer.succeed(
-        AgentSessionRepository,
-        {
-          getAgentSessionByAgentId: () => Effect.succeed(null),
-          listAgentSessionsForSession: () => Effect.succeed([]),
-        },
-      );
+      const agentSessionRepositoryLayer = Layer.succeed(AgentSessionRepository, {
+        getAgentSessionByAgentId: () => Effect.succeed(null),
+        listAgentSessionsForSession: () => Effect.succeed([]),
+      });
 
       const sessionMetaServiceLayer = Layer.succeed(SessionMetaService, {
         getSessionMeta: () =>

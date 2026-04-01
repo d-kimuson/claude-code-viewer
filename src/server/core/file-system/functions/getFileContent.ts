@@ -222,9 +222,7 @@ export const isBinaryContent = (buffer: Buffer): boolean => {
 export const validateFilePath = (
   projectRoot: string,
   filePath: string,
-):
-  | { valid: true; resolvedPath: string }
-  | { valid: false; message: string } => {
+): { valid: true; resolvedPath: string } | { valid: false; message: string } => {
   // Check for empty path
   if (!filePath || filePath.trim() === "") {
     return { valid: false, message: "File path cannot be empty" };
@@ -253,10 +251,7 @@ export const validateFilePath = (
   }
 
   // Ensure the resolved path is within the project root
-  if (
-    !resolvedPath.startsWith(`${resolvedRoot}/`) &&
-    resolvedPath !== resolvedRoot
-  ) {
+  if (!resolvedPath.startsWith(`${resolvedRoot}/`) && resolvedPath !== resolvedRoot) {
     return { valid: false, message: "Path is outside the project root" };
   }
 

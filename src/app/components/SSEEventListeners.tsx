@@ -12,22 +12,22 @@ import { useServerEventListener } from "../../lib/sse/hook/useServerEventListene
 export const SSEEventListeners: FC<PropsWithChildren> = ({ children }) => {
   const queryClient = useQueryClient();
 
-  useServerEventListener("sessionListChanged", async (event) => {
-    await queryClient.invalidateQueries({
+  useServerEventListener("sessionListChanged", (event) => {
+    void queryClient.invalidateQueries({
       queryKey: projectDetailQuery(event.projectId).queryKey,
     });
   });
 
-  useServerEventListener("sessionChanged", async (event) => {
-    await queryClient.invalidateQueries({
+  useServerEventListener("sessionChanged", (event) => {
+    void queryClient.invalidateQueries({
       queryKey: sessionDetailQuery(event.projectId, event.sessionId).queryKey,
     });
   });
 
-  useServerEventListener("agentSessionChanged", async (event) => {
+  useServerEventListener("agentSessionChanged", (event) => {
     // Invalidate the specific agent-session query for this agentSessionId
     // New query key pattern: ["projects", projectId, "agent-sessions", agentId]
-    await queryClient.invalidateQueries({
+    void queryClient.invalidateQueries({
       predicate: (query) => {
         const queryKey = query.queryKey;
         return (
@@ -41,38 +41,38 @@ export const SSEEventListeners: FC<PropsWithChildren> = ({ children }) => {
     });
   });
 
-  useServerEventListener("permissionRequested", async () => {
-    await queryClient.invalidateQueries({
+  useServerEventListener("permissionRequested", () => {
+    void queryClient.invalidateQueries({
       queryKey: pendingPermissionRequestsQuery.queryKey,
     });
   });
 
-  useServerEventListener("permissionResolved", async () => {
-    await queryClient.invalidateQueries({
+  useServerEventListener("permissionResolved", () => {
+    void queryClient.invalidateQueries({
       queryKey: pendingPermissionRequestsQuery.queryKey,
     });
   });
 
-  useServerEventListener("questionRequested", async () => {
-    await queryClient.invalidateQueries({
+  useServerEventListener("questionRequested", () => {
+    void queryClient.invalidateQueries({
       queryKey: pendingQuestionRequestsQuery.queryKey,
     });
   });
 
-  useServerEventListener("questionResolved", async () => {
-    await queryClient.invalidateQueries({
+  useServerEventListener("questionResolved", () => {
+    void queryClient.invalidateQueries({
       queryKey: pendingQuestionRequestsQuery.queryKey,
     });
   });
 
-  useServerEventListener("notificationCreated", async () => {
-    await queryClient.invalidateQueries({
+  useServerEventListener("notificationCreated", () => {
+    void queryClient.invalidateQueries({
       queryKey: notificationsQuery.queryKey,
     });
   });
 
-  useServerEventListener("notificationConsumed", async () => {
-    await queryClient.invalidateQueries({
+  useServerEventListener("notificationConsumed", () => {
+    void queryClient.invalidateQueries({
       queryKey: notificationsQuery.queryKey,
     });
   });

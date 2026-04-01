@@ -8,9 +8,7 @@ describe("normalizeQueueOperationContent", () => {
   });
 
   test("extracts text from single text content object", () => {
-    const result = normalizeQueueOperationContent([
-      { type: "text", text: "こんにちは！" },
-    ]);
+    const result = normalizeQueueOperationContent([{ type: "text", text: "こんにちは！" }]);
     expect(result).toBe("こんにちは！");
   });
 

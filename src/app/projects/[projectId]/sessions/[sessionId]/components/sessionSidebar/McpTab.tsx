@@ -1,11 +1,6 @@
 import { Trans, useLingui } from "@lingui/react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  CheckCircle2Icon,
-  CircleHelpIcon,
-  RefreshCwIcon,
-  XCircleIcon,
-} from "lucide-react";
+import { CheckCircle2Icon, CircleHelpIcon, RefreshCwIcon, XCircleIcon } from "lucide-react";
 import type { FC } from "react";
 import { Button } from "@/components/ui/button";
 import { Loading } from "../../../../../../../components/Loading";
@@ -30,7 +25,7 @@ export const McpTab: FC<{ projectId: string }> = ({ projectId }) => {
   });
 
   const handleReload = () => {
-    queryClient.invalidateQueries({
+    void queryClient.invalidateQueries({
       queryKey: mcpListQuery(projectId).queryKey,
     });
   };
@@ -50,9 +45,7 @@ export const McpTab: FC<{ projectId: string }> = ({ projectId }) => {
             disabled={isLoading || isFetching}
             title={i18n._("Reload MCP servers")}
           >
-            <RefreshCwIcon
-              className={`w-3 h-3 ${isLoading || isFetching ? "animate-spin" : ""}`}
-            />
+            <RefreshCwIcon className={`w-3 h-3 ${isLoading || isFetching ? "animate-spin" : ""}`} />
           </Button>
         </div>
       </div>
@@ -68,10 +61,7 @@ export const McpTab: FC<{ projectId: string }> = ({ projectId }) => {
 
         {error && (
           <div className="text-sm text-red-500">
-            <Trans
-              id="mcp.error.load_failed"
-              values={{ error: (error as Error).message }}
-            />
+            <Trans id="mcp.error.load_failed" values={{ error: error.message }} />
           </div>
         )}
 

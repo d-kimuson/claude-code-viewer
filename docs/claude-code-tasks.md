@@ -1,123 +1,124 @@
-# Claude Code Tasks 工具完整介绍
+# Complete Guide to Claude Code Tasks
 
-## 概述
+## Overview
 
-Claude Code Tasks 是 Claude Code 内置的任务管理系统，用于在软件开发过程中追踪、组织和管理复杂的开发工作。它支持跨会话持久化、依赖关系管理和并发安全操作。
-
----
-
-## 核心特性
-
-### ✅ 跨会话持久化
-
-Tasks 不会在会话结束后丢失。所有任务数据存储在 `~/.claude/tasks/` 中，新会话开始时自动加载。
-
-```
-会话 1：创建 5 个 tasks + 完成 Task 1
-         ↓ 保存到 ~/.claude/tasks/
-会话 2：TaskList 显示所有 5 个 tasks，Task 1 已完成
-        继续处理 Task 2-5
-```
-
-### ✅ 依赖关系管理
-
-支持复杂的任务依赖图，自动管理阻塞状态。任务完成后，被其阻塞的任务自动变为可用。
-
-```
-Task 1 (数据库)
-  ├─→ Task 2 (登录 API)  [阻塞中]
-  └─→ Task 3 (注册 API)  [阻塞中]
-        └─→ Task 4 (测试)  [双重阻塞]
-              └─→ Task 5 (部署)  [阻塞中]
-
-完成 Task 1 后：
-Task 2 和 3 自动变为可用 ✓
-```
-
-### ✅ 原子性与并发安全
-
-每个 task 独立存储为单个 JSON 文件。修改任何 task 只需写入一个小文件（~380 字节），避免多会话并发冲突。
-
-### ✅ 项目隔离
-
-多个项目的 tasks 独立管理，通过 UUID 确保全局唯一性，互不干扰。
+Claude Code Tasks is a built-in task management system in Claude Code. It is designed to track, organize, and manage complex development work during software projects. It supports cross-session persistence, dependency management, and concurrency-safe operations.
 
 ---
 
-## 工具详解
+## Key Features
 
-### 1. TaskCreate - 创建新任务
+### ✅ Cross-Session Persistence
 
-**作用**：创建一个新的 task
+Tasks are not lost when a session ends. All task data is stored in `~/.claude/tasks/` and loaded automatically when a new session starts.
 
-#### 入参
+```
+Session 1: Create 5 tasks and complete Task 1
+           ↓ Saved to ~/.claude/tasks/
+Session 2: TaskList shows all 5 tasks, with Task 1 completed
+           Continue working on Tasks 2-5
+```
 
-| 参数 | 类型 | 必需 | 说明 |
-|------|------|------|------|
-| `subject` | string | ✅ | 任务标题（命令式）。例："修复登录 bug" |
-| `description` | string | ✅ | 详细描述，包含需求和验收条件 |
-| `activeForm` | string | ❌ | 进行中时显示的形式（现在进行式）。例："正在修复登录 bug" |
-| `metadata` | object | ❌ | 任意键值对，用于存储额外信息（优先级、标签等） |
+### ✅ Dependency Management
 
-#### 返回值
+Claude Code Tasks supports complex task dependency graphs and automatically manages blocked states. When a task is completed, any tasks blocked by it automatically become available.
+
+```
+Task 1 (Database)
+  ├─→ Task 2 (Login API)     [blocked]
+  └─→ Task 3 (Signup API)    [blocked]
+        └─→ Task 4 (Tests)   [blocked by both]
+              └─→ Task 5 (Deploy)  [blocked]
+
+After Task 1 is completed:
+Tasks 2 and 3 automatically become available ✓
+```
+
+### ✅ Atomic and Concurrency-Safe
+
+Each task is stored as its own JSON file. Updating any task only requires writing one small file, around 380 bytes, which helps avoid conflicts when multiple sessions operate in parallel.
+
+### ✅ Project Isolation
+
+Tasks from different projects are managed independently. A UUID is used to ensure each project is globally unique, so separate projects do not interfere with each other.
+
+---
+
+## Tool Reference
+
+### 1. TaskCreate - Create a New Task
+
+**Purpose**: Creates a new task
+
+#### Inputs
+
+| Parameter     | Type   | Required | Description                                                                    |
+| ------------- | ------ | -------- | ------------------------------------------------------------------------------ |
+| `subject`     | string | ✅       | Task title in imperative form. Example: `"Fix login bug"`                      |
+| `description` | string | ✅       | Detailed description including requirements and acceptance criteria            |
+| `activeForm`  | string | ❌       | Display text used while the task is in progress. Example: `"Fixing login bug"` |
+| `metadata`    | object | ❌       | Arbitrary key-value pairs for extra information such as priority or labels     |
+
+#### Return Value
 
 ```
 Task #{id} created successfully: {subject}
 ```
 
-#### 使用示例
+#### Example
 
 ```typescript
 TaskCreate {
-  subject: "实现用户登录功能"
-  description: "添加登录表单，包括：
-- 输入验证
-- API 集成
-- 错误处理
-- 单元测试"
-  activeForm: "实现用户登录功能"
+  subject: "Implement user login"
+  description: "Add a login form that includes:
+- Input validation
+- API integration
+- Error handling
+- Unit tests"
+  activeForm: "Implementing user login"
   metadata: { priority: "high", component: "auth" }
 }
 
-// 返回
-Task #1 created successfully: 实现用户登录功能
+// Returns
+Task #1 created successfully: Implement user login
 ```
 
 ---
 
-### 2. TaskList - 查看所有任务
+### 2. TaskList - View All Tasks
 
-**作用**：列出当前项目的所有 tasks，显示状态和依赖关系
+**Purpose**: Lists all tasks in the current project, including status and dependencies
 
-#### 入参
+#### Inputs
 
-无入参
+No inputs
 
-#### 返回值
+#### Return Value
 
-返回所有 tasks 的摘要列表：
+Returns a summary list of all tasks:
 
 ```
 #{id} [{status}] {subject} [blocked by #{id}, #{id}]
 ```
 
-字段说明：
-- `#{id}` - task ID
-- `[{status}]` - 状态：`pending`、`in_progress`、`completed`
-- `{subject}` - 任务标题
-- `[blocked by ...]` - 阻塞此 task 的其他 task ID（如果有）
+Field descriptions:
 
-#### 使用示例
+- `#{id}` - Task ID
+- `[{status}]` - Status: `pending`, `in_progress`, or `completed`
+- `{subject}` - Task title
+- `[blocked by ...]` - IDs of tasks blocking this task, if any
+
+#### Example
 
 ```
-#1 [completed] 设计和创建用户认证数据库模式
-#2 [pending] 实现登录 API 端点
-#3 [pending] 实现注册 API 端点
-#4 [pending] 编写认证功能单元测试 [blocked by #2, #3]
-#5 [pending] 部署认证功能到生产环境 [blocked by #4]
+#1 [completed] Design and create the user authentication database schema
+#2 [pending] Implement the login API endpoint
+#3 [pending] Implement the signup API endpoint
+#4 [pending] Write unit tests for the authentication feature [blocked by #2, #3]
+#5 [pending] Deploy the authentication feature to production [blocked by #4]
 ```
 
-没有 tasks 时：
+If there are no tasks:
 
 ```
 No tasks found
@@ -125,33 +126,33 @@ No tasks found
 
 ---
 
-### 3. TaskUpdate - 更新任务
+### 3. TaskUpdate - Update a Task
 
-**作用**：更新 task 的属性、状态和依赖关系
+**Purpose**: Updates task properties, status, and dependencies
 
-#### 入参
+#### Inputs
 
-| 参数 | 类型 | 必需 | 说明 |
-|------|------|------|------|
-| `taskId` | string | ✅ | 要更新的 task ID（例："1"） |
-| `status` | enum | ❌ | 新状态：`pending`、`in_progress`、`completed` |
-| `subject` | string | ❌ | 更新任务标题 |
-| `description` | string | ❌ | 更新任务描述 |
-| `activeForm` | string | ❌ | 更新进行中显示的形式 |
-| `owner` | string | ❌ | 设置任务所有者（agent 名称或用户名） |
-| `addBlockedBy` | string[] | ❌ | 添加阻塞此 task 的 task ID 列表 |
-| `addBlocks` | string[] | ❌ | 添加此 task 阻塞的 task ID 列表 |
-| `metadata` | object | ❌ | 合并 metadata 键值对（设置值为 `null` 删除键） |
+| Parameter      | Type     | Required | Description                                                                      |
+| -------------- | -------- | -------- | -------------------------------------------------------------------------------- |
+| `taskId`       | string   | ✅       | The task ID to update. Example: `"1"`                                            |
+| `status`       | enum     | ❌       | New status: `pending`, `in_progress`, or `completed`                             |
+| `subject`      | string   | ❌       | Updated task title                                                               |
+| `description`  | string   | ❌       | Updated task description                                                         |
+| `activeForm`   | string   | ❌       | Updated in-progress display text                                                 |
+| `owner`        | string   | ❌       | Task owner, such as an agent name or username                                    |
+| `addBlockedBy` | string[] | ❌       | List of task IDs to add as blockers for this task                                |
+| `addBlocks`    | string[] | ❌       | List of task IDs that this task should block                                     |
+| `metadata`     | object   | ❌       | Key-value pairs to merge into metadata. Set a value to `null` to remove that key |
 
-#### 返回值
+#### Return Value
 
 ```
 Updated task #{id} {field}
 ```
 
-#### 使用示例
+#### Examples
 
-**标记为进行中：**
+**Mark as in progress:**
 
 ```typescript
 TaskUpdate {
@@ -159,27 +160,27 @@ TaskUpdate {
   status: "in_progress"
 }
 
-// 返回
+// Returns
 Updated task #1 status
 ```
 
-**建立依赖关系：**
+**Add dependencies:**
 
 ```typescript
-// Task 2 被 Task 1 阻塞
+// Task 2 is blocked by Task 1
 TaskUpdate {
   taskId: "2"
   addBlockedBy: ["1"]
 }
 
-// Task 4 被 Task 2 和 3 阻塞
+// Task 4 is blocked by both Task 2 and Task 3
 TaskUpdate {
   taskId: "4"
   addBlockedBy: ["2", "3"]
 }
 ```
 
-**完成任务：**
+**Mark as completed:**
 
 ```typescript
 TaskUpdate {
@@ -188,7 +189,7 @@ TaskUpdate {
 }
 ```
 
-**更新 metadata：**
+**Update metadata:**
 
 ```typescript
 TaskUpdate {
@@ -196,26 +197,26 @@ TaskUpdate {
   metadata: {
     priority: "high"
     reviewed: true
-    assignee: null  // 删除 assignee 键
+    assignee: null  // Removes the assignee key
   }
 }
 ```
 
 ---
 
-### 4. TaskGet - 获取任务详情
+### 4. TaskGet - Get Task Details
 
-**作用**：获取单个 task 的完整信息
+**Purpose**: Retrieves the complete information for a single task
 
-#### 入参
+#### Inputs
 
-| 参数 | 类型 | 必需 | 说明 |
-|------|------|------|------|
-| `taskId` | string | ✅ | task ID（例："1"） |
+| Parameter | Type   | Required | Description             |
+| --------- | ------ | -------- | ----------------------- |
+| `taskId`  | string | ✅       | Task ID. Example: `"1"` |
 
-#### 返回值
+#### Return Value
 
-返回完整的 task 对象：
+Returns the full task object:
 
 ```typescript
 {
@@ -224,43 +225,43 @@ TaskUpdate {
   description: string
   status: "pending" | "in_progress" | "completed"
   owner?: string
-  blocks?: string[]      // 此 task 阻塞的其他 task ID
-  blockedBy?: string[]   // 阻塞此 task 的其他 task ID
+  blocks?: string[]      // Task IDs blocked by this task
+  blockedBy?: string[]   // Task IDs blocking this task
   metadata?: object
   activeForm?: string
 }
 ```
 
-#### 使用示例
+#### Example
 
 ```typescript
 TaskGet {
   taskId: "1"
 }
 
-// 返回
+// Returns
 {
   id: "1"
-  subject: "设计和创建用户认证数据库模式"
-  description: "覆盖：\n- 数据库模式验证\n- API 端点逻辑..."
+  subject: "Design and create the user authentication database schema"
+  description: "Covers:\n- Database schema validation\n- API endpoint logic..."
   status: "completed"
   owner: "claude"
   blocks: ["2", "3"]
   blockedBy: []
   metadata: { priority: "high" }
-  activeForm: "编写单元测试"
+  activeForm: "Writing unit tests"
 }
 ```
 
 ---
 
-## 存储结构
+## Storage Layout
 
-### 文件系统架构
+### Filesystem Structure
 
 ```
 ~/.claude/tasks/
-└── {project-id}/                    ← UUID，唯一标识一个项目
+└── {project-id}/                    ← UUID uniquely identifying a project
     ├── 1.json                       ← Task ID 1
     ├── 2.json                       ← Task ID 2
     ├── 3.json                       ← Task ID 3
@@ -268,63 +269,63 @@ TaskGet {
     └── 5.json                       ← Task ID 5
 ```
 
-### 单个 Task 文件结构
+### Individual Task File Structure
 
-**Task 1.json（无依赖）：**
+**Task 1.json (no dependencies):**
 
 ```json
 {
   "id": "1",
-  "subject": "设计和创建用户认证数据库模式",
-  "description": "覆盖：\n- 数据库模式验证...",
-  "activeForm": "编写单元测试",
+  "subject": "Design and create the user authentication database schema",
+  "description": "Covers:\n- Database schema validation...",
+  "activeForm": "Writing unit tests",
   "status": "completed",
   "blocks": ["2", "3"],
   "blockedBy": []
 }
 ```
 
-**Task 4.json（多个依赖）：**
+**Task 4.json (multiple dependencies):**
 
 ```json
 {
   "id": "4",
-  "subject": "编写认证功能单元测试",
-  "description": "覆盖：\n- 登录端点...",
-  "activeForm": "编写单元测试",
+  "subject": "Write unit tests for the authentication feature",
+  "description": "Covers:\n- Login endpoint...",
+  "activeForm": "Writing unit tests",
   "status": "pending",
   "blocks": ["5"],
   "blockedBy": ["2", "3"]
 }
 ```
 
-### 设计优势
+### Design Benefits
 
-| 方面 | 设计 | 原因 |
-|------|------|------|
-| 项目隔离 | project-id 文件夹 | 支持多项目独立管理，UUID 避免冲突 |
-| 原子操作 | 每个 task 一个文件 | 修改单个 task 只写一个小文件，并发安全 |
-| 快速查询 | 按 ID 查找 | O(1) 时间复杂度，无需遍历 |
-| 依赖管理 | blocks + blockedBy | 双向引用，支持快速依赖图遍历 |
-| 文件大小 | ~380 字节/task | 极小，I/O 快速，易于备份 |
+| Aspect            | Design                 | Why it helps                                                      |
+| ----------------- | ---------------------- | ----------------------------------------------------------------- |
+| Project isolation | `project-id` folder    | Keeps multiple projects separate and avoids collisions with UUIDs |
+| Atomic updates    | One file per task      | Updating a single task only requires writing one small file       |
+| Fast lookup       | ID-based access        | O(1) lookup without scanning the whole set                        |
+| Dependency graph  | `blocks` + `blockedBy` | Bidirectional links make dependency traversal fast                |
+| File size         | ~380 bytes/task        | Very small, fast to read and write, easy to back up               |
 
 ---
 
-## 典型工作流
+## Typical Workflow
 
-### 场景：实现用户认证功能
+### Scenario: Implementing User Authentication
 
-#### 第 1 步：创建 tasks
+#### Step 1: Create tasks
 
 ```typescript
-// 创建 5 个相关任务
-TaskCreate({ subject: "设计数据库模式", description: "..." })
-TaskCreate({ subject: "实现登录 API", description: "..." })
-TaskCreate({ subject: "实现注册 API", description: "..." })
-TaskCreate({ subject: "编写单元测试", description: "..." })
-TaskCreate({ subject: "部署到生产", description: "..." })
+// Create 5 related tasks
+TaskCreate({ subject: "Design the database schema", description: "..." })
+TaskCreate({ subject: "Implement the login API", description: "..." })
+TaskCreate({ subject: "Implement the signup API", description: "..." })
+TaskCreate({ subject: "Write unit tests", description: "..." })
+TaskCreate({ subject: "Deploy to production", description: "..." })
 
-// 返回
+// Returns
 Task #1 created
 Task #2 created
 Task #3 created
@@ -332,156 +333,156 @@ Task #4 created
 Task #5 created
 ```
 
-#### 第 2 步：建立依赖关系
+#### Step 2: Add dependencies
 
 ```typescript
-// Task 2 和 3 依赖 Task 1
-TaskUpdate({ taskId: "2", addBlockedBy: ["1"] })
-TaskUpdate({ taskId: "3", addBlockedBy: ["1"] })
+// Tasks 2 and 3 depend on Task 1
+TaskUpdate({ taskId: "2", addBlockedBy: ["1"] });
+TaskUpdate({ taskId: "3", addBlockedBy: ["1"] });
 
-// Task 4 同时依赖 Task 2 和 3
-TaskUpdate({ taskId: "4", addBlockedBy: ["2", "3"] })
+// Task 4 depends on both Tasks 2 and 3
+TaskUpdate({ taskId: "4", addBlockedBy: ["2", "3"] });
 
-// Task 5 依赖 Task 4
-TaskUpdate({ taskId: "5", addBlockedBy: ["4"] })
+// Task 5 depends on Task 4
+TaskUpdate({ taskId: "5", addBlockedBy: ["4"] });
 ```
 
-#### 第 3 步：查看任务列表
+#### Step 3: View the task list
 
 ```typescript
 TaskList()
 
-// 返回
-#1 [pending] 设计数据库模式
-#2 [pending] 实现登录 API [blocked by #1]
-#3 [pending] 实现注册 API [blocked by #1]
-#4 [pending] 编写单元测试 [blocked by #2, #3]
-#5 [pending] 部署到生产 [blocked by #4]
+// Returns
+#1 [pending] Design the database schema
+#2 [pending] Implement the login API [blocked by #1]
+#3 [pending] Implement the signup API [blocked by #1]
+#4 [pending] Write unit tests [blocked by #2, #3]
+#5 [pending] Deploy to production [blocked by #4]
 ```
 
-#### 第 4 步：开始工作
+#### Step 4: Start working
 
 ```typescript
-// 标记 Task 1 为进行中
+// Mark Task 1 as in progress
 TaskUpdate({ taskId: "1", status: "in_progress" })
 
-// 完成 Task 1
+// Complete Task 1
 TaskUpdate({ taskId: "1", status: "completed" })
 
-// 查看更新后的列表
+// View the updated list
 TaskList()
 
-// 返回 - Task 2 和 3 现在可以开始
-#1 [completed] 设计数据库模式
-#2 [pending] 实现登录 API
-#3 [pending] 实现注册 API
-#4 [pending] 编写单元测试 [blocked by #2, #3]
-#5 [pending] 部署到生产 [blocked by #4]
+// Returns - Tasks 2 and 3 are now available
+#1 [completed] Design the database schema
+#2 [pending] Implement the login API
+#3 [pending] Implement the signup API
+#4 [pending] Write unit tests [blocked by #2, #3]
+#5 [pending] Deploy to production [blocked by #4]
 ```
 
-#### 第 5 步：继续工作
+#### Step 5: Continue the same pattern
 
-重复：标记为 `in_progress` → 完成 → 标记为 `completed` → 下一个 task 自动可用
-
----
-
-## 何时使用 Tasks
-
-### ✅ 使用 Tasks
-
-- 复杂多步骤功能（3+ 步）
-- 需要追踪进度的工作
-- 有先后依赖的开发任务
-- 多会话跨越的工作
-- 团队协作的项目追踪
-
-### ❌ 不需要 Tasks
-
-- 单个简单函数实现
-- 单行修复或 typo 修正
-- 单一明确的操作
+Update to `in_progress` → finish the work → update to `completed` → the next task becomes available automatically
 
 ---
 
-## 最佳实践
+## When to Use Tasks
+
+### ✅ Good Use Cases
+
+- Complex features with 3 or more steps
+- Work that requires progress tracking
+- Development tasks with dependencies
+- Work spanning multiple sessions
+- Team-based project tracking
+
+### ❌ Cases Where Tasks Are Unnecessary
+
+- Implementing a single simple function
+- A one-line fix or typo correction
+- One clear, isolated action
+
+---
+
+## Best Practices
 
 ### ✅ DO
 
-**清晰的任务标题（命令式）**
+**Use clear task titles in imperative form**
 
 ```
-✓ "实现用户认证"
-✗ "认证相关工作"
+✓ "Implement user authentication"
+✗ "Authentication-related work"
 ```
 
-**详细的描述（包含验收条件）**
+**Write detailed descriptions with acceptance criteria**
 
 ```
-描述：创建登录端点
-- 验证用户名和密码
-- 生成 JWT token
-- 返回用户信息
-- 错误处理
+Description: Create the login endpoint
+- Validate username and password
+- Generate a JWT token
+- Return user information
+- Handle errors
 ```
 
-**合理的依赖关系**
+**Keep dependencies realistic**
 
-- 只连接真实的前置条件
-- 避免不必要的依赖
+- Only link real prerequisites
+- Avoid unnecessary dependencies
 
-**及时更新状态**
+**Update task status promptly**
 
-- 开始工作时标记 `in_progress`
-- 完成时标记 `completed`
+- Mark `in_progress` when work starts
+- Mark `completed` when work is done
 
 ### ❌ DON'T
 
-- 创建过于细粒度的 tasks（每行代码一个 task）
-- 忽视依赖关系，随意修改
-- 创建循环依赖
-- 长期不更新 task 状态
+- Create tasks that are too granular, such as one per line of code
+- Ignore dependencies and modify them casually
+- Create circular dependencies
+- Leave task status outdated for long periods
 
 ---
 
-## 与其他工具的集成
+## Integration With Other Tools
 
-### Tasks + Git 工作流
+### Tasks + Git Workflow
 
 ```
-创建 tasks 规划功能
+Create tasks to plan the feature
     ↓
-TaskUpdate 标记为 in_progress
+Use TaskUpdate to mark a task as in_progress
     ↓
-本地开发 → git commit
+Develop locally → git commit
     ↓
-完成功能 → TaskUpdate 标记为 completed
+Finish the feature → TaskUpdate to mark completed
     ↓
-git push → 创建 PR
+git push → create a PR
 ```
 
-### Tasks + 项目文档
+### Tasks + Project Documentation
 
-将重要的 task 集合记录在项目的 `TASKS.md`：
+You can record important task groups in the project's `TASKS.md`:
 
 ```markdown
-## 认证功能实现
+## Authentication Feature Implementation
 
-- [x] #1 - 设计数据库模式
-- [ ] #2 - 实现登录 API
-- [ ] #3 - 实现注册 API
-- [ ] #4 - 编写单元测试
-- [ ] #5 - 部署到生产
+- [x] #1 - Design the database schema
+- [ ] #2 - Implement the login API
+- [ ] #3 - Implement the signup API
+- [ ] #4 - Write unit tests
+- [ ] #5 - Deploy to production
 ```
 
 ---
 
-## 总结
+## Summary
 
-Claude Code Tasks 是一个轻量级但功能完整的任务管理系统，设计用于：
+Claude Code Tasks is a lightweight but capable task management system designed to:
 
-- **组织**复杂的开发工作
-- **追踪**多步骤功能的进度
-- **管理**任务之间的依赖关系
-- **支持**跨会话的工作连续性
+- **Organize** complex development work
+- **Track** progress across multi-step features
+- **Manage** dependencies between tasks
+- **Support** continuity across sessions
 
-通过文件系统级别的持久化和原子性操作设计，它提供了并发安全、高性能和易于维护的任务管理体验。
+With filesystem-level persistence and atomic update behavior, it provides a task management workflow that is concurrency-safe, fast, and easy to maintain.

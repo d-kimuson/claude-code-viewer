@@ -1,15 +1,11 @@
 import { FileSystem } from "@effect/platform";
 import { Option } from "effect";
 
-export const testFileSystemLayer = (
-  overrides?: Partial<FileSystem.FileSystem>,
-) => {
+export const testFileSystemLayer = (overrides?: Partial<FileSystem.FileSystem>) => {
   return FileSystem.layerNoop(overrides ?? {});
 };
 
-export const createFileInfo = (
-  overrides: Partial<FileSystem.File.Info>,
-): FileSystem.File.Info => ({
+export const createFileInfo = (overrides: Partial<FileSystem.File.Info>): FileSystem.File.Info => ({
   type: "File",
   mtime: Option.some(new Date()),
   atime: Option.none(),

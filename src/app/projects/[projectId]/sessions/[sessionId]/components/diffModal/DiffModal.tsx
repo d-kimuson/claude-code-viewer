@@ -1,14 +1,6 @@
 import { Trans, useLingui } from "@lingui/react";
-import {
-  ChevronDown,
-  ChevronUp,
-  FileText,
-  GitBranch,
-  Loader2,
-  RefreshCcwIcon,
-} from "lucide-react";
-import type { FC } from "react";
-import { useCallback, useEffect, useId, useState } from "react";
+import { ChevronDown, ChevronUp, FileText, GitBranch, Loader2, RefreshCcwIcon } from "lucide-react";
+import { type FC, useCallback, useEffect, useId, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -32,10 +24,10 @@ import {
 import { DiffViewer } from "./DiffViewer";
 import type { DiffModalProps, DiffSummary, GitRef } from "./types";
 
-interface DiffSummaryProps {
+type DiffSummaryProps = {
   summary: DiffSummary;
   className?: string;
-}
+};
 
 const DiffSummaryComponent: FC<DiffSummaryProps> = ({ summary, className }) => {
   return (
@@ -64,9 +56,7 @@ const DiffSummaryComponent: FC<DiffSummaryProps> = ({ summary, className }) => {
             </span>
           )}
           {summary.deletions > 0 && (
-            <span className="text-red-600 dark:text-red-400 font-medium">
-              -{summary.deletions}
-            </span>
+            <span className="text-red-600 dark:text-red-400 font-medium">-{summary.deletions}</span>
           )}
         </div>
       </div>
@@ -74,19 +64,14 @@ const DiffSummaryComponent: FC<DiffSummaryProps> = ({ summary, className }) => {
   );
 };
 
-interface RefSelectorProps {
+type RefSelectorProps = {
   label: string;
   value: string;
   onValueChange: (value: GitRef["name"]) => void;
   refs: GitRef[];
-}
+};
 
-const RefSelector: FC<RefSelectorProps> = ({
-  label,
-  value,
-  onValueChange,
-  refs,
-}) => {
+const RefSelector: FC<RefSelectorProps> = ({ label, value, onValueChange, refs }) => {
   const id = useId();
   const getRefIcon = (type: GitRef["type"]) => {
     switch (type) {
@@ -94,6 +79,8 @@ const RefSelector: FC<RefSelectorProps> = ({
         return <GitBranch className="h-4 w-4" />;
       case "commit":
         return <span className="text-xs">📝</span>;
+      case "head":
+        return <GitBranch className="h-4 w-4" />;
       case "working":
         return <span className="text-xs">🚧</span>;
       default:
@@ -103,10 +90,7 @@ const RefSelector: FC<RefSelectorProps> = ({
 
   return (
     <div className="space-y-1">
-      <label
-        htmlFor={id}
-        className="text-sm font-medium text-gray-700 dark:text-gray-300"
-      >
+      <label htmlFor={id} className="text-sm font-medium text-gray-700 dark:text-gray-300">
         {label}
       </label>
       <Select value={value} onValueChange={onValueChange}>
@@ -119,7 +103,7 @@ const RefSelector: FC<RefSelectorProps> = ({
               <div className="flex items-center gap-2">
                 {getRefIcon(ref.type)}
                 <span>{ref.displayName}</span>
-                {ref.sha && (
+                {ref.sha !== undefined && ref.sha !== "" && (
                   <span className="text-xs text-gray-500 dark:text-gray-400 font-mono">
                     {ref.sha.substring(0, 7)}
                   </span>
@@ -147,9 +131,7 @@ export const DiffModal: FC<DiffModalProps> = ({
   const [compareTo, setCompareTo] = useState(defaultCompareTo);
 
   // File selection state (FR-002: all selected by default)
-  const [selectedFiles, setSelectedFiles] = useState<Map<string, boolean>>(
-    new Map(),
-  );
+  const [selectedFiles, setSelectedFiles] = useState<Map<string, boolean>>(new Map());
 
   // Commit message state
   const [commitMessage, setCommitMessage] = useState("");
@@ -170,55 +152,68 @@ export const DiffModal: FC<DiffModalProps> = ({
   const commitMutation = useCommitFiles(projectId);
   const pushMutation = usePushCommits(projectId);
   const commitAndPushMutation = useCommitAndPush(projectId);
+  const revisionDetails = revisionsData?.success === true ? revisionsData.data : undefined;
+  const diffResult = diffData?.success === true ? diffData.data : undefined;
+  const createBranchRef = (name: string, displayName: string, sha: string): GitRef => ({
+    name: `branch:${name}`,
+    type: "branch",
+    displayName,
+    sha,
+  });
+  const createCommitRef = (sha: string, displayName: string): GitRef => ({
+    name: `commit:${sha}`,
+    type: "commit",
+    displayName,
+    sha,
+  });
 
   // Transform revisions data to GitRef format
   const gitRefs: GitRef[] =
-    revisionsData?.success && revisionsData.data
+    revisionDetails !== undefined
       ? [
           {
-            name: "working" as const,
-            type: "working" as const,
+            name: "working",
+            type: "working",
             displayName: i18n._("Uncommitted changes"),
           },
           {
-            name: "HEAD" as const,
-            type: "commit" as const,
+            name: "HEAD",
+            type: "head",
             displayName: "HEAD",
+            ...(revisionDetails.head !== null ? { sha: revisionDetails.head } : {}),
           },
           // Add base branch if exists
-          ...(revisionsData.data.baseBranch
+          ...(revisionDetails.baseBranch !== null
             ? [
-                {
-                  name: `branch:${revisionsData.data.baseBranch.name}` as const,
-                  type: "branch" as const,
-                  displayName: `${revisionsData.data.baseBranch.name} (base)`,
-                  sha: revisionsData.data.baseBranch.commit,
-                },
+                createBranchRef(
+                  revisionDetails.baseBranch.name,
+                  `${revisionDetails.baseBranch.name} (base)`,
+                  revisionDetails.baseBranch.commit,
+                ),
               ]
             : []),
           // Add current branch if exists
-          ...(revisionsData.data.currentBranch
+          ...(revisionDetails.currentBranch !== null
             ? [
-                {
-                  name: `branch:${revisionsData.data.currentBranch.name}` as const,
-                  type: "branch" as const,
-                  displayName: `${revisionsData.data.currentBranch.name} (current)`,
-                  sha: revisionsData.data.currentBranch.commit,
-                },
+                createBranchRef(
+                  revisionDetails.currentBranch.name,
+                  `${revisionDetails.currentBranch.name} (current)`,
+                  revisionDetails.currentBranch.commit,
+                ),
               ]
             : []),
           // Add commits from current branch
-          ...revisionsData.data.commits.map((commit) => ({
-            name: `commit:${commit.sha}` as const,
-            type: "commit" as const,
-            displayName: `${commit.message.substring(0, 50)}${commit.message.length > 50 ? "..." : ""}`,
-            sha: commit.sha,
-          })),
+          ...revisionDetails.commits.map((commit) =>
+            createCommitRef(
+              commit.sha,
+              `${commit.message.substring(0, 50)}${commit.message.length > 50 ? "..." : ""}`,
+            ),
+          ),
         ]
       : [];
 
   const loadDiff = useCallback(() => {
-    if (compareFrom && compareTo && compareFrom !== compareTo) {
+    if (compareFrom.length > 0 && compareTo.length > 0 && compareFrom !== compareTo) {
       getDiff({
         projectId,
         fromRef: compareFrom,
@@ -229,16 +224,14 @@ export const DiffModal: FC<DiffModalProps> = ({
 
   // Initialize file selection when diff data changes (FR-002: all selected by default)
   useEffect(() => {
-    if (diffData?.success && diffData.data.files.length > 0) {
-      const initialSelection = new Map(
-        diffData.data.files.map((file) => [file.filePath, true]),
-      );
+    if (diffResult !== undefined && diffResult.files.length > 0) {
+      const initialSelection = new Map(diffResult.files.map((file) => [file.filePath, true]));
       setSelectedFiles(initialSelection);
     }
-  }, [diffData]);
+  }, [diffResult]);
 
   useEffect(() => {
-    if (isOpen && compareFrom && compareTo) {
+    if (isOpen && compareFrom.length > 0 && compareTo.length > 0) {
       loadDiff();
     }
   }, [isOpen, compareFrom, compareTo, loadDiff]);
@@ -251,25 +244,21 @@ export const DiffModal: FC<DiffModalProps> = ({
   const handleToggleFile = (filePath: string) => {
     setSelectedFiles((prev) => {
       const next = new Map(prev);
-      const newValue = !prev.get(filePath);
+      const newValue = prev.get(filePath) !== true;
       next.set(filePath, newValue);
       return next;
     });
   };
 
   const handleSelectAll = () => {
-    if (diffData?.success && diffData.data.files.length > 0) {
-      setSelectedFiles(
-        new Map(diffData.data.files.map((file) => [file.filePath, true])),
-      );
+    if (diffResult !== undefined && diffResult.files.length > 0) {
+      setSelectedFiles(new Map(diffResult.files.map((file) => [file.filePath, true])));
     }
   };
 
   const handleDeselectAll = () => {
-    if (diffData?.success && diffData.data.files.length > 0) {
-      setSelectedFiles(
-        new Map(diffData.data.files.map((file) => [file.filePath, false])),
-      );
+    if (diffResult !== undefined && diffResult.files.length > 0) {
+      setSelectedFiles(new Map(diffResult.files.map((file) => [file.filePath, false])));
     }
   };
 
@@ -279,15 +268,9 @@ export const DiffModal: FC<DiffModalProps> = ({
       .filter(([_, isSelected]) => isSelected)
       .map(([path]) => path);
 
-    console.log(
-      "[DiffModal.handleCommit] Selected files state:",
-      selectedFiles,
-    );
+    console.log("[DiffModal.handleCommit] Selected files state:", selectedFiles);
     console.log("[DiffModal.handleCommit] Filtered selected files:", selected);
-    console.log(
-      "[DiffModal.handleCommit] Total files:",
-      diffData?.success ? diffData.data.files.length : 0,
-    );
+    console.log("[DiffModal.handleCommit] Total files:", diffResult?.files.length ?? 0);
 
     try {
       const result = await commitMutation.mutateAsync({
@@ -298,9 +281,7 @@ export const DiffModal: FC<DiffModalProps> = ({
       console.log("[DiffModal.handleCommit] Commit result:", result);
 
       if (result.success) {
-        toast.success(
-          `Committed ${result.filesCommitted} files (${result.commitSha.slice(0, 7)})`,
-        );
+        toast.success(`Committed ${result.filesCommitted} files (${result.commitSha.slice(0, 7)})`);
         setCommitMessage(""); // Reset message
         // Reload diff to show updated state
         loadDiff();
@@ -363,7 +344,9 @@ export const DiffModal: FC<DiffModalProps> = ({
           {
             action: {
               label: i18n._("Retry Push"),
-              onClick: handlePush,
+              onClick: () => {
+                void handlePush();
+              },
             },
           },
         );
@@ -380,13 +363,9 @@ export const DiffModal: FC<DiffModalProps> = ({
   };
 
   // Validation
-  const selectedCount = Array.from(selectedFiles.values()).filter(
-    Boolean,
-  ).length;
+  const selectedCount = Array.from(selectedFiles.values()).filter(Boolean).length;
   const isCommitDisabled =
-    selectedCount === 0 ||
-    commitMessage.trim().length === 0 ||
-    commitMutation.isPending;
+    selectedCount === 0 || commitMessage.trim().length === 0 || commitMutation.isPending;
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -408,9 +387,7 @@ export const DiffModal: FC<DiffModalProps> = ({
           </div>
           <Button
             onClick={handleCompare}
-            disabled={
-              isDiffLoading || isLoadingRevisions || compareFrom === compareTo
-            }
+            disabled={isDiffLoading || isLoadingRevisions || compareFrom === compareTo}
             className="sm:self-end w-full sm:w-auto"
           >
             {isDiffLoading ? (
@@ -426,20 +403,18 @@ export const DiffModal: FC<DiffModalProps> = ({
 
         {diffError && (
           <div className="bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800 rounded-lg p-4">
-            <p className="text-red-600 dark:text-red-400 text-sm">
-              {diffError.message}
-            </p>
+            <p className="text-red-600 dark:text-red-400 text-sm">{diffError.message}</p>
           </div>
         )}
 
-        {diffData?.success && (
+        {diffResult !== undefined && (
           <div className="flex-1 overflow-auto">
             <DiffSummaryComponent
               summary={{
-                filesChanged: diffData.data.files.length,
-                insertions: diffData.data.summary.totalAdditions,
-                deletions: diffData.data.summary.totalDeletions,
-                files: diffData.data.diffs.map((diff) => ({
+                filesChanged: diffResult.files.length,
+                insertions: diffResult.summary.totalAdditions,
+                deletions: diffResult.summary.totalDeletions,
+                files: diffResult.diffs.map((diff) => ({
                   filename: diff.file.filePath,
                   oldFilename: diff.file.oldPath,
                   isNew: diff.file.status === "added",
@@ -460,9 +435,7 @@ export const DiffModal: FC<DiffModalProps> = ({
                 {/* Section header with toggle */}
                 <button
                   type="button"
-                  onClick={() =>
-                    setIsCommitSectionExpanded(!isCommitSectionExpanded)
-                  }
+                  onClick={() => setIsCommitSectionExpanded(!isCommitSectionExpanded)}
                   className="w-full flex items-center justify-between p-2 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors rounded-t-lg"
                 >
                   <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -498,25 +471,19 @@ export const DiffModal: FC<DiffModalProps> = ({
                           <Trans id="diff.deselect.all" />
                         </Button>
                         <span className="text-sm text-gray-600 dark:text-gray-400">
-                          {selectedCount} / {diffData.data.files.length} files
-                          selected
+                          {selectedCount} / {diffResult.files.length} files selected
                         </span>
                       </div>
                     </div>
 
                     {/* File list with checkboxes */}
                     <div className="space-y-2 max-h-40 overflow-y-auto border border-gray-200 dark:border-gray-700 rounded p-2">
-                      {diffData.data.files.map((file) => (
-                        <div
-                          key={file.filePath}
-                          className="flex items-center gap-2"
-                        >
+                      {diffResult.files.map((file) => (
+                        <div key={file.filePath} className="flex items-center gap-2">
                           <Checkbox
                             id={`file-${file.filePath}`}
                             checked={selectedFiles.get(file.filePath) ?? false}
-                            onCheckedChange={() =>
-                              handleToggleFile(file.filePath)
-                            }
+                            onCheckedChange={() => handleToggleFile(file.filePath)}
                             disabled={commitMutation.isPending}
                           />
                           <label
@@ -551,7 +518,9 @@ export const DiffModal: FC<DiffModalProps> = ({
                     {/* Action buttons */}
                     <div className="flex items-center gap-2 flex-wrap">
                       <Button
-                        onClick={handleCommit}
+                        onClick={() => {
+                          void handleCommit();
+                        }}
                         disabled={isCommitDisabled}
                         className="w-full sm:w-auto"
                       >
@@ -565,7 +534,9 @@ export const DiffModal: FC<DiffModalProps> = ({
                         )}
                       </Button>
                       <Button
-                        onClick={handlePush}
+                        onClick={() => {
+                          void handlePush();
+                        }}
                         disabled={pushMutation.isPending}
                         variant="outline"
                         className="w-full sm:w-auto"
@@ -580,10 +551,10 @@ export const DiffModal: FC<DiffModalProps> = ({
                         )}
                       </Button>
                       <Button
-                        onClick={handleCommitAndPush}
-                        disabled={
-                          isCommitDisabled || commitAndPushMutation.isPending
-                        }
+                        onClick={() => {
+                          void handleCommitAndPush();
+                        }}
+                        disabled={isCommitDisabled || commitAndPushMutation.isPending}
                         variant="secondary"
                         className="w-full sm:w-auto"
                       >
@@ -614,7 +585,7 @@ export const DiffModal: FC<DiffModalProps> = ({
             )}
 
             <div className="space-y-3">
-              {diffData.data.diffs.map((diff) => (
+              {diffResult.diffs.map((diff) => (
                 <DiffViewer
                   key={diff.file.filePath}
                   fileDiff={{

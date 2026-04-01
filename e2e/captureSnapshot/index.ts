@@ -4,12 +4,13 @@ import { homeCapture } from "./home";
 import { projectsCapture } from "./projects";
 import { sessionDetailCapture } from "./session-detail";
 
+// biome-ignore lint/complexity/useLiteralKeys: env var
+const maxConcurrencyEnv = process.env["MAX_CONCURRENCY"];
 const executor = new TaskExecutor({
-  // biome-ignore lint/complexity/useLiteralKeys: env var
-  maxConcurrency: process.env["MAX_CONCURRENCY"]
-    ? // biome-ignore lint/complexity/useLiteralKeys: env var
-      parseInt(process.env["MAX_CONCURRENCY"], 10)
-    : 10,
+  maxConcurrency:
+    maxConcurrencyEnv !== undefined && maxConcurrencyEnv !== ""
+      ? parseInt(maxConcurrencyEnv, 10)
+      : 10,
 });
 
 const tasks = [

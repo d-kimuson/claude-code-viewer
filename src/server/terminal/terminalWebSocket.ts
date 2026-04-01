@@ -1,7 +1,9 @@
 import type { IncomingMessage } from "node:http";
+import type { Duplex } from "node:stream";
 import type { ServerType } from "@hono/node-server";
 import { Effect, Runtime } from "effect";
 import WebSocket, { WebSocketServer } from "ws";
+import { z } from "zod";
 import { TerminalService } from "../core/terminal/TerminalService";
 import { AuthMiddleware } from "../hono/middleware/auth.middleware";
 
@@ -21,43 +23,31 @@ type ClientMessage =
 
 const parseCookies = (cookieHeader: string | undefined) => {
   const result: Record<string, string> = {};
-  if (!cookieHeader) return result;
+  if (cookieHeader === undefined || cookieHeader === "") return result;
   const parts = cookieHeader.split(";");
   for (const part of parts) {
     const [rawKey, ...rest] = part.trim().split("=");
-    if (!rawKey) continue;
+    if (rawKey === undefined || rawKey === "") continue;
     result[rawKey] = rest.join("=");
   }
   return result;
 };
 
+const clientMessageSchema = z.union([
+  z.object({ type: z.literal("input"), data: z.string() }),
+  z.object({ type: z.literal("resize"), cols: z.number(), rows: z.number() }),
+  z.object({ type: z.literal("signal"), name: z.string() }),
+  z.object({ type: z.literal("sync"), lastSeq: z.number() }),
+  z.object({ type: z.literal("ping") }),
+]);
+
 const parseClientMessage = (payload: string): ClientMessage | undefined => {
   try {
-    const parsed = JSON.parse(payload);
-    if (!parsed || typeof parsed !== "object") return undefined;
-    if (parsed.type === "input" && typeof parsed.data === "string") {
-      return { type: "input", data: parsed.data };
-    }
-    if (
-      parsed.type === "resize" &&
-      typeof parsed.cols === "number" &&
-      typeof parsed.rows === "number"
-    ) {
-      return { type: "resize", cols: parsed.cols, rows: parsed.rows };
-    }
-    if (parsed.type === "signal" && typeof parsed.name === "string") {
-      return { type: "signal", name: parsed.name };
-    }
-    if (parsed.type === "sync" && typeof parsed.lastSeq === "number") {
-      return { type: "sync", lastSeq: parsed.lastSeq };
-    }
-    if (parsed.type === "ping") {
-      return { type: "ping" };
-    }
+    const result = clientMessageSchema.safeParse(JSON.parse(payload));
+    return result.success ? result.data : undefined;
   } catch {
     return undefined;
   }
-  return undefined;
 };
 
 const sendJson = (client: WebSocket, payload: ServerMessage) => {
@@ -80,7 +70,7 @@ export const setupTerminalWebSocket = (server: ServerType) =>
 
     const wss = new WebSocketServer({ noServer: true });
 
-    server.on("upgrade", (req, socket, head) => {
+    server.on("upgrade", (req: IncomingMessage, socket: Duplex, head: Buffer) => {
       const url = new URL(req.url ?? "/", baseUrlForRequest(req));
       if (url.pathname !== "/ws/terminal") return;
 
@@ -102,11 +92,9 @@ export const setupTerminalWebSocket = (server: ServerType) =>
       const url = new URL(req.url ?? "/", baseUrlForRequest(req));
       const sessionIdParam = url.searchParams.get("sessionId");
       const requestedSessionId =
-        sessionIdParam && sessionIdParam.length > 0
-          ? sessionIdParam
-          : undefined;
+        sessionIdParam !== null && sessionIdParam.length > 0 ? sessionIdParam : undefined;
       const cwdParam = url.searchParams.get("cwd");
-      const cwd = cwdParam && cwdParam.length > 0 ? cwdParam : undefined;
+      const cwd = cwdParam !== null && cwdParam.length > 0 ? cwdParam : undefined;
 
       runPromise(terminalService.getOrCreateSession(requestedSessionId, cwd))
         .then((session) => {
@@ -115,9 +103,7 @@ export const setupTerminalWebSocket = (server: ServerType) =>
             sessionId: session.id,
             seq: session.seq,
           });
-          return runPromise(
-            terminalService.registerClient(session.id, ws),
-          ).then(() => session);
+          return runPromise(terminalService.registerClient(session.id, ws)).then(() => session);
         })
         .then((session) => {
           ws.on("message", (data: WebSocket.RawData) => {
@@ -127,19 +113,15 @@ export const setupTerminalWebSocket = (server: ServerType) =>
                 : data instanceof Buffer
                   ? data.toString("utf8")
                   : undefined;
-            if (!text) return;
+            if (text === undefined || text === "") return;
             const message = parseClientMessage(text);
             if (!message) return;
             if (message.type === "input") {
-              void runPromise(
-                terminalService.writeInput(session.id, message.data),
-              );
+              void runPromise(terminalService.writeInput(session.id, message.data));
               return;
             }
             if (message.type === "resize") {
-              void runPromise(
-                terminalService.resize(session.id, message.cols, message.rows),
-              );
+              void runPromise(terminalService.resize(session.id, message.cols, message.rows));
               return;
             }
             if (message.type === "signal") {
@@ -147,16 +129,16 @@ export const setupTerminalWebSocket = (server: ServerType) =>
               return;
             }
             if (message.type === "sync") {
-              void runPromise(
-                terminalService.snapshotSince(session.id, message.lastSeq),
-              ).then((snapshot) => {
-                if (!snapshot) return;
-                sendJson(ws, {
-                  type: "snapshot",
-                  seq: snapshot.seq,
-                  data: snapshot.data,
-                });
-              });
+              void runPromise(terminalService.snapshotSince(session.id, message.lastSeq)).then(
+                (snapshot) => {
+                  if (!snapshot) return;
+                  sendJson(ws, {
+                    type: "snapshot",
+                    seq: snapshot.seq,
+                    data: snapshot.data,
+                  });
+                },
+              );
               return;
             }
             if (message.type === "ping") {

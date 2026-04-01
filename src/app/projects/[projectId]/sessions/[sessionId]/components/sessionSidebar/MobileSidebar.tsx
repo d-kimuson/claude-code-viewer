@@ -1,5 +1,5 @@
 import { Trans, useLingui } from "@lingui/react";
-import { Link, useSearch } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { PlusIcon, XIcon } from "lucide-react";
 import { type FC, Suspense, useEffect, useState } from "react";
 import { NotificationSettings } from "@/components/NotificationSettings";
@@ -17,19 +17,18 @@ import { useSwipeGesture } from "@/hooks/useSwipeGesture";
 import { cn } from "@/lib/utils";
 import { McpTab } from "./McpTab";
 import { SchedulerTab } from "./SchedulerTab";
+import { tabSchema, type Tab } from "./schema";
 import { SessionsTab } from "./SessionsTab";
-import type { Tab } from "./schema";
-import { tabSchema } from "./schema";
 import { TasksTab } from "./TasksTab";
 
-interface MobileSidebarProps {
+type MobileSidebarProps = {
   currentSessionId: string;
   projectId: string;
   isOpen: boolean;
   onClose: () => void;
   /** Tab to show when opened */
   initialTab?: Tab;
-}
+};
 
 export const MobileSidebar: FC<MobileSidebarProps> = ({
   currentSessionId,
@@ -40,8 +39,7 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
 }) => {
   const { i18n } = useLingui();
   const [activeTab, setActiveTab] = useState<Tab>(initialTab);
-  const search = useSearch({ strict: false });
-  const currentTab = (search?.tab ?? "sessions") satisfies string;
+  const currentTab = activeTab;
 
   const tabLabels: Record<Tab, string> = {
     sessions: i18n._({ id: "sidebar.tab.sessions" }),
@@ -108,9 +106,7 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
       case "tasks":
         return <TasksTab projectId={projectId} sessionId={currentSessionId} />;
       case "scheduler":
-        return (
-          <SchedulerTab projectId={projectId} sessionId={currentSessionId} />
-        );
+        return <SchedulerTab projectId={projectId} sessionId={currentSessionId} />;
       case "settings":
         return (
           <div className="h-full flex flex-col">
@@ -146,9 +142,7 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
           <Suspense
             fallback={
               <div className="flex-1 flex items-center justify-center p-4">
-                <div className="text-sm text-sidebar-foreground/70">
-                  Loading...
-                </div>
+                <div className="text-sm text-sidebar-foreground/70">Loading...</div>
               </div>
             }
           >
@@ -187,11 +181,7 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
         <Link
           to="/projects/$projectId/session"
           params={{ projectId }}
-          search={(prev) => ({
-            ...prev,
-            tab: currentTab,
-            sessionId: undefined,
-          })}
+          search={{ tab: currentTab }}
           onClick={onClose}
           className="flex-shrink-0"
         >

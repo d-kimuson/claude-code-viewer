@@ -6,9 +6,7 @@ export const projectsCapture = defineCapture({
     {
       name: "new-project-modal",
       setup: async (page) => {
-        const newProjectButton = page.locator(
-          '[data-testid="new-project-button"]',
-        );
+        const newProjectButton = page.locator('[data-testid="new-project-button"]');
         await newProjectButton.click();
         await page.waitForTimeout(1000);
       },

@@ -12,12 +12,7 @@ const locales = readdirSync(localesDir).filter((item) => {
 });
 
 for (const locale of locales) {
-  const filePath = join(
-    rootDir,
-    "src/lib/i18n/locales",
-    locale,
-    "messages.json",
-  );
+  const filePath = join(rootDir, "src/lib/i18n/locales", locale, "messages.json");
 
   try {
     const content = readFileSync(filePath, "utf-8");
@@ -44,11 +39,7 @@ for (const locale of locales) {
       sortedData[key] = message;
     }
 
-    writeFileSync(
-      filePath,
-      `${JSON.stringify(sortedData, null, 2)}\n`,
-      "utf-8",
-    );
+    writeFileSync(filePath, `${JSON.stringify(sortedData, null, 2)}\n`, "utf-8");
 
     console.log(`✓ Sorted ${locale}/messages.json`);
   } catch (error) {

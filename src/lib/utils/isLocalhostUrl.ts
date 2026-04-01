@@ -1,5 +1,5 @@
-export function isLocalhostUrl(url: string | undefined): boolean {
-  if (!url) {
+export const isLocalhostUrl = (url: string | undefined): boolean => {
+  if (url === undefined || url === "") {
     return false;
   }
 
@@ -16,4 +16,4 @@ export function isLocalhostUrl(url: string | undefined): boolean {
   } catch {
     return false;
   }
-}
+};

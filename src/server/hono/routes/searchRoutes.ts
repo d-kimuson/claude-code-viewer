@@ -20,7 +20,7 @@ const searchRoutes = Effect.gen(function* () {
         limit: z
           .string()
           .optional()
-          .transform((val) => (val ? parseInt(val, 10) : undefined)),
+          .transform((val) => (val !== undefined && val !== "" ? parseInt(val, 10) : undefined)),
         projectId: z.string().optional(),
       }),
     ),
@@ -28,9 +28,7 @@ const searchRoutes = Effect.gen(function* () {
       const { q, limit, projectId } = c.req.valid("query");
       const response = await effectToResponse(
         c,
-        searchController
-          .search({ query: q, limit, projectId })
-          .pipe(Effect.provide(runtime)),
+        searchController.search({ query: q, limit, projectId }).pipe(Effect.provide(runtime)),
       );
       return response;
     },

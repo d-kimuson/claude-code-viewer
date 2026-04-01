@@ -12,15 +12,10 @@ export type ChatInputDraftScope = {
   sessionId: string;
 };
 
-export const buildChatInputDraftKey = ({
-  projectId,
-  sessionId,
-}: ChatInputDraftScope) => `${projectId}:${sessionId}`;
+export const buildChatInputDraftKey = ({ projectId, sessionId }: ChatInputDraftScope) =>
+  `${projectId}:${sessionId}`;
 
-export const sanitizeChatInputDraftStore = (
-  value: unknown,
-  fallback: ChatInputDraftStore,
-) => {
+export const sanitizeChatInputDraftStore = (value: unknown, fallback: ChatInputDraftStore) => {
   const result = chatInputDraftStoreSchema.safeParse(value);
   return result.success ? result.data : fallback;
 };
@@ -45,12 +40,8 @@ const baseStorage = createJSONStorage<ChatInputDraftStore>(() => localStorage);
 
 const chatInputDraftStorage = {
   getItem: (key: string, initialValue: ChatInputDraftStore) =>
-    sanitizeChatInputDraftStore(
-      baseStorage.getItem(key, initialValue),
-      initialValue,
-    ),
-  setItem: (key: string, newValue: ChatInputDraftStore) =>
-    baseStorage.setItem(key, newValue),
+    sanitizeChatInputDraftStore(baseStorage.getItem(key, initialValue), initialValue),
+  setItem: (key: string, newValue: ChatInputDraftStore) => baseStorage.setItem(key, newValue),
   removeItem: (key: string) => baseStorage.removeItem(key),
 };
 
@@ -69,8 +60,7 @@ export const useChatInputDraft = (scope: ChatInputDraftScope) => {
     (nextValue: SetStateAction<string>) => {
       setStore((prev) => {
         const currentValue = prev[draftKey] ?? "";
-        const resolvedValue =
-          typeof nextValue === "function" ? nextValue(currentValue) : nextValue;
+        const resolvedValue = typeof nextValue === "function" ? nextValue(currentValue) : nextValue;
 
         return updateChatInputDraftStore(prev, draftKey, resolvedValue);
       });

@@ -1,7 +1,4 @@
-/// <reference types="vitest" />
-/**
- * @vitest-environment jsdom
- */
+// @vitest-environment jsdom
 
 import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
@@ -9,9 +6,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { ChatInput, type ChatInputProps } from "./ChatInput";
 
 vi.mock("@lingui/react", () => ({
-  Trans: ({ id, message }: { id?: string; message?: string }) => (
-    <>{message ?? id ?? ""}</>
-  ),
+  Trans: ({ id, message }: { id?: string; message?: string }) => <>{message ?? id ?? ""}</>,
   useLingui: () => ({
     i18n: {
       _: (input: string | { id?: string; message?: string }) =>
@@ -81,19 +76,13 @@ describe("ChatInput", () => {
   const getTextarea = () => {
     const textarea = container?.querySelector("textarea");
     expect(textarea).not.toBeNull();
-    if (textarea == null) {
+    if (textarea === null || textarea === undefined) {
       throw new Error("Textarea not found");
     }
     return textarea;
   };
 
-  const dispatchPasteEvent = ({
-    items,
-    files,
-  }: {
-    items: unknown[];
-    files: File[];
-  }) => {
+  const dispatchPasteEvent = ({ items, files }: { items: unknown[]; files: File[] }) => {
     const event = new Event("paste", {
       bubbles: true,
       cancelable: true,

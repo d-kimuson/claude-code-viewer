@@ -1,8 +1,6 @@
 import type { ExtendedConversation } from "../../types";
 
-export const extractFirstUserText = (
-  conversation: ExtendedConversation,
-): string | null => {
+export const extractFirstUserText = (conversation: ExtendedConversation): string | null => {
   if (conversation.type !== "user") {
     return null;
   }

@@ -51,9 +51,7 @@ describe("shouldRemoveVirtualMessage", () => {
   });
 
   test("returns false when no user messages exist", () => {
-    const conversations = [
-      makeAssistantConversation("2024-06-15T12:31:00.000Z"),
-    ];
+    const conversations = [makeAssistantConversation("2024-06-15T12:31:00.000Z")];
     expect(shouldRemoveVirtualMessage(conversations, sentAt)).toBe(false);
   });
 

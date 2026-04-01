@@ -1,13 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { Loader2Icon, MessageSquareIcon, SearchIcon } from "lucide-react";
-import {
-  type KeyboardEvent,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { type KeyboardEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useConfig } from "../app/hooks/useConfig";
 import { searchQuery } from "../lib/api/queries";
 import { formatLocaleDate } from "../lib/date/formatLocaleDate";
@@ -20,11 +14,7 @@ type SearchDialogProps = {
   projectId?: string;
 };
 
-export function SearchDialog({
-  open,
-  onOpenChange,
-  projectId,
-}: SearchDialogProps) {
+export const SearchDialog = ({ open, onOpenChange, projectId }: SearchDialogProps) => {
   const { config } = useConfig();
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
@@ -56,7 +46,8 @@ export function SearchDialog({
     enabled: debouncedQuery.length >= 2,
   });
 
-  const results = data?.results ?? [];
+  const results = useMemo(() => data?.results ?? [], [data?.results]);
+  const resultsLength = results.length;
 
   // Reset selection when query changes
   // biome-ignore lint/correctness/useExhaustiveDependencies: intentional re-run on query change
@@ -75,10 +66,10 @@ export function SearchDialog({
   const handleSelect = useCallback(
     (result: (typeof results)[number]) => {
       onOpenChange(false);
-      navigate({
+      void navigate({
         to: "/projects/$projectId/session",
         params: { projectId: result.projectId },
-        search: (prev) => ({ ...prev, sessionId: result.sessionId }),
+        search: (prev: Record<string, unknown>) => ({ ...prev, sessionId: result.sessionId }),
       });
     },
     [navigate, onOpenChange],
@@ -86,12 +77,12 @@ export function SearchDialog({
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent<HTMLInputElement>) => {
-      if (results.length === 0) return;
+      if (resultsLength === 0) return;
 
       switch (e.key) {
         case "ArrowDown":
           e.preventDefault();
-          setSelectedIndex((i) => Math.min(i + 1, results.length - 1));
+          setSelectedIndex((i) => Math.min(i + 1, resultsLength - 1));
           break;
         case "ArrowUp":
           e.preventDefault();
@@ -103,17 +94,16 @@ export function SearchDialog({
             handleSelect(results[selectedIndex]);
           }
           break;
+        default:
+          break;
       }
     },
-    [results, selectedIndex, handleSelect],
+    [results, resultsLength, selectedIndex, handleSelect],
   );
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent
-        className="max-w-2xl p-0 gap-0 overflow-hidden"
-        showCloseButton={false}
-      >
+      <DialogContent className="max-w-2xl p-0 gap-0 overflow-hidden" showCloseButton={false}>
         <DialogHeader className="sr-only">
           <DialogTitle>Search conversations</DialogTitle>
         </DialogHeader>
@@ -123,16 +113,14 @@ export function SearchDialog({
           <Input
             ref={inputRef}
             placeholder={
-              projectId ? "Search this project..." : "Search all projects..."
+              projectId !== undefined ? "Search this project..." : "Search all projects..."
             }
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
             className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none"
           />
-          {isLoading && (
-            <Loader2Icon className="size-4 shrink-0 opacity-50 animate-spin" />
-          )}
+          {isLoading && <Loader2Icon className="size-4 shrink-0 opacity-50 animate-spin" />}
         </div>
 
         <div className="max-h-[400px] overflow-y-auto">
@@ -141,9 +129,7 @@ export function SearchDialog({
               Type at least 2 characters to search
             </div>
           ) : results.length === 0 && !isLoading ? (
-            <div className="p-4 text-center text-sm text-muted-foreground">
-              No results found
-            </div>
+            <div className="p-4 text-center text-sm text-muted-foreground">No results found</div>
           ) : (
             <div className="p-2">
               {results.map((result, index) => (
@@ -172,9 +158,7 @@ export function SearchDialog({
                           {result.type === "user" ? "You" : "Claude"}
                         </span>
                       </div>
-                      <p className="text-sm line-clamp-2 break-words">
-                        {result.snippet}
-                      </p>
+                      <p className="text-sm line-clamp-2 break-words">{result.snippet}</p>
                       <p className="text-xs text-muted-foreground mt-1">
                         {formatLocaleDate(result.timestamp, {
                           locale: config.locale,
@@ -191,25 +175,16 @@ export function SearchDialog({
 
         <div className="border-t px-3 py-2 text-xs text-muted-foreground flex items-center gap-4">
           <span>
-            <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">
-              ↑↓
-            </kbd>{" "}
-            navigate
+            <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">↑↓</kbd> navigate
           </span>
           <span>
-            <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">
-              ↵
-            </kbd>{" "}
-            select
+            <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">↵</kbd> select
           </span>
           <span>
-            <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">
-              esc
-            </kbd>{" "}
-            close
+            <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">esc</kbd> close
           </span>
         </div>
       </DialogContent>
     </Dialog>
   );
-}
+};

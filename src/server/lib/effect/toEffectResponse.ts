@@ -9,14 +9,11 @@ export type ControllerResponse = {
 };
 
 declare const dummyCtx: Context<HonoContext, string, Input>;
-const dummyJson = <S extends ContentfulStatusCode, T extends object>(
-  s: S,
-  t: T,
-) => dummyCtx.json(t, s);
-type ResponseType<
-  S extends ContentfulStatusCode,
-  T extends object,
-> = ReturnType<typeof dummyJson<S, T>>;
+const dummyJson = <S extends ContentfulStatusCode, T extends object>(s: S, t: T) =>
+  dummyCtx.json(t, s);
+type ResponseType<S extends ContentfulStatusCode, T extends object> = ReturnType<
+  typeof dummyJson<S, T>
+>;
 
 export const effectToResponse = async <
   const P extends string,
@@ -39,5 +36,6 @@ export const effectToResponse = async <
   const result = await Effect.runPromise(effect);
   const result2 = ctx.json(result.response, result.status);
 
+  // oxlint-disable-next-line typescript/no-unsafe-type-assertion -- complex Hono response type inference requires this cast
   return result2 as Ret;
 };

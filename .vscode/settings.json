@@ -5,35 +5,19 @@
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "typescript.experimental.useTsgo": true,
   "typescript.preferences.importModuleSpecifier": "relative",
-  // biome
-  "biome.enabled": true,
+  // oxc
+  "oxc.enable": true,
+  "oxc.fmt.experimental": true,
+  "oxc.tsConfigPath": "./tsconfig.json",
+  "oxc.typeAware": true,
+  "oxc.unusedDisableDirectives": "deny",
   // autofix
   "editor.formatOnSave": false,
-  "[typescript]": {
-    "editor.formatOnSave": true,
-    "editor.defaultFormatter": "biomejs.biome"
-  },
-  "[typescriptreact]": {
-    "editor.formatOnSave": true,
-    "editor.defaultFormatter": "biomejs.biome"
-  },
-  "[javascript]": {
-    "editor.formatOnSave": true,
-    "editor.defaultFormatter": "biomejs.biome"
-  },
-  "[javascriptreact]": {
-    "editor.formatOnSave": true,
-    "editor.defaultFormatter": "biomejs.biome"
-  },
-  "[json]": {
-    "editor.formatOnSave": true,
-    "editor.defaultFormatter": "biomejs.biome"
-  },
-  "[jsonc]": {
-    "editor.formatOnSave": true,
-    "editor.defaultFormatter": "biomejs.biome"
+  "[json][jsonc][typescript][typescriptreact][javascript][javascriptreact]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode",
+    "editor.formatOnSave": true
   },
   "editor.codeActionsOnSave": {
-    "source.fixAll.ts": "explicit"
+    "source.fixAll.oxc": "explicit"
   }
 }

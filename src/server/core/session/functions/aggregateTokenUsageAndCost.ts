@@ -79,10 +79,7 @@ export const aggregateTokenUsageAndCost = (
 
   const totalCost: ReturnType<typeof calculateTokenCost> = {
     totalUsd:
-      totalInputTokensUsd +
-      totalOutputTokensUsd +
-      totalCacheCreationUsd +
-      totalCacheReadUsd,
+      totalInputTokensUsd + totalOutputTokensUsd + totalCacheCreationUsd + totalCacheReadUsd,
     breakdown: {
       inputTokensUsd: totalInputTokensUsd,
       outputTokensUsd: totalOutputTokensUsd,

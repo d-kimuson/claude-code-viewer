@@ -37,20 +37,32 @@ export const testPlatformLayer = (overrides?: {
   const ccvOptionsServiceLayer = Layer.mock(CcvOptionsService, {
     getCcvOptions: <Key extends keyof CcvOptions>(key: Key) =>
       Effect.sync((): CcvOptions[Key] => {
+        // oxlint-disable-next-line typescript/no-unsafe-type-assertion -- test mock returns partial overrides, the cast is safe in test context
         return overrides?.ccvOptions?.[key] as CcvOptions[Key];
       }),
   });
 
   const envServiceLayer = Layer.mock(EnvService, {
     getEnv: <Key extends keyof EnvSchema>(key: Key) =>
+      // oxlint-disable-next-line typescript/no-unsafe-type-assertion -- test mock with generic key requires cast for return type
       Effect.sync(() => {
         switch (key) {
           case "CCV_ENV":
             return overrides?.env?.CCV_ENV ?? "development";
           case "NEXT_PHASE":
             return overrides?.env?.NEXT_PHASE ?? "phase-test";
+          case "PATH":
+            return overrides?.env?.PATH ?? undefined;
+          case "SHELL":
+            return overrides?.env?.SHELL ?? undefined;
+          case "CCV_TERMINAL_SHELL":
+            return overrides?.env?.CCV_TERMINAL_SHELL ?? undefined;
+          case "CCV_TERMINAL_UNRESTRICTED":
+            return overrides?.env?.CCV_TERMINAL_UNRESTRICTED ?? undefined;
+          case "CCV_TERMINAL_DISABLED":
+            return overrides?.env?.CCV_TERMINAL_DISABLED ?? undefined;
           default:
-            return overrides?.env?.[key] ?? undefined;
+            return undefined;
         }
       }) as Effect.Effect<EnvSchema[Key]>,
   });
@@ -59,23 +71,15 @@ export const testPlatformLayer = (overrides?: {
     setUserConfig: () => Effect.succeed(undefined),
     getUserConfig: () =>
       Effect.succeed<UserConfig>({
-        hideNoUserMessageSession:
-          overrides?.userConfig?.hideNoUserMessageSession ?? true,
-        unifySameTitleSession:
-          overrides?.userConfig?.unifySameTitleSession ?? true,
-        enterKeyBehavior:
-          overrides?.userConfig?.enterKeyBehavior ?? "shift-enter-send",
+        hideNoUserMessageSession: overrides?.userConfig?.hideNoUserMessageSession ?? true,
+        unifySameTitleSession: overrides?.userConfig?.unifySameTitleSession ?? true,
+        enterKeyBehavior: overrides?.userConfig?.enterKeyBehavior ?? "shift-enter-send",
         locale: overrides?.userConfig?.locale ?? DEFAULT_LOCALE,
         theme: overrides?.userConfig?.theme ?? "system",
         searchHotkey: overrides?.userConfig?.searchHotkey ?? "command-k",
         autoScheduleContinueOnRateLimit:
           overrides?.userConfig?.autoScheduleContinueOnRateLimit ?? false,
-        modelChoices: overrides?.userConfig?.modelChoices ?? [
-          "default",
-          "haiku",
-          "sonnet",
-          "opus",
-        ],
+        modelChoices: overrides?.userConfig?.modelChoices ?? ["default", "haiku", "sonnet", "opus"],
       }),
   });
 

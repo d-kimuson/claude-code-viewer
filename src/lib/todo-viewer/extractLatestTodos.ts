@@ -24,11 +24,11 @@ const isTodoWriteInput = (
       typeof todo === "object" &&
       todo !== null &&
       "content" in todo &&
+      // oxlint-disable-next-line no-unsafe-member-access -- Checked via in-operator above
       typeof todo.content === "string" &&
       "status" in todo &&
-      (todo.status === "pending" ||
-        todo.status === "in_progress" ||
-        todo.status === "completed"),
+      // oxlint-disable-next-line no-unsafe-member-access -- Checked via in-operator above
+      (todo.status === "pending" || todo.status === "in_progress" || todo.status === "completed"),
   );
 };
 

@@ -1,23 +1,17 @@
 import { type FC, useMemo } from "react";
 import Markdown, { type Components } from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import {
-  oneDark,
-  oneLight,
-} from "react-syntax-highlighter/dist/esm/styles/prism";
+import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
 import remarkGfm from "remark-gfm";
 import { useTheme } from "../../hooks/useTheme";
 import { MarkdownLink } from "./MarkdownLink";
 
-interface MarkdownContentProps {
+type MarkdownContentProps = {
   content: string;
   className?: string;
-}
+};
 
-export const MarkdownContent: FC<MarkdownContentProps> = ({
-  content,
-  className = "",
-}) => {
+export const MarkdownContent: FC<MarkdownContentProps> = ({ content, className = "" }) => {
   const { resolvedTheme } = useTheme();
   const syntaxTheme = resolvedTheme === "dark" ? oneDark : oneLight;
 
@@ -45,40 +39,28 @@ export const MarkdownContent: FC<MarkdownContentProps> = ({
       },
       h3({ children, ...props }) {
         return (
-          <h3
-            className="text-xl font-semibold mb-3 mt-6 text-foreground"
-            {...props}
-          >
+          <h3 className="text-xl font-semibold mb-3 mt-6 text-foreground" {...props}>
             {children}
           </h3>
         );
       },
       h4({ children, ...props }) {
         return (
-          <h4
-            className="text-lg font-medium mb-2 mt-4 text-foreground"
-            {...props}
-          >
+          <h4 className="text-lg font-medium mb-2 mt-4 text-foreground" {...props}>
             {children}
           </h4>
         );
       },
       h5({ children, ...props }) {
         return (
-          <h5
-            className="text-base font-medium mb-2 mt-4 text-foreground"
-            {...props}
-          >
+          <h5 className="text-base font-medium mb-2 mt-4 text-foreground" {...props}>
             {children}
           </h5>
         );
       },
       h6({ children, ...props }) {
         return (
-          <h6
-            className="text-sm font-medium mb-2 mt-4 text-muted-foreground"
-            {...props}
-          >
+          <h6 className="text-sm font-medium mb-2 mt-4 text-muted-foreground" {...props}>
             {children}
           </h6>
         );
@@ -112,7 +94,7 @@ export const MarkdownContent: FC<MarkdownContentProps> = ({
         );
       },
       code({ className, children, ...props }) {
-        const match = /language-(\w+)/.exec(className || "");
+        const match = /language-(\w+)/.exec(className ?? "");
         const isInline = !match;
 
         if (isInline) {
@@ -126,28 +108,37 @@ export const MarkdownContent: FC<MarkdownContentProps> = ({
           );
         }
 
-        return (
-          <div className="relative my-6">
-            <div className="flex items-center justify-between bg-muted/30 px-4 py-2 border-b border-border rounded-t-lg">
-              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                {match[1]}
-              </span>
+        return (() => {
+          const codeContent =
+            typeof children === "string"
+              ? children
+              : Array.isArray(children)
+                ? children.filter((child) => typeof child === "string").join("")
+                : "";
+
+          return (
+            <div className="relative my-6">
+              <div className="flex items-center justify-between bg-muted/30 px-4 py-2 border-b border-border rounded-t-lg">
+                <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                  {match[1]}
+                </span>
+              </div>
+              <SyntaxHighlighter
+                style={syntaxTheme}
+                language={match[1]}
+                PreTag="div"
+                className="!mt-0 !rounded-t-none !rounded-b-lg !border-t-0 !border !border-border"
+                customStyle={{
+                  margin: 0,
+                  borderTopLeftRadius: 0,
+                  borderTopRightRadius: 0,
+                }}
+              >
+                {codeContent.replace(/\n$/, "")}
+              </SyntaxHighlighter>
             </div>
-            <SyntaxHighlighter
-              style={syntaxTheme}
-              language={match[1]}
-              PreTag="div"
-              className="!mt-0 !rounded-t-none !rounded-b-lg !border-t-0 !border !border-border"
-              customStyle={{
-                margin: 0,
-                borderTopLeftRadius: 0,
-                borderTopRightRadius: 0,
-              }}
-            >
-              {String(children).replace(/\n$/, "")}
-            </SyntaxHighlighter>
-          </div>
-        );
+          );
+        })();
       },
       pre({ children, ...props }) {
         return <pre {...props}>{children}</pre>;
@@ -198,10 +189,7 @@ export const MarkdownContent: FC<MarkdownContentProps> = ({
       },
       td({ children, ...props }) {
         return (
-          <td
-            className="border-b border-border px-4 py-3 text-foreground"
-            {...props}
-          >
+          <td className="border-b border-border px-4 py-3 text-foreground" {...props}>
             {children}
           </td>
         );
@@ -228,9 +216,7 @@ export const MarkdownContent: FC<MarkdownContentProps> = ({
   );
 
   return (
-    <div
-      className={`prose prose-neutral dark:prose-invert max-w-none ${className}`}
-    >
+    <div className={`prose prose-neutral dark:prose-invert max-w-none ${className}`}>
       <Markdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
         {content}
       </Markdown>

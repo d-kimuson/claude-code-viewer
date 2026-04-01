@@ -32,10 +32,7 @@ export const formatDuration = (durationMs: number): string => {
  * @param endTimestamp - ISO string timestamp (end)
  * @returns Duration in milliseconds, or null if invalid timestamps
  */
-export const calculateDuration = (
-  startTimestamp: string,
-  endTimestamp: string,
-): number | null => {
+export const calculateDuration = (startTimestamp: string, endTimestamp: string): number | null => {
   const startDate = new Date(startTimestamp);
   const endDate = new Date(endTimestamp);
 

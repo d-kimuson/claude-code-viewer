@@ -8,9 +8,7 @@ import {
   type VirtualMessage,
 } from "./virtualMessageStore";
 
-const makeMessage = (
-  overrides: Partial<VirtualMessage> = {},
-): VirtualMessage => ({
+const makeMessage = (overrides: Partial<VirtualMessage> = {}): VirtualMessage => ({
   sessionId: "session-1",
   projectId: "project-1",
   userMessage: "hello",
@@ -50,27 +48,20 @@ describe("virtualMessageStore", () => {
 
     test("does nothing when removing non-existent sessionId", () => {
       removeVirtualMessage("non-existent");
-      // no error thrown
+      // Verify no error thrown and store is still functional
+      expect(getVirtualMessage("non-existent")).toBeUndefined();
     });
   });
 
   describe("getVirtualMessagesByProject", () => {
     test("returns messages matching the projectId", () => {
-      addVirtualMessage(
-        makeMessage({ sessionId: "s1", projectId: "project-a" }),
-      );
-      addVirtualMessage(
-        makeMessage({ sessionId: "s2", projectId: "project-b" }),
-      );
-      addVirtualMessage(
-        makeMessage({ sessionId: "s3", projectId: "project-a" }),
-      );
+      addVirtualMessage(makeMessage({ sessionId: "s1", projectId: "project-a" }));
+      addVirtualMessage(makeMessage({ sessionId: "s2", projectId: "project-b" }));
+      addVirtualMessage(makeMessage({ sessionId: "s3", projectId: "project-a" }));
 
       const result = getVirtualMessagesByProject("project-a");
       expect(result).toHaveLength(2);
-      expect(result.map((m) => m.sessionId)).toEqual(
-        expect.arrayContaining(["s1", "s3"]),
-      );
+      expect(result.map((m) => m.sessionId)).toEqual(expect.arrayContaining(["s1", "s3"]));
     });
 
     test("returns empty array when no messages match", () => {

@@ -8,8 +8,8 @@ pnpm gatecheck check
 
 This runs all of the following checks against changed files:
 
-- **biome-format**: Code formatting (Biome)
-- **biome-check**: Linting (Biome)
+- **oxfmt**: Code formatting (oxfmt)
+- **oxlint**: Linting (oxlint)
 - **typecheck**: TypeScript type checking (`tsc --noEmit`)
 - **typecheck-tsgo**: TypeScript type checking (`tsgo --noEmit`)
 - **vitest**: Unit tests related to changed files

@@ -11,10 +11,7 @@ import { testPlatformLayer } from "../../../../testing/layers/testPlatformLayer"
 import { DrizzleService } from "../../../lib/db/DrizzleService";
 import * as schema from "../../../lib/db/schema";
 import { projects, sessions } from "../../../lib/db/schema";
-import {
-  type ISyncService,
-  SyncService,
-} from "../../sync/services/SyncService";
+import { type ISyncService, SyncService } from "../../sync/services/SyncService";
 import type { SessionMeta } from "../../types";
 import { SessionRepository } from "../infrastructure/SessionRepository";
 import { SessionMetaService } from "../services/SessionMetaService";
@@ -24,8 +21,7 @@ import { createMockSessionMeta } from "../testing/createMockSessionMeta";
 // Helpers
 // ---------------------------------------------------------------------------
 
-const migrationsFolder = new URL("../../../lib/db/migrations", import.meta.url)
-  .pathname;
+const migrationsFolder = new URL("../../../lib/db/migrations", import.meta.url).pathname;
 
 const testSessionMetaServiceLayer = (meta: SessionMeta) =>
   Layer.mock(SessionMetaService, {
@@ -33,9 +29,7 @@ const testSessionMetaServiceLayer = (meta: SessionMeta) =>
     invalidateSession: () => Effect.void,
   });
 
-const makeSyncServiceMock = (
-  overrides?: Partial<ISyncService>,
-): Layer.Layer<SyncService> =>
+const makeSyncServiceMock = (overrides?: Partial<ISyncService>): Layer.Layer<SyncService> =>
   Layer.succeed(SyncService, {
     fullSync: () => Effect.void,
     syncSession: () => Effect.void,
@@ -174,13 +168,14 @@ describe("SessionRepository", () => {
       );
 
       expect(result.session).not.toBeNull();
-      if (result.session) {
-        expect(result.session.id).toBe(sessionId);
-        expect(result.session.jsonlFilePath).toBe(sessionPath);
-        expect(result.session.meta).toEqual(mockMeta);
-        expect(result.session.conversations).toHaveLength(3);
-        expect(result.session.lastModifiedAt).toEqual(mockDate);
+      if (result.session === null) {
+        throw new Error("Expected session to exist");
       }
+      expect(result.session.id).toBe(sessionId);
+      expect(result.session.jsonlFilePath).toBe(sessionPath);
+      expect(result.session.meta).toEqual(mockMeta);
+      expect(result.session.conversations).toHaveLength(3);
+      expect(result.session.lastModifiedAt).toEqual(mockDate);
     });
 
     it("returns null when session does not exist", async () => {

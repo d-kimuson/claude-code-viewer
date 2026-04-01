@@ -22,9 +22,7 @@ export const usePermissionRequests = (sessionId?: string) => {
   const handlePermissionResponse = useCallback(
     async (response: PermissionResponse): Promise<void> => {
       try {
-        const apiResponse = await honoClient.api["claude-code"][
-          "permission-response"
-        ].$post({
+        const apiResponse = await honoClient.api["claude-code"]["permission-response"].$post({
           json: response,
         });
 
@@ -33,7 +31,7 @@ export const usePermissionRequests = (sessionId?: string) => {
         }
 
         // Consume the approval notification now that the user has responded
-        if (sessionId) {
+        if (sessionId !== undefined && sessionId !== "") {
           await honoClient.api.notifications[":sessionId"].consume.$post({
             param: { sessionId },
             json: { types: ["permission_requested"] },

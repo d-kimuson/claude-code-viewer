@@ -27,10 +27,7 @@ export const formatLocaleDate = (
 ) => {
   const { locale = "en", target = "time" } = options;
 
-  const dateObject =
-    typeof date === "string" || typeof date === "number"
-      ? new Date(date)
-      : date;
+  const dateObject = typeof date === "string" || typeof date === "number" ? new Date(date) : date;
 
   if (Number.isNaN(dateObject.getTime())) {
     return typeof date === "string" ? date : "";
@@ -51,6 +48,9 @@ export const formatLocaleDate = (
           return "yyyy年M月d日 HH:mm";
         case "datetime":
           return "yyyy年M月d日 HH:mm:ss";
+        default:
+          target satisfies never;
+          return "yyyy年M月d日 HH:mm";
       }
     } else if (locale === "en") {
       switch (target) {
@@ -62,6 +62,9 @@ export const formatLocaleDate = (
           return "MM/dd/yyyy HH:mm";
         case "datetime":
           return "MM/dd/yyyy HH:mm:ss";
+        default:
+          target satisfies never;
+          return "MM/dd/yyyy HH:mm";
       }
     } else if (locale === "zh_CN") {
       switch (target) {
@@ -73,6 +76,9 @@ export const formatLocaleDate = (
           return "yyyy年M月d日 HH:mm";
         case "datetime":
           return "yyyy年M月d日 HH:mm:ss";
+        default:
+          target satisfies never;
+          return "yyyy年M月d日 HH:mm";
       }
     }
     // default
@@ -85,6 +91,9 @@ export const formatLocaleDate = (
         return "yyyy-MM-dd HH:mm";
       case "datetime":
         return "yyyy-MM-dd HH:mm:ss";
+      default:
+        target satisfies never;
+        return "yyyy-MM-dd HH:mm";
     }
   };
 

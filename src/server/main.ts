@@ -8,10 +8,7 @@ import { startServer } from "./startServer";
 
 const program = new Command();
 
-program
-  .name(packageJson.name)
-  .version(packageJson.version)
-  .description(packageJson.description);
+program.name(packageJson.name).version(packageJson.version).description(packageJson.description);
 
 // start server
 program
@@ -20,15 +17,9 @@ program
   .option("-P, --password <password>", "password to authenticate")
   .option("-e, --executable <executable>", "path to claude code executable")
   .option("--claude-dir <claude-dir>", "path to claude directory")
-  .option(
-    "--terminal-disabled",
-    "disable the in-app terminal panel when enabled",
-  )
+  .option("--terminal-disabled", "disable the in-app terminal panel when enabled")
   .option("--terminal-shell <path>", "shell executable for terminal sessions")
-  .option(
-    "--terminal-unrestricted",
-    "disable restricted shell flags for bash sessions",
-  )
+  .option("--terminal-unrestricted", "disable restricted shell flags for bash sessions")
   .option("--api-only", "run in API-only mode without Web UI")
   .action(async (options: CliOptions) => {
     // Check for deprecated environment variables and show migration guide
@@ -40,10 +31,10 @@ program
 /* Other Commands Here */
 
 const main = async () => {
-  program.parse(process.argv);
+  await program.parseAsync(process.argv);
 };
 
-main().catch((error) => {
+main().catch((error: unknown) => {
   console.error(error);
   process.exit(1);
 });

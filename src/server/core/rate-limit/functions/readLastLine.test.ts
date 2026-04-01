@@ -37,9 +37,7 @@ describe("extractLastNonEmptyLine", () => {
   });
 
   it("should handle CRLF line endings", () => {
-    expect(extractLastNonEmptyLine("line1\r\nline2\r\nline3\r\n")).toBe(
-      "line3",
-    );
+    expect(extractLastNonEmptyLine("line1\r\nline2\r\nline3\r\n")).toBe("line3");
   });
 
   it("should handle mixed LF and CRLF line endings", () => {
@@ -51,9 +49,7 @@ describe("extractLastNonEmptyLine", () => {
   });
 
   it("should preserve whitespace in the last valid line", () => {
-    expect(extractLastNonEmptyLine("  indented line  \n")).toBe(
-      "  indented line  ",
-    );
+    expect(extractLastNonEmptyLine("  indented line  \n")).toBe("  indented line  ");
   });
 });
 
@@ -87,9 +83,7 @@ describe("readLastLine", () => {
       }).pipe(Effect.provide(testLayer)),
     );
 
-    const result = await Effect.runPromise(
-      readLastLine(filePath).pipe(Effect.provide(testLayer)),
-    );
+    const result = await Effect.runPromise(readLastLine(filePath).pipe(Effect.provide(testLayer)));
 
     expect(result).toBe("only line");
   });
@@ -99,16 +93,11 @@ describe("readLastLine", () => {
     await Effect.runPromise(
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
-        yield* fs.writeFileString(
-          filePath,
-          "first line\nsecond line\nlast line",
-        );
+        yield* fs.writeFileString(filePath, "first line\nsecond line\nlast line");
       }).pipe(Effect.provide(testLayer)),
     );
 
-    const result = await Effect.runPromise(
-      readLastLine(filePath).pipe(Effect.provide(testLayer)),
-    );
+    const result = await Effect.runPromise(readLastLine(filePath).pipe(Effect.provide(testLayer)));
 
     expect(result).toBe("last line");
   });
@@ -118,16 +107,11 @@ describe("readLastLine", () => {
     await Effect.runPromise(
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
-        yield* fs.writeFileString(
-          filePath,
-          "first line\nsecond line\nlast line\n",
-        );
+        yield* fs.writeFileString(filePath, "first line\nsecond line\nlast line\n");
       }).pipe(Effect.provide(testLayer)),
     );
 
-    const result = await Effect.runPromise(
-      readLastLine(filePath).pipe(Effect.provide(testLayer)),
-    );
+    const result = await Effect.runPromise(readLastLine(filePath).pipe(Effect.provide(testLayer)));
 
     expect(result).toBe("last line");
   });
@@ -137,16 +121,11 @@ describe("readLastLine", () => {
     await Effect.runPromise(
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
-        yield* fs.writeFileString(
-          filePath,
-          "first line\nsecond line\nlast line\n\n\n",
-        );
+        yield* fs.writeFileString(filePath, "first line\nsecond line\nlast line\n\n\n");
       }).pipe(Effect.provide(testLayer)),
     );
 
-    const result = await Effect.runPromise(
-      readLastLine(filePath).pipe(Effect.provide(testLayer)),
-    );
+    const result = await Effect.runPromise(readLastLine(filePath).pipe(Effect.provide(testLayer)));
 
     expect(result).toBe("last line");
   });
@@ -160,9 +139,7 @@ describe("readLastLine", () => {
       }).pipe(Effect.provide(testLayer)),
     );
 
-    const result = await Effect.runPromise(
-      readLastLine(filePath).pipe(Effect.provide(testLayer)),
-    );
+    const result = await Effect.runPromise(readLastLine(filePath).pipe(Effect.provide(testLayer)));
 
     expect(result).toBe("");
   });
@@ -176,9 +153,7 @@ describe("readLastLine", () => {
       }).pipe(Effect.provide(testLayer)),
     );
 
-    const result = await Effect.runPromise(
-      readLastLine(filePath).pipe(Effect.provide(testLayer)),
-    );
+    const result = await Effect.runPromise(readLastLine(filePath).pipe(Effect.provide(testLayer)));
 
     expect(result).toBe("");
   });
@@ -188,16 +163,11 @@ describe("readLastLine", () => {
     await Effect.runPromise(
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
-        yield* fs.writeFileString(
-          filePath,
-          "first line\r\nsecond line\r\nlast line\r\n",
-        );
+        yield* fs.writeFileString(filePath, "first line\r\nsecond line\r\nlast line\r\n");
       }).pipe(Effect.provide(testLayer)),
     );
 
-    const result = await Effect.runPromise(
-      readLastLine(filePath).pipe(Effect.provide(testLayer)),
-    );
+    const result = await Effect.runPromise(readLastLine(filePath).pipe(Effect.provide(testLayer)));
 
     expect(result).toBe("last line");
   });
@@ -208,16 +178,11 @@ describe("readLastLine", () => {
     await Effect.runPromise(
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
-        yield* fs.writeFileString(
-          filePath,
-          `{"first":"line"}\n${jsonContent}\n`,
-        );
+        yield* fs.writeFileString(filePath, `{"first":"line"}\n${jsonContent}\n`);
       }).pipe(Effect.provide(testLayer)),
     );
 
-    const result = await Effect.runPromise(
-      readLastLine(filePath).pipe(Effect.provide(testLayer)),
-    );
+    const result = await Effect.runPromise(readLastLine(filePath).pipe(Effect.provide(testLayer)));
 
     expect(result).toBe(jsonContent);
   });
@@ -248,9 +213,7 @@ describe("readLastLine", () => {
       }).pipe(Effect.provide(testLayer)),
     );
 
-    const result = await Effect.runPromise(
-      readLastLine(filePath).pipe(Effect.provide(testLayer)),
-    );
+    const result = await Effect.runPromise(readLastLine(filePath).pipe(Effect.provide(testLayer)));
 
     expect(result).toBe("last-unique-line");
   });
@@ -264,9 +227,7 @@ describe("readLastLine", () => {
       }).pipe(Effect.provide(testLayer)),
     );
 
-    const result = await Effect.runPromise(
-      readLastLine(filePath).pipe(Effect.provide(testLayer)),
-    );
+    const result = await Effect.runPromise(readLastLine(filePath).pipe(Effect.provide(testLayer)));
 
     expect(result).toBe("small content");
   });

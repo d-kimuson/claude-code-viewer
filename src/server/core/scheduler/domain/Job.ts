@@ -49,10 +49,7 @@ export const shouldExecuteJob = (job: SchedulerJob, now: Date): boolean => {
   return true;
 };
 
-export const calculateReservedDelay = (
-  job: SchedulerJob,
-  now: Date,
-): number => {
+export const calculateReservedDelay = (job: SchedulerJob, now: Date): number => {
   if (job.schedule.type !== "reserved") {
     throw new Error("Job schedule type must be reserved");
   }

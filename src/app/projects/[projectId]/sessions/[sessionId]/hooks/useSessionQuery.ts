@@ -11,8 +11,7 @@ const filterConversations = (
   conversations: ReadonlyArray<
     Conversation | { type: "x-error"; line: string; lineNumber: number }
   >,
-): Conversation[] =>
-  conversations.filter((c): c is Conversation => c.type !== "x-error");
+): Conversation[] => conversations.filter((c): c is Conversation => c.type !== "x-error");
 
 export const useSessionQuery = (projectId: string, sessionId: string) => {
   const { isConnected: isSSEConnected } = useAtomValue(sseAtom);

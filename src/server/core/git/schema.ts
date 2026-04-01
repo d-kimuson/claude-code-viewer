@@ -117,12 +117,8 @@ export type PushResultSuccess = z.infer<typeof PushResultSuccessSchema>;
 export type PushResultError = z.infer<typeof PushResultErrorSchema>;
 export type PushResult = z.infer<typeof PushResultSchema>;
 
-export type CommitAndPushResultSuccess = z.infer<
-  typeof CommitAndPushResultSuccessSchema
->;
-export type CommitAndPushResultError = z.infer<
-  typeof CommitAndPushResultErrorSchema
->;
+export type CommitAndPushResultSuccess = z.infer<typeof CommitAndPushResultSuccessSchema>;
+export type CommitAndPushResultError = z.infer<typeof CommitAndPushResultErrorSchema>;
 export type CommitAndPushResult = z.infer<typeof CommitAndPushResultSchema>;
 
 export type CommitErrorCode = CommitResultError["errorCode"];

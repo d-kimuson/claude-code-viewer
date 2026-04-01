@@ -9,24 +9,24 @@ type SearchContextValue = {
 
 const SearchContext = createContext<SearchContextValue | null>(null);
 
-export function useSearch() {
+export const useSearch = () => {
   const context = useContext(SearchContext);
   if (!context) {
     throw new Error("useSearch must be used within SearchProvider");
   }
   return context;
-}
+};
 
 type SearchProviderProps = {
   children: React.ReactNode;
 };
 
-function getProjectIdFromPath(pathname: string): string | undefined {
+const getProjectIdFromPath = (pathname: string): string | undefined => {
   const match = pathname.match(/^\/projects\/([^/]+)/);
   return match?.[1];
-}
+};
 
-export function SearchProvider({ children }: SearchProviderProps) {
+export const SearchProvider = ({ children }: SearchProviderProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const routerState = useRouterState();
   const projectId = getProjectIdFromPath(routerState.location.pathname);
@@ -55,11 +55,7 @@ export function SearchProvider({ children }: SearchProviderProps) {
   return (
     <SearchContext.Provider value={{ openSearch }}>
       {children}
-      <SearchDialog
-        open={isOpen}
-        onOpenChange={setIsOpen}
-        projectId={projectId}
-      />
+      <SearchDialog open={isOpen} onOpenChange={setIsOpen} projectId={projectId} />
     </SearchContext.Provider>
   );
-}
+};

@@ -8,16 +8,13 @@ import {
   ListTodoIcon,
 } from "lucide-react";
 import type { FC } from "react";
-import {
-  useRightPanelTodoActions,
-  useRightPanelTodoState,
-} from "@/hooks/useRightPanel";
+import { useRightPanelTodoActions, useRightPanelTodoState } from "@/hooks/useRightPanel";
 import type { TodoItem } from "@/lib/todo-viewer";
 import { cn } from "@/lib/utils";
 
-interface CollapsibleTodoSectionProps {
+type CollapsibleTodoSectionProps = {
   todos: readonly TodoItem[] | null;
-}
+};
 
 const TodoStatusIcon: FC<{ status: TodoItem["status"] }> = ({ status }) => {
   switch (status) {
@@ -30,15 +27,14 @@ const TodoStatusIcon: FC<{ status: TodoItem["status"] }> = ({ status }) => {
         <CircleDotIcon className="w-3.5 h-3.5 flex-shrink-0 text-amber-600 dark:text-amber-500" />
       );
     case "pending":
-      return (
-        <CircleIcon className="w-3.5 h-3.5 flex-shrink-0 text-muted-foreground" />
-      );
+      return <CircleIcon className="w-3.5 h-3.5 flex-shrink-0 text-muted-foreground" />;
+    default:
+      status satisfies never;
+      return null;
   }
 };
 
-export const CollapsibleTodoSection: FC<CollapsibleTodoSectionProps> = ({
-  todos,
-}) => {
+export const CollapsibleTodoSection: FC<CollapsibleTodoSectionProps> = ({ todos }) => {
   const isOpen = useRightPanelTodoState();
   const { setIsTodoSectionOpen: setIsOpen } = useRightPanelTodoActions();
 
@@ -71,17 +67,13 @@ export const CollapsibleTodoSection: FC<CollapsibleTodoSectionProps> = ({
         <ListTodoIcon
           className={cn(
             "w-3.5 h-3.5",
-            hasInProgress
-              ? "text-amber-600 dark:text-amber-500"
-              : "text-muted-foreground",
+            hasInProgress ? "text-amber-600 dark:text-amber-500" : "text-muted-foreground",
           )}
         />
         <span
           className={cn(
             "flex-1 text-left",
-            hasInProgress
-              ? "text-amber-700 dark:text-amber-400"
-              : "text-muted-foreground",
+            hasInProgress ? "text-amber-700 dark:text-amber-400" : "text-muted-foreground",
           )}
         >
           <Trans id="panel.todo.collapsed_title" />
@@ -114,10 +106,7 @@ export const CollapsibleTodoSection: FC<CollapsibleTodoSectionProps> = ({
             >
               <TodoStatusIcon status={todo.status} />
               <span
-                className={cn(
-                  "flex-1 break-words",
-                  todo.status === "completed" && "line-through",
-                )}
+                className={cn("flex-1 break-words", todo.status === "completed" && "line-through")}
               >
                 {todo.content}
               </span>

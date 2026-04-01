@@ -1,52 +1,36 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useAtom } from "jotai";
-import {
-  type FC,
-  type PropsWithChildren,
-  useCallback,
-  useEffect,
-  useRef,
-} from "react";
+import { type FC, type PropsWithChildren, useCallback, useEffect, useRef } from "react";
 import type { SSEEvent } from "../../../types/sse";
 import { projectListQuery, sessionProcessesQuery } from "../../api/queries";
 import { callSSE } from "../callSSE";
-import {
-  type EventListener,
-  SSEContext,
-  type SSEContextType,
-} from "../SSEContext";
+import { type EventListener, SSEContext, type SSEContextType } from "../SSEContext";
 import { sseAtom } from "../store/sseAtom";
 
 export const ServerEventsProvider: FC<PropsWithChildren> = ({ children }) => {
   const sseRef = useRef<ReturnType<typeof callSSE> | null>(null);
-  const listenersRef = useRef<
-    Map<SSEEvent["kind"], Set<(event: SSEEvent) => void>>
-  >(new Map());
+  const listenersRef = useRef<Map<SSEEvent["kind"], Set<(event: SSEEvent) => void>>>(new Map());
   const [, setSSEState] = useAtom(sseAtom);
   const queryClient = useQueryClient();
 
   useEffect(() => {
     const sse = callSSE({
-      onOpen: async () => {
+      onOpen: () => {
         // reconnect 中のイベントは購読できないので
         // open 時にまとめて invalidate する
-        await queryClient.invalidateQueries({
+        void queryClient.invalidateQueries({
           queryKey: projectListQuery.queryKey,
         });
         // Also invalidate session detail queries to ensure current session is refreshed
         // Pattern: ["projects", projectId, "sessions", sessionId]
-        await queryClient.invalidateQueries({
+        void queryClient.invalidateQueries({
           predicate: (query) => {
             const key = query.queryKey;
-            return (
-              Array.isArray(key) &&
-              key[0] === "projects" &&
-              key[2] === "sessions"
-            );
+            return Array.isArray(key) && key[0] === "projects" && key[2] === "sessions";
           },
         });
         // Invalidate session processes to pick up any status changes missed during reconnection
-        await queryClient.invalidateQueries({
+        void queryClient.invalidateQueries({
           queryKey: sessionProcessesQuery.queryKey,
         });
       },
@@ -80,6 +64,7 @@ export const ServerEventsProvider: FC<PropsWithChildren> = ({ children }) => {
       }
       const listeners = listenersRef.current.get(eventType);
       if (listeners) {
+        // oxlint-disable-next-line no-unsafe-type-assertion -- SSE event listener map requires type widening for storage
         listeners.add(listener as (event: SSEEvent) => void);
       }
 
@@ -89,13 +74,10 @@ export const ServerEventsProvider: FC<PropsWithChildren> = ({ children }) => {
 
       const registerWithSSE = () => {
         if (sseRef.current) {
-          const { removeEventListener } = sseRef.current.addEventListener(
-            eventType,
-            (event) => {
-              // The listener expects the specific event type, so we cast it through unknown first
-              listener(event as unknown as Extract<SSEEvent, { kind: T }>);
-            },
-          );
+          const { removeEventListener } = sseRef.current.addEventListener(eventType, (event) => {
+            // oxlint-disable-next-line no-unsafe-type-assertion -- SSE event narrowing requires type assertion
+            listener(event as unknown as Extract<SSEEvent, { kind: T }>);
+          });
           sseCleanup = removeEventListener;
         }
       };
@@ -113,6 +95,7 @@ export const ServerEventsProvider: FC<PropsWithChildren> = ({ children }) => {
         // Remove from internal listeners
         const listeners = listenersRef.current.get(eventType);
         if (listeners) {
+          // oxlint-disable-next-line no-unsafe-type-assertion -- SSE event listener map requires type widening for removal
           listeners.delete(listener as (event: SSEEvent) => void);
           if (listeners.size === 0) {
             listenersRef.current.delete(eventType);
@@ -135,7 +118,5 @@ export const ServerEventsProvider: FC<PropsWithChildren> = ({ children }) => {
     addEventListener,
   };
 
-  return (
-    <SSEContext.Provider value={contextValue}>{children}</SSEContext.Provider>
-  );
+  return <SSEContext.Provider value={contextValue}>{children}</SSEContext.Provider>;
 };

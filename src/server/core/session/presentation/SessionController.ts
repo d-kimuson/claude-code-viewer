@@ -18,10 +18,7 @@ const LayerImpl = Effect.gen(function* () {
     Effect.gen(function* () {
       const { projectId, sessionId } = options;
 
-      const { session } = yield* sessionRepository.getSession(
-        projectId,
-        sessionId,
-      );
+      const { session } = yield* sessionRepository.getSession(projectId, sessionId);
 
       return {
         status: 200,
@@ -29,17 +26,11 @@ const LayerImpl = Effect.gen(function* () {
       } as const satisfies ControllerResponse;
     });
 
-  const exportSessionHtml = (options: {
-    projectId: string;
-    sessionId: string;
-  }) =>
+  const exportSessionHtml = (options: { projectId: string; sessionId: string }) =>
     Effect.gen(function* () {
       const { projectId, sessionId } = options;
 
-      const { session } = yield* sessionRepository.getSession(
-        projectId,
-        sessionId,
-      );
+      const { session } = yield* sessionRepository.getSession(projectId, sessionId);
 
       if (session === null) {
         return {
@@ -48,11 +39,7 @@ const LayerImpl = Effect.gen(function* () {
         } as const satisfies ControllerResponse;
       }
 
-      const html = yield* generateSessionHtml(
-        session,
-        projectId,
-        agentSessionRepository,
-      );
+      const html = yield* generateSessionHtml(session, projectId, agentSessionRepository);
 
       return {
         status: 200,

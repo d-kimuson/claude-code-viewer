@@ -5,11 +5,7 @@ import type { InferEffect } from "../../lib/effect/types";
 import { CcvOptionsService } from "../platform/services/CcvOptionsService";
 import { EnvService } from "../platform/services/EnvService";
 import { normalizePtyChunk } from "./normalizePtyChunk";
-import {
-  createRusptySession,
-  type RusptyModule,
-  type TerminalPtyProcess,
-} from "./rusptyAdapter";
+import { createRusptySession, type RusptyModule, type TerminalPtyProcess } from "./rusptyAdapter";
 
 type PtyProcess = TerminalPtyProcess;
 
@@ -46,14 +42,14 @@ const selectShell = (
   }
   const command = shellEnv ?? fallbackShell ?? "bash";
   const args: string[] = [];
-  if (!unrestrictedFlag && command.toLowerCase().includes("bash")) {
+  if (unrestrictedFlag !== true && command.toLowerCase().includes("bash")) {
     args.push("--noprofile", "--norc", "--restricted");
   }
   return { command, args };
 };
 
 const isFlagEnabled = (value: string | undefined) => {
-  if (!value) return false;
+  if (value === undefined || value === "") return false;
   return value === "1" || value.toLowerCase() === "true";
 };
 
@@ -78,8 +74,7 @@ const LayerImpl = Effect.gen(function* () {
 
   const ruspty: RusptyModule | null = yield* Effect.tryPromise({
     try: () => import("@replit/ruspty"),
-    catch: (error) =>
-      new Error(`Failed to load @replit/ruspty: ${String(error)}`),
+    catch: (error) => new Error(`Failed to load @replit/ruspty: ${String(error)}`),
   }).pipe(
     Effect.catchAll((error) =>
       Effect.sync(() => {
@@ -94,10 +89,7 @@ const LayerImpl = Effect.gen(function* () {
   }
 
   const trimBuffer = (session: TerminalSession) => {
-    while (
-      session.bufferBytes > MAX_BUFFER_BYTES &&
-      session.buffer.length > 0
-    ) {
+    while (session.bufferBytes > MAX_BUFFER_BYTES && session.buffer.length > 0) {
       const removed = session.buffer.shift();
       if (removed) {
         session.bufferBytes -= Buffer.byteLength(removed.data, "utf8");
@@ -160,11 +152,7 @@ const LayerImpl = Effect.gen(function* () {
     },
   ) => {
     const id = requestedId ?? ulid();
-    const shell = selectShell(
-      options.shell,
-      options.fallbackShell,
-      options.unrestrictedFlag,
-    );
+    const shell = selectShell(options.shell, options.fallbackShell, options.unrestrictedFlag);
     const { process: ptyProcess, read } = createRusptySession(ruspty, {
       command: shell.command,
       args: shell.args,
@@ -214,43 +202,28 @@ const LayerImpl = Effect.gen(function* () {
   };
 
   const getSession = (sessionId: string | undefined) => {
-    if (!sessionId) return undefined;
+    if (sessionId === undefined || sessionId === "") return undefined;
     return sessions.get(sessionId);
   };
 
-  const getOrCreateSession = (
-    sessionId: string | undefined,
-    cwdOverride?: string,
-  ) =>
+  const getOrCreateSession = (sessionId: string | undefined, cwdOverride?: string) =>
     Effect.gen(function* () {
-      const terminalDisabledEnv = yield* envService.getEnv(
-        "CCV_TERMINAL_DISABLED",
-      );
-      const terminalDisabledOption =
-        yield* ccvOptionsService.getCcvOptions("terminalDisabled");
-      const terminalDisabled =
-        terminalDisabledOption ?? isFlagEnabled(terminalDisabledEnv);
+      const terminalDisabledEnv = yield* envService.getEnv("CCV_TERMINAL_DISABLED");
+      const terminalDisabledOption = yield* ccvOptionsService.getCcvOptions("terminalDisabled");
+      const terminalDisabled = terminalDisabledOption ?? isFlagEnabled(terminalDisabledEnv);
       if (terminalDisabled) {
         return yield* Effect.fail(
-          new Error(
-            "Terminal support is unavailable (CCV_TERMINAL_DISABLED is enabled).",
-          ),
+          new Error("Terminal support is unavailable (CCV_TERMINAL_DISABLED is enabled)."),
         );
       }
       const cwd = cwdOverride ?? process.cwd();
-      const terminalShellOption =
-        yield* ccvOptionsService.getCcvOptions("terminalShell");
-      const shell =
-        terminalShellOption ?? (yield* envService.getEnv("CCV_TERMINAL_SHELL"));
+      const terminalShellOption = yield* ccvOptionsService.getCcvOptions("terminalShell");
+      const shell = terminalShellOption ?? (yield* envService.getEnv("CCV_TERMINAL_SHELL"));
       const fallbackShell = yield* envService.getEnv("SHELL");
-      const terminalUnrestrictedOption = yield* ccvOptionsService.getCcvOptions(
-        "terminalUnrestricted",
-      );
-      const terminalUnrestrictedEnv = yield* envService.getEnv(
-        "CCV_TERMINAL_UNRESTRICTED",
-      );
-      const unrestrictedFlag =
-        terminalUnrestrictedOption ?? isFlagEnabled(terminalUnrestrictedEnv);
+      const terminalUnrestrictedOption =
+        yield* ccvOptionsService.getCcvOptions("terminalUnrestricted");
+      const terminalUnrestrictedEnv = yield* envService.getEnv("CCV_TERMINAL_UNRESTRICTED");
+      const unrestrictedFlag = terminalUnrestrictedOption ?? isFlagEnabled(terminalUnrestrictedEnv);
       const env = yield* envService.getAllEnv();
       const existing = getSession(sessionId);
       if (existing) {

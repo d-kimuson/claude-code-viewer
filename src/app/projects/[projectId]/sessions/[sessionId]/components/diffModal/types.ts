@@ -1,19 +1,19 @@
-export interface DiffLine {
+export type DiffLine = {
   type: "added" | "deleted" | "unchanged" | "hunk" | "context";
   oldLineNumber?: number;
   newLineNumber?: number;
   content: string;
-}
+};
 
-export interface DiffHunk {
+export type DiffHunk = {
   oldStart: number;
   // oldLines: number;
   newStart: number;
   // newLines: number;
   lines: DiffLine[];
-}
+};
 
-export interface FileDiff {
+export type FileDiff = {
   filename: string;
   oldFilename?: string;
   isNew: boolean;
@@ -23,23 +23,23 @@ export interface FileDiff {
   hunks: DiffHunk[];
   linesAdded: number;
   linesDeleted: number;
-}
+};
 
-export interface GitRef {
+export type GitRef = {
   name: `branch:${string}` | `commit:${string}` | `HEAD` | "working";
   type: "branch" | "commit" | "head" | "working";
   sha?: string;
   displayName: string;
-}
+};
 
-export interface DiffSummary {
+export type DiffSummary = {
   filesChanged: number;
   insertions: number;
   deletions: number;
   files: FileDiff[];
-}
+};
 
-export interface DiffModalProps {
+export type DiffModalProps = {
   projectId: string;
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
@@ -77,4 +77,4 @@ export interface DiffModalProps {
     | {
         success: false;
       };
-}
+};

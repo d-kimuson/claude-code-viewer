@@ -47,23 +47,19 @@ const soundConfigs: Record<
 /**
  * Play a notification sound based on the sound type
  */
-export function playNotificationSound(soundType: NotificationSoundType) {
+export const playNotificationSound = (soundType: NotificationSoundType) => {
   if (soundType === "none") {
     return;
   }
 
   try {
     const config = soundConfigs[soundType];
-    if (!config) {
-      console.warn(`Unknown sound type: ${soundType}`);
+    const audioContextCtor = window.AudioContext ?? window.webkitAudioContext;
+    if (audioContextCtor === undefined) {
       return;
     }
 
-    const audioContext = new (
-      window.AudioContext ||
-      (window as unknown as { webkitAudioContext: typeof AudioContext })
-        .webkitAudioContext
-    )();
+    const audioContext = new audioContextCtor();
 
     // Play multiple frequencies if specified (for chords/sequences)
     config.frequency.forEach((freq, index) => {
@@ -79,10 +75,7 @@ export function playNotificationSound(soundType: NotificationSoundType) {
       // Set volume and fade out
       const startTime = audioContext.currentTime + index * 0.05; // Slight delay for sequences
       gainNode.gain.setValueAtTime(config.volume, startTime);
-      gainNode.gain.exponentialRampToValueAtTime(
-        0.01,
-        startTime + config.duration,
-      );
+      gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + config.duration);
 
       // Play the sound
       oscillator.start(startTime);
@@ -91,14 +84,12 @@ export function playNotificationSound(soundType: NotificationSoundType) {
   } catch (error) {
     console.warn("Failed to play notification sound:", error);
   }
-}
+};
 
 /**
  * Get display name for sound types
  */
-export function getSoundDisplayName(
-  soundType: NotificationSoundType,
-): ReactNode {
+export const getSoundDisplayName = (soundType: NotificationSoundType): ReactNode => {
   const displayNames: Record<NotificationSoundType, ReactNode> = {
     none: <Trans id="notification.none" />,
     beep: <Trans id="notification.beep" />,
@@ -108,11 +99,11 @@ export function getSoundDisplayName(
   };
 
   return displayNames[soundType];
-}
+};
 
 /**
  * Get all available sound types
  */
-export function getAvailableSoundTypes(): NotificationSoundType[] {
+export const getAvailableSoundTypes = (): NotificationSoundType[] => {
   return ["none", "beep", "chime", "ping", "pop"];
-}
+};

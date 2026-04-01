@@ -1,5 +1,5 @@
 ---
-description: 'Create a comprehensive task plan for complex development work'
+description: "Create a comprehensive task plan for complex development work"
 allowed-tools: TodoWrite, Read, Grep, Glob, Bash(git status:*), Bash(git log:*)
 ---
 
@@ -40,6 +40,7 @@ Create a comprehensive task plan for the given development work. Break down comp
 ## Example Task Structure
 
 For each task in the todo list:
+
 - **content**: "Implement user authentication middleware"
 - **activeForm**: "Implementing user authentication middleware"
 - **status**: "pending"

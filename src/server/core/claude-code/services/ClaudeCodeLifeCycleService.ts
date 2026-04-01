@@ -1,7 +1,4 @@
-import type {
-  SDKMessage,
-  SDKUserMessage,
-} from "@anthropic-ai/claude-agent-sdk";
+import type { SDKMessage, SDKUserMessage } from "@anthropic-ai/claude-agent-sdk";
 import type { FileSystem, Path } from "@effect/platform";
 import type { CommandExecutor } from "@effect/platform/CommandExecutor";
 import { Context, Effect, Layer, Runtime } from "effect";
@@ -11,10 +8,7 @@ import { EventBus } from "../../events/services/EventBus";
 import type { CcvOptionsService } from "../../platform/services/CcvOptionsService";
 import type { EnvService } from "../../platform/services/EnvService";
 import type { SessionMetaService } from "../../session/services/SessionMetaService";
-import {
-  createMessageGenerator,
-  type UserMessageInput,
-} from "../functions/createMessageGenerator";
+import { createMessageGenerator, type UserMessageInput } from "../functions/createMessageGenerator";
 import * as CCSessionProcess from "../models/CCSessionProcess";
 import * as ClaudeCode from "../models/ClaudeCode";
 import type * as CCTurn from "../models/ClaudeCodeTurn";
@@ -22,11 +16,7 @@ import { CCVAskUserQuestionService } from "./CCVAskUserQuestionService";
 import { ClaudeCodePermissionService } from "./ClaudeCodePermissionService";
 import { ClaudeCodeSessionProcessService } from "./ClaudeCodeSessionProcessService";
 
-export type MessageGenerator = () => AsyncGenerator<
-  SDKUserMessage,
-  void,
-  unknown
->;
+export type MessageGenerator = () => AsyncGenerator<SDKUserMessage, void, unknown>;
 
 const LayerImpl = Effect.gen(function* () {
   const eventBusService = yield* EventBus;
@@ -52,16 +42,15 @@ const LayerImpl = Effect.gen(function* () {
     const { sessionProcessId, baseSessionId, input } = options;
 
     return Effect.gen(function* () {
-      const { sessionProcess, task } =
-        yield* sessionProcessService.continueSessionProcess({
-          sessionProcessId,
-          turnDef: {
-            type: "continue",
-            sessionId: baseSessionId,
-            baseSessionId: baseSessionId,
-            turnId: ulid(),
-          },
-        });
+      const { sessionProcess, task } = yield* sessionProcessService.continueSessionProcess({
+        sessionProcessId,
+        turnDef: {
+          type: "continue",
+          sessionId: baseSessionId,
+          baseSessionId: baseSessionId,
+          turnId: ulid(),
+        },
+      });
 
       sessionProcess.def.setNextMessage(input);
       return {
@@ -84,8 +73,7 @@ const LayerImpl = Effect.gen(function* () {
         };
     ccOptions?: CCTurn.CCOptions;
   }) => {
-    const { projectId, cwd, input, sessionId, baseSession, ccOptions } =
-      options;
+    const { projectId, cwd, input, sessionId, baseSession, ccOptions } = options;
 
     return Effect.gen(function* () {
       const {
@@ -94,9 +82,7 @@ const LayerImpl = Effect.gen(function* () {
         setHooks: setMessageGeneratorHooks,
       } = createMessageGenerator();
 
-      const turnDef:
-        | CCTurn.NewClaudeCodeTurnDef
-        | CCTurn.ResumeClaudeCodeTurnDef =
+      const turnDef: CCTurn.NewClaudeCodeTurnDef | CCTurn.ResumeClaudeCodeTurnDef =
         baseSession === undefined
           ? {
               type: "new",
@@ -112,20 +98,19 @@ const LayerImpl = Effect.gen(function* () {
               ccOptions,
             };
 
-      const { sessionProcess, task } =
-        yield* sessionProcessService.startSessionProcess({
-          sessionDef: {
-            projectId,
-            cwd,
-            abortController: new AbortController(),
-            setNextMessage,
-            sessionProcessId: ulid(),
-          },
-          turnDef,
-        });
+      const { sessionProcess, task } = yield* sessionProcessService.startSessionProcess({
+        sessionDef: {
+          projectId,
+          cwd,
+          abortController: new AbortController(),
+          setNextMessage,
+          sessionProcessId: ulid(),
+        },
+        turnDef,
+      });
 
       setMessageGeneratorHooks({
-        onNewUserMessageResolved: async (input) => {
+        onNewUserMessageResolved: (input) => {
           Effect.runFork(
             sessionProcessService.updateRawUserMessage({
               sessionProcessId: sessionProcess.def.sessionProcessId,
@@ -151,9 +136,7 @@ const LayerImpl = Effect.gen(function* () {
           }
 
           if (processState.type === "paused") {
-            return yield* Effect.die(
-              new Error("Illegal state: paused is not expected"),
-            );
+            return yield* Effect.die(new Error("Illegal state: paused is not expected"));
           }
 
           if (
@@ -180,20 +163,14 @@ const LayerImpl = Effect.gen(function* () {
             return "continue" as const;
           }
 
-          if (
-            message.type === "assistant" &&
-            processState.type === "initialized"
-          ) {
+          if (message.type === "assistant" && processState.type === "initialized") {
             yield* sessionProcessService.toFileCreatedState({
               sessionProcessId: processState.def.sessionProcessId,
             });
           }
 
           if (message.type === "result") {
-            if (
-              processState.type === "file_created" ||
-              processState.type === "initialized"
-            ) {
+            if (processState.type === "file_created" || processState.type === "initialized") {
               yield* sessionProcessService.toPausedState({
                 sessionProcessId: processState.def.sessionProcessId,
                 resultMessage: message,
@@ -214,27 +191,18 @@ const LayerImpl = Effect.gen(function* () {
       const handleSessionProcessDaemon = async () => {
         const messageIter = await Runtime.runPromise(runtime)(
           Effect.gen(function* () {
-            const permissionOptions =
-              yield* permissionService.createCanUseToolRelatedOptions({
-                turnId: task.def.turnId,
-                projectId: sessionProcess.def.projectId,
-                permissionMode:
-                  task.def.type !== "continue"
-                    ? task.def.ccOptions?.permissionMode
-                    : undefined,
-                sessionId:
-                  task.def.type === "new"
-                    ? task.def.sessionId
-                    : task.def.baseSessionId,
-              });
+            const permissionOptions = yield* permissionService.createCanUseToolRelatedOptions({
+              turnId: task.def.turnId,
+              projectId: sessionProcess.def.projectId,
+              permissionMode:
+                task.def.type !== "continue" ? task.def.ccOptions?.permissionMode : undefined,
+              sessionId: task.def.type === "new" ? task.def.sessionId : task.def.baseSessionId,
+            });
 
             const ccvMcpServer = ccvAskUserQuestionService.createMcpServer({
               turnId: task.def.turnId,
               projectId: sessionProcess.def.projectId,
-              sessionId:
-                task.def.type === "new"
-                  ? task.def.sessionId
-                  : task.def.baseSessionId,
+              sessionId: task.def.type === "new" ? task.def.sessionId : task.def.baseSessionId,
             });
 
             const baseOptions = {
@@ -263,24 +231,24 @@ const LayerImpl = Effect.gen(function* () {
 
         try {
           for await (const message of messageIter) {
-            const result = await Runtime.runPromise(runtime)(
-              handleMessage(message),
-            ).catch((error) => {
-              // iter 自体が落ちてなければ継続したいので握りつぶす
-              Effect.runFork(
-                sessionProcessService.changeTurnState({
-                  sessionProcessId: sessionProcess.def.sessionProcessId,
-                  turnId: task.def.turnId,
-                  nextTask: {
-                    status: "failed",
-                    def: task.def,
-                    error: error,
-                  },
-                }),
-              );
+            const result = await Runtime.runPromise(runtime)(handleMessage(message)).catch(
+              (error: unknown) => {
+                // iter 自体が落ちてなければ継続したいので握りつぶす
+                Effect.runFork(
+                  sessionProcessService.changeTurnState({
+                    sessionProcessId: sessionProcess.def.sessionProcessId,
+                    turnId: task.def.turnId,
+                    nextTask: {
+                      status: "failed",
+                      def: task.def,
+                      error,
+                    },
+                  }),
+                );
 
-              return "continue" as const;
-            });
+                return "continue" as const;
+              },
+            );
 
             if (result === "break") {
               break;
@@ -303,17 +271,16 @@ const LayerImpl = Effect.gen(function* () {
       };
 
       const daemonPromise = handleSessionProcessDaemon()
-        .catch((error) => {
+        .catch((error: unknown) => {
           console.error("Error occur in task daemon process", error);
           throw error;
         })
         .finally(() => {
           Effect.runFork(
             Effect.gen(function* () {
-              const currentProcess =
-                yield* sessionProcessService.getSessionProcess(
-                  sessionProcess.def.sessionProcessId,
-                );
+              const currentProcess = yield* sessionProcessService.getSessionProcess(
+                sessionProcess.def.sessionProcessId,
+              );
 
               yield* sessionProcessService.toCompletedState({
                 sessionProcessId: currentProcess.def.sessionProcessId,
@@ -340,13 +307,10 @@ const LayerImpl = Effect.gen(function* () {
 
   const abortTask = (sessionProcessId: string): Effect.Effect<void, Error> =>
     Effect.gen(function* () {
-      const currentProcess =
-        yield* sessionProcessService.getSessionProcess(sessionProcessId);
+      const currentProcess = yield* sessionProcessService.getSessionProcess(sessionProcessId);
 
       yield* permissionService.cancelPendingRequests(currentProcess.sessionId);
-      yield* ccvAskUserQuestionService.cancelPendingRequests(
-        currentProcess.sessionId,
-      );
+      yield* ccvAskUserQuestionService.cancelPendingRequests(currentProcess.sessionId);
 
       currentProcess.def.abortController.abort();
 
@@ -379,8 +343,9 @@ const LayerImpl = Effect.gen(function* () {
 
 export type IClaudeCodeLifeCycleService = InferEffect<typeof LayerImpl>;
 
-export class ClaudeCodeLifeCycleService extends Context.Tag(
-  "ClaudeCodeLifeCycleService",
-)<ClaudeCodeLifeCycleService, IClaudeCodeLifeCycleService>() {
+export class ClaudeCodeLifeCycleService extends Context.Tag("ClaudeCodeLifeCycleService")<
+  ClaudeCodeLifeCycleService,
+  IClaudeCodeLifeCycleService
+>() {
   static Live = Layer.effect(this, LayerImpl);
 }

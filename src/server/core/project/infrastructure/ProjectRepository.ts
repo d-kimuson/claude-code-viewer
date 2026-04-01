@@ -22,9 +22,7 @@ const LayerImpl = Effect.gen(function* () {
       // Validate that the decoded path is within the Claude projects directory
       const { claudeProjectsDirPath } = yield* context.claudeCodePaths;
       if (!validateProjectPath(fullPath, claudeProjectsDirPath)) {
-        return yield* Effect.fail(
-          new Error("Invalid project path: outside allowed directory"),
-        );
+        return yield* Effect.fail(new Error("Invalid project path: outside allowed directory"));
       }
 
       // Check if project directory exists
@@ -52,11 +50,7 @@ const LayerImpl = Effect.gen(function* () {
   const getProjects = () =>
     Effect.gen(function* () {
       // Fetch all projects from DB ordered by dirMtimeMs DESC
-      const rows = db
-        .select()
-        .from(projects)
-        .orderBy(desc(projects.dirMtimeMs))
-        .all();
+      const rows = db.select().from(projects).orderBy(desc(projects.dirMtimeMs)).all();
 
       if (rows.length === 0) {
         return { projects: [] };

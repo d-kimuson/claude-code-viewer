@@ -1,5 +1,5 @@
 ---
-description: '最新バージョンのCHANGELOGをリリースノート向けに整形'
+description: "最新バージョンのCHANGELOGをリリースノート向けに整形"
 allowed-tools: Read(*), Edit(CHANGELOG.md)
 ---
 
@@ -12,14 +12,18 @@ Focus **only** on the most recent version section (the first version block in CH
 ## Principles
 
 <user_facing_content>
+
 ### Keep User-Facing Changes Only
+
 Include changes that matter to end users:
+
 - New features and capabilities
 - Bug fixes that affect user experience
 - Performance improvements users will notice
 - Breaking changes or deprecations
 
 **Remove** internal/development changes:
+
 - CI/CD configuration changes
 - Internal refactoring
 - Development tooling additions
@@ -27,16 +31,18 @@ Include changes that matter to end users:
 - Test improvements
 - Documentation fixes
 - Linting and formatting changes
-</user_facing_content>
+  </user_facing_content>
 
 <writing_style>
+
 ### Release Note Writing Style
+
 - Use clear, concise descriptions focused on user benefits
 - Combine related commits into single, meaningful entries
 - Remove redundant or overly technical details
 - Ensure descriptions are self-explanatory without commit context
 - Maintain consistent tone and formatting with previous releases
-</writing_style>
+  </writing_style>
 
 ## Workflow
 

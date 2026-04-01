@@ -1,11 +1,5 @@
-import type {
-  SDKMessage,
-  SDKUserMessage,
-} from "@anthropic-ai/claude-agent-sdk";
-import type {
-  DocumentBlockParam,
-  ImageBlockParam,
-} from "@anthropic-ai/sdk/resources";
+import type { SDKMessage, SDKUserMessage } from "@anthropic-ai/claude-agent-sdk";
+import type { DocumentBlockParam, ImageBlockParam } from "@anthropic-ai/sdk/resources";
 import { controllablePromise } from "../../../../lib/controllablePromise";
 
 export type UserMessageInput = {
@@ -16,28 +10,20 @@ export type UserMessageInput = {
 
 export type OnMessage = (message: SDKMessage) => void | Promise<void>;
 
-export type MessageGenerator = () => AsyncGenerator<
-  SDKUserMessage,
-  void,
-  unknown
->;
+export type MessageGenerator = () => AsyncGenerator<SDKUserMessage, void, unknown>;
 
 export const createMessageGenerator = (): {
   generateMessages: MessageGenerator;
   setNextMessage: (input: UserMessageInput) => void;
   setHooks: (hooks: {
     onNextMessageSet?: (input: UserMessageInput) => void | Promise<void>;
-    onNewUserMessageResolved?: (
-      input: UserMessageInput,
-    ) => void | Promise<void>;
+    onNewUserMessageResolved?: (input: UserMessageInput) => void | Promise<void>;
   }) => void;
 } => {
   let sendMessagePromise = controllablePromise<UserMessageInput>();
   let registeredHooks: {
     onNextMessageSet: ((input: UserMessageInput) => void | Promise<void>)[];
-    onNewUserMessageResolved: ((
-      input: UserMessageInput,
-    ) => void | Promise<void>)[];
+    onNewUserMessageResolved: ((input: UserMessageInput) => void | Promise<void>)[];
   } = {
     onNextMessageSet: [],
     onNewUserMessageResolved: [],
@@ -54,7 +40,7 @@ export const createMessageGenerator = (): {
           content: input.text,
         },
         parent_tool_use_id: null,
-      } satisfies Omit<SDKUserMessage, "session_id"> as SDKUserMessage;
+      } satisfies SDKUserMessage;
     }
 
     return {
@@ -70,35 +56,38 @@ export const createMessageGenerator = (): {
           ...documents,
         ],
       },
-    } as SDKUserMessage;
+      parent_tool_use_id: null,
+    } satisfies SDKUserMessage;
   };
 
-  async function* generateMessages(): ReturnType<MessageGenerator> {
+  const generateMessages = async function* (): ReturnType<MessageGenerator> {
     sendMessagePromise = controllablePromise<UserMessageInput>();
 
     while (true) {
       const message = await sendMessagePromise.promise;
       sendMessagePromise = controllablePromise<UserMessageInput>();
       void Promise.allSettled(
-        registeredHooks.onNewUserMessageResolved.map((hook) => hook(message)),
+        registeredHooks.onNewUserMessageResolved.map(async (hook) => {
+          await hook(message);
+        }),
       );
 
       yield createMessage(message);
     }
-  }
+  };
 
   const setNextMessage = (input: UserMessageInput) => {
     sendMessagePromise.resolve(input);
     void Promise.allSettled(
-      registeredHooks.onNextMessageSet.map((hook) => hook(input)),
+      registeredHooks.onNextMessageSet.map(async (hook) => {
+        await hook(input);
+      }),
     );
   };
 
   const setHooks = (hooks: {
     onNextMessageSet?: (input: UserMessageInput) => void | Promise<void>;
-    onNewUserMessageResolved?: (
-      input: UserMessageInput,
-    ) => void | Promise<void>;
+    onNewUserMessageResolved?: (input: UserMessageInput) => void | Promise<void>;
   }) => {
     registeredHooks = {
       onNextMessageSet: [
@@ -106,9 +95,7 @@ export const createMessageGenerator = (): {
         ...registeredHooks.onNextMessageSet,
       ],
       onNewUserMessageResolved: [
-        ...(hooks?.onNewUserMessageResolved
-          ? [hooks.onNewUserMessageResolved]
-          : []),
+        ...(hooks?.onNewUserMessageResolved ? [hooks.onNewUserMessageResolved] : []),
         ...registeredHooks.onNewUserMessageResolved,
       ],
     };

@@ -18,27 +18,27 @@ Claude Code Viewer is a web-based Claude Code client focused on **comprehensive 
 
 ## Features
 
-| Feature | Description |
-| --- | --- |
-| View Chat Logs | View Claude Code session logs in real-time through the web UI. Supports historical logs as it uses standard Claude Code logs (~/.claude/projects/...) as the data source |
-| Search Conversations | Full-text search across conversations with `⌘K` (macOS) or `Ctrl+K` (Linux). Search within a specific project or across all projects. Features fuzzy matching, prefix search, and keyboard navigation (↑↓ to navigate, Enter to select) |
-| Start Conversations | Start Claude Code sessions directly from Claude Code Viewer. Enjoy core functionality like file/command completion, pause/resume, and tool approval through a superior web experience |
-| Resume Sessions | Resume conversations directly from existing session logs |
-| Continue Sessions | Claude Code Viewer provides advanced session process control. Sessions started through Claude Code Viewer remain alive (unless aborted), allowing you to continue conversations without resuming (no session-id reassignment) |
-| Create Projects | Create new projects from Claude Code Viewer. Select a directory through the web UI to execute the `/init` command and begin project setup |
-| File Upload & Preview | Upload images (PNG, JPEG, GIF, WebP), PDFs, and text files directly from the chat interface. Each file type displays with dedicated preview components—images render inline, PDFs embed with a viewer, and text files show formatted content |
-| Browser Preview | Preview web applications directly within Claude Code Viewer. Click the preview button on any URL in chat messages to open a resizable browser panel on the right side. Features include URL input with keyboard navigation, reload functionality, and automatic chat window width adjustment. The embedded browser tracks URL changes as you navigate (same-origin only) |
-| Message Scheduler | Schedule Claude Code messages using cron expressions for recurring tasks or specific datetime for one-time execution. Supports concurrency control (skip/run) for periodic jobs and auto-deletion for reserved jobs |
-| Review Changes | Built-in Git Diff Viewer lets you review all changes directly within Claude Code Viewer |
-| Commit Changes | Execute Git commits directly from the web interface within the Git Diff Viewer |
-| Push Changes | Push committed changes directly from the Git Diff Viewer. Supports both separate push operations and combined commit-and-push workflows for streamlined deployment |
-| Branch Switcher | Switch local Git branches directly from the Git tab (with search and status indicators) |
-| Files & Tools Inspector | Right panel tab that summarizes edited files, groups them by project, and lists tool invocations with filters and quick file preview |
-| Todo Viewer | Extracts the latest `TodoWrite` items from sessions and displays them in collapsible checklists |
-| Terminal Panel | Bottom panel terminal over WebSocket for running shell commands without leaving the UI |
-| MCP Server Viewer | View MCP server configurations directly in the session sidebar. Lists all configured servers with their names and commands, with real-time reload capability |
-| System Information | Monitor Claude Code and Claude Code Viewer versions, feature compatibility, and system status |
-| Multi-language Support | Full internationalization support with English, Japanese, and Simplified Chinese language options |
+| Feature                 | Description                                                                                                                                                                                                                                                                                                                                                              |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| View Chat Logs          | View Claude Code session logs in real-time through the web UI. Supports historical logs as it uses standard Claude Code logs (~/.claude/projects/...) as the data source                                                                                                                                                                                                 |
+| Search Conversations    | Full-text search across conversations with `⌘K` (macOS) or `Ctrl+K` (Linux). Search within a specific project or across all projects. Features fuzzy matching, prefix search, and keyboard navigation (↑↓ to navigate, Enter to select)                                                                                                                                  |
+| Start Conversations     | Start Claude Code sessions directly from Claude Code Viewer. Enjoy core functionality like file/command completion, pause/resume, and tool approval through a superior web experience                                                                                                                                                                                    |
+| Resume Sessions         | Resume conversations directly from existing session logs                                                                                                                                                                                                                                                                                                                 |
+| Continue Sessions       | Claude Code Viewer provides advanced session process control. Sessions started through Claude Code Viewer remain alive (unless aborted), allowing you to continue conversations without resuming (no session-id reassignment)                                                                                                                                            |
+| Create Projects         | Create new projects from Claude Code Viewer. Select a directory through the web UI to execute the `/init` command and begin project setup                                                                                                                                                                                                                                |
+| File Upload & Preview   | Upload images (PNG, JPEG, GIF, WebP), PDFs, and text files directly from the chat interface. Each file type displays with dedicated preview components—images render inline, PDFs embed with a viewer, and text files show formatted content                                                                                                                             |
+| Browser Preview         | Preview web applications directly within Claude Code Viewer. Click the preview button on any URL in chat messages to open a resizable browser panel on the right side. Features include URL input with keyboard navigation, reload functionality, and automatic chat window width adjustment. The embedded browser tracks URL changes as you navigate (same-origin only) |
+| Message Scheduler       | Schedule Claude Code messages using cron expressions for recurring tasks or specific datetime for one-time execution. Supports concurrency control (skip/run) for periodic jobs and auto-deletion for reserved jobs                                                                                                                                                      |
+| Review Changes          | Built-in Git Diff Viewer lets you review all changes directly within Claude Code Viewer                                                                                                                                                                                                                                                                                  |
+| Commit Changes          | Execute Git commits directly from the web interface within the Git Diff Viewer                                                                                                                                                                                                                                                                                           |
+| Push Changes            | Push committed changes directly from the Git Diff Viewer. Supports both separate push operations and combined commit-and-push workflows for streamlined deployment                                                                                                                                                                                                       |
+| Branch Switcher         | Switch local Git branches directly from the Git tab (with search and status indicators)                                                                                                                                                                                                                                                                                  |
+| Files & Tools Inspector | Right panel tab that summarizes edited files, groups them by project, and lists tool invocations with filters and quick file preview                                                                                                                                                                                                                                     |
+| Todo Viewer             | Extracts the latest `TodoWrite` items from sessions and displays them in collapsible checklists                                                                                                                                                                                                                                                                          |
+| Terminal Panel          | Bottom panel terminal over WebSocket for running shell commands without leaving the UI                                                                                                                                                                                                                                                                                   |
+| MCP Server Viewer       | View MCP server configurations directly in the session sidebar. Lists all configured servers with their names and commands, with real-time reload capability                                                                                                                                                                                                             |
+| System Information      | Monitor Claude Code and Claude Code Viewer versions, feature compatibility, and system status                                                                                                                                                                                                                                                                            |
+| Multi-language Support  | Full internationalization support with English, Japanese, and Simplified Chinese language options                                                                                                                                                                                                                                                                        |
 
 ## Installation & Usage
 
@@ -110,24 +110,23 @@ docker compose up --build
 
 ## Screenshots
 
-| Feature | Capture |
-| --- | --- |
-| BasicChat (Desktop) | ![](./e2e/snapshots/projects/L2hvbWUvcnVubmVyL3dvcmsvY2xhdWRlLWNvZGUtdmlld2VyL2NsYXVkZS1jb2RlLXZpZXdlci9tb2NrLWdsb2JhbC1jbGF1ZGUtZGlyL3Byb2plY3RzL3NhbXBsZS1wcm9qZWN0/session_sessionId_fe5e1c67-53e7-4862-81ae-d0e013e3270b/desktop-dark.png) |
-| BasicChat (Mobile) | ![](./e2e/snapshots/projects/L2hvbWUvcnVubmVyL3dvcmsvY2xhdWRlLWNvZGUtdmlld2VyL2NsYXVkZS1jb2RlLXZpZXdlci9tb2NrLWdsb2JhbC1jbGF1ZGUtZGlyL3Byb2plY3RzL3NhbXBsZS1wcm9qZWN0/session_sessionId_fe5e1c67-53e7-4862-81ae-d0e013e3270b/mobile-dark.png) |
-| Browser Preview (Right Panel) | ![](./e2e/snapshots/projects/L2hvbWUvcnVubmVyL3dvcmsvY2xhdWRlLWNvZGUtdmlld2VyL2NsYXVkZS1jb2RlLXZpZXdlci9tb2NrLWdsb2JhbC1jbGF1ZGUtZGlyL3Byb2plY3RzL3NhbXBsZS1wcm9qZWN0/session_sessionId_fe5e1c67-53e7-4862-81ae-d0e013e3270b/right-panel-browser-opened/desktop-dark.png) |
-| Git Tab (Right Panel) | ![](./e2e/snapshots/projects/L2hvbWUvcnVubmVyL3dvcmsvY2xhdWRlLWNvZGUtdmlld2VyL2NsYXVkZS1jb2RlLXZpZXdlci9tb2NrLWdsb2JhbC1jbGF1ZGUtZGlyL3Byb2plY3RzL3NhbXBsZS1wcm9qZWN0/session_sessionId_fe5e1c67-53e7-4862-81ae-d0e013e3270b/right-panel-git-tab-opened/desktop-dark.png) |
-| Review Panel (Right Panel) | ![](./e2e/snapshots/projects/L2hvbWUvcnVubmVyL3dvcmsvY2xhdWRlLWNvZGUtdmlld2VyL2NsYXVkZS1jb2RlLXZpZXdlci9tb2NrLWdsb2JhbC1jbGF1ZGUtZGlyL3Byb2plY3RzL3NhbXBsZS1wcm9qZWN0/session_sessionId_fe5e1c67-53e7-4862-81ae-d0e013e3270b/right-panel-review-opened/desktop-dark.png) |
-| File Diffs (Right Panel) | ![](./e2e/snapshots/projects/L2hvbWUvcnVubmVyL3dvcmsvY2xhdWRlLWNvZGUtdmlld2VyL2NsYXVkZS1jb2RlLXZpZXdlci9tb2NrLWdsb2JhbC1jbGF1ZGUtZGlyL3Byb2plY3RzL3NhbXBsZS1wcm9qZWN0/session_sessionId_fe5e1c67-53e7-4862-81ae-d0e013e3270b/right-panel-file-diffs-opened/desktop-dark.png) |
-| Settings | ![](./e2e/snapshots/projects/L2hvbWUvcnVubmVyL3dvcmsvY2xhdWRlLWNvZGUtdmlld2VyL2NsYXVkZS1jb2RlLXZpZXdlci9tb2NrLWdsb2JhbC1jbGF1ZGUtZGlyL3Byb2plY3RzL3NhbXBsZS1wcm9qZWN0/session_sessionId_fe5e1c67-53e7-4862-81ae-d0e013e3270b/settings-tab/desktop-dark.png) |
-| Start New Chat | ![](./e2e/snapshots/projects/L2hvbWUvcnVubmVyL3dvcmsvY2xhdWRlLWNvZGUtdmlld2VyL2NsYXVkZS1jb2RlLXZpZXdlci9tb2NrLWdsb2JhbC1jbGF1ZGUtZGlyL3Byb2plY3RzL3NhbXBsZS1wcm9qZWN0/session_sessionId_fe5e1c67-53e7-4862-81ae-d0e013e3270b/start-new-chat/desktop-dark.png) |
-| Projects List | ![](./e2e/snapshots/projects/desktop-dark.png) |
-| New Project Modal | ![](./e2e/snapshots/projects/new-project-modal/desktop-dark.png) |
-| CommandCompletion | ![](./docs/assets/command_completion.png) |
-| FileCompletion | ![](./docs/assets/file_completion.png) |
-| Diff Viewer | ![](./docs/assets/git_diff.png) |
+| Feature                       | Capture                                                                                                                                                                                                                                                                      |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BasicChat (Desktop)           | ![](./e2e/snapshots/projects/L2hvbWUvcnVubmVyL3dvcmsvY2xhdWRlLWNvZGUtdmlld2VyL2NsYXVkZS1jb2RlLXZpZXdlci9tb2NrLWdsb2JhbC1jbGF1ZGUtZGlyL3Byb2plY3RzL3NhbXBsZS1wcm9qZWN0/session_sessionId_fe5e1c67-53e7-4862-81ae-d0e013e3270b/desktop-dark.png)                               |
+| BasicChat (Mobile)            | ![](./e2e/snapshots/projects/L2hvbWUvcnVubmVyL3dvcmsvY2xhdWRlLWNvZGUtdmlld2VyL2NsYXVkZS1jb2RlLXZpZXdlci9tb2NrLWdsb2JhbC1jbGF1ZGUtZGlyL3Byb2plY3RzL3NhbXBsZS1wcm9qZWN0/session_sessionId_fe5e1c67-53e7-4862-81ae-d0e013e3270b/mobile-dark.png)                                |
+| Browser Preview (Right Panel) | ![](./e2e/snapshots/projects/L2hvbWUvcnVubmVyL3dvcmsvY2xhdWRlLWNvZGUtdmlld2VyL2NsYXVkZS1jb2RlLXZpZXdlci9tb2NrLWdsb2JhbC1jbGF1ZGUtZGlyL3Byb2plY3RzL3NhbXBsZS1wcm9qZWN0/session_sessionId_fe5e1c67-53e7-4862-81ae-d0e013e3270b/right-panel-browser-opened/desktop-dark.png)    |
+| Git Tab (Right Panel)         | ![](./e2e/snapshots/projects/L2hvbWUvcnVubmVyL3dvcmsvY2xhdWRlLWNvZGUtdmlld2VyL2NsYXVkZS1jb2RlLXZpZXdlci9tb2NrLWdsb2JhbC1jbGF1ZGUtZGlyL3Byb2plY3RzL3NhbXBsZS1wcm9qZWN0/session_sessionId_fe5e1c67-53e7-4862-81ae-d0e013e3270b/right-panel-git-tab-opened/desktop-dark.png)    |
+| Review Panel (Right Panel)    | ![](./e2e/snapshots/projects/L2hvbWUvcnVubmVyL3dvcmsvY2xhdWRlLWNvZGUtdmlld2VyL2NsYXVkZS1jb2RlLXZpZXdlci9tb2NrLWdsb2JhbC1jbGF1ZGUtZGlyL3Byb2plY3RzL3NhbXBsZS1wcm9qZWN0/session_sessionId_fe5e1c67-53e7-4862-81ae-d0e013e3270b/right-panel-review-opened/desktop-dark.png)     |
+| File Diffs (Right Panel)      | ![](./e2e/snapshots/projects/L2hvbWUvcnVubmVyL3dvcmsvY2xhdWRlLWNvZGUtdmlld2VyL2NsYXVkZS1jb2RlLXZpZXdlci9tb2NrLWdsb2JhbC1jbGF1ZGUtZGlyL3Byb2plY3RzL3NhbXBsZS1wcm9qZWN0/session_sessionId_fe5e1c67-53e7-4862-81ae-d0e013e3270b/right-panel-file-diffs-opened/desktop-dark.png) |
+| Settings                      | ![](./e2e/snapshots/projects/L2hvbWUvcnVubmVyL3dvcmsvY2xhdWRlLWNvZGUtdmlld2VyL2NsYXVkZS1jb2RlLXZpZXdlci9tb2NrLWdsb2JhbC1jbGF1ZGUtZGlyL3Byb2plY3RzL3NhbXBsZS1wcm9qZWN0/session_sessionId_fe5e1c67-53e7-4862-81ae-d0e013e3270b/settings-tab/desktop-dark.png)                  |
+| Start New Chat                | ![](./e2e/snapshots/projects/L2hvbWUvcnVubmVyL3dvcmsvY2xhdWRlLWNvZGUtdmlld2VyL2NsYXVkZS1jb2RlLXZpZXdlci9tb2NrLWdsb2JhbC1jbGF1ZGUtZGlyL3Byb2plY3RzL3NhbXBsZS1wcm9qZWN0/session_sessionId_fe5e1c67-53e7-4862-81ae-d0e013e3270b/start-new-chat/desktop-dark.png)                |
+| Projects List                 | ![](./e2e/snapshots/projects/desktop-dark.png)                                                                                                                                                                                                                               |
+| New Project Modal             | ![](./e2e/snapshots/projects/new-project-modal/desktop-dark.png)                                                                                                                                                                                                             |
+| CommandCompletion             | ![](./docs/assets/command_completion.png)                                                                                                                                                                                                                                    |
+| FileCompletion                | ![](./docs/assets/file_completion.png)                                                                                                                                                                                                                                       |
+| Diff Viewer                   | ![](./docs/assets/git_diff.png)                                                                                                                                                                                                                                              |
 
 Note: Additional UI screenshots are available in [/e2e/snapshots/](./e2e/snapshots/)
-
 
 ## Data Source
 
@@ -161,19 +160,20 @@ The application reads Claude Code conversation logs from:
 
 Claude Code Viewer can be configured using command-line options or environment variables. Command-line options take precedence over environment variables.
 
-| Command-Line Option | Environment Variable | Description | Default |
-| --- | --- | --- | --- |
-| `-p, --port <port>` | `PORT` | Port number for Claude Code Viewer to run on | `3000` |
-| `-h, --hostname <hostname>` | `HOSTNAME` | Hostname to listen on for remote access | `localhost` |
-| `-P, --password <password>` | `CCV_PASSWORD` | Password for authentication. When set, enables password-based authentication to protect access to Claude Code Viewer. All `/api` routes (except login, logout, check, config, and version endpoints) require authentication. If not set, authentication is disabled and the application is publicly accessible | (none) |
-| `-e, --executable <executable>` | `CCV_CC_EXECUTABLE_PATH` | Path to Claude Code installation. If not set, uses system PATH installation, or falls back to bundled version from dependencies | (auto-detect) |
-| `--claude-dir <claude-dir>` | `CCV_GLOBAL_CLAUDE_DIR` | Path to Claude directory where session logs are stored | `~/.claude` |
-| `--terminal-disabled` | `CCV_TERMINAL_DISABLED` | Disable the in-app terminal panel when set to `1`/`true` (env) or when the flag is present (CLI) | (unset) |
-| `--terminal-shell <path>` | `CCV_TERMINAL_SHELL` | Shell executable for terminal sessions (e.g. `/bin/zsh`) | (auto-detect) |
-| `--terminal-unrestricted` | `CCV_TERMINAL_UNRESTRICTED` | When set to `1` (env) or when the flag is present (CLI), disables the restricted shell flags for bash | (unset) |
-| `--api-only` | `CCV_API_ONLY` | Run in API-only mode. Disables Web UI, terminal WebSocket, and non-essential endpoints. Only core API routes (`/api/version`, `/api/config`, `/api/projects`, `/api/claude-code`, `/api/search`, `/api/sse`) are exposed. Useful for integrating with external tools like n8n | (unset) |
+| Command-Line Option             | Environment Variable        | Description                                                                                                                                                                                                                                                                                                    | Default       |
+| ------------------------------- | --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `-p, --port <port>`             | `PORT`                      | Port number for Claude Code Viewer to run on                                                                                                                                                                                                                                                                   | `3000`        |
+| `-h, --hostname <hostname>`     | `HOSTNAME`                  | Hostname to listen on for remote access                                                                                                                                                                                                                                                                        | `localhost`   |
+| `-P, --password <password>`     | `CCV_PASSWORD`              | Password for authentication. When set, enables password-based authentication to protect access to Claude Code Viewer. All `/api` routes (except login, logout, check, config, and version endpoints) require authentication. If not set, authentication is disabled and the application is publicly accessible | (none)        |
+| `-e, --executable <executable>` | `CCV_CC_EXECUTABLE_PATH`    | Path to Claude Code installation. If not set, uses system PATH installation, or falls back to bundled version from dependencies                                                                                                                                                                                | (auto-detect) |
+| `--claude-dir <claude-dir>`     | `CCV_GLOBAL_CLAUDE_DIR`     | Path to Claude directory where session logs are stored                                                                                                                                                                                                                                                         | `~/.claude`   |
+| `--terminal-disabled`           | `CCV_TERMINAL_DISABLED`     | Disable the in-app terminal panel when set to `1`/`true` (env) or when the flag is present (CLI)                                                                                                                                                                                                               | (unset)       |
+| `--terminal-shell <path>`       | `CCV_TERMINAL_SHELL`        | Shell executable for terminal sessions (e.g. `/bin/zsh`)                                                                                                                                                                                                                                                       | (auto-detect) |
+| `--terminal-unrestricted`       | `CCV_TERMINAL_UNRESTRICTED` | When set to `1` (env) or when the flag is present (CLI), disables the restricted shell flags for bash                                                                                                                                                                                                          | (unset)       |
+| `--api-only`                    | `CCV_API_ONLY`              | Run in API-only mode. Disables Web UI, terminal WebSocket, and non-essential endpoints. Only core API routes (`/api/version`, `/api/config`, `/api/projects`, `/api/claude-code`, `/api/search`, `/api/sse`) are exposed. Useful for integrating with external tools like n8n                                  | (unset)       |
 
 **Breaking Change**: Environment variable names have been changed. If you're using environment variables, update them as follows:
+
 - `CLAUDE_CODE_VIEWER_AUTH_PASSWORD` → `CCV_PASSWORD`
 - `CLAUDE_CODE_VIEWER_CC_EXECUTABLE_PATH` → `CCV_CC_EXECUTABLE_PATH`
 - New environment variable added: `CCV_GLOBAL_CLAUDE_DIR` (previously the Claude directory path was hardcoded to `~/.claude`)
@@ -191,17 +191,17 @@ If no password is configured, API authentication is disabled.
 
 Settings can be configured from the sidebar in Claude Code Viewer.
 
-| Setting | Default | Description |
-| --- | --- | --- |
-| Hide sessions without user messages | true | Claude Code creates logs for operations like `/compact` that aren't tied to actual tasks, which can create noise. When enabled, sessions without user messages are hidden. |
-| Unify sessions with same title | false | When resuming, Claude Code creates a new session with regenerated conversation logs. When enabled, only the latest session with the same title is displayed. |
-| Auto-schedule Continue on Rate Limit | false | Automatically schedules a continue message when Claude hits rate limits. When enabled, the system detects rate limit errors in live sessions and creates a scheduled job to send "continue" one minute after the limit reset time. This prevents manual intervention for rate limit recovery. |
-| Enter Key Behavior | Shift+Enter | Specifies which key combination sends messages. Options include Enter, Shift+Enter, and Command+Enter. |
-| Search Hotkey | Command+K | Select the hotkey to open search dialog. Options include Ctrl+K and Command+K. |
-| Permission Mode | Ask permission | Controls the approval logic when Claude Code requests tool invocations. By default, users approve requests through the UI. This feature requires Claude Code v1.0.82 or later; earlier versions automatically approve regardless of this setting. |
-| Theme | System | Toggles between Dark Mode and Light Mode. Default follows system settings. |
-| Notifications | None | Enables sound notifications when running session processes complete. Choose from multiple notification sounds with test playback functionality. |
-| Language | System | Interface language selection. Supports English, Japanese, and Simplified Chinese with automatic system detection. |
+| Setting                              | Default        | Description                                                                                                                                                                                                                                                                                   |
+| ------------------------------------ | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Hide sessions without user messages  | true           | Claude Code creates logs for operations like `/compact` that aren't tied to actual tasks, which can create noise. When enabled, sessions without user messages are hidden.                                                                                                                    |
+| Unify sessions with same title       | false          | When resuming, Claude Code creates a new session with regenerated conversation logs. When enabled, only the latest session with the same title is displayed.                                                                                                                                  |
+| Auto-schedule Continue on Rate Limit | false          | Automatically schedules a continue message when Claude hits rate limits. When enabled, the system detects rate limit errors in live sessions and creates a scheduled job to send "continue" one minute after the limit reset time. This prevents manual intervention for rate limit recovery. |
+| Enter Key Behavior                   | Shift+Enter    | Specifies which key combination sends messages. Options include Enter, Shift+Enter, and Command+Enter.                                                                                                                                                                                        |
+| Search Hotkey                        | Command+K      | Select the hotkey to open search dialog. Options include Ctrl+K and Command+K.                                                                                                                                                                                                                |
+| Permission Mode                      | Ask permission | Controls the approval logic when Claude Code requests tool invocations. By default, users approve requests through the UI. This feature requires Claude Code v1.0.82 or later; earlier versions automatically approve regardless of this setting.                                             |
+| Theme                                | System         | Toggles between Dark Mode and Light Mode. Default follows system settings.                                                                                                                                                                                                                    |
+| Notifications                        | None           | Enables sound notifications when running session processes complete. Choose from multiple notification sounds with test playback functionality.                                                                                                                                               |
+| Language                             | System         | Interface language selection. Supports English, Japanese, and Simplified Chinese with automatic system detection.                                                                                                                                                                             |
 
 ## Internationalization (i18n)
 
@@ -216,11 +216,13 @@ If you'd like support for your language, please open an issue—we'll add it qui
 Anthropic provides [Claude Code on the Web](https://docs.claude.com/en/docs/claude-code/claude-code-on-the-web), which runs Claude Code sessions in Anthropic's cloud VMs. Each session clones your repository and executes predefined setup commands (e.g., `pnpm install`).
 
 **When to use Claude Code on the Web**:
+
 - Quick testing without local setup or self-hosting infrastructure
 - Casual development from mobile devices or public computers
 - Simple repository structures with single CLAUDE.md at the root
 
 **When to use Claude Code Viewer**:
+
 - Working with pre-configured local environments (databases, services, large dependencies)
 - Monorepo projects with multiple CLAUDE.md files in different directories
 - Development requiring significant computational resources or long-running processes

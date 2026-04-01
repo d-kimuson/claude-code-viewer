@@ -1,8 +1,8 @@
 import { useLingui } from "@lingui/react";
 import { CheckIcon, FileIcon, FolderIcon } from "lucide-react";
-import type React from "react";
 import {
   forwardRef,
+  type KeyboardEvent,
   useCallback,
   useEffect,
   useImperativeHandle,
@@ -11,10 +11,7 @@ import {
   useState,
 } from "react";
 import { Button } from "../../../../../components/ui/button";
-import {
-  Collapsible,
-  CollapsibleContent,
-} from "../../../../../components/ui/collapsible";
+import { Collapsible, CollapsibleContent } from "../../../../../components/ui/collapsible";
 import {
   type FileCompletionEntry,
   useFileCompletion,
@@ -29,7 +26,7 @@ type FileCompletionProps = {
 };
 
 export type FileCompletionRef = {
-  handleKeyDown: (e: React.KeyboardEvent) => boolean;
+  handleKeyDown: (e: KeyboardEvent) => boolean;
 };
 
 // Parse the @ completion from input value
@@ -46,7 +43,7 @@ const parseFileCompletionFromInput = (input: string) => {
 
   // Check if we're in the middle of a word after @ (no space after the path)
   const parts = afterAt.split(/\s/);
-  const searchPath = parts[0] || "";
+  const searchPath = parts[0] ?? "";
 
   // Don't show completion if there's a space after the path (user has finished typing the path)
   // This includes cases like "@hoge " where parts = ["hoge", ""]
@@ -60,273 +57,257 @@ const parseFileCompletionFromInput = (input: string) => {
   };
 };
 
-export const FileCompletion = forwardRef<
-  FileCompletionRef,
-  FileCompletionProps
->(({ projectId, inputValue, onFileSelect, className }, ref) => {
-  const { i18n } = useLingui();
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedIndex, setSelectedIndex] = useState(-1);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const listRef = useRef<HTMLDivElement>(null);
+export const FileCompletion = forwardRef<FileCompletionRef, FileCompletionProps>(
+  ({ projectId, inputValue, onFileSelect, className }, ref) => {
+    const { i18n } = useLingui();
+    const [isOpen, setIsOpen] = useState(false);
+    const [selectedIndex, setSelectedIndex] = useState(-1);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const listRef = useRef<HTMLDivElement>(null);
 
-  // Parse the input to extract the path being completed
-  const { shouldShow, searchPath, beforeAt, afterAt } = useMemo(
-    () => parseFileCompletionFromInput(inputValue),
-    [inputValue],
-  );
-
-  // Determine the base path and filter term
-  const { basePath, filterTerm } = useMemo(() => {
-    if (!searchPath) {
-      return { basePath: "/", filterTerm: "" };
-    }
-
-    const lastSlashIndex = searchPath.lastIndexOf("/");
-    if (lastSlashIndex === -1) {
-      return { basePath: "/", filterTerm: searchPath };
-    }
-
-    const path = searchPath.slice(0, lastSlashIndex + 1);
-    const term = searchPath.slice(lastSlashIndex + 1);
-    return {
-      basePath: path === "/" ? "/" : path,
-      filterTerm: term,
-    };
-  }, [searchPath]);
-
-  // Fetch file completion data
-  const { data: completionData, isLoading } = useFileCompletion(
-    projectId,
-    basePath,
-    shouldShow,
-  );
-
-  // Filter entries based on the current filter term
-  const filteredEntries = useMemo(() => {
-    if (!completionData?.entries) return [];
-
-    if (!filterTerm) {
-      return completionData.entries;
-    }
-
-    return completionData.entries.filter((entry) =>
-      entry.name.toLowerCase().includes(filterTerm.toLowerCase()),
+    // Parse the input to extract the path being completed
+    const { shouldShow, searchPath, beforeAt, afterAt } = useMemo(
+      () => parseFileCompletionFromInput(inputValue),
+      [inputValue],
     );
-  }, [completionData?.entries, filterTerm]);
 
-  // Determine if completion should be shown
-  const shouldBeOpen = shouldShow && !isLoading && filteredEntries.length > 0;
-
-  // Update open state when it should change
-  if (isOpen !== shouldBeOpen) {
-    setIsOpen(shouldBeOpen);
-    setSelectedIndex(-1);
-  }
-
-  // Handle file/directory selection with different behaviors for different triggers
-  const handleEntrySelect = useCallback(
-    (entry: FileCompletionEntry, forceClose = false) => {
-      const fullPath = entry.path;
-
-      // For directories, add a trailing slash to continue completion (unless forced to close)
-      // For files or when forced to close, add a space to end completion
-
-      // Reconstruct the message with the selected path
-      const remainingText = afterAt.split(/\s/).slice(1).join(" ");
-      const newMessage =
-        `${beforeAt}@${fullPath}${remainingText}`.trim() +
-        (entry.type === "directory" && !forceClose ? "/" : " ");
-
-      onFileSelect(newMessage);
-
-      // Close completion if it's a file, or if forced to close
-      if (entry.type === "file" || forceClose) {
-        setIsOpen(false);
-        setSelectedIndex(-1);
+    // Determine the base path and filter term
+    const { basePath, filterTerm } = useMemo(() => {
+      if (!searchPath) {
+        return { basePath: "/", filterTerm: "" };
       }
-    },
-    [beforeAt, afterAt, onFileSelect],
-  );
 
-  // Scroll to selected entry
-  const scrollToSelected = useCallback((index: number) => {
-    if (index >= 0 && listRef.current) {
-      // ボタン要素を直接検索
-      const buttons = listRef.current.querySelectorAll('button[role="option"]');
-      const selectedButton = buttons[index] as HTMLElement;
-      if (selectedButton) {
-        selectedButton.scrollIntoView({
-          block: "nearest",
-          behavior: "smooth",
-        });
+      const lastSlashIndex = searchPath.lastIndexOf("/");
+      if (lastSlashIndex === -1) {
+        return { basePath: "/", filterTerm: searchPath };
       }
+
+      const path = searchPath.slice(0, lastSlashIndex + 1);
+      const term = searchPath.slice(lastSlashIndex + 1);
+      return {
+        basePath: path === "/" ? "/" : path,
+        filterTerm: term,
+      };
+    }, [searchPath]);
+
+    // Fetch file completion data
+    const { data: completionData, isLoading } = useFileCompletion(projectId, basePath, shouldShow);
+
+    // Filter entries based on the current filter term
+    const filteredEntries = useMemo(() => {
+      if (!completionData?.entries) return [];
+
+      if (!filterTerm) {
+        return completionData.entries;
+      }
+
+      return completionData.entries.filter((entry) =>
+        entry.name.toLowerCase().includes(filterTerm.toLowerCase()),
+      );
+    }, [completionData?.entries, filterTerm]);
+
+    // Determine if completion should be shown
+    const shouldBeOpen = shouldShow && !isLoading && filteredEntries.length > 0;
+
+    // Update open state when it should change
+    if (isOpen !== shouldBeOpen) {
+      setIsOpen(shouldBeOpen);
+      setSelectedIndex(-1);
     }
-  }, []);
 
-  // Keyboard navigation
-  const handleKeyboardNavigation = useCallback(
-    (e: React.KeyboardEvent): boolean => {
-      if (!isOpen || filteredEntries.length === 0) return false;
+    // Handle file/directory selection with different behaviors for different triggers
+    const handleEntrySelect = useCallback(
+      (entry: FileCompletionEntry, forceClose = false) => {
+        const fullPath = entry.path;
 
-      switch (e.key) {
-        case "ArrowDown":
-          e.preventDefault();
-          setSelectedIndex((prev) => {
-            const newIndex = prev < filteredEntries.length - 1 ? prev + 1 : 0;
-            requestAnimationFrame(() => scrollToSelected(newIndex));
-            return newIndex;
-          });
-          return true;
-        case "ArrowUp":
-          e.preventDefault();
-          setSelectedIndex((prev) => {
-            const newIndex = prev > 0 ? prev - 1 : filteredEntries.length - 1;
-            requestAnimationFrame(() => scrollToSelected(newIndex));
-            return newIndex;
-          });
-          return true;
-        case "Enter":
-          if (selectedIndex >= 0 && selectedIndex < filteredEntries.length) {
-            e.preventDefault();
-            const selectedEntry = filteredEntries[selectedIndex];
-            if (selectedEntry) {
-              // Enter always closes completion (even for directories)
-              handleEntrySelect(selectedEntry, true);
-            }
-            return true;
-          }
-          break;
-        case "Tab":
-          if (selectedIndex >= 0 && selectedIndex < filteredEntries.length) {
-            e.preventDefault();
-            const selectedEntry = filteredEntries[selectedIndex];
-            if (selectedEntry) {
-              // Tab: continue completion for directories, close for files
-              handleEntrySelect(selectedEntry, selectedEntry.type === "file");
-            }
-            return true;
-          }
-          break;
-        case "Escape":
-          e.preventDefault();
+        // For directories, add a trailing slash to continue completion (unless forced to close)
+        // For files or when forced to close, add a space to end completion
+
+        // Reconstruct the message with the selected path
+        const remainingText = afterAt.split(/\s/).slice(1).join(" ");
+        const newMessage =
+          `${beforeAt}@${fullPath}${remainingText}`.trim() +
+          (entry.type === "directory" && !forceClose ? "/" : " ");
+
+        onFileSelect(newMessage);
+
+        // Close completion if it's a file, or if forced to close
+        if (entry.type === "file" || forceClose) {
           setIsOpen(false);
           setSelectedIndex(-1);
-          return true;
+        }
+      },
+      [beforeAt, afterAt, onFileSelect],
+    );
+
+    // Scroll to selected entry
+    const scrollToSelected = useCallback((index: number) => {
+      if (index >= 0 && listRef.current) {
+        // ボタン要素を直接検索
+        const buttons = listRef.current.querySelectorAll('button[role="option"]');
+        const selectedButton = buttons[index];
+        if (selectedButton instanceof HTMLElement) {
+          selectedButton.scrollIntoView({
+            block: "nearest",
+            behavior: "smooth",
+          });
+        }
       }
-      return false;
-    },
-    [
-      isOpen,
-      filteredEntries.length,
-      selectedIndex,
-      handleEntrySelect,
-      scrollToSelected,
-      filteredEntries,
-    ],
-  );
+    }, []);
 
-  // Handle clicks outside the component
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
-        setSelectedIndex(-1);
-      }
-    };
+    // Keyboard navigation
+    const handleKeyboardNavigation = useCallback(
+      (e: KeyboardEvent): boolean => {
+        if (!isOpen || filteredEntries.length === 0) return false;
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+        switch (e.key) {
+          case "ArrowDown":
+            e.preventDefault();
+            setSelectedIndex((prev) => {
+              const newIndex = prev < filteredEntries.length - 1 ? prev + 1 : 0;
+              requestAnimationFrame(() => scrollToSelected(newIndex));
+              return newIndex;
+            });
+            return true;
+          case "ArrowUp":
+            e.preventDefault();
+            setSelectedIndex((prev) => {
+              const newIndex = prev > 0 ? prev - 1 : filteredEntries.length - 1;
+              requestAnimationFrame(() => scrollToSelected(newIndex));
+              return newIndex;
+            });
+            return true;
+          case "Enter":
+            if (selectedIndex >= 0 && selectedIndex < filteredEntries.length) {
+              e.preventDefault();
+              const selectedEntry = filteredEntries[selectedIndex];
+              if (selectedEntry) {
+                // Enter always closes completion (even for directories)
+                handleEntrySelect(selectedEntry, true);
+              }
+              return true;
+            }
+            return false;
+          case "Tab":
+            if (selectedIndex >= 0 && selectedIndex < filteredEntries.length) {
+              e.preventDefault();
+              const selectedEntry = filteredEntries[selectedIndex];
+              if (selectedEntry) {
+                // Tab: continue completion for directories, close for files
+                handleEntrySelect(selectedEntry, selectedEntry.type === "file");
+              }
+              return true;
+            }
+            return false;
+          case "Escape":
+            e.preventDefault();
+            setIsOpen(false);
+            setSelectedIndex(-1);
+            return true;
+          default:
+            return false;
+        }
+      },
+      [isOpen, selectedIndex, handleEntrySelect, scrollToSelected, filteredEntries],
+    );
 
-  // Expose keyboard handler to parent
-  useImperativeHandle(
-    ref,
-    () => ({
-      handleKeyDown: handleKeyboardNavigation,
-    }),
-    [handleKeyboardNavigation],
-  );
+    // Handle clicks outside the component
+    useEffect(() => {
+      const handleClickOutside = (event: MouseEvent) => {
+        if (
+          containerRef.current &&
+          event.target instanceof Node &&
+          !containerRef.current.contains(event.target)
+        ) {
+          setIsOpen(false);
+          setSelectedIndex(-1);
+        }
+      };
 
-  if (!shouldShow || isLoading || filteredEntries.length === 0) {
-    return null;
-  }
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
 
-  return (
-    <div ref={containerRef} className={cn("relative", className)}>
-      <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-        <CollapsibleContent>
-          <div
-            ref={listRef}
-            className="absolute z-50 w-full bg-popover border border-border rounded-lg shadow-xl overflow-hidden"
-            style={{ height: "15rem" }}
-            role="listbox"
-            aria-label={i18n._("Available files and directories")}
-          >
-            <div className="h-full overflow-y-auto">
-              {filteredEntries.length > 0 && (
-                <div className="p-1.5">
-                  <div
-                    className="px-3 py-2 text-xs font-semibold text-muted-foreground/80 border-b border-border/50 mb-1 flex items-center gap-2"
-                    role="presentation"
-                  >
-                    <FileIcon className="w-3.5 h-3.5" />
-                    Files & Directories ({filteredEntries.length})
-                    {basePath !== "/" && (
-                      <span className="text-xs font-mono text-muted-foreground/70">
-                        in {basePath}
-                      </span>
-                    )}
-                  </div>
-                  {filteredEntries.map((entry, index) => (
-                    <Button
-                      key={entry.path}
-                      variant="ghost"
-                      size="sm"
-                      className={cn(
-                        "w-full justify-start text-left font-mono text-sm h-9 px-3 min-w-0 transition-colors duration-150",
-                        index === selectedIndex
-                          ? "bg-gradient-to-r from-blue-500/10 to-purple-500/10 text-foreground border border-blue-500/20"
-                          : "hover:bg-accent/50",
-                      )}
-                      onClick={() =>
-                        handleEntrySelect(entry, entry.type === "file")
-                      }
-                      onMouseEnter={() => setSelectedIndex(index)}
-                      role="option"
-                      aria-selected={index === selectedIndex}
-                      aria-label={`${entry.type}: ${entry.name}`}
-                      title={entry.path}
+    // Expose keyboard handler to parent
+    useImperativeHandle(
+      ref,
+      () => ({
+        handleKeyDown: handleKeyboardNavigation,
+      }),
+      [handleKeyboardNavigation],
+    );
+
+    if (!shouldShow || isLoading || filteredEntries.length === 0) {
+      return null;
+    }
+
+    return (
+      <div ref={containerRef} className={cn("relative", className)}>
+        <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+          <CollapsibleContent>
+            <div
+              ref={listRef}
+              className="absolute z-50 w-full bg-popover border border-border rounded-lg shadow-xl overflow-hidden"
+              style={{ height: "15rem" }}
+              role="listbox"
+              aria-label={i18n._("Available files and directories")}
+            >
+              <div className="h-full overflow-y-auto">
+                {filteredEntries.length > 0 && (
+                  <div className="p-1.5">
+                    <div
+                      className="px-3 py-2 text-xs font-semibold text-muted-foreground/80 border-b border-border/50 mb-1 flex items-center gap-2"
+                      role="presentation"
                     >
-                      {entry.type === "directory" ? (
-                        <FolderIcon className="w-3.5 h-3.5 mr-2 text-blue-500 dark:text-blue-400 flex-shrink-0" />
-                      ) : (
-                        <FileIcon className="w-3.5 h-3.5 mr-2 text-gray-500 dark:text-gray-400 flex-shrink-0" />
-                      )}
-                      <span className="font-medium truncate min-w-0">
-                        {entry.name}
-                      </span>
-                      {entry.type === "directory" && (
-                        <span className="text-muted-foreground ml-1 flex-shrink-0">
-                          /
+                      <FileIcon className="w-3.5 h-3.5" />
+                      Files & Directories ({filteredEntries.length})
+                      {basePath !== "/" && (
+                        <span className="text-xs font-mono text-muted-foreground/70">
+                          in {basePath}
                         </span>
                       )}
-                      {index === selectedIndex && (
-                        <CheckIcon className="w-3.5 h-3.5 ml-auto text-blue-600 dark:text-blue-400 flex-shrink-0" />
-                      )}
-                    </Button>
-                  ))}
-                </div>
-              )}
+                    </div>
+                    {filteredEntries.map((entry, index) => (
+                      <Button
+                        key={entry.path}
+                        variant="ghost"
+                        size="sm"
+                        className={cn(
+                          "w-full justify-start text-left font-mono text-sm h-9 px-3 min-w-0 transition-colors duration-150",
+                          index === selectedIndex
+                            ? "bg-gradient-to-r from-blue-500/10 to-purple-500/10 text-foreground border border-blue-500/20"
+                            : "hover:bg-accent/50",
+                        )}
+                        onClick={() => handleEntrySelect(entry, entry.type === "file")}
+                        onMouseEnter={() => setSelectedIndex(index)}
+                        role="option"
+                        aria-selected={index === selectedIndex}
+                        aria-label={`${entry.type}: ${entry.name}`}
+                        title={entry.path}
+                      >
+                        {entry.type === "directory" ? (
+                          <FolderIcon className="w-3.5 h-3.5 mr-2 text-blue-500 dark:text-blue-400 flex-shrink-0" />
+                        ) : (
+                          <FileIcon className="w-3.5 h-3.5 mr-2 text-gray-500 dark:text-gray-400 flex-shrink-0" />
+                        )}
+                        <span className="font-medium truncate min-w-0">{entry.name}</span>
+                        {entry.type === "directory" && (
+                          <span className="text-muted-foreground ml-1 flex-shrink-0">/</span>
+                        )}
+                        {index === selectedIndex && (
+                          <CheckIcon className="w-3.5 h-3.5 ml-auto text-blue-600 dark:text-blue-400 flex-shrink-0" />
+                        )}
+                      </Button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-        </CollapsibleContent>
-      </Collapsible>
-    </div>
-  );
-});
+          </CollapsibleContent>
+        </Collapsible>
+      </div>
+    );
+  },
+);
 
 FileCompletion.displayName = "FileCompletion";

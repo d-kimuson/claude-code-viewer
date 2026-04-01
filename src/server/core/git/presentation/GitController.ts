@@ -10,11 +10,7 @@ const LayerImpl = Effect.gen(function* () {
   const gitService = yield* GitService;
   const projectRepository = yield* ProjectRepository;
 
-  const getGitDiff = (options: {
-    projectId: string;
-    fromRef: string;
-    toRef: string;
-  }) =>
+  const getGitDiff = (options: { projectId: string; fromRef: string; toRef: string }) =>
     Effect.gen(function* () {
       const { projectId, fromRef, toRef } = options;
 
@@ -32,8 +28,7 @@ const LayerImpl = Effect.gen(function* () {
       const diffResult = yield* Effect.either(
         Effect.tryPromise({
           try: () => getDiff(projectPath, fromRef, toRef),
-          catch: (error) =>
-            error instanceof Error ? error : new Error("Failed to get diff"),
+          catch: (error) => (error instanceof Error ? error : new Error("Failed to get diff")),
         }),
       );
 
@@ -51,11 +46,7 @@ const LayerImpl = Effect.gen(function* () {
       } as const satisfies ControllerResponse;
     });
 
-  const commitFiles = (options: {
-    projectId: string;
-    files: string[];
-    message: string;
-  }) =>
+  const commitFiles = (options: { projectId: string; files: string[]; message: string }) =>
     Effect.gen(function* () {
       const { projectId, files, message } = options;
 
@@ -73,14 +64,9 @@ const LayerImpl = Effect.gen(function* () {
 
       // Stage files
       console.log("[GitController.commitFiles] Staging files...");
-      const stageResult = yield* Effect.either(
-        gitService.stageFiles(projectPath, files),
-      );
+      const stageResult = yield* Effect.either(gitService.stageFiles(projectPath, files));
       if (Either.isLeft(stageResult)) {
-        console.log(
-          "[GitController.commitFiles] Stage failed:",
-          stageResult.left,
-        );
+        console.log("[GitController.commitFiles] Stage failed:", stageResult.left);
         return {
           response: {
             success: false,
@@ -95,14 +81,9 @@ const LayerImpl = Effect.gen(function* () {
 
       // Commit
       console.log("[GitController.commitFiles] Committing...");
-      const commitResult = yield* Effect.either(
-        gitService.commit(projectPath, message),
-      );
+      const commitResult = yield* Effect.either(gitService.commit(projectPath, message));
       if (Either.isLeft(commitResult)) {
-        console.log(
-          "[GitController.commitFiles] Commit failed:",
-          commitResult.left,
-        );
+        console.log("[GitController.commitFiles] Commit failed:", commitResult.left);
         const error = commitResult.left;
         const errorMessage =
           "_tag" in error && error._tag === "GitCommandError"
@@ -115,19 +96,14 @@ const LayerImpl = Effect.gen(function* () {
           response: {
             success: false,
             error: isHookFailure ? "Pre-commit hook failed" : "Commit failed",
-            errorCode: (isHookFailure
-              ? "HOOK_FAILED"
-              : "GIT_COMMAND_ERROR") as CommitErrorCode,
+            errorCode: (isHookFailure ? "HOOK_FAILED" : "GIT_COMMAND_ERROR") as CommitErrorCode,
             details: errorMessage,
           },
           status: 200,
         } as const satisfies ControllerResponse;
       }
 
-      console.log(
-        "[GitController.commitFiles] Commit succeeded, SHA:",
-        commitResult.right,
-      );
+      console.log("[GitController.commitFiles] Commit succeeded, SHA:", commitResult.right);
 
       return {
         response: {
@@ -163,10 +139,7 @@ const LayerImpl = Effect.gen(function* () {
       const pushResult = yield* Effect.either(gitService.push(projectPath));
 
       if (Either.isLeft(pushResult)) {
-        console.log(
-          "[GitController.pushCommits] Push failed:",
-          pushResult.left,
-        );
+        console.log("[GitController.pushCommits] Push failed:", pushResult.left);
         const error = pushResult.left;
         const errorMessage =
           "_tag" in error && error._tag === "GitCommandError"
@@ -199,11 +172,7 @@ const LayerImpl = Effect.gen(function* () {
       } as const satisfies ControllerResponse;
     });
 
-  const commitAndPush = (options: {
-    projectId: string;
-    files: string[];
-    message: string;
-  }) =>
+  const commitAndPush = (options: { projectId: string; files: string[]; message: string }) =>
     Effect.gen(function* () {
       const { projectId, files, message } = options;
 
@@ -217,27 +186,18 @@ const LayerImpl = Effect.gen(function* () {
       const commitResult = yield* commitFiles({ projectId, files, message });
 
       if (commitResult.status !== 200 || !commitResult.response.success) {
-        console.log(
-          "[GitController.commitAndPush] Commit failed:",
-          commitResult,
-        );
+        console.log("[GitController.commitAndPush] Commit failed:", commitResult);
         return commitResult; // Return commit error
       }
 
       const commitSha = commitResult.response.commitSha;
-      console.log(
-        "[GitController.commitAndPush] Commit succeeded, SHA:",
-        commitSha,
-      );
+      console.log("[GitController.commitAndPush] Commit succeeded, SHA:", commitSha);
 
       // Then, push
       const pushResult = yield* pushCommits({ projectId });
 
       if (pushResult.status !== 200 || !pushResult.response.success) {
-        console.log(
-          "[GitController.commitAndPush] Push failed, partial failure:",
-          pushResult,
-        );
+        console.log("[GitController.commitAndPush] Push failed, partial failure:", pushResult);
         // Partial failure: commit succeeded, push failed
         return {
           response: {
@@ -284,9 +244,7 @@ const LayerImpl = Effect.gen(function* () {
       const projectPath = project.meta.projectPath;
 
       // Get current branch
-      const currentBranchResult = yield* Effect.either(
-        gitService.getCurrentBranch(projectPath),
-      );
+      const currentBranchResult = yield* Effect.either(gitService.getCurrentBranch(projectPath));
 
       if (Either.isLeft(currentBranchResult)) {
         return {
@@ -305,9 +263,7 @@ const LayerImpl = Effect.gen(function* () {
       );
 
       // Get all branches to extract branch details
-      const allBranchesResult = yield* Effect.either(
-        gitService.getBranches(projectPath),
-      );
+      const allBranchesResult = yield* Effect.either(gitService.getBranches(projectPath));
 
       if (Either.isLeft(allBranchesResult)) {
         return {
@@ -321,17 +277,13 @@ const LayerImpl = Effect.gen(function* () {
       const allBranches = allBranchesResult.right.data;
 
       // Find current branch details
-      const currentBranchDetails = allBranches.find(
-        (branch) => branch.name === currentBranch,
-      );
+      const currentBranchDetails = allBranches.find((branch) => branch.name === currentBranch);
 
       // Find base branch details if exists
       let baseBranchDetails: (typeof allBranches)[number] | undefined;
       if (Either.isRight(baseBranchResult) && baseBranchResult.right !== null) {
         const baseBranchName = baseBranchResult.right.branch;
-        baseBranchDetails = allBranches.find(
-          (branch) => branch.name === baseBranchName,
-        );
+        baseBranchDetails = allBranches.find((branch) => branch.name === baseBranchName);
       }
 
       // Get commits if base branch exists
@@ -345,11 +297,7 @@ const LayerImpl = Effect.gen(function* () {
       if (Either.isRight(baseBranchResult) && baseBranchResult.right !== null) {
         const baseBranchHash = baseBranchResult.right.hash;
         const commitsResult = yield* Effect.either(
-          gitService.getCommitsBetweenBranches(
-            projectPath,
-            baseBranchHash,
-            "HEAD",
-          ),
+          gitService.getCommitsBetweenBranches(projectPath, baseBranchHash, "HEAD"),
         );
 
         if (Either.isRight(commitsResult)) {
@@ -386,9 +334,7 @@ const LayerImpl = Effect.gen(function* () {
 
       const projectPath = project.meta.projectPath;
 
-      const branchesResult = yield* Effect.either(
-        gitService.getBranches(projectPath),
-      );
+      const branchesResult = yield* Effect.either(gitService.getBranches(projectPath));
 
       if (Either.isLeft(branchesResult)) {
         return {
@@ -397,13 +343,9 @@ const LayerImpl = Effect.gen(function* () {
         } as const satisfies ControllerResponse;
       }
 
-      const currentBranchResult = yield* Effect.either(
-        gitService.getCurrentBranch(projectPath),
-      );
+      const currentBranchResult = yield* Effect.either(gitService.getCurrentBranch(projectPath));
 
-      const currentBranch = Either.isRight(currentBranchResult)
-        ? currentBranchResult.right
-        : null;
+      const currentBranch = Either.isRight(currentBranchResult) ? currentBranchResult.right : null;
 
       return {
         response: {
@@ -432,9 +374,7 @@ const LayerImpl = Effect.gen(function* () {
 
       const projectPath = project.meta.projectPath;
 
-      const checkoutResult = yield* Effect.either(
-        gitService.checkout(projectPath, branchName),
-      );
+      const checkoutResult = yield* Effect.either(gitService.checkout(projectPath, branchName));
 
       if (Either.isLeft(checkoutResult)) {
         return {
@@ -464,20 +404,14 @@ const LayerImpl = Effect.gen(function* () {
 });
 
 // Helper functions for push error handling
-function parsePushError(stderr: string): PushErrorCode {
+const parsePushError = (stderr: string): PushErrorCode => {
   if (stderr.includes("no upstream") || stderr.includes("has no upstream")) {
     return "NO_UPSTREAM";
   }
-  if (
-    stderr.includes("non-fast-forward") ||
-    stderr.includes("failed to push some refs")
-  ) {
+  if (stderr.includes("non-fast-forward") || stderr.includes("failed to push some refs")) {
     return "NON_FAST_FORWARD";
   }
-  if (
-    stderr.includes("Authentication failed") ||
-    stderr.includes("Permission denied")
-  ) {
+  if (stderr.includes("Authentication failed") || stderr.includes("Permission denied")) {
     return "AUTH_FAILED";
   }
   if (stderr.includes("Could not resolve host")) {
@@ -487,29 +421,23 @@ function parsePushError(stderr: string): PushErrorCode {
     return "TIMEOUT";
   }
   return "GIT_COMMAND_ERROR";
-}
+};
 
-function getPushErrorMessage(code: PushErrorCode): string {
+const getPushErrorMessage = (code: PushErrorCode): string => {
   const messages: Record<PushErrorCode, string> = {
-    NO_UPSTREAM:
-      "Branch has no upstream. Run: git push --set-upstream origin <branch>",
+    NO_UPSTREAM: "Branch has no upstream. Run: git push --set-upstream origin <branch>",
     NON_FAST_FORWARD: "Remote has diverged. Pull changes first before pushing.",
-    AUTH_FAILED:
-      "Authentication failed. Check your SSH keys or HTTPS credentials.",
+    AUTH_FAILED: "Authentication failed. Check your SSH keys or HTTPS credentials.",
     NETWORK_ERROR: "Network error. Check your internet connection.",
-    TIMEOUT:
-      "Push operation timed out after 60 seconds. Retry or check network.",
+    TIMEOUT: "Push operation timed out after 60 seconds. Retry or check network.",
     GIT_COMMAND_ERROR: "Git command failed. Check details.",
     PROJECT_NOT_FOUND: "Project not found.",
     NOT_A_REPOSITORY: "Not a git repository.",
   };
   return messages[code];
-}
+};
 
 export type IGitController = InferEffect<typeof LayerImpl>;
-export class GitController extends Context.Tag("GitController")<
-  GitController,
-  IGitController
->() {
+export class GitController extends Context.Tag("GitController")<GitController, IGitController>() {
   static Live = Layer.effect(this, LayerImpl);
 }

@@ -1,14 +1,8 @@
 import { Trans, useLingui } from "@lingui/react";
 import type { UseMutationResult } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import {
-  ArrowDownIcon,
-  ArrowUpIcon,
-  LoaderIcon,
-  PlusIcon,
-  XIcon,
-} from "lucide-react";
-import type { FC } from "react";
+import { ArrowDownIcon, ArrowUpIcon, LoaderIcon, PlusIcon, XIcon } from "lucide-react";
+import { type FC, useId } from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -18,16 +12,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useFeatureFlags } from "@/hooks/useFeatureFlags";
 import type { CCOptionsSchema } from "@/server/core/claude-code/schema";
 import type { PublicSessionProcess } from "../../../../../../../types/session-process";
 
-interface ChatActionMenuProps {
+type ChatActionMenuProps = {
   projectId: string;
   isPending?: boolean;
   onScrollToTop?: () => void;
@@ -38,7 +28,7 @@ interface ChatActionMenuProps {
   enableCCOptions?: boolean;
   ccOptions?: CCOptionsSchema;
   onCCOptionsChange?: (value: CCOptionsSchema | undefined) => void;
-}
+};
 
 export const ChatActionMenu: FC<ChatActionMenuProps> = ({
   projectId,
@@ -53,18 +43,16 @@ export const ChatActionMenu: FC<ChatActionMenuProps> = ({
   onCCOptionsChange,
 }) => {
   const { i18n } = useLingui();
-  const navigate = useNavigate();
+  const systemPromptId = useId();
+  const navigate = useNavigate({ from: "/projects/$projectId/session" });
   const { isFlagEnabled } = useFeatureFlags();
   const isToolApprovalAvailable = isFlagEnabled("tool-approval");
 
   const handleStartNewChat = () => {
-    navigate({
+    void navigate({
       to: "/projects/$projectId/session",
       params: { projectId },
-      search: (prev) => {
-        const { sessionId: _removed, ...rest } = prev;
-        return rest;
-      },
+      search: { sessionId: undefined },
     });
   };
 
@@ -152,11 +140,7 @@ export const ChatActionMenu: FC<ChatActionMenuProps> = ({
                   <Select
                     value={ccOptions?.permissionMode ?? "default"}
                     onValueChange={(
-                      value:
-                        | "default"
-                        | "acceptEdits"
-                        | "bypassPermissions"
-                        | "plan",
+                      value: "default" | "acceptEdits" | "bypassPermissions" | "plan",
                     ) =>
                       onCCOptionsChange({
                         ...ccOptions,
@@ -170,10 +154,7 @@ export const ChatActionMenu: FC<ChatActionMenuProps> = ({
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="default">
-                        <Trans
-                          id="chat.toolbar.permission_mode.default"
-                          message="Default"
-                        />
+                        <Trans id="chat.toolbar.permission_mode.default" message="Default" />
                       </SelectItem>
                       <SelectItem value="acceptEdits">
                         <Trans
@@ -182,45 +163,40 @@ export const ChatActionMenu: FC<ChatActionMenuProps> = ({
                         />
                       </SelectItem>
                       <SelectItem value="bypassPermissions">
-                        <Trans
-                          id="chat.toolbar.permission_mode.bypass"
-                          message="Bypass"
-                        />
+                        <Trans id="chat.toolbar.permission_mode.bypass" message="Bypass" />
                       </SelectItem>
                       <SelectItem value="plan">
-                        <Trans
-                          id="chat.toolbar.permission_mode.plan"
-                          message="Plan"
-                        />
+                        <Trans id="chat.toolbar.permission_mode.plan" message="Plan" />
                       </SelectItem>
                     </SelectContent>
                   </Select>
                 </span>
               </TooltipTrigger>
               <TooltipContent>
-                <Trans
-                  id="chat.toolbar.permission_mode.tooltip"
-                  message="Select permission mode"
-                />
+                <Trans id="chat.toolbar.permission_mode.tooltip" message="Select permission mode" />
               </TooltipContent>
             </Tooltip>
 
             {/* System prompt preset checkbox */}
             <Tooltip>
               <TooltipTrigger asChild>
-                {/* biome-ignore lint/a11y/noLabelWithoutControl: Checkbox is a custom component that wraps input */}
-                <label className="flex items-center gap-1.5 cursor-pointer h-7 px-2 rounded-lg text-[11px] font-medium text-muted-foreground hover:bg-background/80 hover:text-foreground transition-all duration-200">
+                <label
+                  htmlFor={systemPromptId}
+                  className="flex items-center gap-1.5 cursor-pointer h-7 px-2 rounded-lg text-[11px] font-medium text-muted-foreground hover:bg-background/80 hover:text-foreground transition-all duration-200"
+                >
                   <Checkbox
+                    id={systemPromptId}
                     checked={ccOptions?.systemPrompt !== undefined}
                     onCheckedChange={(checked) => {
                       onCCOptionsChange({
                         ...ccOptions,
-                        systemPrompt: checked
-                          ? {
-                              type: "preset",
-                              preset: "claude_code",
-                            }
-                          : undefined,
+                        systemPrompt:
+                          checked === true
+                            ? {
+                                type: "preset",
+                                preset: "claude_code",
+                              }
+                            : undefined,
                       });
                     }}
                     disabled={isPending}

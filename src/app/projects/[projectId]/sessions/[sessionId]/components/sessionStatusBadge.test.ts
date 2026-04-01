@@ -7,8 +7,7 @@ describe("getSessionStatusBadgeProps", () => {
 
     expect(result).toEqual({
       labelId: "session.status.running",
-      className:
-        "bg-green-500/10 text-green-700 dark:text-green-300 border-green-500/20",
+      className: "bg-green-500/10 text-green-700 dark:text-green-300 border-green-500/20",
       icon: "running",
     });
   });
@@ -18,8 +17,7 @@ describe("getSessionStatusBadgeProps", () => {
 
     expect(result).toEqual({
       labelId: "session.status.paused",
-      className:
-        "bg-orange-500/10 text-orange-700 dark:text-orange-300 border-orange-500/20",
+      className: "bg-orange-500/10 text-orange-700 dark:text-orange-300 border-orange-500/20",
       icon: "paused",
     });
   });

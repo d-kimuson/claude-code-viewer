@@ -1,3 +1,6 @@
+/* oxlint-disable typescript/consistent-type-definitions */
+// interface required for global declaration merging
+
 /**
  * Type declarations for the Web Speech API (SpeechRecognition).
  * Needed because TypeScript's default lib does not include webkitSpeechRecognition.
@@ -25,15 +28,9 @@ interface SpeechRecognition extends EventTarget {
   onaudiostart: ((this: SpeechRecognition, ev: Event) => void) | null;
   onaudioend: ((this: SpeechRecognition, ev: Event) => void) | null;
   onend: ((this: SpeechRecognition, ev: Event) => void) | null;
-  onerror:
-    | ((this: SpeechRecognition, ev: SpeechRecognitionErrorEvent) => void)
-    | null;
-  onnomatch:
-    | ((this: SpeechRecognition, ev: SpeechRecognitionEvent) => void)
-    | null;
-  onresult:
-    | ((this: SpeechRecognition, ev: SpeechRecognitionEvent) => void)
-    | null;
+  onerror: ((this: SpeechRecognition, ev: SpeechRecognitionErrorEvent) => void) | null;
+  onnomatch: ((this: SpeechRecognition, ev: SpeechRecognitionEvent) => void) | null;
+  onresult: ((this: SpeechRecognition, ev: SpeechRecognitionEvent) => void) | null;
   onsoundstart: ((this: SpeechRecognition, ev: Event) => void) | null;
   onsoundend: ((this: SpeechRecognition, ev: Event) => void) | null;
   onspeechstart: ((this: SpeechRecognition, ev: Event) => void) | null;
@@ -44,18 +41,12 @@ interface SpeechRecognition extends EventTarget {
   stop(): void;
   addEventListener<K extends keyof SpeechRecognitionEventMap>(
     type: K,
-    listener: (
-      this: SpeechRecognition,
-      ev: SpeechRecognitionEventMap[K],
-    ) => void,
+    listener: (this: SpeechRecognition, ev: SpeechRecognitionEventMap[K]) => void,
     options?: boolean | AddEventListenerOptions,
   ): void;
   removeEventListener<K extends keyof SpeechRecognitionEventMap>(
     type: K,
-    listener: (
-      this: SpeechRecognition,
-      ev: SpeechRecognitionEventMap[K],
-    ) => void,
+    listener: (this: SpeechRecognition, ev: SpeechRecognitionEventMap[K]) => void,
     options?: boolean | EventListenerOptions,
   ): void;
 }
@@ -96,4 +87,5 @@ interface SpeechRecognitionAlternative {
 interface Window {
   SpeechRecognition?: SpeechRecognitionConstructor;
   webkitSpeechRecognition?: SpeechRecognitionConstructor;
+  webkitAudioContext?: typeof AudioContext;
 }

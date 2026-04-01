@@ -4,9 +4,7 @@ import { ProjectRepository } from "../../project/infrastructure/ProjectRepositor
 import { parseMcpListOutput } from "../functions/parseMcpListOutput";
 import * as ClaudeCode from "../models/ClaudeCode";
 
-class ProjectPathNotFoundError extends Data.TaggedError(
-  "ProjectPathNotFoundError",
-)<{
+class ProjectPathNotFoundError extends Data.TaggedError("ProjectPathNotFoundError")<{
   projectId: string;
 }> {}
 
@@ -22,9 +20,7 @@ const LayerImpl = Effect.gen(function* () {
   const getAvailableFeatures = () =>
     Effect.gen(function* () {
       const config = yield* ClaudeCode.Config;
-      const features = ClaudeCode.getAvailableFeatures(
-        config.claudeCodeVersion,
-      );
+      const features = ClaudeCode.getAvailableFeatures(config.claudeCodeVersion);
       return features;
     });
 
@@ -35,9 +31,7 @@ const LayerImpl = Effect.gen(function* () {
         return yield* Effect.fail(new ProjectPathNotFoundError({ projectId }));
       }
 
-      const output = yield* ClaudeCode.getMcpListOutput(
-        project.meta.projectPath,
-      );
+      const output = yield* ClaudeCode.getMcpListOutput(project.meta.projectPath);
       return parseMcpListOutput(output);
     });
 

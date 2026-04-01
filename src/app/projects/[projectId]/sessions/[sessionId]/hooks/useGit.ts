@@ -1,9 +1,4 @@
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { honoClient } from "@/lib/api/client";
 import {
   gitBranchesQuery,
@@ -35,11 +30,7 @@ export const useGitBranches = (projectId: string) => {
   });
 };
 
-export const useGitDiffSuspense = (
-  projectId: string,
-  fromRef: string,
-  toRef: string,
-) => {
+export const useGitDiffSuspense = (projectId: string, fromRef: string, toRef: string) => {
   return useSuspenseQuery({
     queryKey: gitDiffQuery(projectId, fromRef, toRef).queryKey,
     queryFn: gitDiffQuery(projectId, fromRef, toRef).queryFn,
@@ -52,9 +43,7 @@ export const useGitCheckout = (projectId: string) => {
 
   return useMutation({
     mutationFn: async (branchName: string) => {
-      const response = await honoClient.api.projects[
-        ":projectId"
-      ].git.checkout.$post({
+      const response = await honoClient.api.projects[":projectId"].git.checkout.$post({
         param: { projectId },
         json: { branchName },
       });
@@ -66,13 +55,13 @@ export const useGitCheckout = (projectId: string) => {
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: gitBranchesQuery(projectId).queryKey,
       });
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: gitCurrentRevisionsQuery(projectId).queryKey,
       });
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: ["git", "diff", projectId],
       });
     },
@@ -90,9 +79,7 @@ export const useGitDiff = () => {
       fromRef: string;
       toRef: string;
     }) => {
-      const response = await honoClient.api.projects[
-        ":projectId"
-      ].git.diff.$post({
+      const response = await honoClient.api.projects[":projectId"].git.diff.$post({
         param: { projectId },
         json: { fromRef, toRef },
       });
@@ -108,16 +95,8 @@ export const useGitDiff = () => {
 
 export const useCommitFiles = (projectId: string) => {
   return useMutation({
-    mutationFn: async ({
-      files,
-      message,
-    }: {
-      files: string[];
-      message: string;
-    }) => {
-      const response = await honoClient.api.projects[
-        ":projectId"
-      ].git.commit.$post({
+    mutationFn: async ({ files, message }: { files: string[]; message: string }) => {
+      const response = await honoClient.api.projects[":projectId"].git.commit.$post({
         param: { projectId },
         json: { files, message },
       });
@@ -134,9 +113,7 @@ export const useCommitFiles = (projectId: string) => {
 export const usePushCommits = (projectId: string) => {
   return useMutation({
     mutationFn: async () => {
-      const response = await honoClient.api.projects[
-        ":projectId"
-      ].git.push.$post({
+      const response = await honoClient.api.projects[":projectId"].git.push.$post({
         param: { projectId },
       });
 
@@ -151,16 +128,8 @@ export const usePushCommits = (projectId: string) => {
 
 export const useCommitAndPush = (projectId: string) => {
   return useMutation({
-    mutationFn: async ({
-      files,
-      message,
-    }: {
-      files: string[];
-      message: string;
-    }) => {
-      const response = await honoClient.api.projects[":projectId"].git[
-        "commit-and-push"
-      ].$post({
+    mutationFn: async ({ files, message }: { files: string[]; message: string }) => {
+      const response = await honoClient.api.projects[":projectId"].git["commit-and-push"].$post({
         param: { projectId },
         json: { files, message },
       });

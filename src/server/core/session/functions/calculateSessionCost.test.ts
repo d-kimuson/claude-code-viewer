@@ -1,21 +1,13 @@
 import { describe, expect, it } from "vitest";
-import {
-  calculateTokenCost,
-  normalizeModelName,
-  type TokenUsage,
-} from "./calculateSessionCost";
+import { calculateTokenCost, normalizeModelName, type TokenUsage } from "./calculateSessionCost";
 
 describe("normalizeModelName", () => {
   it("should normalize claude-sonnet-4-20250514 to claude-3.5-sonnet", () => {
-    expect(normalizeModelName("claude-sonnet-4-20250514")).toBe(
-      "claude-3.5-sonnet",
-    );
+    expect(normalizeModelName("claude-sonnet-4-20250514")).toBe("claude-3.5-sonnet");
   });
 
   it("should normalize claude-3-5-sonnet-20240620 to claude-3.5-sonnet", () => {
-    expect(normalizeModelName("claude-3-5-sonnet-20240620")).toBe(
-      "claude-3.5-sonnet",
-    );
+    expect(normalizeModelName("claude-3-5-sonnet-20240620")).toBe("claude-3.5-sonnet");
   });
 
   it("should normalize claude-3-opus-20240229 to claude-3-opus", () => {
@@ -23,33 +15,23 @@ describe("normalizeModelName", () => {
   });
 
   it("should normalize claude-3-haiku-20240307 to claude-3-haiku", () => {
-    expect(normalizeModelName("claude-3-haiku-20240307")).toBe(
-      "claude-3-haiku",
-    );
+    expect(normalizeModelName("claude-3-haiku-20240307")).toBe("claude-3-haiku");
   });
 
   it("should normalize claude-opus-4-1-20250101 to claude-opus-4.1", () => {
-    expect(normalizeModelName("claude-opus-4-1-20250101")).toBe(
-      "claude-opus-4.1",
-    );
+    expect(normalizeModelName("claude-opus-4-1-20250101")).toBe("claude-opus-4.1");
   });
 
   it("should normalize claude-opus-4-5-20251101 to claude-opus-4.5", () => {
-    expect(normalizeModelName("claude-opus-4-5-20251101")).toBe(
-      "claude-opus-4.5",
-    );
+    expect(normalizeModelName("claude-opus-4-5-20251101")).toBe("claude-opus-4.5");
   });
 
   it("should normalize claude-sonnet-4-5-20250929 to claude-sonnet-4.5", () => {
-    expect(normalizeModelName("claude-sonnet-4-5-20250929")).toBe(
-      "claude-sonnet-4.5",
-    );
+    expect(normalizeModelName("claude-sonnet-4-5-20250929")).toBe("claude-sonnet-4.5");
   });
 
   it("should normalize claude-haiku-4-5-20251001 to claude-haiku-4.5", () => {
-    expect(normalizeModelName("claude-haiku-4-5-20251001")).toBe(
-      "claude-haiku-4.5",
-    );
+    expect(normalizeModelName("claude-haiku-4-5-20251001")).toBe("claude-haiku-4.5");
   });
 
   it("should return claude-3.5-sonnet for unknown model", () => {

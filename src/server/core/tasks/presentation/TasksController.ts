@@ -8,17 +8,11 @@ const make = Effect.gen(function* () {
   const listTasks = (projectPath: string, specificSessionId?: string) =>
     service.listTasks(projectPath, specificSessionId);
 
-  const createTask = (
-    projectPath: string,
-    task: TaskCreate,
-    specificSessionId?: string,
-  ) => service.createTask(projectPath, task, specificSessionId);
+  const createTask = (projectPath: string, task: TaskCreate, specificSessionId?: string) =>
+    service.createTask(projectPath, task, specificSessionId);
 
-  const updateTask = (
-    projectPath: string,
-    task: TaskUpdate,
-    specificSessionId?: string,
-  ) => service.updateTask(projectPath, task, specificSessionId);
+  const updateTask = (projectPath: string, task: TaskUpdate, specificSessionId?: string) =>
+    service.updateTask(projectPath, task, specificSessionId);
 
   return {
     listTasks,

@@ -23,9 +23,7 @@ const toolUseResultSchema = z.object({
   structuredPatch: structuredPatchSchema,
 });
 
-const convertPatchToHunks = (
-  patches: z.infer<typeof structuredPatchSchema>,
-): DiffHunk[] => {
+const convertPatchToHunks = (patches: z.infer<typeof structuredPatchSchema>): DiffHunk[] => {
   return patches.map((patch) => {
     let oldLine = patch.oldStart;
     let newLine = patch.newStart;
@@ -71,10 +69,7 @@ const convertPatchToHunks = (
   });
 };
 
-export const EditVisualizer: FC<ToolVisualizerProps> = ({
-  input,
-  toolUseResult,
-}) => {
+export const EditVisualizer: FC<ToolVisualizerProps> = ({ input, toolUseResult }) => {
   const parsedInput = inputSchema.safeParse(input);
   if (!parsedInput.success) return null;
 

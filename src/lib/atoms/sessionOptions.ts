@@ -6,15 +6,11 @@ import { z } from "zod";
 const persistedSessionOptionsSchema = z.object({
   model: z.string().optional(),
   effort: z.enum(["low", "medium", "high", "max"]).optional(),
-  permissionMode: z
-    .enum(["acceptEdits", "bypassPermissions", "default", "plan"])
-    .optional(),
+  permissionMode: z.enum(["acceptEdits", "bypassPermissions", "default", "plan"]).optional(),
   useSystemPromptPreset: z.boolean().optional(),
 });
 
-export type PersistedSessionOptions = z.infer<
-  typeof persistedSessionOptionsSchema
->;
+export type PersistedSessionOptions = z.infer<typeof persistedSessionOptionsSchema>;
 
 type SessionOptionsStore = Record<string, PersistedSessionOptions>;
 

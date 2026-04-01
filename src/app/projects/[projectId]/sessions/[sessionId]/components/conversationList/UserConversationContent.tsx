@@ -1,23 +1,9 @@
 import { Trans } from "@lingui/react";
-import {
-  AlertCircle,
-  ChevronDown,
-  FileText,
-  Image as ImageIcon,
-} from "lucide-react";
+import { AlertCircle, ChevronDown, FileText, Image as ImageIcon } from "lucide-react";
 import type { FC } from "react";
 import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import type { UserMessageContent } from "@/lib/conversation-schema/message/UserMessageSchema";
 import { UserTextContent } from "./UserTextContent";
 
@@ -75,10 +61,7 @@ export const UserConversationContent: FC<{
     }
 
     return (
-      <Card
-        className="border-red-200 bg-red-50/50 dark:border-red-800 dark:bg-red-950/20"
-        id={id}
-      >
+      <Card className="border-red-200 bg-red-50/50 dark:border-red-800 dark:bg-red-950/20" id={id}>
         <CardHeader>
           <div className="flex items-center gap-2">
             <AlertCircle className="h-4 w-4 text-red-600 dark:text-red-400" />
@@ -169,9 +152,7 @@ export const UserConversationContent: FC<{
             <CollapsibleContent>
               <div className="py-3 px-4 border-t border-green-200 dark:border-green-800">
                 <div className="rounded-lg border overflow-hidden bg-background">
-                  <pre className="p-4 text-sm overflow-auto max-h-96">
-                    {content.source.data}
-                  </pre>
+                  <pre className="p-4 text-sm overflow-auto max-h-96">{content.source.data}</pre>
                 </div>
               </div>
             </CollapsibleContent>
@@ -181,10 +162,7 @@ export const UserConversationContent: FC<{
     }
 
     return (
-      <Card
-        className="border-red-200 bg-red-50/50 dark:border-red-800 dark:bg-red-950/20"
-        id={id}
-      >
+      <Card className="border-red-200 bg-red-50/50 dark:border-red-800 dark:bg-red-950/20" id={id}>
         <CardHeader>
           <div className="flex items-center gap-2">
             <AlertCircle className="h-4 w-4 text-red-600 dark:text-red-400" />

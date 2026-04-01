@@ -1,7 +1,7 @@
 onlyBuiltDependencies:
-  - '@parcel/watcher'
-  - '@swc/core'
-  - '@tailwindcss/oxide'
+  - "@parcel/watcher"
+  - "@swc/core"
+  - "@tailwindcss/oxide"
   - esbuild
   - lefthook
   - msgpackr-extract

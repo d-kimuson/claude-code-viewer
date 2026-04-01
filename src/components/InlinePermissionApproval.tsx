@@ -1,30 +1,16 @@
-import {
-  Check,
-  ChevronDown,
-  ChevronRight,
-  Copy,
-  ShieldAlert,
-  X,
-} from "lucide-react";
+import { Check, ChevronDown, ChevronRight, Copy, ShieldAlert, X } from "lucide-react";
 import { type FC, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import type {
-  PermissionRequest,
-  PermissionResponse,
-} from "@/types/permissions";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import type { PermissionRequest, PermissionResponse } from "@/types/permissions";
 import { useConfig } from "../app/hooks/useConfig";
 import { formatLocaleDate } from "../lib/date/formatLocaleDate";
 
-interface InlinePermissionApprovalProps {
+type InlinePermissionApprovalProps = {
   permissionRequest: PermissionRequest | null;
   onResponse: (response: PermissionResponse) => Promise<void>;
-}
+};
 
 const formatValue = (value: unknown): string => {
   if (value === null) return "null";
@@ -35,10 +21,7 @@ const formatValue = (value: unknown): string => {
   return JSON.stringify(value, null, 2);
 };
 
-const ParameterEntry: FC<{ paramKey: string; value: unknown }> = ({
-  paramKey,
-  value,
-}) => {
+const ParameterEntry: FC<{ paramKey: string; value: unknown }> = ({ paramKey, value }) => {
   const [copied, setCopied] = useState(false);
   const formattedValue = formatValue(value);
   const isLong = formattedValue.length > 100;
@@ -62,14 +45,10 @@ const ParameterEntry: FC<{ paramKey: string; value: unknown }> = ({
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => copyToClipboard(formattedValue)}
+          onClick={() => void copyToClipboard(formattedValue)}
           className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
         >
-          {copied ? (
-            <Check className="size-3 text-green-500" />
-          ) : (
-            <Copy className="size-3" />
-          )}
+          {copied ? <Check className="size-3 text-green-500" /> : <Copy className="size-3" />}
         </Button>
       </div>
       <div
@@ -138,10 +117,7 @@ export const InlinePermissionApproval: FC<InlinePermissionApprovalProps> = ({
         <div className="p-4 space-y-3">
           {/* Tool name */}
           <div className="flex items-center gap-2">
-            <Badge
-              variant="secondary"
-              className="font-mono text-xs tracking-tight"
-            >
+            <Badge variant="secondary" className="font-mono text-xs tracking-tight">
               {permissionRequest.toolName}
             </Badge>
           </div>
@@ -149,10 +125,7 @@ export const InlinePermissionApproval: FC<InlinePermissionApprovalProps> = ({
           {/* Parameters Section */}
           {hasParameters && (
             <div className="rounded-lg border border-border/60 overflow-hidden">
-              <Collapsible
-                open={isParametersExpanded}
-                onOpenChange={setIsParametersExpanded}
-              >
+              <Collapsible open={isParametersExpanded} onOpenChange={setIsParametersExpanded}>
                 <CollapsibleTrigger className="flex w-full items-center justify-between px-3.5 py-2.5 hover:bg-muted/40 transition-colors">
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-medium">Parameters</span>
@@ -189,7 +162,7 @@ export const InlinePermissionApproval: FC<InlinePermissionApprovalProps> = ({
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => handleResponse("deny")}
+              onClick={() => void handleResponse("deny")}
               disabled={isResponding}
               className="min-w-[4.5rem] gap-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
             >
@@ -198,7 +171,7 @@ export const InlinePermissionApproval: FC<InlinePermissionApprovalProps> = ({
             </Button>
             <Button
               size="sm"
-              onClick={() => handleResponse("allow")}
+              onClick={() => void handleResponse("allow")}
               disabled={isResponding}
               className="min-w-[4.5rem] gap-1.5"
             >

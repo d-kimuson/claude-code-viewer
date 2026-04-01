@@ -18,8 +18,7 @@ import { ProjectRepository } from "./ProjectRepository";
 // Helpers
 // ---------------------------------------------------------------------------
 
-const migrationsFolder = new URL("../../../lib/db/migrations", import.meta.url)
-  .pathname;
+const migrationsFolder = new URL("../../../lib/db/migrations", import.meta.url).pathname;
 
 const createInMemoryDb = () => {
   const sqlite = new DatabaseSync(":memory:");
@@ -82,9 +81,7 @@ describe("ProjectRepository", () => {
       const FileSystemMock = testFileSystemLayer({
         exists: (path: string) => Effect.succeed(path === projectPath),
         stat: () =>
-          Effect.succeed(
-            createFileInfo({ type: "Directory", mtime: Option.some(mockDate) }),
-          ),
+          Effect.succeed(createFileInfo({ type: "Directory", mtime: Option.some(mockDate) })),
       });
 
       const program = Effect.gen(function* () {
@@ -254,9 +251,7 @@ describe("ProjectRepository", () => {
     it("uses row.path for claudeProjectPath when available", async () => {
       const projectId = Buffer.from("/test/project").toString("base64url");
 
-      const projectRows = [
-        makeProjectRow({ id: projectId, path: "/test/project" }),
-      ];
+      const projectRows = [makeProjectRow({ id: projectId, path: "/test/project" })];
 
       const mockMeta: ProjectMeta = {
         projectName: "project",

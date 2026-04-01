@@ -14,8 +14,6 @@ const TOOL_VISUALIZERS: Record<string, ToolVisualizerComponent> = {
   CCVAskUserQuestion: CCVAskUserQuestionVisualizer,
 };
 
-export const getToolVisualizer = (
-  toolName: string,
-): ToolVisualizerComponent | undefined => {
+export const getToolVisualizer = (toolName: string): ToolVisualizerComponent | undefined => {
   return TOOL_VISUALIZERS[toolName];
 };

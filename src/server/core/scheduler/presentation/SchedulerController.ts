@@ -31,11 +31,7 @@ const LayerImpl = Effect.gen(function* () {
       const { id, job } = options;
       const result = yield* schedulerService
         .updateJob(id, job)
-        .pipe(
-          Effect.catchTag("SchedulerJobNotFoundError", () =>
-            Effect.succeed(null),
-          ),
-        );
+        .pipe(Effect.catchTag("SchedulerJobNotFoundError", () => Effect.succeed(null)));
 
       if (result === null) {
         return {
@@ -54,9 +50,7 @@ const LayerImpl = Effect.gen(function* () {
     Effect.gen(function* () {
       const { id } = options;
       const result = yield* schedulerService.deleteJob(id).pipe(
-        Effect.catchTag("SchedulerJobNotFoundError", () =>
-          Effect.succeed(false),
-        ),
+        Effect.catchTag("SchedulerJobNotFoundError", () => Effect.succeed(false)),
         Effect.map(() => true),
       );
 

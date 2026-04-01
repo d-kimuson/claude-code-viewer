@@ -1,10 +1,10 @@
 import { atom } from "jotai";
 
-export interface AuthState {
+export type AuthState = {
   authEnabled: boolean;
   authenticated: boolean;
   checked: boolean;
-}
+};
 
 export const authAtom = atom<AuthState>({
   authEnabled: false,

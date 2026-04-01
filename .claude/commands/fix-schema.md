@@ -1,5 +1,5 @@
 ---
-description: 'セッションログのスキーマパースエラーを修正してPR作成'
+description: "セッションログのスキーマパースエラーを修正してPR作成"
 allowed-tools: Edit(*.ts), Write(*.ts), Bash(pnpm, git, gh)
 ---
 
@@ -18,23 +18,27 @@ User provides failing JSON data from session logs. The data structure indicates 
 - Maintain backward compatibility with existing JSONL files
 
 **2. Fix type errors**:
+
 - Update affected components to handle new schema types
 - Follow project type safety rules (no `as` casting)
 
 **3. Add tests**:
+
 - Create or update test files for modified schemas
 - Verify both old and new formats parse successfully
 
 **4. Verify and commit**:
+
 - Run `pnpm typecheck` (must pass)
 - Run `pnpm test` (must pass)
 - Run `pnpm fix`
 - Commit changes
 
 **5. Create PR**:
+
 - Push branch
 - Create draft PR with summary of schema changes
-</workflow>
+  </workflow>
 
 <principles>
 - **Backward compatibility**: Existing JSONL files must continue to parse

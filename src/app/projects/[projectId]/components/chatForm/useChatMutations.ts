@@ -7,17 +7,11 @@ import {
 } from "../../../../../lib/virtual-messages/virtualMessageStore";
 import type { MessageInput } from "./ChatInput";
 
-export const useCreateSessionProcessMutation = (
-  projectId: string,
-  onSuccess?: () => void,
-) => {
-  const navigate = useNavigate();
+export const useCreateSessionProcessMutation = (projectId: string, onSuccess?: () => void) => {
+  const navigate = useNavigate({ from: "/projects/$projectId/session" });
 
   return useMutation({
-    mutationFn: async (options: {
-      input: MessageInput;
-      baseSessionId?: string;
-    }) => {
+    mutationFn: async (options: { input: MessageInput; baseSessionId?: string }) => {
       const { ccOptions, ...input } = options.input;
       const sessionId = options.baseSessionId ?? crypto.randomUUID();
 
@@ -30,32 +24,28 @@ export const useCreateSessionProcessMutation = (
       });
 
       // Navigate immediately (before API response)
-      navigate({
+      void navigate({
         to: "/projects/$projectId/session",
         params: { projectId },
-        search: (prev) => ({
-          ...prev,
-          sessionId,
-        }),
+        search: { sessionId },
       });
       onSuccess?.();
 
       // Then fire API call
-      const getBaseSession = ():
-        | undefined
-        | { type: "resume"; sessionId: string } => {
-        if (!options.baseSessionId) return undefined;
+      const getBaseSession = (): undefined | { type: "resume"; sessionId: string } => {
+        if (options.baseSessionId === undefined || options.baseSessionId === "") return undefined;
         return { type: "resume", sessionId: options.baseSessionId };
       };
 
       try {
-        const response = await honoClient.api["claude-code"][
-          "session-processes"
-        ].$post(
+        const response = await honoClient.api["claude-code"]["session-processes"].$post(
           {
             json: {
               projectId,
-              sessionId: options.baseSessionId ? undefined : sessionId,
+              sessionId:
+                options.baseSessionId !== undefined && options.baseSessionId !== ""
+                  ? undefined
+                  : sessionId,
               baseSession: getBaseSession(),
               input,
               ccOptions,
@@ -82,15 +72,9 @@ export const useCreateSessionProcessMutation = (
   });
 };
 
-export const useContinueSessionProcessMutation = (
-  projectId: string,
-  baseSessionId: string,
-) => {
+export const useContinueSessionProcessMutation = (projectId: string, baseSessionId: string) => {
   return useMutation({
-    mutationFn: async (options: {
-      input: MessageInput;
-      sessionProcessId: string;
-    }) => {
+    mutationFn: async (options: { input: MessageInput; sessionProcessId: string }) => {
       // Add virtual message to store for continue
       addVirtualMessage({
         sessionId: baseSessionId,
@@ -100,9 +84,9 @@ export const useContinueSessionProcessMutation = (
       });
 
       try {
-        const response = await honoClient.api["claude-code"][
-          "session-processes"
-        ][":sessionProcessId"].continue.$post(
+        const response = await honoClient.api["claude-code"]["session-processes"][
+          ":sessionProcessId"
+        ].continue.$post(
           {
             param: { sessionProcessId: options.sessionProcessId },
             json: {

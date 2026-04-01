@@ -28,13 +28,7 @@ export const SchedulerTab: FC<{ projectId: string; sessionId: string }> = ({
   sessionId,
 }) => {
   const { i18n } = useLingui();
-  const {
-    data: jobs,
-    isLoading,
-    isFetching,
-    error,
-    refetch,
-  } = useSchedulerJobs();
+  const { data: jobs, isLoading, isFetching, error, refetch } = useSchedulerJobs();
   const createJob = useCreateSchedulerJob();
   const updateJob = useUpdateSchedulerJob();
   const deleteJob = useDeleteSchedulerJob();
@@ -104,7 +98,7 @@ export const SchedulerTab: FC<{ projectId: string; sessionId: string }> = ({
   };
 
   const handleDeleteConfirm = () => {
-    if (!deletingJobId) return;
+    if (deletingJobId === null || deletingJobId === "") return;
 
     deleteJob.mutate(deletingJobId, {
       onSuccess: () => {
@@ -153,7 +147,7 @@ export const SchedulerTab: FC<{ projectId: string; sessionId: string }> = ({
   };
 
   const formatLastRun = (lastRunAt: string | null) => {
-    if (!lastRunAt) return "Never";
+    if (lastRunAt === null || lastRunAt === "") return "Never";
     const date = new Date(lastRunAt);
     return date.toLocaleString();
   };
@@ -167,7 +161,9 @@ export const SchedulerTab: FC<{ projectId: string; sessionId: string }> = ({
           </h2>
           <div className="flex gap-1">
             <Button
-              onClick={() => refetch()}
+              onClick={() => {
+                void refetch();
+              }}
               variant="ghost"
               size="sm"
               className="h-7 w-7 p-0"
@@ -208,10 +204,7 @@ export const SchedulerTab: FC<{ projectId: string; sessionId: string }> = ({
 
         {error && (
           <div className="text-sm text-red-500">
-            <Trans
-              id="scheduler.error.load_failed"
-              values={{ error: error.message }}
-            />
+            <Trans id="scheduler.error.load_failed" values={{ error: error.message }} />
           </div>
         )}
 
@@ -234,10 +227,7 @@ export const SchedulerTab: FC<{ projectId: string; sessionId: string }> = ({
                       <h3 className="text-sm font-medium text-sidebar-foreground truncate">
                         {job.name}
                       </h3>
-                      <Badge
-                        variant={job.enabled ? "default" : "secondary"}
-                        className="text-xs"
-                      >
+                      <Badge variant={job.enabled ? "default" : "secondary"} className="text-xs">
                         {job.enabled ? (
                           <Trans id="scheduler.status.enabled" />
                         ) : (
@@ -245,9 +235,7 @@ export const SchedulerTab: FC<{ projectId: string; sessionId: string }> = ({
                         )}
                       </Badge>
                     </div>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {formatSchedule(job)}
-                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">{formatSchedule(job)}</p>
                   </div>
                   <div className="flex gap-1">
                     <Button
@@ -269,7 +257,7 @@ export const SchedulerTab: FC<{ projectId: string; sessionId: string }> = ({
                   </div>
                 </div>
 
-                {job.lastRunAt && (
+                {job.lastRunAt !== null && job.lastRunAt !== "" && (
                   <div className="text-xs text-muted-foreground mt-2 pt-2 border-t border-sidebar-border">
                     <div className="flex items-center justify-between">
                       <span>
@@ -278,11 +266,7 @@ export const SchedulerTab: FC<{ projectId: string; sessionId: string }> = ({
                       </span>
                       {job.lastRunStatus && (
                         <Badge
-                          variant={
-                            job.lastRunStatus === "success"
-                              ? "default"
-                              : "destructive"
-                          }
+                          variant={job.lastRunStatus === "success" ? "default" : "destructive"}
                           className="text-xs"
                         >
                           {job.lastRunStatus}
@@ -338,11 +322,7 @@ export const SchedulerTab: FC<{ projectId: string; sessionId: string }> = ({
               onClick={handleDeleteConfirm}
               disabled={deleteJob.isPending}
             >
-              {deleteJob.isPending ? (
-                <Trans id="common.deleting" />
-              ) : (
-                <Trans id="common.delete" />
-              )}
+              {deleteJob.isPending ? <Trans id="common.deleting" /> : <Trans id="common.delete" />}
             </Button>
           </DialogFooter>
         </DialogContent>

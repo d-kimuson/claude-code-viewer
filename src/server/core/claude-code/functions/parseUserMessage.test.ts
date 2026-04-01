@@ -1,5 +1,13 @@
 import { parseUserMessage } from "./parseUserMessage";
 
+const expectCommandResult = (result: ReturnType<typeof parseUserMessage>) => {
+  expect(result.kind).toBe("command");
+  if (result.kind !== "command") {
+    throw new Error("Expected command result");
+  }
+  return result;
+};
+
 describe("parseCommandXml", () => {
   describe("command parsing", () => {
     it("parses command-name only", () => {
@@ -15,8 +23,7 @@ describe("parseCommandXml", () => {
     });
 
     it("parses command-name with command-args", () => {
-      const input =
-        "<command-name>git commit</command-name><command-args>-m 'test'</command-args>";
+      const input = "<command-name>git commit</command-name><command-args>-m 'test'</command-args>";
       const result = parseUserMessage(input);
 
       expect(result).toEqual({
@@ -92,8 +99,7 @@ describe("parseCommandXml", () => {
     });
 
     it("parses local-command-stdout with multiline content", () => {
-      const input =
-        "<local-command-stdout>line1\nline2\nline3</local-command-stdout>";
+      const input = "<local-command-stdout>line1\nline2\nline3</local-command-stdout>";
       const result = parseUserMessage(input);
 
       expect(result).toEqual({
@@ -103,8 +109,7 @@ describe("parseCommandXml", () => {
     });
 
     it("parses local-command-stdout with whitespace", () => {
-      const input =
-        "<local-command-stdout>  \n  output with spaces  \n  </local-command-stdout>";
+      const input = "<local-command-stdout>  \n  output with spaces  \n  </local-command-stdout>";
       const result = parseUserMessage(input);
 
       // The regex pattern preserves all whitespace in content
@@ -121,10 +126,8 @@ describe("parseCommandXml", () => {
         "<command-name>test</command-name><local-command-stdout>output</local-command-stdout>";
       const result = parseUserMessage(input);
 
-      expect(result.kind).toBe("command");
-      if (result.kind === "command") {
-        expect(result.commandName).toBe("test");
-      }
+      const commandResult = expectCommandResult(result);
+      expect(commandResult.commandName).toBe("test");
     });
   });
 
@@ -182,14 +185,11 @@ describe("parseCommandXml", () => {
 
   describe("edge cases", () => {
     it("handles multiple same tags (uses first match)", () => {
-      const input =
-        "<command-name>first</command-name><command-name>second</command-name>";
+      const input = "<command-name>first</command-name><command-name>second</command-name>";
       const result = parseUserMessage(input);
 
-      expect(result.kind).toBe("command");
-      if (result.kind === "command") {
-        expect(result.commandName).toBe("first");
-      }
+      const commandResult = expectCommandResult(result);
+      expect(commandResult.commandName).toBe("first");
     });
 
     it("handles empty tag content", () => {
@@ -205,14 +205,11 @@ describe("parseCommandXml", () => {
     });
 
     it("handles tags with special characters in content", () => {
-      const input =
-        "<command-name>git commit -m 'test &amp; demo'</command-name>";
+      const input = "<command-name>git commit -m 'test &amp; demo'</command-name>";
       const result = parseUserMessage(input);
 
-      expect(result.kind).toBe("command");
-      if (result.kind === "command") {
-        expect(result.commandName).toBe("git commit -m 'test &amp; demo'");
-      }
+      const commandResult = expectCommandResult(result);
+      expect(commandResult.commandName).toBe("git commit -m 'test &amp; demo'");
     });
 
     it("matches nested tags with a broad regex", () => {
@@ -223,8 +220,7 @@ describe("parseCommandXml", () => {
     });
 
     it("handles tags with surrounding text", () => {
-      const input =
-        "Some text before <command-name>test</command-name> and after";
+      const input = "Some text before <command-name>test</command-name> and after";
       const result = parseUserMessage(input);
 
       expect(result).toEqual({
@@ -236,8 +232,7 @@ describe("parseCommandXml", () => {
     });
 
     it("handles newlines between tags", () => {
-      const input =
-        "<command-name>test</command-name>\n\n<command-args>arg</command-args>";
+      const input = "<command-name>test</command-name>\n\n<command-args>arg</command-args>";
       const result = parseUserMessage(input);
 
       expect(result).toEqual({
@@ -253,10 +248,8 @@ describe("parseCommandXml", () => {
       const input = `<command-name>${longContent}</command-name>`;
       const result = parseUserMessage(input);
 
-      expect(result.kind).toBe("command");
-      if (result.kind === "command") {
-        expect(result.commandName).toBe(longContent);
-      }
+      const commandResult = expectCommandResult(result);
+      expect(commandResult.commandName).toBe(longContent);
     });
 
     it("handles tags with attributes (not matched)", () => {
@@ -287,14 +280,11 @@ describe("parseCommandXml", () => {
     });
 
     it("handles mixed content with multiple tag types", () => {
-      const input =
-        "Some text <command-name>cmd</command-name> more text <unknown>tag</unknown>";
+      const input = "Some text <command-name>cmd</command-name> more text <unknown>tag</unknown>";
       const result = parseUserMessage(input);
 
-      expect(result.kind).toBe("command");
-      if (result.kind === "command") {
-        expect(result.commandName).toBe("cmd");
-      }
+      const commandResult = expectCommandResult(result);
+      expect(commandResult.commandName).toBe("cmd");
     });
   });
 });

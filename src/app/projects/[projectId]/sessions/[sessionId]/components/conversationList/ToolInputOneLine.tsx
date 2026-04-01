@@ -10,9 +10,7 @@ export const ToolInputOneLine: FC<{
     <span>
       {entries.map(([key, value], index) => {
         const valueStr =
-          typeof value === "string"
-            ? value
-            : JSON.stringify(value).replace(/^"|"$/g, "");
+          typeof value === "string" ? value : JSON.stringify(value).replace(/^"|"$/g, "");
 
         return (
           <span key={key}>

@@ -24,9 +24,7 @@ test("disables terminal when --terminal-disabled is enabled", async () => {
     return yield* Effect.either(terminalService.getOrCreateSession(undefined));
   }).pipe(
     Effect.provide(TerminalService.Live),
-    Effect.provide(
-      testPlatformLayer({ ccvOptions: { terminalDisabled: true } }),
-    ),
+    Effect.provide(testPlatformLayer({ ccvOptions: { terminalDisabled: true } })),
     Effect.scoped,
   );
 

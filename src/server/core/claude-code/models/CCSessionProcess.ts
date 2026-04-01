@@ -54,9 +54,7 @@ export type CCSessionProcessStatePublic =
   | CCSessionProcessFileCreatedState
   | CCSessionProcessPausedState;
 
-export type CCSessionProcessState =
-  | CCSessionProcessStatePublic
-  | CCSessionProcessCompletedState;
+export type CCSessionProcessState = CCSessionProcessStatePublic | CCSessionProcessCompletedState;
 
 export const isPublic = (
   process: CCSessionProcessState,
@@ -72,7 +70,5 @@ export const isPublic = (
 export const getAliveTasks = (
   process: CCSessionProcessState,
 ): CCTurn.AliveClaudeCodeTurnState[] => {
-  return process.tasks.filter(
-    (task) => task.status === "pending" || task.status === "running",
-  );
+  return process.tasks.filter((task) => task.status === "pending" || task.status === "running");
 };

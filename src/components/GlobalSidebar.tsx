@@ -1,14 +1,8 @@
 import { Trans } from "@lingui/react";
 import { useNavigate } from "@tanstack/react-router";
-import type { LucideIcon } from "lucide-react";
-import { InfoIcon, LogOut, SearchIcon, SettingsIcon } from "lucide-react";
+import { type LucideIcon, InfoIcon, LogOut, SearchIcon, SettingsIcon } from "lucide-react";
 import { type FC, type ReactNode, Suspense, useState } from "react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { useAuth } from "./AuthProvider";
 import { Loading } from "./Loading";
@@ -17,14 +11,14 @@ import { useSearch } from "./SearchProvider";
 import { SettingsControls } from "./SettingsControls";
 import { SystemInfoCard } from "./SystemInfoCard";
 
-export interface SidebarTab {
+export type SidebarTab = {
   id: string;
   icon: LucideIcon;
   title: ReactNode;
   content: ReactNode;
-}
+};
 
-interface GlobalSidebarProps {
+type GlobalSidebarProps = {
   projectId?: string;
   className?: string;
   additionalTabs?: SidebarTab[];
@@ -38,7 +32,7 @@ interface GlobalSidebarProps {
   onToggle?: () => void;
   /** On mobile, called with tab id instead of inline content expansion */
   onMobileTabClick?: (tabId: string) => void;
-}
+};
 
 export const GlobalSidebar: FC<GlobalSidebarProps> = ({
   projectId,
@@ -57,7 +51,7 @@ export const GlobalSidebar: FC<GlobalSidebarProps> = ({
 
   const handleLogout = async () => {
     await logout();
-    navigate({ to: "/login" });
+    void navigate({ to: "/login" });
   };
 
   const settingsTab: SidebarTab = {
@@ -164,7 +158,7 @@ export const GlobalSidebar: FC<GlobalSidebarProps> = ({
       {/* Vertical Icon Menu - Always Visible (compact on mobile) */}
       <div className="w-(--spacing-sidebar-icon-menu-mobile) md:w-(--spacing-sidebar-icon-menu) flex flex-col border-r border-sidebar-border bg-sidebar/50">
         <TooltipProvider>
-          {headerButton && (
+          {headerButton !== undefined && (
             <div className="border-b border-sidebar-border">{headerButton}</div>
           )}
           <div className="p-1.5 md:p-2 border-b border-sidebar-border">
@@ -225,7 +219,7 @@ export const GlobalSidebar: FC<GlobalSidebarProps> = ({
                 <TooltipTrigger asChild>
                   <button
                     type="button"
-                    onClick={handleLogout}
+                    onClick={() => void handleLogout()}
                     className={cn(
                       "w-7 h-7 md:w-8 md:h-8 flex items-center justify-center rounded-md transition-colors",
                       "hover:bg-destructive/10 hover:text-destructive",
@@ -247,9 +241,7 @@ export const GlobalSidebar: FC<GlobalSidebarProps> = ({
 
       {/* Content Area - Only shown when expanded and not hidden by external control */}
       {showContent && (
-        <div className="flex-1 flex flex-col overflow-hidden">
-          {activeTabContent}
-        </div>
+        <div className="flex-1 flex flex-col overflow-hidden">{activeTabContent}</div>
       )}
     </div>
   );

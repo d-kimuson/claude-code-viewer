@@ -1,9 +1,7 @@
 import type { ParsedUserMessage } from "../../../../server/core/claude-code/functions/parseUserMessage";
 
 const stripLocalCommandCaveat = (text: string) => {
-  return text
-    .replace(/<local-command-caveat>[\s\S]*?<\/local-command-caveat>/g, "")
-    .trim();
+  return text.replace(/<local-command-caveat>[\s\S]*?<\/local-command-caveat>/g, "").trim();
 };
 
 /**
@@ -17,8 +15,7 @@ export const resolveSessionTitle = (
   firstUserMessage: ParsedUserMessage | null,
   fallback: string,
 ): string =>
-  customTitle ??
-  (firstUserMessage ? firstUserMessageToTitle(firstUserMessage) : fallback);
+  customTitle ?? (firstUserMessage ? firstUserMessageToTitle(firstUserMessage) : fallback);
 
 export const firstUserMessageToTitle = (firstCommand: ParsedUserMessage) => {
   switch (firstCommand.kind) {

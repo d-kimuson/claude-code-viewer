@@ -130,7 +130,7 @@
 
 ## 0.5.2
 
-*No significant changes*
+_No significant changes_
 
 ##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.5.1...0.5.2)
 
@@ -229,13 +229,13 @@ claude-code-viewer --password secret --executable /path/to/claude --claude-dir ~
 
 ## 0.4.13
 
-*No significant changes*
+_No significant changes_
 
 ##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.4.11...v0.4.12)
 
 ## 0.4.12
 
-*No significant changes*
+_No significant changes_
 
 ##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.4.11...0.4.12)
 
@@ -257,7 +257,7 @@ claude-code-viewer --password secret --executable /path/to/claude --claude-dir ~
 
 ## 0.4.9
 
-*No significant changes*
+_No significant changes_
 
 ##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.4.8...0.4.9)
 
@@ -331,13 +331,13 @@ claude-code-viewer --password secret --executable /path/to/claude --claude-dir ~
 
 ## 0.4.2
 
-*No significant changes*
+_No significant changes_
 
 ##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.4.2-beta.2...0.4.2)
 
 ## 0.4.2-beta.2
 
-*No significant changes*
+_No significant changes_
 
 ##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.4.2-beta.1...0.4.2-beta.2)
 
@@ -528,13 +528,13 @@ claude-code-viewer --password secret --executable /path/to/claude --claude-dir ~
 
 ## 0.0.8
 
-*No significant changes*
+_No significant changes_
 
 ##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.0.7...0.0.8)
 
 ## 0.0.7
 
-*No significant changes*
+_No significant changes_
 
 ##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.0.6...0.0.7)
 

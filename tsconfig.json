@@ -15,12 +15,7 @@
       "@/*": ["./src/*"]
     },
     // typecheck
-    "types": [
-      "node",
-      "vitest/globals",
-      "vite/client",
-      "vite-plugin-pwa/client"
-    ],
+    "types": ["node", "vitest/globals", "vite/client", "vite-plugin-pwa/client"],
     "exactOptionalPropertyTypes": false,
     "noPropertyAccessFromIndexSignature": false,
     "allowJs": true,

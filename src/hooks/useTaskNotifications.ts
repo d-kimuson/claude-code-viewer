@@ -1,20 +1,14 @@
 import { useAtomValue } from "jotai";
 import { useEffect, useRef } from "react";
 import { toast } from "sonner";
-import {
-  notificationSettingsAtom,
-  soundNotificationsEnabledAtom,
-} from "@/lib/atoms/notifications";
+import { notificationSettingsAtom, soundNotificationsEnabledAtom } from "@/lib/atoms/notifications";
 import { playNotificationSound } from "@/lib/notifications";
 
 /**
  * Hook to handle task completion sound notifications
  * Monitors task state changes and triggers sound when tasks complete
  */
-export const useTaskNotifications = (
-  isRunningTask: boolean,
-  sessionId: string,
-) => {
+export const useTaskNotifications = (isRunningTask: boolean, sessionId: string) => {
   const settings = useAtomValue(notificationSettingsAtom);
   const soundEnabled = useAtomValue(soundNotificationsEnabledAtom);
 

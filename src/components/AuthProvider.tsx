@@ -1,8 +1,4 @@
-import {
-  useMutation,
-  useQueryClient,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
+import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { useAtomValue, useSetAtom } from "jotai";
 import { type FC, type PropsWithChildren, useEffect } from "react";
@@ -44,7 +40,7 @@ export const useAuth = () => {
         queryKey: authCheckQuery.queryKey,
       });
 
-      navigate({ to: "/projects" });
+      void navigate({ to: "/projects" });
     },
   });
 
@@ -57,7 +53,7 @@ export const useAuth = () => {
       });
     },
     onSuccess: () => {
-      navigate({ to: "/login" });
+      void navigate({ to: "/login" });
     },
   });
 

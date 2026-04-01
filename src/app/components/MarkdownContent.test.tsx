@@ -1,7 +1,4 @@
-/// <reference types="vitest" />
-/**
- * @vitest-environment jsdom
- */
+// @vitest-environment jsdom
 
 import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
@@ -42,9 +39,7 @@ describe("MarkdownContent", () => {
   });
 
   it("applies wrapping classes to long inline code", () => {
-    renderComponent(
-      "`very-long-inline-code-token-without-natural-breakpoints`",
-    );
+    renderComponent("`very-long-inline-code-token-without-natural-breakpoints`");
 
     const code = container?.querySelector("code");
 

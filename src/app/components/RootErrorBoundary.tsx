@@ -1,16 +1,9 @@
 import { AlertCircle, Home, RefreshCw } from "lucide-react";
 import type { FC, PropsWithChildren } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { HttpError } from "../../lib/api/client";
 
 const errorToString = (error: unknown): string => {

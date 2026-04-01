@@ -20,11 +20,7 @@ export const getDirectoryListing = async (
   showHidden = false,
 ): Promise<DirectoryListingResult> => {
   const normalizedBasePath =
-    basePath === "/"
-      ? ""
-      : basePath.startsWith("/")
-        ? basePath.slice(1)
-        : basePath;
+    basePath === "/" ? "" : basePath.startsWith("/") ? basePath.slice(1) : basePath;
   const targetPath = resolve(rootPath, normalizedBasePath);
 
   if (!targetPath.startsWith(resolve(rootPath))) {
@@ -57,9 +53,7 @@ export const getDirectoryListing = async (
         continue;
       }
 
-      const entryPath = normalizedBasePath
-        ? join(normalizedBasePath, dirent.name)
-        : dirent.name;
+      const entryPath = normalizedBasePath ? join(normalizedBasePath, dirent.name) : dirent.name;
 
       if (dirent.isDirectory()) {
         entries.push({

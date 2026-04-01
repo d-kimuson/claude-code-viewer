@@ -7,17 +7,11 @@ import { ClaudeCodePermissionService } from "../services/ClaudeCodePermissionSer
 const LayerImpl = Effect.gen(function* () {
   const claudeCodePermissionService = yield* ClaudeCodePermissionService;
 
-  const permissionResponse = (options: {
-    permissionResponse: PermissionResponse;
-  }) =>
+  const permissionResponse = (options: { permissionResponse: PermissionResponse }) =>
     Effect.sync(() => {
       const { permissionResponse } = options;
 
-      Effect.runFork(
-        claudeCodePermissionService.respondToPermissionRequest(
-          permissionResponse,
-        ),
-      );
+      Effect.runFork(claudeCodePermissionService.respondToPermissionRequest(permissionResponse));
 
       return {
         status: 200,
@@ -29,8 +23,7 @@ const LayerImpl = Effect.gen(function* () {
 
   const getPendingPermissionRequests = () =>
     Effect.gen(function* () {
-      const permissionRequests =
-        yield* claudeCodePermissionService.getPendingPermissionRequests;
+      const permissionRequests = yield* claudeCodePermissionService.getPendingPermissionRequests;
 
       return {
         status: 200,
@@ -47,8 +40,9 @@ const LayerImpl = Effect.gen(function* () {
 });
 
 export type IClaudeCodePermissionController = InferEffect<typeof LayerImpl>;
-export class ClaudeCodePermissionController extends Context.Tag(
-  "ClaudeCodePermissionController",
-)<ClaudeCodePermissionController, IClaudeCodePermissionController>() {
+export class ClaudeCodePermissionController extends Context.Tag("ClaudeCodePermissionController")<
+  ClaudeCodePermissionController,
+  IClaudeCodePermissionController
+>() {
   static Live = Layer.effect(this, LayerImpl);
 }

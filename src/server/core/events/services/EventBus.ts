@@ -4,11 +4,8 @@ import type { InternalEventDeclaration } from "../types/InternalEventDeclaration
 
 type Listener<T> = (data: T) => void | Promise<void>;
 
-const layerImpl = Effect.gen(function* () {
-  const listenersMap = new Map<
-    keyof InternalEventDeclaration,
-    Set<Listener<unknown>>
-  >();
+const layerImpl = Effect.sync(() => {
+  const listenersMap = new Map<keyof InternalEventDeclaration, Set<Listener<unknown>>>();
 
   const getListeners = <EventName extends keyof InternalEventDeclaration>(
     event: EventName,
@@ -16,16 +13,15 @@ const layerImpl = Effect.gen(function* () {
     if (!listenersMap.has(event)) {
       listenersMap.set(event, new Set());
     }
-    return listenersMap.get(event) as Set<
-      Listener<InternalEventDeclaration[EventName]>
-    >;
+    // oxlint-disable-next-line typescript-eslint/no-unsafe-type-assertion -- map guarantees correct type via event key
+    return listenersMap.get(event) as Set<Listener<InternalEventDeclaration[EventName]>>;
   };
 
   const emit = <EventName extends keyof InternalEventDeclaration>(
     event: EventName,
     data: InternalEventDeclaration[EventName],
   ): Effect.Effect<void> =>
-    Effect.gen(function* () {
+    Effect.sync(() => {
       const listeners = getListeners(event);
 
       void Promise.allSettled(
@@ -35,10 +31,7 @@ const layerImpl = Effect.gen(function* () {
       ).then((results) => {
         for (const r of results) {
           if (r.status === "rejected") {
-            console.error(
-              `[EventBus] listener error for "${event}":`,
-              r.reason,
-            );
+            console.error(`[EventBus] listener error for "${event}":`, r.reason);
           }
         }
       });

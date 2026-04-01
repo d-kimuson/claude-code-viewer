@@ -17,10 +17,7 @@ const LayerImpl = Effect.gen(function* () {
       } as const satisfies ControllerResponse;
     });
 
-  const consumeNotifications = (params: {
-    sessionId: string;
-    types?: SessionNotificationType[];
-  }) =>
+  const consumeNotifications = (params: { sessionId: string; types?: SessionNotificationType[] }) =>
     Effect.gen(function* () {
       yield* notificationService.consumeNotifications(params.sessionId, {
         types: params.types,
@@ -67,8 +64,9 @@ const LayerImpl = Effect.gen(function* () {
 
 export type INotificationController = InferEffect<typeof LayerImpl>;
 
-export class NotificationController extends Context.Tag(
-  "NotificationController",
-)<NotificationController, INotificationController>() {
+export class NotificationController extends Context.Tag("NotificationController")<
+  NotificationController,
+  INotificationController
+>() {
   static Live = Layer.effect(this, LayerImpl);
 }

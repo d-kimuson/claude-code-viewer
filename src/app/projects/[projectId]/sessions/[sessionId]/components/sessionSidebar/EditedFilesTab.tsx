@@ -23,7 +23,7 @@ const groupFilesByProject = (
   files: readonly { filePath: string; toolName: string }[],
   cwd: string | undefined,
 ): GroupedFiles => {
-  if (!cwd) {
+  if (cwd === undefined) {
     return {
       internal: [],
       external: files.map((f) => ({
@@ -73,7 +73,7 @@ const FileListItem: FC<{
   toolName: string;
   projectId: string;
   isExternal?: boolean;
-}> = ({ filePath, displayPath, toolName, projectId, isExternal }) => {
+}> = ({ filePath, displayPath, toolName, projectId, isExternal = false }) => {
   return (
     <FileContentDialog projectId={projectId} filePaths={[filePath]}>
       <Button
@@ -86,12 +86,8 @@ const FileListItem: FC<{
         ) : (
           <FileIcon className="h-3.5 w-3.5 flex-shrink-0 text-muted-foreground" />
         )}
-        <span className="truncate text-left flex-1 font-mono">
-          {displayPath}
-        </span>
-        <span className="text-[10px] text-muted-foreground flex-shrink-0">
-          {toolName}
-        </span>
+        <span className="truncate text-left flex-1 font-mono">{displayPath}</span>
+        <span className="text-[10px] text-muted-foreground flex-shrink-0">{toolName}</span>
       </Button>
     </FileContentDialog>
   );
@@ -103,10 +99,7 @@ export const EditedFilesTab: FC<{
 }> = ({ projectId, sessionId }) => {
   const { conversations } = useSession(projectId, sessionId);
 
-  const editedFiles = useMemo(
-    () => extractAllEditedFiles(conversations),
-    [conversations],
-  );
+  const editedFiles = useMemo(() => extractAllEditedFiles(conversations), [conversations]);
 
   // Get cwd from the first conversation entry that has it
   const cwd = useMemo(() => {
@@ -118,10 +111,7 @@ export const EditedFilesTab: FC<{
     return undefined;
   }, [conversations]);
 
-  const groupedFiles = useMemo(
-    () => groupFilesByProject(editedFiles, cwd),
-    [editedFiles, cwd],
-  );
+  const groupedFiles = useMemo(() => groupFilesByProject(editedFiles, cwd), [editedFiles, cwd]);
 
   if (editedFiles.length === 0) {
     return (
@@ -138,10 +128,7 @@ export const EditedFilesTab: FC<{
           <Trans id="sidebar.edited_files.title" />
         </h3>
         <p className="text-xs text-muted-foreground mt-1">
-          <Trans
-            id="sidebar.edited_files.count"
-            values={{ count: editedFiles.length }}
-          />
+          <Trans id="sidebar.edited_files.count" values={{ count: editedFiles.length }} />
         </p>
       </div>
       <div className="flex-1 overflow-auto">

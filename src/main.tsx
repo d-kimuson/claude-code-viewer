@@ -1,11 +1,10 @@
-import { registerSW } from "virtual:pwa-register";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
+import { registerSW } from "virtual:pwa-register";
 import { NotFound } from "./components/NotFound";
 import { QueryClientProviderWrapper } from "./lib/api/QueryClientProviderWrapper";
 import { routeTree } from "./routeTree.gen";
-
 import "./styles.css";
 
 const ONE_HOUR_MS = 60 * 60 * 1000;
@@ -32,6 +31,7 @@ const router = createRouter({
 });
 
 declare module "@tanstack/react-router" {
+  // oxlint-disable-next-line consistent-type-definitions -- for declaration merging
   interface Register {
     router: typeof router;
   }

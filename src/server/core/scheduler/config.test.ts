@@ -16,9 +16,7 @@ import type { SchedulerConfig } from "./schema";
 
 describe("scheduler config", () => {
   let testDir: string;
-  let testLayer: Layer.Layer<
-    FileSystem.FileSystem | Path.Path | SchedulerConfigBaseDir
-  >;
+  let testLayer: Layer.Layer<FileSystem.FileSystem | Path.Path | SchedulerConfigBaseDir>;
 
   beforeEach(async () => {
     testDir = join(tmpdir(), `scheduler-test-${Date.now()}`);
@@ -27,11 +25,7 @@ describe("scheduler config", () => {
     // Use test directory as base for config files
     const testConfigBaseDir = Layer.succeed(SchedulerConfigBaseDir, testDir);
 
-    testLayer = Layer.mergeAll(
-      NodeFileSystem.layer,
-      NodePath.layer,
-      testConfigBaseDir,
-    );
+    testLayer = Layer.mergeAll(NodeFileSystem.layer, NodePath.layer, testConfigBaseDir);
   });
 
   afterEach(async () => {
@@ -39,9 +33,7 @@ describe("scheduler config", () => {
   });
 
   test("getConfigPath returns correct path", async () => {
-    const result = await Effect.runPromise(
-      getConfigPath.pipe(Effect.provide(testLayer)),
-    );
+    const result = await Effect.runPromise(getConfigPath.pipe(Effect.provide(testLayer)));
 
     expect(result).toContain("/scheduler/schedules.json");
     expect(result).toContain(testDir);

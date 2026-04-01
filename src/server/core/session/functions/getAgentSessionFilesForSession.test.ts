@@ -23,8 +23,7 @@ const makePathMock = (): Layer.Layer<Path.Path> => {
 describe("getAgentSessionFilesForSession", () => {
   test("returns empty array when no agent files exist", async () => {
     const FileSystemMock = makeFileSystemMock({
-      readDirectory: () =>
-        Effect.succeed(["main-session.jsonl", "another-session.jsonl"]),
+      readDirectory: () => Effect.succeed(["main-session.jsonl", "another-session.jsonl"]),
     });
 
     const PathMock = makePathMock();
@@ -74,8 +73,7 @@ describe("getAgentSessionFilesForSession", () => {
 
   test("returns agent file paths when sessionId matches", async () => {
     const FileSystemMock = makeFileSystemMock({
-      readDirectory: () =>
-        Effect.succeed(["agent-hash-123.jsonl", "main-session.jsonl"]),
+      readDirectory: () => Effect.succeed(["agent-hash-123.jsonl", "main-session.jsonl"]),
       readFileString: (path: string) => {
         if (path.includes("agent-hash-123.jsonl")) {
           return Effect.succeed(
@@ -160,11 +158,7 @@ describe("getAgentSessionFilesForSession", () => {
   test("handles directories and ignores non-file entries", async () => {
     const FileSystemMock = makeFileSystemMock({
       readDirectory: () =>
-        Effect.succeed([
-          "agent-hash-123.jsonl",
-          "some-directory",
-          "agent-hash-456.jsonl",
-        ]),
+        Effect.succeed(["agent-hash-123.jsonl", "some-directory", "agent-hash-456.jsonl"]),
       readFileString: (path: string) => {
         if (path.includes("agent-hash-123.jsonl")) {
           return Effect.succeed(
@@ -204,8 +198,7 @@ describe("getAgentSessionFilesForSession", () => {
 
   test("handles file read errors gracefully by skipping the file", async () => {
     const FileSystemMock = makeFileSystemMock({
-      readDirectory: () =>
-        Effect.succeed(["agent-corrupted.jsonl", "agent-valid.jsonl"]),
+      readDirectory: () => Effect.succeed(["agent-corrupted.jsonl", "agent-valid.jsonl"]),
       readFileString: (path: string) => {
         if (path.includes("agent-corrupted.jsonl")) {
           return Effect.fail(
@@ -249,8 +242,7 @@ describe("getAgentSessionFilesForSession", () => {
 
   test("handles invalid JSON gracefully by skipping the file", async () => {
     const FileSystemMock = makeFileSystemMock({
-      readDirectory: () =>
-        Effect.succeed(["agent-invalid.jsonl", "agent-valid.jsonl"]),
+      readDirectory: () => Effect.succeed(["agent-invalid.jsonl", "agent-valid.jsonl"]),
       readFileString: (path: string) => {
         if (path.includes("agent-invalid.jsonl")) {
           return Effect.succeed("this is not valid json");

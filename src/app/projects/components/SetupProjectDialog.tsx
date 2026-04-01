@@ -38,22 +38,17 @@ export const SetupProjectDialog: FC = () => {
     onSuccess: (result) => {
       toast.success("Project set up successfully");
       setOpen(false);
-      navigate({
+      void navigate({
         to: "/projects/$projectId/session",
         params: {
           projectId: result.projectId,
         },
-        search: (prev) => ({
-          ...prev,
-          sessionId: result.sessionId,
-        }),
+        search: { sessionId: result.sessionId },
       });
     },
 
     onError: (error) => {
-      toast.error(
-        error instanceof Error ? error.message : "Failed to set up project",
-      );
+      toast.error(error instanceof Error ? error.message : "Failed to set up project");
     },
   });
 
@@ -87,8 +82,10 @@ export const SetupProjectDialog: FC = () => {
             <Trans id="common.action.cancel" />
           </Button>
           <Button
-            onClick={async () => await setupProjectMutation.mutateAsync()}
-            disabled={!selectedPath || setupProjectMutation.isPending}
+            onClick={() => {
+              void setupProjectMutation.mutateAsync();
+            }}
+            disabled={selectedPath === "" || setupProjectMutation.isPending}
           >
             {setupProjectMutation.isPending ? (
               <>

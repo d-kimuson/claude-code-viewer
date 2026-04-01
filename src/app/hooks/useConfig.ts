@@ -4,10 +4,7 @@ import { useCallback } from "react";
 import { honoClient } from "../../lib/api/client";
 import { configQuery } from "../../lib/api/queries";
 import { type AuthState, authAtom } from "../../lib/auth/store/authAtom";
-import {
-  defaultUserConfig,
-  type UserConfig,
-} from "../../server/lib/config/config";
+import { defaultUserConfig, type UserConfig } from "../../server/lib/config/config";
 
 export const canFetchConfig = (authState: AuthState) =>
   authState.checked && (!authState.authEnabled || authState.authenticated);
@@ -32,9 +29,7 @@ export const useConfig = () => {
   });
 
   return {
-    config: shouldFetch
-      ? (data?.config ?? defaultUserConfig)
-      : defaultUserConfig,
+    config: shouldFetch ? (data?.config ?? defaultUserConfig) : defaultUserConfig,
     updateConfig: useCallback(
       (
         config: UserConfig,
@@ -47,12 +42,14 @@ export const useConfig = () => {
         }
 
         updateConfigMutation.mutate(config, {
-          onSuccess: async () => {
-            await queryClient.invalidateQueries({
-              queryKey: configQuery.queryKey,
-            });
+          onSuccess: () => {
+            void (async () => {
+              await queryClient.invalidateQueries({
+                queryKey: configQuery.queryKey,
+              });
 
-            await callbacks?.onSuccess?.();
+              await callbacks?.onSuccess?.();
+            })();
           },
         });
       },

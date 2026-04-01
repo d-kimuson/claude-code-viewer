@@ -7,6 +7,7 @@ const LayerImpl = Effect.gen(function* () {
 
   const parseEnv = () => {
     // biome-ignore lint/style/noProcessEnv: allow only here
+    // oxlint-disable-next-line node/no-process-env -- configuration boundary
     const parsed = envSchema.safeParse(process.env);
     if (!parsed.success) {
       console.error(parsed.error);
@@ -16,9 +17,7 @@ const LayerImpl = Effect.gen(function* () {
     return parsed.data;
   };
 
-  const getEnv = <Key extends keyof EnvSchema>(
-    key: Key,
-  ): Effect.Effect<EnvSchema[Key]> => {
+  const getEnv = <Key extends keyof EnvSchema>(key: Key): Effect.Effect<EnvSchema[Key]> => {
     return Effect.gen(function* () {
       yield* Ref.update(envRef, (existingEnv) => {
         if (existingEnv === undefined) {
@@ -29,9 +28,7 @@ const LayerImpl = Effect.gen(function* () {
 
       const env = yield* Ref.get(envRef);
       if (env === undefined) {
-        throw new Error(
-          "Unexpected error: Environment variables are not loaded",
-        );
+        throw new Error("Unexpected error: Environment variables are not loaded");
       }
 
       return env[key];
@@ -42,6 +39,7 @@ const LayerImpl = Effect.gen(function* () {
     return Effect.sync(() => {
       const entries: Array<[string, string]> = [];
       // biome-ignore lint/style/noProcessEnv: centralized env access
+      // oxlint-disable-next-line node/no-process-env -- configuration boundary
       for (const [key, value] of Object.entries(process.env)) {
         if (typeof value === "string") {
           entries.push([key, value]);
@@ -59,9 +57,6 @@ const LayerImpl = Effect.gen(function* () {
 
 export type IEnvService = InferEffect<typeof LayerImpl>;
 
-export class EnvService extends Context.Tag("EnvService")<
-  EnvService,
-  IEnvService
->() {
+export class EnvService extends Context.Tag("EnvService")<EnvService, IEnvService>() {
   static Live = Layer.effect(this, LayerImpl);
 }

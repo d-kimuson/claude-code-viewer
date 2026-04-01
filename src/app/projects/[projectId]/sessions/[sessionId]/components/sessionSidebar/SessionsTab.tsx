@@ -1,5 +1,5 @@
 import { Trans } from "@lingui/react";
-import { Link, useSearch } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { useAtomValue } from "jotai";
 import { MessageSquareIcon, PlusIcon } from "lucide-react";
 import { type FC, useEffect, useMemo, useRef } from "react";
@@ -34,19 +34,13 @@ export const SessionsTab: FC<{
   const sessions = useMemo(() => {
     const serverSessions = projectData.pages.flatMap((page) => page.sessions);
     const existingIds = new Set(serverSessions.map((s) => s.id));
-    const virtualSessions = createVirtualSessionEntries(
-      virtualMessages,
-      projectId,
-      existingIds,
-    );
+    const virtualSessions = createVirtualSessionEntries(virtualMessages, projectId, existingIds);
     return [...serverSessions, ...virtualSessions];
   }, [projectData.pages, projectId, virtualMessages]);
 
   // Clean up virtual messages once the server session list includes them
   useEffect(() => {
-    const serverIds = new Set(
-      projectData.pages.flatMap((page) => page.sessions).map((s) => s.id),
-    );
+    const serverIds = new Set(projectData.pages.flatMap((page) => page.sessions).map((s) => s.id));
     for (const vm of virtualMessages.values()) {
       if (vm.projectId === projectId && serverIds.has(vm.sessionId)) {
         removeVirtualMessage(vm.sessionId);
@@ -65,11 +59,7 @@ export const SessionsTab: FC<{
       behavior: "smooth",
     });
   }, [currentSessionId]);
-  const search = useSearch({
-    from: "/projects/$projectId/session",
-  });
-  // Preserve current tab state or default to "sessions"
-  const currentTab = search.tab ?? "sessions";
+  const currentTab = "sessions";
 
   const isNewChatActive = currentSessionId === "";
 
@@ -83,12 +73,8 @@ export const SessionsTab: FC<{
     };
 
     return [...sessions].sort((a, b) => {
-      const aStatus = sessionProcesses.find(
-        (process) => process.sessionId === a.id,
-      )?.status;
-      const bStatus = sessionProcesses.find(
-        (process) => process.sessionId === b.id,
-      )?.status;
+      const aStatus = sessionProcesses.find((process) => process.sessionId === a.id)?.status;
+      const bStatus = sessionProcesses.find((process) => process.sessionId === b.id)?.status;
 
       const aPriority = getPriority(aStatus);
       const bPriority = getPriority(bStatus);
@@ -122,11 +108,7 @@ export const SessionsTab: FC<{
         <Link
           to="/projects/$projectId/session"
           params={{ projectId }}
-          search={(prev) => ({
-            ...prev,
-            tab: currentTab,
-            sessionId: undefined,
-          })}
+          search={{ tab: currentTab }}
           onClick={onSessionSelect}
           className={cn(
             "block rounded-lg p-2.5 transition-all duration-200 border-2 border-dashed border-sidebar-border/60 hover:border-blue-400/80 hover:bg-blue-50/50 dark:hover:bg-blue-950/40 bg-sidebar/10",
@@ -153,9 +135,7 @@ export const SessionsTab: FC<{
             session.id,
           );
 
-          const sessionProcess = sessionProcesses.find(
-            (task) => task.sessionId === session.id,
-          );
+          const sessionProcess = sessionProcesses.find((task) => task.sessionId === session.id);
           const isRunning = sessionProcess?.status === "running";
           const isPaused = sessionProcess?.status === "paused";
 
@@ -165,11 +145,7 @@ export const SessionsTab: FC<{
               ref={isActive ? activeSessionRef : undefined}
               to="/projects/$projectId/session"
               params={{ projectId }}
-              search={(prev) => ({
-                ...prev,
-                tab: currentTab,
-                sessionId: session.id,
-              })}
+              search={{ tab: currentTab, sessionId: session.id }}
               onClick={onSessionSelect}
               className={cn(
                 "group relative block rounded-lg p-2.5 transition-all duration-200 hover:bg-blue-50/60 dark:hover:bg-blue-950/40 hover:border-blue-300/60 dark:hover:border-blue-700/60 hover:shadow-sm border border-sidebar-border/40 bg-sidebar/30",
@@ -221,10 +197,12 @@ export const SessionsTab: FC<{
         })}
 
         {/* Load More Button */}
-        {hasNextPage && fetchNextPage && (
+        {hasNextPage === true && (
           <div className="p-2">
             <Button
-              onClick={() => fetchNextPage()}
+              onClick={() => {
+                void fetchNextPage();
+              }}
               disabled={isFetchingNextPage}
               variant="outline"
               size="sm"

@@ -2,10 +2,8 @@ import { FileSystem } from "@effect/platform";
 import { Context, Effect, Layer, Ref } from "effect";
 import { ulid } from "ulid";
 import webpush from "web-push";
-import type {
-  SessionNotification,
-  SessionNotificationType,
-} from "../../../../types/notification";
+import { z } from "zod";
+import type { SessionNotification, SessionNotificationType } from "../../../../types/notification";
 import type { InferEffect } from "../../../lib/effect/types";
 import { EventBus } from "../../events/services/EventBus";
 
@@ -17,18 +15,20 @@ type PushSubscriptionRecord = {
   };
 };
 
-type VapidKeys = {
-  publicKey: string;
-  privateKey: string;
-};
+const vapidKeysSchema = z.object({
+  publicKey: z.string(),
+  privateKey: z.string(),
+});
+
+type VapidKeys = z.infer<typeof vapidKeysSchema>;
 
 const VAPID_KEYS_FILENAME = ".claude-code-viewer/vapid-keys.json";
 
 const getVapidKeysPath = (fs: FileSystem.FileSystem) =>
   Effect.gen(function* () {
-    const home =
-      // biome-ignore lint/style/noProcessEnv: required for home directory
-      process.env.HOME ?? process.env.USERPROFILE ?? "/tmp";
+    // biome-ignore lint/style/noProcessEnv: required for home directory
+    // oxlint-disable-next-line node/no-process-env -- configuration boundary
+    const home = process.env.HOME ?? process.env.USERPROFILE ?? "/tmp";
     const dirPath = `${home}/.claude-code-viewer`;
 
     const dirExists = yield* fs.exists(dirPath);
@@ -46,7 +46,7 @@ const loadOrCreateVapidKeys = (fs: FileSystem.FileSystem) =>
 
     if (exists) {
       const content = yield* fs.readFileString(keysPath);
-      return JSON.parse(content) as VapidKeys;
+      return vapidKeysSchema.parse(JSON.parse(content));
     }
 
     const keys = webpush.generateVAPIDKeys();
@@ -123,8 +123,7 @@ const LayerImpl = Effect.gen(function* () {
     );
   });
 
-  const getNotifications = (): Effect.Effect<SessionNotification[]> =>
-    Ref.get(notificationsRef);
+  const getNotifications = (): Effect.Effect<SessionNotification[]> => Ref.get(notificationsRef);
 
   const createNotification = (params: {
     projectId: string;
@@ -140,10 +139,7 @@ const LayerImpl = Effect.gen(function* () {
         createdAt: new Date().toISOString(),
       };
 
-      yield* Ref.update(notificationsRef, (notifications) => [
-        ...notifications,
-        notification,
-      ]);
+      yield* Ref.update(notificationsRef, (notifications) => [...notifications, notification]);
 
       yield* eventBus.emit("notificationCreated", { notification });
 
@@ -162,8 +158,7 @@ const LayerImpl = Effect.gen(function* () {
       const types = options?.types;
 
       const shouldConsume = (n: SessionNotification) =>
-        n.sessionId === sessionId &&
-        (types === undefined || types.includes(n.type));
+        n.sessionId === sessionId && (types === undefined || types.includes(n.type));
 
       const hasMatch = notifications.some(shouldConsume);
 
@@ -178,23 +173,16 @@ const LayerImpl = Effect.gen(function* () {
       yield* eventBus.emit("notificationConsumed", { sessionId });
     });
 
-  const getVapidPublicKey = (): Effect.Effect<string> =>
-    Effect.succeed(vapidKeys.publicKey);
+  const getVapidPublicKey = (): Effect.Effect<string> => Effect.succeed(vapidKeys.publicKey);
 
-  const subscribePush = (
-    subscription: PushSubscriptionRecord,
-  ): Effect.Effect<void> =>
+  const subscribePush = (subscription: PushSubscriptionRecord): Effect.Effect<void> =>
     Ref.update(pushSubscriptionsRef, (subscriptions) => {
       // Avoid duplicates by endpoint
-      const filtered = subscriptions.filter(
-        (s) => s.endpoint !== subscription.endpoint,
-      );
+      const filtered = subscriptions.filter((s) => s.endpoint !== subscription.endpoint);
       return [...filtered, subscription];
     });
 
-  const sendPushNotifications = (
-    notification: SessionNotification,
-  ): Effect.Effect<void> =>
+  const sendPushNotifications = (notification: SessionNotification): Effect.Effect<void> =>
     Effect.gen(function* () {
       const subscriptions = yield* Ref.get(pushSubscriptionsRef);
       if (subscriptions.length === 0) return;

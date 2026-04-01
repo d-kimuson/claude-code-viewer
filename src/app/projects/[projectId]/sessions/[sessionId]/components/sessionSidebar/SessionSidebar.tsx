@@ -8,24 +8,15 @@ import {
   PlugIcon,
 } from "lucide-react";
 import { type FC, Suspense, useMemo } from "react";
-import type { SidebarTab } from "@/components/GlobalSidebar";
-import { GlobalSidebar } from "@/components/GlobalSidebar";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import {
-  useLeftPanelActions,
-  useLeftPanelState,
-} from "@/hooks/useLayoutPanels";
+import { GlobalSidebar, type SidebarTab } from "@/components/GlobalSidebar";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { useLeftPanelActions, useLeftPanelState } from "@/hooks/useLayoutPanels";
 import { cn } from "@/lib/utils";
 import { Loading } from "../../../../../../../components/Loading";
 import { McpTab } from "./McpTab";
 import { SchedulerTab } from "./SchedulerTab";
-import { SessionsTab } from "./SessionsTab";
 import type { Tab } from "./schema";
+import { SessionsTab } from "./SessionsTab";
 import { TasksTab } from "./TasksTab";
 
 export const SessionSidebar: FC<{
@@ -45,10 +36,7 @@ export const SessionSidebar: FC<{
         title: <Trans id="sidebar.show.session.list" />,
         content: (
           <Suspense fallback={<Loading />}>
-            <SessionsTab
-              currentSessionId={activeSessionId}
-              projectId={projectId}
-            />
+            <SessionsTab currentSessionId={activeSessionId} projectId={projectId} />
           </Suspense>
         ),
       },
@@ -68,9 +56,7 @@ export const SessionSidebar: FC<{
         id: "scheduler",
         icon: CalendarClockIcon,
         title: <Trans id="sidebar.show.scheduler.jobs" />,
-        content: (
-          <SchedulerTab projectId={projectId} sessionId={activeSessionId} />
-        ),
+        content: <SchedulerTab projectId={projectId} sessionId={activeSessionId} />,
       },
     ],
     [activeSessionId, projectId],

@@ -1,10 +1,6 @@
 import { ChevronDown } from "lucide-react";
 import type { FC } from "react";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { normalizeQueueOperationContent } from "@/lib/conversation-schema/entry/normalizeQueueOperationContent";
 import type { QueueOperationEntry } from "@/lib/conversation-schema/entry/QueueOperationEntrySchema";
 
@@ -12,9 +8,7 @@ export const QueueOperationConversationContent: FC<{
   conversation: QueueOperationEntry;
 }> = ({ conversation }) => {
   const title =
-    conversation.operation === "enqueue"
-      ? "Queue Operation: Enqueue"
-      : "Queue Operation: Dequeue";
+    conversation.operation === "enqueue" ? "Queue Operation: Enqueue" : "Queue Operation: Dequeue";
 
   return (
     <Collapsible>
@@ -28,28 +22,20 @@ export const QueueOperationConversationContent: FC<{
         <div className="bg-background rounded border p-3 mt-2">
           <div className="space-y-2 text-xs">
             <div>
-              <span className="font-medium text-muted-foreground">
-                Operation:
-              </span>{" "}
+              <span className="font-medium text-muted-foreground">Operation:</span>{" "}
               {conversation.operation}
             </div>
             <div>
-              <span className="font-medium text-muted-foreground">
-                Session ID:
-              </span>{" "}
+              <span className="font-medium text-muted-foreground">Session ID:</span>{" "}
               {conversation.sessionId}
             </div>
             <div>
-              <span className="font-medium text-muted-foreground">
-                Timestamp:
-              </span>{" "}
+              <span className="font-medium text-muted-foreground">Timestamp:</span>{" "}
               {conversation.timestamp}
             </div>
             {conversation.operation === "enqueue" && (
               <div>
-                <span className="font-medium text-muted-foreground">
-                  Content:
-                </span>
+                <span className="font-medium text-muted-foreground">Content:</span>
                 <pre className="mt-1 overflow-x-auto whitespace-pre-wrap">
                   {normalizeQueueOperationContent(conversation.content)}
                 </pre>

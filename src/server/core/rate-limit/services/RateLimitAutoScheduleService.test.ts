@@ -7,7 +7,7 @@ import { ClaudeCodeSessionProcessService } from "../../claude-code/services/Clau
 import { EventBus } from "../../events/services/EventBus";
 import { ProjectRepository } from "../../project/infrastructure/ProjectRepository";
 import { SchedulerConfigBaseDir } from "../../scheduler/config";
-import { SchedulerService } from "../../scheduler/domain/Scheduler";
+import { SchedulerService, type ISchedulerService } from "../../scheduler/domain/Scheduler";
 import type { NewSchedulerJob, SchedulerJob } from "../../scheduler/schema";
 import { RateLimitAutoScheduleService } from "./RateLimitAutoScheduleService";
 
@@ -79,7 +79,7 @@ describe("RateLimitAutoScheduleService", () => {
     addedJobs = [];
     const mockJobs: SchedulerJob[] = [];
 
-    return Layer.succeed(SchedulerService, {
+    const mockSchedulerService: ISchedulerService = {
       startScheduler: Effect.void,
       stopScheduler: Effect.void,
       getJobs: () => Effect.succeed(mockJobs),
@@ -96,9 +96,11 @@ describe("RateLimitAutoScheduleService", () => {
           mockJobs.push(job);
           return job;
         }),
-      updateJob: () => Effect.succeed({} as SchedulerJob),
+      updateJob: () => Effect.die(new Error("Not implemented in this test")),
       deleteJob: () => Effect.succeed(undefined),
-    });
+    };
+
+    return Layer.succeed(SchedulerService, mockSchedulerService);
   };
 
   // Mock ClaudeCodeSessionProcessService with configurable live processes
@@ -106,19 +108,15 @@ describe("RateLimitAutoScheduleService", () => {
     liveSessionIds: Set<string> = new Set(),
     projectIdForSession: Map<string, string> = new Map(),
   ) => {
-    return Layer.succeed(ClaudeCodeSessionProcessService, {
-      startSessionProcess: () =>
-        Effect.succeed({ sessionProcess: {} as never, task: {} as never }),
-      continueSessionProcess: () =>
-        Effect.succeed({ sessionProcess: {} as never, task: {} as never }),
-      updateRawUserMessage: () =>
-        Effect.succeed({ sessionProcess: {} as never }),
-      toInitializedState: () => Effect.succeed({ sessionProcess: {} as never }),
-      toFileCreatedState: () => Effect.succeed({ sessionProcess: {} as never }),
-      toPausedState: () => Effect.succeed({ sessionProcess: {} as never }),
-      toCompletedState: () =>
-        Effect.succeed({ sessionProcess: {} as never, task: undefined }),
-      dangerouslyChangeProcessState: () => Effect.succeed({} as never),
+    const mockSessionProcessService = {
+      startSessionProcess: () => Effect.die(new Error("Not implemented in this test")),
+      continueSessionProcess: () => Effect.die(new Error("Not implemented in this test")),
+      updateRawUserMessage: () => Effect.die(new Error("Not implemented in this test")),
+      toInitializedState: () => Effect.die(new Error("Not implemented in this test")),
+      toFileCreatedState: () => Effect.die(new Error("Not implemented in this test")),
+      toPausedState: () => Effect.die(new Error("Not implemented in this test")),
+      toCompletedState: () => Effect.die(new Error("Not implemented in this test")),
+      dangerouslyChangeProcessState: () => Effect.die(new Error("Not implemented in this test")),
       getSessionProcesses: () =>
         Effect.succeed(
           Array.from(liveSessionIds).map((sessionId) => ({
@@ -134,10 +132,12 @@ describe("RateLimitAutoScheduleService", () => {
             tasks: [],
           })),
         ),
-      getSessionProcess: () => Effect.succeed({} as never),
-      getTask: () => Effect.succeed({} as never),
-      changeTurnState: () => Effect.succeed({} as never),
-    });
+      getSessionProcess: () => Effect.die(new Error("Not implemented in this test")),
+      getTask: () => Effect.die(new Error("Not implemented in this test")),
+      changeTurnState: () => Effect.die(new Error("Not implemented in this test")),
+    };
+
+    return Layer.succeed(ClaudeCodeSessionProcessService, mockSessionProcessService);
   };
 
   // Mock FileSystem that returns specific content
@@ -148,23 +148,36 @@ describe("RateLimitAutoScheduleService", () => {
   };
 
   // Mock ProjectRepository
-  const mockProjectRepository = Layer.succeed(ProjectRepository, {
+  const mockProjectRepositoryService = {
     getProject: () =>
       Effect.succeed({
         project: {
+          id: "test-project",
+          claudeProjectPath: "/test/project",
+          lastModifiedAt: new Date("2026-01-24T10:00:00.000Z"),
           meta: {
+            projectName: "test-project",
             projectPath: "/test/project",
-            encodedProjectId: "test-project",
+            sessionCount: 1,
           },
         },
-      } as never),
-  } as never);
+      }),
+    getProjects: () =>
+      Effect.succeed({
+        projects: [],
+      }),
+  };
+  const mockProjectRepository = Layer.succeed(ProjectRepository, mockProjectRepositoryService);
 
   // Mock ClaudeCodeLifeCycleService
-  const mockLifeCycleService = Layer.succeed(ClaudeCodeLifeCycleService, {
-    startTask: () => Effect.void,
-    continueTask: () => Effect.void,
-  } as never);
+  const mockLifeCycleServiceImpl = {
+    continueSessionProcess: () => Effect.die(new Error("Not implemented in this test")),
+    startSessionProcess: () => Effect.die(new Error("Not implemented in this test")),
+    abortTask: () => Effect.void,
+    abortAllTasks: () => Effect.void,
+    getPublicSessionProcesses: () => Effect.succeed([]),
+  };
+  const mockLifeCycleService = Layer.succeed(ClaudeCodeLifeCycleService, mockLifeCycleServiceImpl);
 
   // Additional layers needed for the service
   const additionalLayers = Layer.mergeAll(
@@ -230,9 +243,7 @@ describe("RateLimitAutoScheduleService", () => {
           Effect.provide(
             createMockSessionProcessService(
               new Set(["9112408c-3585-4a39-a13f-11045828d870"]),
-              new Map([
-                ["9112408c-3585-4a39-a13f-11045828d870", "test-project"],
-              ]),
+              new Map([["9112408c-3585-4a39-a13f-11045828d870", "test-project"]]),
             ),
           ),
           Effect.provide(createMockFileSystem(rateLimitJsonLine)),
@@ -348,9 +359,7 @@ describe("RateLimitAutoScheduleService", () => {
           Effect.provide(
             createMockSessionProcessService(
               new Set(["9112408c-3585-4a39-a13f-11045828d870"]),
-              new Map([
-                ["9112408c-3585-4a39-a13f-11045828d870", "test-project"],
-              ]),
+              new Map([["9112408c-3585-4a39-a13f-11045828d870", "test-project"]]),
             ),
           ),
           Effect.provide(createMockFileSystem(rateLimitJsonLine)),
@@ -367,22 +376,23 @@ describe("RateLimitAutoScheduleService", () => {
       await waitForEventProcessing();
 
       expect(addedJobs).toHaveLength(1);
-      expect(addedJobs[0]).toMatchObject({
-        name: expect.stringContaining("Rate limit"),
-        schedule: {
-          type: "reserved",
-          reservedExecutionTime: expect.any(String),
-        },
-        message: {
-          content: "continue",
-          projectId: "test-project",
-          baseSession: {
-            type: "resume",
-            sessionId: "9112408c-3585-4a39-a13f-11045828d870",
-          },
-        },
-        enabled: true,
+      const [firstJob] = addedJobs;
+      if (firstJob === undefined) {
+        throw new Error("Expected first scheduled job to exist");
+      }
+      expect(firstJob.name).toContain("Rate limit");
+      expect(firstJob.schedule.type).toBe("reserved");
+      if (firstJob.schedule.type !== "reserved") {
+        throw new Error("Expected reserved schedule");
+      }
+      expect(typeof firstJob.schedule.reservedExecutionTime).toBe("string");
+      expect(firstJob.message.content).toBe("continue");
+      expect(firstJob.message.projectId).toBe("test-project");
+      expect(firstJob.message.baseSession).toEqual({
+        type: "resume",
+        sessionId: "9112408c-3585-4a39-a13f-11045828d870",
       });
+      expect(firstJob.enabled).toBe(true);
     });
 
     it("does not create duplicate jobs for the same session", async () => {
@@ -423,9 +433,7 @@ describe("RateLimitAutoScheduleService", () => {
           Effect.provide(
             createMockSessionProcessService(
               new Set(["9112408c-3585-4a39-a13f-11045828d870"]),
-              new Map([
-                ["9112408c-3585-4a39-a13f-11045828d870", "test-project"],
-              ]),
+              new Map([["9112408c-3585-4a39-a13f-11045828d870", "test-project"]]),
             ),
           ),
           Effect.provide(createMockFileSystem(rateLimitJsonLine)),

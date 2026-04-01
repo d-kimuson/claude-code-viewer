@@ -1,18 +1,18 @@
 import { Terminal } from "lucide-react";
 import type { FC } from "react";
-
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { parseUserMessage } from "../../../../../../../server/core/claude-code/functions/parseUserMessage";
 import { CopyableMarkdownContent } from "./CopyableMarkdownContent";
 
-export const UserTextContent: FC<{ text: string; id?: string }> = ({
-  text,
-  id,
-}) => {
+export const UserTextContent: FC<{ text: string; id?: string }> = ({ text, id }) => {
   const parsed = parseUserMessage(text);
 
   if (parsed.kind === "command") {
+    const hasCommandArgs = parsed.commandArgs !== undefined && parsed.commandArgs !== "";
+    const hasCommandMessage = parsed.commandMessage !== undefined && parsed.commandMessage !== "";
+    const hasCommandDetails = hasCommandArgs || hasCommandMessage;
+
     return (
       <Card
         className="border-green-200 bg-green-50/50 dark:border-green-800 dark:bg-green-950/20 gap-2 py-3 mb-3"
@@ -21,9 +21,7 @@ export const UserTextContent: FC<{ text: string; id?: string }> = ({
         <CardHeader className="py-0 px-4">
           <div className="flex items-center gap-2">
             <Terminal className="h-4 w-4 text-green-600 dark:text-green-400" />
-            <CardTitle className="text-sm font-medium">
-              Claude Code Command
-            </CardTitle>
+            <CardTitle className="text-sm font-medium">Claude Code Command</CardTitle>
             <Badge
               variant="outline"
               className="border-green-300 text-green-700 dark:border-green-700 dark:text-green-300"
@@ -32,34 +30,30 @@ export const UserTextContent: FC<{ text: string; id?: string }> = ({
             </Badge>
           </div>
         </CardHeader>
-        {parsed.commandArgs || parsed.commandMessage ? (
+        {hasCommandDetails ? (
           <CardContent className="py-0 px-4">
             <div className="space-y-2">
               <div>
-                {parsed.commandArgs && (
+                {hasCommandArgs ? (
                   <>
-                    <span className="text-xs font-medium text-muted-foreground">
-                      Arguments:
-                    </span>
+                    <span className="text-xs font-medium text-muted-foreground">Arguments:</span>
                     <div className="bg-background rounded border p-2 mt-1">
                       <code className="text-xs whitespace-pre-line break-all">
                         {parsed.commandArgs}
                       </code>
                     </div>
                   </>
-                )}
-                {parsed.commandMessage && (
+                ) : null}
+                {hasCommandMessage ? (
                   <>
-                    <span className="text-xs font-medium text-muted-foreground">
-                      Message:
-                    </span>
+                    <span className="text-xs font-medium text-muted-foreground">Message:</span>
                     <div className="bg-background rounded border p-2 mt-1">
                       <code className="text-xs whitespace-pre-line break-all">
                         {parsed.commandMessage}
                       </code>
                     </div>
                   </>
-                )}
+                ) : null}
               </div>
             </div>
           </CardContent>

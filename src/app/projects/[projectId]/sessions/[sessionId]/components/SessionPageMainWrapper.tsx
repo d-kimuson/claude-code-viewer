@@ -1,10 +1,9 @@
-import type { FC } from "react";
-import { Suspense } from "react";
+import { type FC, Suspense } from "react";
 import { Loading } from "../../../../../../components/Loading";
 import { useProject } from "../../../hooks/useProject";
 import { SessionPageMain } from "./SessionPageMain";
-import { SessionSidebar } from "./sessionSidebar/SessionSidebar";
 import type { Tab } from "./sessionSidebar/schema";
+import { SessionSidebar } from "./sessionSidebar/SessionSidebar";
 
 export const SessionPageMainWrapper: FC<{
   projectId: string;
@@ -23,11 +22,7 @@ export const SessionPageMainWrapper: FC<{
   return (
     <>
       <Suspense fallback={<Loading />}>
-        <SessionSidebar
-          currentSessionId={sessionId}
-          projectId={projectId}
-          initialTab={tab}
-        />
+        <SessionSidebar currentSessionId={sessionId} projectId={projectId} initialTab={tab} />
       </Suspense>
       <Suspense fallback={<Loading />}>
         <SessionPageMain

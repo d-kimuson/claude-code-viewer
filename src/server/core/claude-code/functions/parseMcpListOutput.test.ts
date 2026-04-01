@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { parseMcpListOutput } from "./parseMcpListOutput";
 
 describe("parseMcpListOutput", () => {
-  it("should parse claude mcp list output correctly", async () => {
+  it("should parse claude mcp list output correctly", () => {
     const output = `2.0.21 (Claude Code)
 Checking MCP server health...
 
@@ -20,7 +20,7 @@ context7: npx -y @upstash/context7-mcp@latest - ✓ Connected
     ]);
   });
 
-  it("should handle multiple MCP servers", async () => {
+  it("should handle multiple MCP servers", () => {
     const output = `2.0.21 (Claude Code)
 Checking MCP server health...
 
@@ -50,7 +50,7 @@ database: docker run db-mcp - ✗ Failed
     ]);
   });
 
-  it("should return empty array for output with no MCP servers", async () => {
+  it("should return empty array for output with no MCP servers", () => {
     const output = `2.0.21 (Claude Code)
 Checking MCP server health...
 
@@ -61,7 +61,7 @@ Checking MCP server health...
     expect(result).toEqual([]);
   });
 
-  it("should skip malformed lines", async () => {
+  it("should skip malformed lines", () => {
     const output = `2.0.21 (Claude Code)
 Checking MCP server health...
 

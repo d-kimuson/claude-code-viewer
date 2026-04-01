@@ -13,8 +13,7 @@ import {
 } from "@/lib/atoms/rightPanel";
 import type { RightPanelTab } from "@/lib/types/rightPanel";
 
-const clampValue = (value: number, min: number, max: number) =>
-  Math.min(max, Math.max(min, value));
+const clampValue = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
 const isBlockedDomain = (url: string) => {
   try {
@@ -37,7 +36,7 @@ const isBlockedDomain = (url: string) => {
   }
 };
 
-interface RightPanelContextValue {
+type RightPanelContextValue = {
   isOpen: boolean;
   activeTab: RightPanelTab;
   width: number; // percentage
@@ -58,7 +57,7 @@ interface RightPanelContextValue {
   // Todo section state
   isTodoSectionOpen: boolean;
   setIsTodoSectionOpen: (isOpen: boolean) => void;
-}
+};
 
 export const useRightPanelOpen = () => useAtomValue(rightPanelOpenAtom);
 
@@ -73,8 +72,7 @@ export const useRightPanelState = () => {
   return { isOpen, activeTab, width, browserUrl, inputUrl };
 };
 
-export const useRightPanelTodoState = () =>
-  useAtomValue(rightPanelTodoOpenAtom);
+export const useRightPanelTodoState = () => useAtomValue(rightPanelTodoOpenAtom);
 
 export const useRightPanelTodoActions = () => {
   const setIsTodoSectionOpen = useSetAtom(rightPanelTodoOpenAtom);
@@ -149,8 +147,9 @@ export const useRightPanelActions = () => {
     const iframeRef = store.get(rightPanelIframeRefAtom);
     const currentUrl = store.get(rightPanelCurrentUrlAtom);
     const browserUrl = store.get(rightPanelBrowserUrlAtom);
-    if (iframeRef.current && (currentUrl ?? browserUrl)) {
-      iframeRef.current.src = currentUrl ?? browserUrl ?? "";
+    const resolvedUrl = currentUrl ?? browserUrl;
+    if (iframeRef.current !== null && resolvedUrl !== null && resolvedUrl !== "") {
+      iframeRef.current.src = resolvedUrl;
     }
   }, [store]);
 
@@ -190,8 +189,7 @@ export const useRightPanelActions = () => {
 };
 
 export const useRightPanel = (): RightPanelContextValue => {
-  const { isOpen, activeTab, width, browserUrl, inputUrl } =
-    useRightPanelState();
+  const { isOpen, activeTab, width, browserUrl, inputUrl } = useRightPanelState();
   const actions = useRightPanelActions();
   const isTodoSectionOpen = useRightPanelTodoState();
   const { setIsTodoSectionOpen } = useRightPanelTodoActions();

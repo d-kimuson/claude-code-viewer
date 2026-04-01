@@ -26,21 +26,14 @@ export const projectListQuery = {
   },
 } as const;
 
-export const directoryListingQuery = (
-  currentPath?: string,
-  showHidden?: boolean,
-) =>
+export const directoryListingQuery = (currentPath?: string, showHidden?: boolean) =>
   ({
     queryKey: ["directory-listing", currentPath, showHidden],
     queryFn: async (): Promise<DirectoryListingResult> => {
-      const response = await honoClient.api["file-system"][
-        "directory-browser"
-      ].$get({
+      const response = await honoClient.api["file-system"]["directory-browser"].$get({
         query: {
-          ...(currentPath ? { currentPath } : {}),
-          ...(showHidden !== undefined
-            ? { showHidden: showHidden.toString() }
-            : {}),
+          ...(currentPath !== undefined && currentPath !== "" ? { currentPath } : {}),
+          ...(showHidden !== undefined ? { showHidden: showHidden.toString() } : {}),
         },
       });
 
@@ -73,16 +66,12 @@ export const latestSessionQuery = (projectId: string) =>
   ({
     queryKey: ["projects", projectId, "latest-session"],
     queryFn: async () => {
-      const response = await honoClient.api.projects[":projectId"][
-        "latest-session"
-      ].$get({
+      const response = await honoClient.api.projects[":projectId"]["latest-session"].$get({
         param: { projectId },
       });
 
       if (!response.ok) {
-        throw new Error(
-          `Failed to fetch latest session: ${response.statusText}`,
-        );
+        throw new Error(`Failed to fetch latest session: ${response.statusText}`);
       }
 
       return response.json();
@@ -93,9 +82,7 @@ export const sessionDetailQuery = (projectId: string, sessionId: string) =>
   ({
     queryKey: ["projects", projectId, "sessions", sessionId],
     queryFn: async () => {
-      const response = await honoClient.api.projects[":projectId"].sessions[
-        ":sessionId"
-      ].$get({
+      const response = await honoClient.api.projects[":projectId"].sessions[":sessionId"].$get({
         param: {
           projectId,
           sessionId,
@@ -114,16 +101,12 @@ export const claudeCommandsQuery = (projectId: string) =>
   ({
     queryKey: ["claude-commands", projectId],
     queryFn: async () => {
-      const response = await honoClient.api.projects[":projectId"][
-        "claude-commands"
-      ].$get({
+      const response = await honoClient.api.projects[":projectId"]["claude-commands"].$get({
         param: { projectId },
       });
 
       if (!response.ok) {
-        throw new Error(
-          `Failed to fetch claude commands: ${response.statusText}`,
-        );
+        throw new Error(`Failed to fetch claude commands: ${response.statusText}`);
       }
 
       return await response.json();
@@ -133,9 +116,7 @@ export const claudeCommandsQuery = (projectId: string) =>
 export const sessionProcessesQuery = {
   queryKey: ["sessionProcesses"],
   queryFn: async () => {
-    const response = await honoClient.api["claude-code"][
-      "session-processes"
-    ].$get({});
+    const response = await honoClient.api["claude-code"]["session-processes"].$get({});
 
     if (!response.ok) {
       throw new Error(`Failed to fetch alive tasks: ${response.statusText}`);
@@ -149,16 +130,12 @@ export const gitCurrentRevisionsQuery = (projectId: string) =>
   ({
     queryKey: ["git", "current-revisions", projectId],
     queryFn: async () => {
-      const response = await honoClient.api.projects[":projectId"].git[
-        "current-revisions"
-      ].$get({
+      const response = await honoClient.api.projects[":projectId"].git["current-revisions"].$get({
         param: { projectId },
       });
 
       if (!response.ok) {
-        throw new Error(
-          `Failed to fetch current revisions: ${response.statusText}`,
-        );
+        throw new Error(`Failed to fetch current revisions: ${response.statusText}`);
       }
 
       return await response.json();
@@ -169,9 +146,7 @@ export const gitBranchesQuery = (projectId: string) =>
   ({
     queryKey: ["git", "branches", projectId],
     queryFn: async () => {
-      const response = await honoClient.api.projects[
-        ":projectId"
-      ].git.branches.$get({
+      const response = await honoClient.api.projects[":projectId"].git.branches.$get({
         param: { projectId },
       });
 
@@ -183,17 +158,11 @@ export const gitBranchesQuery = (projectId: string) =>
     },
   }) as const;
 
-export const gitDiffQuery = (
-  projectId: string,
-  fromRef: string,
-  toRef: string,
-) =>
+export const gitDiffQuery = (projectId: string, fromRef: string, toRef: string) =>
   ({
     queryKey: ["git", "diff", projectId, fromRef, toRef],
     queryFn: async () => {
-      const response = await honoClient.api.projects[
-        ":projectId"
-      ].git.diff.$post({
+      const response = await honoClient.api.projects[":projectId"].git.diff.$post({
         param: { projectId },
         json: { fromRef, toRef },
       });
@@ -210,9 +179,7 @@ export const mcpListQuery = (projectId: string) =>
   ({
     queryKey: ["mcp", "list", projectId],
     queryFn: async () => {
-      const response = await honoClient.api.projects[
-        ":projectId"
-      ].mcp.list.$get({
+      const response = await honoClient.api.projects[":projectId"].mcp.list.$get({
         param: { projectId },
       });
 
@@ -228,9 +195,7 @@ export const fileCompletionQuery = (projectId: string, basePath: string) =>
   ({
     queryKey: ["file-completion", projectId, basePath],
     queryFn: async (): Promise<FileCompletionResult> => {
-      const response = await honoClient.api["file-system"][
-        "file-completion"
-      ].$get({
+      const response = await honoClient.api["file-system"]["file-completion"].$get({
         query: { basePath, projectId },
       });
 
@@ -274,9 +239,7 @@ export const claudeCodeMetaQuery = {
     const response = await honoClient.api["claude-code"].meta.$get();
 
     if (!response.ok) {
-      throw new Error(
-        `Failed to fetch system features: ${response.statusText}`,
-      );
+      throw new Error(`Failed to fetch system features: ${response.statusText}`);
     }
 
     return await response.json();
@@ -289,9 +252,7 @@ export const claudeCodeFeaturesQuery = {
     const response = await honoClient.api["claude-code"].features.$get();
 
     if (!response.ok) {
-      throw new Error(
-        `Failed to fetch claude code features: ${response.statusText}`,
-      );
+      throw new Error(`Failed to fetch claude code features: ${response.statusText}`);
     }
 
     return await response.json();
@@ -328,61 +289,50 @@ export const agentSessionListQuery = (projectId: string, sessionId: string) =>
   ({
     queryKey: ["projects", projectId, "sessions", sessionId, "agent-sessions"],
     queryFn: async () => {
-      const response = await honoClient.api.projects[":projectId"].sessions[
-        ":sessionId"
-      ]["agent-sessions"].$get({
+      const response = await honoClient.api.projects[":projectId"].sessions[":sessionId"][
+        "agent-sessions"
+      ].$get({
         param: { projectId, sessionId },
       });
 
       if (!response.ok) {
-        throw new Error(
-          `Failed to fetch agent sessions: ${response.statusText}`,
-        );
+        throw new Error(`Failed to fetch agent sessions: ${response.statusText}`);
       }
 
       return await response.json();
     },
   }) as const;
 
-export const agentSessionQuery = (
-  projectId: string,
-  agentId: string,
-  sessionId?: string,
-) =>
+export const agentSessionQuery = (projectId: string, agentId: string, sessionId?: string) =>
   ({
     queryKey: ["projects", projectId, "agent-sessions", agentId, sessionId],
     queryFn: async () => {
-      const response = await honoClient.api.projects[":projectId"][
-        "agent-sessions"
-      ][":agentId"].$get({
+      const response = await honoClient.api.projects[":projectId"]["agent-sessions"][
+        ":agentId"
+      ].$get({
         param: { projectId, agentId },
         query: { sessionId },
       });
 
       if (!response.ok) {
-        throw new Error(
-          `Failed to fetch agent session: ${response.statusText}`,
-        );
+        throw new Error(`Failed to fetch agent session: ${response.statusText}`);
       }
 
       return await response.json();
     },
   }) as const;
 
-export const searchQuery = (
-  query: string,
-  options?: { limit?: number; projectId?: string },
-) =>
+export const searchQuery = (query: string, options?: { limit?: number; projectId?: string }) =>
   ({
     queryKey: ["search", query, options?.limit, options?.projectId],
     queryFn: async () => {
       const response = await honoClient.api.search.$get({
         query: {
           q: query,
-          ...(options?.limit !== undefined
-            ? { limit: options.limit.toString() }
+          ...(options?.limit !== undefined ? { limit: options.limit.toString() } : {}),
+          ...(options?.projectId !== undefined && options.projectId !== ""
+            ? { projectId: options.projectId }
             : {}),
-          ...(options?.projectId ? { projectId: options.projectId } : {}),
         },
       });
 
@@ -410,8 +360,7 @@ export const notificationsQuery = {
 export const pendingPermissionRequestsQuery = {
   queryKey: ["pending-permission-requests"],
   queryFn: async () => {
-    const response =
-      await honoClient.api["claude-code"]["pending-permission-requests"].$get();
+    const response = await honoClient.api["claude-code"]["pending-permission-requests"].$get();
 
     if (!response.ok) {
       throw new Error("Failed to fetch pending permission requests");
@@ -424,8 +373,7 @@ export const pendingPermissionRequestsQuery = {
 export const pendingQuestionRequestsQuery = {
   queryKey: ["pending-question-requests"],
   queryFn: async () => {
-    const response =
-      await honoClient.api["claude-code"]["pending-question-requests"].$get();
+    const response = await honoClient.api["claude-code"]["pending-question-requests"].$get();
 
     if (!response.ok) {
       throw new Error("Failed to fetch pending question requests");

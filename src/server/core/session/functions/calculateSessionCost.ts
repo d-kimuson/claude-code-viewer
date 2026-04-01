@@ -60,7 +60,7 @@ export type CostCalculationResult = {
  * @param modelName Raw model name from API
  * @returns Normalized model name or default model name if unknown
  */
-export function normalizeModelName(modelName: string): ModelName {
+export const normalizeModelName = (modelName: string): ModelName => {
   const normalized = modelName.toLowerCase();
 
   // Claude Opus 4.5 patterns (more specific first)
@@ -104,15 +104,15 @@ export function normalizeModelName(modelName: string): ModelName {
 
   // Unknown model - return default
   return "claude-3.5-sonnet";
-}
+};
 
 /**
  * Gets pricing for a model, with fallback to default pricing
  */
-function getModelPricing(modelName: string): ModelPricing {
+const getModelPricing = (modelName: string): ModelPricing => {
   const normalized = normalizeModelName(modelName);
   return MODEL_PRICING[normalized] ?? DEFAULT_MODEL_PRICING;
-}
+};
 
 /**
  * Calculates the cost in USD for token usage
@@ -121,17 +121,13 @@ function getModelPricing(modelName: string): ModelPricing {
  * @param modelName Model name (will be normalized)
  * @returns Cost calculation result with breakdown
  */
-export function calculateTokenCost(
-  usage: TokenUsage,
-  modelName: string,
-): CostCalculationResult {
+export const calculateTokenCost = (usage: TokenUsage, modelName: string): CostCalculationResult => {
   const pricing = getModelPricing(modelName);
 
   // Convert tokens to millions for cost calculation
   const inputMTok = usage.input_tokens / 1_000_000;
   const outputMTok = usage.output_tokens / 1_000_000;
-  const cacheCreationMTok =
-    (usage.cache_creation_input_tokens ?? 0) / 1_000_000;
+  const cacheCreationMTok = (usage.cache_creation_input_tokens ?? 0) / 1_000_000;
   const cacheReadMTok = (usage.cache_read_input_tokens ?? 0) / 1_000_000;
 
   // Calculate costs
@@ -140,8 +136,7 @@ export function calculateTokenCost(
   const cacheCreationUsd = cacheCreationMTok * pricing.cache_creation;
   const cacheReadUsd = cacheReadMTok * pricing.cache_read;
 
-  const totalUsd =
-    inputTokensUsd + outputTokensUsd + cacheCreationUsd + cacheReadUsd;
+  const totalUsd = inputTokensUsd + outputTokensUsd + cacheCreationUsd + cacheReadUsd;
 
   return {
     totalUsd,
@@ -158,4 +153,4 @@ export function calculateTokenCost(
       cacheReadTokens: usage.cache_read_input_tokens ?? 0,
     },
   };
-}
+};

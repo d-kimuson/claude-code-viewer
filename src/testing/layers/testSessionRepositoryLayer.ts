@@ -2,9 +2,7 @@ import { Effect, Layer } from "effect";
 import { SessionRepository } from "../../server/core/session/infrastructure/SessionRepository";
 import type { Session } from "../../server/core/types";
 
-export const testSessionRepositoryLayer = (options?: {
-  sessions: Array<Session>;
-}) => {
+export const testSessionRepositoryLayer = (options?: { sessions: Array<Session> }) => {
   const { sessions = [] } = options ?? {};
 
   return Layer.mock(SessionRepository, {

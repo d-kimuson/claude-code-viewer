@@ -1,18 +1,8 @@
 import { Trans } from "@lingui/react";
-import {
-  GitBranchIcon,
-  PanelBottomIcon,
-  PanelLeftIcon,
-  PanelRightIcon,
-} from "lucide-react";
+import { GitBranchIcon, PanelBottomIcon, PanelLeftIcon, PanelRightIcon } from "lucide-react";
 import type { FC, ReactNode } from "react";
 import { Badge } from "@/components/ui/badge";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   useBottomPanelActions,
   useBottomPanelState,
@@ -24,14 +14,14 @@ import { cn } from "@/lib/utils";
 import { NotificationBell } from "./NotificationBell";
 import { ProjectSwitcher } from "./ProjectSwitcher";
 
-interface AppLayoutProps {
+type AppLayoutProps = {
   children: ReactNode;
   // Session context info
   projectId?: string;
   projectPath?: string;
   currentBranch?: string;
   sessionId?: string;
-}
+};
 
 export const AppLayout: FC<AppLayoutProps> = ({
   children,
@@ -54,12 +44,9 @@ export const AppLayout: FC<AppLayoutProps> = ({
         {/* Left: Project/Session Info */}
         <div className="flex items-center gap-2.5 min-w-0 flex-1 overflow-x-auto overflow-y-hidden">
           <div className="shrink-0">
-            <ProjectSwitcher
-              currentProjectId={projectId}
-              currentProjectPath={projectPath}
-            />
+            <ProjectSwitcher currentProjectId={projectId} currentProjectPath={projectPath} />
           </div>
-          {currentBranch && (
+          {currentBranch !== undefined && currentBranch !== "" && (
             <Badge
               variant="outline"
               className="h-5 text-[11px] px-2 bg-background/50 border-border/60 gap-1 shrink-0"
@@ -68,7 +55,7 @@ export const AppLayout: FC<AppLayoutProps> = ({
               <span className="max-w-[100px] truncate">{currentBranch}</span>
             </Badge>
           )}
-          {sessionId && (
+          {sessionId !== undefined && sessionId !== "" && (
             <Badge
               variant="outline"
               className="h-5 text-[11px] px-2 bg-background/50 border-border/60 font-mono shrink-0 whitespace-nowrap hidden md:flex"

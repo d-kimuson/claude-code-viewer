@@ -1,13 +1,11 @@
 import { useLingui } from "@lingui/react";
 import { type FC, memo } from "react";
-import type {
-  Conversation,
-  SidechainConversation,
-} from "@/lib/conversation-schema";
+import type { Conversation, SidechainConversation } from "@/lib/conversation-schema";
 import type { ToolResultContent } from "@/lib/conversation-schema/content/ToolResultContentSchema";
 import type { AssistantMessageContent } from "@/lib/conversation-schema/message/AssistantMessageSchema";
 import { formatLocaleDate } from "@/lib/date/formatLocaleDate";
-import type { SupportedLocale } from "@/lib/i18n/schema";
+import { DEFAULT_LOCALE } from "@/lib/i18n/localeDetection";
+import { localeSchema, type SupportedLocale } from "@/lib/i18n/schema";
 import { parseUserMessage } from "@/server/core/claude-code/functions/parseUserMessage";
 import { AssistantConversationContent } from "./AssistantConversationContent";
 import { FileHistorySnapshotConversationContent } from "./FileHistorySnapshotConversationContent";
@@ -25,12 +23,8 @@ type ConversationItemProps = {
   getToolUseResult: (toolUseId: string) => unknown;
   getTurnDuration: (uuid: string) => number | undefined;
   isRootSidechain: (conversation: Conversation) => boolean;
-  getSidechainConversationByAgentId: (
-    agentId: string,
-  ) => SidechainConversation | undefined;
-  getSidechainConversationByPrompt: (
-    prompt: string,
-  ) => SidechainConversation | undefined;
+  getSidechainConversationByAgentId: (agentId: string) => SidechainConversation | undefined;
+  getSidechainConversationByPrompt: (prompt: string) => SidechainConversation | undefined;
   getSidechainConversations: (rootUuid: string) => SidechainConversation[];
   existsRelatedTaskCall: (prompt: string) => boolean;
   projectId: string;
@@ -38,9 +32,7 @@ type ConversationItemProps = {
   showTimestamp?: boolean;
 };
 
-const formatSystemMessage = (
-  conversation: Extract<Conversation, { type: "system" }>,
-) => {
+const formatSystemMessage = (conversation: Extract<Conversation, { type: "system" }>) => {
   const lines: string[] = [];
 
   if ("subtype" in conversation && conversation.subtype) {
@@ -61,9 +53,7 @@ const formatSystemMessage = (
     lines.push(`Prevented Continuation: ${conversation.preventedContinuation}`);
     lines.push(`Has Output: ${conversation.hasOutput}`);
     if (conversation.hookInfos.length > 0) {
-      lines.push(
-        `Commands: ${conversation.hookInfos.map((hook) => hook.command).join(", ")}`,
-      );
+      lines.push(`Commands: ${conversation.hookInfos.map((hook) => hook.command).join(", ")}`);
     }
     if (conversation.hookErrors.length > 0) {
       lines.push(`Errors: ${JSON.stringify(conversation.hookErrors, null, 2)}`);
@@ -74,10 +64,7 @@ const formatSystemMessage = (
     lines.push(`Duration: ${(conversation.durationMs / 1000).toFixed(2)}s`);
   }
 
-  if (
-    conversation.subtype === "compact_boundary" &&
-    conversation.compactMetadata
-  ) {
+  if (conversation.subtype === "compact_boundary" && conversation.compactMetadata) {
     lines.push(`Trigger: ${conversation.compactMetadata.trigger}`);
     lines.push(`Pre-Tokens: ${conversation.compactMetadata.preTokens}`);
   }
@@ -87,20 +74,18 @@ const formatSystemMessage = (
     if (error.status !== undefined) {
       lines.push(`Status: ${error.status}`);
     }
-    if (error.requestID) {
+    if (error.requestID !== undefined && error.requestID !== "") {
       lines.push(`Request ID: ${error.requestID}`);
     }
     const errorMsg =
-      error?.error?.error?.message ||
-      error?.error?.message ||
+      error?.error?.error?.message ??
+      error?.error?.message ??
       (error?.error ? JSON.stringify(error.error, null, 2) : null);
-    if (errorMsg) {
+    if (errorMsg !== null && errorMsg !== "") {
       lines.push(`Error: ${errorMsg}`);
     }
     if (conversation.retryAttempt !== undefined) {
-      lines.push(
-        `Retry: ${conversation.retryAttempt}/${conversation.maxRetries}`,
-      );
+      lines.push(`Retry: ${conversation.retryAttempt}/${conversation.maxRetries}`);
     }
     if (conversation.retryInMs !== undefined) {
       lines.push(`Retry In: ${(conversation.retryInMs / 1000).toFixed(2)}s`);
@@ -111,7 +96,7 @@ const formatSystemMessage = (
     lines.push(`Tool Use ID: ${conversation.toolUseID}`);
   }
 
-  if ("slug" in conversation && conversation.slug) {
+  if ("slug" in conversation && conversation.slug !== undefined && conversation.slug !== "") {
     lines.push(`Slug: ${conversation.slug}`);
   }
 
@@ -132,28 +117,21 @@ const ConversationItemComponent: FC<ConversationItemProps> = ({
   showTimestamp = true,
 }) => {
   const { i18n } = useLingui();
-  const locale = (i18n.locale as SupportedLocale) || "en";
+  const localeResult = localeSchema.safeParse(i18n.locale);
+  const locale: SupportedLocale = localeResult.success ? localeResult.data : DEFAULT_LOCALE;
 
   if (conversation.type === "summary") {
-    return (
-      <SummaryConversationContent>
-        {conversation.summary}
-      </SummaryConversationContent>
-    );
+    return <SummaryConversationContent>{conversation.summary}</SummaryConversationContent>;
   }
 
   if (conversation.type === "system") {
     return (
-      <SystemConversationContent>
-        {formatSystemMessage(conversation)}
-      </SystemConversationContent>
+      <SystemConversationContent>{formatSystemMessage(conversation)}</SystemConversationContent>
     );
   }
 
   if (conversation.type === "file-history-snapshot") {
-    return (
-      <FileHistorySnapshotConversationContent conversation={conversation} />
-    );
+    return <FileHistorySnapshotConversationContent conversation={conversation} />;
   }
 
   if (conversation.type === "queue-operation") {
@@ -187,12 +165,8 @@ const ConversationItemComponent: FC<ConversationItemProps> = ({
                   getToolResult={getToolResult}
                   getAgentIdForToolUse={getAgentIdForToolUse}
                   getToolUseResult={getToolUseResult}
-                  getSidechainConversationByAgentId={
-                    getSidechainConversationByAgentId
-                  }
-                  getSidechainConversationByPrompt={
-                    getSidechainConversationByPrompt
-                  }
+                  getSidechainConversationByAgentId={getSidechainConversationByAgentId}
+                  getSidechainConversationByPrompt={getSidechainConversationByPrompt}
                   getSidechainConversations={getSidechainConversations}
                   projectId={projectId}
                   sessionId={sessionId}
@@ -268,12 +242,8 @@ const ConversationItemComponent: FC<ConversationItemProps> = ({
                 getToolResult={getToolResult}
                 getAgentIdForToolUse={getAgentIdForToolUse}
                 getToolUseResult={getToolUseResult}
-                getSidechainConversationByAgentId={
-                  getSidechainConversationByAgentId
-                }
-                getSidechainConversationByPrompt={
-                  getSidechainConversationByPrompt
-                }
+                getSidechainConversationByAgentId={getSidechainConversationByAgentId}
+                getSidechainConversationByPrompt={getSidechainConversationByPrompt}
                 getSidechainConversations={getSidechainConversations}
                 projectId={projectId}
                 sessionId={sessionId}
@@ -281,9 +251,7 @@ const ConversationItemComponent: FC<ConversationItemProps> = ({
             </li>
           ))}
         </ul>
-        {turnDuration !== undefined && (
-          <TurnDuration durationMs={turnDuration} />
-        )}
+        {turnDuration !== undefined && <TurnDuration durationMs={turnDuration} />}
       </div>
     );
   }

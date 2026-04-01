@@ -2,10 +2,7 @@ import { z } from "zod";
 
 export const envSchema = z.object({
   // Frameworks
-  CCV_ENV: z
-    .enum(["development", "production", "test"])
-    .optional()
-    .default("development"),
+  CCV_ENV: z.enum(["development", "production", "test"]).optional().default("development"),
   NEXT_PHASE: z.string().optional(),
   PATH: z.string().optional(),
   SHELL: z.string().optional(),

@@ -1,24 +1,16 @@
-import type {
-  CanUseTool,
-  PermissionMode,
-} from "@anthropic-ai/claude-agent-sdk";
+import type { CanUseTool, PermissionMode } from "@anthropic-ai/claude-agent-sdk";
 import { Context, Deferred, Effect, Layer, Ref } from "effect";
 import { ulid } from "ulid";
-import type {
-  PermissionRequest,
-  PermissionResponse,
-} from "../../../../types/permissions";
+import type { PermissionRequest, PermissionResponse } from "../../../../types/permissions";
 import type { InferEffect } from "../../../lib/effect/types";
 import { EventBus } from "../../events/services/EventBus";
 import * as ClaudeCode from "../models/ClaudeCode";
 
 const LayerImpl = Effect.gen(function* () {
-  const pendingPermissionRequestsRef = yield* Ref.make<
-    Map<string, PermissionRequest>
-  >(new Map());
-  const deferredsRef = yield* Ref.make<
-    Map<string, Deferred.Deferred<PermissionResponse, never>>
-  >(new Map());
+  const pendingPermissionRequestsRef = yield* Ref.make<Map<string, PermissionRequest>>(new Map());
+  const deferredsRef = yield* Ref.make<Map<string, Deferred.Deferred<PermissionResponse, never>>>(
+    new Map(),
+  );
   const eventBus = yield* EventBus;
 
   const waitPermissionResponse = (request: PermissionRequest) =>
@@ -70,10 +62,7 @@ const LayerImpl = Effect.gen(function* () {
     return Effect.gen(function* () {
       const claudeCodeConfig = yield* ClaudeCode.Config;
 
-      if (
-        !ClaudeCode.getAvailableFeatures(claudeCodeConfig.claudeCodeVersion)
-          .canUseTool
-      ) {
+      if (!ClaudeCode.getAvailableFeatures(claudeCodeConfig.claudeCodeVersion).canUseTool) {
         return {
           permissionMode: "bypassPermissions",
         } as const;
@@ -82,10 +71,7 @@ const LayerImpl = Effect.gen(function* () {
       const canUseTool: CanUseTool = async (toolName, toolInput, _options) => {
         if (permissionMode !== "default") {
           // Convert Claude Code permission modes to canUseTool behaviors
-          if (
-            permissionMode === "bypassPermissions" ||
-            permissionMode === "acceptEdits"
-          ) {
+          if (permissionMode === "bypassPermissions" || permissionMode === "acceptEdits") {
             return {
               behavior: "allow" as const,
               updatedInput: toolInput,
@@ -109,9 +95,7 @@ const LayerImpl = Effect.gen(function* () {
           timestamp: Date.now(),
         };
 
-        const response = await Effect.runPromise(
-          waitPermissionResponse(permissionRequest),
-        );
+        const response = await Effect.runPromise(waitPermissionResponse(permissionRequest));
 
         if (response.decision === "allow") {
           return {
@@ -133,9 +117,7 @@ const LayerImpl = Effect.gen(function* () {
     });
   };
 
-  const respondToPermissionRequest = (
-    response: PermissionResponse,
-  ): Effect.Effect<void> =>
+  const respondToPermissionRequest = (response: PermissionResponse): Effect.Effect<void> =>
     Effect.gen(function* () {
       const deferreds = yield* Ref.get(deferredsRef);
       const deferred = deferreds.get(response.permissionRequestId);
@@ -221,8 +203,9 @@ const LayerImpl = Effect.gen(function* () {
 
 export type IClaudeCodePermissionService = InferEffect<typeof LayerImpl>;
 
-export class ClaudeCodePermissionService extends Context.Tag(
-  "ClaudeCodePermissionService",
-)<ClaudeCodePermissionService, IClaudeCodePermissionService>() {
+export class ClaudeCodePermissionService extends Context.Tag("ClaudeCodePermissionService")<
+  ClaudeCodePermissionService,
+  IClaudeCodePermissionService
+>() {
   static Live = Layer.effect(this, LayerImpl);
 }

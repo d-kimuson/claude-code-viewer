@@ -22,8 +22,5 @@ export const validateProjectPath = (
 ): boolean => {
   const normalizedPath = resolve(decodedPath);
   const normalizedBase = resolve(claudeProjectsDirPath);
-  return (
-    normalizedPath.startsWith(`${normalizedBase}/`) ||
-    normalizedPath === normalizedBase
-  );
+  return normalizedPath.startsWith(`${normalizedBase}/`) || normalizedPath === normalizedBase;
 };

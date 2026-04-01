@@ -9,21 +9,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  type NotificationSoundType,
-  notificationSettingsAtom,
-} from "@/lib/atoms/notifications";
+import { type NotificationSoundType, notificationSettingsAtom } from "@/lib/atoms/notifications";
 import {
   getAvailableSoundTypes,
   getSoundDisplayName,
   playNotificationSound,
 } from "@/lib/notifications";
 
-interface NotificationSettingsProps {
+type NotificationSettingsProps = {
   showLabels?: boolean;
   showDescriptions?: boolean;
   className?: string;
-}
+};
 
 export const NotificationSettings: FC<NotificationSettingsProps> = ({
   showLabels = true,
@@ -55,19 +52,13 @@ export const NotificationSettings: FC<NotificationSettingsProps> = ({
     <div className={`space-y-4 ${className}`}>
       <div className="space-y-2">
         {showLabels && (
-          <label
-            htmlFor={selectId}
-            className="text-sm font-medium leading-none"
-          >
+          <label htmlFor={selectId} className="text-sm font-medium leading-none">
             Task completion sound
           </label>
         )}
 
         <div className="flex items-center gap-2">
-          <Select
-            value={settings.soundType}
-            onValueChange={handleSoundTypeChange}
-          >
+          <Select value={settings.soundType} onValueChange={handleSoundTypeChange}>
             <SelectTrigger id={selectId} className="w-[180px]">
               <SelectValue placeholder="音を選択" />
             </SelectTrigger>
@@ -81,12 +72,7 @@ export const NotificationSettings: FC<NotificationSettingsProps> = ({
           </Select>
 
           {settings.soundType !== "none" && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleTestSound}
-              className="px-3"
-            >
+            <Button variant="outline" size="sm" onClick={handleTestSound} className="px-3">
               <Trans id="notification.test" />
             </Button>
           )}

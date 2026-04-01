@@ -153,10 +153,7 @@ describe("ccOptionsFormSchema", () => {
         },
       };
       const result = transformFormToSchema(form);
-      expect(result?.sandbox?.network?.allowedDomains).toEqual([
-        "example.com",
-        "api.example.com",
-      ]);
+      expect(result?.sandbox?.network?.allowedDomains).toEqual(["example.com", "api.example.com"]);
     });
 
     test("should handle all field types", () => {

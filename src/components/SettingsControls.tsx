@@ -15,22 +15,19 @@ import {
 } from "@/components/ui/select";
 import { useTheme } from "@/hooks/useTheme";
 import { projectDetailQuery, projectListQuery } from "../lib/api/queries";
-import {
-  DEFAULT_LOCALE,
-  detectLocaleFromNavigator,
-} from "../lib/i18n/localeDetection";
+import { DEFAULT_LOCALE, detectLocaleFromNavigator } from "../lib/i18n/localeDetection";
 import type { SupportedLocale } from "../lib/i18n/schema";
 
-interface SettingsControlsProps {
+type SettingsControlsProps = {
   openingProjectId: string;
   showLabels?: boolean;
   showDescriptions?: boolean;
   className?: string;
-}
+};
 
-function isSearchHotkey(value: string): value is "ctrl-k" | "command-k" {
+const isSearchHotkey = (value: string): value is "ctrl-k" | "command-k" => {
   return value === "ctrl-k" || value === "command-k";
-}
+};
 
 export const SettingsControls: FC<SettingsControlsProps> = ({
   openingProjectId,
@@ -53,7 +50,7 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
     return detectLocaleFromNavigator() ?? DEFAULT_LOCALE;
   }, []);
 
-  const handleHideNoUserMessageChange = async () => {
+  const handleHideNoUserMessageChange = () => {
     const newConfig = {
       ...config,
       hideNoUserMessageSession: !config?.hideNoUserMessageSession,
@@ -67,7 +64,7 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
     });
   };
 
-  const handleUnifySameTitleChange = async () => {
+  const handleUnifySameTitleChange = () => {
     const newConfig = {
       ...config,
       unifySameTitleSession: !config?.unifySameTitleSession,
@@ -81,7 +78,7 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
     });
   };
 
-  const handleAutoScheduleContinueOnRateLimitChange = async () => {
+  const handleAutoScheduleContinueOnRateLimitChange = () => {
     const newConfig = {
       ...config,
       autoScheduleContinueOnRateLimit: !config?.autoScheduleContinueOnRateLimit,
@@ -89,18 +86,19 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
     updateConfig(newConfig);
   };
 
-  const handleEnterKeyBehaviorChange = async (value: string) => {
+  const enterKeyBehaviors = ["shift-enter-send", "enter-send", "command-enter-send"] as const;
+
+  const handleEnterKeyBehaviorChange = (value: string) => {
+    const matched = enterKeyBehaviors.find((b) => b === value);
+    if (matched === undefined) return;
     const newConfig = {
       ...config,
-      enterKeyBehavior: value as
-        | "shift-enter-send"
-        | "enter-send"
-        | "command-enter-send",
+      enterKeyBehavior: matched,
     };
     updateConfig(newConfig);
   };
 
-  const handleSearchHotkeyChange = async (value: string) => {
+  const handleSearchHotkeyChange = (value: string) => {
     if (!isSearchHotkey(value)) {
       return;
     }
@@ -129,7 +127,7 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
     });
   };
 
-  const handleLocaleChange = async (value: SupportedLocale) => {
+  const handleLocaleChange = (value: SupportedLocale) => {
     const newConfig = {
       ...config,
       locale: value,
@@ -137,7 +135,7 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
     updateConfig(newConfig);
   };
 
-  const handleThemeChange = async (value: "light" | "dark" | "system") => {
+  const handleThemeChange = (value: "light" | "dark" | "system") => {
     const newConfig = {
       ...config,
       theme: value,
@@ -212,10 +210,7 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
 
       <div className="space-y-2">
         {showLabels && (
-          <label
-            htmlFor={enterKeyBehaviorId}
-            className="text-sm font-medium leading-none"
-          >
+          <label htmlFor={enterKeyBehaviorId} className="text-sm font-medium leading-none">
             <Trans id="settings.input.enter_key_behavior" />
           </label>
         )}
@@ -247,10 +242,7 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
 
       <div className="space-y-2">
         {showLabels && (
-          <label
-            htmlFor={searchHotkeyId}
-            className="text-sm font-medium leading-none"
-          >
+          <label htmlFor={searchHotkeyId} className="text-sm font-medium leading-none">
             <Trans id="settings.input.search_hotkey" />
           </label>
         )}
@@ -339,17 +331,11 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
 
       <div className="space-y-2">
         {showLabels && (
-          <label
-            htmlFor={localeId}
-            className="text-sm font-medium leading-none"
-          >
+          <label htmlFor={localeId} className="text-sm font-medium leading-none">
             <Trans id="settings.locale" />
           </label>
         )}
-        <Select
-          value={config?.locale || inferredLocale}
-          onValueChange={handleLocaleChange}
-        >
+        <Select value={config?.locale || inferredLocale} onValueChange={handleLocaleChange}>
           <SelectTrigger id={localeId} className="w-full">
             <SelectValue placeholder={i18n._("Select language")} />
           </SelectTrigger>

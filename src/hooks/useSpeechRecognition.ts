@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-interface UseSpeechRecognitionOptions {
+type UseSpeechRecognitionOptions = {
   /** Called with the final transcript text when speech is recognized */
   onTranscript: (text: string) => void;
   /** Called with interim (not yet finalized) transcript text */
   onInterimTranscript?: (text: string) => void;
-}
+};
 
-interface UseSpeechRecognitionReturn {
+type UseSpeechRecognitionReturn = {
   /** Whether the browser supports the Web Speech API */
   isSupported: boolean;
   /** Whether speech recognition is currently active */
@@ -16,11 +16,9 @@ interface UseSpeechRecognitionReturn {
   audioLevels: number[];
   /** Toggle speech recognition on/off */
   toggle: () => void;
-}
+};
 
-const getSpeechRecognitionAPI = ():
-  | SpeechRecognitionConstructor
-  | undefined => {
+const getSpeechRecognitionAPI = (): SpeechRecognitionConstructor | undefined => {
   if (typeof window === "undefined") return undefined;
   return window.SpeechRecognition ?? window.webkitSpeechRecognition;
 };
@@ -189,7 +187,7 @@ export const useSpeechRecognition = ({
     }
 
     // Start audio analysis in parallel for waveform visualization (optional)
-    startAudioAnalysis().then(() => {
+    void startAudioAnalysis().then(() => {
       // If stop() was called while we were awaiting getUserMedia, clean up
       if (recognitionRef.current !== recognition) {
         stopAudioAnalysis();

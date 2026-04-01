@@ -3,9 +3,7 @@ import type { SessionMeta } from "../../types";
 /**
  * Creates a mock SessionMeta object for testing purposes with default cost values
  */
-export function createMockSessionMeta(
-  overrides: Partial<SessionMeta> = {},
-): SessionMeta {
+export const createMockSessionMeta = (overrides: Partial<SessionMeta> = {}): SessionMeta => {
   return {
     messageCount: 0,
     firstUserMessage: null,
@@ -29,4 +27,4 @@ export function createMockSessionMeta(
     prLinks: [],
     ...overrides,
   };
-}
+};

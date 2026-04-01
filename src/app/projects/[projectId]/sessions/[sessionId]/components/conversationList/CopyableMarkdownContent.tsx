@@ -58,7 +58,9 @@ export const CopyableMarkdownContent: FC<CopyableMarkdownContentProps> = ({
           variant="ghost"
           size="icon"
           className="pointer-events-auto h-7 w-7 bg-background/85 opacity-0 shadow-sm transition-opacity group-hover:opacity-100 group-focus-within:opacity-100 backdrop-blur supports-[backdrop-filter]:bg-background/70"
-          onClick={handleCopy}
+          onClick={() => {
+            void handleCopy();
+          }}
           aria-label={copyLabel}
           title={copyLabel}
         >

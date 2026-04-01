@@ -1,26 +1,12 @@
 import { Trans } from "@lingui/react";
 import { Link } from "@tanstack/react-router";
 import { useAtomValue } from "jotai";
-import {
-  CoinsIcon,
-  HistoryIcon,
-  MessageSquareIcon,
-  PlusIcon,
-} from "lucide-react";
+import { CoinsIcon, HistoryIcon, MessageSquareIcon, PlusIcon } from "lucide-react";
 import { type FC, useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { createVirtualSessionEntries } from "@/lib/virtual-messages/createVirtualSessionEntries";
 import { virtualMessagesAtom } from "@/lib/virtual-messages/virtualMessageStore";
@@ -31,13 +17,13 @@ import { firstUserMessageToTitle } from "../projects/[projectId]/services/firstC
 import type { Tab } from "../projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/schema";
 import { sessionProcessesAtom } from "../projects/[projectId]/sessions/[sessionId]/store/sessionProcessesAtom";
 
-interface SessionHistoryPopoverProps {
+type SessionHistoryPopoverProps = {
   projectId: string;
   currentSessionId?: string;
   currentTab?: Tab;
   /** Trigger button variant: "icon" (default) or "menu" (with label, for action menu) */
   variant?: "icon" | "menu";
-}
+};
 
 export const SessionHistoryPopover: FC<SessionHistoryPopoverProps> = ({
   projectId,
@@ -45,22 +31,14 @@ export const SessionHistoryPopover: FC<SessionHistoryPopoverProps> = ({
   currentTab = "sessions",
   variant = "icon",
 }) => {
-  const {
-    data: projectData,
-    fetchNextPage,
-    hasNextPage,
-  } = useProject(projectId);
+  const { data: projectData, fetchNextPage, hasNextPage } = useProject(projectId);
   const sessionProcesses = useAtomValue(sessionProcessesAtom);
   const virtualMessages = useAtomValue(virtualMessagesAtom);
 
   const sessions = useMemo(() => {
     const serverSessions = projectData.pages.flatMap((page) => page.sessions);
     const existingIds = new Set(serverSessions.map((s) => s.id));
-    const virtualSessions = createVirtualSessionEntries(
-      virtualMessages,
-      projectId,
-      existingIds,
-    );
+    const virtualSessions = createVirtualSessionEntries(virtualMessages, projectId, existingIds);
     return [...serverSessions, ...virtualSessions];
   }, [projectData.pages, projectId, virtualMessages]);
   const { config } = useConfig();
@@ -73,12 +51,8 @@ export const SessionHistoryPopover: FC<SessionHistoryPopoverProps> = ({
     };
 
     return [...sessions].sort((a, b) => {
-      const aStatus = sessionProcesses.find(
-        (process) => process.sessionId === a.id,
-      )?.status;
-      const bStatus = sessionProcesses.find(
-        (process) => process.sessionId === b.id,
-      )?.status;
+      const aStatus = sessionProcesses.find((process) => process.sessionId === a.id)?.status;
+      const bStatus = sessionProcesses.find((process) => process.sessionId === b.id)?.status;
 
       const aPriority = getPriority(aStatus);
       const bPriority = getPriority(bStatus);
@@ -93,7 +67,7 @@ export const SessionHistoryPopover: FC<SessionHistoryPopoverProps> = ({
     });
   }, [sessions, sessionProcesses]);
 
-  const isNewChatActive = !currentSessionId;
+  const isNewChatActive = currentSessionId === undefined || currentSessionId === "";
 
   const triggerButton =
     variant === "menu" ? (
@@ -135,12 +109,7 @@ export const SessionHistoryPopover: FC<SessionHistoryPopoverProps> = ({
     <Popover>
       {triggerButton}
 
-      <PopoverContent
-        className="w-80 p-0"
-        align="start"
-        side="bottom"
-        sideOffset={8}
-      >
+      <PopoverContent className="w-80 p-0" align="start" side="bottom" sideOffset={8}>
         <div className="border-b border-border/60 px-3 py-2">
           <h3 className="text-sm font-semibold">
             <Trans id="chat.history.title" />
@@ -185,9 +154,7 @@ export const SessionHistoryPopover: FC<SessionHistoryPopoverProps> = ({
                   ? firstUserMessageToTitle(session.meta.firstUserMessage)
                   : session.id;
 
-              const sessionProcess = sessionProcesses.find(
-                (task) => task.sessionId === session.id,
-              );
+              const sessionProcess = sessionProcesses.find((task) => task.sessionId === session.id);
               const isRunning = sessionProcess?.status === "running";
               const isPaused = sessionProcess?.status === "paused";
 
@@ -209,18 +176,14 @@ export const SessionHistoryPopover: FC<SessionHistoryPopoverProps> = ({
                   )}
                 >
                   <div className="flex items-start justify-between gap-2 mb-1">
-                    <h4 className="text-sm font-medium line-clamp-1 flex-1">
-                      {title}
-                    </h4>
+                    <h4 className="text-sm font-medium line-clamp-1 flex-1">{title}</h4>
                     {(isRunning || isPaused) && (
                       <Badge
                         variant="secondary"
                         className={cn(
                           "text-[10px] px-1.5 h-4 shrink-0",
-                          isRunning &&
-                            "bg-green-500/10 text-green-600 dark:text-green-400",
-                          isPaused &&
-                            "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400",
+                          isRunning && "bg-green-500/10 text-green-600 dark:text-green-400",
+                          isPaused && "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400",
                         )}
                       >
                         {isRunning ? (
@@ -259,7 +222,7 @@ export const SessionHistoryPopover: FC<SessionHistoryPopoverProps> = ({
                 variant="ghost"
                 size="sm"
                 className="w-full text-xs h-8"
-                onClick={() => fetchNextPage()}
+                onClick={() => void fetchNextPage()}
               >
                 <Trans id="sessions.load.more" />
               </Button>

@@ -23,12 +23,7 @@ export const determineFileType = (mimeType: string): FileType => {
  * Check if MIME type is supported
  */
 export const isSupportedMimeType = (mimeType: string): boolean => {
-  const supportedImageTypes = [
-    "image/png",
-    "image/jpeg",
-    "image/gif",
-    "image/webp",
-  ];
+  const supportedImageTypes = ["image/png", "image/jpeg", "image/gif", "image/webp"];
   const supportedDocumentTypes = ["application/pdf"];
   const supportedTextTypes = ["text/plain"];
 
@@ -42,31 +37,25 @@ export const isSupportedMimeType = (mimeType: string): boolean => {
 /**
  * Extract image files from clipboard data for paste-to-attach support.
  */
-export const extractClipboardImageFiles = (
-  clipboardData: DataTransfer | null,
-): File[] => {
+export const extractClipboardImageFiles = (clipboardData: DataTransfer | null): File[] => {
   if (clipboardData === null) {
     return [];
   }
 
-  const imageFilesFromItems = Array.from(clipboardData.items).flatMap(
-    (item) => {
-      if (item.kind !== "file" || !item.type.startsWith("image/")) {
-        return [];
-      }
+  const imageFilesFromItems = Array.from(clipboardData.items).flatMap((item) => {
+    if (item.kind !== "file" || !item.type.startsWith("image/")) {
+      return [];
+    }
 
-      const file = item.getAsFile();
-      return file === null ? [] : [file];
-    },
-  );
+    const file = item.getAsFile();
+    return file === null ? [] : [file];
+  });
 
   if (imageFilesFromItems.length > 0) {
     return imageFilesFromItems;
   }
 
-  return Array.from(clipboardData.files).filter((file) =>
-    file.type.startsWith("image/"),
-  );
+  return Array.from(clipboardData.files).filter((file) => file.type.startsWith("image/"));
 };
 
 /**

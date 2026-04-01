@@ -9,10 +9,7 @@ type CaptureCase = {
   setup: (page: Page) => Promise<void>;
 };
 
-export const defineCapture = (options: {
-  href: string;
-  cases?: readonly CaptureCase[];
-}) => {
+export const defineCapture = (options: { href: string; cases?: readonly CaptureCase[] }) => {
   const { href, cases = [] } = options;
 
   const paths = href
@@ -35,9 +32,7 @@ export const defineCapture = (options: {
           await page.goto(href);
 
           await page.waitForLoadState("domcontentloaded");
-          const loadingIndicator = page.locator(
-            '[data-testid="loading-indicator"]',
-          );
+          const loadingIndicator = page.locator('[data-testid="loading-indicator"]');
           await loadingIndicator.waitFor({
             state: "hidden",
             timeout: 10000,
@@ -62,12 +57,7 @@ export const defineCapture = (options: {
                 testCase.name,
                 `${device.name}-${colorScheme}.png`,
               )
-            : resolve(
-                "e2e",
-                "snapshots",
-                ...paths,
-                `${device.name}-${colorScheme}.png`,
-              );
+            : resolve("e2e", "snapshots", ...paths, `${device.name}-${colorScheme}.png`);
 
           await page.screenshot({
             path: picturePath,

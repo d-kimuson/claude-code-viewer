@@ -8,13 +8,7 @@ export const ToolResultContentSchema = z.object({
   tool_use_id: z.string(),
   content: z.union([
     z.string(),
-    z.array(
-      z.union([
-        TextContentSchema,
-        ImageContentSchema,
-        ToolReferenceContentSchema,
-      ]),
-    ),
+    z.array(z.union([TextContentSchema, ImageContentSchema, ToolReferenceContentSchema])),
   ]),
   is_error: z.boolean().optional(),
 });

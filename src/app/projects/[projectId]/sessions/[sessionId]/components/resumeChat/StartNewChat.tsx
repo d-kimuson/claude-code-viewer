@@ -32,8 +32,7 @@ export const StartNewChat: FC<StartNewChatProps> = ({
     if (behavior === "enter-send") {
       return i18n._({
         id: "chat.placeholder.continue.enter",
-        message:
-          "Type your message... (Start with / for commands, @ for files, Enter to send)",
+        message: "Type your message... (Start with / for commands, @ for files, Enter to send)",
       });
     }
     if (behavior === "command-enter-send") {
@@ -45,8 +44,7 @@ export const StartNewChat: FC<StartNewChatProps> = ({
     }
     return i18n._({
       id: "chat.placeholder.continue.shift_enter",
-      message:
-        "Type your message... (Start with / for commands, @ for files, Shift+Enter to send)",
+      message: "Type your message... (Start with / for commands, @ for files, Shift+Enter to send)",
     });
   };
 

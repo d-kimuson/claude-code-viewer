@@ -1,6 +1,7 @@
 import type { Readable } from "node:stream";
 import type { PtyOptions } from "@replit/ruspty";
 
+// oxlint-disable-next-line typescript-eslint/consistent-type-imports -- dynamic import type needed for optional dependency
 type RusptyModule = typeof import("@replit/ruspty");
 
 type TerminalPtyProcess = {
@@ -14,10 +15,7 @@ type TerminalPtySession = {
   read: Readable;
 };
 
-const createRusptySession = (
-  ruspty: RusptyModule,
-  options: PtyOptions,
-): TerminalPtySession => {
+const createRusptySession = (ruspty: RusptyModule, options: PtyOptions): TerminalPtySession => {
   const pty = new ruspty.Pty(options);
 
   return {

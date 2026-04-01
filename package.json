@@ -2,22 +2,19 @@
   "name": "@kimuson/claude-code-viewer",
   "version": "0.6.0",
   "description": "A full-featured web-based Claude Code client that provides complete interactive functionality for managing Claude Code projects.",
-  "type": "module",
+  "homepage": "https://github.com/d-kimuson/claude-code-viewer",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/d-kimuson/claude-code-viewer.git"
   },
-  "homepage": "https://github.com/d-kimuson/claude-code-viewer",
-  "files": [
-    "dist"
-  ],
-  "engines": {
-    "node": ">=22.13.0"
-  },
   "bin": {
     "claude-code-viewer": "./dist/main.js"
   },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
   "scripts": {
     "dev": "run-p 'dev:*'",
     "dev:frontend": "vite",
@@ -26,12 +23,12 @@
     "build": "./scripts/build.sh",
     "build:frontend": "vite build",
     "build:backend": "esbuild src/server/main.ts --format=esm --bundle --packages=external --sourcemap --platform=node --outfile=dist/main.js",
-    "lint": "run-s 'lint:*'",
-    "lint:biome-format": "biome format .",
-    "lint:biome-lint": "biome check .",
-    "fix": "run-s 'fix:*'",
-    "fix:biome-format": "biome format --write .",
-    "fix:biome-lint": "biome check --write --unsafe .",
+    "lint": "run-p 'lint:*'",
+    "lint:oxlint": "oxlint --ignore-path .gitignore",
+    "lint:oxfmt": "pnpm fix:oxfmt --check",
+    "fix": "run-p 'fix:*'",
+    "fix:oxlint": "pnpm lint:oxlint --fix",
+    "fix:oxfmt": "oxfmt --ignore-path .gitignore --no-error-on-unmatched-pattern",
     "typecheck": "tsgo --noEmit",
     "test": "vitest --run",
     "test:watch": "vitest",
@@ -106,7 +103,6 @@
     "zod": "4.3.6"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.4.10",
     "@effect/language-service": "0.84.2",
     "@lingui/cli": "5.9.4",
     "@lingui/conf": "5.9.4",
@@ -131,6 +127,9 @@
     "jsdom": "^29.0.1",
     "lefthook": "2.1.4",
     "npm-run-all2": "8.0.4",
+    "oxfmt": "^0.43.0",
+    "oxlint": "^1.58.0",
+    "oxlint-tsgolint": "^0.19.0",
     "playwright": "1.58.2",
     "release-it": "19.2.4",
     "release-it-pnpm": "4.6.6",
@@ -147,6 +146,9 @@
     "workbox-routing": "^7.4.0",
     "workbox-strategies": "^7.4.0",
     "workbox-window": "^7.4.0"
+  },
+  "engines": {
+    "node": ">=22.13.0"
   },
   "packageManager": "pnpm@10.28.1+sha512.7d7dbbca9e99447b7c3bf7a73286afaaf6be99251eb9498baefa7d406892f67b879adb3a1d7e687fc4ccc1a388c7175fbaae567a26ab44d1067b54fcb0d6a316"
 }

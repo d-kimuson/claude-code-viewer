@@ -35,12 +35,12 @@ export const getAgentSessionFilesForSession = (
       Effect.gen(function* () {
         const content = yield* fs.readFileString(filePath);
         const firstLine = content.split("\n")[0];
-        if (!firstLine || firstLine.trim() === "") {
+        if (firstLine === undefined || firstLine.trim() === "") {
           return false;
         }
 
         try {
-          const firstLineData = JSON.parse(firstLine);
+          const firstLineData: unknown = JSON.parse(firstLine);
           if (typeof firstLineData !== "object" || firstLineData === null) {
             return false;
           }
@@ -48,10 +48,9 @@ export const getAgentSessionFilesForSession = (
           // If expectedSessionId is provided, strictly check it.
           // Otherwise, just ensure it looks like a valid log entry (has a sessionId).
           if (expectedSessionId !== undefined) {
-            return (
-              "sessionId" in firstLineData &&
-              firstLineData.sessionId === expectedSessionId
-            );
+            if (!("sessionId" in firstLineData)) return false;
+            const sid: unknown = firstLineData.sessionId;
+            return sid === expectedSessionId;
           }
 
           return "sessionId" in firstLineData;
@@ -65,8 +64,7 @@ export const getAgentSessionFilesForSession = (
     // 1. Check legacy root directory
     const rootEntries = yield* fs.readDirectory(projectPath);
     const rootAgentFiles = rootEntries.filter(
-      (filename) =>
-        filename.startsWith("agent-") && filename.endsWith(".jsonl"),
+      (filename) => filename.startsWith("agent-") && filename.endsWith(".jsonl"),
     );
 
     for (const agentFile of rootAgentFiles) {
@@ -86,8 +84,7 @@ export const getAgentSessionFilesForSession = (
       );
 
       const subagentFiles = subagentEntries.filter(
-        (filename) =>
-          filename.startsWith("agent-") && filename.endsWith(".jsonl"),
+        (filename) => filename.startsWith("agent-") && filename.endsWith(".jsonl"),
       );
 
       for (const agentFile of subagentFiles) {

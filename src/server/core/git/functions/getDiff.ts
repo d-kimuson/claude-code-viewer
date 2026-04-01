@@ -1,14 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
-import parseGitDiff, {
-  type AnyChunk,
-  type AnyFileChange,
-} from "parse-git-diff";
-import {
-  executeGitCommand,
-  parseLines,
-  stripAnsiColors,
-} from "../functions/utils";
+import parseGitDiff, { type AnyChunk, type AnyFileChange } from "parse-git-diff";
+import { executeGitCommand, parseLines, stripAnsiColors } from "../functions/utils";
 import type {
   GitComparisonResult,
   GitDiff,
@@ -21,10 +14,10 @@ import type {
 /**
  * Convert parse-git-diff file change to GitDiffFile
  */
-function convertToGitDiffFile(
+const convertToGitDiffFile = (
   fileChange: AnyFileChange,
   fileStats: Map<string, { additions: number; deletions: number }>,
-): GitDiffFile {
+): GitDiffFile => {
   let filePath: string;
   let status: GitDiffFile["status"];
   let oldPath: string | undefined;
@@ -54,8 +47,8 @@ function convertToGitDiffFile(
   }
 
   // Get stats from numstat
-  const stats = fileStats.get(filePath) ||
-    fileStats.get(oldPath || "") || { additions: 0, deletions: 0 };
+  const stats = fileStats.get(filePath) ??
+    fileStats.get(oldPath ?? "") ?? { additions: 0, deletions: 0 };
 
   return {
     filePath,
@@ -64,12 +57,12 @@ function convertToGitDiffFile(
     deletions: stats.deletions,
     oldPath,
   };
-}
+};
 
 /**
  * Convert parse-git-diff chunk to GitDiffHunk
  */
-function convertToGitDiffHunk(chunk: AnyChunk): GitDiffHunk {
+const convertToGitDiffHunk = (chunk: AnyChunk): GitDiffHunk => {
   if (chunk.type !== "Chunk") {
     // For non-standard chunks, return empty hunk
     return {
@@ -133,10 +126,70 @@ function convertToGitDiffHunk(chunk: AnyChunk): GitDiffHunk {
     oldCount: chunk.fromFileRange.lines,
     newStart: chunk.toFileRange.start,
     newCount: chunk.toFileRange.lines,
-    header: `@@ -${chunk.fromFileRange.start},${chunk.fromFileRange.lines} +${chunk.toFileRange.start},${chunk.toFileRange.lines} @@${chunk.context ? ` ${chunk.context}` : ""}`,
+    header: `@@ -${chunk.fromFileRange.start},${chunk.fromFileRange.lines} +${chunk.toFileRange.start},${chunk.toFileRange.lines} @@${chunk.context !== undefined && chunk.context !== "" ? ` ${chunk.context}` : ""}`,
     lines,
   };
-}
+};
+
+const parseFallbackDiffFiles = (
+  diffOutput: string,
+  fileStats: Map<string, { additions: number; deletions: number }>,
+): GitDiffFile[] => {
+  const sections = diffOutput
+    .split(/^diff --git /m)
+    .map((section) => section.trim())
+    .filter((section) => section !== "");
+
+  return sections.flatMap((section) => {
+    const lines = section.split("\n");
+    const header = lines[0];
+    if (header === undefined) {
+      return [];
+    }
+
+    const headerMatch = header.match(/^a\/(.+?) b\/(.+)$/);
+    if (!headerMatch) {
+      return [];
+    }
+
+    const oldPathFromHeader = headerMatch[1];
+    const newPathFromHeader = headerMatch[2];
+    if (oldPathFromHeader === undefined || newPathFromHeader === undefined) {
+      return [];
+    }
+
+    const renameFromLine = lines.find((line) => line.startsWith("rename from "));
+    const renameToLine = lines.find((line) => line.startsWith("rename to "));
+    const deleted = lines.some((line) => line.startsWith("deleted file mode"));
+    const added = lines.some((line) => line.startsWith("new file mode"));
+
+    const oldPath =
+      renameFromLine !== undefined ? renameFromLine.replace("rename from ", "") : oldPathFromHeader;
+    const filePath =
+      renameToLine !== undefined ? renameToLine.replace("rename to ", "") : newPathFromHeader;
+
+    const status: GitDiffFile["status"] = deleted
+      ? "deleted"
+      : renameFromLine !== undefined && renameToLine !== undefined
+        ? "renamed"
+        : added
+          ? "added"
+          : "modified";
+
+    const stats = fileStats.get(filePath) ??
+      fileStats.get(oldPath) ?? { additions: 0, deletions: 0 };
+
+    return [
+      {
+        filePath,
+        status,
+        additions: stats.additions,
+        deletions: stats.deletions,
+        ...(status === "renamed" ? { oldPath } : {}),
+      },
+    ];
+  });
+};
 
 const extractRef = (refText: string) => {
   const [group, ref] = refText.split(":");
@@ -158,11 +211,8 @@ const extractRef = (refText: string) => {
 /**
  * Get untracked files using git status
  */
-async function getUntrackedFiles(cwd: string): Promise<GitResult<string[]>> {
-  const statusResult = await executeGitCommand(
-    ["status", "--untracked-files=all", "--short"],
-    cwd,
-  );
+const getUntrackedFiles = async (cwd: string): Promise<GitResult<string[]>> => {
+  const statusResult = await executeGitCommand(["status", "--untracked-files=all", "--short"], cwd);
 
   if (!statusResult.success) {
     return statusResult;
@@ -187,15 +237,12 @@ async function getUntrackedFiles(cwd: string): Promise<GitResult<string[]>> {
       },
     };
   }
-}
+};
 
 /**
  * Create artificial diff for an untracked file (all lines as additions)
  */
-async function createUntrackedFileDiff(
-  cwd: string,
-  filePath: string,
-): Promise<GitDiff | null> {
+const createUntrackedFileDiff = async (cwd: string, filePath: string): Promise<GitDiff | null> => {
   try {
     const fullPath = resolve(cwd, filePath);
     const content = await readFile(fullPath, "utf8");
@@ -232,7 +279,7 @@ async function createUntrackedFileDiff(
     console.warn(`Failed to read untracked file ${filePath}:`, error);
     return null;
   }
-}
+};
 
 /**
  * Get Git diff between two references (branches, commits, tags)
@@ -267,20 +314,14 @@ export const getDiff = async (
   const commandArgs = toRef === undefined ? [fromRef] : [fromRef, toRef];
 
   // Get diff with numstat for file statistics
-  const numstatResult = await executeGitCommand(
-    ["diff", "--numstat", ...commandArgs, "--"],
-    cwd,
-  );
+  const numstatResult = await executeGitCommand(["diff", "--numstat", ...commandArgs, "--"], cwd);
 
   if (!numstatResult.success) {
     return numstatResult;
   }
 
   // Get diff with full content
-  const diffResult = await executeGitCommand(
-    ["diff", "--unified=5", ...commandArgs, "--"],
-    cwd,
-  );
+  const diffResult = await executeGitCommand(["diff", "--unified=5", ...commandArgs, "--"], cwd);
 
   if (!diffResult.success) {
     return diffResult;
@@ -288,15 +329,20 @@ export const getDiff = async (
 
   try {
     // Parse numstat output to get file statistics
-    const fileStats = new Map<
-      string,
-      { additions: number; deletions: number }
-    >();
+    const fileStats = new Map<string, { additions: number; deletions: number }>();
     const numstatLines = parseLines(numstatResult.data);
 
     for (const line of numstatLines) {
       const parts = line.split("\t");
-      if (parts.length >= 3 && parts[0] && parts[1] && parts[2]) {
+      if (
+        parts.length >= 3 &&
+        parts[0] !== undefined &&
+        parts[0] !== "" &&
+        parts[1] !== undefined &&
+        parts[1] !== "" &&
+        parts[2] !== undefined &&
+        parts[2] !== ""
+      ) {
         const additions = parts[0] === "-" ? 0 : parseInt(parts[0], 10);
         const deletions = parts[1] === "-" ? 0 : parseInt(parts[1], 10);
         const filePath = parts[2];
@@ -306,6 +352,7 @@ export const getDiff = async (
 
     // Parse diff output using parse-git-diff
     const parsedDiff = parseGitDiff(diffResult.data);
+    const fallbackFiles = parseFallbackDiffFiles(diffResult.data, fileStats);
 
     const files: GitDiffFile[] = [];
     const diffs: GitDiff[] = [];
@@ -333,15 +380,29 @@ export const getDiff = async (
       totalDeletions += file.deletions;
     }
 
+    for (const fallbackFile of fallbackFiles) {
+      const alreadyIncluded = files.some(
+        (file) => file.filePath === fallbackFile.filePath && file.oldPath === fallbackFile.oldPath,
+      );
+      if (alreadyIncluded) {
+        continue;
+      }
+
+      files.push(fallbackFile);
+      diffs.push({
+        file: fallbackFile,
+        hunks: [],
+      });
+      totalAdditions += fallbackFile.additions;
+      totalDeletions += fallbackFile.deletions;
+    }
+
     // Include untracked files when comparing to working directory
     if (toRef === undefined) {
       const untrackedResult = await getUntrackedFiles(cwd);
       if (untrackedResult.success) {
         for (const untrackedFile of untrackedResult.data) {
-          const untrackedDiff = await createUntrackedFileDiff(
-            cwd,
-            untrackedFile,
-          );
+          const untrackedDiff = await createUntrackedFileDiff(cwd, untrackedFile);
           if (untrackedDiff) {
             files.push(untrackedDiff.file);
             diffs.push(untrackedDiff);
@@ -377,10 +438,10 @@ export const getDiff = async (
 /**
  * Compare between two branches (shorthand for getDiff)
  */
-export async function compareBranches(
+export const compareBranches = async (
   cwd: string,
   baseBranch: string,
   targetBranch: string,
-): Promise<GitResult<GitComparisonResult>> {
+): Promise<GitResult<GitComparisonResult>> => {
   return getDiff(cwd, baseBranch, targetBranch);
-}
+};

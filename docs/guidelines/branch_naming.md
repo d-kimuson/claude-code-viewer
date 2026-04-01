@@ -8,15 +8,15 @@
 
 ## Prefixes
 
-| Prefix | Purpose |
-|--------|---------|
-| `feat/` | New feature |
-| `fix/` | Bug fix |
-| `chore/` | Internal maintenance, config changes |
-| `ci/` | CI/CD changes |
-| `docs/` | Documentation changes |
-| `refactor/` | Code restructuring |
-| `prepare/` | Release preparation |
+| Prefix      | Purpose                              |
+| ----------- | ------------------------------------ |
+| `feat/`     | New feature                          |
+| `fix/`      | Bug fix                              |
+| `chore/`    | Internal maintenance, config changes |
+| `ci/`       | CI/CD changes                        |
+| `docs/`     | Documentation changes                |
+| `refactor/` | Code restructuring                   |
+| `prepare/`  | Release preparation                  |
 
 ## Rules
 

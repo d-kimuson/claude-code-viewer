@@ -1,9 +1,6 @@
 import type { QueueOperationEntry } from "./QueueOperationEntrySchema";
 
-type EnqueueContent = Extract<
-  QueueOperationEntry,
-  { operation: "enqueue" }
->["content"];
+type EnqueueContent = Extract<QueueOperationEntry, { operation: "enqueue" }>["content"];
 
 /**
  * Normalizes queue operation content to a string for display.
@@ -12,9 +9,7 @@ type EnqueueContent = Extract<
  * @param content - Queue operation content (string or array)
  * @returns Normalized string representation
  */
-export const normalizeQueueOperationContent = (
-  content: EnqueueContent,
-): string => {
+export const normalizeQueueOperationContent = (content: EnqueueContent): string => {
   // Legacy format: string
   if (typeof content === "string") {
     return content;

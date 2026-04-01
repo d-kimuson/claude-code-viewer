@@ -99,8 +99,7 @@ export class TaskExecutor {
       return;
     }
 
-    const remainingTaskCount =
-      this.options.maxConcurrency - this.runningTasks.length;
+    const remainingTaskCount = this.options.maxConcurrency - this.runningTasks.length;
 
     if (remainingTaskCount <= 0) {
       return;

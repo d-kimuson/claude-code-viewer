@@ -2,17 +2,10 @@ import { Trans } from "@lingui/react";
 import { ChevronDown, Code, Lightbulb, Wrench } from "lucide-react";
 import { type FC, useMemo, useState } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import {
-  oneDark,
-  oneLight,
-} from "react-syntax-highlighter/dist/esm/styles/prism";
+import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
 import z from "zod";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import type { ToolResultContent } from "@/lib/conversation-schema/content/ToolResultContentSchema";
 import type { AssistantMessageContent } from "@/lib/conversation-schema/message/AssistantMessageSchema";
 import { extractEditedFilePaths } from "@/lib/file-viewer";
@@ -37,12 +30,8 @@ type ToolUseContentProps = {
   getToolResult: (toolUseId: string) => ToolResultContent | undefined;
   getAgentIdForToolUse: (toolUseId: string) => string | undefined;
   getToolUseResult: (toolUseId: string) => unknown;
-  getSidechainConversationByAgentId: (
-    agentId: string,
-  ) => SidechainConversation | undefined;
-  getSidechainConversationByPrompt: (
-    prompt: string,
-  ) => SidechainConversation | undefined;
+  getSidechainConversationByAgentId: (agentId: string) => SidechainConversation | undefined;
+  getSidechainConversationByPrompt: (prompt: string) => SidechainConversation | undefined;
   getSidechainConversations: (rootUuid: string) => SidechainConversation[];
   projectId: string;
   sessionId: string;
@@ -62,29 +51,19 @@ const ToolUseContent: FC<ToolUseContentProps> = ({
   syntaxTheme,
 }) => {
   const Visualizer = getToolVisualizer(content.name);
-  const [viewMode, setViewMode] = useState<ToolUseViewMode>(
-    Visualizer ? "visual" : "raw",
-  );
+  const [viewMode, setViewMode] = useState<ToolUseViewMode>(Visualizer ? "visual" : "raw");
 
   const toolResult = getToolResult(content.id);
   const toolUseResult = getToolUseResult(content.id);
 
   const visualizerElement = useMemo(() => {
     if (!Visualizer || viewMode !== "visual") return null;
-    return (
-      <Visualizer
-        input={content.input}
-        output={toolResult}
-        toolUseResult={toolUseResult}
-      />
-    );
+    return <Visualizer input={content.input} output={toolResult} toolUseResult={toolUseResult} />;
   }, [Visualizer, viewMode, content.input, toolResult, toolUseResult]);
 
   // If visualizer returned null (validation failed), force raw mode
   const effectiveMode =
-    viewMode === "visual" && Visualizer && visualizerElement === null
-      ? "raw"
-      : viewMode;
+    viewMode === "visual" && Visualizer && visualizerElement === null ? "raw" : viewMode;
 
   const taskModal = (() => {
     const taskInput = SUBAGENT_TOOL_NAMES.has(content.name)
@@ -139,7 +118,7 @@ const ToolUseContent: FC<ToolUseContentProps> = ({
               </div>
             </div>
           </CollapsibleTrigger>
-          {(taskModal || fileContentDialog) && (
+          {(taskModal ?? fileContentDialog) && (
             <div className="flex-shrink-0 border-l border-blue-200 dark:border-blue-800 flex items-center">
               {taskModal}
               {fileContentDialog}
@@ -156,9 +135,7 @@ const ToolUseContent: FC<ToolUseContentProps> = ({
               {Visualizer && (
                 <button
                   type="button"
-                  onClick={() =>
-                    setViewMode(effectiveMode === "raw" ? "visual" : "raw")
-                  }
+                  onClick={() => setViewMode(effectiveMode === "raw" ? "visual" : "raw")}
                   className={`ml-auto flex items-center gap-1 px-2 py-0.5 text-xs rounded-md border transition-colors ${
                     effectiveMode === "raw"
                       ? "border-blue-300 dark:border-blue-700 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300"
@@ -223,9 +200,7 @@ const ToolUseContent: FC<ToolUseContentProps> = ({
                             return null;
                           }
                           item satisfies never;
-                          throw new Error(
-                            "Unexpected tool result content type",
-                          );
+                          throw new Error("Unexpected tool result content type");
                         })
                       )}
                     </div>
@@ -245,12 +220,8 @@ export const AssistantConversationContent: FC<{
   getToolResult: (toolUseId: string) => ToolResultContent | undefined;
   getAgentIdForToolUse: (toolUseId: string) => string | undefined;
   getToolUseResult: (toolUseId: string) => unknown;
-  getSidechainConversationByAgentId: (
-    agentId: string,
-  ) => SidechainConversation | undefined;
-  getSidechainConversationByPrompt: (
-    prompt: string,
-  ) => SidechainConversation | undefined;
+  getSidechainConversationByAgentId: (agentId: string) => SidechainConversation | undefined;
+  getSidechainConversationByPrompt: (prompt: string) => SidechainConversation | undefined;
   getSidechainConversations: (rootUuid: string) => SidechainConversation[];
   projectId: string;
   sessionId: string;

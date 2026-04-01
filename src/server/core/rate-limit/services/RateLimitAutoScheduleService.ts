@@ -14,9 +14,7 @@ import { detectRateLimitFromLastLine } from "../functions/detectRateLimitFromLas
 import { parseRateLimitResetTime } from "../functions/parseRateLimitResetTime";
 import { readLastLine } from "../functions/readLastLine";
 
-type SessionChangedListener = (
-  event: InternalEventDeclaration["sessionChanged"],
-) => void;
+type SessionChangedListener = (event: InternalEventDeclaration["sessionChanged"]) => void;
 
 /**
  * Service that monitors session changes and automatically schedules
@@ -50,9 +48,7 @@ const LayerImpl = Effect.gen(function* () {
    * Checks if a session has a live process.
    * Returns the projectId if found, undefined otherwise.
    */
-  const getSessionProcessProjectId = (
-    sessionId: string,
-  ): Effect.Effect<string | undefined> =>
+  const getSessionProcessProjectId = (sessionId: string): Effect.Effect<string | undefined> =>
     Effect.gen(function* () {
       const processes = yield* sessionProcessService.getSessionProcesses();
 
@@ -90,9 +86,7 @@ const LayerImpl = Effect.gen(function* () {
    * Handles a sessionChanged event.
    * Checks conditions and potentially schedules a continue task.
    */
-  const handleSessionChanged = (
-    event: InternalEventDeclaration["sessionChanged"],
-  ) =>
+  const handleSessionChanged = (event: InternalEventDeclaration["sessionChanged"]) =>
     Effect.gen(function* () {
       const { projectId, sessionId } = event;
 
@@ -116,10 +110,7 @@ const LayerImpl = Effect.gen(function* () {
 
       // 4. Read the last line of the session file
       const projectPath = decodeProjectId(projectId);
-      const sessionFilePath = pathService.join(
-        projectPath,
-        `${sessionId}.jsonl`,
-      );
+      const sessionFilePath = pathService.join(projectPath, `${sessionId}.jsonl`);
 
       const lastLine = yield* readLastLine(sessionFilePath).pipe(
         Effect.catchAll(() => Effect.succeed("")),
@@ -193,9 +184,7 @@ const LayerImpl = Effect.gen(function* () {
       }
 
       const listener: SessionChangedListener = (event) => {
-        Effect.runFork(
-          handleSessionChanged(event).pipe(Effect.provide(runtimeLayer)),
-        );
+        Effect.runFork(handleSessionChanged(event).pipe(Effect.provide(runtimeLayer)));
       };
 
       yield* Ref.set(listenerRef, listener);
@@ -225,8 +214,9 @@ const LayerImpl = Effect.gen(function* () {
 
 export type IRateLimitAutoScheduleService = InferEffect<typeof LayerImpl>;
 
-export class RateLimitAutoScheduleService extends Context.Tag(
-  "RateLimitAutoScheduleService",
-)<RateLimitAutoScheduleService, IRateLimitAutoScheduleService>() {
+export class RateLimitAutoScheduleService extends Context.Tag("RateLimitAutoScheduleService")<
+  RateLimitAutoScheduleService,
+  IRateLimitAutoScheduleService
+>() {
   static Live = Layer.effect(this, LayerImpl);
 }

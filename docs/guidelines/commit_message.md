@@ -11,14 +11,14 @@ Conventional Commits: `type: description`
 
 ## Type Selection
 
-| Type | Release Note Section | When to Use |
-|------|---------------------|-------------|
-| `feat` | Features | User-facing new feature |
-| `fix` | Bug Fixes | User-impacting bug fix |
-| `chore` | Excluded | Internal changes, dependency updates, config, lingui messages |
-| `ci` | Excluded | CI/CD changes |
-| `build` | Excluded | Build system changes |
-| `refactor` | Excluded | Code restructuring without behavior change |
+| Type       | Release Note Section | When to Use                                                   |
+| ---------- | -------------------- | ------------------------------------------------------------- |
+| `feat`     | Features             | User-facing new feature                                       |
+| `fix`      | Bug Fixes            | User-impacting bug fix                                        |
+| `chore`    | Excluded             | Internal changes, dependency updates, config, lingui messages |
+| `ci`       | Excluded             | CI/CD changes                                                 |
+| `build`    | Excluded             | Build system changes                                          |
+| `refactor` | Excluded             | Code restructuring without behavior change                    |
 
 **Important**: Commit messages appear in release notes. Use `fix` only for user-facing bugs. Internal fixes (linter errors, type errors, build config) use `chore`.
 

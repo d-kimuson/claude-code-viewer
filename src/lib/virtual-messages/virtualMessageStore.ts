@@ -7,9 +7,7 @@ export type VirtualMessage = {
   readonly sentAt: string; // ISO timestamp
 };
 
-export const virtualMessagesAtom = atom<ReadonlyMap<string, VirtualMessage>>(
-  new Map(),
-);
+export const virtualMessagesAtom = atom<ReadonlyMap<string, VirtualMessage>>(new Map());
 
 const jotaiStore = getDefaultStore();
 
@@ -20,9 +18,7 @@ export const addVirtualMessage = (message: VirtualMessage): void => {
   jotaiStore.set(virtualMessagesAtom, next);
 };
 
-export const getVirtualMessage = (
-  sessionId: string,
-): VirtualMessage | undefined => {
+export const getVirtualMessage = (sessionId: string): VirtualMessage | undefined => {
   return jotaiStore.get(virtualMessagesAtom).get(sessionId);
 };
 
@@ -34,12 +30,8 @@ export const removeVirtualMessage = (sessionId: string): void => {
   jotaiStore.set(virtualMessagesAtom, next);
 };
 
-export const getVirtualMessagesByProject = (
-  projectId: string,
-): VirtualMessage[] => {
-  return [...jotaiStore.get(virtualMessagesAtom).values()].filter(
-    (m) => m.projectId === projectId,
-  );
+export const getVirtualMessagesByProject = (projectId: string): VirtualMessage[] => {
+  return [...jotaiStore.get(virtualMessagesAtom).values()].filter((m) => m.projectId === projectId);
 };
 
 export const clear = (): void => {

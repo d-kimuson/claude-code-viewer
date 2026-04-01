@@ -15,7 +15,7 @@ export type SearchResult = {
 };
 
 // FTS5 query result row type (raw SQL returns snake_case)
-interface SearchJoinRow {
+type SearchJoinRow = {
   session_id: string;
   project_id: string;
   project_name: string | null;
@@ -24,7 +24,7 @@ interface SearchJoinRow {
   conversation_index: number;
   rank: number;
   last_modified_at: string | null;
-}
+};
 
 /**
  * Escape user input for FTS5 MATCH queries.
@@ -80,9 +80,7 @@ const LayerImpl = Effect.gen(function* () {
       const rows = yield* Effect.try({
         try: () => db.all<SearchJoinRow>(drizzleQuery),
         catch: (err) =>
-          new Error(
-            `FTS5 query failed: ${err instanceof Error ? err.message : String(err)}`,
-          ),
+          new Error(`FTS5 query failed: ${err instanceof Error ? err.message : String(err)}`),
       });
 
       const results: SearchResult[] = [];
@@ -102,13 +100,9 @@ const LayerImpl = Effect.gen(function* () {
           const start = Math.max(0, matchIndex - 50);
           const end = Math.min(text.length, start + snippetLength);
           snippet =
-            (start > 0 ? "..." : "") +
-            text.slice(start, end) +
-            (end < text.length ? "..." : "");
+            (start > 0 ? "..." : "") + text.slice(start, end) + (end < text.length ? "..." : "");
         } else {
-          snippet =
-            text.slice(0, snippetLength) +
-            (text.length > snippetLength ? "..." : "");
+          snippet = text.slice(0, snippetLength) + (text.length > snippetLength ? "..." : "");
         }
 
         // FTS5 rank is negative (BM25): larger absolute value = more relevant
@@ -145,9 +139,6 @@ const LayerImpl = Effect.gen(function* () {
 });
 
 export type ISearchService = InferEffect<typeof LayerImpl>;
-export class SearchService extends Context.Tag("SearchService")<
-  SearchService,
-  ISearchService
->() {
+export class SearchService extends Context.Tag("SearchService")<SearchService, ISearchService>() {
   static Live = Layer.effect(this, LayerImpl);
 }

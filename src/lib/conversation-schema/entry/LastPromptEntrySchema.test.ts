@@ -9,15 +9,10 @@ describe("LastPromptEntrySchema", () => {
       sessionId: "28fc793f-fbe6-4062-8b4a-3d6e28f65b8b",
     });
     expect(result.success).toBe(true);
-    if (result.success) {
-      expect(result.data.type).toBe("last-prompt");
-      expect(result.data.lastPrompt).toBe(
-        "Read docs/2026-03-12-phase-2-raise-only-hires.md...",
-      );
-      expect(result.data.sessionId).toBe(
-        "28fc793f-fbe6-4062-8b4a-3d6e28f65b8b",
-      );
-    }
+    const data = result.success ? result.data : undefined;
+    expect(data?.type).toBe("last-prompt");
+    expect(data?.lastPrompt).toBe("Read docs/2026-03-12-phase-2-raise-only-hires.md...");
+    expect(data?.sessionId).toBe("28fc793f-fbe6-4062-8b4a-3d6e28f65b8b");
   });
 
   test("rejects missing lastPrompt", () => {

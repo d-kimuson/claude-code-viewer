@@ -115,14 +115,10 @@ describe("FileWatcherService", () => {
         const watcher = yield* FileWatcherService;
         const eventBus = yield* EventBus;
 
-        const sessionChangedEvents: Array<
-          InternalEventDeclaration["sessionChanged"]
-        > = [];
+        const sessionChangedEvents: Array<InternalEventDeclaration["sessionChanged"]> = [];
 
         // Register event listener
-        const listener = (
-          event: InternalEventDeclaration["sessionChanged"],
-        ) => {
+        const listener = (event: InternalEventDeclaration["sessionChanged"]) => {
           sessionChangedEvents.push(event);
         };
 

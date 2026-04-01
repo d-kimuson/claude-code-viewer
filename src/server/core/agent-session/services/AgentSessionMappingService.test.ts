@@ -27,15 +27,10 @@ describe("AgentSessionMappingService", () => {
       });
 
       const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(AgentSessionMappingService.Live),
-          Effect.provide(testLayer),
-        ),
+        program.pipe(Effect.provide(AgentSessionMappingService.Live), Effect.provide(testLayer)),
       );
 
-      expect(result).toBe(
-        resolve(sampleProjectPath, "agent-test-hash-123.jsonl"),
-      );
+      expect(result).toBe(resolve(sampleProjectPath, "agent-test-hash-123.jsonl"));
     });
 
     it("should return null for non-matching prompt", async () => {
@@ -49,10 +44,7 @@ describe("AgentSessionMappingService", () => {
       });
 
       const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(AgentSessionMappingService.Live),
-          Effect.provide(testLayer),
-        ),
+        program.pipe(Effect.provide(AgentSessionMappingService.Live), Effect.provide(testLayer)),
       );
 
       expect(result).toBeNull();
@@ -71,10 +63,7 @@ describe("AgentSessionMappingService", () => {
       });
 
       const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(AgentSessionMappingService.Live),
-          Effect.provide(testLayer),
-        ),
+        program.pipe(Effect.provide(AgentSessionMappingService.Live), Effect.provide(testLayer)),
       );
 
       expect(result).toBeNull();
@@ -91,15 +80,10 @@ describe("AgentSessionMappingService", () => {
       });
 
       const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(AgentSessionMappingService.Live),
-          Effect.provide(testLayer),
-        ),
+        program.pipe(Effect.provide(AgentSessionMappingService.Live), Effect.provide(testLayer)),
       );
 
-      expect(result).toBe(
-        resolve(sampleProjectPath, "agent-test-hash-123.jsonl"),
-      );
+      expect(result).toBe(resolve(sampleProjectPath, "agent-test-hash-123.jsonl"));
     });
 
     it("should cache results", async () => {
@@ -128,16 +112,10 @@ describe("AgentSessionMappingService", () => {
       });
 
       const { result1, result2 } = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(AgentSessionMappingService.Live),
-          Effect.provide(testLayer),
-        ),
+        program.pipe(Effect.provide(AgentSessionMappingService.Live), Effect.provide(testLayer)),
       );
 
-      const expectedPath = resolve(
-        sampleProjectPath,
-        "agent-test-hash-456.jsonl",
-      );
+      const expectedPath = resolve(sampleProjectPath, "agent-test-hash-456.jsonl");
       expect(result1).toBe(expectedPath);
       expect(result2).toBe(expectedPath);
       expect(callCount).toBe(2);
@@ -160,18 +138,11 @@ describe("AgentSessionMappingService", () => {
       });
 
       const { result1, result2 } = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(AgentSessionMappingService.Live),
-          Effect.provide(testLayer),
-        ),
+        program.pipe(Effect.provide(AgentSessionMappingService.Live), Effect.provide(testLayer)),
       );
 
-      expect(result1).toBe(
-        resolve(sampleProjectPath, "agent-test-hash-123.jsonl"),
-      );
-      expect(result2).toBe(
-        resolve(sampleProjectPath, "agent-test-hash-456.jsonl"),
-      );
+      expect(result1).toBe(resolve(sampleProjectPath, "agent-test-hash-123.jsonl"));
+      expect(result2).toBe(resolve(sampleProjectPath, "agent-test-hash-456.jsonl"));
     });
   });
 
@@ -201,16 +172,10 @@ describe("AgentSessionMappingService", () => {
       });
 
       const { result1, result2 } = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(AgentSessionMappingService.Live),
-          Effect.provide(testLayer),
-        ),
+        program.pipe(Effect.provide(AgentSessionMappingService.Live), Effect.provide(testLayer)),
       );
 
-      const expectedPath = resolve(
-        sampleProjectPath,
-        "agent-test-hash-123.jsonl",
-      );
+      const expectedPath = resolve(sampleProjectPath, "agent-test-hash-123.jsonl");
       expect(result1).toBe(expectedPath);
       expect(result2).toBe(expectedPath);
     });
@@ -242,16 +207,10 @@ describe("AgentSessionMappingService", () => {
       });
 
       const { result1, result2 } = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(AgentSessionMappingService.Live),
-          Effect.provide(testLayer),
-        ),
+        program.pipe(Effect.provide(AgentSessionMappingService.Live), Effect.provide(testLayer)),
       );
 
-      const expectedPath = resolve(
-        sampleProjectPath,
-        "agent-test-hash-123.jsonl",
-      );
+      const expectedPath = resolve(sampleProjectPath, "agent-test-hash-123.jsonl");
       expect(result1).toBe(expectedPath);
       expect(result2).toBe(expectedPath);
     });

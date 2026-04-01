@@ -14,18 +14,13 @@ import { createMockSessionMeta } from "../core/session/testing/createMockSession
 import { SyncService } from "../core/sync/services/SyncService";
 import { InitializeService } from "./initialize";
 
-const fileWatcherWithEventBus = FileWatcherService.Live.pipe(
-  Layer.provide(EventBus.Live),
-);
+const fileWatcherWithEventBus = FileWatcherService.Live.pipe(Layer.provide(EventBus.Live));
 
 // Mock RateLimitAutoScheduleService for testing
-const mockRateLimitAutoScheduleService = Layer.succeed(
-  RateLimitAutoScheduleService,
-  {
-    start: () => Effect.void,
-    stop: () => Effect.void,
-  },
-);
+const mockRateLimitAutoScheduleService = Layer.succeed(RateLimitAutoScheduleService, {
+  start: () => Effect.void,
+  stop: () => Effect.void,
+});
 
 // Mock SyncService for testing
 const mockSyncService = Layer.succeed(SyncService, {
@@ -54,10 +49,9 @@ const allDependencies = Layer.mergeAll(
   testPlatformLayer(),
 );
 
-const sharedTestLayer = Layer.provide(
-  InitializeService.Live,
-  allDependencies,
-).pipe(Layer.merge(allDependencies));
+const sharedTestLayer = Layer.provide(InitializeService.Live, allDependencies).pipe(
+  Layer.merge(allDependencies),
+);
 
 describe("InitializeService", () => {
   describe("basic initialization process", () => {
@@ -149,9 +143,7 @@ describe("InitializeService", () => {
       const program = Effect.gen(function* () {
         const initialize = yield* InitializeService;
         const eventBus = yield* EventBus;
-        const eventsRef = yield* Ref.make<
-          Array<InternalEventDeclaration["sessionChanged"]>
-        >([]);
+        const eventsRef = yield* Ref.make<Array<InternalEventDeclaration["sessionChanged"]>>([]);
 
         // Set up listener for sessionChanged event
         yield* eventBus.on("sessionChanged", (event) => {

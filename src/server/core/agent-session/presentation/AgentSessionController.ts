@@ -10,11 +10,7 @@ const LayerImpl = Effect.gen(function* () {
    * Get agent session by agentId.
    * Directly reads agent-${agentId}.jsonl file without mapping service.
    */
-  const getAgentSession = (params: {
-    projectId: string;
-    agentId: string;
-    sessionId?: string;
-  }) =>
+  const getAgentSession = (params: { projectId: string; agentId: string; sessionId?: string }) =>
     Effect.gen(function* () {
       const { projectId, agentId, sessionId } = params;
 
@@ -47,16 +43,10 @@ const LayerImpl = Effect.gen(function* () {
   /**
    * List agent sessions for a given session.
    */
-  const listAgentSessions = (params: {
-    projectId: string;
-    sessionId: string;
-  }) =>
+  const listAgentSessions = (params: { projectId: string; sessionId: string }) =>
     Effect.gen(function* () {
       const { projectId, sessionId } = params;
-      const agentSessions = yield* repository.listAgentSessionsForSession(
-        projectId,
-        sessionId,
-      );
+      const agentSessions = yield* repository.listAgentSessionsForSession(projectId, sessionId);
 
       return {
         status: 200,
@@ -74,8 +64,9 @@ const LayerImpl = Effect.gen(function* () {
 
 export type IAgentSessionController = InferEffect<typeof LayerImpl>;
 
-export class AgentSessionController extends Context.Tag(
-  "AgentSessionController",
-)<AgentSessionController, IAgentSessionController>() {
+export class AgentSessionController extends Context.Tag("AgentSessionController")<
+  AgentSessionController,
+  IAgentSessionController
+>() {
   static Live = Layer.effect(this, LayerImpl);
 }

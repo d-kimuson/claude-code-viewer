@@ -11,22 +11,17 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { projectListQuery } from "@/lib/api/queries";
 import { cn } from "@/lib/utils";
 
 /** Replace /home/<user> or /Users/<user> prefix with ~/ */
-const shortenHome = (path: string): string =>
-  path.replace(/^\/(?:home|Users)\/[^/]+/, "~");
+const shortenHome = (path: string): string => path.replace(/^\/(?:home|Users)\/[^/]+/, "~");
 
-interface ProjectSwitcherProps {
+type ProjectSwitcherProps = {
   currentProjectId?: string;
   currentProjectPath?: string;
-}
+};
 
 export const ProjectSwitcher: FC<ProjectSwitcherProps> = ({
   currentProjectId,
@@ -47,16 +42,15 @@ export const ProjectSwitcher: FC<ProjectSwitcherProps> = ({
     currentProjectPath ??
     (() => {
       const match = projects.find((p) => p.id === currentProjectId);
-      return match
-        ? (match.meta.projectPath ?? match.claudeProjectPath)
-        : undefined;
+      return match ? (match.meta.projectPath ?? match.claudeProjectPath) : undefined;
     })();
-  const displayPath = resolvedPath ? shortenHome(resolvedPath) : undefined;
+  const displayPath =
+    resolvedPath !== undefined && resolvedPath !== "" ? shortenHome(resolvedPath) : undefined;
 
   const handleSelect = (projectId: string) => {
     setOpen(false);
     if (projectId === currentProjectId) return;
-    navigate({
+    void navigate({
       to: "/projects/$projectId/session",
       params: { projectId },
     });
@@ -67,6 +61,7 @@ export const ProjectSwitcher: FC<ProjectSwitcherProps> = ({
       <PopoverTrigger asChild>
         <button
           type="button"
+          // oxlint-disable-next-line jsx-a11y/role-has-required-aria-props -- shadcn-ui Combobox pattern
           role="combobox"
           aria-expanded={open}
           className="flex items-center gap-1.5 h-7 text-foreground/70 font-medium truncate hover:text-foreground transition-colors rounded px-2 hover:bg-muted/50"
@@ -87,8 +82,7 @@ export const ProjectSwitcher: FC<ProjectSwitcherProps> = ({
             </CommandEmpty>
             <CommandGroup>
               {projects.map((project) => {
-                const path =
-                  project.meta.projectPath ?? project.claudeProjectPath;
+                const path = project.meta.projectPath ?? project.claudeProjectPath;
                 const displayPath = shortenHome(path);
                 const isActive = project.id === currentProjectId;
                 return (
@@ -99,14 +93,9 @@ export const ProjectSwitcher: FC<ProjectSwitcherProps> = ({
                     className="gap-2"
                   >
                     <CheckIcon
-                      className={cn(
-                        "w-3.5 h-3.5 shrink-0",
-                        isActive ? "opacity-100" : "opacity-0",
-                      )}
+                      className={cn("w-3.5 h-3.5 shrink-0", isActive ? "opacity-100" : "opacity-0")}
                     />
-                    <span className="truncate font-mono text-xs">
-                      {displayPath}
-                    </span>
+                    <span className="truncate font-mono text-xs">{displayPath}</span>
                   </CommandItem>
                 );
               })}

@@ -31,8 +31,7 @@ describe("aggregateTokenUsageAndCost", () => {
     });
 
     test("returns zero cost for file with no assistant messages", () => {
-      const content =
-        '{"type":"user","message":{"role":"user","content":"test message"}}';
+      const content = '{"type":"user","message":{"role":"user","content":"test message"}}';
 
       const result = aggregateTokenUsageAndCost([content]);
 
@@ -51,10 +50,7 @@ describe("aggregateTokenUsageAndCost", () => {
       const agentFileContent =
         '{"type":"assistant","uuid":"a1111111-1111-4111-a111-111111111111","timestamp":"2024-01-01T00:00:02.000Z","isSidechain":true,"userType":"external","cwd":"/test","sessionId":"test-session","version":"1.0.0","parentUuid":"550e8400-e29b-41d4-a716-446655440001","message":{"type":"message","role":"assistant","model":"claude-3-5-sonnet-20240620","content":[],"usage":{"input_tokens":300,"output_tokens":150,"cache_creation_input_tokens":50,"cache_read_input_tokens":25},"stop_reason":null,"stop_sequence":null,"id":"msg_02"}}';
 
-      const result = aggregateTokenUsageAndCost([
-        mainFileContent,
-        agentFileContent,
-      ]);
+      const result = aggregateTokenUsageAndCost([mainFileContent, agentFileContent]);
 
       // Main file: input=1000, output=500, cache_creation=100, cache_read=50
       // Agent file: input=300, output=150, cache_creation=50, cache_read=25
@@ -76,11 +72,7 @@ describe("aggregateTokenUsageAndCost", () => {
       const agent2Content =
         '{"type":"assistant","uuid":"a2222222-2222-4222-a222-222222222222","timestamp":"2024-01-01T00:00:03.000Z","isSidechain":true,"userType":"external","cwd":"/test","sessionId":"test-session","version":"1.0.0","parentUuid":"a1111111-1111-4111-a111-111111111111","message":{"type":"message","role":"assistant","model":"claude-3-5-sonnet-20240620","content":[],"usage":{"input_tokens":300,"output_tokens":150,"cache_creation_input_tokens":50,"cache_read_input_tokens":25},"stop_reason":null,"stop_sequence":null,"id":"msg_03"}}';
 
-      const result = aggregateTokenUsageAndCost([
-        mainFileContent,
-        agent1Content,
-        agent2Content,
-      ]);
+      const result = aggregateTokenUsageAndCost([mainFileContent, agent1Content, agent2Content]);
 
       // Main: input=1000, output=500
       // Agent1: input=200, output=100
@@ -99,10 +91,7 @@ describe("aggregateTokenUsageAndCost", () => {
       const opusFileContent =
         '{"type":"assistant","uuid":"a1111111-1111-4111-a111-111111111111","timestamp":"2024-01-01T00:00:02.000Z","isSidechain":true,"userType":"external","cwd":"/test","sessionId":"test-session","version":"1.0.0","parentUuid":"550e8400-e29b-41d4-a716-446655440001","message":{"type":"message","role":"assistant","model":"claude-3-opus-20240229","content":[],"usage":{"input_tokens":1000000,"output_tokens":1000000,"cache_creation_input_tokens":0,"cache_read_input_tokens":0},"stop_reason":null,"stop_sequence":null,"id":"msg_02"}}';
 
-      const result = aggregateTokenUsageAndCost([
-        haikuFileContent,
-        opusFileContent,
-      ]);
+      const result = aggregateTokenUsageAndCost([haikuFileContent, opusFileContent]);
 
       // Verify aggregated token counts
       expect(result.totalUsage.input_tokens).toBe(2000000);
@@ -131,10 +120,7 @@ describe("aggregateTokenUsageAndCost", () => {
 
       const emptyFileContent = "";
 
-      const result = aggregateTokenUsageAndCost([
-        mainFileContent,
-        emptyFileContent,
-      ]);
+      const result = aggregateTokenUsageAndCost([mainFileContent, emptyFileContent]);
 
       // Should only count tokens from the main file
       expect(result.totalUsage.input_tokens).toBe(1000);
@@ -161,15 +147,10 @@ describe("aggregateTokenUsageAndCost", () => {
     });
 
     test("handles files with only user messages", () => {
-      const userOnlyContent1 =
-        '{"type":"user","message":{"role":"user","content":"test 1"}}';
-      const userOnlyContent2 =
-        '{"type":"user","message":{"role":"user","content":"test 2"}}';
+      const userOnlyContent1 = '{"type":"user","message":{"role":"user","content":"test 1"}}';
+      const userOnlyContent2 = '{"type":"user","message":{"role":"user","content":"test 2"}}';
 
-      const result = aggregateTokenUsageAndCost([
-        userOnlyContent1,
-        userOnlyContent2,
-      ]);
+      const result = aggregateTokenUsageAndCost([userOnlyContent1, userOnlyContent2]);
 
       expect(result.totalUsage.input_tokens).toBe(0);
       expect(result.totalUsage.output_tokens).toBe(0);

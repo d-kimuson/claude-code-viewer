@@ -9,14 +9,7 @@ import {
   SendIcon,
   XIcon,
 } from "lucide-react";
-import {
-  type FC,
-  useCallback,
-  useEffect,
-  useId,
-  useRef,
-  useState,
-} from "react";
+import { type FC, useCallback, useEffect, useId, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "../../../../../components/ui/button";
 import { Input } from "../../../../../components/ui/input";
@@ -29,11 +22,7 @@ import {
   SelectValue,
 } from "../../../../../components/ui/select";
 import { Textarea } from "../../../../../components/ui/textarea";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "../../../../../components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../../../../../components/ui/tooltip";
 import { useCreateSchedulerJob } from "../../../../../hooks/useScheduler";
 import { useSpeechRecognition } from "../../../../../hooks/useSpeechRecognition";
 import { useChatInputDraft } from "../../../../../lib/atoms/chatInputDrafts";
@@ -50,14 +39,14 @@ import type { FileCompletionRef } from "./FileCompletion";
 import { extractClipboardImageFiles, processFile } from "./fileUtils";
 import { InlineCompletion } from "./InlineCompletion";
 
-export interface MessageInput {
+export type MessageInput = {
   text: string;
   images?: ImageBlockParam[];
   documents?: DocumentBlockParam[];
   ccOptions?: CCOptionsSchema;
-}
+};
 
-export interface ChatInputProps {
+export type ChatInputProps = {
   projectId: string;
   onSubmit: (input: MessageInput) => Promise<void>;
   isPending: boolean;
@@ -75,7 +64,7 @@ export interface ChatInputProps {
   enableCCOptions?: boolean;
   ccOptions?: CCOptionsSchema;
   onCCOptionsChange?: (value: CCOptionsSchema | undefined) => void;
-}
+};
 
 export const ChatInput: FC<ChatInputProps> = ({
   projectId,
@@ -100,7 +89,7 @@ export const ChatInput: FC<ChatInputProps> = ({
   const parseMinHeight = (value: string): number => {
     // Try to extract pixel value using regex (handles both formats)
     const match = value.match(/(\d+)px/);
-    if (match?.[1]) {
+    if (match?.[1] !== undefined) {
       const parsed = parseInt(match[1], 10);
       if (!Number.isNaN(parsed)) {
         return parsed;
@@ -116,16 +105,12 @@ export const ChatInput: FC<ChatInputProps> = ({
     projectId,
     sessionId: draftSessionId,
   });
-  const [attachedFiles, setAttachedFiles] = useState<
-    Array<{ file: File; id: string }>
-  >([]);
+  const [attachedFiles, setAttachedFiles] = useState<Array<{ file: File; id: string }>>([]);
   const [cursorPosition, setCursorPosition] = useState<{
     relative: { top: number; left: number };
     absolute: { top: number; left: number };
   }>({ relative: { top: 0, left: 0 }, absolute: { top: 0, left: 0 } });
-  const [sendMode, setSendMode] = useState<"immediate" | "scheduled">(
-    "immediate",
-  );
+  const [sendMode, setSendMode] = useState<"immediate" | "scheduled">("immediate");
   const [scheduledTime, setScheduledTime] = useState(() => {
     const now = new Date();
     now.setHours(now.getHours() + 1);
@@ -226,9 +211,7 @@ export const ChatInput: FC<ChatInputProps> = ({
 
     if (enableScheduledSend && sendMode === "scheduled") {
       // Create a scheduler job for scheduled send
-      const match = scheduledTime.match(
-        /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/,
-      );
+      const match = scheduledTime.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/);
       if (!match) {
         throw new Error("Invalid datetime format");
       }
@@ -249,9 +232,10 @@ export const ChatInput: FC<ChatInputProps> = ({
           message: {
             content: message,
             projectId,
-            baseSession: baseSessionId
-              ? { type: "resume", sessionId: baseSessionId }
-              : null,
+            baseSession:
+              baseSessionId !== null && baseSessionId !== ""
+                ? { type: "resume", sessionId: baseSessionId }
+                : null,
           },
           enabled: true,
         });
@@ -322,11 +306,11 @@ export const ChatInput: FC<ChatInputProps> = ({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (fileCompletionRef.current?.handleKeyDown(e)) {
+    if (fileCompletionRef.current?.handleKeyDown(e) === true) {
       return;
     }
 
-    if (commandCompletionRef.current?.handleKeyDown(e)) {
+    if (commandCompletionRef.current?.handleKeyDown(e) === true) {
       return;
     }
 
@@ -337,23 +321,15 @@ export const ChatInput: FC<ChatInputProps> = ({
       if (enterKeyBehavior === "enter-send" && !e.shiftKey && !e.metaKey) {
         // Enter: Send mode
         e.preventDefault();
-        handleSubmit();
-      } else if (
-        enterKeyBehavior === "shift-enter-send" &&
-        e.shiftKey &&
-        !e.metaKey
-      ) {
+        void handleSubmit();
+      } else if (enterKeyBehavior === "shift-enter-send" && e.shiftKey && !e.metaKey) {
         // Shift+Enter: Send mode (default)
         e.preventDefault();
-        handleSubmit();
-      } else if (
-        enterKeyBehavior === "command-enter-send" &&
-        e.metaKey &&
-        !e.shiftKey
-      ) {
+        void handleSubmit();
+      } else if (enterKeyBehavior === "command-enter-send" && e.metaKey && !e.shiftKey) {
         // Command+Enter: Send mode (Mac)
         e.preventDefault();
-        handleSubmit();
+        void handleSubmit();
       }
     }
   };
@@ -450,10 +426,7 @@ export const ChatInput: FC<ChatInputProps> = ({
               ref={textareaRef}
               value={message}
               onChange={(e) => {
-                if (
-                  e.target.value.endsWith("@") ||
-                  e.target.value.endsWith("/")
-                ) {
+                if (e.target.value.endsWith("@") || e.target.value.endsWith("/")) {
                   const position = getCursorPosition();
                   if (position) {
                     setCursorPosition(position);
@@ -473,9 +446,6 @@ export const ChatInput: FC<ChatInputProps> = ({
               aria-label={i18n._("Message input with completion support")}
               aria-describedby={helpId}
               aria-expanded={isInCompletionContext(message)}
-              aria-haspopup="listbox"
-              role="combobox"
-              aria-autocomplete="list"
             />
           </div>
 
@@ -486,9 +456,7 @@ export const ChatInput: FC<ChatInputProps> = ({
                   key={id}
                   className="flex items-center gap-2 px-3 py-1.5 bg-background border border-border/50 shadow-sm rounded-lg text-sm text-foreground/80 hover:text-foreground hover:border-foreground/20 transition-all duration-200"
                 >
-                  <span className="truncate max-w-[200px] font-medium">
-                    {file.name}
-                  </span>
+                  <span className="truncate max-w-[200px] font-medium">{file.name}</span>
                   <button
                     type="button"
                     onClick={() => handleRemoveFile(id)}
@@ -510,9 +478,7 @@ export const ChatInput: FC<ChatInputProps> = ({
                 </Label>
                 <Select
                   value={sendMode}
-                  onValueChange={(value: "immediate" | "scheduled") =>
-                    setSendMode(value)
-                  }
+                  onValueChange={(value: "immediate" | "scheduled") => setSendMode(value)}
                   disabled={isPending || disabled}
                 >
                   <SelectTrigger
@@ -593,22 +559,17 @@ export const ChatInput: FC<ChatInputProps> = ({
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                              {(config?.modelChoices ?? ["default"]).map(
-                                (choice) => (
-                                  <SelectItem key={choice} value={choice}>
-                                    {choice}
-                                  </SelectItem>
-                                ),
-                              )}
+                              {(config?.modelChoices ?? ["default"]).map((choice) => (
+                                <SelectItem key={choice} value={choice}>
+                                  {choice}
+                                </SelectItem>
+                              ))}
                             </SelectContent>
                           </Select>
                         </span>
                       </TooltipTrigger>
                       <TooltipContent>
-                        <Trans
-                          id="chat.toolbar.model.tooltip"
-                          message="Select model"
-                        />
+                        <Trans id="chat.toolbar.model.tooltip" message="Select model" />
                       </TooltipContent>
                     </Tooltip>
 
@@ -618,9 +579,7 @@ export const ChatInput: FC<ChatInputProps> = ({
                         <span>
                           <Select
                             value={ccOptions?.effort ?? "auto"}
-                            onValueChange={(
-                              value: "auto" | "low" | "medium" | "high" | "max",
-                            ) =>
+                            onValueChange={(value: "auto" | "low" | "medium" | "high" | "max") =>
                               onCCOptionsChange?.({
                                 ...ccOptions,
                                 effort: value === "auto" ? undefined : value,
@@ -642,10 +601,7 @@ export const ChatInput: FC<ChatInputProps> = ({
                         </span>
                       </TooltipTrigger>
                       <TooltipContent>
-                        <Trans
-                          id="chat.toolbar.effort.tooltip"
-                          message="Select reasoning effort"
-                        />
+                        <Trans id="chat.toolbar.effort.tooltip" message="Select reasoning effort" />
                       </TooltipContent>
                     </Tooltip>
                   </>
@@ -670,17 +626,12 @@ export const ChatInput: FC<ChatInputProps> = ({
               <div className="flex items-center gap-1 sm:gap-2">
                 {enableScheduledSend && sendMode === "immediate" && (
                   <div className="hidden sm:flex items-center gap-2">
-                    <Label
-                      htmlFor="send-mode-desktop"
-                      className="text-xs sr-only"
-                    >
+                    <Label htmlFor="send-mode-desktop" className="text-xs sr-only">
                       <Trans id="chat.send_mode.label" />
                     </Label>
                     <Select
                       value={sendMode}
-                      onValueChange={(value: "immediate" | "scheduled") =>
-                        setSendMode(value)
-                      }
+                      onValueChange={(value: "immediate" | "scheduled") => setSendMode(value)}
                       disabled={isPending || disabled}
                     >
                       <SelectTrigger
@@ -745,9 +696,7 @@ export const ChatInput: FC<ChatInputProps> = ({
                           onClick={toggleSpeechRecognition}
                           disabled={isPending || disabled}
                           className={`px-1.5 hover:bg-background/80 hover:text-foreground transition-all duration-200 h-7 rounded-lg ${
-                            isListening
-                              ? "text-red-500"
-                              : "text-muted-foreground"
+                            isListening ? "text-red-500" : "text-muted-foreground"
                           }`}
                         >
                           {isListening ? (
@@ -764,7 +713,9 @@ export const ChatInput: FC<ChatInputProps> = ({
                   </div>
                 )}
                 <Button
-                  onClick={handleSubmit}
+                  onClick={() => {
+                    void handleSubmit();
+                  }}
                   disabled={
                     (!message.trim() && attachedFiles.length === 0) ||
                     isPending ||
@@ -784,9 +735,7 @@ export const ChatInput: FC<ChatInputProps> = ({
                   ) : (
                     <>
                       <SendIcon className="w-4 h-4" />
-                      <span className="hidden sm:inline font-medium">
-                        {buttonText}
-                      </span>
+                      <span className="hidden sm:inline font-medium">{buttonText}</span>
                     </>
                   )}
                 </Button>

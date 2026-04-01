@@ -6,22 +6,16 @@ import { Effect, Layer } from "effect";
 import { DrizzleService } from "../../../lib/db/DrizzleService";
 import * as schema from "../../../lib/db/schema";
 import { projects } from "../../../lib/db/schema";
-import {
-  type ISyncService,
-  SyncService,
-} from "../../sync/services/SyncService";
+import { type ISyncService, SyncService } from "../../sync/services/SyncService";
 import { ProjectMetaService } from "../services/ProjectMetaService";
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 
-const migrationsFolder = new URL("../../../lib/db/migrations", import.meta.url)
-  .pathname;
+const migrationsFolder = new URL("../../../lib/db/migrations", import.meta.url).pathname;
 
-const makeSyncServiceMock = (
-  overrides?: Partial<ISyncService>,
-): Layer.Layer<SyncService> =>
+const makeSyncServiceMock = (overrides?: Partial<ISyncService>): Layer.Layer<SyncService> =>
   Layer.succeed(SyncService, {
     fullSync: () => Effect.void,
     syncSession: () => Effect.void,

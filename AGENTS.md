@@ -3,15 +3,18 @@
 ## Critical Rules (Read First)
 
 **Language**:
+
 - Code, comments, and commit messages should be in English
 
 **NEVER**:
+
 - Use `as` type casting in ANY context including test code (explain the problem to the user instead)
 - Use raw `fetch` or bypass TanStack Query for API calls
 - Run `pnpm dev` or `pnpm start` (dev servers)
 - Use `node:fs`, `node:path`, etc. directly (use Effect-TS equivalents)
 
 **ALWAYS**:
+
 - Use Effect-TS for all backend side effects
 - Use Hono RPC + TanStack Query for all API calls
 - Follow TDD: write tests first, then implement
@@ -22,6 +25,7 @@
 Conventional Commits format: `type: description`
 
 **Release Note Awareness**:
+
 - Commit messages are included in release notes; write for users.
 
 **Type Selection**:
@@ -34,6 +38,7 @@ Conventional Commits format: `type: description`
 **Critical**: Use `fix` only for user-facing bugs. Internal fixes (linter errors, type errors, build scripts) must use `chore`.
 
 **Message Quality Examples**:
+
 - Bad: `fix: fix lingui error` (internal issue)
 - Bad: `feat: add button` (too vague)
 - Good: `feat: add dark mode toggle to settings`
@@ -45,6 +50,7 @@ Conventional Commits format: `type: description`
 Claude Code Viewer reads Claude Code session logs directly from JSONL files (`~/.claude/projects/`) with zero data loss. It's a web-based client built as a CLI tool serving a Vite application.
 
 **Core Architecture**:
+
 - Frontend: Vite + TanStack Router + React 19 + TanStack Query
 - Backend: Hono (standalone server) + Effect-TS (all business logic)
 - Data: Direct JSONL reads with strict Zod validation
@@ -86,32 +92,34 @@ pnpm gatecheck check
 ### Backend: Effect-TS
 
 **Prioritize Pure Functions**:
+
 - Extract logic into pure, testable functions whenever possible
 - Pure functions are easier to test, reason about, and maintain
 - Only use Effect-TS when side effects or state management is required
 
 **Use Effect-TS for Side Effects and State**:
+
 - Mandatory for I/O operations, async code, and stateful logic
 - Avoid class-based implementations or mutable variables for state
 - Use Effect-TS's functional patterns for state management
 - Reference: https://effect.website/llms.txt
 
 **Testing with Layers**:
+
 ```typescript
-import { expect, test } from "vitest"
-import { Effect } from "effect"
-import { testPlatformLayer } from "@/testing/layers"
-import { yourEffect } from "./your-module"
+import { expect, test } from "vitest";
+import { Effect } from "effect";
+import { testPlatformLayer } from "@/testing/layers";
+import { yourEffect } from "./your-module";
 
 test("example", async () => {
-  const result = await Effect.runPromise(
-    yourEffect.pipe(Effect.provide(testPlatformLayer))
-  )
-  expect(result).toBe(expectedValue)
-})
+  const result = await Effect.runPromise(yourEffect.pipe(Effect.provide(testPlatformLayer)));
+  expect(result).toBe(expectedValue);
+});
 ```
 
 **Avoid Node.js Built-ins**:
+
 - Use `FileSystem.FileSystem` instead of `node:fs`
 - Use `Path.Path` instead of `node:path`
 - Use `Command.string` instead of `child_process`
@@ -119,6 +127,7 @@ test("example", async () => {
 This enables dependency injection and proper testing.
 
 **Type Safety - NO `as` Casting**:
+
 - `as` casting is **strictly prohibited**
 - If types seem unsolvable without `as`, explain the problem to the user and ask for guidance
 - Valid alternatives: type guards, assertion functions, Zod schema validation
@@ -126,21 +135,22 @@ This enables dependency injection and proper testing.
 ### Frontend: API Access
 
 **Hono RPC + TanStack Query Only**:
+
 ```typescript
-import { api } from "@/lib/api"
-import { useQuery } from "@tanstack/react-query"
+import { api } from "@/lib/api";
+import { useQuery } from "@tanstack/react-query";
 
 const { data } = useQuery({
   queryKey: ["example"],
-  queryFn: () => api.endpoint.$get().then(res => res.json())
-})
+  queryFn: () => api.endpoint.$get().then((res) => res.json()),
+});
 ```
 
 Raw `fetch` and direct requests are prohibited.
 
 ### Tech Standards
 
-- **Linter/Formatter**: Biome (not ESLint/Prettier)
+- **Linter/Formatter**: oxlint + oxfmt (not ESLint/Prettier/Biome)
 - **Type Config**: `@tsconfig/strictest`
 - **Path Alias**: `@/*` maps to `./src/*`
 
@@ -149,11 +159,13 @@ Raw `fetch` and direct requests are prohibited.
 ### SSE (Server-Sent Events)
 
 **When to Use SSE**:
+
 - Delivering session log updates to frontend
 - Notifying clients of background process state changes
 - **Never** for request-response patterns (use Hono RPC instead)
 
 **Implementation**:
+
 - Server: `/api/sse` endpoint with type-safe events (`TypeSafeSSE`)
 - Client: `useServerEventListener` hook for subscriptions
 

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef } from "react";
 
 type SwipeDirection = "left" | "right";
 
-interface UseSwipeGestureOptions {
+type UseSwipeGestureOptions = {
   onSwipe: (direction: SwipeDirection) => void;
   /** Minimum horizontal pixels to trigger a swipe (default: 50) */
   threshold?: number;
@@ -12,9 +12,9 @@ interface UseSwipeGestureOptions {
   edgeWidth?: number;
   /** Whether gesture detection is enabled (default: true) */
   enabled?: boolean;
-}
+};
 
-export interface SwipeDetectParams {
+export type SwipeDetectParams = {
   startX: number;
   startY: number;
   endX: number;
@@ -22,7 +22,7 @@ export interface SwipeDetectParams {
   threshold: number;
   maxVerticalRatio: number;
   edgeWidth: number | undefined;
-}
+};
 
 /**
  * Pure function to detect swipe direction from touch coordinates.
@@ -63,9 +63,7 @@ export const detectSwipe = ({
 };
 
 /** Extract first touch coordinates from a TouchEvent */
-const getFirstTouch = (
-  e: TouchEvent,
-): { clientX: number; clientY: number } | undefined => {
+const getFirstTouch = (e: TouchEvent): { clientX: number; clientY: number } | undefined => {
   const touch = e.changedTouches[0];
   if (!touch) return undefined;
   return { clientX: touch.clientX, clientY: touch.clientY };

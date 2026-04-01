@@ -1,4 +1,3 @@
-import type { SDKResultMessage } from "@anthropic-ai/claude-agent-sdk";
 import { Context, Data, Effect, Layer, Ref } from "effect";
 import type { InferEffect } from "../../../lib/effect/types";
 import { EventBus } from "../../events/services/EventBus";
@@ -6,29 +5,21 @@ import * as CCSessionProcess from "../models/CCSessionProcess";
 import type * as CCTurn from "../models/ClaudeCodeTurn";
 import type { InitMessageContext } from "../types";
 
-class SessionProcessNotFoundError extends Data.TaggedError(
-  "SessionProcessNotFoundError",
-)<{
+class SessionProcessNotFoundError extends Data.TaggedError("SessionProcessNotFoundError")<{
   sessionProcessId: string;
 }> {}
 
-class SessionProcessNotPausedError extends Data.TaggedError(
-  "SessionProcessNotPausedError",
-)<{
+class SessionProcessNotPausedError extends Data.TaggedError("SessionProcessNotPausedError")<{
   sessionProcessId: string;
 }> {}
 
-class SessionProcessAlreadyAliveError extends Data.TaggedError(
-  "SessionProcessAlreadyAliveError",
-)<{
+class SessionProcessAlreadyAliveError extends Data.TaggedError("SessionProcessAlreadyAliveError")<{
   sessionProcessId: string;
   aliveTaskId: string;
   aliveTaskSessionId?: string;
 }> {}
 
-class IllegalStateChangeError extends Data.TaggedError(
-  "IllegalStateChangeError",
-)<{
+class IllegalStateChangeError extends Data.TaggedError("IllegalStateChangeError")<{
   from: CCSessionProcess.CCSessionProcessState["type"];
   to: CCSessionProcess.CCSessionProcessState["type"];
 }> {}
@@ -38,27 +29,18 @@ class TaskNotFoundError extends Data.TaggedError("TaskNotFoundError")<{
 }> {}
 
 const LayerImpl = Effect.gen(function* () {
-  const processesRef = yield* Ref.make<
-    CCSessionProcess.CCSessionProcessState[]
-  >([]);
+  const processesRef = yield* Ref.make<CCSessionProcess.CCSessionProcessState[]>([]);
   const eventBus = yield* EventBus;
 
-  const emitSessionProcessChanged = (
-    changed: CCSessionProcess.CCSessionProcessState,
-  ) =>
+  const emitSessionProcessChanged = (changed: CCSessionProcess.CCSessionProcessState) =>
     Effect.gen(function* () {
       const processes = yield* Ref.get(processesRef);
-      const publicProcesses = processes
-        .filter(CCSessionProcess.isPublic)
-        .map((process) => ({
-          id: process.def.sessionProcessId,
-          projectId: process.def.projectId,
-          sessionId: process.sessionId,
-          status:
-            process.type === "paused"
-              ? ("paused" as const)
-              : ("running" as const),
-        }));
+      const publicProcesses = processes.filter(CCSessionProcess.isPublic).map((process) => ({
+        id: process.def.sessionProcessId,
+        projectId: process.def.projectId,
+        sessionId: process.sessionId,
+        status: process.type === "paused" ? ("paused" as const) : ("running" as const),
+      }));
 
       yield* eventBus.emit("sessionProcessChanged", {
         processes: publicProcesses,
@@ -87,10 +69,7 @@ const LayerImpl = Effect.gen(function* () {
         rawUserMessage: "", // Will be set when message is resolved
       };
 
-      yield* Ref.update(processesRef, (processes) => [
-        ...processes,
-        newProcess,
-      ]);
+      yield* Ref.update(processesRef, (processes) => [...processes, newProcess]);
 
       yield* emitSessionProcessChanged(newProcess);
 
@@ -144,9 +123,7 @@ const LayerImpl = Effect.gen(function* () {
       };
 
       yield* Ref.update(processesRef, (processes) => {
-        return processes.map((p) =>
-          p.def.sessionProcessId === sessionProcessId ? newProcess : p,
-        );
+        return processes.map((p) => (p.def.sessionProcessId === sessionProcessId ? newProcess : p));
       });
 
       yield* emitSessionProcessChanged(newProcess);
@@ -161,13 +138,9 @@ const LayerImpl = Effect.gen(function* () {
   const getSessionProcess = (sessionProcessId: string) => {
     return Effect.gen(function* () {
       const processes = yield* Ref.get(processesRef);
-      const result = processes.find(
-        (p) => p.def.sessionProcessId === sessionProcessId,
-      );
+      const result = processes.find((p) => p.def.sessionProcessId === sessionProcessId);
       if (result === undefined) {
-        return yield* Effect.fail(
-          new SessionProcessNotFoundError({ sessionProcessId }),
-        );
+        return yield* Effect.fail(new SessionProcessNotFoundError({ sessionProcessId }));
       }
       return result;
     });
@@ -217,9 +190,7 @@ const LayerImpl = Effect.gen(function* () {
 
     return Effect.gen(function* () {
       const processes = yield* Ref.get(processesRef);
-      const targetProcess = processes.find(
-        (p) => p.def.sessionProcessId === sessionProcessId,
-      );
+      const targetProcess = processes.find((p) => p.def.sessionProcessId === sessionProcessId);
       const currentStatus = targetProcess?.type;
 
       const updatedProcesses = processes.map((p) =>
@@ -230,14 +201,12 @@ const LayerImpl = Effect.gen(function* () {
 
       if (currentStatus !== nextState.type) {
         yield* eventBus.emit("sessionProcessChanged", {
-          processes: updatedProcesses
-            .filter(CCSessionProcess.isPublic)
-            .map((process) => ({
-              id: process.def.sessionProcessId,
-              projectId: process.def.projectId,
-              sessionId: process.sessionId,
-              status: process.type === "paused" ? "paused" : "running",
-            })),
+          processes: updatedProcesses.filter(CCSessionProcess.isPublic).map((process) => ({
+            id: process.def.sessionProcessId,
+            projectId: process.def.projectId,
+            sessionId: process.sessionId,
+            status: process.type === "paused" ? "paused" : "running",
+          })),
           changed: nextState,
         });
       }
@@ -265,9 +234,7 @@ const LayerImpl = Effect.gen(function* () {
           p.def.sessionProcessId === sessionProcessId
             ? {
                 ...p,
-                tasks: p.tasks.map((t) =>
-                  t.def.turnId === task.def.turnId ? { ...nextTask } : t,
-                ),
+                tasks: p.tasks.map((t) => (t.def.turnId === task.def.turnId ? { ...nextTask } : t)),
               }
             : p,
         );
@@ -278,14 +245,12 @@ const LayerImpl = Effect.gen(function* () {
         throw new Error("Unreachable: updatedProcess is undefined");
       }
 
+      // oxlint-disable-next-line typescript-eslint/no-unsafe-type-assertion -- generic task type is narrowed by caller
       return updated.task as T;
     });
   };
 
-  const updateRawUserMessage = (options: {
-    sessionProcessId: string;
-    rawUserMessage: string;
-  }) => {
+  const updateRawUserMessage = (options: { sessionProcessId: string; rawUserMessage: string }) => {
     const { sessionProcessId, rawUserMessage } = options;
 
     return Effect.gen(function* () {
@@ -386,16 +351,15 @@ const LayerImpl = Effect.gen(function* () {
 
   const toPausedState = (options: {
     sessionProcessId: string;
-    resultMessage: SDKResultMessage;
+    resultMessage: {
+      session_id: string;
+    };
   }) => {
     const { sessionProcessId, resultMessage } = options;
 
     return Effect.gen(function* () {
       const currentProcess = yield* getSessionProcess(sessionProcessId);
-      if (
-        currentProcess.type !== "file_created" &&
-        currentProcess.type !== "initialized"
-      ) {
+      if (currentProcess.type !== "file_created" && currentProcess.type !== "initialized") {
         return yield* Effect.fail(
           new IllegalStateChangeError({
             from: currentProcess.type,
@@ -432,10 +396,7 @@ const LayerImpl = Effect.gen(function* () {
     });
   };
 
-  const toCompletedState = (options: {
-    sessionProcessId: string;
-    error?: unknown;
-  }) => {
+  const toCompletedState = (options: { sessionProcessId: string; error?: unknown }) => {
     const { sessionProcessId, error } = options;
 
     return Effect.gen(function* () {
@@ -478,9 +439,7 @@ const LayerImpl = Effect.gen(function* () {
           def: currentProcess.def,
           tasks:
             newTask !== undefined
-              ? currentProcess.tasks.map((t) =>
-                  t.def.turnId === newTask.def.turnId ? newTask : t,
-                )
+              ? currentProcess.tasks.map((t) => (t.def.turnId === newTask.def.turnId ? newTask : t))
               : currentProcess.tasks,
           sessionId: currentProcess.sessionId,
         },
@@ -514,8 +473,9 @@ const LayerImpl = Effect.gen(function* () {
 
 export type IClaudeCodeSessionProcessService = InferEffect<typeof LayerImpl>;
 
-export class ClaudeCodeSessionProcessService extends Context.Tag(
-  "ClaudeCodeSessionProcessService",
-)<ClaudeCodeSessionProcessService, IClaudeCodeSessionProcessService>() {
+export class ClaudeCodeSessionProcessService extends Context.Tag("ClaudeCodeSessionProcessService")<
+  ClaudeCodeSessionProcessService,
+  IClaudeCodeSessionProcessService
+>() {
   static Live = Layer.effect(this, LayerImpl);
 }

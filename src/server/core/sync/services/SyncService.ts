@@ -1,6 +1,7 @@
 import { FileSystem, Path } from "@effect/platform";
 import { count, eq } from "drizzle-orm";
 import { Context, Effect, Layer, Option } from "effect";
+import { z } from "zod";
 import { DrizzleService } from "../../../lib/db/DrizzleService";
 import { projects, sessions } from "../../../lib/db/schema";
 import { parseJsonl } from "../../claude-code/functions/parseJsonl";
@@ -17,14 +18,11 @@ import { extractFirstUserMessage } from "../../session/functions/isValidFirstMes
 // SyncService interface
 // ---------------------------------------------------------------------------
 
-export interface ISyncService {
+export type ISyncService = {
   readonly fullSync: () => Effect.Effect<void, Error>;
-  readonly syncSession: (
-    projectId: string,
-    sessionId: string,
-  ) => Effect.Effect<void, Error>;
+  readonly syncSession: (projectId: string, sessionId: string) => Effect.Effect<void, Error>;
   readonly syncProjectList: (projectId: string) => Effect.Effect<void, Error>;
-}
+};
 
 // ---------------------------------------------------------------------------
 // Helper: extract actualSessionId from the first line of a JSONL file
@@ -32,18 +30,14 @@ export interface ISyncService {
 
 const extractActualSessionId = (content: string): string | undefined => {
   const firstLine = content.split("\n")[0];
-  if (!firstLine || firstLine.trim() === "") {
+  if (firstLine === undefined || firstLine.trim() === "") {
     return undefined;
   }
   try {
-    const parsed = JSON.parse(firstLine);
-    if (
-      typeof parsed === "object" &&
-      parsed !== null &&
-      "sessionId" in parsed &&
-      typeof parsed.sessionId === "string"
-    ) {
-      return parsed.sessionId;
+    const parsed: unknown = JSON.parse(firstLine);
+    const result = z.object({ sessionId: z.string() }).safeParse(parsed);
+    if (result.success) {
+      return result.data.sessionId;
     }
   } catch {
     // ignore parse errors
@@ -112,21 +106,14 @@ const LayerImpl = Effect.gen(function* () {
 
       if (indexContent !== "") {
         try {
-          const parsed = JSON.parse(indexContent);
-          if (
-            typeof parsed === "object" &&
-            parsed !== null &&
-            Array.isArray(parsed.entries)
-          ) {
-            for (const entry of parsed.entries) {
-              if (
-                typeof entry === "object" &&
-                entry !== null &&
-                "projectPath" in entry &&
-                typeof entry.projectPath === "string"
-              ) {
-                return entry.projectPath;
-              }
+          const parsed: unknown = JSON.parse(indexContent);
+          const indexSchema = z.object({
+            entries: z.array(z.looseObject({ projectPath: z.string() })),
+          });
+          const indexResult = indexSchema.safeParse(parsed);
+          if (indexResult.success) {
+            for (const entry of indexResult.data.entries) {
+              return entry.projectPath;
             }
           }
         } catch {
@@ -138,14 +125,9 @@ const LayerImpl = Effect.gen(function* () {
       const fileEntries: Array<{ fullPath: string; mtimeMs: number }> = [];
       for (const fileName of sessionFileNames) {
         const fullPath = path.join(projectDirPath, fileName);
-        const stat = yield* fs
-          .stat(fullPath)
-          .pipe(Effect.catchAll(() => Effect.succeed(null)));
+        const stat = yield* fs.stat(fullPath).pipe(Effect.catchAll(() => Effect.succeed(null)));
         if (stat) {
-          const mtimeMs = Option.getOrElse(
-            stat.mtime,
-            () => new Date(0),
-          ).getTime();
+          const mtimeMs = Option.getOrElse(stat.mtime, () => new Date(0)).getTime();
           fileEntries.push({ fullPath, mtimeMs });
         }
       }
@@ -182,10 +164,7 @@ const LayerImpl = Effect.gen(function* () {
         .readFileString(filePath)
         .pipe(
           Effect.mapError(
-            (e) =>
-              new Error(
-                `Failed to read session file ${filePath}: ${e.message}`,
-              ),
+            (e) => new Error(`Failed to read session file ${filePath}: ${e.message}`),
           ),
         );
       const conversations = parseJsonl(content);
@@ -229,10 +208,7 @@ const LayerImpl = Effect.gen(function* () {
       // Discover agent session files
       const agentFilePaths =
         actualSessionId !== undefined
-          ? yield* getAgentSessionFilesForSession(
-              projectPath,
-              actualSessionId,
-            ).pipe(
+          ? yield* getAgentSessionFilesForSession(projectPath, actualSessionId).pipe(
               Effect.provide(Layer.succeed(FileSystem.FileSystem, fs)),
               Effect.provide(Layer.succeed(Path.Path, path)),
               Effect.catchAll(() => Effect.succeed([] as string[])),
@@ -251,14 +227,9 @@ const LayerImpl = Effect.gen(function* () {
       }
 
       // Aggregate token usage and cost
-      const { totalCost, modelName } = aggregateTokenUsageAndCost([
-        content,
-        ...agentContents,
-      ]);
+      const { totalCost, modelName } = aggregateTokenUsageAndCost([content, ...agentContents]);
 
-      const messageCount = content
-        .split("\n")
-        .filter((line) => line.trim() !== "").length;
+      const messageCount = content.split("\n").filter((line) => line.trim() !== "").length;
 
       const now = Date.now();
 
@@ -299,9 +270,7 @@ const LayerImpl = Effect.gen(function* () {
             filePath,
             messageCount,
             firstUserMessageJson:
-              firstUserMessage !== null
-                ? JSON.stringify(firstUserMessage)
-                : null,
+              firstUserMessage !== null ? JSON.stringify(firstUserMessage) : null,
             customTitle,
             totalCostUsd: totalCost.totalUsd,
             costBreakdownJson: JSON.stringify(totalCost.breakdown),
@@ -319,9 +288,7 @@ const LayerImpl = Effect.gen(function* () {
               filePath,
               messageCount,
               firstUserMessageJson:
-                firstUserMessage !== null
-                  ? JSON.stringify(firstUserMessage)
-                  : null,
+                firstUserMessage !== null ? JSON.stringify(firstUserMessage) : null,
               customTitle,
               totalCostUsd: totalCost.totalUsd,
               costBreakdownJson: JSON.stringify(totalCost.breakdown),
@@ -336,9 +303,7 @@ const LayerImpl = Effect.gen(function* () {
           .run();
 
         // Delete old FTS entries for this session
-        rawDb
-          .prepare("DELETE FROM session_messages_fts WHERE session_id = ?")
-          .run(sessionId);
+        rawDb.prepare("DELETE FROM session_messages_fts WHERE session_id = ?").run(sessionId);
 
         // Insert new FTS entries
         for (const entry of ftsEntries) {
@@ -369,10 +334,7 @@ const LayerImpl = Effect.gen(function* () {
       .where(eq(sessions.projectId, projectId))
       .get();
     const cnt = result?.cnt ?? 0;
-    db.update(projects)
-      .set({ sessionCount: cnt })
-      .where(eq(projects.id, projectId))
-      .run();
+    db.update(projects).set({ sessionCount: cnt }).where(eq(projects.id, projectId)).run();
   };
 
   // -------------------------------------------------------------------------
@@ -415,10 +377,7 @@ const LayerImpl = Effect.gen(function* () {
         const projectId = encodeProjectId(projectPath);
         seenProjectIds.add(projectId);
 
-        const dirMtimeMs = Option.getOrElse(
-          dirStat.mtime,
-          () => new Date(0),
-        ).getTime();
+        const dirMtimeMs = Option.getOrElse(dirStat.mtime, () => new Date(0)).getTime();
 
         // Get current session file list from filesystem
         const fileNames = yield* fs
@@ -430,10 +389,7 @@ const LayerImpl = Effect.gen(function* () {
         const existingProject = knownProjects.find((p) => p.id === projectId);
         if (!existingProject) {
           // Extract actual project cwd from the earliest session file
-          const projectCwd = yield* extractProjectCwd(
-            projectPath,
-            sessionFiles,
-          );
+          const projectCwd = yield* extractProjectCwd(projectPath, sessionFiles);
 
           db.insert(projects)
             .values({
@@ -466,33 +422,18 @@ const LayerImpl = Effect.gen(function* () {
             .pipe(Effect.catchAll(() => Effect.succeed(null)));
           if (!fileStat) continue;
 
-          const fileMtimeMs = Option.getOrElse(
-            fileStat.mtime,
-            () => new Date(0),
-          ).getTime();
+          const fileMtimeMs = Option.getOrElse(fileStat.mtime, () => new Date(0)).getTime();
 
           // Check if new file or mtime changed
-          const knownSession = knownSessions.find(
-            (s) => s.filePath === filePath,
-          );
+          const knownSession = knownSessions.find((s) => s.filePath === filePath);
           const isNew = !knownSessionPaths.has(filePath);
-          const isModified =
-            knownSession !== undefined &&
-            fileMtimeMs > knownSession.fileMtimeMs;
+          const isModified = knownSession !== undefined && fileMtimeMs > knownSession.fileMtimeMs;
 
           if (isNew || isModified) {
             const sessionId = encodeSessionId(filePath);
-            yield* parseAndUpsertSession(
-              projectId,
-              sessionId,
-              filePath,
-              fileMtimeMs,
-            ).pipe(
+            yield* parseAndUpsertSession(projectId, sessionId, filePath, fileMtimeMs).pipe(
               Effect.catchAll((e) => {
-                console.error(
-                  `[SyncService] Failed to upsert session ${filePath}:`,
-                  e,
-                );
+                console.error(`[SyncService] Failed to upsert session ${filePath}:`, e);
                 return Effect.void;
               }),
             );
@@ -502,9 +443,7 @@ const LayerImpl = Effect.gen(function* () {
         // Delete sessions whose files no longer exist
         for (const knownSession of knownSessions) {
           if (!seenFilePaths.has(knownSession.filePath)) {
-            db.delete(sessions)
-              .where(eq(sessions.filePath, knownSession.filePath))
-              .run();
+            db.delete(sessions).where(eq(sessions.filePath, knownSession.filePath)).run();
             rawDb
               .prepare("DELETE FROM session_messages_fts WHERE session_id = ?")
               .run(knownSession.id);
@@ -523,9 +462,7 @@ const LayerImpl = Effect.gen(function* () {
       // Delete projects that no longer exist on filesystem
       for (const knownProjectId of knownProjectIds) {
         if (!seenProjectIds.has(knownProjectId)) {
-          db.delete(sessions)
-            .where(eq(sessions.projectId, knownProjectId))
-            .run();
+          db.delete(sessions).where(eq(sessions.projectId, knownProjectId)).run();
           rawDb
             .prepare("DELETE FROM session_messages_fts WHERE project_id = ?")
             .run(knownProjectId);
@@ -538,30 +475,20 @@ const LayerImpl = Effect.gen(function* () {
   // syncSession
   // -------------------------------------------------------------------------
 
-  const syncSession = (
-    projectId: string,
-    sessionId: string,
-  ): Effect.Effect<void, Error> =>
+  const syncSession = (projectId: string, sessionId: string): Effect.Effect<void, Error> =>
     Effect.gen(function* () {
       const filePath = decodeSessionId(projectId, sessionId);
 
-      const fileStat = yield* fs
-        .stat(filePath)
-        .pipe(Effect.catchAll(() => Effect.succeed(null)));
+      const fileStat = yield* fs.stat(filePath).pipe(Effect.catchAll(() => Effect.succeed(null)));
       if (!fileStat) {
         // File no longer exists — remove from DB
         db.delete(sessions).where(eq(sessions.id, sessionId)).run();
-        rawDb
-          .prepare("DELETE FROM session_messages_fts WHERE session_id = ?")
-          .run(sessionId);
+        rawDb.prepare("DELETE FROM session_messages_fts WHERE session_id = ?").run(sessionId);
         updateProjectSessionCount(projectId);
         return;
       }
 
-      const fileMtimeMs = Option.getOrElse(
-        fileStat.mtime,
-        () => new Date(0),
-      ).getTime();
+      const fileMtimeMs = Option.getOrElse(fileStat.mtime, () => new Date(0)).getTime();
 
       // Check stored mtime
       const stored = db
@@ -618,23 +545,12 @@ const LayerImpl = Effect.gen(function* () {
             .pipe(Effect.catchAll(() => Effect.succeed(null)));
           if (!fileStat) continue;
 
-          const fileMtimeMs = Option.getOrElse(
-            fileStat.mtime,
-            () => new Date(0),
-          ).getTime();
+          const fileMtimeMs = Option.getOrElse(fileStat.mtime, () => new Date(0)).getTime();
           const sessionId = encodeSessionId(filePath);
 
-          yield* parseAndUpsertSession(
-            projectId,
-            sessionId,
-            filePath,
-            fileMtimeMs,
-          ).pipe(
+          yield* parseAndUpsertSession(projectId, sessionId, filePath, fileMtimeMs).pipe(
             Effect.catchAll((e) => {
-              console.error(
-                `[SyncService] Failed to upsert session ${filePath}:`,
-                e,
-              );
+              console.error(`[SyncService] Failed to upsert session ${filePath}:`, e);
               return Effect.void;
             }),
           );
@@ -644,9 +560,7 @@ const LayerImpl = Effect.gen(function* () {
       // Delete sessions whose files no longer exist
       for (const knownSession of knownSessions) {
         if (!seenFilePaths.has(knownSession.filePath)) {
-          db.delete(sessions)
-            .where(eq(sessions.filePath, knownSession.filePath))
-            .run();
+          db.delete(sessions).where(eq(sessions.filePath, knownSession.filePath)).run();
           rawDb
             .prepare("DELETE FROM session_messages_fts WHERE session_id = ?")
             .run(knownSession.id);
@@ -667,9 +581,6 @@ const LayerImpl = Effect.gen(function* () {
 // SyncService Tag
 // ---------------------------------------------------------------------------
 
-export class SyncService extends Context.Tag("SyncService")<
-  SyncService,
-  ISyncService
->() {
+export class SyncService extends Context.Tag("SyncService")<SyncService, ISyncService>() {
   static readonly Live = Layer.effect(this, LayerImpl);
 }

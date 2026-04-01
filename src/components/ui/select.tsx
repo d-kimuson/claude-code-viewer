@@ -1,32 +1,25 @@
 import * as SelectPrimitive from "@radix-ui/react-select";
 import { Check, ChevronDown, ChevronUp } from "lucide-react";
 import type * as React from "react";
-
 import { cn } from "@/lib/utils";
 
-function Select({
-  ...props
-}: React.ComponentProps<typeof SelectPrimitive.Root>) {
+const Select = ({ ...props }: React.ComponentProps<typeof SelectPrimitive.Root>) => {
   return <SelectPrimitive.Root {...props} />;
-}
+};
 
-function SelectGroup({
-  ...props
-}: React.ComponentProps<typeof SelectPrimitive.Group>) {
+const SelectGroup = ({ ...props }: React.ComponentProps<typeof SelectPrimitive.Group>) => {
   return <SelectPrimitive.Group {...props} />;
-}
+};
 
-function SelectValue({
-  ...props
-}: React.ComponentProps<typeof SelectPrimitive.Value>) {
+const SelectValue = ({ ...props }: React.ComponentProps<typeof SelectPrimitive.Value>) => {
   return <SelectPrimitive.Value {...props} />;
-}
+};
 
-function SelectTrigger({
+const SelectTrigger = ({
   className,
   children,
   ...props
-}: React.ComponentProps<typeof SelectPrimitive.Trigger>) {
+}: React.ComponentProps<typeof SelectPrimitive.Trigger>) => {
   return (
     <SelectPrimitive.Trigger
       className={cn(
@@ -41,48 +34,42 @@ function SelectTrigger({
       </SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>
   );
-}
+};
 
-function SelectScrollUpButton({
+const SelectScrollUpButton = ({
   className,
   ...props
-}: React.ComponentProps<typeof SelectPrimitive.ScrollUpButton>) {
+}: React.ComponentProps<typeof SelectPrimitive.ScrollUpButton>) => {
   return (
     <SelectPrimitive.ScrollUpButton
-      className={cn(
-        "flex cursor-default items-center justify-center py-1",
-        className,
-      )}
+      className={cn("flex cursor-default items-center justify-center py-1", className)}
       {...props}
     >
       <ChevronUp className="h-4 w-4" />
     </SelectPrimitive.ScrollUpButton>
   );
-}
+};
 
-function SelectScrollDownButton({
+const SelectScrollDownButton = ({
   className,
   ...props
-}: React.ComponentProps<typeof SelectPrimitive.ScrollDownButton>) {
+}: React.ComponentProps<typeof SelectPrimitive.ScrollDownButton>) => {
   return (
     <SelectPrimitive.ScrollDownButton
-      className={cn(
-        "flex cursor-default items-center justify-center py-1",
-        className,
-      )}
+      className={cn("flex cursor-default items-center justify-center py-1", className)}
       {...props}
     >
       <ChevronDown className="h-4 w-4" />
     </SelectPrimitive.ScrollDownButton>
   );
-}
+};
 
-function SelectContent({
+const SelectContent = ({
   className,
   children,
   position = "popper",
   ...props
-}: React.ComponentProps<typeof SelectPrimitive.Content>) {
+}: React.ComponentProps<typeof SelectPrimitive.Content>) => {
   return (
     <SelectPrimitive.Portal>
       <SelectPrimitive.Content
@@ -109,25 +96,25 @@ function SelectContent({
       </SelectPrimitive.Content>
     </SelectPrimitive.Portal>
   );
-}
+};
 
-function SelectLabel({
+const SelectLabel = ({
   className,
   ...props
-}: React.ComponentProps<typeof SelectPrimitive.Label>) {
+}: React.ComponentProps<typeof SelectPrimitive.Label>) => {
   return (
     <SelectPrimitive.Label
       className={cn("py-1.5 pl-8 pr-2 text-sm font-semibold", className)}
       {...props}
     />
   );
-}
+};
 
-function SelectItem({
+const SelectItem = ({
   className,
   children,
   ...props
-}: React.ComponentProps<typeof SelectPrimitive.Item>) {
+}: React.ComponentProps<typeof SelectPrimitive.Item>) => {
   return (
     <SelectPrimitive.Item
       className={cn(
@@ -145,19 +132,16 @@ function SelectItem({
       <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
     </SelectPrimitive.Item>
   );
-}
+};
 
-function SelectSeparator({
+const SelectSeparator = ({
   className,
   ...props
-}: React.ComponentProps<typeof SelectPrimitive.Separator>) {
+}: React.ComponentProps<typeof SelectPrimitive.Separator>) => {
   return (
-    <SelectPrimitive.Separator
-      className={cn("-mx-1 my-1 h-px bg-muted", className)}
-      {...props}
-    />
+    <SelectPrimitive.Separator className={cn("-mx-1 my-1 h-px bg-muted", className)} {...props} />
   );
-}
+};
 
 export {
   Select,

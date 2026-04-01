@@ -1,10 +1,10 @@
 export type McpServerStatus = "connected" | "failed" | "unknown";
 
-export interface McpServer {
+export type McpServer = {
   name: string;
   command: string;
   status: McpServerStatus;
-}
+};
 
 export const parseMcpListOutput = (output: string) => {
   const servers: McpServer[] = [];

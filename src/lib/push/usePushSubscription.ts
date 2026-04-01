@@ -39,8 +39,7 @@ export const usePushSubscription = (): void => {
       const registration = await navigator.serviceWorker.ready;
 
       // Check for existing subscription
-      const existingSubscription =
-        await registration.pushManager.getSubscription();
+      const existingSubscription = await registration.pushManager.getSubscription();
       if (existingSubscription) {
         // Already subscribed, send to server in case it's a new server instance
         await sendSubscriptionToServer(existingSubscription);
@@ -48,8 +47,7 @@ export const usePushSubscription = (): void => {
       }
 
       // Fetch VAPID public key
-      const vapidResponse =
-        await honoClient.api.notifications["vapid-public-key"].$get();
+      const vapidResponse = await honoClient.api.notifications["vapid-public-key"].$get();
 
       if (!vapidResponse.ok) {
         console.warn("Failed to fetch VAPID public key");
@@ -67,21 +65,19 @@ export const usePushSubscription = (): void => {
       await sendSubscriptionToServer(subscription);
     };
 
-    void subscribe().catch((error) => {
+    void subscribe().catch((error: unknown) => {
       console.warn("Failed to subscribe to push notifications:", error);
     });
   }, []);
 };
 
-const sendSubscriptionToServer = async (
-  subscription: PushSubscription,
-): Promise<void> => {
+const sendSubscriptionToServer = async (subscription: PushSubscription): Promise<void> => {
   const json = subscription.toJSON();
-  if (!json.endpoint || !json.keys) return;
+  if (json.endpoint === undefined || json.endpoint === "" || json.keys === undefined) return;
 
   const p256dh = json.keys.p256dh;
   const auth = json.keys.auth;
-  if (!p256dh || !auth) return;
+  if (p256dh === undefined || p256dh === "" || auth === undefined || auth === "") return;
 
   await honoClient.api.notifications["push-subscription"].$post({
     json: {

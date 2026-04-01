@@ -6,10 +6,7 @@ describe("detectSwipe", () => {
     threshold: 50,
     maxVerticalRatio: 0.75,
     edgeWidth: undefined,
-  } satisfies Pick<
-    SwipeDetectParams,
-    "threshold" | "maxVerticalRatio" | "edgeWidth"
-  >;
+  } satisfies Pick<SwipeDetectParams, "threshold" | "maxVerticalRatio" | "edgeWidth">;
 
   it("returns 'right' for a valid right swipe", () => {
     const result = detectSwipe({

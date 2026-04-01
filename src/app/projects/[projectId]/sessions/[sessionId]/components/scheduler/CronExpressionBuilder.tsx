@@ -1,5 +1,5 @@
 import { Trans } from "@lingui/react";
-import { useEffect, useState } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -12,17 +12,17 @@ import {
 
 type CronMode = "hourly" | "daily" | "weekly" | "custom";
 
-interface CronExpressionBuilderProps {
+type CronExpressionBuilderProps = {
   value: string;
   onChange: (expression: string) => void;
-}
+};
 
-interface ParsedCron {
+type ParsedCron = {
   mode: CronMode;
   hour: number;
   minute: number;
   dayOfWeek: number;
-}
+};
 
 const WEEKDAYS = [
   {
@@ -55,7 +55,7 @@ const WEEKDAYS = [
   },
 ];
 
-function parseCronExpression(expression: string): ParsedCron | null {
+const parseCronExpression = (expression: string): ParsedCron | null => {
   const parts = expression.trim().split(/\s+/);
   if (parts.length !== 5) return null;
 
@@ -63,7 +63,16 @@ function parseCronExpression(expression: string): ParsedCron | null {
   const hour = parts[1];
   const dayOfWeek = parts[4];
 
-  if (!minute || !hour || !dayOfWeek) return null;
+  if (
+    minute === undefined ||
+    minute === "" ||
+    hour === undefined ||
+    hour === "" ||
+    dayOfWeek === undefined ||
+    dayOfWeek === ""
+  ) {
+    return null;
+  }
 
   // Hourly: "0 * * * *"
   if (hour === "*" && minute === "0") {
@@ -90,14 +99,14 @@ function parseCronExpression(expression: string): ParsedCron | null {
   }
 
   return { mode: "custom", hour: 0, minute: 0, dayOfWeek: 0 };
-}
+};
 
-function buildCronExpression(
+const buildCronExpression = (
   mode: CronMode,
   hour: number,
   minute: number,
   dayOfWeek: number,
-): string {
+): string => {
   switch (mode) {
     case "hourly":
       return "0 * * * *";
@@ -107,10 +116,12 @@ function buildCronExpression(
       return `${minute} ${hour} * * ${dayOfWeek}`;
     case "custom":
       return "0 0 * * *";
+    default:
+      return "0 0 * * *";
   }
-}
+};
 
-function validateCronExpression(expression: string): boolean {
+const validateCronExpression = (expression: string): boolean => {
   const parts = expression.trim().split(/\s+/);
   if (parts.length !== 5) return false;
 
@@ -120,7 +131,20 @@ function validateCronExpression(expression: string): boolean {
   const month = parts[3];
   const dayOfWeek = parts[4];
 
-  if (!minute || !hour || !dayOfMonth || !month || !dayOfWeek) return false;
+  if (
+    minute === undefined ||
+    minute === "" ||
+    hour === undefined ||
+    hour === "" ||
+    dayOfMonth === undefined ||
+    dayOfMonth === "" ||
+    month === undefined ||
+    month === "" ||
+    dayOfWeek === undefined ||
+    dayOfWeek === ""
+  ) {
+    return false;
+  }
 
   const isValidField = (field: string, min: number, max: number): boolean => {
     if (field === "*") return true;
@@ -135,9 +159,9 @@ function validateCronExpression(expression: string): boolean {
     (month === "*" || isValidField(month, 1, 12)) &&
     (dayOfWeek === "*" || isValidField(dayOfWeek, 0, 6))
   );
-}
+};
 
-function getNextExecutionPreview(expression: string): React.ReactNode {
+const getNextExecutionPreview = (expression: string): ReactNode => {
   const parts = expression.trim().split(/\s+/);
   if (parts.length !== 5) return "Invalid cron expression";
 
@@ -145,7 +169,16 @@ function getNextExecutionPreview(expression: string): React.ReactNode {
   const hour = parts[1];
   const dayOfWeek = parts[4];
 
-  if (!minute || !hour || !dayOfWeek) return "Invalid cron expression";
+  if (
+    minute === undefined ||
+    minute === "" ||
+    hour === undefined ||
+    hour === "" ||
+    dayOfWeek === undefined ||
+    dayOfWeek === ""
+  ) {
+    return "Invalid cron expression";
+  }
 
   if (hour === "*") {
     return `Every hour at ${minute} minute(s)`;
@@ -164,18 +197,15 @@ function getNextExecutionPreview(expression: string): React.ReactNode {
       Every {dayName ? dayName.labelKey : "unknown"} at {timeStr}
     </>
   );
-}
+};
 
-export function CronExpressionBuilder({
-  value,
-  onChange,
-}: CronExpressionBuilderProps) {
+export const CronExpressionBuilder = ({ value, onChange }: CronExpressionBuilderProps) => {
   const parsed = parseCronExpression(value);
 
-  const [mode, setMode] = useState<CronMode>(parsed?.mode || "daily");
-  const [hour, setHour] = useState(parsed?.hour || 9);
-  const [minute, setMinute] = useState(parsed?.minute || 0);
-  const [dayOfWeek, setDayOfWeek] = useState(parsed?.dayOfWeek || 1);
+  const [mode, setMode] = useState<CronMode>(parsed?.mode ?? "daily");
+  const [hour, setHour] = useState(parsed?.hour ?? 9);
+  const [minute, setMinute] = useState(parsed?.minute ?? 0);
+  const [dayOfWeek, setDayOfWeek] = useState(parsed?.dayOfWeek ?? 1);
   const [customExpression, setCustomExpression] = useState(value);
   const [error, setError] = useState<string | null>(null);
 
@@ -328,12 +358,10 @@ export function CronExpressionBuilder({
           <Trans id="cron_builder.preview" />
         </div>
         <div className="text-muted-foreground">
-          {error ? (
+          {error !== null ? (
             <span className="text-destructive">{error}</span>
           ) : (
-            getNextExecutionPreview(
-              mode === "custom" ? customExpression : value,
-            )
+            getNextExecutionPreview(mode === "custom" ? customExpression : value)
           )}
         </div>
         <div className="text-xs text-muted-foreground mt-2">
@@ -343,4 +371,4 @@ export function CronExpressionBuilder({
       </div>
     </div>
   );
-}
+};

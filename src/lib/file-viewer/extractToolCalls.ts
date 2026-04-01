@@ -24,11 +24,16 @@ const summarizeInput = (input: unknown): string => {
     return input.slice(0, 80);
   }
 
-  if (typeof input !== "object") {
+  if (typeof input === "number" || typeof input === "boolean" || typeof input === "bigint") {
     return String(input).slice(0, 80);
   }
 
+  if (typeof input !== "object") {
+    return "";
+  }
+
   // For objects, try to extract meaningful summary
+  // oxlint-disable-next-line no-unsafe-type-assertion -- After null/primitive checks, input is a non-null object
   const obj = input as Record<string, unknown>;
 
   // Common patterns for tool inputs

@@ -14,20 +14,9 @@ import {
   Loader2,
   RefreshCwIcon,
 } from "lucide-react";
-import {
-  type FC,
-  Suspense,
-  useCallback,
-  useEffect,
-  useId,
-  useMemo,
-  useState,
-} from "react";
+import { type FC, Suspense, useCallback, useEffect, useId, useMemo, useState } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import {
-  oneDark,
-  oneLight,
-} from "react-syntax-highlighter/dist/esm/styles/prism";
+import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -48,23 +37,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useTheme } from "@/hooks/useTheme";
-import {
-  fileContentQuery,
-  gitBranchesQuery,
-  gitCurrentRevisionsQuery,
-} from "@/lib/api/queries";
+import { fileContentQuery, gitBranchesQuery, gitCurrentRevisionsQuery } from "@/lib/api/queries";
 import { detectLanguage } from "@/lib/file-viewer";
 import { extractLatestTodos } from "@/lib/todo-viewer";
 import { cn } from "@/lib/utils";
 import { DiffViewer } from "../../projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffViewer";
+import type { DiffHunk } from "../../projects/[projectId]/sessions/[sessionId]/components/diffModal/types";
 import {
   useCommitAndPush,
   useCommitFiles,
@@ -100,8 +82,7 @@ const BranchSelectorContent: FC<{ projectId: string }> = ({ projectId }) => {
   const [open, setOpen] = useState(false);
   const { data: revisionsData } = useGitCurrentRevisionsSuspense(projectId);
   const { data: branchesData } = useGitBranches(projectId);
-  const { mutate: checkout, isPending: isCheckoutPending } =
-    useGitCheckout(projectId);
+  const { mutate: checkout, isPending: isCheckoutPending } = useGitCheckout(projectId);
 
   const currentBranch = revisionsData?.success
     ? (revisionsData.data.currentBranch?.name ?? null)
@@ -170,9 +151,7 @@ const BranchSelectorContent: FC<{ projectId: string }> = ({ projectId }) => {
                   className="text-xs"
                 >
                   <GitBranchIcon className="w-3.5 h-3.5 mr-2 text-muted-foreground" />
-                  <span className="font-mono truncate flex-1">
-                    {branch.name}
-                  </span>
+                  <span className="font-mono truncate flex-1">{branch.name}</span>
                   {branch.name === currentBranch && (
                     <CheckIcon className="w-3.5 h-3.5 text-primary" />
                   )}
@@ -190,7 +169,7 @@ const BranchSelectorContent: FC<{ projectId: string }> = ({ projectId }) => {
 // GitFileDialog (non-Suspense, uses lazy useQuery)
 // ---------------------------------------------------------------------------
 
-interface GitFileDialogProps {
+type GitFileDialogProps = {
   projectId: string;
   filePath: string;
   status: string;
@@ -207,7 +186,7 @@ interface GitFileDialogProps {
     }>;
   }[];
   children: React.ReactNode;
-}
+};
 
 const GitFileDialog: FC<GitFileDialogProps> = ({
   projectId,
@@ -222,6 +201,11 @@ const GitFileDialog: FC<GitFileDialogProps> = ({
   const [activeTab, setActiveTab] = useState<"content" | "diff">("diff");
   const { resolvedTheme } = useTheme();
   const syntaxTheme = resolvedTheme === "dark" ? oneDark : oneLight;
+  const handleTabChange = (value: string) => {
+    if (value === "content" || value === "diff") {
+      setActiveTab(value);
+    }
+  };
 
   const { data, isLoading, error, refetch } = useQuery({
     ...fileContentQuery(projectId, filePath),
@@ -229,8 +213,7 @@ const GitFileDialog: FC<GitFileDialogProps> = ({
   });
 
   const fileName = filePath.split("/").pop() ?? filePath;
-  const language =
-    data?.success === true ? data.language : detectLanguage(filePath);
+  const language = data?.success === true ? data.language : detectLanguage(filePath);
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -250,10 +233,7 @@ const GitFileDialog: FC<GitFileDialogProps> = ({
               <DialogTitle className="text-lg font-semibold leading-tight mb-1 pr-8 break-all">
                 {fileName}
               </DialogTitle>
-              <DialogDescription
-                className="text-xs flex items-center gap-2 flex-wrap"
-                asChild
-              >
+              <DialogDescription className="text-xs flex items-center gap-2 flex-wrap" asChild>
                 <div>
                   <code className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono break-all">
                     {filePath}
@@ -276,9 +256,7 @@ const GitFileDialog: FC<GitFileDialogProps> = ({
                     </span>
                   )}
                   {deletions > 0 && (
-                    <span className="text-red-600 dark:text-red-400 text-[10px]">
-                      -{deletions}
-                    </span>
+                    <span className="text-red-600 dark:text-red-400 text-[10px]">-{deletions}</span>
                   )}
                 </div>
               </DialogDescription>
@@ -288,7 +266,7 @@ const GitFileDialog: FC<GitFileDialogProps> = ({
 
         <Tabs
           value={activeTab}
-          onValueChange={(v) => setActiveTab(v as "content" | "diff")}
+          onValueChange={handleTabChange}
           className="flex-1 flex flex-col overflow-hidden"
         >
           <TabsList className="mx-4 mt-2 w-fit">
@@ -332,13 +310,19 @@ const GitFileDialog: FC<GitFileDialogProps> = ({
                 </p>
               </div>
             )}
-            {error && (
+            {error !== null && (
               <div className="flex flex-col items-center justify-center h-full gap-4 px-6">
                 <AlertCircle className="h-8 w-8 text-destructive" />
                 <p className="text-sm text-destructive text-center">
                   <Trans id="assistant.tool.error_loading_file" />
                 </p>
-                <Button variant="outline" size="sm" onClick={() => refetch()}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    void refetch();
+                  }}
+                >
                   <Trans id="assistant.tool.retry" />
                 </Button>
               </div>
@@ -347,18 +331,10 @@ const GitFileDialog: FC<GitFileDialogProps> = ({
               <div className="flex flex-col items-center justify-center h-full gap-4 px-6">
                 <AlertCircle className="h-8 w-8 text-destructive" />
                 <p className="text-sm text-destructive text-center">
-                  {data.error === "NOT_FOUND" && (
-                    <Trans id="assistant.tool.file_not_found" />
-                  )}
-                  {data.error === "BINARY_FILE" && (
-                    <Trans id="assistant.tool.binary_file" />
-                  )}
-                  {data.error === "INVALID_PATH" && (
-                    <Trans id="assistant.tool.invalid_path" />
-                  )}
-                  {data.error === "READ_ERROR" && (
-                    <Trans id="assistant.tool.read_error" />
-                  )}
+                  {data.error === "NOT_FOUND" && <Trans id="assistant.tool.file_not_found" />}
+                  {data.error === "BINARY_FILE" && <Trans id="assistant.tool.binary_file" />}
+                  {data.error === "INVALID_PATH" && <Trans id="assistant.tool.invalid_path" />}
+                  {data.error === "READ_ERROR" && <Trans id="assistant.tool.read_error" />}
                 </p>
               </div>
             )}
@@ -410,73 +386,54 @@ const GitFileListWithCommit: FC<{ projectId: string }> = ({ projectId }) => {
   const files = diffData?.success ? diffData.data.files : [];
   const hasGitChanges = files.length > 0;
 
-  const [selectedFiles, setSelectedFiles] = useState<Map<string, boolean>>(
-    () => new Map(),
-  );
+  const [selectedFiles, setSelectedFiles] = useState<Map<string, boolean>>(() => new Map());
   const [commitMessage, setCommitMessage] = useState("");
   const [isCommitSectionExpanded, setIsCommitSectionExpanded] = useState(false);
 
   const commitMutation = useCommitFiles(projectId);
   const pushMutation = usePushCommits(projectId);
   const commitAndPushMutation = useCommitAndPush(projectId);
+  const diffResult = diffData?.success === true ? diffData.data : undefined;
 
   const diffsByFile = useMemo(() => {
-    if (!diffData?.success) return new Map();
-    const map = new Map<
-      string,
-      {
-        hunks: {
-          oldStart: number;
-          newStart: number;
-          lines: Array<{
-            type: "added" | "deleted" | "unchanged" | "hunk" | "context";
-            oldLineNumber?: number;
-            newLineNumber?: number;
-            content: string;
-          }>;
-        }[];
-      }
-    >();
-    for (const diff of diffData.data.diffs) {
+    const map = new Map<string, { hunks: DiffHunk[] }>();
+    if (diffResult === undefined) {
+      return map;
+    }
+    for (const diff of diffResult.diffs) {
       map.set(diff.file.filePath, { hunks: diff.hunks });
     }
     return map;
-  }, [diffData]);
+  }, [diffResult]);
 
   useEffect(() => {
-    if (diffData?.success && diffData.data.files.length > 0) {
-      setSelectedFiles(
-        new Map(diffData.data.files.map((file) => [file.filePath, true])),
-      );
+    if (diffResult !== undefined && diffResult.files.length > 0) {
+      setSelectedFiles(new Map(diffResult.files.map((file) => [file.filePath, true])));
     }
-  }, [diffData]);
+  }, [diffResult]);
 
   const handleToggleFile = (filePath: string) => {
     setSelectedFiles((prev) => {
       const next = new Map(prev);
-      next.set(filePath, !prev.get(filePath));
+      next.set(filePath, prev.get(filePath) !== true);
       return next;
     });
   };
 
   const handleSelectAll = () => {
-    if (diffData?.success && diffData.data.files.length > 0) {
-      setSelectedFiles(
-        new Map(diffData.data.files.map((file) => [file.filePath, true])),
-      );
+    if (diffResult !== undefined && diffResult.files.length > 0) {
+      setSelectedFiles(new Map(diffResult.files.map((file) => [file.filePath, true])));
     }
   };
 
   const handleDeselectAll = () => {
-    if (diffData?.success && diffData.data.files.length > 0) {
-      setSelectedFiles(
-        new Map(diffData.data.files.map((file) => [file.filePath, false])),
-      );
+    if (diffResult !== undefined && diffResult.files.length > 0) {
+      setSelectedFiles(new Map(diffResult.files.map((file) => [file.filePath, false])));
     }
   };
 
   const invalidateDiffQueries = useCallback(() => {
-    queryClient.invalidateQueries({
+    void queryClient.invalidateQueries({
       queryKey: ["git", "diff", projectId],
     });
   }, [queryClient, projectId]);
@@ -493,9 +450,7 @@ const GitFileListWithCommit: FC<{ projectId: string }> = ({ projectId }) => {
       });
 
       if (result.success) {
-        toast.success(
-          `Committed ${result.filesCommitted} files (${result.commitSha.slice(0, 7)})`,
-        );
+        toast.success(`Committed ${result.filesCommitted} files (${result.commitSha.slice(0, 7)})`);
         setCommitMessage("");
         invalidateDiffQueries();
       } else {
@@ -545,7 +500,9 @@ const GitFileListWithCommit: FC<{ projectId: string }> = ({ projectId }) => {
           {
             action: {
               label: i18n._("Retry Push"),
-              onClick: handlePush,
+              onClick: () => {
+                void handlePush();
+              },
             },
           },
         );
@@ -559,13 +516,9 @@ const GitFileListWithCommit: FC<{ projectId: string }> = ({ projectId }) => {
     }
   };
 
-  const selectedCount = Array.from(selectedFiles.values()).filter(
-    Boolean,
-  ).length;
+  const selectedCount = Array.from(selectedFiles.values()).filter(Boolean).length;
   const isCommitDisabled =
-    selectedCount === 0 ||
-    commitMessage.trim().length === 0 ||
-    commitMutation.isPending;
+    selectedCount === 0 || commitMessage.trim().length === 0 || commitMutation.isPending;
 
   if (!hasGitChanges) {
     return (
@@ -652,7 +605,9 @@ const GitFileListWithCommit: FC<{ projectId: string }> = ({ projectId }) => {
             {/* Action buttons */}
             <div className="flex items-center gap-1.5 flex-wrap">
               <Button
-                onClick={handleCommit}
+                onClick={() => {
+                  void handleCommit();
+                }}
                 disabled={isCommitDisabled}
                 size="sm"
                 className="h-7 text-xs"
@@ -667,7 +622,9 @@ const GitFileListWithCommit: FC<{ projectId: string }> = ({ projectId }) => {
                 )}
               </Button>
               <Button
-                onClick={handlePush}
+                onClick={() => {
+                  void handlePush();
+                }}
                 disabled={pushMutation.isPending}
                 variant="outline"
                 size="sm"
@@ -683,7 +640,9 @@ const GitFileListWithCommit: FC<{ projectId: string }> = ({ projectId }) => {
                 )}
               </Button>
               <Button
-                onClick={handleCommitAndPush}
+                onClick={() => {
+                  void handleCommitAndPush();
+                }}
                 disabled={isCommitDisabled || commitAndPushMutation.isPending}
                 variant="secondary"
                 size="sm"
@@ -737,19 +696,13 @@ const GitFileListWithCommit: FC<{ projectId: string }> = ({ projectId }) => {
                       file.status === "renamed" && "bg-blue-500",
                     )}
                   />
-                  <span className="truncate flex-1 font-mono">
-                    {file.filePath}
-                  </span>
+                  <span className="truncate flex-1 font-mono">{file.filePath}</span>
                   <span className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
                     {file.additions > 0 && (
-                      <span className="text-green-600 dark:text-green-400">
-                        +{file.additions}
-                      </span>
+                      <span className="text-green-600 dark:text-green-400">+{file.additions}</span>
                     )}
                     {file.deletions > 0 && (
-                      <span className="text-red-600 dark:text-red-400">
-                        -{file.deletions}
-                      </span>
+                      <span className="text-red-600 dark:text-red-400">-{file.deletions}</span>
                     )}
                   </span>
                 </button>
@@ -771,10 +724,7 @@ const SessionTodoSection: FC<{ projectId: string; sessionId: string }> = ({
   sessionId,
 }) => {
   const { conversations } = useSession(projectId, sessionId);
-  const latestTodos = useMemo(
-    () => extractLatestTodos(conversations),
-    [conversations],
-  );
+  const latestTodos = useMemo(() => extractLatestTodos(conversations), [conversations]);
   return <CollapsibleTodoSection todos={latestTodos} />;
 };
 
@@ -826,30 +776,26 @@ const SessionPrLinksSection: FC<{ projectId: string; sessionId: string }> = ({
 // GitTabContent (exported, manages Suspense boundaries + reload)
 // ---------------------------------------------------------------------------
 
-interface GitTabContentProps {
+type GitTabContentProps = {
   projectId: string;
   sessionId?: string;
-}
+};
 
-export const GitTabContent: FC<GitTabContentProps> = ({
-  projectId,
-  sessionId,
-}) => {
+export const GitTabContent: FC<GitTabContentProps> = ({ projectId, sessionId }) => {
   const queryClient = useQueryClient();
   const isGitFetching =
     useIsFetching({
-      predicate: (query) =>
-        query.queryKey[0] === "git" && query.queryKey.includes(projectId),
+      predicate: (query) => query.queryKey[0] === "git" && query.queryKey.includes(projectId),
     }) > 0;
 
   const handleReload = useCallback(() => {
-    queryClient.invalidateQueries({
+    void queryClient.invalidateQueries({
       queryKey: gitCurrentRevisionsQuery(projectId).queryKey,
     });
-    queryClient.invalidateQueries({
+    void queryClient.invalidateQueries({
       queryKey: gitBranchesQuery(projectId).queryKey,
     });
-    queryClient.invalidateQueries({
+    void queryClient.invalidateQueries({
       queryKey: ["git", "diff", projectId],
     });
   }, [queryClient, projectId]);
@@ -869,10 +815,7 @@ export const GitTabContent: FC<GitTabContentProps> = ({
           disabled={isGitFetching}
         >
           <RefreshCwIcon
-            className={cn(
-              "w-3.5 h-3.5 text-muted-foreground",
-              isGitFetching && "animate-spin",
-            )}
+            className={cn("w-3.5 h-3.5 text-muted-foreground", isGitFetching && "animate-spin")}
           />
         </Button>
       </div>
@@ -885,14 +828,14 @@ export const GitTabContent: FC<GitTabContentProps> = ({
       </div>
 
       {/* PR links section */}
-      {sessionId && (
+      {sessionId !== undefined && sessionId !== "" && (
         <Suspense fallback={null}>
           <SessionPrLinksSection projectId={projectId} sessionId={sessionId} />
         </Suspense>
       )}
 
       {/* Todo section */}
-      {sessionId && (
+      {sessionId !== undefined && sessionId !== "" && (
         <Suspense fallback={null}>
           <SessionTodoSection projectId={projectId} sessionId={sessionId} />
         </Suspense>

@@ -1,5 +1,5 @@
-import type { SDKSystemMessage } from "@anthropic-ai/claude-agent-sdk";
-
 export type InitMessageContext = {
-  initMessage: SDKSystemMessage;
+  initMessage: {
+    session_id: string;
+  };
 };

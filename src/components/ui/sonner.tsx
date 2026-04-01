@@ -9,6 +9,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
       theme={theme as ToasterProps["theme"]}
       className="toaster group"
       style={
+        // oxlint-disable-next-line typescript-eslint/no-unsafe-type-assertion -- shadcn/ui generated component requires CSS custom properties
         {
           "--normal-bg": "var(--popover)",
           "--normal-text": "var(--popover-foreground)",

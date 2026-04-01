@@ -54,10 +54,7 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
           projectDir: projDir,
           projectCommandsDir,
         };
-      }).pipe(
-        Effect.provide(NodeContext.layer),
-        Effect.provide(testPlatformLayer()),
-      ),
+      }).pipe(Effect.provide(NodeContext.layer), Effect.provide(testPlatformLayer())),
     );
 
     testDir = result.tmpDir;
@@ -81,14 +78,8 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
         yield* fs.writeFileString(`${globalCommandsDir}/review.md`, "# Review");
 
         // Project commands
-        yield* fs.writeFileString(
-          `${projectCommandsDir}/deploy.md`,
-          "# Deploy",
-        );
-      }).pipe(
-        Effect.provide(NodeContext.layer),
-        Effect.provide(testPlatformLayer()),
-      ),
+        yield* fs.writeFileString(`${projectCommandsDir}/deploy.md`, "# Deploy");
+      }).pipe(Effect.provide(NodeContext.layer), Effect.provide(testPlatformLayer())),
     );
 
     const projectLayer = testProjectRepositoryLayer({
@@ -133,10 +124,7 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
           .getClaudeCommands({
             projectId: "test-project",
           })
-          .pipe(
-            Effect.provide(NodeContext.layer),
-            Effect.provide(testPlatformLayer()),
-          );
+          .pipe(Effect.provide(NodeContext.layer), Effect.provide(testPlatformLayer()));
       }).pipe(Effect.provide(testLayer)),
     );
 
@@ -166,31 +154,16 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
         yield* fs.makeDirectory(`${globalCommandsDir}/frontend`, {
           recursive: true,
         });
-        yield* fs.writeFileString(
-          `${globalCommandsDir}/frontend/impl.md`,
-          "# Frontend Impl",
-        );
-        yield* fs.writeFileString(
-          `${globalCommandsDir}/frontend/review.md`,
-          "# Frontend Review",
-        );
-        yield* fs.writeFileString(
-          `${globalCommandsDir}/backend.md`,
-          "# Backend",
-        );
+        yield* fs.writeFileString(`${globalCommandsDir}/frontend/impl.md`, "# Frontend Impl");
+        yield* fs.writeFileString(`${globalCommandsDir}/frontend/review.md`, "# Frontend Review");
+        yield* fs.writeFileString(`${globalCommandsDir}/backend.md`, "# Backend");
 
         // Project commands with subdirectories
         yield* fs.makeDirectory(`${projectCommandsDir}/api`, {
           recursive: true,
         });
-        yield* fs.writeFileString(
-          `${projectCommandsDir}/api/create.md`,
-          "# API Create",
-        );
-      }).pipe(
-        Effect.provide(NodeContext.layer),
-        Effect.provide(testPlatformLayer()),
-      ),
+        yield* fs.writeFileString(`${projectCommandsDir}/api/create.md`, "# API Create");
+      }).pipe(Effect.provide(NodeContext.layer), Effect.provide(testPlatformLayer())),
     );
 
     const projectLayer = testProjectRepositoryLayer({
@@ -235,10 +208,7 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
           .getClaudeCommands({
             projectId: "test-project",
           })
-          .pipe(
-            Effect.provide(NodeContext.layer),
-            Effect.provide(testPlatformLayer()),
-          );
+          .pipe(Effect.provide(NodeContext.layer), Effect.provide(testPlatformLayer()));
       }).pipe(Effect.provide(testLayer)),
     );
 
@@ -259,18 +229,14 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
 
-        yield* fs.makeDirectory(
-          `${globalCommandsDir}/frontend/components/buttons`,
-          { recursive: true },
-        );
+        yield* fs.makeDirectory(`${globalCommandsDir}/frontend/components/buttons`, {
+          recursive: true,
+        });
         yield* fs.writeFileString(
           `${globalCommandsDir}/frontend/components/buttons/primary.md`,
           "# Primary Button",
         );
-      }).pipe(
-        Effect.provide(NodeContext.layer),
-        Effect.provide(testPlatformLayer()),
-      ),
+      }).pipe(Effect.provide(NodeContext.layer), Effect.provide(testPlatformLayer())),
     );
 
     const projectLayer = testProjectRepositoryLayer({
@@ -315,18 +281,13 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
           .getClaudeCommands({
             projectId: "test-project",
           })
-          .pipe(
-            Effect.provide(NodeContext.layer),
-            Effect.provide(testPlatformLayer()),
-          );
+          .pipe(Effect.provide(NodeContext.layer), Effect.provide(testPlatformLayer()));
       }).pipe(Effect.provide(testLayer)),
     );
 
     expect(result.status).toBe(200);
     expect(result.response.globalCommandsLegacy).toHaveLength(1);
-    expect(result.response.globalCommandsLegacy).toContain(
-      "frontend:components:buttons:primary",
-    );
+    expect(result.response.globalCommandsLegacy).toContain("frontend:components:buttons:primary");
     expect(result.response.globalSkillsLegacy).toEqual([]);
     expect(result.response.projectSkillsLegacy).toEqual([]);
   });
@@ -374,10 +335,7 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
           .getClaudeCommands({
             projectId: "test-project",
           })
-          .pipe(
-            Effect.provide(NodeContext.layer),
-            Effect.provide(testPlatformLayer()),
-          );
+          .pipe(Effect.provide(NodeContext.layer), Effect.provide(testPlatformLayer()));
       }).pipe(Effect.provide(testLayer)),
     );
 
@@ -393,10 +351,7 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         yield* fs.writeFileString(`${globalCommandsDir}/impl.md`, "# Impl");
-      }).pipe(
-        Effect.provide(NodeContext.layer),
-        Effect.provide(testPlatformLayer()),
-      ),
+      }).pipe(Effect.provide(NodeContext.layer), Effect.provide(testPlatformLayer())),
     );
 
     const projectLayer = testProjectRepositoryLayer({
@@ -441,10 +396,7 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
           .getClaudeCommands({
             projectId: "test-project",
           })
-          .pipe(
-            Effect.provide(NodeContext.layer),
-            Effect.provide(testPlatformLayer()),
-          );
+          .pipe(Effect.provide(NodeContext.layer), Effect.provide(testPlatformLayer()));
       }).pipe(Effect.provide(testLayer)),
     );
 
@@ -462,25 +414,13 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
 
-        yield* fs.writeFileString(
-          `${globalCommandsDir}/visible.md`,
-          "# Visible",
-        );
-        yield* fs.writeFileString(
-          `${globalCommandsDir}/.hidden.md`,
-          "# Hidden",
-        );
+        yield* fs.writeFileString(`${globalCommandsDir}/visible.md`, "# Visible");
+        yield* fs.writeFileString(`${globalCommandsDir}/.hidden.md`, "# Hidden");
         yield* fs.makeDirectory(`${globalCommandsDir}/.hidden-dir`, {
           recursive: true,
         });
-        yield* fs.writeFileString(
-          `${globalCommandsDir}/.hidden-dir/impl.md`,
-          "# Hidden Impl",
-        );
-      }).pipe(
-        Effect.provide(NodeContext.layer),
-        Effect.provide(testPlatformLayer()),
-      ),
+        yield* fs.writeFileString(`${globalCommandsDir}/.hidden-dir/impl.md`, "# Hidden Impl");
+      }).pipe(Effect.provide(NodeContext.layer), Effect.provide(testPlatformLayer())),
     );
 
     const projectLayer = testProjectRepositoryLayer({
@@ -525,10 +465,7 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
           .getClaudeCommands({
             projectId: "test-project",
           })
-          .pipe(
-            Effect.provide(NodeContext.layer),
-            Effect.provide(testPlatformLayer()),
-          );
+          .pipe(Effect.provide(NodeContext.layer), Effect.provide(testPlatformLayer()));
       }).pipe(Effect.provide(testLayer)),
     );
 
@@ -536,9 +473,7 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
     expect(result.response.globalCommandsLegacy).toHaveLength(1);
     expect(result.response.globalCommandsLegacy).toContain("visible");
     expect(result.response.globalCommandsLegacy).not.toContain(".hidden");
-    expect(result.response.globalCommandsLegacy).not.toContain(
-      ".hidden-dir:impl",
-    );
+    expect(result.response.globalCommandsLegacy).not.toContain(".hidden-dir:impl");
     expect(result.response.globalSkillsLegacy).toEqual([]);
     expect(result.response.projectSkillsLegacy).toEqual([]);
   });
@@ -556,18 +491,12 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
         yield* fs.makeDirectory(`${globalSkillsDir}/typescript`, {
           recursive: true,
         });
-        yield* fs.writeFileString(
-          `${globalSkillsDir}/typescript/SKILL.md`,
-          "# TypeScript Skill",
-        );
+        yield* fs.writeFileString(`${globalSkillsDir}/typescript/SKILL.md`, "# TypeScript Skill");
 
         yield* fs.makeDirectory(`${globalSkillsDir}/react`, {
           recursive: true,
         });
-        yield* fs.writeFileString(
-          `${globalSkillsDir}/react/SKILL.md`,
-          "# React Skill",
-        );
+        yield* fs.writeFileString(`${globalSkillsDir}/react/SKILL.md`, "# React Skill");
 
         // Nested global skill
         yield* fs.makeDirectory(`${globalSkillsDir}/frontend/design`, {
@@ -595,10 +524,7 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
           `${projectSkillsDir}/api/validation/SKILL.md`,
           "# API Validation Skill",
         );
-      }).pipe(
-        Effect.provide(NodeContext.layer),
-        Effect.provide(testPlatformLayer()),
-      ),
+      }).pipe(Effect.provide(NodeContext.layer), Effect.provide(testPlatformLayer())),
     );
 
     const projectLayer = testProjectRepositoryLayer({
@@ -664,10 +590,7 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
           .getClaudeCommands({
             projectId: "test-project",
           })
-          .pipe(
-            Effect.provide(NodeContext.layer),
-            Effect.provide(testPlatformLayer()),
-          );
+          .pipe(Effect.provide(NodeContext.layer), Effect.provide(testPlatformLayer()));
       }).pipe(Effect.provide(testLayer)),
     );
 

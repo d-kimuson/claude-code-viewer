@@ -11,13 +11,11 @@ export const parseGitBranchesOutput = (output: string) => {
 
   for (const line of lines) {
     // Parse branch line format: "  main     abc1234 [origin/main: ahead 1] Commit message"
-    const match = line.match(
-      /^(\*?\s*)([^\s]+)\s+([a-f0-9]+)(?:\s+\[([^\]]+)\])?\s*(.*)/,
-    );
+    const match = line.match(/^(\*?\s*)([^\s]+)\s+([a-f0-9]+)(?:\s+\[([^\]]+)\])?\s*(.*)/);
     if (!match) continue;
 
     const [, prefix, name, commit, tracking] = match;
-    if (!prefix || !name || !commit) continue;
+    if (prefix === undefined || name === undefined || commit === undefined) continue;
 
     const current = prefix.includes("*");
 
@@ -32,16 +30,18 @@ export const parseGitBranchesOutput = (output: string) => {
     let ahead: number | undefined;
     let behind: number | undefined;
 
-    if (tracking) {
+    if (tracking !== undefined && tracking !== "") {
       const remoteMatch = tracking.match(/^([^:]+)/);
-      if (remoteMatch?.[1]) {
+      if (remoteMatch?.[1] !== undefined && remoteMatch[1] !== "") {
         remote = remoteMatch[1];
       }
 
       const aheadMatch = tracking.match(/ahead (\d+)/);
       const behindMatch = tracking.match(/behind (\d+)/);
-      if (aheadMatch?.[1]) ahead = parseInt(aheadMatch[1], 10);
-      if (behindMatch?.[1]) behind = parseInt(behindMatch[1], 10);
+      if (aheadMatch?.[1] !== undefined && aheadMatch[1] !== "")
+        ahead = parseInt(aheadMatch[1], 10);
+      if (behindMatch?.[1] !== undefined && behindMatch[1] !== "")
+        behind = parseInt(behindMatch[1], 10);
     }
 
     branches.push({

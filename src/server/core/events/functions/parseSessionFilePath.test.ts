@@ -13,9 +13,7 @@ describe("parseSessionFilePath", () => {
     });
 
     it("parses session file with UUID-like session ID", () => {
-      const result = parseSessionFilePath(
-        "my-project/550e8400-e29b-41d4-a716-446655440000.jsonl",
-      );
+      const result = parseSessionFilePath("my-project/550e8400-e29b-41d4-a716-446655440000.jsonl");
       expect(result).toEqual({
         type: "session",
         projectId: "my-project",
@@ -27,9 +25,7 @@ describe("parseSessionFilePath", () => {
       // The regex is non-greedy, so it matches the first slash
       // In practice, the projectId is just the first directory component
       // The encodeProjectIdFromSessionFilePath function handles proper encoding
-      const result = parseSessionFilePath(
-        "home/user/projects/my-app/session123.jsonl",
-      );
+      const result = parseSessionFilePath("home/user/projects/my-app/session123.jsonl");
       expect(result).toEqual({
         type: "session",
         projectId: "home",
@@ -62,9 +58,7 @@ describe("parseSessionFilePath", () => {
     it("parses agent file with nested path (greedy match for projectId)", () => {
       // For agent files, the regex matches everything before /agent-
       // This correctly captures the full project path
-      const result = parseSessionFilePath(
-        "home/user/projects/my-app/agent-def456.jsonl",
-      );
+      const result = parseSessionFilePath("home/user/projects/my-app/agent-def456.jsonl");
       expect(result).toEqual({
         type: "agent",
         projectId: "home/user/projects/my-app",

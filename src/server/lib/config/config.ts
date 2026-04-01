@@ -12,10 +12,7 @@ export const userConfigSchema = z.object({
   theme: z.enum(["light", "dark", "system"]).optional().default("system"),
   searchHotkey: z.enum(["ctrl-k", "command-k"]).optional().default("command-k"),
   autoScheduleContinueOnRateLimit: z.boolean().optional().default(false),
-  modelChoices: z
-    .array(z.string())
-    .optional()
-    .default(["default", "haiku", "sonnet", "opus"]),
+  modelChoices: z.array(z.string()).optional().default(["default", "haiku", "sonnet", "opus"]),
 });
 
 export const defaultUserConfig = userConfigSchema.parse({});

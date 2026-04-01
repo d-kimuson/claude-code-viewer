@@ -10,9 +10,7 @@ export const useFeatureFlags = () => {
   });
 
   const enabledFlags = useMemo(() => {
-    return new Set(
-      data.flags.filter((flag) => flag.enabled).map((flag) => flag.name),
-    );
+    return new Set(data.flags.filter((flag) => flag.enabled).map((flag) => flag.name));
   }, [data.flags]);
 
   const isFlagEnabled = useCallback(

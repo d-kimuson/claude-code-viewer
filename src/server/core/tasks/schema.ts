@@ -1,11 +1,6 @@
 import { z } from "zod";
 
-export const TaskStatusSchema = z.enum([
-  "pending",
-  "in_progress",
-  "completed",
-  "failed",
-]);
+export const TaskStatusSchema = z.enum(["pending", "in_progress", "completed", "failed"]);
 export type TaskStatus = z.infer<typeof TaskStatusSchema>;
 
 export const TaskSchema = z.object({

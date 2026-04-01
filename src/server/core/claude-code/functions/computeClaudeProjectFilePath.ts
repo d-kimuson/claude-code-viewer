@@ -9,8 +9,5 @@ export const computeClaudeProjectFilePath = (options: {
     const path = yield* Path.Path;
     const { projectPath, claudeProjectsDirPath } = options;
 
-    return path.join(
-      claudeProjectsDirPath,
-      projectPath.replace(/\/$/, "").replace(/\//g, "-"),
-    );
+    return path.join(claudeProjectsDirPath, projectPath.replace(/\/$/, "").replace(/\//g, "-"));
   });

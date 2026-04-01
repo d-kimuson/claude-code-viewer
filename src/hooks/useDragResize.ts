@@ -1,5 +1,10 @@
-import type { MouseEvent as ReactMouseEvent } from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  type MouseEvent as ReactMouseEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 type DragResizeOptions = {
   onResize: (event: MouseEvent) => void;

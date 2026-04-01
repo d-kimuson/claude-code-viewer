@@ -1,7 +1,4 @@
-/// <reference types="vitest" />
-/**
- * @vitest-environment jsdom
- */
+// @vitest-environment jsdom
 
 import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
@@ -58,10 +55,8 @@ describe("useIsMobile", () => {
       if (typeof listener === "function") {
         return listener;
       }
-      if (listener && "handleEvent" in listener && listener.handleEvent) {
-        return listener.handleEvent.bind(listener) as (
-          event: MediaQueryListEvent,
-        ) => void;
+      if (listener !== null && typeof listener === "object" && "handleEvent" in listener) {
+        return listener.handleEvent.bind(listener) as (event: MediaQueryListEvent) => void;
       }
       return undefined;
     };
@@ -72,38 +67,26 @@ describe("useIsMobile", () => {
       media: "",
       onchange: null,
       dispatchEvent: () => true,
-      addEventListener: (
-        _: string,
-        listener: EventListenerOrEventListenerObject,
-      ) => {
+      addEventListener: (_: string, listener: EventListenerOrEventListenerObject) => {
         const callback = normalizeListener(listener);
         if (callback) {
           listeners.add(callback);
         }
       },
-      removeEventListener: (
-        _: string,
-        listener: EventListenerOrEventListenerObject,
-      ) => {
+      removeEventListener: (_: string, listener: EventListenerOrEventListenerObject) => {
         const callback = normalizeListener(listener);
         if (callback) {
           listeners.delete(callback);
         }
       },
-      addListener: (
-        listener:
-          | ((this: MediaQueryList, ev: MediaQueryListEvent) => void)
-          | null,
-      ) => {
+      addListener: (listener: ((this: MediaQueryList, ev: MediaQueryListEvent) => void) | null) => {
         const callback = normalizeListener(listener);
         if (callback) {
           listeners.add(callback);
         }
       },
       removeListener: (
-        listener:
-          | ((this: MediaQueryList, ev: MediaQueryListEvent) => void)
-          | null,
+        listener: ((this: MediaQueryList, ev: MediaQueryListEvent) => void) | null,
       ) => {
         const callback = normalizeListener(listener);
         if (callback) {
@@ -139,6 +122,7 @@ describe("useIsMobile", () => {
     act(() => {
       matches.value = true;
       listeners.forEach((listener) => {
+        // oxlint-disable-next-line no-unsafe-type-assertion -- Minimal mock for test
         listener({
           matches: matches.value,
         } as MediaQueryListEvent);

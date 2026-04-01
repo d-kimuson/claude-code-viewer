@@ -20,36 +20,35 @@ const LayerImpl = Effect.gen(function* () {
 
       const { project } = yield* projectRepository.getProject(projectId);
 
-      try {
-        if (project.meta.projectPath === null) {
-          return {
-            response: { error: "Project path not found" },
-            status: 400,
-          } as const satisfies ControllerResponse;
-        }
-
-        const projectPath = project.meta.projectPath;
-
-        const result = yield* Effect.promise(() =>
-          getDiff(projectPath, fromRef, toRef),
-        );
+      if (project.meta.projectPath === null) {
         return {
-          response: result,
-          status: 200,
-        } as const satisfies ControllerResponse;
-      } catch (error) {
-        console.error("Get diff error:", error);
-        if (error instanceof Error) {
-          return {
-            response: { error: error.message },
-            status: 400,
-          } as const satisfies ControllerResponse;
-        }
-        return {
-          response: { error: "Failed to get diff" },
-          status: 500,
+          response: { error: "Project path not found" },
+          status: 400,
         } as const satisfies ControllerResponse;
       }
+
+      const projectPath = project.meta.projectPath;
+
+      const diffResult = yield* Effect.either(
+        Effect.tryPromise({
+          try: () => getDiff(projectPath, fromRef, toRef),
+          catch: (error) =>
+            error instanceof Error ? error : new Error("Failed to get diff"),
+        }),
+      );
+
+      if (Either.isLeft(diffResult)) {
+        console.error("Get diff error:", diffResult.left);
+        return {
+          response: { error: diffResult.left.message },
+          status: 400,
+        } as const satisfies ControllerResponse;
+      }
+
+      return {
+        response: diffResult.right,
+        status: 200,
+      } as const satisfies ControllerResponse;
     });
 
   const commitFiles = (options: {

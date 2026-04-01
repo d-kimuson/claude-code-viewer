@@ -1,3 +1,5 @@
+/* oxlint-disable no-restricted-imports */
+/* Exception: this file still uses Node watcher APIs because full migration to Effect FileSystem is high-cost. Keep this exception scoped to this file so new code does not copy this pattern. */
 import { type FSWatcher, watch } from "node:fs";
 import { Path } from "@effect/platform";
 import { Context, Effect, Layer, Ref } from "effect";

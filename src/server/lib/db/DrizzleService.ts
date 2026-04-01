@@ -1,3 +1,5 @@
+/* oxlint-disable no-restricted-imports */
+/* Exception: this file still uses Node filesystem/sqlite APIs because full migration to Effect database abstractions is high-cost. Keep this exception scoped to this file so new code does not copy this pattern. */
 import { mkdirSync, rmSync } from "node:fs";
 import { homedir } from "node:os";
 import { resolve } from "node:path";

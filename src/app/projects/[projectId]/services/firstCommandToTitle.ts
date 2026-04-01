@@ -1,4 +1,4 @@
-import type { ParsedUserMessage } from "../../../../server/core/claude-code/functions/parseUserMessage";
+import type { ParsedUserMessage } from "@/lib/claude-code/parseUserMessage";
 
 const stripLocalCommandCaveat = (text: string) => {
   return text.replace(/<local-command-caveat>[\s\S]*?<\/local-command-caveat>/g, "").trim();

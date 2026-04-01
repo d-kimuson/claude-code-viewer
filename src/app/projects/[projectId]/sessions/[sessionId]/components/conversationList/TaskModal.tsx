@@ -2,6 +2,7 @@ import { Trans } from "@lingui/react";
 import { useQuery } from "@tanstack/react-query";
 import { Eye, Loader2, MessageSquare, XCircle } from "lucide-react";
 import { type FC, useState } from "react";
+import { z } from "zod";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,7 +17,6 @@ import { agentSessionQuery } from "@/lib/api/queries";
 import type { SidechainConversation } from "@/lib/conversation-schema";
 import type { ToolResultContent } from "@/lib/conversation-schema/content/ToolResultContentSchema";
 import type { UserEntry } from "../../../../../../../lib/conversation-schema/entry/UserEntrySchema";
-import { extractFirstUserText } from "../../../../../../../server/core/session/functions/extractFirstUserText";
 import { ConversationList } from "./ConversationList";
 
 type TaskModalProps = {
@@ -32,6 +32,49 @@ type TaskModalProps = {
   getSidechainConversationByPrompt: (prompt: string) => SidechainConversation | undefined;
   getSidechainConversations: (rootUuid: string) => SidechainConversation[];
   getToolResult: (toolUseId: string) => ToolResultContent | undefined;
+};
+
+const extractFirstUserText = (conversation: unknown): string | null => {
+  const userConversationSchema = z.object({
+    type: z.literal("user"),
+    message: z.object({
+      content: z.union([
+        z.string(),
+        z.array(
+          z.union([
+            z.string(),
+            z.object({
+              type: z.literal("text"),
+              text: z.string(),
+            }),
+          ]),
+        ),
+      ]),
+    }),
+  });
+  const parsedConversation = userConversationSchema.safeParse(conversation);
+
+  if (!parsedConversation.success) {
+    return null;
+  }
+
+  const content = parsedConversation.data.message.content;
+  const firstUserText =
+    typeof content === "string"
+      ? content
+      : (() => {
+          if (!Array.isArray(content)) {
+            return null;
+          }
+
+          const firstContent = content.at(0);
+          if (firstContent === undefined) return null;
+          if (typeof firstContent === "string") return firstContent;
+          if (firstContent.type === "text") return firstContent.text;
+          return null;
+        })();
+
+  return firstUserText;
 };
 
 /**

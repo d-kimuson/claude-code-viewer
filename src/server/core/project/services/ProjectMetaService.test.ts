@@ -1,10 +1,10 @@
-import { DatabaseSync } from "node:sqlite";
 import { Path } from "@effect/platform";
-import { drizzle } from "drizzle-orm/node-sqlite";
-import { migrate } from "drizzle-orm/node-sqlite/migrator";
 import { Effect, Layer } from "effect";
+import {
+  createInMemoryDrizzle,
+  makeDrizzleTestServiceLayer,
+} from "../../../../testing/layers/testDrizzleServiceLayer";
 import { DrizzleService } from "../../../lib/db/DrizzleService";
-import * as schema from "../../../lib/db/schema";
 import { projects } from "../../../lib/db/schema";
 import { type ISyncService, SyncService } from "../../sync/services/SyncService";
 import { ProjectMetaService } from "../services/ProjectMetaService";
@@ -12,8 +12,6 @@ import { ProjectMetaService } from "../services/ProjectMetaService";
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
-
-const migrationsFolder = new URL("../../../lib/db/migrations", import.meta.url).pathname;
 
 const makeSyncServiceMock = (overrides?: Partial<ISyncService>): Layer.Layer<SyncService> =>
   Layer.succeed(SyncService, {
@@ -23,34 +21,14 @@ const makeSyncServiceMock = (overrides?: Partial<ISyncService>): Layer.Layer<Syn
     ...overrides,
   });
 
-const createInMemoryDb = () => {
-  const sqlite = new DatabaseSync(":memory:");
-  sqlite.exec("PRAGMA foreign_keys = ON");
-  const db = drizzle({ client: sqlite, schema });
-  migrate(db, { migrationsFolder });
-  sqlite.exec(`
-    CREATE VIRTUAL TABLE IF NOT EXISTS session_messages_fts USING fts5(
-      session_id UNINDEXED,
-      project_id UNINDEXED,
-      role UNINDEXED,
-      content,
-      conversation_index UNINDEXED,
-      tokenize='trigram'
-    )
-  `);
-  return { db, rawDb: sqlite };
-};
-
 const makeDrizzleServiceWithData = (opts: {
   projectRows?: (typeof projects.$inferInsert)[];
 }): Layer.Layer<DrizzleService> => {
-  const { db, rawDb } = createInMemoryDb();
-
-  for (const row of opts.projectRows ?? []) {
-    db.insert(projects).values(row).run();
-  }
-
-  return Layer.succeed(DrizzleService, { db, rawDb });
+  return makeDrizzleTestServiceLayer((db) => {
+    for (const row of opts.projectRows ?? []) {
+      db.insert(projects).values(row).run();
+    }
+  });
 };
 
 const makeProjectRow = (
@@ -128,7 +106,7 @@ describe("ProjectMetaService", () => {
     it("triggers syncProjectList and retries when project not in DB", async () => {
       let syncCalled = false;
       const row = makeProjectRow({ id: projectId });
-      const { db, rawDb } = createInMemoryDb();
+      const { db, rawDb } = createInMemoryDrizzle();
 
       // DB starts empty — no project rows
       const program = Effect.gen(function* () {
@@ -159,7 +137,7 @@ describe("ProjectMetaService", () => {
     });
 
     it("fails when project not found even after sync", async () => {
-      const { db, rawDb } = createInMemoryDb();
+      const { db, rawDb } = createInMemoryDrizzle();
 
       const program = Effect.gen(function* () {
         const service = yield* ProjectMetaService;

@@ -2,7 +2,7 @@ import { Terminal } from "lucide-react";
 import type { FC } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { parseUserMessage } from "../../../../../../../server/core/claude-code/functions/parseUserMessage";
+import { parseUserMessage } from "@/lib/claude-code/parseUserMessage";
 import { CopyableMarkdownContent } from "./CopyableMarkdownContent";
 
 export const UserTextContent: FC<{ text: string; id?: string }> = ({ text, id }) => {

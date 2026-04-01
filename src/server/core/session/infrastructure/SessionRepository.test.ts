@@ -1,15 +1,15 @@
-import { DatabaseSync } from "node:sqlite";
 import { SystemError } from "@effect/platform/Error";
-import { drizzle } from "drizzle-orm/node-sqlite";
-import { migrate } from "drizzle-orm/node-sqlite/migrator";
 import { Effect, Layer, Option } from "effect";
+import {
+  createInMemoryDrizzle,
+  makeDrizzleTestServiceLayer,
+} from "../../../../testing/layers/testDrizzleServiceLayer";
 import {
   createFileInfo,
   testFileSystemLayer,
 } from "../../../../testing/layers/testFileSystemLayer";
 import { testPlatformLayer } from "../../../../testing/layers/testPlatformLayer";
 import { DrizzleService } from "../../../lib/db/DrizzleService";
-import * as schema from "../../../lib/db/schema";
 import { projects, sessions } from "../../../lib/db/schema";
 import { type ISyncService, SyncService } from "../../sync/services/SyncService";
 import type { SessionMeta } from "../../types";
@@ -20,8 +20,6 @@ import { createMockSessionMeta } from "../testing/createMockSessionMeta";
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
-
-const migrationsFolder = new URL("../../../lib/db/migrations", import.meta.url).pathname;
 
 const testSessionMetaServiceLayer = (meta: SessionMeta) =>
   Layer.mock(SessionMetaService, {
@@ -36,24 +34,6 @@ const makeSyncServiceMock = (overrides?: Partial<ISyncService>): Layer.Layer<Syn
     syncProjectList: () => Effect.void,
     ...overrides,
   });
-
-const createInMemoryDb = () => {
-  const sqlite = new DatabaseSync(":memory:");
-  sqlite.exec("PRAGMA foreign_keys = ON");
-  const db = drizzle({ client: sqlite, schema });
-  migrate(db, { migrationsFolder });
-  sqlite.exec(`
-    CREATE VIRTUAL TABLE IF NOT EXISTS session_messages_fts USING fts5(
-      session_id UNINDEXED,
-      project_id UNINDEXED,
-      role UNINDEXED,
-      content,
-      conversation_index UNINDEXED,
-      tokenize='trigram'
-    )
-  `);
-  return { db, rawDb: sqlite };
-};
 
 const defaultProjectRow: typeof projects.$inferInsert = {
   id: Buffer.from("/test/project").toString("base64url"),
@@ -89,16 +69,14 @@ const makeDrizzleServiceWithData = (opts: {
   projectRows?: (typeof projects.$inferInsert)[];
   sessionRows?: (typeof sessions.$inferInsert)[];
 }): Layer.Layer<DrizzleService> => {
-  const { db, rawDb } = createInMemoryDb();
-
-  for (const row of opts.projectRows ?? []) {
-    db.insert(projects).values(row).run();
-  }
-  for (const row of opts.sessionRows ?? []) {
-    db.insert(sessions).values(row).run();
-  }
-
-  return Layer.succeed(DrizzleService, { db, rawDb });
+  return makeDrizzleTestServiceLayer((db) => {
+    for (const row of opts.projectRows ?? []) {
+      db.insert(projects).values(row).run();
+    }
+    for (const row of opts.sessionRows ?? []) {
+      db.insert(sessions).values(row).run();
+    }
+  });
 };
 
 // ---------------------------------------------------------------------------
@@ -417,7 +395,7 @@ describe("SessionRepository", () => {
       const SessionMetaServiceMock = testSessionMetaServiceLayer(mockMeta);
 
       // Start with an empty DB — no project row
-      const { db, rawDb } = createInMemoryDb();
+      const { db, rawDb } = createInMemoryDrizzle();
 
       const program = Effect.gen(function* () {
         const repo = yield* SessionRepository;

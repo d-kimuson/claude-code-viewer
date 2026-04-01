@@ -1,12 +1,12 @@
 import { useLingui } from "@lingui/react";
 import { type FC, memo } from "react";
+import { parseUserMessage } from "@/lib/claude-code/parseUserMessage";
 import type { Conversation, SidechainConversation } from "@/lib/conversation-schema";
 import type { ToolResultContent } from "@/lib/conversation-schema/content/ToolResultContentSchema";
 import type { AssistantMessageContent } from "@/lib/conversation-schema/message/AssistantMessageSchema";
 import { formatLocaleDate } from "@/lib/date/formatLocaleDate";
 import { DEFAULT_LOCALE } from "@/lib/i18n/localeDetection";
 import { localeSchema, type SupportedLocale } from "@/lib/i18n/schema";
-import { parseUserMessage } from "@/server/core/claude-code/functions/parseUserMessage";
 import { AssistantConversationContent } from "./AssistantConversationContent";
 import { FileHistorySnapshotConversationContent } from "./FileHistorySnapshotConversationContent";
 import { MetaConversationContent } from "./MetaConversationContent";

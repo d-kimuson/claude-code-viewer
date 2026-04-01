@@ -12,6 +12,7 @@
     "react",
     "jsx-a11y"
   ],
+  "jsPlugins": ["./dev/lints/conventions.js"],
   "categories": {},
   "rules": {
     /* Correctness (違反するとそのままランタイムエラーになるような無条件適用しやすいルール群) */
@@ -158,8 +159,6 @@
 
     "unicorn/prefer-node-protocol": "error", // Node.js 組み込みモジュールは node: プロトコルで import
 
-    "node/no-process-env": "error", // process.env への直接アクセスを禁止（腐敗防止層を使用）
-
     /* Suspicious */
     "import/no-empty-named-blocks": "error", // 空の named import ブロックを検出
 
@@ -208,11 +207,36 @@
       "error",
       { "prefer": "type-imports", "fixStyle": "inline-type-imports" }
     ], // 型 import は type キーワードを使用
-    "typescript/consistent-type-definitions": ["error", "type"] // 型定義は type を使用（interface より優先）
+    "typescript/consistent-type-definitions": ["error", "type"], // 型定義は type を使用（interface より優先）
 
-    /* Project-Specific Custom Restrictions (from CLAUDE.md guidelines) */
-    // `as` type casting は typescript/no-unsafe-type-assertion で検出
-    // consistent-type-assertions は as const / as never も禁止してしまうため使用しない
+    /* Project-Specific Custom Restrictions */
+    "node/no-process-env": "error",
+    // 本来は設定したいが利用している箇所が多いので許容
+    // "no-restricted-globals": [
+    //   "error",
+    //   {
+    //     "name": "Date",
+    //     "message": "Use Effect Clock instead of global Date."
+    //   }
+    // ],
+    "no-restricted-imports": [
+      "error",
+      {
+        "paths": [
+          {
+            "name": "node:child_process",
+            "message": "Use @effect/platform CommandExecutor instead."
+          },
+          { "name": "node:fs", "message": "Use @effect/platform FileSystem instead." },
+          // 本当は設定したいが参照箇所がすでに多いのと副作用も少ないので許容
+          // { "name": "node:path", "message": "Use @effect/platform Path instead." },
+          { "name": "node:sqlite", "message": "Use DrizzleService service instead." }
+        ]
+      }
+    ],
+    "conventions/no-barrel-file": "error",
+    "conventions/colocated-tests": "error",
+    "conventions/module-boundaries": "error"
   },
   "overrides": [
     {
@@ -283,36 +307,6 @@
         "jsx-a11y/scope": "error", // scope 属性の使用を th 要素に限定
         "jsx-a11y/tabindex-no-positive": "error" // 正の tabindex 値を禁止
       }
-    },
-    {
-      "files": ["e2e/**"],
-      "rules": {
-        "no-unused-vars": "off",
-        "typescript/no-explicit-any": "off",
-        "typescript/no-unsafe-assignment": "off",
-        "typescript/no-unsafe-member-access": "off",
-        "typescript/no-unsafe-call": "off",
-        "typescript/no-unsafe-return": "off",
-        "typescript/no-unsafe-argument": "off",
-        "node/no-process-env": "off"
-      }
-    },
-    {
-      "files": ["scripts/**"],
-      "rules": {
-        "typescript/no-unsafe-assignment": "off",
-        "typescript/no-unsafe-member-access": "off",
-        "typescript/no-unsafe-call": "off",
-        "typescript/no-unsafe-argument": "off",
-        "typescript/strict-boolean-expressions": "off",
-        "typescript/use-unknown-in-catch-callback-variable": "off"
-      }
-    },
-    {
-      "files": ["**/*.config.ts", "**/*.config.js", "**/*.config.mjs"],
-      "rules": {
-        "node/no-process-env": "off"
-      }
     }
   ],
   "settings": {
@@ -360,7 +354,12 @@
     "src/lib/$path.ts",
     "src/lib/i18n/locales/*/messages.ts",
     "src/lib/i18n/locales/*/messages.json",
-    "src/routeTree.gen.ts"
+    "src/routeTree.gen.ts",
+    "e2e/**",
+    "scripts/**",
+    "dev/lints/**",
+    "dev/lints/**",
+    "**/*.config.*"
   ],
   "options": {
     "typeCheck": false,

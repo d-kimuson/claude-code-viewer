@@ -1,10 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAtomValue } from "jotai";
 import { useCallback } from "react";
+import { defaultUserConfig, type UserConfig } from "@/lib/config/userConfig";
 import { honoClient } from "../../lib/api/client";
 import { configQuery } from "../../lib/api/queries";
 import { type AuthState, authAtom } from "../../lib/auth/store/authAtom";
-import { defaultUserConfig, type UserConfig } from "../../server/lib/config/config";
 
 export const canFetchConfig = (authState: AuthState) =>
   authState.checked && (!authState.authEnabled || authState.authenticated);

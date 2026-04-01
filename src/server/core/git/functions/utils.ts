@@ -1,3 +1,5 @@
+/* oxlint-disable no-restricted-imports */
+/* Exception: this file still uses Node process/filesystem APIs because full migration to Effect services is high-cost. Keep this exception scoped to this file so new code does not copy this pattern. */
 import { execFile } from "node:child_process";
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";

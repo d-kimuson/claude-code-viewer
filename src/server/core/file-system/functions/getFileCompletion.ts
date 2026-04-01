@@ -1,3 +1,5 @@
+/* oxlint-disable no-restricted-imports */
+/* Exception: this file still uses Node built-ins because full migration to Effect FileSystem is high-cost. Keep this exception scoped to this file so new code does not copy this pattern. */
 import { existsSync } from "node:fs";
 import { readdir } from "node:fs/promises";
 import { join, resolve } from "node:path";

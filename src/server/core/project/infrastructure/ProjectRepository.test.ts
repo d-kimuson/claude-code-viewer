@@ -1,15 +1,12 @@
-import { DatabaseSync } from "node:sqlite";
-import { drizzle } from "drizzle-orm/node-sqlite";
-import { migrate } from "drizzle-orm/node-sqlite/migrator";
-import { Effect, Layer, Option } from "effect";
+import { Effect, Option, type Layer } from "effect";
+import { makeDrizzleTestServiceLayer } from "../../../../testing/layers/testDrizzleServiceLayer";
 import {
   createFileInfo,
   testFileSystemLayer,
 } from "../../../../testing/layers/testFileSystemLayer";
 import { testPlatformLayer } from "../../../../testing/layers/testPlatformLayer";
 import { testProjectMetaServiceLayer } from "../../../../testing/layers/testProjectMetaServiceLayer";
-import { DrizzleService } from "../../../lib/db/DrizzleService";
-import * as schema from "../../../lib/db/schema";
+import type { DrizzleService } from "../../../lib/db/DrizzleService";
 import { projects } from "../../../lib/db/schema";
 import type { ProjectMeta } from "../../types";
 import { ProjectRepository } from "./ProjectRepository";
@@ -18,36 +15,14 @@ import { ProjectRepository } from "./ProjectRepository";
 // Helpers
 // ---------------------------------------------------------------------------
 
-const migrationsFolder = new URL("../../../lib/db/migrations", import.meta.url).pathname;
-
-const createInMemoryDb = () => {
-  const sqlite = new DatabaseSync(":memory:");
-  sqlite.exec("PRAGMA foreign_keys = ON");
-  const db = drizzle({ client: sqlite, schema });
-  migrate(db, { migrationsFolder });
-  sqlite.exec(`
-    CREATE VIRTUAL TABLE IF NOT EXISTS session_messages_fts USING fts5(
-      session_id UNINDEXED,
-      project_id UNINDEXED,
-      role UNINDEXED,
-      content,
-      conversation_index UNINDEXED,
-      tokenize='trigram'
-    )
-  `);
-  return { db, rawDb: sqlite };
-};
-
 const makeDrizzleServiceWithData = (opts: {
   projectRows?: (typeof projects.$inferInsert)[];
 }): Layer.Layer<DrizzleService> => {
-  const { db, rawDb } = createInMemoryDb();
-
-  for (const row of opts.projectRows ?? []) {
-    db.insert(projects).values(row).run();
-  }
-
-  return Layer.succeed(DrizzleService, { db, rawDb });
+  return makeDrizzleTestServiceLayer((db) => {
+    for (const row of opts.projectRows ?? []) {
+      db.insert(projects).values(row).run();
+    }
+  });
 };
 
 const makeProjectRow = (

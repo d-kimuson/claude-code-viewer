@@ -1,8 +1,10 @@
-import {
-  type DocumentBlockParam,
-  type ImageBlockParam,
-  mediaTypeSchema,
+import { z } from "zod";
+import type {
+  DocumentBlockParam,
+  ImageBlockParam,
 } from "../../../../../server/core/claude-code/schema";
+
+const mediaTypeSchema = z.enum(["image/png", "image/jpeg", "image/gif", "image/webp"]);
 
 export type FileType = "text" | "image" | "pdf";
 

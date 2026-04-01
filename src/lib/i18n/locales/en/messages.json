@@ -1925,7 +1925,7 @@
     "origin": [
       [
         "src/routes/projects/$projectId/session.tsx",
-        25
+        24
       ]
     ],
     "translation": "The session you are looking for does not exist."
@@ -1936,7 +1936,7 @@
     "origin": [
       [
         "src/routes/projects/$projectId/session.tsx",
-        24
+        23
       ]
     ],
     "translation": "Session Not Found"
@@ -2369,7 +2369,7 @@
     "origin": [
       [
         "src/app/components/ProjectSwitcher.tsx",
-        68
+        76
       ]
     ],
     "translation": "No project selected"
@@ -2380,7 +2380,7 @@
     "origin": [
       [
         "src/app/components/ProjectSwitcher.tsx",
-        79
+        86
       ]
     ],
     "translation": "No matching projects"

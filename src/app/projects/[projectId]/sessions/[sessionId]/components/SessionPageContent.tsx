@@ -20,13 +20,40 @@ import { MobileSidebar } from "./sessionSidebar/MobileSidebar";
 import { SessionSidebar } from "./sessionSidebar/SessionSidebar";
 import type { Tab } from "./sessionSidebar/schema";
 
+/**
+ * Outer shell: renders AppLayout immediately (no data fetching),
+ * so the header stays visible while inner content loads.
+ */
 export const SessionPageContent: FC<{
   projectId: string;
   sessionId?: string;
   tab: Tab;
 }> = ({ projectId, sessionId, tab }) => {
-  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   useSyncRightPanelWithSearchParams();
+
+  return (
+    <AppLayout projectId={projectId} sessionId={sessionId}>
+      <Suspense fallback={<Loading />}>
+        <SessionPageInner
+          projectId={projectId}
+          sessionId={sessionId}
+          tab={tab}
+        />
+      </Suspense>
+    </AppLayout>
+  );
+};
+
+/**
+ * Inner content that depends on project data (suspends via useSuspenseInfiniteQuery).
+ * Wrapped in Suspense by SessionPageContent so the AppLayout shell stays visible.
+ */
+const SessionPageInner: FC<{
+  projectId: string;
+  sessionId?: string;
+  tab: Tab;
+}> = ({ projectId, sessionId, tab }) => {
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const isMobile = useIsMobile();
 
   // Swipe from left edge to open mobile sidebar
@@ -49,6 +76,10 @@ export const SessionPageContent: FC<{
   const projectPath = project?.meta.projectPath ?? project?.claudeProjectPath;
   const projectName = project?.meta.projectName ?? "Untitled Project";
 
+  const title = projectName
+    ? `${projectName} - Claude Code Viewer`
+    : "Claude Code Viewer";
+
   // Right panel margin (when open, reserve space for fixed right panel)
   const rightPanelMargin =
     isRightPanelOpen && !isMobile ? `${rightPanelWidth}%` : "0";
@@ -62,11 +93,8 @@ export const SessionPageContent: FC<{
   }, []);
 
   return (
-    <AppLayout
-      projectId={projectId}
-      projectPath={projectPath}
-      sessionId={sessionId}
-    >
+    <>
+      <title>{title}</title>
       {/* Mobile sidebar (fixed, push-style) */}
       {isMobile && (
         <MobileSidebar
@@ -163,6 +191,6 @@ export const SessionPageContent: FC<{
           }
         />
       </div>
-    </AppLayout>
+    </>
   );
 };

@@ -42,6 +42,17 @@ export const ProjectSwitcher: FC<ProjectSwitcherProps> = ({
 
   const projects = data?.projects ?? [];
 
+  // Derive display path from own query data if not provided as prop
+  const resolvedPath =
+    currentProjectPath ??
+    (() => {
+      const match = projects.find((p) => p.id === currentProjectId);
+      return match
+        ? (match.meta.projectPath ?? match.claudeProjectPath)
+        : undefined;
+    })();
+  const displayPath = resolvedPath ? shortenHome(resolvedPath) : undefined;
+
   const handleSelect = (projectId: string) => {
     setOpen(false);
     if (projectId === currentProjectId) return;
@@ -58,17 +69,13 @@ export const ProjectSwitcher: FC<ProjectSwitcherProps> = ({
           type="button"
           role="combobox"
           aria-expanded={open}
-          className="flex items-center gap-1.5 text-foreground/70 font-medium truncate hover:text-foreground transition-colors rounded px-1.5 py-0.5 -mx-1.5 hover:bg-muted/50"
+          className="flex items-center gap-1.5 h-7 text-foreground/70 font-medium truncate hover:text-foreground transition-colors rounded px-2 hover:bg-muted/50"
         >
-          <FolderIcon className="w-3 h-3 shrink-0 opacity-60" />
-          <span className="truncate max-w-[300px] font-mono text-[11px]">
-            {currentProjectPath ? (
-              shortenHome(currentProjectPath)
-            ) : (
-              <Trans id="project_switcher.no_project" />
-            )}
+          <FolderIcon className="w-3.5 h-3.5 shrink-0 opacity-60" />
+          <span className="truncate max-w-[300px] font-mono text-xs">
+            {displayPath ?? <Trans id="project_switcher.no_project" />}
           </span>
-          <ChevronsUpDownIcon className="w-3 h-3 shrink-0 opacity-40" />
+          <ChevronsUpDownIcon className="w-3.5 h-3.5 shrink-0 opacity-40" />
         </button>
       </PopoverTrigger>
       <PopoverContent className="w-80 p-0 z-[53]" align="start" sideOffset={8}>

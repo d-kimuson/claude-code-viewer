@@ -135,7 +135,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        446
+        454
       ]
     ],
     "translation": "Message input with autocomplete support"
@@ -253,7 +253,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        305
+        291
       ]
     ],
     "translation": "Thinking"
@@ -335,7 +335,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        194
+        180
       ]
     ],
     "translation": "Input Parameters"
@@ -451,7 +451,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        208
+        194
       ]
     ],
     "translation": "Tool Result"
@@ -489,17 +489,6 @@
       ]
     ],
     "translation": "Task ID"
-  },
-  "assistant.tool.tool_id": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        153
-      ]
-    ],
-    "translation": "Tool ID"
   },
   "assistant.tool.view_file": {
     "placeholders": {},
@@ -540,7 +529,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        546
+        554
       ]
     ],
     "translation": "Attach"
@@ -562,7 +551,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        410
+        418
       ]
     ],
     "translation": "Failed to send message. Please try again."
@@ -758,7 +747,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        255
+        263
       ]
     ],
     "translation": "Failed to schedule message"
@@ -770,7 +759,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        239
+        247
       ]
     ],
     "translation": "Message scheduled successfully"
@@ -782,7 +771,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        244
+        252
       ]
     ],
     "translation": "You can view and manage it in the Scheduler tab"
@@ -804,11 +793,11 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        499
+        507
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        667
+        675
       ]
     ],
     "translation": "Send Now"
@@ -819,11 +808,11 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        482
+        490
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        650
+        658
       ]
     ],
     "translation": "Send Mode"
@@ -834,15 +823,15 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        502
+        510
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        670
+        678
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        692
+        700
       ]
     ],
     "translation": "Schedule Send"
@@ -853,7 +842,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        509
+        517
       ]
     ],
     "translation": "Scheduled Send Time"
@@ -864,7 +853,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        754
+        762
       ]
     ],
     "translation": "Processing..."
@@ -876,7 +865,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        618
+        626
       ]
     ],
     "translation": "Select reasoning effort"
@@ -888,7 +877,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        581
+        589
       ]
     ],
     "translation": "Select model"
@@ -972,7 +961,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        734
+        742
       ]
     ],
     "translation": "Voice input"

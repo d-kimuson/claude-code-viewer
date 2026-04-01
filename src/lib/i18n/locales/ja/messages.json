@@ -135,7 +135,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        446
+        454
       ]
     ],
     "translation": "補完機能付きメッセージ入力"
@@ -253,7 +253,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        305
+        291
       ]
     ],
     "translation": "思考中"
@@ -335,7 +335,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        194
+        180
       ]
     ],
     "translation": "入力パラメータ"
@@ -451,7 +451,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        208
+        194
       ]
     ],
     "translation": "ツール実行結果"
@@ -489,17 +489,6 @@
       ]
     ],
     "translation": "タスクID"
-  },
-  "assistant.tool.tool_id": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        153
-      ]
-    ],
-    "translation": "ツールID"
   },
   "assistant.tool.view_file": {
     "placeholders": {},
@@ -540,7 +529,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        546
+        554
       ]
     ],
     "translation": "添付"
@@ -562,7 +551,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        410
+        418
       ]
     ],
     "translation": "メッセージの送信に失敗しました。もう一度お試しください。"
@@ -758,7 +747,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        255
+        263
       ]
     ],
     "translation": "メッセージの予約に失敗しました"
@@ -770,7 +759,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        239
+        247
       ]
     ],
     "translation": "メッセージを予約しました"
@@ -782,7 +771,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        244
+        252
       ]
     ],
     "translation": "スケジューラタブで確認・管理できます"
@@ -804,11 +793,11 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        499
+        507
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        667
+        675
       ]
     ],
     "translation": "今すぐ送信"
@@ -819,11 +808,11 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        482
+        490
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        650
+        658
       ]
     ],
     "translation": "送信モード"
@@ -834,15 +823,15 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        502
+        510
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        670
+        678
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        692
+        700
       ]
     ],
     "translation": "予約送信"
@@ -853,7 +842,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        509
+        517
       ]
     ],
     "translation": "送信予定時刻"
@@ -864,7 +853,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        754
+        762
       ]
     ],
     "translation": "処理中..."
@@ -876,7 +865,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        618
+        626
       ]
     ],
     "translation": "Reasoning effort を選択"
@@ -888,7 +877,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        581
+        589
       ]
     ],
     "translation": "モデルを選択"
@@ -972,7 +961,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        734
+        742
       ]
     ],
     "translation": "音声入力"

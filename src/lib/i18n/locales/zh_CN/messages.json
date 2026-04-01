@@ -135,7 +135,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        446
+        454
       ]
     ],
     "translation": "带补全支持的消息输入"
@@ -253,7 +253,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        305
+        291
       ]
     ],
     "translation": "思考中"
@@ -335,7 +335,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        194
+        180
       ]
     ],
     "translation": "输入参数"
@@ -451,7 +451,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        208
+        194
       ]
     ],
     "translation": "工具结果"
@@ -489,17 +489,6 @@
       ]
     ],
     "translation": "任务 ID"
-  },
-  "assistant.tool.tool_id": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        153
-      ]
-    ],
-    "translation": "工具 ID"
   },
   "assistant.tool.view_file": {
     "placeholders": {},
@@ -540,7 +529,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        546
+        554
       ]
     ],
     "translation": "附加"
@@ -562,7 +551,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        410
+        418
       ]
     ],
     "translation": "发送消息失败。请重试。"
@@ -758,7 +747,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        255
+        263
       ]
     ],
     "translation": "定时发送消息失败"
@@ -770,7 +759,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        239
+        247
       ]
     ],
     "translation": "消息定时发送成功"
@@ -782,7 +771,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        244
+        252
       ]
     ],
     "translation": "您可以在定时任务选项卡中查看和管理"
@@ -804,11 +793,11 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        499
+        507
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        667
+        675
       ]
     ],
     "translation": "立即发送"
@@ -819,11 +808,11 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        482
+        490
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        650
+        658
       ]
     ],
     "translation": "发送模式"
@@ -834,15 +823,15 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        502
+        510
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        670
+        678
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        692
+        700
       ]
     ],
     "translation": "定时发送"
@@ -853,7 +842,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        509
+        517
       ]
     ],
     "translation": "定时发送时间"
@@ -864,7 +853,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        754
+        762
       ]
     ],
     "translation": "处理中..."
@@ -876,7 +865,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        618
+        626
       ]
     ],
     "translation": "选择推理努力程度"
@@ -888,7 +877,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        581
+        589
       ]
     ],
     "translation": "选择模型"
@@ -972,7 +961,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        734
+        742
       ]
     ],
     "translation": "语音输入"

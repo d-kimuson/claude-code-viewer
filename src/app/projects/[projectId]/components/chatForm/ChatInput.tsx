@@ -36,6 +36,7 @@ import {
 } from "../../../../../components/ui/tooltip";
 import { useCreateSchedulerJob } from "../../../../../hooks/useScheduler";
 import { useSpeechRecognition } from "../../../../../hooks/useSpeechRecognition";
+import { useChatInputDraft } from "../../../../../lib/atoms/chatInputDrafts";
 import type {
   CCOptionsSchema,
   DocumentBlockParam,
@@ -110,7 +111,11 @@ export const ChatInput: FC<ChatInputProps> = ({
   };
   const minHeightValue = parseMinHeight(minHeightProp);
   const { i18n } = useLingui();
-  const [message, setMessage] = useState("");
+  const draftSessionId = baseSessionId ?? "new-session";
+  const [message, setMessage, clearMessage] = useChatInputDraft({
+    projectId,
+    sessionId: draftSessionId,
+  });
   const [attachedFiles, setAttachedFiles] = useState<
     Array<{ file: File; id: string }>
   >([]);
@@ -146,9 +151,12 @@ export const ChatInput: FC<ChatInputProps> = ({
     audioLevels,
     toggle: toggleSpeechRecognition,
   } = useSpeechRecognition({
-    onTranscript: useCallback((text: string) => {
-      setMessage((prev) => prev + text);
-    }, []),
+    onTranscript: useCallback(
+      (text: string) => {
+        setMessage((prev) => prev + text);
+      },
+      [setMessage],
+    ),
   });
 
   // Auto-resize textarea based on content
@@ -248,7 +256,7 @@ export const ChatInput: FC<ChatInputProps> = ({
           },
         );
 
-        setMessage("");
+        clearMessage();
         setAttachedFiles([]);
       } catch (error) {
         toast.error(
@@ -270,7 +278,7 @@ export const ChatInput: FC<ChatInputProps> = ({
         ccOptions,
       });
 
-      setMessage("");
+      clearMessage();
       setAttachedFiles([]);
     }
   };

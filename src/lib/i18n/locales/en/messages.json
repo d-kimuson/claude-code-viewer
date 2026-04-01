@@ -2,13 +2,23 @@
   "Available commands": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/[projectId]/components/chatForm/CommandCompletion.tsx", 203]],
+    "origin": [
+      [
+        "src/web/app/projects/[projectId]/components/chatForm/CommandCompletion.tsx",
+        203
+      ]
+    ],
     "translation": "Available Commands"
   },
   "Available files and directories": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/[projectId]/components/chatForm/FileCompletion.tsx", 253]],
+    "origin": [
+      [
+        "src/web/app/projects/[projectId]/components/chatForm/FileCompletion.tsx",
+        253
+      ]
+    ],
     "translation": "Available Files and Directories"
   },
   "Close sidebar": {
@@ -26,7 +36,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/ReviewTabContent.tsx", 257],
+      [
+        "src/web/app/components/rightPanel/ReviewTabContent.tsx",
+        257
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         376
@@ -38,7 +51,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/ReviewTabContent.tsx", 265],
+      [
+        "src/web/app/components/rightPanel/ReviewTabContent.tsx",
+        265
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         382
@@ -50,7 +66,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx", 205]
+      [
+        "src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        205
+      ]
     ],
     "translation": "Custom tool name"
   },
@@ -58,7 +77,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/GitTabContent.tsx", 464],
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        464
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         293
@@ -70,7 +92,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/GitTabContent.tsx", 519],
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        519
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         361
@@ -82,7 +107,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/GitTabContent.tsx", 478],
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        478
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         311
@@ -94,14 +122,22 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx", 97]
+      [
+        "src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        97
+      ]
     ],
     "translation": "Key name"
   },
   "Message input with completion support": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx", 446]],
+    "origin": [
+      [
+        "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        446
+      ]
+    ],
     "translation": "Message input with autocomplete support"
   },
   "New chat": {
@@ -130,7 +166,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/GitTabContent.tsx", 506],
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        506
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         346
@@ -141,32 +180,55 @@
   "Select enter key behavior": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 222]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        222
+      ]
+    ],
     "translation": "Select Enter key behavior"
   },
   "Select language": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 340]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        340
+      ]
+    ],
     "translation": "Select Language"
   },
   "Select search hotkey": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 254]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        254
+      ]
+    ],
     "translation": "Select Search Hotkey"
   },
   "Select theme": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 369]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        369
+      ]
+    ],
     "translation": "Select Theme"
   },
   "Uncommitted changes": {
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/ReviewTabContent.tsx", 172],
+      [
+        "src/web/app/components/rightPanel/ReviewTabContent.tsx",
+        172
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         177
@@ -178,7 +240,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx", 105]
+      [
+        "src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        105
+      ]
     ],
     "translation": "Value field"
   },
@@ -197,7 +262,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/GitTabContent.tsx", 339],
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        339
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
         179
@@ -209,7 +277,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/GitTabContent.tsx", 321],
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        321
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
         161
@@ -221,10 +292,13 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/FilesToolsTabContent.tsx", 343],
+      [
+        "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
+        344
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        219
+        220
       ]
     ],
     "translation": "Failed to load task"
@@ -233,7 +307,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/GitTabContent.tsx", 338],
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        338
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
         178
@@ -267,7 +344,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/GitTabContent.tsx", 340],
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        340
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
         180
@@ -279,7 +359,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/GitTabContent.tsx", 313],
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        313
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
         153
@@ -291,24 +374,32 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/FilesToolsTabContent.tsx", 335],
+      [
+        "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
+        336
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        211
+        212
       ]
     ],
     "translation": "Loading task..."
   },
   "assistant.tool.message_count": {
     "placeholders": {
-      "count": ["conversations.length"]
+      "count": [
+        "conversations.length"
+      ]
     },
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/FilesToolsTabContent.tsx", 321],
+      [
+        "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
+        322
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        197
+        198
       ]
     ],
     "translation": "{count} messages"
@@ -317,10 +408,13 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/FilesToolsTabContent.tsx", 353],
+      [
+        "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
+        354
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        235
+        236
       ]
     ],
     "translation": "No task data"
@@ -331,7 +425,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        238
+        239
       ]
     ],
     "translation": "No data is available for this task"
@@ -340,7 +434,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/GitTabContent.tsx", 341],
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        341
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
         181
@@ -363,15 +460,21 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/FilesToolsTabContent.tsx", 346],
-      ["src/web/app/components/rightPanel/GitTabContent.tsx", 330],
+      [
+        "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
+        347
+      ],
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        330
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
         170
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        228
+        229
       ]
     ],
     "translation": "Retry"
@@ -382,7 +485,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        188
+        189
       ]
     ],
     "translation": "Task ID"
@@ -404,7 +507,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        166
+        167
       ]
     ],
     "translation": "View Task Details"
@@ -423,7 +526,12 @@
   "chat.attach_file": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx", 539]],
+    "origin": [
+      [
+        "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        539
+      ]
+    ],
     "translation": "Attach"
   },
   "chat.button.start": {
@@ -440,15 +548,26 @@
   "chat.error.send_failed": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx", 412]],
+    "origin": [
+      [
+        "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        412
+      ]
+    ],
     "translation": "Failed to send message. Please try again."
   },
   "chat.history.button": {
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/SessionHistoryPopover.tsx", 88],
-      ["src/web/app/components/SessionHistoryPopover.tsx", 107]
+      [
+        "src/web/app/components/SessionHistoryPopover.tsx",
+        88
+      ],
+      [
+        "src/web/app/components/SessionHistoryPopover.tsx",
+        107
+      ]
     ],
     "translation": "history"
   },
@@ -456,8 +575,14 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/SessionHistoryPopover.tsx", 120],
-      ["src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx", 618]
+      [
+        "src/web/app/components/SessionHistoryPopover.tsx",
+        120
+      ],
+      [
+        "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
+        619
+      ]
     ],
     "translation": "Recent sessions"
   },
@@ -465,9 +590,18 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/SessionHistoryPopover.tsx", 150],
-      ["src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx", 338],
-      ["src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx", 606],
+      [
+        "src/web/app/components/SessionHistoryPopover.tsx",
+        150
+      ],
+      [
+        "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
+        338
+      ],
+      [
+        "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
+        607
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
         125
@@ -610,21 +744,36 @@
     "message": "Failed to schedule message",
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx", 260]],
+    "origin": [
+      [
+        "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        260
+      ]
+    ],
     "translation": "Failed to schedule message"
   },
   "chat.scheduled_send.success": {
     "message": "Message scheduled successfully",
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx", 244]],
+    "origin": [
+      [
+        "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        244
+      ]
+    ],
     "translation": "Message scheduled successfully"
   },
   "chat.scheduled_send.success_description": {
     "message": "You can view and manage it in the Scheduler tab",
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx", 249]],
+    "origin": [
+      [
+        "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        249
+      ]
+    ],
     "translation": "You can view and manage it in the Scheduler tab"
   },
   "chat.send": {
@@ -642,8 +791,14 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx", 492],
-      ["src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx", 645]
+      [
+        "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        492
+      ],
+      [
+        "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        645
+      ]
     ],
     "translation": "Send Now"
   },
@@ -651,8 +806,14 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx", 477],
-      ["src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx", 630]
+      [
+        "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        477
+      ],
+      [
+        "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        630
+      ]
     ],
     "translation": "Send Mode"
   },
@@ -660,36 +821,65 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx", 495],
-      ["src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx", 648],
-      ["src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx", 670]
+      [
+        "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        495
+      ],
+      [
+        "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        648
+      ],
+      [
+        "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        670
+      ]
     ],
     "translation": "Schedule Send"
   },
   "chat.send_mode.scheduled_time": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx", 502]],
+    "origin": [
+      [
+        "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        502
+      ]
+    ],
     "translation": "Scheduled Send Time"
   },
   "chat.status.processing": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx", 732]],
+    "origin": [
+      [
+        "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        732
+      ]
+    ],
     "translation": "Processing..."
   },
   "chat.toolbar.effort.tooltip": {
     "message": "Select reasoning effort",
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx", 604]],
+    "origin": [
+      [
+        "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        604
+      ]
+    ],
     "translation": "Select reasoning effort"
   },
   "chat.toolbar.model.tooltip": {
     "message": "Select model",
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx", 572]],
+    "origin": [
+      [
+        "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        572
+      ]
+    ],
     "translation": "Select model"
   },
   "chat.toolbar.permission_mode.accept_edits": {
@@ -768,13 +958,23 @@
     "message": "Voice input",
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx", 710]],
+    "origin": [
+      [
+        "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        710
+      ]
+    ],
     "translation": "Voice input"
   },
   "common.action.cancel": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/components/SetupProjectDialog.tsx", 82]],
+    "origin": [
+      [
+        "src/web/app/projects/components/SetupProjectDialog.tsx",
+        82
+      ]
+    ],
     "translation": "Cancel"
   },
   "common.cancel": {
@@ -856,7 +1056,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/ReviewTabContent.tsx", 281],
+      [
+        "src/web/app/components/rightPanel/ReviewTabContent.tsx",
+        281
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         396
@@ -906,7 +1109,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx", 465]
+      [
+        "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
+        465
+      ]
     ],
     "translation": "Branch"
   },
@@ -914,7 +1120,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx", 446]
+      [
+        "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
+        446
+      ]
     ],
     "translation": "Metadata"
   },
@@ -922,7 +1131,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx", 492]
+      [
+        "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
+        492
+      ]
     ],
     "translation": "Model"
   },
@@ -953,7 +1165,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx", 452]
+      [
+        "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
+        452
+      ]
     ],
     "translation": "Project Path"
   },
@@ -985,7 +1200,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx", 479]
+      [
+        "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
+        479
+      ]
     ],
     "translation": "Session ID"
   },
@@ -1031,7 +1249,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        122
+        74
       ]
     ],
     "translation": "Raw Data: "
@@ -1042,7 +1260,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        115
+        67
       ]
     ],
     "translation": "Report This Issue"
@@ -1053,7 +1271,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        93
+        45
       ]
     ],
     "translation": "Schema Error"
@@ -1064,7 +1282,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        105
+        57
       ]
     ],
     "translation": "Schema Validation Error"
@@ -1075,7 +1293,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        108
+        60
       ]
     ],
     "translation": "Failed to parse this conversation entry. This may be due to format changes or parsing issues."
@@ -1290,7 +1508,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/GitTabContent.tsx", 625],
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        625
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         533
@@ -1302,7 +1523,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/GitTabContent.tsx", 554],
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        554
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         442
@@ -1314,7 +1538,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/GitTabContent.tsx", 596],
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        596
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         505
@@ -1326,7 +1553,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/GitTabContent.tsx", 661],
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        661
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         567
@@ -1338,7 +1568,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/GitTabContent.tsx", 622],
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        622
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         530
@@ -1350,7 +1583,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/GitTabContent.tsx", 658],
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        658
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         564
@@ -1362,7 +1598,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/GitTabContent.tsx", 583],
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        583
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         471
@@ -1396,7 +1635,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/ReviewTabContent.tsx", 59],
+      [
+        "src/web/app/components/rightPanel/ReviewTabContent.tsx",
+        59
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         45
@@ -1408,7 +1650,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/ReviewTabContent.tsx", 389],
+      [
+        "src/web/app/components/rightPanel/ReviewTabContent.tsx",
+        389
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         613
@@ -1420,7 +1665,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/GitTabContent.tsx", 643],
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        643
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         550
@@ -1432,7 +1680,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/GitTabContent.tsx", 640],
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        640
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         547
@@ -1444,7 +1695,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/GitTabContent.tsx", 574],
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        574
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         463
@@ -1466,32 +1720,55 @@
   "directory_picker.current": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/components/DirectoryPicker.tsx", 39]],
+    "origin": [
+      [
+        "src/web/app/projects/components/DirectoryPicker.tsx",
+        39
+      ]
+    ],
     "translation": "Current: "
   },
   "directory_picker.loading": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/components/DirectoryPicker.tsx", 56]],
+    "origin": [
+      [
+        "src/web/app/projects/components/DirectoryPicker.tsx",
+        56
+      ]
+    ],
     "translation": "Loading..."
   },
   "directory_picker.no_directories": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/components/DirectoryPicker.tsx", 81]],
+    "origin": [
+      [
+        "src/web/app/projects/components/DirectoryPicker.tsx",
+        81
+      ]
+    ],
     "translation": "No Directories Found"
   },
   "directory_picker.show_hidden": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/components/DirectoryPicker.tsx", 50]],
+    "origin": [
+      [
+        "src/web/app/projects/components/DirectoryPicker.tsx",
+        50
+      ]
+    ],
     "translation": "Show Hidden Files"
   },
   "e.g., 1.00": {
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx", 512]
+      [
+        "src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        512
+      ]
     ],
     "translation": "Example: 1.00"
   },
@@ -1499,7 +1776,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx", 468]
+      [
+        "src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        468
+      ]
     ],
     "translation": "Example: 10"
   },
@@ -1507,7 +1787,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx", 489]
+      [
+        "src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        489
+      ]
     ],
     "translation": "Example: 10000"
   },
@@ -1515,37 +1798,62 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx", 400]
+      [
+        "src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        400
+      ]
     ],
     "translation": "Example: api.example.com, cdn.example.com"
   },
   "layout.bottom_panel.title": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/BottomPanel.tsx", 88]],
+    "origin": [
+      [
+        "src/web/app/components/BottomPanel.tsx",
+        88
+      ]
+    ],
     "translation": "Terminal"
   },
   "layout.toggle_bottom_panel": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/AppLayout.tsx", 117]],
+    "origin": [
+      [
+        "src/web/app/components/AppLayout.tsx",
+        117
+      ]
+    ],
     "translation": "Toggle bottom panel"
   },
   "layout.toggle_left_panel": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/AppLayout.tsx", 96]],
+    "origin": [
+      [
+        "src/web/app/components/AppLayout.tsx",
+        96
+      ]
+    ],
     "translation": "Toggle left panel"
   },
   "layout.toggle_right_panel": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/AppLayout.tsx", 138]],
+    "origin": [
+      [
+        "src/web/app/components/AppLayout.tsx",
+        138
+      ]
+    ],
     "translation": "Toggle right panel"
   },
   "mcp.error.load_failed": {
     "placeholders": {
-      "error": ["error.message"]
+      "error": [
+        "error.message"
+      ]
     },
     "comments": [],
     "origin": [
@@ -1581,153 +1889,276 @@
   "notfound.button.go_home": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/NotFound.tsx", 43]],
+    "origin": [
+      [
+        "src/web/components/NotFound.tsx",
+        43
+      ]
+    ],
     "translation": "Go Home"
   },
   "notfound.default.description": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/NotFound.tsx", 20]],
+    "origin": [
+      [
+        "src/web/components/NotFound.tsx",
+        20
+      ]
+    ],
     "translation": "The page you are looking for does not exist or has been moved."
   },
   "notfound.default.title": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/NotFound.tsx", 19]],
+    "origin": [
+      [
+        "src/web/components/NotFound.tsx",
+        19
+      ]
+    ],
     "translation": "Page Not Found"
   },
   "notfound.session.description": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/routes/projects/$projectId/session.tsx", 36]],
+    "origin": [
+      [
+        "src/web/routes/projects/$projectId/session.tsx",
+        36
+      ]
+    ],
     "translation": "The session you are looking for does not exist."
   },
   "notfound.session.title": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/routes/projects/$projectId/session.tsx", 35]],
+    "origin": [
+      [
+        "src/web/routes/projects/$projectId/session.tsx",
+        35
+      ]
+    ],
     "translation": "Session Not Found"
   },
   "notification.beep": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/lib/notifications.tsx", 95]],
+    "origin": [
+      [
+        "src/lib/notifications.tsx",
+        95
+      ]
+    ],
     "translation": "Beep"
   },
   "notification.chime": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/lib/notifications.tsx", 96]],
+    "origin": [
+      [
+        "src/lib/notifications.tsx",
+        96
+      ]
+    ],
     "translation": "Chime"
   },
   "notification.description": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/NotificationSettings.tsx", 83]],
+    "origin": [
+      [
+        "src/web/components/NotificationSettings.tsx",
+        83
+      ]
+    ],
     "translation": "Select sound to play when Claude Code task completes"
   },
   "notification.empty": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/NotificationBell.tsx", 109]],
+    "origin": [
+      [
+        "src/web/app/components/NotificationBell.tsx",
+        109
+      ]
+    ],
     "translation": "No new notifications"
   },
   "notification.none": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/lib/notifications.tsx", 94]],
+    "origin": [
+      [
+        "src/lib/notifications.tsx",
+        94
+      ]
+    ],
     "translation": "None"
   },
   "notification.permission_requested": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/NotificationBell.tsx", 130]],
+    "origin": [
+      [
+        "src/web/app/components/NotificationBell.tsx",
+        130
+      ]
+    ],
     "translation": "Permission Required"
   },
   "notification.ping": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/lib/notifications.tsx", 97]],
+    "origin": [
+      [
+        "src/lib/notifications.tsx",
+        97
+      ]
+    ],
     "translation": "Ping"
   },
   "notification.pop": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/lib/notifications.tsx", 98]],
+    "origin": [
+      [
+        "src/lib/notifications.tsx",
+        98
+      ]
+    ],
     "translation": "Pop"
   },
   "notification.question_asked": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/NotificationBell.tsx", 132]],
+    "origin": [
+      [
+        "src/web/app/components/NotificationBell.tsx",
+        132
+      ]
+    ],
     "translation": "Question from Claude"
   },
   "notification.session_completed": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/NotificationBell.tsx", 128]],
+    "origin": [
+      [
+        "src/web/app/components/NotificationBell.tsx",
+        128
+      ]
+    ],
     "translation": "Session completed"
   },
   "notification.session_paused": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/NotificationBell.tsx", 126]],
+    "origin": [
+      [
+        "src/web/app/components/NotificationBell.tsx",
+        126
+      ]
+    ],
     "translation": "Session paused"
   },
   "notification.test": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/NotificationSettings.tsx", 76]],
+    "origin": [
+      [
+        "src/web/components/NotificationSettings.tsx",
+        76
+      ]
+    ],
     "translation": "Test"
   },
   "notification.title": {
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/NotificationBell.tsx", 87],
-      ["src/web/app/components/NotificationBell.tsx", 99]
+      [
+        "src/web/app/components/NotificationBell.tsx",
+        87
+      ],
+      [
+        "src/web/app/components/NotificationBell.tsx",
+        99
+      ]
     ],
     "translation": "Notifications"
   },
   "panel.browser.empty.description": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/RightPanel.tsx", 327]],
+    "origin": [
+      [
+        "src/web/app/components/RightPanel.tsx",
+        327
+      ]
+    ],
     "translation": "Enter a URL in the bar above or click a link in the conversation"
   },
   "panel.browser.empty.title": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/RightPanel.tsx", 324]],
+    "origin": [
+      [
+        "src/web/app/components/RightPanel.tsx",
+        324
+      ]
+    ],
     "translation": "No page loaded"
   },
   "panel.files.edited_section": {
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/FilesToolsTabContent.tsx", 412],
-      ["src/web/app/components/rightPanel/FilesToolsTabContent.tsx", 542]
+      [
+        "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
+        414
+      ],
+      [
+        "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
+        544
+      ]
     ],
     "translation": "Edited files"
   },
   "panel.files.filter_tools": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/rightPanel/FilesToolsTabContent.tsx", 609]],
+    "origin": [
+      [
+        "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
+        611
+      ]
+    ],
     "translation": "Filter by tool"
   },
   "panel.files.loading_agents": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/rightPanel/FilesToolsTabContent.tsx", 684]],
+    "origin": [
+      [
+        "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
+        686
+      ]
+    ],
     "translation": "Loading agents..."
   },
   "panel.files.no_agents": {
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/FilesToolsTabContent.tsx", 443],
-      ["src/web/app/components/rightPanel/FilesToolsTabContent.tsx", 700]
+      [
+        "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
+        445
+      ],
+      [
+        "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
+        702
+      ]
     ],
     "translation": "No agents yet"
   },
@@ -1735,23 +2166,40 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/FilesToolsTabContent.tsx", 419],
-      ["src/web/app/components/rightPanel/FilesToolsTabContent.tsx", 583]
+      [
+        "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
+        421
+      ],
+      [
+        "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
+        585
+      ]
     ],
     "translation": "No edited files yet"
   },
   "panel.files.no_filtered_tool_calls": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/rightPanel/FilesToolsTabContent.tsx", 665]],
+    "origin": [
+      [
+        "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
+        667
+      ]
+    ],
     "translation": "No tool calls match the selected filters"
   },
   "panel.files.no_tool_calls": {
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/FilesToolsTabContent.tsx", 431],
-      ["src/web/app/components/rightPanel/FilesToolsTabContent.tsx", 667]
+      [
+        "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
+        433
+      ],
+      [
+        "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
+        669
+      ]
     ],
     "translation": "No tool calls yet"
   },
@@ -1759,183 +2207,334 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/FilesToolsTabContent.tsx", 424],
-      ["src/web/app/components/rightPanel/FilesToolsTabContent.tsx", 590]
+      [
+        "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
+        426
+      ],
+      [
+        "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
+        592
+      ]
     ],
     "translation": "Tool calls"
   },
   "panel.git.empty": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/rightPanel/GitTabContent.tsx", 536]],
+    "origin": [
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        536
+      ]
+    ],
     "translation": "No Git changes"
   },
   "panel.git.pr_links": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/rightPanel/GitTabContent.tsx", 754]],
+    "origin": [
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        754
+      ]
+    ],
     "translation": "Pull Requests"
   },
   "panel.git.view_content": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/rightPanel/GitTabContent.tsx", 283]],
+    "origin": [
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        283
+      ]
+    ],
     "translation": "Content"
   },
   "panel.git.view_diff": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/rightPanel/GitTabContent.tsx", 279]],
+    "origin": [
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        279
+      ]
+    ],
     "translation": "Diff"
   },
   "panel.review.empty": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/rightPanel/ReviewTabContent.tsx", 308]],
+    "origin": [
+      [
+        "src/web/app/components/rightPanel/ReviewTabContent.tsx",
+        308
+      ]
+    ],
     "translation": "No items to review"
   },
   "panel.tab.browser": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/RightPanel.tsx", 58]],
+    "origin": [
+      [
+        "src/web/app/components/RightPanel.tsx",
+        58
+      ]
+    ],
     "translation": "Browser"
   },
   "panel.tab.explorer": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/RightPanel.tsx", 46]],
+    "origin": [
+      [
+        "src/web/app/components/RightPanel.tsx",
+        46
+      ]
+    ],
     "translation": "Explorer"
   },
   "panel.tab.git": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/RightPanel.tsx", 51]],
+    "origin": [
+      [
+        "src/web/app/components/RightPanel.tsx",
+        51
+      ]
+    ],
     "translation": "Git"
   },
   "panel.tab.review": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/RightPanel.tsx", 56]],
+    "origin": [
+      [
+        "src/web/app/components/RightPanel.tsx",
+        56
+      ]
+    ],
     "translation": "Review"
   },
   "panel.todo.collapsed_title": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/rightPanel/common/CollapsibleTodoSection.tsx", 79]],
+    "origin": [
+      [
+        "src/web/app/components/rightPanel/common/CollapsibleTodoSection.tsx",
+        79
+      ]
+    ],
     "translation": "Todo"
   },
   "project.new": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/components/SetupProjectDialog.tsx", 60]],
+    "origin": [
+      [
+        "src/web/app/projects/components/SetupProjectDialog.tsx",
+        60
+      ]
+    ],
     "translation": "New Project"
   },
   "project.setup.action.setting_up": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/components/SetupProjectDialog.tsx", 93]],
+    "origin": [
+      [
+        "src/web/app/projects/components/SetupProjectDialog.tsx",
+        93
+      ]
+    ],
     "translation": "Setting up..."
   },
   "project.setup.action.setup": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/components/SetupProjectDialog.tsx", 96]],
+    "origin": [
+      [
+        "src/web/app/projects/components/SetupProjectDialog.tsx",
+        96
+      ]
+    ],
     "translation": "Set Up Project"
   },
   "project.setup.description": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/components/SetupProjectDialog.tsx", 69]],
+    "origin": [
+      [
+        "src/web/app/projects/components/SetupProjectDialog.tsx",
+        69
+      ]
+    ],
     "translation": "Navigate to the directory to set up as a Claude Code project. If CLAUDE.md exists, it describes the project; otherwise initialize with <0>/init</0>."
   },
   "project.setup.title": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/components/SetupProjectDialog.tsx", 66]],
+    "origin": [
+      [
+        "src/web/app/projects/components/SetupProjectDialog.tsx",
+        66
+      ]
+    ],
     "translation": "Set Up New Project"
   },
   "project_list.last_modified": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/components/ProjectList.tsx", 54]],
+    "origin": [
+      [
+        "src/web/app/projects/components/ProjectList.tsx",
+        54
+      ]
+    ],
     "translation": "Last Modified: "
   },
   "project_list.messages": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/components/ProjectList.tsx", 63]],
+    "origin": [
+      [
+        "src/web/app/projects/components/ProjectList.tsx",
+        63
+      ]
+    ],
     "translation": "Messages: "
   },
   "project_list.no_projects.description": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/components/ProjectList.tsx", 31]],
+    "origin": [
+      [
+        "src/web/app/projects/components/ProjectList.tsx",
+        31
+      ]
+    ],
     "translation": "No Claude Code projects found in your ~/.claude/projects directory. Start a conversation with Claude Code to set up your first project."
   },
   "project_list.no_projects.title": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/components/ProjectList.tsx", 28]],
+    "origin": [
+      [
+        "src/web/app/projects/components/ProjectList.tsx",
+        28
+      ]
+    ],
     "translation": "No Projects Found"
   },
   "project_list.view_conversations": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/components/ProjectList.tsx", 69]],
+    "origin": [
+      [
+        "src/web/app/projects/components/ProjectList.tsx",
+        69
+      ]
+    ],
     "translation": "View Conversations"
   },
   "project_switcher.no_project": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/ProjectSwitcher.tsx", 71]],
+    "origin": [
+      [
+        "src/web/app/components/ProjectSwitcher.tsx",
+        71
+      ]
+    ],
     "translation": "No project selected"
   },
   "project_switcher.no_results": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/ProjectSwitcher.tsx", 81]],
+    "origin": [
+      [
+        "src/web/app/components/ProjectSwitcher.tsx",
+        81
+      ]
+    ],
     "translation": "No matching projects"
   },
   "projects.page.description": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/page.tsx", 13]],
+    "origin": [
+      [
+        "src/web/app/projects/page.tsx",
+        13
+      ]
+    ],
     "translation": "View Claude Code conversation history and project operations"
   },
   "projects.page.loading": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/page.tsx", 29]],
+    "origin": [
+      [
+        "src/web/app/projects/page.tsx",
+        29
+      ]
+    ],
     "translation": "Loading projects..."
   },
   "projects.page.title": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/page.tsx", 21]],
+    "origin": [
+      [
+        "src/web/app/projects/page.tsx",
+        21
+      ]
+    ],
     "translation": "Projects"
   },
   "review.action.insert": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/rightPanel/ReviewTabContent.tsx", 345]],
+    "origin": [
+      [
+        "src/web/app/components/rightPanel/ReviewTabContent.tsx",
+        345
+      ]
+    ],
     "translation": "Insert Review"
   },
   "review.action.insert.success": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/rightPanel/ReviewTabContent.tsx", 232]],
+    "origin": [
+      [
+        "src/web/app/components/rightPanel/ReviewTabContent.tsx",
+        232
+      ]
+    ],
     "translation": "Review inserted into chat input"
   },
   "review.action.reset": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/rightPanel/ReviewTabContent.tsx", 335]],
+    "origin": [
+      [
+        "src/web/app/components/rightPanel/ReviewTabContent.tsx",
+        335
+      ]
+    ],
     "translation": "Reset"
   },
   "review.action.reset.success": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/rightPanel/ReviewTabContent.tsx", 226]],
+    "origin": [
+      [
+        "src/web/app/components/rightPanel/ReviewTabContent.tsx",
+        226
+      ]
+    ],
     "translation": "All comments cleared"
   },
   "review.comment.placeholder": {
@@ -1962,16 +2561,28 @@
   },
   "review.comments.count": {
     "placeholders": {
-      "count": ["comments.length"]
+      "count": [
+        "comments.length"
+      ]
     },
     "comments": [],
-    "origin": [["src/web/app/components/rightPanel/ReviewTabContent.tsx", 322]],
+    "origin": [
+      [
+        "src/web/app/components/rightPanel/ReviewTabContent.tsx",
+        322
+      ]
+    ],
     "translation": "{count} comments"
   },
   "review.comments.empty": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/rightPanel/ReviewTabContent.tsx", 321]],
+    "origin": [
+      [
+        "src/web/app/components/rightPanel/ReviewTabContent.tsx",
+        321
+      ]
+    ],
     "translation": "No comments"
   },
   "scheduler.create_job": {
@@ -2043,7 +2654,9 @@
   },
   "scheduler.error.load_failed": {
     "placeholders": {
-      "error": ["error.message"]
+      "error": [
+        "error.message"
+      ]
     },
     "comments": [],
     "origin": [
@@ -2363,7 +2976,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx", 546]
+      [
+        "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
+        546
+      ]
     ],
     "translation": "Cache creation"
   },
@@ -2371,7 +2987,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx", 560]
+      [
+        "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
+        560
+      ]
     ],
     "translation": "Cache read"
   },
@@ -2379,7 +2998,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx", 518]
+      [
+        "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
+        518
+      ]
     ],
     "translation": "Input tokens"
   },
@@ -2387,7 +3009,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx", 505]
+      [
+        "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
+        505
+      ]
     ],
     "translation": "Session Cost"
   },
@@ -2395,7 +3020,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx", 532]
+      [
+        "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
+        532
+      ]
     ],
     "translation": "Output tokens"
   },
@@ -2403,7 +3031,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx", 512]
+      [
+        "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
+        512
+      ]
     ],
     "translation": "Total"
   },
@@ -2433,7 +3064,9 @@
   },
   "session.delete_dialog.description": {
     "placeholders": {
-      "title": ["sessionTitle"]
+      "title": [
+        "sessionTitle"
+      ]
     },
     "comments": [],
     "origin": [
@@ -2448,7 +3081,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx", 439],
+      [
+        "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
+        439
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/DeleteSessionDialog.tsx",
         73
@@ -2460,8 +3096,14 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/FilesToolsTabContent.tsx", 407],
-      ["src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx", 609]
+      [
+        "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
+        409
+      ],
+      [
+        "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
+        610
+      ]
     ],
     "translation": "Start a new chat to begin the conversation"
   },
@@ -2469,7 +3111,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx", 429]
+      [
+        "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
+        429
+      ]
     ],
     "translation": "Copy session file path"
   },
@@ -2477,7 +3122,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx", 407]
+      [
+        "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
+        407
+      ]
     ],
     "translation": "Export to HTML"
   },
@@ -2485,7 +3133,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx", 416]
+      [
+        "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
+        416
+      ]
     ],
     "translation": "Export to JSONL"
   },
@@ -2493,7 +3144,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx", 696]
+      [
+        "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
+        697
+      ]
     ],
     "translation": "Claude Code is processing..."
   },
@@ -2534,8 +3188,14 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/SessionHistoryPopover.tsx", 197],
-      ["src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx", 661],
+      [
+        "src/web/app/components/SessionHistoryPopover.tsx",
+        197
+      ],
+      [
+        "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
+        662
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
         173
@@ -2547,8 +3207,14 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/SessionHistoryPopover.tsx", 195],
-      ["src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx", 659],
+      [
+        "src/web/app/components/SessionHistoryPopover.tsx",
+        195
+      ],
+      [
+        "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
+        660
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
         171
@@ -2560,7 +3226,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/SessionHistoryPopover.tsx", 232],
+      [
+        "src/web/app/components/SessionHistoryPopover.tsx",
+        232
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
         214
@@ -2583,7 +3252,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/SessionHistoryPopover.tsx", 123],
+      [
+        "src/web/app/components/SessionHistoryPopover.tsx",
+        123
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
         103
@@ -2596,21 +3268,32 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx", 416]
+      [
+        "src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        416
+      ]
     ],
     "translation": "Advanced Settings"
   },
   "settings.description": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/GlobalSidebar.tsx", 73]],
+    "origin": [
+      [
+        "src/web/components/GlobalSidebar.tsx",
+        73
+      ]
+    ],
     "translation": "Display and behavior settings"
   },
   "settings.disallowedTools.label": {
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx", 263]
+      [
+        "src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        263
+      ]
     ],
     "translation": "Disabled tools"
   },
@@ -2618,7 +3301,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx", 130]
+      [
+        "src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        130
+      ]
     ],
     "translation": "Add environment variable"
   },
@@ -2627,62 +3313,110 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx", 278]
+      [
+        "src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        278
+      ]
     ],
     "translation": "Environment Variables"
   },
   "settings.input.enter_key_behavior": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 214]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        214
+      ]
+    ],
     "translation": "Enter Key Behavior"
   },
   "settings.input.enter_key_behavior.command_enter": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 232]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        232
+      ]
+    ],
     "translation": "Send with Command+Enter"
   },
   "settings.input.enter_key_behavior.description": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 238]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        238
+      ]
+    ],
     "translation": "Select Enter key behavior for message input"
   },
   "settings.input.enter_key_behavior.enter": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 229]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        229
+      ]
+    ],
     "translation": "Send with Enter"
   },
   "settings.input.enter_key_behavior.shift_enter": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 226]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        226
+      ]
+    ],
     "translation": "Send with Shift+Enter (Default)"
   },
   "settings.input.search_hotkey": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 246]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        246
+      ]
+    ],
     "translation": "Search Hotkey"
   },
   "settings.input.search_hotkey.command_k": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 261]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        261
+      ]
+    ],
     "translation": "Command+K"
   },
   "settings.input.search_hotkey.ctrl_k": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 258]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        258
+      ]
+    ],
     "translation": "Ctrl+K"
   },
   "settings.input.search_hotkey.description": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 267]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        267
+      ]
+    ],
     "translation": "Select the hotkey to open search dialog"
   },
   "settings.loading": {
@@ -2693,38 +3427,66 @@
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
         117
       ],
-      ["src/web/components/GlobalSidebar.tsx", 81]
+      [
+        "src/web/components/GlobalSidebar.tsx",
+        81
+      ]
     ],
     "translation": "Loading settings..."
   },
   "settings.locale": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 335]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        335
+      ]
+    ],
     "translation": "Language"
   },
   "settings.locale.description": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 356]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        356
+      ]
+    ],
     "translation": "Select your preferred language"
   },
   "settings.locale.en": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 347]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        347
+      ]
+    ],
     "translation": "English"
   },
   "settings.locale.ja": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 344]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        344
+      ]
+    ],
     "translation": "Japanese"
   },
   "settings.locale.zh_CN": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 350]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        350
+      ]
+    ],
     "translation": "Chinese (Simplified)"
   },
   "settings.maxBudgetUsd.label": {
@@ -2732,7 +3494,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx", 502]
+      [
+        "src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        502
+      ]
     ],
     "translation": "Max Budget (USD)"
   },
@@ -2741,7 +3506,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx", 480]
+      [
+        "src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        480
+      ]
     ],
     "translation": "Max Thinking Tokens"
   },
@@ -2750,7 +3518,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx", 459]
+      [
+        "src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        459
+      ]
     ],
     "translation": "Max Turns"
   },
@@ -2758,21 +3529,36 @@
     "message": "Configure the model options available in the session toolbar",
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 324]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        324
+      ]
+    ],
     "translation": "Configure the model options available in the session toolbar"
   },
   "settings.model_choices.label": {
     "message": "Model Choices",
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 275]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        275
+      ]
+    ],
     "translation": "Model Choices"
   },
   "settings.model_choices.placeholder": {
     "message": "Add model choice...",
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 305]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        305
+      ]
+    ],
     "translation": "Add model choice..."
   },
   "settings.notifications": {
@@ -2791,7 +3577,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx", 343]
+      [
+        "src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        343
+      ]
     ],
     "translation": "Allow unsandboxed commands"
   },
@@ -2800,7 +3589,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx", 323]
+      [
+        "src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        323
+      ]
     ],
     "translation": "Auto-allow Bash if sandboxed"
   },
@@ -2809,7 +3601,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx", 294]
+      [
+        "src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        294
+      ]
     ],
     "translation": "Sandbox"
   },
@@ -2818,7 +3613,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx", 375]
+      [
+        "src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        375
+      ]
     ],
     "translation": "Allow local binding"
   },
@@ -2827,7 +3625,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx", 384]
+      [
+        "src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        384
+      ]
     ],
     "translation": "Allowed Domains (comma-separated)"
   },
@@ -2836,38 +3637,66 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx", 353]
+      [
+        "src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        353
+      ]
     ],
     "translation": "Network Settings"
   },
   "settings.section.notifications": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/GlobalSidebar.tsx", 96]],
+    "origin": [
+      [
+        "src/web/components/GlobalSidebar.tsx",
+        96
+      ]
+    ],
     "translation": "Notifications"
   },
   "settings.section.session_display": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/GlobalSidebar.tsx", 89]],
+    "origin": [
+      [
+        "src/web/components/GlobalSidebar.tsx",
+        89
+      ]
+    ],
     "translation": "Session Display"
   },
   "settings.section.system_info": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/GlobalSidebar.tsx", 109]],
+    "origin": [
+      [
+        "src/web/components/GlobalSidebar.tsx",
+        109
+      ]
+    ],
     "translation": "System Information"
   },
   "settings.session.auto_schedule_continue_on_rate_limit": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 201]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        201
+      ]
+    ],
     "translation": "Auto-schedule Continue on Rate Limit"
   },
   "settings.session.auto_schedule_continue_on_rate_limit.description": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 207]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        207
+      ]
+    ],
     "translation": "Automatically schedule a continue message when Claude hits rate limits"
   },
   "settings.session.display": {
@@ -2884,25 +3713,45 @@
   "settings.session.hide_no_user_message": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 159]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        159
+      ]
+    ],
     "translation": "Hide Sessions Without User Messages"
   },
   "settings.session.hide_no_user_message.description": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 165]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        165
+      ]
+    ],
     "translation": "Show only sessions that contain user commands or messages"
   },
   "settings.session.unify_same_title": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 180]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        180
+      ]
+    ],
     "translation": "Unify Sessions with Same Title"
   },
   "settings.session.unify_same_title.description": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 186]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        186
+      ]
+    ],
     "translation": "When multiple sessions have the same title, show only the latest session"
   },
   "settings.settingSources.label": {
@@ -2910,44 +3759,77 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx", 422]
+      [
+        "src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        422
+      ]
     ],
     "translation": "Setting Sources"
   },
   "settings.tab.title": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/GlobalSidebar.tsx", 65]],
+    "origin": [
+      [
+        "src/web/components/GlobalSidebar.tsx",
+        65
+      ]
+    ],
     "translation": "Display and Notification Settings"
   },
   "settings.theme": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 364]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        364
+      ]
+    ],
     "translation": "Theme"
   },
   "settings.theme.dark": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 376]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        376
+      ]
+    ],
     "translation": "Dark"
   },
   "settings.theme.description": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 385]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        385
+      ]
+    ],
     "translation": "Select your preferred color theme"
   },
   "settings.theme.light": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 373]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        373
+      ]
+    ],
     "translation": "Light"
   },
   "settings.theme.system": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 379]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        379
+      ]
+    ],
     "translation": "System"
   },
   "settings.title": {
@@ -2955,8 +3837,14 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx", 555],
-      ["src/web/components/GlobalSidebar.tsx", 70]
+      [
+        "src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
+        555
+      ],
+      [
+        "src/web/components/GlobalSidebar.tsx",
+        70
+      ]
     ],
     "translation": "Settings"
   },
@@ -2973,7 +3861,9 @@
   },
   "sidebar.edited_files.count": {
     "placeholders": {
-      "count": ["editedFiles.length"]
+      "count": [
+        "editedFiles.length"
+      ]
     },
     "comments": [],
     "origin": [
@@ -2999,7 +3889,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/FilesToolsTabContent.tsx", 565],
+      [
+        "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
+        567
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/EditedFilesTab.tsx",
         156
@@ -3142,105 +4035,191 @@
   "system_info.available_features": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SystemInfoCard.tsx", 126]],
+    "origin": [
+      [
+        "src/web/components/SystemInfoCard.tsx",
+        126
+      ]
+    ],
     "translation": "Available Features"
   },
   "system_info.claude_code": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SystemInfoCard.tsx", 94]],
+    "origin": [
+      [
+        "src/web/components/SystemInfoCard.tsx",
+        94
+      ]
+    ],
     "translation": "Claude Code"
   },
   "system_info.description": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SystemInfoCard.tsx", 71]],
+    "origin": [
+      [
+        "src/web/components/SystemInfoCard.tsx",
+        71
+      ]
+    ],
     "translation": "Version and feature information"
   },
   "system_info.executable_path": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SystemInfoCard.tsx", 99]],
+    "origin": [
+      [
+        "src/web/components/SystemInfoCard.tsx",
+        99
+      ]
+    ],
     "translation": "Executable Path"
   },
   "system_info.feature.agent_sdk.description": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SystemInfoCard.tsx", 26]],
+    "origin": [
+      [
+        "src/web/components/SystemInfoCard.tsx",
+        26
+      ]
+    ],
     "translation": "Uses @anthropic-ai/claude-agent-sdk instead of @anthropic-ai/claude-code"
   },
   "system_info.feature.agent_sdk.title": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SystemInfoCard.tsx", 25]],
+    "origin": [
+      [
+        "src/web/components/SystemInfoCard.tsx",
+        25
+      ]
+    ],
     "translation": "Extended Agent Mode"
   },
   "system_info.feature.run_skills_directly.description": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SystemInfoCard.tsx", 41]],
+    "origin": [
+      [
+        "src/web/components/SystemInfoCard.tsx",
+        41
+      ]
+    ],
     "translation": "Enables direct skill execution functionality"
   },
   "system_info.feature.run_skills_directly.title": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SystemInfoCard.tsx", 40]],
+    "origin": [
+      [
+        "src/web/components/SystemInfoCard.tsx",
+        40
+      ]
+    ],
     "translation": "Direct Skills Execution"
   },
   "system_info.feature.sidechain_separation.description": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SystemInfoCard.tsx", 31]],
+    "origin": [
+      [
+        "src/web/components/SystemInfoCard.tsx",
+        31
+      ]
+    ],
     "translation": "Sidechain conversations are stored separately in agent-*.jsonl files"
   },
   "system_info.feature.sidechain_separation.title": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SystemInfoCard.tsx", 30]],
+    "origin": [
+      [
+        "src/web/components/SystemInfoCard.tsx",
+        30
+      ]
+    ],
     "translation": "Sidechain Separation"
   },
   "system_info.feature.tool_approval.description": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SystemInfoCard.tsx", 21]],
+    "origin": [
+      [
+        "src/web/components/SystemInfoCard.tsx",
+        21
+      ]
+    ],
     "translation": "Approve or reject tool executions before Claude runs them, giving you full control over actions"
   },
   "system_info.feature.tool_approval.title": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SystemInfoCard.tsx", 20]],
+    "origin": [
+      [
+        "src/web/components/SystemInfoCard.tsx",
+        20
+      ]
+    ],
     "translation": "Tool Approval"
   },
   "system_info.feature.unknown.description": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SystemInfoCard.tsx", 46]],
+    "origin": [
+      [
+        "src/web/components/SystemInfoCard.tsx",
+        46
+      ]
+    ],
     "translation": "Feature information unavailable"
   },
   "system_info.feature.uuid_on_sdk_message.description": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SystemInfoCard.tsx", 36]],
+    "origin": [
+      [
+        "src/web/components/SystemInfoCard.tsx",
+        36
+      ]
+    ],
     "translation": "SDK messages include UUIDs for tracking"
   },
   "system_info.feature.uuid_on_sdk_message.title": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SystemInfoCard.tsx", 35]],
+    "origin": [
+      [
+        "src/web/components/SystemInfoCard.tsx",
+        35
+      ]
+    ],
     "translation": "SDK Message UUID"
   },
   "system_info.title": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SystemInfoCard.tsx", 68]],
+    "origin": [
+      [
+        "src/web/components/SystemInfoCard.tsx",
+        68
+      ]
+    ],
     "translation": "System Information"
   },
   "system_info.unknown": {
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/components/SystemInfoCard.tsx", 104],
-      ["src/web/components/SystemInfoCard.tsx", 115]
+      [
+        "src/web/components/SystemInfoCard.tsx",
+        104
+      ],
+      [
+        "src/web/components/SystemInfoCard.tsx",
+        115
+      ]
     ],
     "translation": "Unknown"
   },
@@ -3248,15 +4227,26 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/components/SystemInfoCard.tsx", 83],
-      ["src/web/components/SystemInfoCard.tsx", 112]
+      [
+        "src/web/components/SystemInfoCard.tsx",
+        83
+      ],
+      [
+        "src/web/components/SystemInfoCard.tsx",
+        112
+      ]
     ],
     "translation": "Version"
   },
   "system_info.viewer_version": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SystemInfoCard.tsx", 79]],
+    "origin": [
+      [
+        "src/web/components/SystemInfoCard.tsx",
+        79
+      ]
+    ],
     "translation": "Claude Code Viewer"
   },
   "user.content.document.pdf": {

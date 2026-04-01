@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { Context, Effect, Layer, Runtime } from "effect";
 import { getCookie } from "hono/cookie";
 import { createMiddleware } from "hono/factory";
@@ -5,10 +6,10 @@ import { CcvOptionsService } from "../../core/platform/services/CcvOptionsServic
 import type { InferEffect } from "../../lib/effect/types";
 import type { HonoContext } from "../app";
 
-// Session token is a simple hash of the password
+// Session token is a SHA-256 hash of the password
 const generateSessionToken = (password: string | undefined): string => {
   if (!password) return "";
-  return Buffer.from(`ccv-session:${password}`).toString("base64");
+  return createHash("sha256").update(`ccv-session:${password}`).digest("hex");
 };
 
 const getBearerToken = (authorization: string | undefined) => {

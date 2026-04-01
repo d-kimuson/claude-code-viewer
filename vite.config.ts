@@ -19,6 +19,9 @@ export default defineConfig({
     lingui(),
     tailwindcss(),
     VitePWA({
+      strategies: "injectManifest",
+      srcDir: "src",
+      filename: "sw.ts",
       registerType: "autoUpdate",
       includeAssets: ["favicon.ico", "apple-touch-icon.png", "icon-*.png"],
       manifest: {
@@ -52,26 +55,8 @@ export default defineConfig({
           },
         ],
       },
-      workbox: {
+      injectManifest: {
         globPatterns: ["**/*.{js,css,html,ico,png,svg,woff,woff2}"],
-        runtimeCaching: [
-          {
-            // SSE must never be cached
-            urlPattern: /\/api\/sse/,
-            handler: "NetworkOnly",
-          },
-          {
-            urlPattern: /^.*\/api\/.*/i,
-            handler: "NetworkFirst",
-            options: {
-              cacheName: "api-cache",
-              expiration: {
-                maxEntries: 100,
-                maxAgeSeconds: 60 * 60,
-              },
-            },
-          },
-        ],
       },
     }),
   ],

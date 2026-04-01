@@ -1,6 +1,7 @@
-import type { ReactNode } from "react";
+import type { FC, PropsWithChildren, ReactNode } from "react";
 import { SSEEventListeners } from "../app/components/SSEEventListeners";
 import { SyncSessionProcess } from "../app/components/SyncSessionProcess";
+import { usePushSubscription } from "../lib/push/usePushSubscription";
 import { SSEProvider } from "../lib/sse/components/SSEProvider";
 import { useAuth } from "./AuthProvider";
 import { SearchProvider } from "./SearchProvider";
@@ -8,6 +9,11 @@ import { SearchProvider } from "./SearchProvider";
 interface AuthenticatedProvidersProps {
   children: ReactNode;
 }
+
+const PushSubscriptionInit: FC<PropsWithChildren> = ({ children }) => {
+  usePushSubscription();
+  return <>{children}</>;
+};
 
 /**
  * Wraps children with SSE providers only when authenticated.
@@ -28,7 +34,9 @@ export function AuthenticatedProviders({
     <SSEProvider>
       <SSEEventListeners>
         <SyncSessionProcess>
-          <SearchProvider>{children}</SearchProvider>
+          <PushSubscriptionInit>
+            <SearchProvider>{children}</SearchProvider>
+          </PushSubscriptionInit>
         </SyncSessionProcess>
       </SSEEventListeners>
     </SSEProvider>

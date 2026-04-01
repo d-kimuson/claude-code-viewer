@@ -1,6 +1,10 @@
 import { useQueryClient } from "@tanstack/react-query";
 import type { FC, PropsWithChildren } from "react";
-import { projectDetailQuery, sessionDetailQuery } from "../../lib/api/queries";
+import {
+  notificationsQuery,
+  projectDetailQuery,
+  sessionDetailQuery,
+} from "../../lib/api/queries";
 import { useServerEventListener } from "../../lib/sse/hook/useServerEventListener";
 
 export const SSEEventListeners: FC<PropsWithChildren> = ({ children }) => {
@@ -32,6 +36,18 @@ export const SSEEventListeners: FC<PropsWithChildren> = ({ children }) => {
           queryKey[3] === event.agentSessionId
         );
       },
+    });
+  });
+
+  useServerEventListener("notificationCreated", async () => {
+    await queryClient.invalidateQueries({
+      queryKey: notificationsQuery.queryKey,
+    });
+  });
+
+  useServerEventListener("notificationConsumed", async () => {
+    await queryClient.invalidateQueries({
+      queryKey: notificationsQuery.queryKey,
     });
   });
 

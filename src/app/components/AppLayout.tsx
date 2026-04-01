@@ -22,6 +22,7 @@ import {
 } from "@/hooks/useLayoutPanels";
 import { useRightPanelActions, useRightPanelOpen } from "@/hooks/useRightPanel";
 import { cn } from "@/lib/utils";
+import { NotificationBell } from "./NotificationBell";
 import { ProjectSwitcher } from "./ProjectSwitcher";
 
 interface AppLayoutProps {
@@ -81,8 +82,9 @@ export const AppLayout: FC<AppLayoutProps> = ({
           )}
         </div>
 
-        {/* Right: Panel Toggle Buttons */}
+        {/* Right: Notifications + Panel Toggle Buttons */}
         <div className="flex items-center gap-1 shrink-0">
+          <NotificationBell sessionId={sessionId} />
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>

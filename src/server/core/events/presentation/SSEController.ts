@@ -78,12 +78,34 @@ const LayerImpl = Effect.gen(function* () {
         );
       };
 
+      const onNotificationCreated = (
+        event: InternalEventDeclaration["notificationCreated"],
+      ) => {
+        Effect.runFork(
+          typeSafeSSE.writeSSE("notificationCreated", {
+            notification: event.notification,
+          }),
+        );
+      };
+
+      const onNotificationConsumed = (
+        event: InternalEventDeclaration["notificationConsumed"],
+      ) => {
+        Effect.runFork(
+          typeSafeSSE.writeSSE("notificationConsumed", {
+            sessionId: event.sessionId,
+          }),
+        );
+      };
+
       yield* eventBus.on("sessionListChanged", onSessionListChanged);
       yield* eventBus.on("sessionChanged", onSessionChanged);
       yield* eventBus.on("agentSessionChanged", onAgentSessionChanged);
       yield* eventBus.on("sessionProcessChanged", onSessionProcessChanged);
       yield* eventBus.on("heartbeat", onHeartbeat);
       yield* eventBus.on("permissionRequested", onPermissionRequested);
+      yield* eventBus.on("notificationCreated", onNotificationCreated);
+      yield* eventBus.on("notificationConsumed", onNotificationConsumed);
 
       const { connectionPromise } = adaptInternalEventToSSE(rawStream, {
         timeout: 5 /* min */ * 60 /* sec */ * 1000,
@@ -99,6 +121,11 @@ const LayerImpl = Effect.gen(function* () {
               );
               yield* eventBus.off("heartbeat", onHeartbeat);
               yield* eventBus.off("permissionRequested", onPermissionRequested);
+              yield* eventBus.off("notificationCreated", onNotificationCreated);
+              yield* eventBus.off(
+                "notificationConsumed",
+                onNotificationConsumed,
+              );
             }),
           );
         },

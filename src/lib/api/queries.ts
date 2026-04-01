@@ -394,6 +394,19 @@ export const searchQuery = (
     },
   }) as const;
 
+export const notificationsQuery = {
+  queryKey: ["notifications"],
+  queryFn: async () => {
+    const response = await honoClient.api.notifications.$get();
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch notifications: ${response.statusText}`);
+    }
+
+    return await response.json();
+  },
+} as const;
+
 export const fileContentQuery = (projectId: string, filePath: string) =>
   ({
     queryKey: ["projects", projectId, "files", filePath],

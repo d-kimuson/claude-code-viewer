@@ -20,6 +20,7 @@ import { authRoutes } from "./authRoutes";
 import { claudeCodeRoutes } from "./claudeCodeRoutes";
 import { featureFlagRoutes } from "./featureFlagRoutes";
 import { fileSystemRoutes } from "./fileSystemRoutes";
+import { notificationRoutes } from "./notificationRoutes";
 import { projectRoutes } from "./projectRoutes";
 import { schedulerRoutes } from "./schedulerRoutes";
 import { searchRoutes } from "./searchRoutes";
@@ -32,6 +33,7 @@ const API_ONLY_ALLOWED_PREFIXES = [
   "/api/projects",
   "/api/claude-code",
   "/api/search",
+  "/api/notifications",
   "/api/sse",
 ];
 
@@ -128,6 +130,7 @@ export const routes = (app: HonoAppType, options: CliOptions) =>
         .route("/api/search", yield* searchRoutes)
         .route("/api/feature-flags", yield* featureFlagRoutes)
         .route("/api/tasks", yield* tasksRoutes)
+        .route("/api/notifications", yield* notificationRoutes)
         .route("/api/sse", yield* sseRoutes)
     );
   });

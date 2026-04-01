@@ -178,5 +178,17 @@
   },
   "sidebar.show.task.list": {
     "translation": "タスク一覧を表示"
+  },
+  "notification.title": {
+    "translation": "通知"
+  },
+  "notification.empty": {
+    "translation": "新しい通知はありません"
+  },
+  "notification.session_paused": {
+    "translation": "セッションが一時停止しました"
+  },
+  "notification.session_completed": {
+    "translation": "セッションが完了しました"
   }
 }

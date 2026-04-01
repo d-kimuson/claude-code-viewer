@@ -175,5 +175,17 @@
   },
   "sidebar.show.task.list": {
     "translation": "Show Task List"
+  },
+  "notification.title": {
+    "translation": "Notifications"
+  },
+  "notification.empty": {
+    "translation": "No new notifications"
+  },
+  "notification.session_paused": {
+    "translation": "Session paused"
+  },
+  "notification.session_completed": {
+    "translation": "Session completed"
   }
 }

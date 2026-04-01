@@ -1,3 +1,4 @@
+import type { SessionNotification } from "../../../../types/notification";
 import type { PermissionRequest } from "../../../../types/permissions";
 import type { PublicSessionProcess } from "../../../../types/session-process";
 import type * as CCSessionProcess from "../../claude-code/models/CCSessionProcess";
@@ -27,5 +28,13 @@ export type InternalEventDeclaration = {
 
   permissionRequested: {
     permissionRequest: PermissionRequest;
+  };
+
+  notificationCreated: {
+    notification: SessionNotification;
+  };
+
+  notificationConsumed: {
+    sessionId: string;
   };
 };

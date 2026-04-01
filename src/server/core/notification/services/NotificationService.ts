@@ -1,0 +1,227 @@
+import { FileSystem } from "@effect/platform";
+import { Context, Effect, Layer, Ref } from "effect";
+import { ulid } from "ulid";
+import webpush from "web-push";
+import type {
+  SessionNotification,
+  SessionNotificationType,
+} from "../../../../types/notification";
+import type { InferEffect } from "../../../lib/effect/types";
+import { EventBus } from "../../events/services/EventBus";
+
+type PushSubscriptionRecord = {
+  endpoint: string;
+  keys: {
+    p256dh: string;
+    auth: string;
+  };
+};
+
+type VapidKeys = {
+  publicKey: string;
+  privateKey: string;
+};
+
+const VAPID_KEYS_FILENAME = ".claude-code-viewer/vapid-keys.json";
+
+const getVapidKeysPath = (fs: FileSystem.FileSystem) =>
+  Effect.gen(function* () {
+    const home =
+      // biome-ignore lint/style/noProcessEnv: required for home directory
+      process.env.HOME ?? process.env.USERPROFILE ?? "/tmp";
+    const dirPath = `${home}/.claude-code-viewer`;
+
+    const dirExists = yield* fs.exists(dirPath);
+    if (!dirExists) {
+      yield* fs.makeDirectory(dirPath, { recursive: true });
+    }
+
+    return `${home}/${VAPID_KEYS_FILENAME}`;
+  });
+
+const loadOrCreateVapidKeys = (fs: FileSystem.FileSystem) =>
+  Effect.gen(function* () {
+    const keysPath = yield* getVapidKeysPath(fs);
+    const exists = yield* fs.exists(keysPath);
+
+    if (exists) {
+      const content = yield* fs.readFileString(keysPath);
+      return JSON.parse(content) as VapidKeys;
+    }
+
+    const keys = webpush.generateVAPIDKeys();
+    const vapidKeys: VapidKeys = {
+      publicKey: keys.publicKey,
+      privateKey: keys.privateKey,
+    };
+
+    yield* fs.writeFileString(keysPath, JSON.stringify(vapidKeys, null, 2));
+
+    return vapidKeys;
+  });
+
+const LayerImpl = Effect.gen(function* () {
+  const notificationsRef = yield* Ref.make<SessionNotification[]>([]);
+  const pushSubscriptionsRef = yield* Ref.make<PushSubscriptionRecord[]>([]);
+  const eventBus = yield* EventBus;
+  const fs = yield* FileSystem.FileSystem;
+
+  // Load or generate VAPID keys
+  const vapidKeys = yield* loadOrCreateVapidKeys(fs).pipe(
+    Effect.catchAll((error) => {
+      console.warn("Failed to load VAPID keys, generating in-memory:", error);
+      const keys = webpush.generateVAPIDKeys();
+      return Effect.succeed({
+        publicKey: keys.publicKey,
+        privateKey: keys.privateKey,
+      });
+    }),
+  );
+  webpush.setVapidDetails(
+    "mailto:noreply@claude-code-viewer.local",
+    vapidKeys.publicKey,
+    vapidKeys.privateKey,
+  );
+
+  // Subscribe to session process state changes to auto-create notifications
+  yield* eventBus.on("sessionProcessChanged", (event) => {
+    const { changed } = event;
+
+    if (changed.type === "paused" || changed.type === "completed") {
+      const notificationType: SessionNotificationType =
+        changed.type === "paused" ? "session_paused" : "session_completed";
+
+      Effect.runFork(
+        createNotification({
+          projectId: changed.def.projectId,
+          sessionId: changed.sessionId,
+          type: notificationType,
+        }),
+      );
+    }
+  });
+
+  const getNotifications = (): Effect.Effect<SessionNotification[]> =>
+    Ref.get(notificationsRef);
+
+  const createNotification = (params: {
+    projectId: string;
+    sessionId: string;
+    type: SessionNotificationType;
+  }): Effect.Effect<SessionNotification> =>
+    Effect.gen(function* () {
+      const notification: SessionNotification = {
+        id: ulid(),
+        projectId: params.projectId,
+        sessionId: params.sessionId,
+        type: params.type,
+        createdAt: new Date().toISOString(),
+      };
+
+      yield* Ref.update(notificationsRef, (notifications) => [
+        ...notifications,
+        notification,
+      ]);
+
+      yield* eventBus.emit("notificationCreated", { notification });
+
+      // Send push notifications to all subscribed clients
+      yield* sendPushNotifications(notification);
+
+      return notification;
+    });
+
+  const consumeNotifications = (sessionId: string): Effect.Effect<void> =>
+    Effect.gen(function* () {
+      const notifications = yield* Ref.get(notificationsRef);
+      const hasMatch = notifications.some((n) => n.sessionId === sessionId);
+
+      if (!hasMatch) {
+        return;
+      }
+
+      yield* Ref.update(notificationsRef, (notifications) =>
+        notifications.filter((n) => n.sessionId !== sessionId),
+      );
+
+      yield* eventBus.emit("notificationConsumed", { sessionId });
+    });
+
+  const getVapidPublicKey = (): Effect.Effect<string> =>
+    Effect.succeed(vapidKeys.publicKey);
+
+  const subscribePush = (
+    subscription: PushSubscriptionRecord,
+  ): Effect.Effect<void> =>
+    Ref.update(pushSubscriptionsRef, (subscriptions) => {
+      // Avoid duplicates by endpoint
+      const filtered = subscriptions.filter(
+        (s) => s.endpoint !== subscription.endpoint,
+      );
+      return [...filtered, subscription];
+    });
+
+  const sendPushNotifications = (
+    notification: SessionNotification,
+  ): Effect.Effect<void> =>
+    Effect.gen(function* () {
+      const subscriptions = yield* Ref.get(pushSubscriptionsRef);
+      if (subscriptions.length === 0) return;
+
+      const title =
+        notification.type === "session_paused"
+          ? "Session Paused"
+          : "Session Completed";
+
+      const body = `Session ${notification.sessionId.slice(0, 8)}...`;
+      const url = `/projects/${notification.projectId}/session?sessionId=${notification.sessionId}`;
+
+      const payload = JSON.stringify({ title, body, url });
+
+      // Send to all subscriptions, remove invalid ones
+      const invalidEndpoints: string[] = [];
+
+      yield* Effect.forEach(
+        subscriptions,
+        (sub) =>
+          Effect.tryPromise({
+            try: () =>
+              webpush.sendNotification(
+                {
+                  endpoint: sub.endpoint,
+                  keys: sub.keys,
+                },
+                payload,
+              ),
+            catch: () => {
+              invalidEndpoints.push(sub.endpoint);
+            },
+          }).pipe(Effect.catchAll(() => Effect.void)),
+        { concurrency: "unbounded" },
+      );
+
+      // Clean up invalid subscriptions
+      if (invalidEndpoints.length > 0) {
+        yield* Ref.update(pushSubscriptionsRef, (subs) =>
+          subs.filter((s) => !invalidEndpoints.includes(s.endpoint)),
+        );
+      }
+    });
+
+  return {
+    getNotifications,
+    createNotification,
+    consumeNotifications,
+    getVapidPublicKey,
+    subscribePush,
+  } as const;
+});
+
+export type INotificationService = InferEffect<typeof LayerImpl>;
+
+export class NotificationService extends Context.Tag("NotificationService")<
+  NotificationService,
+  INotificationService
+>() {
+  static Live = Layer.effect(this, LayerImpl);
+}

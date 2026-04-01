@@ -19,6 +19,8 @@ import { FeatureFlagController } from "./core/feature-flag/presentation/FeatureF
 import { FileSystemController } from "./core/file-system/presentation/FileSystemController";
 import { GitController } from "./core/git/presentation/GitController";
 import { GitService } from "./core/git/services/GitService";
+import { NotificationController } from "./core/notification/presentation/NotificationController";
+import { NotificationService } from "./core/notification/services/NotificationService";
 import { isDevelopmentEnv } from "./core/platform/ccvEnv";
 import type { CliOptions } from "./core/platform/services/CcvOptionsService";
 import { ProjectRepository } from "./core/project/infrastructure/ProjectRepository";
@@ -121,6 +123,7 @@ const DomainBase = Layer.mergeAll(
   ClaudeCodeSessionProcessService.Live,
   ClaudeCodeService.Live,
   GitService.Live,
+  NotificationService.Live,
   SchedulerService.Live,
   SchedulerConfigBaseDir.Live,
   SearchService.Live,
@@ -152,6 +155,7 @@ const PresentationLayer = Layer.mergeAll(
   ClaudeCodePermissionController.Live,
   FileSystemController.Live,
   SSEController.Live,
+  NotificationController.Live,
   SchedulerController.Live,
   FeatureFlagController.Live,
   SearchController.Live,

@@ -1,3 +1,4 @@
+import type { SessionNotification } from "./notification";
 import type { PermissionRequest } from "./permissions";
 import type { PublicSessionProcess } from "./session-process";
 
@@ -28,6 +29,14 @@ export type SSEEventDeclaration = {
 
   permissionRequested: {
     permissionRequest: PermissionRequest;
+  };
+
+  notificationCreated: {
+    notification: SessionNotification;
+  };
+
+  notificationConsumed: {
+    sessionId: string;
   };
 };
 

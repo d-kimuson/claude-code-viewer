@@ -178,5 +178,17 @@
   },
   "sidebar.show.task.list": {
     "translation": "显示任务列表"
+  },
+  "notification.title": {
+    "translation": "通知"
+  },
+  "notification.empty": {
+    "translation": "没有新通知"
+  },
+  "notification.session_paused": {
+    "translation": "会话已暂停"
+  },
+  "notification.session_completed": {
+    "translation": "会话已完成"
   }
 }

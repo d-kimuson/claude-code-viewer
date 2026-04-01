@@ -135,7 +135,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        470
+        432
       ]
     ],
     "translation": "Message input with autocomplete support"
@@ -529,7 +529,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        570
+        532
       ]
     ],
     "translation": "Attach"
@@ -540,7 +540,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/StartNewChat.tsx",
-        50
+        61
       ]
     ],
     "translation": "Start Chat"
@@ -551,7 +551,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        434
+        396
       ]
     ],
     "translation": "Failed to send message. Please try again."
@@ -581,7 +581,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        605
+        640
       ]
     ],
     "translation": "Recent sessions"
@@ -596,11 +596,11 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        332
+        367
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        593
+        628
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
@@ -620,7 +620,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/StartNewChat.tsx",
-        29
+        40
       ]
     ],
     "translation": "Type your message... (Start with / for commands, @ for files, Command+Enter to send)"
@@ -636,7 +636,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/StartNewChat.tsx",
-        22
+        33
       ]
     ],
     "translation": "Type your message... (Start with / for commands, @ for files, Enter to send)"
@@ -652,7 +652,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/StartNewChat.tsx",
-        35
+        46
       ]
     ],
     "translation": "Type your message... (Start with / for commands, @ for files, Shift+Enter to send)"
@@ -664,7 +664,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ResumeChat.tsx",
-        35
+        45
       ]
     ],
     "translation": "Type your message... (Start with / for commands, @ for files, Command+Enter to send)"
@@ -676,7 +676,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ResumeChat.tsx",
-        28
+        38
       ]
     ],
     "translation": "Type your message... (Start with / for commands, @ for files, Enter to send)"
@@ -688,7 +688,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ResumeChat.tsx",
-        41
+        51
       ]
     ],
     "translation": "Type your message... (Start with / for commands, @ for files, Shift+Enter to send)"
@@ -735,7 +735,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ResumeChat.tsx",
-        48
+        58
       ]
     ],
     "translation": "Resume"
@@ -747,7 +747,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        279
+        241
       ]
     ],
     "translation": "Failed to schedule message"
@@ -759,7 +759,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        263
+        225
       ]
     ],
     "translation": "Message scheduled successfully"
@@ -771,7 +771,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        268
+        230
       ]
     ],
     "translation": "You can view and manage it in the Scheduler tab"
@@ -793,11 +793,11 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        523
+        485
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        795
+        653
       ]
     ],
     "translation": "Send Now"
@@ -808,11 +808,11 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        506
+        468
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        778
+        636
       ]
     ],
     "translation": "Send Mode"
@@ -823,15 +823,15 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        526
+        488
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        798
+        656
       ],
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        815
+        678
       ]
     ],
     "translation": "Schedule Send"
@@ -842,22 +842,10 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        533
+        495
       ]
     ],
     "translation": "Scheduled Send Time"
-  },
-  "chat.settings": {
-    "message": "Settings",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        578
-      ]
-    ],
-    "translation": "Settings"
   },
   "chat.status.processing": {
     "placeholders": {},
@@ -865,7 +853,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        835
+        698
       ]
     ],
     "translation": "Processing..."
@@ -877,7 +865,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        647
+        604
       ]
     ],
     "translation": "Select reasoning effort"
@@ -889,7 +877,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        605
+        567
       ]
     ],
     "translation": "Select model"
@@ -900,8 +888,8 @@
     "comments": [],
     "origin": [
       [
-        "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        688
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
+        179
       ]
     ],
     "translation": "Accept Edits"
@@ -912,8 +900,8 @@
     "comments": [],
     "origin": [
       [
-        "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        694
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
+        185
       ]
     ],
     "translation": "Bypass"
@@ -924,8 +912,8 @@
     "comments": [],
     "origin": [
       [
-        "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        682
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
+        173
       ]
     ],
     "translation": "Default"
@@ -936,8 +924,8 @@
     "comments": [],
     "origin": [
       [
-        "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        700
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
+        191
       ]
     ],
     "translation": "Plan"
@@ -948,23 +936,11 @@
     "comments": [],
     "origin": [
       [
-        "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        710
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
+        201
       ]
     ],
     "translation": "Select permission mode"
-  },
-  "chat.toolbar.system_prompt": {
-    "message": "CC Prompt",
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        738
-      ]
-    ],
-    "translation": "CC Prompt"
   },
   "chat.toolbar.system_prompt.tooltip": {
     "message": "Include default Claude Code prompt",
@@ -972,8 +948,8 @@
     "comments": [],
     "origin": [
       [
-        "src/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        746
+        "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
+        233
       ]
     ],
     "translation": "Include default Claude Code prompt"
@@ -1123,7 +1099,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        450
+        485
       ]
     ],
     "translation": "Branch"
@@ -1134,7 +1110,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        431
+        466
       ]
     ],
     "translation": "Metadata"
@@ -1145,7 +1121,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        477
+        512
       ]
     ],
     "translation": "Model"
@@ -1156,7 +1132,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        74
+        89
       ]
     ],
     "translation": "New"
@@ -1168,7 +1144,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        67
+        82
       ]
     ],
     "translation": "New Chat"
@@ -1179,7 +1155,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        437
+        472
       ]
     ],
     "translation": "Project Path"
@@ -1191,7 +1167,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        101
+        116
       ]
     ],
     "translation": "Scroll to Bottom"
@@ -1203,7 +1179,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        85
+        100
       ]
     ],
     "translation": "Scroll to Top"
@@ -1214,7 +1190,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        464
+        499
       ]
     ],
     "translation": "Session ID"
@@ -1834,7 +1810,7 @@
     "origin": [
       [
         "src/app/components/AppLayout.tsx",
-        131
+        133
       ]
     ],
     "translation": "Toggle bottom panel"
@@ -1845,7 +1821,7 @@
     "origin": [
       [
         "src/app/components/AppLayout.tsx",
-        110
+        112
       ]
     ],
     "translation": "Toggle left panel"
@@ -1856,7 +1832,7 @@
     "origin": [
       [
         "src/app/components/AppLayout.tsx",
-        152
+        154
       ]
     ],
     "translation": "Toggle right panel"
@@ -1986,6 +1962,17 @@
     ],
     "translation": "Select sound to play when Claude Code task completes"
   },
+  "notification.empty": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/NotificationBell.tsx",
+        104
+      ]
+    ],
+    "translation": "No new notifications"
+  },
   "notification.none": {
     "placeholders": {},
     "comments": [],
@@ -2019,6 +2006,28 @@
     ],
     "translation": "Pop"
   },
+  "notification.session_completed": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/NotificationBell.tsx",
+        126
+      ]
+    ],
+    "translation": "Session completed"
+  },
+  "notification.session_paused": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/NotificationBell.tsx",
+        124
+      ]
+    ],
+    "translation": "Session paused"
+  },
   "notification.test": {
     "placeholders": {},
     "comments": [],
@@ -2029,6 +2038,21 @@
       ]
     ],
     "translation": "Test"
+  },
+  "notification.title": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/NotificationBell.tsx",
+        85
+      ],
+      [
+        "src/app/components/NotificationBell.tsx",
+        92
+      ]
+    ],
+    "translation": "Notifications"
   },
   "panel.browser.empty.description": {
     "placeholders": {},
@@ -2742,7 +2766,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        126
+        141
       ]
     ],
     "translation": "Abort"
@@ -2753,7 +2777,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        533
+        568
       ]
     ],
     "translation": "Cache creation"
@@ -2764,7 +2788,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        547
+        582
       ]
     ],
     "translation": "Cache read"
@@ -2775,7 +2799,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        505
+        540
       ]
     ],
     "translation": "Input tokens"
@@ -2786,7 +2810,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        490
+        525
       ]
     ],
     "translation": "Session Cost"
@@ -2797,7 +2821,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        519
+        554
       ]
     ],
     "translation": "Output tokens"
@@ -2808,7 +2832,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        497
+        532
       ]
     ],
     "translation": "Total"
@@ -2858,7 +2882,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        424
+        459
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/DeleteSessionDialog.tsx",
@@ -2873,7 +2897,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        596
+        631
       ]
     ],
     "translation": "Start a new chat to begin the conversation"
@@ -2884,7 +2908,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        414
+        449
       ]
     ],
     "translation": "Copy session file path"
@@ -2895,7 +2919,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        395
+        430
       ]
     ],
     "translation": "Export to HTML"
@@ -2906,7 +2930,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        404
+        439
       ]
     ],
     "translation": "Export to JSONL"
@@ -2917,7 +2941,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        688
+        723
       ]
     ],
     "translation": "Claude Code is processing..."
@@ -2965,7 +2989,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        653
+        688
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
@@ -2984,7 +3008,7 @@
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        651
+        686
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
@@ -3610,7 +3634,7 @@
     "origin": [
       [
         "src/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        593
+        591
       ],
       [
         "src/components/GlobalSidebar.tsx",

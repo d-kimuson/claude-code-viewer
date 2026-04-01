@@ -15,7 +15,7 @@ import {
   WrenchIcon,
   XCircle,
 } from "lucide-react";
-import { type FC, useCallback, useMemo, useState } from "react";
+import { type FC, useCallback, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { extractAllEditedFiles, extractToolCalls } from "@/lib/file-viewer";
 import { extractLatestTodos } from "@/lib/todo-viewer";
@@ -284,6 +284,7 @@ const AgentSessionDialog: FC<{
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
 }> = ({ projectId, sessionId, agentId, title, isOpen, onOpenChange }) => {
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const { data, isLoading, error, refetch } = useQuery({
     ...agentSessionQuery(projectId, agentId, sessionId),
     enabled: isOpen,
@@ -327,7 +328,7 @@ const AgentSessionDialog: FC<{
             </div>
           </div>
         </DialogHeader>
-        <div className="flex-1 overflow-auto px-6 py-4">
+        <div ref={scrollContainerRef} className="flex-1 overflow-auto px-6 py-4">
           {isLoading && (
             <div className="flex flex-col items-center justify-center h-full gap-4">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -364,6 +365,7 @@ const AgentSessionDialog: FC<{
               projectId={projectId}
               sessionId={sessionId}
               scheduledJobs={[]}
+              scrollContainerRef={scrollContainerRef}
             />
           )}
         </div>

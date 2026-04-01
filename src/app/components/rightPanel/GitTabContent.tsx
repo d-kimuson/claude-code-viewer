@@ -586,64 +586,8 @@ const GitFileListWithCommit: FC<{ projectId: string }> = ({ projectId }) => {
 
   return (
     <div className="flex flex-col">
-      {/* File list with checkboxes */}
-      <div className="p-2 space-y-1">
-        {files.map((file) => {
-          const diffInfo = diffsByFile.get(file.filePath);
-          return (
-            <GitFileDialog
-              key={file.filePath}
-              projectId={projectId}
-              filePath={file.filePath}
-              status={file.status}
-              additions={file.additions}
-              deletions={file.deletions}
-              diffHunks={diffInfo?.hunks}
-            >
-              <button
-                type="button"
-                className="w-full flex items-center gap-2 px-2 py-1.5 text-xs hover:bg-muted/30 rounded-md transition-colors text-left"
-                data-testid="git-file-button"
-              >
-                <Checkbox
-                  checked={selectedFiles.get(file.filePath) ?? false}
-                  onCheckedChange={() => handleToggleFile(file.filePath)}
-                  onClick={(e) => e.stopPropagation()}
-                  disabled={commitMutation.isPending}
-                  className="h-3 w-3"
-                />
-                <span
-                  className={cn(
-                    "w-1.5 h-1.5 rounded-full flex-shrink-0",
-                    file.status === "added" && "bg-green-500",
-                    file.status === "deleted" && "bg-red-500",
-                    file.status === "modified" && "bg-amber-500",
-                    file.status === "renamed" && "bg-blue-500",
-                  )}
-                />
-                <span className="truncate flex-1 font-mono">
-                  {file.filePath}
-                </span>
-                <span className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
-                  {file.additions > 0 && (
-                    <span className="text-green-600 dark:text-green-400">
-                      +{file.additions}
-                    </span>
-                  )}
-                  {file.deletions > 0 && (
-                    <span className="text-red-600 dark:text-red-400">
-                      -{file.deletions}
-                    </span>
-                  )}
-                </span>
-              </button>
-            </GitFileDialog>
-          );
-        })}
-      </div>
-
       {/* Commit section */}
-      <div className="mx-2 mb-2 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
+      <div className="mx-2 mt-2 mb-1 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
         <button
           type="button"
           onClick={() => setIsCommitSectionExpanded(!isCommitSectionExpanded)}
@@ -757,6 +701,62 @@ const GitFileListWithCommit: FC<{ projectId: string }> = ({ projectId }) => {
             </div>
           </div>
         )}
+      </div>
+
+      {/* File list with checkboxes */}
+      <div className="p-2 space-y-1">
+        {files.map((file) => {
+          const diffInfo = diffsByFile.get(file.filePath);
+          return (
+            <GitFileDialog
+              key={file.filePath}
+              projectId={projectId}
+              filePath={file.filePath}
+              status={file.status}
+              additions={file.additions}
+              deletions={file.deletions}
+              diffHunks={diffInfo?.hunks}
+            >
+              <button
+                type="button"
+                className="w-full flex items-center gap-2 px-2 py-1.5 text-xs hover:bg-muted/30 rounded-md transition-colors text-left"
+                data-testid="git-file-button"
+              >
+                <Checkbox
+                  checked={selectedFiles.get(file.filePath) ?? false}
+                  onCheckedChange={() => handleToggleFile(file.filePath)}
+                  onClick={(e) => e.stopPropagation()}
+                  disabled={commitMutation.isPending}
+                  className="h-3 w-3"
+                />
+                <span
+                  className={cn(
+                    "w-1.5 h-1.5 rounded-full flex-shrink-0",
+                    file.status === "added" && "bg-green-500",
+                    file.status === "deleted" && "bg-red-500",
+                    file.status === "modified" && "bg-amber-500",
+                    file.status === "renamed" && "bg-blue-500",
+                  )}
+                />
+                <span className="truncate flex-1 font-mono">
+                  {file.filePath}
+                </span>
+                <span className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
+                  {file.additions > 0 && (
+                    <span className="text-green-600 dark:text-green-400">
+                      +{file.additions}
+                    </span>
+                  )}
+                  {file.deletions > 0 && (
+                    <span className="text-red-600 dark:text-red-400">
+                      -{file.deletions}
+                    </span>
+                  )}
+                </span>
+              </button>
+            </GitFileDialog>
+          );
+        })}
       </div>
     </div>
   );

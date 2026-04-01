@@ -256,6 +256,46 @@ const ToolCallItem: FC<{
   );
 };
 
+const SectionStatusMessage: FC<{
+  message: React.ReactNode;
+  icon?: React.ReactNode;
+}> = ({ message, icon }) => {
+  return (
+    <div className="flex items-center gap-2 px-2 py-3 text-xs text-muted-foreground">
+      {icon}
+      <span>{message}</span>
+    </div>
+  );
+};
+
+const StaticCollapsibleSection: FC<CollapsibleSectionProps> = ({
+  title,
+  count,
+  defaultOpen = false,
+  children,
+  icon,
+  stickyTop = 0,
+}) => {
+  return (
+    <>
+      <div
+        style={{ top: stickyTop }}
+        className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-muted-foreground sticky bg-background z-10 border-b border-border/40"
+      >
+        <ChevronDownIcon className="w-3.5 h-3.5" />
+        {icon}
+        <span className="flex-1 text-left">{title}</span>
+        <span className="text-[10px] bg-muted px-1.5 py-0.5 rounded-full">
+          {count}
+        </span>
+      </div>
+      {defaultOpen && (
+        <div className="px-1 pb-2 border-b border-border/40">{children}</div>
+      )}
+    </>
+  );
+};
+
 const noopGetToolResult = () => undefined;
 
 const AgentSessionDialog: FC<{
@@ -379,6 +419,60 @@ const AgentSessionItem: FC<{
   );
 };
 
+export const EmptyFilesToolsTabContent: FC = () => {
+  const sectionHeaderHeight = 33;
+
+  return (
+    <div className="flex flex-col h-full">
+      <div className="flex-1 min-h-0 overflow-y-auto">
+        <div className="px-3 py-3 border-b border-border/40 bg-muted/10">
+          <p className="text-xs text-muted-foreground">
+            <Trans id="session.empty_state.description" />
+          </p>
+        </div>
+
+        <StaticCollapsibleSection
+          title={<Trans id="panel.files.edited_section" />}
+          count={0}
+          icon={<FileIcon className="w-3.5 h-3.5" />}
+          stickyTop={0}
+        >
+          <SectionStatusMessage
+            icon={<FileIcon className="h-3.5 w-3.5" />}
+            message={<Trans id="panel.files.no_edited_files" />}
+          />
+        </StaticCollapsibleSection>
+
+        <StaticCollapsibleSection
+          title={<Trans id="panel.files.tool_calls_section" />}
+          count={0}
+          icon={<WrenchIcon className="w-3.5 h-3.5" />}
+          stickyTop={sectionHeaderHeight}
+        >
+          <SectionStatusMessage
+            icon={<WrenchIcon className="h-3.5 w-3.5" />}
+            message={<Trans id="panel.files.no_tool_calls" />}
+          />
+        </StaticCollapsibleSection>
+
+        <StaticCollapsibleSection
+          title="Agents"
+          count={0}
+          icon={<BotIcon className="w-3.5 h-3.5" />}
+          stickyTop={sectionHeaderHeight * 2}
+        >
+          <SectionStatusMessage
+            icon={<BotIcon className="h-3.5 w-3.5" />}
+            message={<Trans id="panel.files.no_agents" />}
+          />
+        </StaticCollapsibleSection>
+      </div>
+
+      <CollapsibleTodoSection todos={null} />
+    </div>
+  );
+};
+
 export const FilesToolsTabContent: FC<FilesToolsTabContentProps> = ({
   projectId,
   sessionId,
@@ -388,9 +482,10 @@ export const FilesToolsTabContent: FC<FilesToolsTabContentProps> = ({
   const [openAgentId, setOpenAgentId] = useState<string | null>(null);
 
   // Agent sessions
-  const { data: agentSessionsData } = useQuery({
-    ...agentSessionListQuery(projectId, sessionId),
-  });
+  const { data: agentSessionsData, isPending: isAgentSessionsPending } =
+    useQuery({
+      ...agentSessionListQuery(projectId, sessionId),
+    });
   const agentSessions = agentSessionsData?.agentSessions ?? [];
   const hasAgentSessions = agentSessions.length > 0;
 
@@ -452,8 +547,9 @@ export const FilesToolsTabContent: FC<FilesToolsTabContentProps> = ({
     [conversations],
   );
 
-  const hasEditedFiles = editedFiles.length > 0;
-  const hasToolCalls = toolCalls.length > 0;
+  const hasEditedFiles =
+    groupedFiles.internal.length > 0 || groupedFiles.external.length > 0;
+  const hasToolCalls = filteredToolCalls.length > 0;
 
   const handleToggleTool = (toolName: string) => {
     setSelectedTools((prev) => {
@@ -471,26 +567,6 @@ export const FilesToolsTabContent: FC<FilesToolsTabContentProps> = ({
     setSelectedTools(new Set());
   };
 
-  if (!hasEditedFiles && !hasToolCalls && !hasAgentSessions) {
-    return (
-      <div className="flex flex-col h-full">
-        <div className="flex-1 flex items-center justify-center p-8">
-          <div className="text-center space-y-3">
-            <div className="w-12 h-12 mx-auto rounded-xl bg-muted/30 flex items-center justify-center">
-              <FileIcon className="w-6 h-6 text-muted-foreground/50" />
-            </div>
-            <div className="space-y-1">
-              <p className="text-sm font-medium text-muted-foreground">
-                <Trans id="sidebar.edited_files.empty" />
-              </p>
-            </div>
-          </div>
-        </div>
-        <CollapsibleTodoSection todos={latestTodos} />
-      </div>
-    );
-  }
-
   // Section header height: py-2 (16px) + text-xs line-height (16px) + border-b (1px) = 33px
   const sectionHeaderHeight = 33;
 
@@ -499,55 +575,62 @@ export const FilesToolsTabContent: FC<FilesToolsTabContentProps> = ({
       {/* Scrollable Content */}
       <div className="flex-1 min-h-0 overflow-y-auto">
         {/* Edited Files Section */}
-        {hasEditedFiles && (
-          <CollapsibleSection
-            title={<Trans id="panel.files.edited_section" />}
-            count={editedFiles.length}
-            icon={<FileIcon className="w-3.5 h-3.5" />}
-            stickyTop={0}
-          >
-            {groupedFiles.internal.length > 0 && (
-              <div className="space-y-0.5">
-                {groupedFiles.internal.map((file) => (
-                  <FileListItem
-                    key={file.filePath}
-                    filePath={file.filePath}
-                    displayPath={file.displayPath}
-                    toolName={file.toolName}
-                    projectId={projectId}
-                  />
-                ))}
-              </div>
-            )}
-            {groupedFiles.external.length > 0 && (
-              <div className="space-y-0.5 mt-2">
-                <div className="px-2 py-1 text-[10px] font-medium text-muted-foreground/70 uppercase tracking-wider">
-                  <Trans id="sidebar.edited_files.external" />
+        <CollapsibleSection
+          title={<Trans id="panel.files.edited_section" />}
+          count={editedFiles.length}
+          icon={<FileIcon className="w-3.5 h-3.5" />}
+          stickyTop={0}
+        >
+          {hasEditedFiles ? (
+            <>
+              {groupedFiles.internal.length > 0 && (
+                <div className="space-y-0.5">
+                  {groupedFiles.internal.map((file) => (
+                    <FileListItem
+                      key={file.filePath}
+                      filePath={file.filePath}
+                      displayPath={file.displayPath}
+                      toolName={file.toolName}
+                      projectId={projectId}
+                    />
+                  ))}
                 </div>
-                {groupedFiles.external.map((file) => (
-                  <FileListItem
-                    key={file.filePath}
-                    filePath={file.filePath}
-                    displayPath={file.displayPath}
-                    toolName={file.toolName}
-                    projectId={projectId}
-                    isExternal
-                  />
-                ))}
-              </div>
-            )}
-          </CollapsibleSection>
-        )}
+              )}
+              {groupedFiles.external.length > 0 && (
+                <div className="space-y-0.5 mt-2">
+                  <div className="px-2 py-1 text-[10px] font-medium text-muted-foreground/70 uppercase tracking-wider">
+                    <Trans id="sidebar.edited_files.external" />
+                  </div>
+                  {groupedFiles.external.map((file) => (
+                    <FileListItem
+                      key={file.filePath}
+                      filePath={file.filePath}
+                      displayPath={file.displayPath}
+                      toolName={file.toolName}
+                      projectId={projectId}
+                      isExternal
+                    />
+                  ))}
+                </div>
+              )}
+            </>
+          ) : (
+            <SectionStatusMessage
+              icon={<FileIcon className="h-3.5 w-3.5" />}
+              message={<Trans id="panel.files.no_edited_files" />}
+            />
+          )}
+        </CollapsibleSection>
 
         {/* Tool Calls Section */}
-        {hasToolCalls && (
-          <CollapsibleSection
-            title={<Trans id="panel.files.tool_calls_section" />}
-            count={filteredToolCalls.length}
-            icon={<WrenchIcon className="w-3.5 h-3.5" />}
-            stickyTop={hasEditedFiles ? sectionHeaderHeight : 0}
-          >
-            {/* Filter */}
+        <CollapsibleSection
+          title={<Trans id="panel.files.tool_calls_section" />}
+          count={filteredToolCalls.length}
+          icon={<WrenchIcon className="w-3.5 h-3.5" />}
+          stickyTop={sectionHeaderHeight}
+        >
+          {/* Filter */}
+          {toolCalls.length > 0 && (
             <div className="px-2 pb-2">
               <Popover>
                 <PopoverTrigger asChild>
@@ -598,8 +681,9 @@ export const FilesToolsTabContent: FC<FilesToolsTabContentProps> = ({
                 </PopoverContent>
               </Popover>
             </div>
+          )}
 
-            {/* Tool call list */}
+          {hasToolCalls ? (
             <div className="space-y-0.5">
               {filteredToolCalls.map((tc) => (
                 <ToolCallItem
@@ -610,20 +694,33 @@ export const FilesToolsTabContent: FC<FilesToolsTabContentProps> = ({
                 />
               ))}
             </div>
-          </CollapsibleSection>
-        )}
+          ) : (
+            <SectionStatusMessage
+              icon={<WrenchIcon className="h-3.5 w-3.5" />}
+              message={
+                selectedTools.size > 0 ? (
+                  <Trans id="panel.files.no_filtered_tool_calls" />
+                ) : (
+                  <Trans id="panel.files.no_tool_calls" />
+                )
+              }
+            />
+          )}
+        </CollapsibleSection>
 
         {/* Agent Sessions Section */}
-        {hasAgentSessions && (
-          <CollapsibleSection
-            title="Agents"
-            count={agentSessions.length}
-            icon={<BotIcon className="w-3.5 h-3.5" />}
-            stickyTop={
-              (hasEditedFiles ? sectionHeaderHeight : 0) +
-              (hasToolCalls ? sectionHeaderHeight : 0)
-            }
-          >
+        <CollapsibleSection
+          title="Agents"
+          count={agentSessions.length}
+          icon={<BotIcon className="w-3.5 h-3.5" />}
+          stickyTop={sectionHeaderHeight * 2}
+        >
+          {isAgentSessionsPending ? (
+            <SectionStatusMessage
+              icon={<Loader2 className="h-3.5 w-3.5 animate-spin" />}
+              message={<Trans id="panel.files.loading_agents" />}
+            />
+          ) : hasAgentSessions ? (
             <div className="space-y-0.5">
               {agentSessions.map((agent) => (
                 <AgentSessionItem
@@ -634,8 +731,13 @@ export const FilesToolsTabContent: FC<FilesToolsTabContentProps> = ({
                 />
               ))}
             </div>
-          </CollapsibleSection>
-        )}
+          ) : (
+            <SectionStatusMessage
+              icon={<BotIcon className="h-3.5 w-3.5" />}
+              message={<Trans id="panel.files.no_agents" />}
+            />
+          )}
+        </CollapsibleSection>
       </div>
 
       {/* Todo Checklist Section - Fixed at bottom */}

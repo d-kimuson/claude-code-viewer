@@ -155,6 +155,15 @@
   "panel.files.filter_tools": {
     "translation": "按工具筛选"
   },
+  "panel.files.no_edited_files": {
+    "translation": "还没有已编辑文件"
+  },
+  "panel.files.loading_agents": {
+    "translation": "正在加载 Agent..."
+  },
+  "panel.files.no_agents": {
+    "translation": "还没有 Agent"
+  },
   "panel.todo.collapsed_title": {
     "translation": "Todo"
   },
@@ -169,6 +178,9 @@
   },
   "panel.files.no_tool_calls": {
     "translation": "暂无工具调用"
+  },
+  "panel.files.no_filtered_tool_calls": {
+    "translation": "没有与所选筛选条件匹配的工具调用"
   },
   "panel.review.empty": {
     "translation": "选择要比较的引用"

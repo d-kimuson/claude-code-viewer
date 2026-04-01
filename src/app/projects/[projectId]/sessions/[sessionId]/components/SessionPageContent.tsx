@@ -3,7 +3,10 @@ import { type FC, Suspense, useCallback, useState } from "react";
 import { AppLayout } from "@/app/components/AppLayout";
 import { BottomPanel } from "@/app/components/BottomPanel";
 import { RightPanel } from "@/app/components/RightPanel";
-import { FilesToolsTabContent } from "@/app/components/rightPanel/FilesToolsTabContent";
+import {
+  EmptyFilesToolsTabContent,
+  FilesToolsTabContent,
+} from "@/app/components/rightPanel/FilesToolsTabContent";
 import { GitTabContent } from "@/app/components/rightPanel/GitTabContent";
 import { ReviewTabContent } from "@/app/components/rightPanel/ReviewTabContent";
 import { Loading } from "@/components/Loading";
@@ -182,7 +185,9 @@ const SessionPageInner: FC<{
                   sessionId={sessionId}
                 />
               </Suspense>
-            ) : null
+            ) : (
+              <EmptyFilesToolsTabContent />
+            )
           }
           reviewTabContent={
             <Suspense fallback={<Loading />}>

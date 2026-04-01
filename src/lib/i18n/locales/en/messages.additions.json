@@ -152,6 +152,15 @@
   "panel.files.filter_tools": {
     "translation": "Filter by tool"
   },
+  "panel.files.no_edited_files": {
+    "translation": "No edited files yet"
+  },
+  "panel.files.loading_agents": {
+    "translation": "Loading agents..."
+  },
+  "panel.files.no_agents": {
+    "translation": "No agents yet"
+  },
   "panel.todo.collapsed_title": {
     "translation": "Todo"
   },
@@ -166,6 +175,9 @@
   },
   "panel.files.no_tool_calls": {
     "translation": "No tool calls yet"
+  },
+  "panel.files.no_filtered_tool_calls": {
+    "translation": "No tool calls match the selected filters"
   },
   "panel.review.empty": {
     "translation": "Select references to compare"

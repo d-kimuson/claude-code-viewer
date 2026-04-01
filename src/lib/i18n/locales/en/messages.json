@@ -294,7 +294,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/FilesToolsTabContent.tsx",
-        325
+        365
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
@@ -376,7 +376,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/FilesToolsTabContent.tsx",
-        317
+        357
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
@@ -395,7 +395,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/FilesToolsTabContent.tsx",
-        303
+        343
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
@@ -410,7 +410,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/FilesToolsTabContent.tsx",
-        335
+        375
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
@@ -462,7 +462,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/FilesToolsTabContent.tsx",
-        328
+        368
       ],
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
@@ -2116,7 +2116,11 @@
     "origin": [
       [
         "src/app/components/rightPanel/FilesToolsTabContent.tsx",
-        504
+        435
+      ],
+      [
+        "src/app/components/rightPanel/FilesToolsTabContent.tsx",
+        579
       ]
     ],
     "translation": "Edited files"
@@ -2127,10 +2131,77 @@
     "origin": [
       [
         "src/app/components/rightPanel/FilesToolsTabContent.tsx",
-        563
+        646
       ]
     ],
     "translation": "Filter by tool"
+  },
+  "panel.files.loading_agents": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/rightPanel/FilesToolsTabContent.tsx",
+        721
+      ]
+    ],
+    "translation": "Loading agents..."
+  },
+  "panel.files.no_agents": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/rightPanel/FilesToolsTabContent.tsx",
+        466
+      ],
+      [
+        "src/app/components/rightPanel/FilesToolsTabContent.tsx",
+        737
+      ]
+    ],
+    "translation": "No agents yet"
+  },
+  "panel.files.no_edited_files": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/rightPanel/FilesToolsTabContent.tsx",
+        442
+      ],
+      [
+        "src/app/components/rightPanel/FilesToolsTabContent.tsx",
+        620
+      ]
+    ],
+    "translation": "No edited files yet"
+  },
+  "panel.files.no_filtered_tool_calls": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/rightPanel/FilesToolsTabContent.tsx",
+        702
+      ]
+    ],
+    "translation": "No tool calls match the selected filters"
+  },
+  "panel.files.no_tool_calls": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/app/components/rightPanel/FilesToolsTabContent.tsx",
+        454
+      ],
+      [
+        "src/app/components/rightPanel/FilesToolsTabContent.tsx",
+        704
+      ]
+    ],
+    "translation": "No tool calls yet"
   },
   "panel.files.tool_calls_section": {
     "placeholders": {},
@@ -2138,7 +2209,11 @@
     "origin": [
       [
         "src/app/components/rightPanel/FilesToolsTabContent.tsx",
-        545
+        447
+      ],
+      [
+        "src/app/components/rightPanel/FilesToolsTabContent.tsx",
+        627
       ]
     ],
     "translation": "Tool calls"
@@ -3022,6 +3097,10 @@
     "comments": [],
     "origin": [
       [
+        "src/app/components/rightPanel/FilesToolsTabContent.tsx",
+        430
+      ],
+      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
         661
       ]
@@ -3800,10 +3879,6 @@
     "comments": [],
     "origin": [
       [
-        "src/app/components/rightPanel/FilesToolsTabContent.tsx",
-        484
-      ],
-      [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/EditedFilesTab.tsx",
         129
       ]
@@ -3816,7 +3891,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/FilesToolsTabContent.tsx",
-        525
+        602
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/EditedFilesTab.tsx",

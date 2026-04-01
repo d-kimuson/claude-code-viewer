@@ -1510,7 +1510,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        722
+        666
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
@@ -1525,7 +1525,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        653
+        597
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
@@ -1540,7 +1540,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        695
+        639
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
@@ -1555,7 +1555,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        754
+        698
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
@@ -1570,7 +1570,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        719
+        663
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
@@ -1585,7 +1585,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        751
+        695
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
@@ -1600,7 +1600,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        682
+        626
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
@@ -1667,7 +1667,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        738
+        682
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
@@ -1682,7 +1682,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        735
+        679
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
@@ -1697,7 +1697,7 @@
     "origin": [
       [
         "src/app/components/rightPanel/GitTabContent.tsx",
-        673
+        617
       ],
       [
         "src/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
@@ -2209,16 +2209,16 @@
     ],
     "translation": "ブラウザ"
   },
-  "panel.tab.files_tools": {
+  "panel.tab.explorer": {
     "placeholders": {},
     "comments": [],
     "origin": [
       [
         "src/app/components/RightPanel.tsx",
-        55
+        50
       ]
     ],
-    "translation": "ファイル/ツール"
+    "translation": "エクスプローラー"
   },
   "panel.tab.git": {
     "placeholders": {},
@@ -2226,7 +2226,7 @@
     "origin": [
       [
         "src/app/components/RightPanel.tsx",
-        50
+        55
       ]
     ],
     "translation": "Git"

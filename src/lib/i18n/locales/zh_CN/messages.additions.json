@@ -146,9 +146,6 @@
   "panel.tab.git": {
     "translation": "Git"
   },
-  "panel.tab.files_tools": {
-    "translation": "文件 & 工具"
-  },
   "panel.tab.review": {
     "translation": "审查"
   },

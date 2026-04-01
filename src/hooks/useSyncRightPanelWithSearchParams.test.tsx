@@ -132,19 +132,19 @@ describe("useSyncRightPanelWithSearchParams", () => {
 
     describe("Tab synchronization", () => {
       it("should sync rightPanelTab from URL to atom", () => {
-        const urlRightPanelTab = "files-tools" as const;
+        const urlRightPanelTab = "explorer" as const;
         store.set(rightPanelActiveTabAtom, urlRightPanelTab);
 
-        expect(store.get(rightPanelActiveTabAtom)).toBe("files-tools");
+        expect(store.get(rightPanelActiveTabAtom)).toBe("explorer");
       });
 
-      it("should default to 'git' when rightPanelTab is undefined", () => {
+      it("should default to 'explorer' when rightPanelTab is undefined", () => {
         // Simulating the schema default behavior
         const urlRightPanelTab = undefined;
-        const effectiveTab = urlRightPanelTab ?? "git";
+        const effectiveTab = urlRightPanelTab ?? "explorer";
         store.set(rightPanelActiveTabAtom, effectiveTab);
 
-        expect(store.get(rightPanelActiveTabAtom)).toBe("git");
+        expect(store.get(rightPanelActiveTabAtom)).toBe("explorer");
       });
     });
   });

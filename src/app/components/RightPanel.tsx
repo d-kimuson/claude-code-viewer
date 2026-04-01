@@ -45,14 +45,14 @@ interface TabConfig {
 
 const tabs: TabConfig[] = [
   {
+    id: "explorer",
+    icon: FileTextIcon,
+    label: <Trans id="panel.tab.explorer" />,
+  },
+  {
     id: "git",
     icon: GitCompareIcon,
     label: <Trans id="panel.tab.git" />,
-  },
-  {
-    id: "files-tools",
-    icon: FileTextIcon,
-    label: <Trans id="panel.tab.files_tools" />,
   },
   {
     id: "review",
@@ -259,7 +259,7 @@ export const RightPanel: FC<RightPanelProps> = ({
         {activeTab === "git" && (
           <div className="flex-1 overflow-auto">{gitTabContent}</div>
         )}
-        {activeTab === "files-tools" && (
+        {activeTab === "explorer" && (
           <div className="flex-1 overflow-auto">{filesToolsTabContent}</div>
         )}
         {activeTab === "review" && (

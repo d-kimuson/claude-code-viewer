@@ -117,7 +117,7 @@ const groupFilesByProject = (
 interface CollapsibleSectionProps {
   title: React.ReactNode;
   count: number;
-  defaultOpen?: boolean;
+  defaultOpen?: boolean; // defaults to false (collapsed)
   children: React.ReactNode;
   icon?: React.ReactNode;
   /** sticky top position in pixels (for stacking multiple sticky headers) */
@@ -127,7 +127,7 @@ interface CollapsibleSectionProps {
 const CollapsibleSection: FC<CollapsibleSectionProps> = ({
   title,
   count,
-  defaultOpen = true,
+  defaultOpen = false,
   children,
   icon,
   stickyTop = 0,

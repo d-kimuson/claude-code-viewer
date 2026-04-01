@@ -5,5 +5,5 @@
     "newlinesBetween": false
   },
   "experimentalSortPackageJson": true,
-  "ignorePatterns": ["src/routeTree.gen.ts"]
+  "ignorePatterns": ["src/web/routeTree.gen.ts", "src/lib/i18n/locales/**"]
 }

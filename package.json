@@ -13,7 +13,7 @@
     "dist"
   ],
   "engines": {
-    "node": ">=20.19.0"
+    "node": ">=22.13.0"
   },
   "bin": {
     "claude-code-viewer": "./dist/main.js"

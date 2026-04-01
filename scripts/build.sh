@@ -9,3 +9,5 @@ fi
 pnpm lingui:compile
 pnpm build:frontend
 pnpm build:backend
+
+cp -r ./src/server/lib/db/migrations ./dist

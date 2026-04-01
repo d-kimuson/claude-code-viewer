@@ -1,6 +1,11 @@
 pre-commit:
   parallel: true
   commands:
+    gitleaks:
+      run: gitleaks protect --staged --no-banner
+      skip:
+        - merge
+
     oxlint:
       glob: "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}"
       run: pnpm fix:oxlint {staged_files}

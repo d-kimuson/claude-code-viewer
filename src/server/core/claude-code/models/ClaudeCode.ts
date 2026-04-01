@@ -45,9 +45,7 @@ const resolveClaudeCodePath = Effect.gen(function* () {
   }
 
   // System PATH lookup
-  const claudePaths = yield* Command.string(
-    Command.make("which", "-a", "claude").pipe(Command.runInShell(true)),
-  ).pipe(
+  const claudePaths = yield* Command.string(Command.make("which", "-a", "claude")).pipe(
     Effect.map(
       (output) =>
         output

@@ -1,21 +1,35 @@
 import { Trans } from "@lingui/react";
-import { AlertTriangle, ChevronDown, ExternalLink } from "lucide-react";
-import { type FC, useCallback, useMemo } from "react";
+import { useVirtualizer } from "@tanstack/react-virtual";
+import {
+  AlertTriangle,
+  ChevronDown,
+  ChevronUp,
+  ExternalLink,
+  SearchIcon,
+  XIcon,
+} from "lucide-react";
+import { type FC, type RefObject, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { parseUserMessage } from "@/lib/claude-code/parseUserMessage";
 import type { Conversation } from "@/lib/conversation-schema";
 import type { ToolResultContent } from "@/lib/conversation-schema/content/ToolResultContentSchema";
+import type { AssistantMessageContent } from "@/lib/conversation-schema/message/AssistantMessageSchema";
 import { calculateDuration } from "@/lib/date/formatDuration";
 import type { SchedulerJob } from "@/server/core/scheduler/schema";
 import type { ErrorJsonl } from "@/server/core/types";
 import { Alert, AlertDescription, AlertTitle } from "@/web/components/ui/alert";
+import { Button } from "@/web/components/ui/button";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/web/components/ui/collapsible";
+import { Input } from "@/web/components/ui/input";
 import { useSidechain } from "../../hooks/useSidechain";
 import { ConversationItem } from "./ConversationItem";
+import { buildRenderableConversationRows } from "./conversationRows";
 import { ScheduledMessageNotice } from "./ScheduledMessageNotice";
+
+const searchInputId = "conversation-in-page-search";
 
 /**
  * Type guard to check if toolUseResult contains agentId.
@@ -31,106 +45,177 @@ const hasAgentId = (toolUseResult: unknown): toolUseResult is { agentId: string 
   );
 };
 
-const getConversationKey = (conversation: Conversation) => {
+const extractUserContentText = (
+  content: Extract<Conversation, { type: "user" }>["message"]["content"],
+): string => {
+  if (typeof content === "string") {
+    return content;
+  }
+
+  const parts: string[] = [];
+  for (const item of content) {
+    if (typeof item === "string") {
+      parts.push(item);
+      continue;
+    }
+
+    if (item.type === "text") {
+      parts.push(item.text);
+    }
+  }
+
+  return parts.join(" ");
+};
+
+const extractAssistantContentText = (content: AssistantMessageContent): string => {
+  if (content.type === "text") {
+    return content.text;
+  }
+
+  if (content.type === "thinking") {
+    return content.thinking;
+  }
+
+  if (content.type === "tool_use") {
+    return content.name;
+  }
+
+  return "";
+};
+
+const getSearchableText = (conversation: Conversation | ErrorJsonl): string => {
+  if (conversation.type === "x-error") {
+    return conversation.line;
+  }
+
   if (conversation.type === "user") {
-    return `user_${conversation.uuid}`;
+    return extractUserContentText(conversation.message.content);
   }
 
   if (conversation.type === "assistant") {
-    return `assistant_${conversation.uuid}`;
-  }
-
-  if (conversation.type === "system") {
-    return `system_${conversation.uuid}`;
+    return conversation.message.content.map(extractAssistantContentText).join(" ");
   }
 
   if (conversation.type === "summary") {
-    return `summary_${conversation.leafUuid}`;
+    return conversation.summary;
   }
 
-  if (conversation.type === "file-history-snapshot") {
-    return `file-history-snapshot_${conversation.messageId}`;
-  }
-
-  if (conversation.type === "queue-operation") {
-    return `queue-operation_${conversation.operation}_${conversation.sessionId}_${conversation.timestamp}`;
-  }
-
-  if (conversation.type === "progress") {
-    return `progress_${conversation.uuid}`;
+  if (conversation.type === "system" && "content" in conversation) {
+    return conversation.content;
   }
 
   if (conversation.type === "custom-title") {
-    return `custom-title_${conversation.sessionId}_${conversation.customTitle}`;
-  }
-
-  if (conversation.type === "agent-name") {
-    return `agent-name_${conversation.sessionId}_${conversation.agentName}`;
-  }
-
-  if (conversation.type === "pr-link") {
-    return `pr-link_${conversation.sessionId}_${conversation.prNumber}`;
+    return conversation.customTitle;
   }
 
   if (conversation.type === "last-prompt") {
-    return `last-prompt_${conversation.sessionId}`;
+    return conversation.lastPrompt;
   }
 
-  conversation satisfies never;
-  throw new Error("Unknown conversation type");
+  return "";
+};
+
+const getSearchInputElement = (): HTMLInputElement | null => {
+  const input = document.getElementById(searchInputId);
+  return input instanceof HTMLInputElement ? input : null;
+};
+
+const clearActiveSearchHighlights = (root: ParentNode | null) => {
+  if (root === null) {
+    return;
+  }
+
+  const highlights = root.querySelectorAll("mark[data-active-search-highlight='true']");
+  for (const highlight of highlights) {
+    const parent = highlight.parentNode;
+    if (parent === null) {
+      continue;
+    }
+
+    const textNode = document.createTextNode(highlight.textContent ?? "");
+    parent.replaceChild(textNode, highlight);
+    parent.normalize();
+  }
+};
+
+const findTextMatchNode = (
+  root: HTMLElement,
+  normalizedQuery: string,
+): { node: Text; startOffset: number } | null => {
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+
+  while (true) {
+    const currentNode = walker.nextNode();
+    if (currentNode === null) {
+      return null;
+    }
+
+    if (!(currentNode instanceof Text)) {
+      continue;
+    }
+
+    const value = currentNode.nodeValue;
+    if (value === null || value === "") {
+      continue;
+    }
+
+    const normalizedValue = value.toLowerCase();
+    const startOffset = normalizedValue.indexOf(normalizedQuery);
+    if (startOffset >= 0) {
+      return { node: currentNode, startOffset };
+    }
+  }
 };
 
 const SchemaErrorDisplay: FC<{ errorLine: string }> = ({ errorLine }) => {
   return (
-    <li className="w-full flex justify-start">
-      <div className="w-full max-w-3xl lg:max-w-4xl sm:w-[90%] md:w-[85%] px-2">
-        <Collapsible>
-          <CollapsibleTrigger asChild>
-            <div className="flex items-center justify-between cursor-pointer hover:bg-muted/50 rounded p-2 -mx-2 border-l-2 border-red-400">
-              <div className="flex items-center gap-2">
-                <AlertTriangle className="h-3 w-3 text-red-500" />
-                <span className="text-xs font-medium text-red-600">
-                  <Trans id="conversation.error.schema" />
-                </span>
-              </div>
-              <ChevronDown className="h-3 w-3 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
+    <div className="w-full max-w-3xl lg:max-w-4xl sm:w-[90%] md:w-[85%] px-2">
+      <Collapsible>
+        <CollapsibleTrigger asChild>
+          <div className="flex items-center justify-between cursor-pointer hover:bg-muted/50 rounded p-2 -mx-2 border-l-2 border-red-400">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="h-3 w-3 text-red-500" />
+              <span className="text-xs font-medium text-red-600">
+                <Trans id="conversation.error.schema" />
+              </span>
             </div>
-          </CollapsibleTrigger>
-          <CollapsibleContent>
-            <div className="bg-background rounded border border-red-200 p-3 mt-2">
-              <div className="space-y-3">
-                <Alert variant="destructive" className="border-red-200 bg-red-50">
-                  <AlertTriangle className="h-4 w-4" />
-                  <AlertTitle className="text-red-800">
-                    <Trans id="conversation.error.schema_validation" />
-                  </AlertTitle>
-                  <AlertDescription className="text-red-700">
-                    <Trans id="conversation.error.schema_validation.description" />{" "}
-                    <a
-                      href="https://github.com/d-kimuson/claude-code-viewer/issues"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-red-600 hover:text-red-800 underline underline-offset-4"
-                    >
-                      <Trans id="conversation.error.report_issue" />
-                      <ExternalLink className="h-3 w-3" />
-                    </a>
-                  </AlertDescription>
-                </Alert>
-                <div className="bg-gray-50 border rounded px-3 py-2">
-                  <h5 className="text-xs font-medium text-gray-700 mb-2">
-                    <Trans id="conversation.error.raw_content" />
-                  </h5>
-                  <pre className="text-xs overflow-x-auto whitespace-pre-wrap break-all font-mono text-gray-800">
-                    {errorLine}
-                  </pre>
-                </div>
+            <ChevronDown className="h-3 w-3 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
+          </div>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <div className="bg-background rounded border border-red-200 p-3 mt-2">
+            <div className="space-y-3">
+              <Alert variant="destructive" className="border-red-200 bg-red-50">
+                <AlertTriangle className="h-4 w-4" />
+                <AlertTitle className="text-red-800">
+                  <Trans id="conversation.error.schema_validation" />
+                </AlertTitle>
+                <AlertDescription className="text-red-700">
+                  <Trans id="conversation.error.schema_validation.description" />{" "}
+                  <a
+                    href="https://github.com/d-kimuson/claude-code-viewer/issues"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-red-600 hover:text-red-800 underline underline-offset-4"
+                  >
+                    <Trans id="conversation.error.report_issue" />
+                    <ExternalLink className="h-3 w-3" />
+                  </a>
+                </AlertDescription>
+              </Alert>
+              <div className="bg-gray-50 border rounded px-3 py-2">
+                <h5 className="text-xs font-medium text-gray-700 mb-2">
+                  <Trans id="conversation.error.raw_content" />
+                </h5>
+                <pre className="text-xs overflow-x-auto whitespace-pre-wrap break-all font-mono text-gray-800">
+                  {errorLine}
+                </pre>
               </div>
             </div>
-          </CollapsibleContent>
-        </Collapsible>
-      </div>
-    </li>
+          </div>
+        </CollapsibleContent>
+      </Collapsible>
+    </div>
   );
 };
 
@@ -140,6 +225,8 @@ type ConversationListProps = {
   projectId: string;
   sessionId: string;
   scheduledJobs: SchedulerJob[];
+  scrollContainerRef: RefObject<HTMLDivElement | null>;
+  enableInPageSearch?: boolean;
 };
 
 export const ConversationList: FC<ConversationListProps> = ({
@@ -148,7 +235,14 @@ export const ConversationList: FC<ConversationListProps> = ({
   projectId,
   sessionId,
   scheduledJobs,
+  scrollContainerRef,
+  enableInPageSearch = false,
 }) => {
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [committedSearchQuery, setCommittedSearchQuery] = useState("");
+  const [activeMatchPosition, setActiveMatchPosition] = useState(0);
+  const highlightRetryRafIdRef = useRef<number | null>(null);
+
   const validConversations = useMemo(
     () => conversations.filter((conversation) => conversation.type !== "x-error"),
     [conversations],
@@ -161,19 +255,13 @@ export const ConversationList: FC<ConversationListProps> = ({
     existsRelatedTaskCall,
   } = useSidechain(validConversations);
 
-  // Build a map of assistant UUID -> turn duration (ms)
-  // Turn duration = time from the starting user message to the last assistant message of the turn
-  // A turn starts with a real user message and ends when the next real user message arrives
-  // Only the LAST assistant message in each turn gets a duration
   const turnDurationMap = useMemo(() => {
     const map = new Map<string, number>();
 
-    // Helper to check if a user message is a real user input (not a tool result)
     const isRealUserMessage = (conv: Conversation): boolean => {
       if (conv.type !== "user" || conv.isSidechain) {
         return false;
       }
-      // Tool result messages have array content starting with tool_result
       const content = conv.message.content;
       if (Array.isArray(content)) {
         const firstItem = content[0];
@@ -189,7 +277,6 @@ export const ConversationList: FC<ConversationListProps> = ({
       return true;
     };
 
-    // First, identify turn boundaries (indices of real user messages)
     const turnStartIndices: number[] = [];
     for (let i = 0; i < validConversations.length; i++) {
       const conv = validConversations[i];
@@ -198,7 +285,6 @@ export const ConversationList: FC<ConversationListProps> = ({
       }
     }
 
-    // For each turn, find the last assistant message and calculate duration
     for (let turnIdx = 0; turnIdx < turnStartIndices.length; turnIdx++) {
       const turnStartIndex = turnStartIndices[turnIdx];
       if (turnStartIndex === undefined) {
@@ -211,7 +297,6 @@ export const ConversationList: FC<ConversationListProps> = ({
         continue;
       }
 
-      // Find the last non-sidechain assistant message in this turn
       let lastAssistantInTurn: (typeof validConversations)[number] | null = null;
       for (let i = turnStartIndex + 1; i < turnEndIndex; i++) {
         const conv = validConversations[i];
@@ -220,7 +305,6 @@ export const ConversationList: FC<ConversationListProps> = ({
         }
       }
 
-      // Calculate duration from turn start to last assistant message
       if (lastAssistantInTurn !== null) {
         const duration = calculateDuration(turnStartConv.timestamp, lastAssistantInTurn.timestamp);
         if (duration !== null && duration >= 0) {
@@ -239,7 +323,6 @@ export const ConversationList: FC<ConversationListProps> = ({
     [turnDurationMap],
   );
 
-  // Build a map of tool_use_id -> agentId from user entries with toolUseResult
   const toolUseIdToAgentIdMap = useMemo(() => {
     const map = new Map<string, string>();
     for (const conv of validConversations) {
@@ -248,7 +331,6 @@ export const ConversationList: FC<ConversationListProps> = ({
       if (typeof messageContent === "string") continue;
 
       for (const content of messageContent) {
-        // content can be string or object - need to check type
         if (typeof content === "string") continue;
         if (content.type === "tool_result") {
           const toolUseResult = conv.toolUseResult;
@@ -292,22 +374,18 @@ export const ConversationList: FC<ConversationListProps> = ({
     [toolUseIdToToolUseResultMap],
   );
 
-  // Helper to check if a conversation is a user message containing only tool results
   const isOnlyToolResult = useCallback((conv: Conversation): boolean => {
     if (conv.type !== "user") return false;
     const content = conv.message.content;
     if (typeof content === "string") return false;
 
-    // Check if every item in the content array is a tool_result
     return content.every((item) => typeof item !== "string" && item.type === "tool_result");
   }, []);
 
-  // Helper to check if a conversation should be rendered
   const shouldRenderConversation = useCallback(
     (conv: Conversation | ErrorJsonl): boolean => {
       if (conv.type === "x-error") return true;
 
-      // Existing checks
       if (conv.type === "progress") return false;
       if (conv.type === "custom-title") return false;
       if (conv.type === "agent-name") return false;
@@ -322,7 +400,6 @@ export const ConversationList: FC<ConversationListProps> = ({
 
       if (isSidechain) return false;
 
-      // specific check for ghost tool results
       if (conv.type === "user" && isOnlyToolResult(conv)) {
         return false;
       }
@@ -332,107 +409,369 @@ export const ConversationList: FC<ConversationListProps> = ({
     [isOnlyToolResult],
   );
 
-  // Calculate timestamp visibility and render eligibility
-  const conversationsWithTimestamp = useMemo(() => {
-    return conversations.map((conv) => {
-      if (conv.type === "x-error") {
-        return { conversation: conv, showTimestamp: false, shouldRender: true };
-      }
-
-      const shouldRender = shouldRenderConversation(conv);
-      if (!shouldRender) {
-        return {
-          conversation: conv,
-          showTimestamp: false,
-          shouldRender: false,
-        };
-      }
-
-      if (
-        conv.type === "summary" ||
-        conv.type === "progress" ||
-        conv.type === "queue-operation" ||
-        conv.type === "file-history-snapshot" ||
-        conv.type === "custom-title" ||
-        conv.type === "agent-name"
-      ) {
-        // These types might not have timestamp or are invisible
-        return { conversation: conv, showTimestamp: false, shouldRender: true };
-      }
-
-      // Always show timestamp for every message as per new requirement
-      return { conversation: conv, showTimestamp: true, shouldRender: true };
-    });
+  const renderableRows = useMemo(() => {
+    return buildRenderableConversationRows(conversations, shouldRenderConversation);
   }, [conversations, shouldRenderConversation]);
+
+  const searchableTexts = useMemo(() => {
+    return renderableRows.map((row) => getSearchableText(row.conversation).toLowerCase());
+  }, [renderableRows]);
+
+  const matchedRowIndices = useMemo(() => {
+    if (committedSearchQuery === "") {
+      return [];
+    }
+
+    const result: number[] = [];
+    for (let index = 0; index < searchableTexts.length; index++) {
+      const searchableText = searchableTexts[index];
+      if (searchableText !== undefined && searchableText.includes(committedSearchQuery)) {
+        result.push(index);
+      }
+    }
+
+    return result;
+  }, [committedSearchQuery, searchableTexts]);
+
+  useEffect(() => {
+    if (!enableInPageSearch) {
+      return;
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "f") {
+        event.preventDefault();
+        setIsSearchOpen(true);
+      }
+
+      if (event.key === "Escape" && isSearchOpen) {
+        setIsSearchOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [enableInPageSearch, isSearchOpen]);
+
+  useEffect(() => {
+    setActiveMatchPosition(0);
+  }, [committedSearchQuery]);
+
+  useEffect(() => {
+    if (!isSearchOpen) {
+      return;
+    }
+
+    requestAnimationFrame(() => {
+      const input = getSearchInputElement();
+      if (input !== null) {
+        input.focus();
+        input.select();
+      }
+    });
+  }, [isSearchOpen]);
+
+  const commitSearch = useCallback((query: string) => {
+    const normalizedQuery = query.trim().toLowerCase();
+    setCommittedSearchQuery(normalizedQuery);
+    setActiveMatchPosition(0);
+  }, []);
+
+  const virtualizer = useVirtualizer({
+    count: renderableRows.length,
+    getScrollElement: () => scrollContainerRef.current,
+    getItemKey: (index) => renderableRows[index]?.rowKey ?? index,
+    estimateSize: () => 140,
+    overscan: 320,
+    useAnimationFrameWithResizeObserver: true,
+  });
+
+  useEffect(() => {
+    const containerElement = scrollContainerRef.current;
+
+    if (matchedRowIndices.length === 0) {
+      clearActiveSearchHighlights(containerElement);
+      return;
+    }
+
+    if (activeMatchPosition >= matchedRowIndices.length) {
+      setActiveMatchPosition(0);
+      return;
+    }
+
+    const rowIndex = matchedRowIndices[activeMatchPosition];
+    if (rowIndex === undefined) {
+      return;
+    }
+
+    virtualizer.scrollToIndex(rowIndex, { align: "center" });
+  }, [activeMatchPosition, matchedRowIndices, scrollContainerRef, virtualizer]);
+
+  useEffect(() => {
+    const rootElement = scrollContainerRef.current;
+    if (rootElement === null) {
+      return;
+    }
+
+    if (highlightRetryRafIdRef.current !== null) {
+      window.cancelAnimationFrame(highlightRetryRafIdRef.current);
+      highlightRetryRafIdRef.current = null;
+    }
+
+    clearActiveSearchHighlights(rootElement);
+
+    if (committedSearchQuery === "" || matchedRowIndices.length === 0) {
+      return;
+    }
+
+    const targetRowIndex = matchedRowIndices[activeMatchPosition];
+    if (targetRowIndex === undefined) {
+      return;
+    }
+
+    const applyHighlight = (retriesLeft: number) => {
+      const rowElement = rootElement.querySelector(`li[data-index='${targetRowIndex}']`);
+      if (!(rowElement instanceof HTMLElement)) {
+        if (retriesLeft > 0) {
+          highlightRetryRafIdRef.current = window.requestAnimationFrame(() => {
+            applyHighlight(retriesLeft - 1);
+          });
+        }
+        return;
+      }
+
+      const match = findTextMatchNode(rowElement, committedSearchQuery);
+      if (match === null) {
+        if (retriesLeft > 0) {
+          highlightRetryRafIdRef.current = window.requestAnimationFrame(() => {
+            applyHighlight(retriesLeft - 1);
+          });
+        }
+        return;
+      }
+
+      const markElement = document.createElement("mark");
+      markElement.dataset.activeSearchHighlight = "true";
+      markElement.className = "rounded bg-yellow-200 px-0.5 text-foreground dark:bg-yellow-700/70";
+
+      const range = document.createRange();
+      range.setStart(match.node, match.startOffset);
+      range.setEnd(match.node, match.startOffset + committedSearchQuery.length);
+      range.surroundContents(markElement);
+      highlightRetryRafIdRef.current = null;
+    };
+
+    applyHighlight(6);
+  }, [activeMatchPosition, committedSearchQuery, matchedRowIndices, scrollContainerRef]);
+
+  useEffect(() => {
+    const rootElement = scrollContainerRef.current;
+
+    return () => {
+      if (highlightRetryRafIdRef.current !== null) {
+        window.cancelAnimationFrame(highlightRetryRafIdRef.current);
+      }
+      clearActiveSearchHighlights(rootElement);
+    };
+  }, [scrollContainerRef]);
+
+  const virtualItems = virtualizer.getVirtualItems();
+  const totalSize = virtualizer.getTotalSize();
+  const firstVirtualItem = virtualItems[0];
+  const lastVirtualItem = virtualItems[virtualItems.length - 1];
+  const paddingTop = firstVirtualItem?.start ?? 0;
+  const paddingBottom = totalSize - (lastVirtualItem?.end ?? 0);
+
+  const jumpToPreviousMatch = () => {
+    if (matchedRowIndices.length === 0) {
+      return;
+    }
+
+    setActiveMatchPosition((current) =>
+      current === 0 ? matchedRowIndices.length - 1 : current - 1,
+    );
+  };
+
+  const jumpToNextMatch = () => {
+    if (matchedRowIndices.length === 0) {
+      return;
+    }
+
+    setActiveMatchPosition((current) => (current + 1) % matchedRowIndices.length);
+  };
+
+  const renderConversationRow = (virtualRowIndex: number) => {
+    const row = renderableRows[virtualRowIndex];
+    if (row === undefined) {
+      return null;
+    }
+
+    if (row.conversation.type === "x-error") {
+      return (
+        <div className="w-full flex justify-start">
+          <SchemaErrorDisplay errorLine={row.conversation.line} />
+        </div>
+      );
+    }
+
+    const conversation = row.conversation;
+    const isLocalCommandOutput =
+      conversation.type === "user" &&
+      typeof conversation.message.content === "string" &&
+      parseUserMessage(conversation.message.content).kind === "local-command";
+
+    const isSidechain =
+      conversation.type !== "summary" &&
+      conversation.type !== "file-history-snapshot" &&
+      conversation.type !== "queue-operation" &&
+      conversation.type !== "progress" &&
+      conversation.type !== "custom-title" &&
+      conversation.type !== "agent-name" &&
+      conversation.type !== "pr-link" &&
+      conversation.type !== "last-prompt" &&
+      conversation.isSidechain;
+
+    return (
+      <div
+        className={`w-full flex ${
+          isSidechain ||
+          isLocalCommandOutput ||
+          conversation.type === "assistant" ||
+          conversation.type === "system" ||
+          conversation.type === "summary"
+            ? "justify-start"
+            : "justify-end"
+        }`}
+      >
+        <div className="w-full max-w-3xl lg:max-w-4xl sm:w-[90%] md:w-[85%]">
+          <ConversationItem
+            conversation={conversation}
+            getToolResult={getToolResult}
+            getAgentIdForToolUse={getAgentIdForToolUse}
+            getToolUseResult={getToolUseResult}
+            getTurnDuration={getTurnDuration}
+            isRootSidechain={isRootSidechain}
+            getSidechainConversations={getSidechainConversations}
+            getSidechainConversationByAgentId={getSidechainConversationByAgentId}
+            getSidechainConversationByPrompt={getSidechainConversationByPrompt}
+            existsRelatedTaskCall={existsRelatedTaskCall}
+            projectId={projectId}
+            sessionId={sessionId}
+            showTimestamp={row.showTimestamp}
+          />
+        </div>
+      </div>
+    );
+  };
 
   return (
     <>
-      <ul>
-        {conversationsWithTimestamp.flatMap(({ conversation, showTimestamp, shouldRender }) => {
-          if (!shouldRender) {
-            return [];
-          }
+      {enableInPageSearch && isSearchOpen && (
+        <div className="sticky top-2 z-20 mb-3 flex justify-end">
+          <div className="flex items-center gap-2 rounded-md border bg-background/95 px-2 py-1.5 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/85">
+            <SearchIcon className="h-4 w-4 text-muted-foreground" />
+            <Input
+              id={searchInputId}
+              placeholder="Find in conversation"
+              defaultValue={committedSearchQuery}
+              className="h-8 w-56"
+              onKeyDown={(event) => {
+                if (event.key !== "Enter") {
+                  return;
+                }
 
-          if (conversation.type === "x-error") {
-            return (
-              <SchemaErrorDisplay
-                key={`error_${conversation.line}`}
-                errorLine={conversation.line}
-              />
-            );
-          }
+                const inputValue = event.currentTarget.value;
+                const normalizedInputValue = inputValue.trim().toLowerCase();
+                if (normalizedInputValue === committedSearchQuery && matchedRowIndices.length > 0) {
+                  if (event.shiftKey) {
+                    jumpToPreviousMatch();
+                  } else {
+                    jumpToNextMatch();
+                  }
+                  return;
+                }
 
-          const elm = (
-            <ConversationItem
-              key={getConversationKey(conversation)}
-              conversation={conversation}
-              getToolResult={getToolResult}
-              getAgentIdForToolUse={getAgentIdForToolUse}
-              getToolUseResult={getToolUseResult}
-              getTurnDuration={getTurnDuration}
-              isRootSidechain={isRootSidechain}
-              getSidechainConversations={getSidechainConversations}
-              getSidechainConversationByAgentId={getSidechainConversationByAgentId}
-              getSidechainConversationByPrompt={getSidechainConversationByPrompt}
-              existsRelatedTaskCall={existsRelatedTaskCall}
-              projectId={projectId}
-              sessionId={sessionId}
-              showTimestamp={showTimestamp}
+                commitSearch(inputValue);
+              }}
             />
-          );
-
-          const isLocalCommandOutput =
-            conversation.type === "user" &&
-            typeof conversation.message.content === "string" &&
-            parseUserMessage(conversation.message.content).kind === "local-command";
-
-          const isSidechain =
-            conversation.type !== "summary" &&
-            conversation.type !== "file-history-snapshot" &&
-            conversation.type !== "queue-operation" &&
-            conversation.type !== "progress" &&
-            conversation.type !== "custom-title" &&
-            conversation.type !== "agent-name" &&
-            conversation.type !== "pr-link" &&
-            conversation.type !== "last-prompt" &&
-            conversation.isSidechain;
-
-          return [
-            <li
-              className={`w-full flex ${
-                isSidechain ||
-                isLocalCommandOutput ||
-                conversation.type === "assistant" ||
-                conversation.type === "system" ||
-                conversation.type === "summary"
-                  ? "justify-start"
-                  : "justify-end"
-              } animate-in fade-in slide-in-from-bottom-2 duration-300`}
-              key={getConversationKey(conversation)}
+            <span className="min-w-14 text-right text-xs text-muted-foreground">
+              {matchedRowIndices.length === 0
+                ? "0/0"
+                : `${activeMatchPosition + 1}/${matchedRowIndices.length}`}
+            </span>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="h-7 w-7 p-0"
+              onClick={() => {
+                const inputValue = getSearchInputElement()?.value ?? "";
+                const normalizedInputValue = inputValue.trim().toLowerCase();
+                if (normalizedInputValue !== committedSearchQuery) {
+                  commitSearch(inputValue);
+                  return;
+                }
+                jumpToPreviousMatch();
+              }}
+              disabled={matchedRowIndices.length === 0}
             >
-              <div className="w-full max-w-3xl lg:max-w-4xl sm:w-[90%] md:w-[85%]">{elm}</div>
-            </li>,
-          ];
+              <ChevronUp className="h-4 w-4" />
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="h-7 w-7 p-0"
+              onClick={() => {
+                const inputValue = getSearchInputElement()?.value ?? "";
+                const normalizedInputValue = inputValue.trim().toLowerCase();
+                if (normalizedInputValue !== committedSearchQuery) {
+                  commitSearch(inputValue);
+                  return;
+                }
+                jumpToNextMatch();
+              }}
+              disabled={matchedRowIndices.length === 0}
+            >
+              <ChevronDown className="h-4 w-4" />
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="h-7 w-7 p-0"
+              onClick={() => setIsSearchOpen(false)}
+            >
+              <XIcon className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      )}
+      <ul
+        className="w-full"
+        style={{
+          paddingTop: `${paddingTop}px`,
+          paddingBottom: `${paddingBottom}px`,
+        }}
+      >
+        {virtualItems.map((virtualRow) => {
+          const row = renderableRows[virtualRow.index];
+          if (row === undefined) {
+            return null;
+          }
+
+          const rowElement = renderConversationRow(virtualRow.index);
+          if (rowElement === null) {
+            return null;
+          }
+
+          return (
+            <li key={row.rowKey} ref={virtualizer.measureElement} data-index={virtualRow.index}>
+              {rowElement}
+            </li>
+          );
         })}
       </ul>
       <ScheduledMessageNotice scheduledJobs={scheduledJobs} />

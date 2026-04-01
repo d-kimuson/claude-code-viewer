@@ -221,6 +221,25 @@ const SessionPageMainContent: FC<
   const [previousConversationLength, setPreviousConversationLength] = useState(0);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+  const scrollSettleRafIdRef = useRef<number | null>(null);
+
+  const scrollToBottomSettled = useCallback((frames: number) => {
+    const scrollContainer = scrollContainerRef.current;
+    if (scrollContainer === null) {
+      return;
+    }
+
+    scrollContainer.scrollTo({ top: scrollContainer.scrollHeight, behavior: "auto" });
+
+    if (frames <= 0) {
+      scrollSettleRafIdRef.current = null;
+      return;
+    }
+
+    scrollSettleRafIdRef.current = window.requestAnimationFrame(() => {
+      scrollToBottomSettled(frames - 1);
+    });
+  }, []);
 
   const abortTask = useMutation({
     mutationFn: async (sessionProcessId: string) => {
@@ -239,48 +258,54 @@ const SessionPageMainContent: FC<
     },
   });
 
-  // Scroll to bottom immediately when switching to a different session
-  // biome-ignore lint/correctness/useExhaustiveDependencies: intentionally fires on sessionId change only
-  useEffect(() => {
-    const scrollContainer = scrollContainerRef.current;
-    if (scrollContainer) {
-      scrollContainer.scrollTop = scrollContainer.scrollHeight;
-    }
-  }, [sessionId]);
-
   useEffect(() => {
     if (!isExistingSession) return;
     if (effectiveSessionStatus === "running" && conversationCount !== previousConversationLength) {
-      setPreviousConversationLength(conversationCount);
       const scrollContainer = scrollContainerRef.current;
-      if (scrollContainer) {
-        scrollContainer.scrollTo({
-          top: scrollContainer.scrollHeight,
-          behavior: "smooth",
-        });
+      if (scrollContainer !== null) {
+        const distanceFromBottom =
+          scrollContainer.scrollHeight - scrollContainer.scrollTop - scrollContainer.clientHeight;
+        if (distanceFromBottom > 120) {
+          setPreviousConversationLength(conversationCount);
+          return;
+        }
       }
+
+      setPreviousConversationLength(conversationCount);
+      scrollToBottomSettled(6);
     }
-  }, [conversationCount, isExistingSession, effectiveSessionStatus, previousConversationLength]);
+  }, [
+    conversationCount,
+    isExistingSession,
+    effectiveSessionStatus,
+    previousConversationLength,
+    scrollToBottomSettled,
+  ]);
 
   const handleScrollToTop = () => {
     const scrollContainer = scrollContainerRef.current;
-    if (scrollContainer) {
-      scrollContainer.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
+    if (scrollContainer === null) {
+      return;
     }
+
+    scrollContainer.scrollTo({ top: 0, behavior: "auto" });
   };
 
   const handleScrollToBottom = () => {
-    const scrollContainer = scrollContainerRef.current;
-    if (scrollContainer) {
-      scrollContainer.scrollTo({
-        top: scrollContainer.scrollHeight,
-        behavior: "smooth",
-      });
+    if (scrollSettleRafIdRef.current !== null) {
+      window.cancelAnimationFrame(scrollSettleRafIdRef.current);
+      scrollSettleRafIdRef.current = null;
     }
+    scrollToBottomSettled(8);
   };
+
+  useEffect(() => {
+    return () => {
+      if (scrollSettleRafIdRef.current !== null) {
+        window.cancelAnimationFrame(scrollSettleRafIdRef.current);
+      }
+    };
+  }, []);
 
   const sessionTitle = resolveSessionTitle(
     sessionData?.session.meta.customTitle ?? null,
@@ -594,6 +619,8 @@ const SessionPageMainContent: FC<
               projectId={projectId}
               sessionId={sessionId ?? ""}
               scheduledJobs={sessionScheduledJobs}
+              scrollContainerRef={scrollContainerRef}
+              enableInPageSearch
             />
             {!isExistingSession && (
               <div className="space-y-6">

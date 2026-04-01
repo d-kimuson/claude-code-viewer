@@ -376,57 +376,62 @@ const FileHeader: FC<FileHeaderProps> = ({ fileDiff, isCollapsed, onToggleCollap
   };
 
   return (
-    <Button
-      onClick={onToggleCollapse}
-      className="w-full bg-gray-50 dark:bg-gray-800 px-3 py-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors sticky top-0 z-20"
-    >
-      <div className="w-full flex items-center gap-2">
-        {isCollapsed ? (
-          <ChevronRightIcon className="w-4 h-4 text-gray-500 flex-shrink-0" />
-        ) : (
-          <ChevronDownIcon className="w-4 h-4 text-gray-500 flex-shrink-0" />
-        )}
-        <div
-          className={cn(
-            "w-5 h-5 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-xs flex-shrink-0",
-            diffMonoClass,
+    <div className="w-full bg-gray-50 dark:bg-gray-800 px-3 py-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors sticky top-0 z-20">
+      <button
+        type="button"
+        onClick={onToggleCollapse}
+        className="w-full text-left"
+        aria-expanded={!isCollapsed}
+      >
+        <div className="w-full flex items-center gap-2 pr-8">
+          {isCollapsed ? (
+            <ChevronRightIcon className="w-4 h-4 text-gray-500 flex-shrink-0" />
+          ) : (
+            <ChevronDownIcon className="w-4 h-4 text-gray-500 flex-shrink-0" />
           )}
-        >
-          {getFileStatusIcon()}
+          <div
+            className={cn(
+              "w-5 h-5 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-xs flex-shrink-0",
+              diffMonoClass,
+            )}
+          >
+            {getFileStatusIcon()}
+          </div>
+          <span
+            className={cn(
+              "text-xs font-medium text-black dark:text-white text-left truncate flex-1 min-w-0",
+              diffMonoClass,
+            )}
+          >
+            {fileDiff.filename}
+          </span>
+          <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400 flex-shrink-0">
+            {fileDiff.linesAdded > 0 && (
+              <span className="text-green-600 dark:text-green-400">+{fileDiff.linesAdded}</span>
+            )}
+            {fileDiff.linesDeleted > 0 && (
+              <span className="text-red-600 dark:text-red-400">-{fileDiff.linesDeleted}</span>
+            )}
+          </div>
         </div>
-        <span
-          className={cn(
-            "text-xs font-medium text-black dark:text-white text-left truncate flex-1 min-w-0",
-            diffMonoClass,
-          )}
-        >
-          {fileDiff.filename}
-        </span>
-        <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400 flex-shrink-0">
-          {fileDiff.linesAdded > 0 && (
-            <span className="text-green-600 dark:text-green-400">+{fileDiff.linesAdded}</span>
-          )}
-          {fileDiff.linesDeleted > 0 && (
-            <span className="text-red-600 dark:text-red-400">-{fileDiff.linesDeleted}</span>
-          )}
-        </div>
-        <Button
-          onClick={(event) => {
-            void handleCopyFilename(event);
-          }}
-          variant="ghost"
-          size="sm"
-          className="flex-shrink-0 p-1 h-5 w-5 hover:bg-gray-200 dark:hover:bg-gray-600"
-        >
-          <CopyIcon className="w-3 h-3 text-gray-500 dark:text-gray-400" />
-        </Button>
-      </div>
+      </button>
+      <Button
+        type="button"
+        onClick={(event) => {
+          void handleCopyFilename(event);
+        }}
+        variant="ghost"
+        size="sm"
+        className="absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 p-1 hover:bg-gray-200 dark:hover:bg-gray-600"
+      >
+        <CopyIcon className="w-3 h-3 text-gray-500 dark:text-gray-400" />
+      </Button>
       {fileDiff.isBinary && (
         <div className="mt-2 text-xs text-gray-500 dark:text-gray-400 text-left">
           Binary file (content not shown)
         </div>
       )}
-    </Button>
+    </div>
   );
 };
 

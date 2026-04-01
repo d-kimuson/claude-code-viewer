@@ -2,9 +2,17 @@ import { FileSystem, Path } from "@effect/platform";
 import { Context, Effect, Layer, Option } from "effect";
 import type { InferEffect } from "../../../lib/effect/types";
 import { parseJsonl } from "../../claude-code/functions/parseJsonl";
-import { decodeProjectId } from "../../project/functions/id";
+import { ApplicationContext } from "../../platform/services/ApplicationContext";
+import {
+  decodeProjectId,
+  validateProjectPath,
+} from "../../project/functions/id";
 import type { Session, SessionDetail } from "../../types";
-import { decodeSessionId, encodeSessionId } from "../functions/id";
+import {
+  decodeSessionId,
+  encodeSessionId,
+  validateSessionId,
+} from "../functions/id";
 import { isRegularSessionFile } from "../functions/isRegularSessionFile";
 import { SessionMetaService } from "../services/SessionMetaService";
 
@@ -12,9 +20,26 @@ const LayerImpl = Effect.gen(function* () {
   const fs = yield* FileSystem.FileSystem;
   const path = yield* Path.Path;
   const sessionMetaService = yield* SessionMetaService;
+  const appContext = yield* ApplicationContext;
 
   const getSession = (projectId: string, sessionId: string) =>
     Effect.gen(function* () {
+      // Validate sessionId contains only safe characters
+      if (!validateSessionId(sessionId)) {
+        return yield* Effect.fail(
+          new Error("Invalid session ID: contains unsafe characters"),
+        );
+      }
+
+      // Validate that the project path is within the Claude projects directory
+      const projectPath = decodeProjectId(projectId);
+      const { claudeProjectsDirPath } = yield* appContext.claudeCodePaths;
+      if (!validateProjectPath(projectPath, claudeProjectsDirPath)) {
+        return yield* Effect.fail(
+          new Error("Invalid project path: outside allowed directory"),
+        );
+      }
+
       const sessionPath = decodeSessionId(projectId, sessionId);
 
       // Check if session file exists
@@ -66,6 +91,14 @@ const LayerImpl = Effect.gen(function* () {
       const { maxCount = 20, cursor } = options ?? {};
 
       const claudeProjectPath = decodeProjectId(projectId);
+
+      // Validate that the project path is within the Claude projects directory
+      const { claudeProjectsDirPath } = yield* appContext.claudeCodePaths;
+      if (!validateProjectPath(claudeProjectPath, claudeProjectsDirPath)) {
+        return yield* Effect.fail(
+          new Error("Invalid project path: outside allowed directory"),
+        );
+      }
 
       // Check if project directory exists
       const dirExists = yield* fs.exists(claudeProjectPath);

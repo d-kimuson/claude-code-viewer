@@ -65,7 +65,11 @@ describe("SessionRepository", () => {
                 ),
             }),
           ),
-          Effect.provide(testPlatformLayer()),
+          Effect.provide(
+            testPlatformLayer({
+              claudeCodePaths: { claudeProjectsDirPath: "/test" },
+            }),
+          ),
         ),
       );
 
@@ -104,7 +108,11 @@ describe("SessionRepository", () => {
           Effect.provide(SessionRepository.Live),
           Effect.provide(SessionMetaServiceMock),
           Effect.provide(FileSystemMock),
-          Effect.provide(testPlatformLayer()),
+          Effect.provide(
+            testPlatformLayer({
+              claudeCodePaths: { claudeProjectsDirPath: "/test" },
+            }),
+          ),
         ),
       );
 
@@ -159,7 +167,11 @@ describe("SessionRepository", () => {
           Effect.provide(SessionRepository.Live),
           Effect.provide(SessionMetaServiceMock),
           Effect.provide(FileSystemMock),
-          Effect.provide(testPlatformLayer()),
+          Effect.provide(
+            testPlatformLayer({
+              claudeCodePaths: { claudeProjectsDirPath: "/test" },
+            }),
+          ),
         ),
       );
 
@@ -204,7 +216,11 @@ describe("SessionRepository", () => {
           Effect.provide(SessionRepository.Live),
           Effect.provide(SessionMetaServiceMock),
           Effect.provide(FileSystemMock),
-          Effect.provide(testPlatformLayer()),
+          Effect.provide(
+            testPlatformLayer({
+              claudeCodePaths: { claudeProjectsDirPath: "/test" },
+            }),
+          ),
         ),
       );
 
@@ -249,7 +265,11 @@ describe("SessionRepository", () => {
           Effect.provide(SessionRepository.Live),
           Effect.provide(SessionMetaServiceMock),
           Effect.provide(FileSystemMock),
-          Effect.provide(testPlatformLayer()),
+          Effect.provide(
+            testPlatformLayer({
+              claudeCodePaths: { claudeProjectsDirPath: "/test" },
+            }),
+          ),
         ),
       );
 
@@ -258,7 +278,7 @@ describe("SessionRepository", () => {
     });
 
     it("returns empty array when project does not exist", async () => {
-      const projectId = Buffer.from("/nonexistent").toString("base64url");
+      const projectId = Buffer.from("/test/nonexistent").toString("base64url");
 
       const FileSystemMock = testFileSystemLayer({
         exists: () => Effect.succeed(false),
@@ -290,7 +310,11 @@ describe("SessionRepository", () => {
           Effect.provide(SessionRepository.Live),
           Effect.provide(SessionMetaServiceMock),
           Effect.provide(FileSystemMock),
-          Effect.provide(testPlatformLayer()),
+          Effect.provide(
+            testPlatformLayer({
+              claudeCodePaths: { claudeProjectsDirPath: "/test" },
+            }),
+          ),
         ),
       );
 
@@ -334,7 +358,11 @@ describe("SessionRepository", () => {
           Effect.provide(SessionRepository.Live),
           Effect.provide(SessionMetaServiceMock),
           Effect.provide(FileSystemMock),
-          Effect.provide(testPlatformLayer()),
+          Effect.provide(
+            testPlatformLayer({
+              claudeCodePaths: { claudeProjectsDirPath: "/test" },
+            }),
+          ),
         ),
       );
 

@@ -77,12 +77,12 @@ index 0000000..ghi789
       }
 
       expect(utils.executeGitCommand).toHaveBeenCalledWith(
-        ["diff", "--numstat", "main", "feature"],
+        ["diff", "--numstat", "main", "feature", "--"],
         mockCwd,
       );
 
       expect(utils.executeGitCommand).toHaveBeenCalledWith(
-        ["diff", "--unified=5", "main", "feature"],
+        ["diff", "--unified=5", "main", "feature", "--"],
         mockCwd,
       );
     });
@@ -400,7 +400,7 @@ index abc123..def456 100644
 
       // Verify that git commands are executed in the subdirectory
       expect(utils.executeGitCommand).toHaveBeenCalledWith(
-        ["diff", "--numstat", "main", "feature"],
+        ["diff", "--numstat", "main", "feature", "--"],
         mockCwd,
       );
     });

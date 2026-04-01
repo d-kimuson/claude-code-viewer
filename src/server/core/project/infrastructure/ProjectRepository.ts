@@ -1,20 +1,19 @@
-import { FileSystem, Path } from "@effect/platform";
+import { FileSystem } from "@effect/platform";
+import { desc } from "drizzle-orm";
 import { Context, Effect, Layer, Option } from "effect";
+import { DrizzleService } from "../../../lib/db/DrizzleService";
+import { projects } from "../../../lib/db/schema";
 import type { InferEffect } from "../../../lib/effect/types";
 import { ApplicationContext } from "../../platform/services/ApplicationContext";
 import type { Project } from "../../types";
-import {
-  decodeProjectId,
-  encodeProjectId,
-  validateProjectPath,
-} from "../functions/id";
+import { decodeProjectId, validateProjectPath } from "../functions/id";
 import { ProjectMetaService } from "../services/ProjectMetaService";
 
 const LayerImpl = Effect.gen(function* () {
   const fs = yield* FileSystem.FileSystem;
-  const path = yield* Path.Path;
   const projectMetaService = yield* ProjectMetaService;
   const context = yield* ApplicationContext;
+  const { db } = yield* DrizzleService;
 
   const getProject = (projectId: string) =>
     Effect.gen(function* () {
@@ -52,68 +51,33 @@ const LayerImpl = Effect.gen(function* () {
 
   const getProjects = () =>
     Effect.gen(function* () {
-      // Check if the claude projects directory exists
-      const dirExists = yield* fs.exists(
-        (yield* context.claudeCodePaths).claudeProjectsDirPath,
-      );
-      if (!dirExists) {
-        console.warn(
-          `Claude projects directory not found at ${(yield* context.claudeCodePaths).claudeProjectsDirPath}`,
-        );
+      // Fetch all projects from DB ordered by dirMtimeMs DESC
+      const rows = db
+        .select()
+        .from(projects)
+        .orderBy(desc(projects.dirMtimeMs))
+        .all();
+
+      if (rows.length === 0) {
         return { projects: [] };
       }
 
-      // Read directory entries
-      const entries = yield* fs.readDirectory(
-        (yield* context.claudeCodePaths).claudeProjectsDirPath,
+      const projectsList: Project[] = yield* Effect.all(
+        rows.map((row) =>
+          Effect.gen(function* () {
+            const meta = yield* projectMetaService.getProjectMeta(row.id);
+            return {
+              id: row.id,
+              claudeProjectPath: row.path ?? decodeProjectId(row.id),
+              lastModifiedAt: new Date(row.dirMtimeMs),
+              meta,
+            } satisfies Project;
+          }),
+        ),
+        { concurrency: "unbounded" },
       );
 
-      // Filter directories and map to Project objects
-      const projectEffects = entries.map((entry) =>
-        Effect.gen(function* () {
-          const fullPath = path.resolve(
-            (yield* context.claudeCodePaths).claudeProjectsDirPath,
-            entry,
-          );
-
-          // Check if it's a directory
-          const stat = yield* Effect.tryPromise(() =>
-            fs.stat(fullPath).pipe(Effect.runPromise),
-          ).pipe(Effect.catchAll(() => Effect.succeed(null)));
-
-          if (!stat || stat.type !== "Directory") {
-            return null;
-          }
-
-          const id = encodeProjectId(fullPath);
-          const meta = yield* projectMetaService.getProjectMeta(id);
-
-          return {
-            id,
-            claudeProjectPath: fullPath,
-            lastModifiedAt: Option.getOrElse(stat.mtime, () => new Date()),
-            meta,
-          } satisfies Project;
-        }),
-      );
-
-      // Execute all effects in parallel and filter out nulls
-      const projectsWithNulls = yield* Effect.all(projectEffects, {
-        concurrency: "unbounded",
-      });
-      const projects = projectsWithNulls.filter(
-        (p): p is Project => p !== null,
-      );
-
-      // Sort by last modified date (newest first)
-      const sortedProjects = projects.sort((a, b) => {
-        return (
-          (b.lastModifiedAt ? b.lastModifiedAt.getTime() : 0) -
-          (a.lastModifiedAt ? a.lastModifiedAt.getTime() : 0)
-        );
-      });
-
-      return { projects: sortedProjects };
+      return { projects: projectsList };
     });
 
   return {

@@ -1,25 +1,87 @@
-import { FileSystem, Path } from "@effect/platform";
-import { Context, Effect, Layer, Ref } from "effect";
-import {
-  FileCacheStorage,
-  makeFileCacheStorageLayer,
-} from "../../../lib/storage/FileCacheStorage";
-import { PersistentService } from "../../../lib/storage/FileCacheStorage/PersistentService";
-import { parseJsonl } from "../../claude-code/functions/parseJsonl";
-import {
-  type ParsedUserMessage,
-  parsedUserMessageSchema,
-} from "../../claude-code/functions/parseUserMessage";
+import { eq } from "drizzle-orm";
+import { Context, Effect, Layer } from "effect";
+import { z } from "zod";
+import { DrizzleService } from "../../../lib/db/DrizzleService";
+import type { SessionRow } from "../../../lib/db/schema";
+import { sessions } from "../../../lib/db/schema";
+import { parsedUserMessageSchema } from "../../claude-code/functions/parseUserMessage";
+import { SyncService } from "../../sync/services/SyncService";
 import type { SessionMeta } from "../../types";
-import { aggregateTokenUsageAndCost } from "../functions/aggregateTokenUsageAndCost";
-import { getAgentSessionFilesForSession } from "../functions/getAgentSessionFilesForSession";
-import { decodeSessionId } from "../functions/id";
-import {
-  extractFirstUserMessage,
-  isLocalCommandCaveat,
-} from "../functions/isValidFirstMessage";
 
 const parsedUserMessageOrNullSchema = parsedUserMessageSchema.nullable();
+
+const costBreakdownSchema = z.object({
+  inputTokensUsd: z.number(),
+  outputTokensUsd: z.number(),
+  cacheCreationUsd: z.number(),
+  cacheReadUsd: z.number(),
+});
+
+const tokenUsageSchema = z.object({
+  inputTokens: z.number(),
+  outputTokens: z.number(),
+  cacheCreationTokens: z.number(),
+  cacheReadTokens: z.number(),
+});
+
+const prLinksSchema = z.array(
+  z.object({
+    prNumber: z.number(),
+    prUrl: z.string(),
+    prRepository: z.string(),
+  }),
+);
+
+const defaultBreakdown = {
+  inputTokensUsd: 0,
+  outputTokensUsd: 0,
+  cacheCreationUsd: 0,
+  cacheReadUsd: 0,
+};
+
+const defaultTokenUsage = {
+  inputTokens: 0,
+  outputTokens: 0,
+  cacheCreationTokens: 0,
+  cacheReadTokens: 0,
+};
+
+const rowToSessionMeta = (row: SessionRow): SessionMeta => {
+  const firstUserMessage =
+    row.firstUserMessageJson !== null
+      ? parsedUserMessageOrNullSchema.parse(
+          JSON.parse(row.firstUserMessageJson),
+        )
+      : null;
+
+  const breakdown =
+    row.costBreakdownJson !== null
+      ? costBreakdownSchema.parse(JSON.parse(row.costBreakdownJson))
+      : defaultBreakdown;
+
+  const tokenUsage =
+    row.tokenUsageJson !== null
+      ? tokenUsageSchema.parse(JSON.parse(row.tokenUsageJson))
+      : defaultTokenUsage;
+
+  const prLinks =
+    row.prLinksJson !== null
+      ? prLinksSchema.parse(JSON.parse(row.prLinksJson))
+      : [];
+
+  return {
+    messageCount: row.messageCount,
+    firstUserMessage,
+    customTitle: row.customTitle,
+    cost: {
+      totalUsd: row.totalCostUsd,
+      breakdown,
+      tokenUsage,
+    },
+    modelName: row.modelName,
+    prLinks,
+  };
+};
 
 export class SessionMetaService extends Context.Tag("SessionMetaService")<
   SessionMetaService,
@@ -37,199 +99,57 @@ export class SessionMetaService extends Context.Tag("SessionMetaService")<
   static Live = Layer.effect(
     this,
     Effect.gen(function* () {
-      const fs = yield* FileSystem.FileSystem;
-      const path = yield* Path.Path;
-      const firstUserMessageCache =
-        yield* FileCacheStorage<ParsedUserMessage | null>();
-      const sessionMetaCacheRef = yield* Ref.make(
-        new Map<string, SessionMeta>(),
-      );
-
-      const getFirstUserMessage = (
-        jsonlFilePath: string,
-        lines: string[],
-      ): Effect.Effect<ParsedUserMessage | null, Error> =>
-        Effect.gen(function* () {
-          const cached = yield* firstUserMessageCache.get(jsonlFilePath);
-          if (cached !== undefined) {
-            const isStale =
-              cached !== null &&
-              ((cached.kind === "text" &&
-                isLocalCommandCaveat(cached.content)) ||
-                (cached.kind === "local-command" &&
-                  cached.stdout.trim() === ""));
-            if (!isStale) {
-              return cached;
-            }
-          }
-
-          let firstUserMessage: ParsedUserMessage | null = null;
-
-          for (const line of lines) {
-            const conversation = parseJsonl(line).at(0);
-
-            if (conversation === undefined) {
-              continue;
-            }
-
-            const maybeFirstUserMessage = extractFirstUserMessage(conversation);
-
-            if (maybeFirstUserMessage === undefined) {
-              continue;
-            }
-
-            firstUserMessage = maybeFirstUserMessage;
-
-            break;
-          }
-
-          if (firstUserMessage !== null) {
-            yield* firstUserMessageCache.set(jsonlFilePath, firstUserMessage);
-          }
-
-          return firstUserMessage;
-        });
+      const { db } = yield* DrizzleService;
+      const syncService = yield* SyncService;
 
       const getSessionMeta = (
         projectId: string,
         sessionId: string,
       ): Effect.Effect<SessionMeta, Error> =>
         Effect.gen(function* () {
-          const metaCache = yield* Ref.get(sessionMetaCacheRef);
-          const cached = metaCache.get(sessionId);
-          if (cached !== undefined) {
-            return cached;
+          const row = db
+            .select()
+            .from(sessions)
+            .where(eq(sessions.id, sessionId))
+            .get();
+
+          if (row === undefined) {
+            // Not in DB yet — sync and retry
+            yield* syncService
+              .syncSession(projectId, sessionId)
+              .pipe(Effect.catchAll(() => Effect.void));
+
+            const retryRow = db
+              .select()
+              .from(sessions)
+              .where(eq(sessions.id, sessionId))
+              .get();
+
+            if (retryRow === undefined) {
+              return yield* Effect.fail(
+                new Error(`Session not found: ${sessionId}`),
+              );
+            }
+
+            return rowToSessionMeta(retryRow);
           }
 
-          const sessionPath = decodeSessionId(projectId, sessionId);
-          const content = yield* fs.readFileString(sessionPath);
-          const lines = content.split("\n");
-
-          const firstUserMessage = yield* getFirstUserMessage(
-            sessionPath,
-            lines,
-          );
-
-          // Get project directory from session path
-          const projectPath = path.dirname(sessionPath);
-
-          // Parse first line to extract actual sessionId
-          const firstLine = lines[0];
-          let actualSessionId: string | undefined;
-          if (firstLine && firstLine.trim() !== "") {
-            try {
-              const firstLineData = JSON.parse(firstLine);
-              if (
-                typeof firstLineData === "object" &&
-                firstLineData !== null &&
-                "sessionId" in firstLineData &&
-                typeof firstLineData.sessionId === "string"
-              ) {
-                actualSessionId = firstLineData.sessionId;
-              }
-            } catch {
-              // Invalid JSON, skip sessionId extraction
-            }
-          }
-
-          // Discover agent session files that belong to this session
-          const agentFilePaths =
-            actualSessionId !== undefined
-              ? yield* getAgentSessionFilesForSession(
-                  projectPath,
-                  actualSessionId,
-                ).pipe(
-                  Effect.provide(Layer.succeed(FileSystem.FileSystem, fs)),
-                  Effect.provide(Layer.succeed(Path.Path, path)),
-                )
-              : [];
-
-          // Read contents of all agent files
-          const agentContents: string[] = [];
-          for (const agentPath of agentFilePaths) {
-            const agentContent = yield* fs
-              .readFileString(agentPath)
-              .pipe(Effect.catchAll(() => Effect.succeed(""))); // Skip files that fail to read
-            if (agentContent !== "") {
-              agentContents.push(agentContent);
-            }
-          }
-
-          // Extract custom title and pr-links
-          let customTitle: string | null = null;
-          const prLinksMap = new Map<
-            string,
-            { prNumber: number; prUrl: string; prRepository: string }
-          >();
-          for (const line of lines) {
-            const conversation = parseJsonl(line).at(0);
-            if (
-              conversation !== undefined &&
-              conversation.type === "custom-title"
-            ) {
-              customTitle = conversation.customTitle;
-            }
-            if (conversation !== undefined && conversation.type === "pr-link") {
-              const key = `${conversation.prRepository}#${conversation.prNumber}`;
-              prLinksMap.set(key, {
-                prNumber: conversation.prNumber,
-                prUrl: conversation.prUrl,
-                prRepository: conversation.prRepository,
-              });
-            }
-          }
-          const prLinks = [...prLinksMap.values()];
-
-          // Calculate cost information including agent sessions
-          const fileContents = [content, ...agentContents];
-          const { totalCost, modelName } =
-            aggregateTokenUsageAndCost(fileContents);
-
-          const sessionMeta: SessionMeta = {
-            messageCount: lines.length,
-            firstUserMessage: firstUserMessage,
-            customTitle: customTitle,
-            cost: {
-              totalUsd: totalCost.totalUsd,
-              breakdown: totalCost.breakdown,
-              tokenUsage: totalCost.tokenUsage,
-            },
-            modelName: modelName,
-            prLinks: prLinks,
-          };
-
-          yield* Ref.update(sessionMetaCacheRef, (cache) => {
-            cache.set(sessionId, sessionMeta);
-            return cache;
-          });
-
-          return sessionMeta;
+          return rowToSessionMeta(row);
         });
 
       const invalidateSession = (
-        _projectId: string,
+        projectId: string,
         sessionId: string,
       ): Effect.Effect<void> =>
-        Effect.gen(function* () {
-          yield* Ref.update(sessionMetaCacheRef, (cache) => {
-            cache.delete(sessionId);
-            return cache;
-          });
-        });
+        syncService
+          .syncSession(projectId, sessionId)
+          .pipe(Effect.catchAll(() => Effect.void));
 
       return {
         getSessionMeta,
         invalidateSession,
       };
     }),
-  ).pipe(
-    Layer.provide(
-      makeFileCacheStorageLayer(
-        "first-user-message-cache",
-        parsedUserMessageOrNullSchema,
-      ),
-    ),
-    Layer.provide(PersistentService.Live),
   );
 }
 

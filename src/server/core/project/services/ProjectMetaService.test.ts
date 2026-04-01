@@ -1,179 +1,241 @@
-import { FileSystem } from "@effect/platform";
-import { Effect, Option } from "effect";
-import { testFileSystemLayer } from "../../../../testing/layers/testFileSystemLayer";
-import { testPlatformLayer } from "../../../../testing/layers/testPlatformLayer";
+import { DatabaseSync } from "node:sqlite";
+import { Path } from "@effect/platform";
+import { drizzle } from "drizzle-orm/node-sqlite";
+import { migrate } from "drizzle-orm/node-sqlite/migrator";
+import { Effect, Layer } from "effect";
+import { DrizzleService } from "../../../lib/db/DrizzleService";
+import * as schema from "../../../lib/db/schema";
+import { projects } from "../../../lib/db/schema";
+import {
+  type ISyncService,
+  SyncService,
+} from "../../sync/services/SyncService";
 import { ProjectMetaService } from "../services/ProjectMetaService";
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+const migrationsFolder = new URL("../../../lib/db/migrations", import.meta.url)
+  .pathname;
+
+const makeSyncServiceMock = (
+  overrides?: Partial<ISyncService>,
+): Layer.Layer<SyncService> =>
+  Layer.succeed(SyncService, {
+    fullSync: () => Effect.void,
+    syncSession: () => Effect.void,
+    syncProjectList: () => Effect.void,
+    ...overrides,
+  });
+
+const createInMemoryDb = () => {
+  const sqlite = new DatabaseSync(":memory:");
+  sqlite.exec("PRAGMA foreign_keys = ON");
+  const db = drizzle({ client: sqlite, schema });
+  migrate(db, { migrationsFolder });
+  sqlite.exec(`
+    CREATE VIRTUAL TABLE IF NOT EXISTS session_messages_fts USING fts5(
+      session_id UNINDEXED,
+      project_id UNINDEXED,
+      role UNINDEXED,
+      content,
+      conversation_index UNINDEXED,
+      tokenize='trigram'
+    )
+  `);
+  return { db, rawDb: sqlite };
+};
+
+const makeDrizzleServiceWithData = (opts: {
+  projectRows?: (typeof projects.$inferInsert)[];
+}): Layer.Layer<DrizzleService> => {
+  const { db, rawDb } = createInMemoryDb();
+
+  for (const row of opts.projectRows ?? []) {
+    db.insert(projects).values(row).run();
+  }
+
+  return Layer.succeed(DrizzleService, { db, rawDb });
+};
+
+const makeProjectRow = (
+  overrides?: Partial<typeof projects.$inferInsert>,
+): typeof projects.$inferInsert => ({
+  id: Buffer.from("/test/project").toString("base64url"),
+  name: "project",
+  path: "/test/project",
+  sessionCount: 3,
+  dirMtimeMs: Date.now(),
+  syncedAt: Date.now(),
+  ...overrides,
+});
+
+const projectId = Buffer.from("/test/project").toString("base64url");
+
+// ---------------------------------------------------------------------------
+// Tests
+// ---------------------------------------------------------------------------
 
 describe("ProjectMetaService", () => {
   describe("getProjectMeta", () => {
-    it("returns cached metadata", async () => {
-      let readDirectoryCalls = 0;
-
-      const program = Effect.gen(function* () {
-        const storage = yield* ProjectMetaService;
-        const projectId = Buffer.from("/test/project").toString("base64url");
-
-        // First call
-        const result1 = yield* storage.getProjectMeta(projectId);
-
-        // Second call (retrieved from cache)
-        const result2 = yield* storage.getProjectMeta(projectId);
-
-        return { result1, result2, readDirectoryCalls };
+    it("returns project metadata from DB row", async () => {
+      const row = makeProjectRow({
+        id: projectId,
+        path: "/test/project",
+        sessionCount: 5,
       });
 
-      const { result1, result2 } = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(ProjectMetaService.Live),
-          Effect.provide(
-            testFileSystemLayer({
-              readDirectory: () => {
-                readDirectoryCalls++;
-                return Effect.succeed(["session1.jsonl"]);
-              },
-              readFileString: () =>
-                Effect.succeed(
-                  '{"type":"user","cwd":"/workspace/app","text":"test"}',
-                ),
-              stat: () =>
-                Effect.succeed({
-                  type: "File",
-                  mtime: Option.some(new Date("2024-01-01")),
-                  atime: Option.none(),
-                  birthtime: Option.none(),
-                  dev: 0,
-                  ino: Option.none(),
-                  mode: 0,
-                  nlink: Option.none(),
-                  uid: Option.none(),
-                  gid: Option.none(),
-                  rdev: Option.none(),
-                  size: FileSystem.Size(0n),
-                  blksize: Option.none(),
-                  blocks: Option.none(),
-                }),
-              exists: () => Effect.succeed(true),
-              makeDirectory: () => Effect.void,
-              writeFileString: () => Effect.void,
-            }),
-          ),
-          Effect.provide(testPlatformLayer()),
-        ),
-      );
-
-      // Both results are the same
-      expect(result1).toEqual(result2);
-
-      // readDirectory is called only once (cache is working)
-      expect(readDirectoryCalls).toBe(1);
-    });
-
-    it("returns null if project path is not found", async () => {
       const program = Effect.gen(function* () {
-        const storage = yield* ProjectMetaService;
-        const projectId = Buffer.from("/test/project").toString("base64url");
-        return yield* storage.getProjectMeta(projectId);
+        const service = yield* ProjectMetaService;
+        return yield* service.getProjectMeta(projectId);
       });
 
       const result = await Effect.runPromise(
         program.pipe(
           Effect.provide(ProjectMetaService.Live),
-          Effect.provide(
-            testFileSystemLayer({
-              readDirectory: () => Effect.succeed(["session1.jsonl"]),
-              readFileString: () =>
-                Effect.succeed('{"type":"summary","text":"summary"}'),
-              stat: () =>
-                Effect.succeed({
-                  type: "File",
-                  mtime: Option.some(new Date("2024-01-01")),
-                  atime: Option.none(),
-                  birthtime: Option.none(),
-                  dev: 0,
-                  ino: Option.none(),
-                  mode: 0,
-                  nlink: Option.none(),
-                  uid: Option.none(),
-                  gid: Option.none(),
-                  rdev: Option.none(),
-                  size: FileSystem.Size(0n),
-                  blksize: Option.none(),
-                  blocks: Option.none(),
-                }),
-              exists: () => Effect.succeed(true),
-              makeDirectory: () => Effect.void,
-              writeFileString: () => Effect.void,
-            }),
-          ),
-          Effect.provide(testPlatformLayer()),
+          Effect.provide(makeDrizzleServiceWithData({ projectRows: [row] })),
+          Effect.provide(makeSyncServiceMock()),
+          Effect.provide(Path.layer),
         ),
       );
 
-      expect(result.projectName).toBeNull();
+      expect(result.projectPath).toBe("/test/project");
+      expect(result.projectName).toBe("project");
+      expect(result.sessionCount).toBe(5);
+    });
+
+    it("returns null projectName and projectPath when path column is null", async () => {
+      const row = makeProjectRow({
+        id: projectId,
+        path: null,
+        sessionCount: 2,
+      });
+
+      const program = Effect.gen(function* () {
+        const service = yield* ProjectMetaService;
+        return yield* service.getProjectMeta(projectId);
+      });
+
+      const result = await Effect.runPromise(
+        program.pipe(
+          Effect.provide(ProjectMetaService.Live),
+          Effect.provide(makeDrizzleServiceWithData({ projectRows: [row] })),
+          Effect.provide(makeSyncServiceMock()),
+          Effect.provide(Path.layer),
+        ),
+      );
+
       expect(result.projectPath).toBeNull();
-      expect(result.sessionCount).toBe(1);
+      expect(result.projectName).toBeNull();
+      expect(result.sessionCount).toBe(2);
+    });
+
+    it("triggers syncProjectList and retries when project not in DB", async () => {
+      let syncCalled = false;
+      const row = makeProjectRow({ id: projectId });
+      const { db, rawDb } = createInMemoryDb();
+
+      // DB starts empty — no project rows
+      const program = Effect.gen(function* () {
+        const service = yield* ProjectMetaService;
+        return yield* service.getProjectMeta(projectId);
+      });
+
+      const result = await Effect.runPromise(
+        program.pipe(
+          Effect.provide(ProjectMetaService.Live),
+          Effect.provide(Layer.succeed(DrizzleService, { db, rawDb })),
+          Effect.provide(
+            makeSyncServiceMock({
+              syncProjectList: () =>
+                Effect.sync(() => {
+                  syncCalled = true;
+                  // Insert the project row so retry finds it
+                  db.insert(projects).values(row).run();
+                }),
+            }),
+          ),
+          Effect.provide(Path.layer),
+        ),
+      );
+
+      expect(syncCalled).toBe(true);
+      expect(result.projectPath).toBe("/test/project");
+    });
+
+    it("fails when project not found even after sync", async () => {
+      const { db, rawDb } = createInMemoryDb();
+
+      const program = Effect.gen(function* () {
+        const service = yield* ProjectMetaService;
+        return yield* service.getProjectMeta("nonexistent-project-id");
+      });
+
+      await expect(
+        Effect.runPromise(
+          program.pipe(
+            Effect.provide(ProjectMetaService.Live),
+            Effect.provide(Layer.succeed(DrizzleService, { db, rawDb })),
+            Effect.provide(makeSyncServiceMock()),
+            Effect.provide(Path.layer),
+          ),
+        ),
+      ).rejects.toThrow("Project not found: nonexistent-project-id");
     });
   });
 
   describe("invalidateProject", () => {
-    it("can invalidate project cache", async () => {
-      let readDirectoryCalls = 0;
+    it("calls syncProjectList on invalidate", async () => {
+      let syncCalled = false;
+      const row = makeProjectRow({ id: projectId });
 
       const program = Effect.gen(function* () {
-        const storage = yield* ProjectMetaService;
-        const projectId = Buffer.from("/test/project").toString("base64url");
-
-        // First call
-        yield* storage.getProjectMeta(projectId);
-
-        // Invalidate cache
-        yield* storage.invalidateProject(projectId);
-
-        // Second call (re-read from file)
-        yield* storage.getProjectMeta(projectId);
+        const service = yield* ProjectMetaService;
+        yield* service.invalidateProject(projectId);
       });
 
       await Effect.runPromise(
         program.pipe(
           Effect.provide(ProjectMetaService.Live),
+          Effect.provide(makeDrizzleServiceWithData({ projectRows: [row] })),
           Effect.provide(
-            testFileSystemLayer({
-              readDirectory: () => {
-                readDirectoryCalls++;
-                return Effect.succeed(["session1.jsonl"]);
-              },
-              readFileString: () =>
-                Effect.succeed(
-                  '{"type":"user","cwd":"/workspace/app","text":"test"}',
-                ),
-              stat: () =>
-                Effect.succeed({
-                  type: "File",
-                  mtime: Option.some(new Date("2024-01-01")),
-                  atime: Option.none(),
-                  birthtime: Option.none(),
-                  dev: 0,
-                  ino: Option.none(),
-                  mode: 0,
-                  nlink: Option.none(),
-                  uid: Option.none(),
-                  gid: Option.none(),
-                  rdev: Option.none(),
-                  size: FileSystem.Size(0n),
-                  blksize: Option.none(),
-                  blocks: Option.none(),
+            makeSyncServiceMock({
+              syncProjectList: () =>
+                Effect.sync(() => {
+                  syncCalled = true;
                 }),
-              exists: () => Effect.succeed(true),
-              makeDirectory: () => Effect.void,
-              writeFileString: () => Effect.void,
             }),
           ),
-          Effect.provide(testPlatformLayer()),
+          Effect.provide(Path.layer),
         ),
       );
 
-      // readDirectory is called twice (cache was invalidated)
-      expect(readDirectoryCalls).toBe(2);
+      expect(syncCalled).toBe(true);
+    });
+
+    it("does not throw even if syncProjectList fails", async () => {
+      const row = makeProjectRow({ id: projectId });
+
+      const program = Effect.gen(function* () {
+        const service = yield* ProjectMetaService;
+        yield* service.invalidateProject(projectId);
+      });
+
+      await expect(
+        Effect.runPromise(
+          program.pipe(
+            Effect.provide(ProjectMetaService.Live),
+            Effect.provide(makeDrizzleServiceWithData({ projectRows: [row] })),
+            Effect.provide(
+              makeSyncServiceMock({
+                syncProjectList: () => Effect.fail(new Error("sync failed")),
+              }),
+            ),
+            Effect.provide(Path.layer),
+          ),
+        ),
+      ).resolves.toBeUndefined();
     });
   });
 });

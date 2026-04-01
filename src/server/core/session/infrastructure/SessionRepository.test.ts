@@ -1,21 +1,115 @@
+import { DatabaseSync } from "node:sqlite";
 import { SystemError } from "@effect/platform/Error";
+import { drizzle } from "drizzle-orm/node-sqlite";
+import { migrate } from "drizzle-orm/node-sqlite/migrator";
 import { Effect, Layer, Option } from "effect";
 import {
   createFileInfo,
   testFileSystemLayer,
 } from "../../../../testing/layers/testFileSystemLayer";
 import { testPlatformLayer } from "../../../../testing/layers/testPlatformLayer";
+import { DrizzleService } from "../../../lib/db/DrizzleService";
+import * as schema from "../../../lib/db/schema";
+import { projects, sessions } from "../../../lib/db/schema";
+import {
+  type ISyncService,
+  SyncService,
+} from "../../sync/services/SyncService";
 import type { SessionMeta } from "../../types";
 import { SessionRepository } from "../infrastructure/SessionRepository";
 import { SessionMetaService } from "../services/SessionMetaService";
 import { createMockSessionMeta } from "../testing/createMockSessionMeta";
 
-const testSessionMetaServiceLayer = (meta: SessionMeta) => {
-  return Layer.mock(SessionMetaService, {
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+const migrationsFolder = new URL("../../../lib/db/migrations", import.meta.url)
+  .pathname;
+
+const testSessionMetaServiceLayer = (meta: SessionMeta) =>
+  Layer.mock(SessionMetaService, {
     getSessionMeta: () => Effect.succeed(meta),
     invalidateSession: () => Effect.void,
   });
+
+const makeSyncServiceMock = (
+  overrides?: Partial<ISyncService>,
+): Layer.Layer<SyncService> =>
+  Layer.succeed(SyncService, {
+    fullSync: () => Effect.void,
+    syncSession: () => Effect.void,
+    syncProjectList: () => Effect.void,
+    ...overrides,
+  });
+
+const createInMemoryDb = () => {
+  const sqlite = new DatabaseSync(":memory:");
+  sqlite.exec("PRAGMA foreign_keys = ON");
+  const db = drizzle({ client: sqlite, schema });
+  migrate(db, { migrationsFolder });
+  sqlite.exec(`
+    CREATE VIRTUAL TABLE IF NOT EXISTS session_messages_fts USING fts5(
+      session_id UNINDEXED,
+      project_id UNINDEXED,
+      role UNINDEXED,
+      content,
+      conversation_index UNINDEXED,
+      tokenize='trigram'
+    )
+  `);
+  return { db, rawDb: sqlite };
 };
+
+const defaultProjectRow: typeof projects.$inferInsert = {
+  id: Buffer.from("/test/project").toString("base64url"),
+  name: "project",
+  path: "/test/project",
+  sessionCount: 0,
+  dirMtimeMs: Date.now(),
+  syncedAt: Date.now(),
+};
+
+const makeSessionRow = (
+  id: string,
+  projectId: string,
+  lastModifiedAt: Date,
+): typeof sessions.$inferInsert => ({
+  id,
+  projectId,
+  filePath: `/test/project/${id}.jsonl`,
+  messageCount: 1,
+  firstUserMessageJson: null,
+  customTitle: null,
+  totalCostUsd: 0,
+  costBreakdownJson: null,
+  tokenUsageJson: null,
+  modelName: null,
+  prLinksJson: null,
+  fileMtimeMs: lastModifiedAt.getTime(),
+  lastModifiedAt: lastModifiedAt.toISOString(),
+  syncedAt: Date.now(),
+});
+
+const makeDrizzleServiceWithData = (opts: {
+  projectRows?: (typeof projects.$inferInsert)[];
+  sessionRows?: (typeof sessions.$inferInsert)[];
+}): Layer.Layer<DrizzleService> => {
+  const { db, rawDb } = createInMemoryDb();
+
+  for (const row of opts.projectRows ?? []) {
+    db.insert(projects).values(row).run();
+  }
+  for (const row of opts.sessionRows ?? []) {
+    db.insert(sessions).values(row).run();
+  }
+
+  return Layer.succeed(DrizzleService, { db, rawDb });
+};
+
+// ---------------------------------------------------------------------------
+// Tests
+// ---------------------------------------------------------------------------
 
 describe("SessionRepository", () => {
   describe("getSession", () => {
@@ -42,6 +136,12 @@ describe("SessionRepository", () => {
         program.pipe(
           Effect.provide(SessionRepository.Live),
           Effect.provide(SessionMetaServiceMock),
+          Effect.provide(
+            makeDrizzleServiceWithData({
+              projectRows: [defaultProjectRow],
+            }),
+          ),
+          Effect.provide(makeSyncServiceMock()),
           Effect.provide(
             testFileSystemLayer({
               exists: (path: string) => Effect.succeed(path === sessionPath),
@@ -107,6 +207,12 @@ describe("SessionRepository", () => {
         program.pipe(
           Effect.provide(SessionRepository.Live),
           Effect.provide(SessionMetaServiceMock),
+          Effect.provide(
+            makeDrizzleServiceWithData({
+              projectRows: [defaultProjectRow],
+            }),
+          ),
+          Effect.provide(makeSyncServiceMock()),
           Effect.provide(FileSystemMock),
           Effect.provide(
             testPlatformLayer({
@@ -121,7 +227,7 @@ describe("SessionRepository", () => {
   });
 
   describe("getSessions", () => {
-    it("returns list of sessions within project", async () => {
+    it("returns list of sessions within project ordered by last_modified_at DESC", async () => {
       const projectPath = "/test/project";
       const projectId = Buffer.from(projectPath).toString("base64url");
       const date1 = new Date("2024-01-01T00:00:00.000Z");
@@ -132,28 +238,11 @@ describe("SessionRepository", () => {
         firstUserMessage: null,
       });
 
-      const FileSystemMock = testFileSystemLayer({
-        exists: (path: string) => Effect.succeed(path === projectPath),
-        readDirectory: (path: string) =>
-          path === projectPath
-            ? Effect.succeed(["session1.jsonl", "session2.jsonl"])
-            : Effect.succeed([]),
-        stat: (path: string) => {
-          if (path.includes("session1.jsonl")) {
-            return Effect.succeed(
-              createFileInfo({ type: "File", mtime: Option.some(date2) }),
-            );
-          }
-          if (path.includes("session2.jsonl")) {
-            return Effect.succeed(
-              createFileInfo({ type: "File", mtime: Option.some(date1) }),
-            );
-          }
-          return Effect.succeed(
-            createFileInfo({ type: "File", mtime: Option.some(new Date()) }),
-          );
-        },
-      });
+      // DB rows ordered by last_modified_at DESC (newer first)
+      const sessionRows = [
+        makeSessionRow("session1", projectId, date2), // newer
+        makeSessionRow("session2", projectId, date1), // older
+      ];
 
       const SessionMetaServiceMock = testSessionMetaServiceLayer(mockMeta);
 
@@ -166,7 +255,14 @@ describe("SessionRepository", () => {
         program.pipe(
           Effect.provide(SessionRepository.Live),
           Effect.provide(SessionMetaServiceMock),
-          Effect.provide(FileSystemMock),
+          Effect.provide(
+            makeDrizzleServiceWithData({
+              projectRows: [defaultProjectRow],
+              sessionRows,
+            }),
+          ),
+          Effect.provide(makeSyncServiceMock()),
+          Effect.provide(testFileSystemLayer({})),
           Effect.provide(
             testPlatformLayer({
               claudeCodePaths: { claudeProjectsDirPath: "/test" },
@@ -176,8 +272,8 @@ describe("SessionRepository", () => {
       );
 
       expect(result.sessions).toHaveLength(2);
-      expect(result.sessions.at(0)?.lastModifiedAt).toEqual(date2);
-      expect(result.sessions.at(1)?.lastModifiedAt).toEqual(date1);
+      expect(result.sessions.at(0)?.id).toBe("session1");
+      expect(result.sessions.at(1)?.id).toBe("session2");
     });
 
     it("can limit number of results with maxCount option", async () => {
@@ -190,19 +286,11 @@ describe("SessionRepository", () => {
         firstUserMessage: null,
       });
 
-      const FileSystemMock = testFileSystemLayer({
-        exists: (path: string) => Effect.succeed(path === projectPath),
-        readDirectory: (path: string) =>
-          path === projectPath
-            ? Effect.succeed([
-                "session1.jsonl",
-                "session2.jsonl",
-                "session3.jsonl",
-              ])
-            : Effect.succeed([]),
-        stat: () =>
-          Effect.succeed(createFileInfo({ mtime: Option.some(mockDate) })),
-      });
+      const sessionRows = [
+        makeSessionRow("session1", projectId, mockDate),
+        makeSessionRow("session2", projectId, mockDate),
+        makeSessionRow("session3", projectId, mockDate),
+      ];
 
       const SessionMetaServiceMock = testSessionMetaServiceLayer(mockMeta);
 
@@ -215,7 +303,14 @@ describe("SessionRepository", () => {
         program.pipe(
           Effect.provide(SessionRepository.Live),
           Effect.provide(SessionMetaServiceMock),
-          Effect.provide(FileSystemMock),
+          Effect.provide(
+            makeDrizzleServiceWithData({
+              projectRows: [defaultProjectRow],
+              sessionRows,
+            }),
+          ),
+          Effect.provide(makeSyncServiceMock()),
+          Effect.provide(testFileSystemLayer({})),
           Effect.provide(
             testPlatformLayer({
               claudeCodePaths: { claudeProjectsDirPath: "/test" },
@@ -237,19 +332,12 @@ describe("SessionRepository", () => {
         firstUserMessage: null,
       });
 
-      const FileSystemMock = testFileSystemLayer({
-        exists: (path: string) => Effect.succeed(path === projectPath),
-        readDirectory: (path: string) =>
-          path === projectPath
-            ? Effect.succeed([
-                "session1.jsonl",
-                "session2.jsonl",
-                "session3.jsonl",
-              ])
-            : Effect.succeed([]),
-        stat: () =>
-          Effect.succeed(createFileInfo({ mtime: Option.some(mockDate) })),
-      });
+      // 3 sessions, cursor=session1 should return session2 and session3
+      const sessionRows = [
+        makeSessionRow("session1", projectId, mockDate),
+        makeSessionRow("session2", projectId, mockDate),
+        makeSessionRow("session3", projectId, mockDate),
+      ];
 
       const SessionMetaServiceMock = testSessionMetaServiceLayer(mockMeta);
 
@@ -264,7 +352,14 @@ describe("SessionRepository", () => {
         program.pipe(
           Effect.provide(SessionRepository.Live),
           Effect.provide(SessionMetaServiceMock),
-          Effect.provide(FileSystemMock),
+          Effect.provide(
+            makeDrizzleServiceWithData({
+              projectRows: [defaultProjectRow],
+              sessionRows,
+            }),
+          ),
+          Effect.provide(makeSyncServiceMock()),
+          Effect.provide(testFileSystemLayer({})),
           Effect.provide(
             testPlatformLayer({
               claudeCodePaths: { claudeProjectsDirPath: "/test" },
@@ -277,21 +372,8 @@ describe("SessionRepository", () => {
       expect(result.sessions.every((s) => s.id !== "session1")).toBe(true);
     });
 
-    it("returns empty array when project does not exist", async () => {
+    it("returns empty array when project has no sessions in DB", async () => {
       const projectId = Buffer.from("/test/nonexistent").toString("base64url");
-
-      const FileSystemMock = testFileSystemLayer({
-        exists: () => Effect.succeed(false),
-        readDirectory: () =>
-          Effect.fail(
-            new SystemError({
-              method: "readDirectory",
-              reason: "NotFound",
-              module: "FileSystem",
-              cause: undefined,
-            }),
-          ),
-      });
 
       const SessionMetaServiceMock = testSessionMetaServiceLayer(
         createMockSessionMeta({
@@ -309,7 +391,13 @@ describe("SessionRepository", () => {
         program.pipe(
           Effect.provide(SessionRepository.Live),
           Effect.provide(SessionMetaServiceMock),
-          Effect.provide(FileSystemMock),
+          Effect.provide(
+            makeDrizzleServiceWithData({
+              projectRows: [defaultProjectRow],
+            }),
+          ),
+          Effect.provide(makeSyncServiceMock()),
+          Effect.provide(testFileSystemLayer({})),
           Effect.provide(
             testPlatformLayer({
               claudeCodePaths: { claudeProjectsDirPath: "/test" },
@@ -321,43 +409,40 @@ describe("SessionRepository", () => {
       expect(result.sessions).toEqual([]);
     });
 
-    it("excludes agent-*.jsonl files from session list", async () => {
+    it("triggers syncProjectList when project not in DB", async () => {
       const projectPath = "/test/project";
       const projectId = Buffer.from(projectPath).toString("base64url");
-      const mockDate = new Date("2024-01-01T00:00:00.000Z");
+      let syncCalled = false;
 
       const mockMeta: SessionMeta = createMockSessionMeta({
         messageCount: 1,
         firstUserMessage: null,
       });
 
-      const FileSystemMock = testFileSystemLayer({
-        exists: (path: string) => Effect.succeed(path === projectPath),
-        readDirectory: (path: string) =>
-          path === projectPath
-            ? Effect.succeed([
-                "session1.jsonl",
-                "agent-abc123.jsonl", // This should be excluded
-                "session2.jsonl",
-                "agent-def456.jsonl", // This should be excluded
-              ])
-            : Effect.succeed([]),
-        stat: () =>
-          Effect.succeed(createFileInfo({ mtime: Option.some(mockDate) })),
-      });
-
       const SessionMetaServiceMock = testSessionMetaServiceLayer(mockMeta);
+
+      // Start with an empty DB — no project row
+      const { db, rawDb } = createInMemoryDb();
 
       const program = Effect.gen(function* () {
         const repo = yield* SessionRepository;
         return yield* repo.getSessions(projectId);
       });
 
-      const result = await Effect.runPromise(
+      await Effect.runPromise(
         program.pipe(
           Effect.provide(SessionRepository.Live),
           Effect.provide(SessionMetaServiceMock),
-          Effect.provide(FileSystemMock),
+          Effect.provide(Layer.succeed(DrizzleService, { db, rawDb })),
+          Effect.provide(
+            makeSyncServiceMock({
+              syncProjectList: () =>
+                Effect.sync(() => {
+                  syncCalled = true;
+                }),
+            }),
+          ),
+          Effect.provide(testFileSystemLayer({})),
           Effect.provide(
             testPlatformLayer({
               claudeCodePaths: { claudeProjectsDirPath: "/test" },
@@ -366,13 +451,7 @@ describe("SessionRepository", () => {
         ),
       );
 
-      // Should only contain session1 and session2, not agent files
-      expect(result.sessions).toHaveLength(2);
-      expect(result.sessions.some((s) => s.id === "session1")).toBe(true);
-      expect(result.sessions.some((s) => s.id === "session2")).toBe(true);
-      expect(result.sessions.some((s) => s.id.startsWith("agent-"))).toBe(
-        false,
-      );
+      expect(syncCalled).toBe(true);
     });
   });
 });

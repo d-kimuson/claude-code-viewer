@@ -1,1097 +1,410 @@
-import { FileSystem, Path } from "@effect/platform";
-import type { PlatformError } from "@effect/platform/Error";
+import { DatabaseSync } from "node:sqlite";
+import { drizzle } from "drizzle-orm/node-sqlite";
+import { migrate } from "drizzle-orm/node-sqlite/migrator";
 import { Effect, Layer } from "effect";
-import { PersistentService } from "../../../lib/storage/FileCacheStorage/PersistentService";
+import { DrizzleService } from "../../../lib/db/DrizzleService";
+import * as schema from "../../../lib/db/schema";
+import { projects, sessions } from "../../../lib/db/schema";
+import {
+  type ISyncService,
+  SyncService,
+} from "../../sync/services/SyncService";
 import { SessionMetaService } from "../services/SessionMetaService";
 
-/**
- * Helper function to create a FileSystem mock layer
- */
-const makeFileSystemMock = (
-  overrides: Partial<FileSystem.FileSystem>,
-): Layer.Layer<FileSystem.FileSystem> => {
-  return FileSystem.layerNoop(overrides);
-};
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
 
-/**
- * Helper function to create a Path mock layer
- */
-const makePathMock = (): Layer.Layer<Path.Path> => {
-  return Path.layer;
-};
+const migrationsFolder = new URL("../../../lib/db/migrations", import.meta.url)
+  .pathname;
 
-/**
- * Helper function to create a PersistentService mock layer
- * load returns an empty array to avoid file system access
- */
-const makePersistentServiceMock = (): Layer.Layer<PersistentService> => {
-  return Layer.succeed(PersistentService, {
-    load: (_key: string) => Effect.succeed([]),
-    save: (_key: string, _entries: readonly [string, unknown][]) => Effect.void,
+const makeSyncServiceMock = (
+  overrides?: Partial<ISyncService>,
+): Layer.Layer<SyncService> =>
+  Layer.succeed(SyncService, {
+    fullSync: () => Effect.void,
+    syncSession: () => Effect.void,
+    syncProjectList: () => Effect.void,
+    ...overrides,
   });
+
+const createInMemoryDb = () => {
+  const sqlite = new DatabaseSync(":memory:");
+  sqlite.exec("PRAGMA foreign_keys = ON");
+  const db = drizzle({ client: sqlite, schema });
+  migrate(db, { migrationsFolder });
+  sqlite.exec(`
+    CREATE VIRTUAL TABLE IF NOT EXISTS session_messages_fts USING fts5(
+      session_id UNINDEXED,
+      project_id UNINDEXED,
+      role UNINDEXED,
+      content,
+      conversation_index UNINDEXED,
+      tokenize='trigram'
+    )
+  `);
+  return { db, rawDb: sqlite };
 };
+
+const makeDrizzleServiceWithData = (opts: {
+  projectRows?: (typeof projects.$inferInsert)[];
+  sessionRows?: (typeof sessions.$inferInsert)[];
+}): Layer.Layer<DrizzleService> => {
+  const { db, rawDb } = createInMemoryDb();
+
+  for (const row of opts.projectRows ?? []) {
+    db.insert(projects).values(row).run();
+  }
+  for (const row of opts.sessionRows ?? []) {
+    db.insert(sessions).values(row).run();
+  }
+
+  return Layer.succeed(DrizzleService, { db, rawDb });
+};
+
+const defaultProjectRow: typeof projects.$inferInsert = {
+  id: "test-project-id",
+  name: "test-project",
+  path: "/test/project",
+  sessionCount: 0,
+  dirMtimeMs: Date.now(),
+  syncedAt: Date.now(),
+};
+
+const makeSessionRow = (
+  overrides?: Partial<typeof sessions.$inferInsert>,
+): typeof sessions.$inferInsert => ({
+  id: "test-session-id",
+  projectId: "test-project-id",
+  filePath: "/test/project/test-session-id.jsonl",
+  messageCount: 5,
+  firstUserMessageJson: JSON.stringify({ kind: "text", content: "hello" }),
+  customTitle: null,
+  totalCostUsd: 0.01,
+  costBreakdownJson: JSON.stringify({
+    inputTokensUsd: 0.003,
+    outputTokensUsd: 0.007,
+    cacheCreationUsd: 0,
+    cacheReadUsd: 0,
+  }),
+  tokenUsageJson: JSON.stringify({
+    inputTokens: 1000,
+    outputTokens: 500,
+    cacheCreationTokens: 0,
+    cacheReadTokens: 0,
+  }),
+  modelName: "claude-3-5-sonnet-20240620",
+  prLinksJson: null,
+  fileMtimeMs: Date.now(),
+  lastModifiedAt: new Date().toISOString(),
+  syncedAt: Date.now(),
+  ...overrides,
+});
+
+const projectId = Buffer.from("/test/project").toString("base64url");
+const sessionId = "test-session-id";
+
+// ---------------------------------------------------------------------------
+// Tests
+// ---------------------------------------------------------------------------
 
 describe("SessionMetaService", () => {
   describe("getSessionMeta", () => {
-    it("can retrieve session metadata", async () => {
-      const FileSystemMock = makeFileSystemMock({
-        readFileString: () =>
-          Effect.succeed(
-            '{"parentUuid":null,"isSidechain":false,"userType":"external","cwd":"/workspace/app","sessionId":"e2ab9812-8be7-4e9e-8194-d9b7b9d6da14","version":"1.0.0","gitBranch":"","type":"user","message":{"role":"user","content":"test message"},"uuid":"e2ab9812-8be7-4e9e-8194-d9b7b9d6da14","timestamp":"2024-01-01T00:00:00.000Z"}',
-          ),
-        readDirectory: () => Effect.succeed([]),
-        exists: () => Effect.succeed(false),
-        makeDirectory: () => Effect.void,
-        writeFileString: () => Effect.void,
-      });
-
-      const PathMock = makePathMock();
-      const PersistentServiceMock = makePersistentServiceMock();
+    it("returns session metadata from DB row", async () => {
+      const row = makeSessionRow({ id: sessionId });
 
       const program = Effect.gen(function* () {
-        const storage = yield* SessionMetaService;
-        const projectId = Buffer.from("/test/project").toString("base64url");
-        const sessionId = Buffer.from("/test/project/session.jsonl").toString(
-          "base64url",
-        );
-
-        return yield* storage.getSessionMeta(projectId, sessionId);
+        const service = yield* SessionMetaService;
+        return yield* service.getSessionMeta(projectId, sessionId);
       });
 
       const result = await Effect.runPromise(
         program.pipe(
           Effect.provide(SessionMetaService.Live),
-          Effect.provide(FileSystemMock),
-          Effect.provide(PathMock),
-          Effect.provide(PersistentServiceMock),
+          Effect.provide(
+            makeDrizzleServiceWithData({
+              projectRows: [defaultProjectRow],
+              sessionRows: [row],
+            }),
+          ),
+          Effect.provide(makeSyncServiceMock()),
         ),
       );
 
-      expect(result.messageCount).toBe(1);
+      expect(result.messageCount).toBe(5);
       expect(result.firstUserMessage).toEqual({
         kind: "text",
-        content: "test message",
+        content: "hello",
       });
-    });
-
-    it("returns cached metadata", async () => {
-      let readFileStringCalls = 0;
-
-      const FileSystemMock = makeFileSystemMock({
-        readFileString: () => {
-          readFileStringCalls++;
-          return Effect.succeed(
-            '{"parentUuid":null,"isSidechain":false,"userType":"external","cwd":"/workspace/app","sessionId":"e2ab9812-8be7-4e9e-8194-d9b7b9d6da14","version":"1.0.0","gitBranch":"","type":"user","message":{"role":"user","content":"test message"},"uuid":"e2ab9812-8be7-4e9e-8194-d9b7b9d6da14","timestamp":"2024-01-01T00:00:00.000Z"}',
-          );
-        },
-        readDirectory: () => Effect.succeed([]),
-        exists: () => Effect.succeed(true),
-        makeDirectory: () => Effect.void,
-        writeFileString: () => Effect.void,
-      });
-
-      const PathMock = makePathMock();
-      const PersistentServiceMock = makePersistentServiceMock();
-
-      const program = Effect.gen(function* () {
-        const storage = yield* SessionMetaService;
-        const projectId = Buffer.from("/test/project").toString("base64url");
-        const sessionId = Buffer.from("/test/project/session.jsonl").toString(
-          "base64url",
-        );
-
-        // 1回目の呼び出し
-        const result1 = yield* storage.getSessionMeta(projectId, sessionId);
-
-        // 2回目の呼び出し（キャッシュから取得）
-        const result2 = yield* storage.getSessionMeta(projectId, sessionId);
-
-        return { result1, result2, readFileStringCalls };
-      });
-
-      const { result1, result2 } = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(SessionMetaService.Live),
-          Effect.provide(FileSystemMock),
-          Effect.provide(PathMock),
-          Effect.provide(PersistentServiceMock),
-        ),
-      );
-
-      expect(result1).toEqual(result2);
-
-      expect(readFileStringCalls).toBe(2);
-    });
-
-    it("correctly parses commands", async () => {
-      const FileSystemMock = makeFileSystemMock({
-        readFileString: () =>
-          Effect.succeed(
-            '{"parentUuid":null,"isSidechain":false,"userType":"external","cwd":"/workspace/app","sessionId":"e2ab9812-8be7-4e9e-8194-d9b7b9d6da14","version":"1.0.0","gitBranch":"","type":"user","message":{"role":"user","content":"<command-name>/test</command-name>"},"uuid":"e2ab9812-8be7-4e9e-8194-d9b7b9d6da14","timestamp":"2024-01-01T00:00:00.000Z"}',
-          ),
-        readDirectory: () => Effect.succeed([]),
-        exists: () => Effect.succeed(false),
-        makeDirectory: () => Effect.void,
-        writeFileString: () => Effect.void,
-      });
-
-      const PathMock = makePathMock();
-      const PersistentServiceMock = makePersistentServiceMock();
-
-      const program = Effect.gen(function* () {
-        const storage = yield* SessionMetaService;
-        const projectId = Buffer.from("/test/project").toString("base64url");
-        const sessionId = Buffer.from("/test/project/session.jsonl").toString(
-          "base64url",
-        );
-
-        return yield* storage.getSessionMeta(projectId, sessionId);
-      });
-
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(SessionMetaService.Live),
-          Effect.provide(FileSystemMock),
-          Effect.provide(PathMock),
-          Effect.provide(PersistentServiceMock),
-        ),
-      );
-
-      expect(result.firstUserMessage).toEqual({
-        kind: "command",
-        commandName: "/test",
-      });
-    });
-
-    it("extracts title from first real user message after /clear command sequence", async () => {
-      // Actual JSONL content from a real session where /clear was run before the user message
-      const jsonlContent = [
-        '{"type":"file-history-snapshot","messageId":"630fe684-847c-4502-a7d0-36d8f71d5f6d","snapshot":{"messageId":"630fe684-847c-4502-a7d0-36d8f71d5f6d","trackedFileBackups":{},"timestamp":"2026-02-12T12:35:00.126Z"},"isSnapshotUpdate":false}',
-        '{"parentUuid":null,"isSidechain":false,"userType":"external","cwd":"/Users/kaito-kimura/repos/claude-code-viewer","sessionId":"81cdbc9a-4309-4e68-bd33-dd5672098b4b","version":"2.1.37","gitBranch":"main","type":"user","message":{"role":"user","content":"<local-command-caveat>Caveat: The messages below were generated by the user while running local commands. DO NOT respond to these messages or otherwise consider them in your response unless the user explicitly asks you to.</local-command-caveat>"},"isMeta":true,"uuid":"6151a0b6-2545-48ad-a471-b27ba45969b0","timestamp":"2026-02-12T12:35:00.126Z"}',
-        '{"parentUuid":"6151a0b6-2545-48ad-a471-b27ba45969b0","isSidechain":false,"userType":"external","cwd":"/Users/kaito-kimura/repos/claude-code-viewer","sessionId":"81cdbc9a-4309-4e68-bd33-dd5672098b4b","version":"2.1.37","gitBranch":"main","type":"user","message":{"role":"user","content":"<command-name>/clear</command-name>\\n            <command-message>clear</command-message>\\n            <command-args></command-args>"},"uuid":"630fe684-847c-4502-a7d0-36d8f71d5f6d","timestamp":"2026-02-12T12:35:00.123Z"}',
-        '{"parentUuid":"630fe684-847c-4502-a7d0-36d8f71d5f6d","isSidechain":false,"userType":"external","cwd":"/Users/kaito-kimura/repos/claude-code-viewer","sessionId":"81cdbc9a-4309-4e68-bd33-dd5672098b4b","version":"2.1.37","gitBranch":"main","type":"user","message":{"role":"user","content":"<local-command-stdout></local-command-stdout>"},"uuid":"d125a3f7-0c37-4342-94a9-d2665b7c0457","timestamp":"2026-02-12T12:35:00.125Z"}',
-        '{"type":"file-history-snapshot","messageId":"2d99a60b-339c-436b-97d2-87addc380fcd","snapshot":{"messageId":"2d99a60b-339c-436b-97d2-87addc380fcd","trackedFileBackups":{},"timestamp":"2026-02-12T12:35:04.494Z"},"isSnapshotUpdate":false}',
-        '{"parentUuid":"d125a3f7-0c37-4342-94a9-d2665b7c0457","isSidechain":false,"userType":"external","cwd":"/Users/kaito-kimura/repos/claude-code-viewer","sessionId":"81cdbc9a-4309-4e68-bd33-dd5672098b4b","version":"2.1.37","gitBranch":"main","type":"user","message":{"role":"user","content":"hi, how a u?2"},"uuid":"2d99a60b-339c-436b-97d2-87addc380fcd","timestamp":"2026-02-12T12:35:04.493Z","thinkingMetadata":{"maxThinkingTokens":31999},"permissionMode":"bypassPermissions"}',
-      ].join("\n");
-
-      const FileSystemMock = makeFileSystemMock({
-        readFileString: () => Effect.succeed(jsonlContent),
-        readDirectory: () => Effect.succeed([]),
-        exists: () => Effect.succeed(false),
-        makeDirectory: () => Effect.void,
-        writeFileString: () => Effect.void,
-      });
-
-      const PathMock = makePathMock();
-      const PersistentServiceMock = makePersistentServiceMock();
-
-      const program = Effect.gen(function* () {
-        const storage = yield* SessionMetaService;
-        const projectId = Buffer.from("/test/project").toString("base64url");
-        const sessionId = Buffer.from("/test/project/session.jsonl").toString(
-          "base64url",
-        );
-
-        return yield* storage.getSessionMeta(projectId, sessionId);
-      });
-
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(SessionMetaService.Live),
-          Effect.provide(FileSystemMock),
-          Effect.provide(PathMock),
-          Effect.provide(PersistentServiceMock),
-        ),
-      );
-
-      expect(result.firstUserMessage).toEqual({
-        kind: "text",
-        content: "hi, how a u?2",
-      });
-    });
-
-    it("extracts customTitle from custom-title entry", async () => {
-      const jsonlContent = [
-        '{"parentUuid":null,"isSidechain":false,"userType":"external","cwd":"/workspace/app","sessionId":"e2ab9812-8be7-4e9e-8194-d9b7b9d6da14","version":"1.0.0","gitBranch":"","type":"user","message":{"role":"user","content":"initial message"},"uuid":"e2ab9812-8be7-4e9e-8194-d9b7b9d6da14","timestamp":"2024-01-01T00:00:00.000Z"}',
-        '{"type":"custom-title","customTitle":"My Custom Session Name","sessionId":"e2ab9812-8be7-4e9e-8194-d9b7b9d6da14"}',
-      ].join("\n");
-
-      const FileSystemMock = makeFileSystemMock({
-        readFileString: () => Effect.succeed(jsonlContent),
-        readDirectory: () => Effect.succeed([]),
-        exists: () => Effect.succeed(false),
-        makeDirectory: () => Effect.void,
-        writeFileString: () => Effect.void,
-      });
-
-      const PathMock = makePathMock();
-      const PersistentServiceMock = makePersistentServiceMock();
-
-      const program = Effect.gen(function* () {
-        const storage = yield* SessionMetaService;
-        const projectId = Buffer.from("/test/project").toString("base64url");
-        const sessionId = Buffer.from("/test/project/session.jsonl").toString(
-          "base64url",
-        );
-
-        return yield* storage.getSessionMeta(projectId, sessionId);
-      });
-
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(SessionMetaService.Live),
-          Effect.provide(FileSystemMock),
-          Effect.provide(PathMock),
-          Effect.provide(PersistentServiceMock),
-        ),
-      );
-
-      expect(result.customTitle).toBe("My Custom Session Name");
-      expect(result.firstUserMessage).toEqual({
-        kind: "text",
-        content: "initial message",
-      });
-    });
-
-    it("returns null customTitle when no custom-title entry exists", async () => {
-      const FileSystemMock = makeFileSystemMock({
-        readFileString: () =>
-          Effect.succeed(
-            '{"parentUuid":null,"isSidechain":false,"userType":"external","cwd":"/workspace/app","sessionId":"e2ab9812-8be7-4e9e-8194-d9b7b9d6da14","version":"1.0.0","gitBranch":"","type":"user","message":{"role":"user","content":"test message"},"uuid":"e2ab9812-8be7-4e9e-8194-d9b7b9d6da14","timestamp":"2024-01-01T00:00:00.000Z"}',
-          ),
-        readDirectory: () => Effect.succeed([]),
-        exists: () => Effect.succeed(false),
-        makeDirectory: () => Effect.void,
-        writeFileString: () => Effect.void,
-      });
-
-      const PathMock = makePathMock();
-      const PersistentServiceMock = makePersistentServiceMock();
-
-      const program = Effect.gen(function* () {
-        const storage = yield* SessionMetaService;
-        const projectId = Buffer.from("/test/project").toString("base64url");
-        const sessionId = Buffer.from("/test/project/session.jsonl").toString(
-          "base64url",
-        );
-
-        return yield* storage.getSessionMeta(projectId, sessionId);
-      });
-
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(SessionMetaService.Live),
-          Effect.provide(FileSystemMock),
-          Effect.provide(PathMock),
-          Effect.provide(PersistentServiceMock),
-        ),
-      );
-
+      expect(result.cost.totalUsd).toBeCloseTo(0.01);
+      expect(result.cost.tokenUsage.inputTokens).toBe(1000);
+      expect(result.cost.tokenUsage.outputTokens).toBe(500);
+      expect(result.modelName).toBe("claude-3-5-sonnet-20240620");
+      expect(result.prLinks).toEqual([]);
       expect(result.customTitle).toBeNull();
     });
 
-    it("uses the last custom-title entry when multiple exist", async () => {
-      const jsonlContent = [
-        '{"parentUuid":null,"isSidechain":false,"userType":"external","cwd":"/workspace/app","sessionId":"e2ab9812-8be7-4e9e-8194-d9b7b9d6da14","version":"1.0.0","gitBranch":"","type":"user","message":{"role":"user","content":"initial message"},"uuid":"e2ab9812-8be7-4e9e-8194-d9b7b9d6da14","timestamp":"2024-01-01T00:00:00.000Z"}',
-        '{"type":"custom-title","customTitle":"First Title","sessionId":"e2ab9812-8be7-4e9e-8194-d9b7b9d6da14"}',
-        '{"type":"custom-title","customTitle":"Second Title","sessionId":"e2ab9812-8be7-4e9e-8194-d9b7b9d6da14"}',
-        '{"type":"custom-title","customTitle":"Final Title","sessionId":"e2ab9812-8be7-4e9e-8194-d9b7b9d6da14"}',
-      ].join("\n");
-
-      const FileSystemMock = makeFileSystemMock({
-        readFileString: () => Effect.succeed(jsonlContent),
-        readDirectory: () => Effect.succeed([]),
-        exists: () => Effect.succeed(false),
-        makeDirectory: () => Effect.void,
-        writeFileString: () => Effect.void,
+    it("returns null firstUserMessage when column is null", async () => {
+      const row = makeSessionRow({
+        id: sessionId,
+        firstUserMessageJson: null,
       });
 
-      const PathMock = makePathMock();
-      const PersistentServiceMock = makePersistentServiceMock();
-
       const program = Effect.gen(function* () {
-        const storage = yield* SessionMetaService;
-        const projectId = Buffer.from("/test/project").toString("base64url");
-        const sessionId = Buffer.from("/test/project/session.jsonl").toString(
-          "base64url",
-        );
-
-        return yield* storage.getSessionMeta(projectId, sessionId);
+        const service = yield* SessionMetaService;
+        return yield* service.getSessionMeta(projectId, sessionId);
       });
 
       const result = await Effect.runPromise(
         program.pipe(
           Effect.provide(SessionMetaService.Live),
-          Effect.provide(FileSystemMock),
-          Effect.provide(PathMock),
-          Effect.provide(PersistentServiceMock),
-        ),
-      );
-
-      expect(result.customTitle).toBe("Final Title");
-    });
-
-    it("bypasses stale persistent cache with empty local-command-stdout", async () => {
-      const projectId = Buffer.from("/test/project").toString("base64url");
-      const sessionId = Buffer.from("/test/project/session.jsonl").toString(
-        "base64url",
-      );
-      // The actual jsonlFilePath computed by decodeSessionId
-      const cacheKey = `/test/project/${sessionId}.jsonl`;
-
-      // Stale cache content: empty local-command was cached before the fix
-      const staleCacheContent = JSON.stringify([
-        [cacheKey, { kind: "local-command", stdout: "" }],
-      ]);
-
-      // JSONL with /clear sequence followed by a real user message
-      const jsonlContent = [
-        '{"parentUuid":null,"isSidechain":false,"userType":"external","cwd":"/repo","sessionId":"test-session","version":"2.1.37","gitBranch":"main","type":"user","message":{"role":"user","content":"<local-command-stdout></local-command-stdout>"},"uuid":"d125a3f7-0c37-4342-94a9-d2665b7c0457","timestamp":"2026-02-12T12:35:00.125Z"}',
-        '{"parentUuid":"d125a3f7-0c37-4342-94a9-d2665b7c0457","isSidechain":false,"userType":"external","cwd":"/repo","sessionId":"test-session","version":"2.1.37","gitBranch":"main","type":"user","message":{"role":"user","content":"actual user message"},"uuid":"2d99a60b-339c-436b-97d2-87addc380fcd","timestamp":"2026-02-12T12:35:04.493Z"}',
-      ].join("\n");
-
-      const cacheFilePath = `${require("node:os").homedir()}/.claude-code-viewer/cache/first-user-message-cache.json`;
-
-      const FileSystemMock = makeFileSystemMock({
-        readFileString: (path: string) => {
-          if (path === cacheFilePath) {
-            return Effect.succeed(staleCacheContent);
-          }
-          return Effect.succeed(jsonlContent);
-        },
-        readDirectory: () => Effect.succeed([]),
-        exists: (path: string) => Effect.succeed(path === cacheFilePath),
-        makeDirectory: () => Effect.void,
-        writeFileString: () => Effect.void,
-      });
-
-      const PathMock = makePathMock();
-      const PersistentServiceMock = makePersistentServiceMock();
-
-      const program = Effect.gen(function* () {
-        const storage = yield* SessionMetaService;
-        return yield* storage.getSessionMeta(projectId, sessionId);
-      });
-
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(SessionMetaService.Live),
-          Effect.provide(FileSystemMock),
-          Effect.provide(PathMock),
-          Effect.provide(PersistentServiceMock),
-        ),
-      );
-
-      // Stale cache with empty local-command should be bypassed
-      expect(result.firstUserMessage?.kind).not.toBe("local-command");
-      expect(result.firstUserMessage).toEqual({
-        kind: "text",
-        content: "actual user message",
-      });
-    });
-
-    it("skips commands that should be ignored", async () => {
-      const FileSystemMock = makeFileSystemMock({
-        readFileString: () =>
-          Effect.succeed(
-            '{"parentUuid":null,"isSidechain":false,"userType":"external","cwd":"/workspace/app","sessionId":"e2ab9812-8be7-4e9e-8194-d9b7b9d6da14","version":"1.0.0","gitBranch":"","type":"user","message":{"role":"user","content":"<command-name>/clear</command-name>"},"uuid":"d78d1de2-52bd-4e64-ad0f-affcbcc1dabf","timestamp":"2024-01-01T00:00:00.000Z"}\n{"parentUuid":"d78d1de2-52bd-4e64-ad0f-affcbcc1dabf","isSidechain":false,"userType":"external","cwd":"/workspace/app","sessionId":"e2ab9812-8be7-4e9e-8194-d9b7b9d6da14","version":"1.0.0","gitBranch":"","type":"user","message":{"role":"user","content":"actual message"},"uuid":"e2ab9812-8be7-4e9e-8194-d9b7b9d6da14","timestamp":"2024-01-01T00:00:01.000Z"}',
+          Effect.provide(
+            makeDrizzleServiceWithData({
+              projectRows: [defaultProjectRow],
+              sessionRows: [row],
+            }),
           ),
-        readDirectory: () => Effect.succeed([]),
-        exists: () => Effect.succeed(false),
-        makeDirectory: () => Effect.void,
-        writeFileString: () => Effect.void,
+          Effect.provide(makeSyncServiceMock()),
+        ),
+      );
+
+      expect(result.firstUserMessage).toBeNull();
+    });
+
+    it("parses customTitle from DB row", async () => {
+      const row = makeSessionRow({
+        id: sessionId,
+        customTitle: "My Custom Title",
       });
 
-      const PathMock = makePathMock();
-      const PersistentServiceMock = makePersistentServiceMock();
-
       const program = Effect.gen(function* () {
-        const storage = yield* SessionMetaService;
-        const projectId = Buffer.from("/test/project").toString("base64url");
-        const sessionId = Buffer.from("/test/project/session.jsonl").toString(
-          "base64url",
-        );
-
-        return yield* storage.getSessionMeta(projectId, sessionId);
+        const service = yield* SessionMetaService;
+        return yield* service.getSessionMeta(projectId, sessionId);
       });
 
       const result = await Effect.runPromise(
         program.pipe(
           Effect.provide(SessionMetaService.Live),
-          Effect.provide(FileSystemMock),
-          Effect.provide(PathMock),
-          Effect.provide(PersistentServiceMock),
+          Effect.provide(
+            makeDrizzleServiceWithData({
+              projectRows: [defaultProjectRow],
+              sessionRows: [row],
+            }),
+          ),
+          Effect.provide(makeSyncServiceMock()),
         ),
       );
 
-      expect(result.firstUserMessage).toEqual({
-        kind: "text",
-        content: "actual message",
+      expect(result.customTitle).toBe("My Custom Title");
+    });
+
+    it("parses prLinks from DB row", async () => {
+      const prLinks = [
+        {
+          prNumber: 42,
+          prUrl: "https://github.com/test/repo/pull/42",
+          prRepository: "test/repo",
+        },
+      ];
+      const row = makeSessionRow({
+        id: sessionId,
+        prLinksJson: JSON.stringify(prLinks),
       });
+
+      const program = Effect.gen(function* () {
+        const service = yield* SessionMetaService;
+        return yield* service.getSessionMeta(projectId, sessionId);
+      });
+
+      const result = await Effect.runPromise(
+        program.pipe(
+          Effect.provide(SessionMetaService.Live),
+          Effect.provide(
+            makeDrizzleServiceWithData({
+              projectRows: [defaultProjectRow],
+              sessionRows: [row],
+            }),
+          ),
+          Effect.provide(makeSyncServiceMock()),
+        ),
+      );
+
+      expect(result.prLinks).toEqual(prLinks);
+    });
+
+    it("returns empty prLinks when pr_links_json is null", async () => {
+      const row = makeSessionRow({ id: sessionId, prLinksJson: null });
+
+      const program = Effect.gen(function* () {
+        const service = yield* SessionMetaService;
+        return yield* service.getSessionMeta(projectId, sessionId);
+      });
+
+      const result = await Effect.runPromise(
+        program.pipe(
+          Effect.provide(SessionMetaService.Live),
+          Effect.provide(
+            makeDrizzleServiceWithData({
+              projectRows: [defaultProjectRow],
+              sessionRows: [row],
+            }),
+          ),
+          Effect.provide(makeSyncServiceMock()),
+        ),
+      );
+
+      expect(result.prLinks).toEqual([]);
+    });
+
+    it("triggers syncSession and retries when session not in DB", async () => {
+      let syncCalled = false;
+      const { db, rawDb } = createInMemoryDb();
+
+      // Insert project row (required for foreign key)
+      db.insert(projects).values(defaultProjectRow).run();
+
+      // DB starts empty — no session rows
+      const program = Effect.gen(function* () {
+        const service = yield* SessionMetaService;
+        return yield* service.getSessionMeta(projectId, sessionId);
+      });
+
+      const result = await Effect.runPromise(
+        program.pipe(
+          Effect.provide(SessionMetaService.Live),
+          Effect.provide(Layer.succeed(DrizzleService, { db, rawDb })),
+          Effect.provide(
+            makeSyncServiceMock({
+              syncSession: () =>
+                Effect.sync(() => {
+                  syncCalled = true;
+                  // Insert the session row so retry finds it
+                  db.insert(sessions)
+                    .values(makeSessionRow({ id: sessionId }))
+                    .run();
+                }),
+            }),
+          ),
+        ),
+      );
+
+      expect(syncCalled).toBe(true);
+      expect(result.messageCount).toBe(5);
+    });
+
+    it("fails when session not found even after sync", async () => {
+      const { db, rawDb } = createInMemoryDb();
+
+      const program = Effect.gen(function* () {
+        const service = yield* SessionMetaService;
+        return yield* service.getSessionMeta(projectId, "nonexistent-session");
+      });
+
+      await expect(
+        Effect.runPromise(
+          program.pipe(
+            Effect.provide(SessionMetaService.Live),
+            Effect.provide(Layer.succeed(DrizzleService, { db, rawDb })),
+            Effect.provide(makeSyncServiceMock()),
+          ),
+        ),
+      ).rejects.toThrow("Session not found: nonexistent-session");
     });
   });
 
   describe("invalidateSession", () => {
-    it("can invalidate session cache", async () => {
-      let readFileStringCalls = 0;
-
-      const FileSystemMock = makeFileSystemMock({
-        readFileString: () => {
-          readFileStringCalls++;
-          return Effect.succeed(
-            '{"parentUuid":null,"isSidechain":false,"userType":"external","cwd":"/workspace/app","sessionId":"e2ab9812-8be7-4e9e-8194-d9b7b9d6da14","version":"1.0.0","gitBranch":"","type":"user","message":{"role":"user","content":"test message"},"uuid":"e2ab9812-8be7-4e9e-8194-d9b7b9d6da14","timestamp":"2024-01-01T00:00:00.000Z"}',
-          );
-        },
-        readDirectory: () => Effect.succeed([]),
-        exists: () => Effect.succeed(true),
-        makeDirectory: () => Effect.void,
-        writeFileString: () => Effect.void,
-      });
-
-      const PathMock = makePathMock();
-      const PersistentServiceMock = makePersistentServiceMock();
+    it("calls syncSession on invalidate", async () => {
+      let syncCalled = false;
+      const row = makeSessionRow({ id: sessionId });
 
       const program = Effect.gen(function* () {
-        const storage = yield* SessionMetaService;
-        const projectId = Buffer.from("/test/project").toString("base64url");
-        const sessionId = Buffer.from("/test/project/session.jsonl").toString(
-          "base64url",
-        );
-
-        yield* storage.getSessionMeta(projectId, sessionId);
-
-        yield* storage.invalidateSession(projectId, sessionId);
-
-        yield* storage.getSessionMeta(projectId, sessionId);
+        const service = yield* SessionMetaService;
+        yield* service.invalidateSession(projectId, sessionId);
       });
 
       await Effect.runPromise(
         program.pipe(
           Effect.provide(SessionMetaService.Live),
-          Effect.provide(FileSystemMock),
-          Effect.provide(PathMock),
-          Effect.provide(PersistentServiceMock),
+          Effect.provide(
+            makeDrizzleServiceWithData({
+              projectRows: [defaultProjectRow],
+              sessionRows: [row],
+            }),
+          ),
+          Effect.provide(
+            makeSyncServiceMock({
+              syncSession: () =>
+                Effect.sync(() => {
+                  syncCalled = true;
+                }),
+            }),
+          ),
         ),
       );
 
-      expect(readFileStringCalls).toBe(3);
+      expect(syncCalled).toBe(true);
+    });
+
+    it("does not throw even if syncSession fails", async () => {
+      const row = makeSessionRow({ id: sessionId });
+
+      const program = Effect.gen(function* () {
+        const service = yield* SessionMetaService;
+        yield* service.invalidateSession(projectId, sessionId);
+      });
+
+      await expect(
+        Effect.runPromise(
+          program.pipe(
+            Effect.provide(SessionMetaService.Live),
+            Effect.provide(
+              makeDrizzleServiceWithData({
+                projectRows: [defaultProjectRow],
+                sessionRows: [row],
+              }),
+            ),
+            Effect.provide(
+              makeSyncServiceMock({
+                syncSession: () => Effect.fail(new Error("sync failed")),
+              }),
+            ),
+          ),
+        ),
+      ).resolves.toBeUndefined();
     });
   });
 
   describe("cost calculation", () => {
-    it("calculates cost from assistant messages", async () => {
-      const FileSystemMock = makeFileSystemMock({
-        readFileString: () =>
-          Effect.succeed(
-            '{"type":"user","uuid":"550e8400-e29b-41d4-a716-446655440000","timestamp":"2024-01-01T00:00:00.000Z","isSidechain":false,"userType":"external","cwd":"/test","sessionId":"test-session","version":"1.0.0","parentUuid":null,"message":{"role":"user","content":"test"}}\n{"type":"assistant","uuid":"550e8400-e29b-41d4-a716-446655440001","timestamp":"2024-01-01T00:00:01.000Z","isSidechain":false,"userType":"external","cwd":"/test","sessionId":"test-session","version":"1.0.0","parentUuid":"550e8400-e29b-41d4-a716-446655440000","message":{"type":"message","role":"assistant","model":"claude-sonnet-4-20250514","content":[],"usage":{"input_tokens":1000,"output_tokens":500,"cache_creation_input_tokens":200,"cache_read_input_tokens":100},"stop_reason":null,"stop_sequence":null,"id":"msg_01"}}',
-          ),
-        readDirectory: () => Effect.succeed([]),
-        exists: () => Effect.succeed(false),
-        makeDirectory: () => Effect.void,
-        writeFileString: () => Effect.void,
+    it("returns zero cost when breakdown columns are null", async () => {
+      const row = makeSessionRow({
+        id: sessionId,
+        totalCostUsd: 0,
+        costBreakdownJson: null,
+        tokenUsageJson: null,
       });
 
-      const PathMock = makePathMock();
-      const PersistentServiceMock = makePersistentServiceMock();
-
       const program = Effect.gen(function* () {
-        const storage = yield* SessionMetaService;
-        const projectId = Buffer.from("/test/project").toString("base64url");
-        const sessionId = Buffer.from("/test/project/session.jsonl").toString(
-          "base64url",
-        );
-
-        return yield* storage.getSessionMeta(projectId, sessionId);
+        const service = yield* SessionMetaService;
+        return yield* service.getSessionMeta(projectId, sessionId);
       });
 
       const result = await Effect.runPromise(
         program.pipe(
           Effect.provide(SessionMetaService.Live),
-          Effect.provide(FileSystemMock),
-          Effect.provide(PathMock),
-          Effect.provide(PersistentServiceMock),
-        ),
-      );
-
-      // Verify cost is calculated
-      expect(result.cost.tokenUsage.inputTokens).toBe(1000);
-      expect(result.cost.tokenUsage.outputTokens).toBe(500);
-      expect(result.cost.tokenUsage.cacheCreationTokens).toBe(200);
-      expect(result.cost.tokenUsage.cacheReadTokens).toBe(100);
-
-      // Verify cost breakdown is present
-      expect(result.cost.breakdown.inputTokensUsd).toBeGreaterThan(0);
-      expect(result.cost.breakdown.outputTokensUsd).toBeGreaterThan(0);
-      expect(result.cost.totalUsd).toBeGreaterThan(0);
-    });
-
-    it("aggregates costs from multiple assistant messages", async () => {
-      const FileSystemMock = makeFileSystemMock({
-        readFileString: () =>
-          Effect.succeed(
-            '{"type":"assistant","uuid":"550e8400-e29b-41d4-a716-446655440001","timestamp":"2024-01-01T00:00:01.000Z","isSidechain":false,"userType":"external","cwd":"/test","sessionId":"test-session","version":"1.0.0","parentUuid":"550e8400-e29b-41d4-a716-446655440000","message":{"type":"message","role":"assistant","model":"claude-3-5-sonnet-20240620","content":[],"usage":{"input_tokens":500,"output_tokens":250,"cache_creation_input_tokens":0,"cache_read_input_tokens":0},"stop_reason":null,"stop_sequence":null,"id":"msg_01"}}\n{"type":"assistant","uuid":"550e8400-e29b-41d4-a716-446655440002","timestamp":"2024-01-01T00:00:02.000Z","isSidechain":false,"userType":"external","cwd":"/test","sessionId":"test-session","version":"1.0.0","parentUuid":"550e8400-e29b-41d4-a716-446655440001","message":{"type":"message","role":"assistant","model":"claude-3-5-sonnet-20240620","content":[],"usage":{"input_tokens":300,"output_tokens":150,"cache_creation_input_tokens":100,"cache_read_input_tokens":50},"stop_reason":null,"stop_sequence":null,"id":"msg_02"}}',
+          Effect.provide(
+            makeDrizzleServiceWithData({
+              projectRows: [defaultProjectRow],
+              sessionRows: [row],
+            }),
           ),
-        readDirectory: () => Effect.succeed([]),
-        exists: () => Effect.succeed(false),
-        makeDirectory: () => Effect.void,
-        writeFileString: () => Effect.void,
-      });
-
-      const PathMock = makePathMock();
-      const PersistentServiceMock = makePersistentServiceMock();
-
-      const program = Effect.gen(function* () {
-        const storage = yield* SessionMetaService;
-        const projectId = Buffer.from("/test/project").toString("base64url");
-        const sessionId = Buffer.from("/test/project/session.jsonl").toString(
-          "base64url",
-        );
-
-        return yield* storage.getSessionMeta(projectId, sessionId);
-      });
-
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(SessionMetaService.Live),
-          Effect.provide(FileSystemMock),
-          Effect.provide(PathMock),
-          Effect.provide(PersistentServiceMock),
+          Effect.provide(makeSyncServiceMock()),
         ),
       );
 
-      // Verify costs are aggregated
-      expect(result.cost.tokenUsage.inputTokens).toBe(800); // 500 + 300
-      expect(result.cost.tokenUsage.outputTokens).toBe(400); // 250 + 150
-      expect(result.cost.tokenUsage.cacheCreationTokens).toBe(100);
-      expect(result.cost.tokenUsage.cacheReadTokens).toBe(50);
-      expect(result.cost.totalUsd).toBeGreaterThan(0);
-    });
-
-    it("returns zero cost when no assistant messages exist", async () => {
-      const FileSystemMock = makeFileSystemMock({
-        readFileString: () =>
-          Effect.succeed(
-            '{"type":"user","message":{"role":"user","content":"test message"}}',
-          ),
-        exists: () => Effect.succeed(false),
-        makeDirectory: () => Effect.void,
-        writeFileString: () => Effect.void,
-      });
-
-      const PathMock = makePathMock();
-      const PersistentServiceMock = makePersistentServiceMock();
-
-      const program = Effect.gen(function* () {
-        const storage = yield* SessionMetaService;
-        const projectId = Buffer.from("/test/project").toString("base64url");
-        const sessionId = Buffer.from("/test/project/session.jsonl").toString(
-          "base64url",
-        );
-
-        return yield* storage.getSessionMeta(projectId, sessionId);
-      });
-
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(SessionMetaService.Live),
-          Effect.provide(FileSystemMock),
-          Effect.provide(PathMock),
-          Effect.provide(PersistentServiceMock),
-        ),
-      );
-
-      // Verify zero cost
+      expect(result.cost.totalUsd).toBe(0);
       expect(result.cost.tokenUsage.inputTokens).toBe(0);
       expect(result.cost.tokenUsage.outputTokens).toBe(0);
-      expect(result.cost.totalUsd).toBe(0);
-    });
-
-    it("calculates costs correctly with mixed models (Haiku + Opus)", async () => {
-      const FileSystemMock = makeFileSystemMock({
-        readFileString: () =>
-          Effect.succeed(
-            // First message: Haiku with 1M input tokens ($0.25/MTok) and 1M output tokens ($1.25/MTok)
-            '{"type":"assistant","uuid":"550e8400-e29b-41d4-a716-446655440001","timestamp":"2024-01-01T00:00:01.000Z","isSidechain":false,"userType":"external","cwd":"/test","sessionId":"test-session","version":"1.0.0","parentUuid":"550e8400-e29b-41d4-a716-446655440000","message":{"type":"message","role":"assistant","model":"claude-3-haiku-20240307","content":[],"usage":{"input_tokens":1000000,"output_tokens":1000000,"cache_creation_input_tokens":0,"cache_read_input_tokens":0},"stop_reason":null,"stop_sequence":null,"id":"msg_01"}}\n' +
-              // Second message: Opus with 1M input tokens ($15/MTok) and 1M output tokens ($75/MTok)
-              '{"type":"assistant","uuid":"550e8400-e29b-41d4-a716-446655440002","timestamp":"2024-01-01T00:00:02.000Z","isSidechain":false,"userType":"external","cwd":"/test","sessionId":"test-session","version":"1.0.0","parentUuid":"550e8400-e29b-41d4-a716-446655440001","message":{"type":"message","role":"assistant","model":"claude-3-opus-20240229","content":[],"usage":{"input_tokens":1000000,"output_tokens":1000000,"cache_creation_input_tokens":0,"cache_read_input_tokens":0},"stop_reason":null,"stop_sequence":null,"id":"msg_02"}}',
-          ),
-        readDirectory: () => Effect.succeed([]),
-        exists: () => Effect.succeed(false),
-        makeDirectory: () => Effect.void,
-        writeFileString: () => Effect.void,
-      });
-
-      const PathMock = makePathMock();
-      const PersistentServiceMock = makePersistentServiceMock();
-
-      const program = Effect.gen(function* () {
-        const storage = yield* SessionMetaService;
-        const projectId = Buffer.from("/test/project").toString("base64url");
-        const sessionId = Buffer.from("/test/project/session.jsonl").toString(
-          "base64url",
-        );
-
-        return yield* storage.getSessionMeta(projectId, sessionId);
-      });
-
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(SessionMetaService.Live),
-          Effect.provide(FileSystemMock),
-          Effect.provide(PathMock),
-          Effect.provide(PersistentServiceMock),
-        ),
-      );
-
-      // Verify aggregated token counts
-      expect(result.cost.tokenUsage.inputTokens).toBe(2000000);
-      expect(result.cost.tokenUsage.outputTokens).toBe(2000000);
-
-      // Expected cost calculation:
-      // Haiku: 1M input * $0.25 + 1M output * $1.25 = $0.25 + $1.25 = $1.50
-      // Opus: 1M input * $15 + 1M output * $75 = $15 + $75 = $90
-      // Total: $1.50 + $90 = $91.50
-      const expectedTotal = 1.5 + 90.0;
-      expect(result.cost.totalUsd).toBeCloseTo(expectedTotal, 2);
-
-      // Verify breakdown shows correct aggregated costs
-      // Input: Haiku $0.25 + Opus $15 = $15.25
-      expect(result.cost.breakdown.inputTokensUsd).toBeCloseTo(15.25, 2);
-      // Output: Haiku $1.25 + Opus $75 = $76.25
-      expect(result.cost.breakdown.outputTokensUsd).toBeCloseTo(76.25, 2);
-    });
-  });
-
-  describe("caching with agent sessions", () => {
-    it("caches metadata including agent session costs", async () => {
-      let mainFileReads = 0;
-      let agentFileReads = 0;
-      let directoryReads = 0;
-
-      const FileSystemMock = makeFileSystemMock({
-        readFileString: (path: string) => {
-          if (path === "/test/project/session.jsonl") {
-            mainFileReads++;
-            return Effect.succeed(
-              '{"type":"user","uuid":"550e8400-e29b-41d4-a716-446655440000","timestamp":"2024-01-01T00:00:00.000Z","isSidechain":false,"userType":"external","cwd":"/test","sessionId":"test-session","version":"1.0.0","parentUuid":null,"message":{"role":"user","content":"test"}}\n{"type":"assistant","uuid":"550e8400-e29b-41d4-a716-446655440001","timestamp":"2024-01-01T00:00:01.000Z","isSidechain":false,"userType":"external","cwd":"/test","sessionId":"test-session","version":"1.0.0","parentUuid":"550e8400-e29b-41d4-a716-446655440000","message":{"type":"message","role":"assistant","model":"claude-3-5-sonnet-20240620","content":[],"usage":{"input_tokens":1000,"output_tokens":500,"cache_creation_input_tokens":0,"cache_read_input_tokens":0},"stop_reason":null,"stop_sequence":null,"id":"msg_01"}}',
-            );
-          }
-          if (path === "/test/project/agent-hash-1.jsonl") {
-            agentFileReads++;
-            return Effect.succeed(
-              '{"type":"assistant","uuid":"a1111111-1111-4111-a111-111111111111","timestamp":"2024-01-01T00:00:02.000Z","isSidechain":true,"userType":"external","cwd":"/test","sessionId":"test-session","version":"1.0.0","parentUuid":"550e8400-e29b-41d4-a716-446655440001","message":{"type":"message","role":"assistant","model":"claude-3-5-sonnet-20240620","content":[],"usage":{"input_tokens":300,"output_tokens":150,"cache_creation_input_tokens":50,"cache_read_input_tokens":25},"stop_reason":null,"stop_sequence":null,"id":"msg_02"}}',
-            );
-          }
-          return Effect.fail({
-            _tag: "SystemError",
-            reason: "NotFound",
-            module: "FileSystem",
-            method: "readFileString",
-            pathOrDescriptor: path,
-            message: `File not found: ${path}`,
-          } as PlatformError);
-        },
-        readDirectory: (dirPath: string) => {
-          if (dirPath === "/test/project") {
-            directoryReads++;
-            return Effect.succeed([
-              "session.jsonl",
-              "agent-hash-1.jsonl",
-              "other-file.txt",
-            ]);
-          }
-          return Effect.succeed([]);
-        },
-        exists: () => Effect.succeed(false),
-        makeDirectory: () => Effect.void,
-        writeFileString: () => Effect.void,
-      });
-
-      const PathMock = makePathMock();
-      const PersistentServiceMock = makePersistentServiceMock();
-
-      const program = Effect.gen(function* () {
-        const storage = yield* SessionMetaService;
-        const projectId = Buffer.from("/test/project").toString("base64url");
-        const sessionId = "session"; // encodeSessionId("/test/project/session.jsonl") returns "session"
-
-        // First call - should read files
-        const result1 = yield* storage.getSessionMeta(projectId, sessionId);
-
-        // Second call - should use cache
-        const result2 = yield* storage.getSessionMeta(projectId, sessionId);
-
-        return { result1, result2 };
-      });
-
-      const { result1, result2 } = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(SessionMetaService.Live),
-          Effect.provide(FileSystemMock),
-          Effect.provide(PathMock),
-          Effect.provide(PersistentServiceMock),
-        ),
-      );
-
-      // Both results should be identical (from cache)
-      expect(result1).toEqual(result2);
-
-      // Verify costs include agent session
-      expect(result1.cost.tokenUsage.inputTokens).toBe(1300);
-      expect(result1.cost.tokenUsage.outputTokens).toBe(650);
-
-      // Files should only be read once (second call uses cache)
-      expect(mainFileReads).toBe(1);
-      // Agent files are read twice: once in getAgentSessionFilesForSession to check sessionId,
-      // and once more to get the actual content
-      expect(agentFileReads).toBe(2);
-      expect(directoryReads).toBe(1);
-    });
-
-    it("invalidates cache and re-reads all files including agent sessions", async () => {
-      let mainFileReads = 0;
-      let agentFileReads = 0;
-      let directoryReads = 0;
-
-      const FileSystemMock = makeFileSystemMock({
-        readFileString: (path: string) => {
-          if (path === "/test/project/session.jsonl") {
-            mainFileReads++;
-            return Effect.succeed(
-              '{"type":"user","uuid":"550e8400-e29b-41d4-a716-446655440000","timestamp":"2024-01-01T00:00:00.000Z","isSidechain":false,"userType":"external","cwd":"/test","sessionId":"test-session","version":"1.0.0","parentUuid":null,"message":{"role":"user","content":"test"}}\n{"type":"assistant","uuid":"550e8400-e29b-41d4-a716-446655440001","timestamp":"2024-01-01T00:00:01.000Z","isSidechain":false,"userType":"external","cwd":"/test","sessionId":"test-session","version":"1.0.0","parentUuid":"550e8400-e29b-41d4-a716-446655440000","message":{"type":"message","role":"assistant","model":"claude-3-5-sonnet-20240620","content":[],"usage":{"input_tokens":1000,"output_tokens":500,"cache_creation_input_tokens":0,"cache_read_input_tokens":0},"stop_reason":null,"stop_sequence":null,"id":"msg_01"}}',
-            );
-          }
-          if (path === "/test/project/agent-hash-1.jsonl") {
-            agentFileReads++;
-            return Effect.succeed(
-              '{"type":"assistant","uuid":"a1111111-1111-4111-a111-111111111111","timestamp":"2024-01-01T00:00:02.000Z","isSidechain":true,"userType":"external","cwd":"/test","sessionId":"test-session","version":"1.0.0","parentUuid":"550e8400-e29b-41d4-a716-446655440001","message":{"type":"message","role":"assistant","model":"claude-3-5-sonnet-20240620","content":[],"usage":{"input_tokens":300,"output_tokens":150,"cache_creation_input_tokens":50,"cache_read_input_tokens":25},"stop_reason":null,"stop_sequence":null,"id":"msg_02"}}',
-            );
-          }
-          return Effect.fail({
-            _tag: "SystemError",
-            reason: "NotFound",
-            module: "FileSystem",
-            method: "readFileString",
-            pathOrDescriptor: path,
-            message: `File not found: ${path}`,
-          } as PlatformError);
-        },
-        readDirectory: (dirPath: string) => {
-          if (dirPath === "/test/project") {
-            directoryReads++;
-            return Effect.succeed([
-              "session.jsonl",
-              "agent-hash-1.jsonl",
-              "other-file.txt",
-            ]);
-          }
-          return Effect.succeed([]);
-        },
-        exists: () => Effect.succeed(false),
-        makeDirectory: () => Effect.void,
-        writeFileString: () => Effect.void,
-      });
-
-      const PathMock = makePathMock();
-      const PersistentServiceMock = makePersistentServiceMock();
-
-      const program = Effect.gen(function* () {
-        const storage = yield* SessionMetaService;
-        const projectId = Buffer.from("/test/project").toString("base64url");
-        const sessionId = "session";
-
-        // First call
-        yield* storage.getSessionMeta(projectId, sessionId);
-
-        // Invalidate cache
-        yield* storage.invalidateSession(projectId, sessionId);
-
-        // Second call after invalidation
-        yield* storage.getSessionMeta(projectId, sessionId);
-      });
-
-      await Effect.runPromise(
-        program.pipe(
-          Effect.provide(SessionMetaService.Live),
-          Effect.provide(FileSystemMock),
-          Effect.provide(PathMock),
-          Effect.provide(PersistentServiceMock),
-        ),
-      );
-
-      // Files should be read twice (once before invalidation, once after)
-      expect(mainFileReads).toBe(2);
-      // Agent files are read 4 times: 2 reads per getSessionMeta call
-      // (once to check sessionId, once to get content)
-      expect(agentFileReads).toBe(4);
-      expect(directoryReads).toBe(2);
-    });
-  });
-
-  describe("agent session integration", () => {
-    it("includes costs from agent session files", async () => {
-      const FileSystemMock = makeFileSystemMock({
-        readFileString: (path: string) => {
-          if (path === "/test/project/session.jsonl") {
-            // Main session file with 1000 input tokens and 500 output tokens
-            return Effect.succeed(
-              '{"type":"user","uuid":"550e8400-e29b-41d4-a716-446655440000","timestamp":"2024-01-01T00:00:00.000Z","isSidechain":false,"userType":"external","cwd":"/test","sessionId":"test-session","version":"1.0.0","parentUuid":null,"message":{"role":"user","content":"test"}}\n{"type":"assistant","uuid":"550e8400-e29b-41d4-a716-446655440001","timestamp":"2024-01-01T00:00:01.000Z","isSidechain":false,"userType":"external","cwd":"/test","sessionId":"test-session","version":"1.0.0","parentUuid":"550e8400-e29b-41d4-a716-446655440000","message":{"type":"message","role":"assistant","model":"claude-3-5-sonnet-20240620","content":[],"usage":{"input_tokens":1000,"output_tokens":500,"cache_creation_input_tokens":0,"cache_read_input_tokens":0},"stop_reason":null,"stop_sequence":null,"id":"msg_01"}}',
-            );
-          }
-          if (path === "/test/project/agent-hash-1.jsonl") {
-            // Agent session file with 300 input tokens and 150 output tokens
-            return Effect.succeed(
-              '{"type":"assistant","uuid":"a1111111-1111-4111-a111-111111111111","timestamp":"2024-01-01T00:00:02.000Z","isSidechain":true,"userType":"external","cwd":"/test","sessionId":"test-session","version":"1.0.0","parentUuid":"550e8400-e29b-41d4-a716-446655440001","message":{"type":"message","role":"assistant","model":"claude-3-5-sonnet-20240620","content":[],"usage":{"input_tokens":300,"output_tokens":150,"cache_creation_input_tokens":50,"cache_read_input_tokens":25},"stop_reason":null,"stop_sequence":null,"id":"msg_02"}}',
-            );
-          }
-          return Effect.fail({
-            _tag: "SystemError",
-            reason: "NotFound",
-            module: "FileSystem",
-            method: "readFileString",
-            pathOrDescriptor: path,
-            message: `File not found: ${path}`,
-          } as PlatformError);
-        },
-        readDirectory: (dirPath: string) => {
-          if (dirPath === "/test/project") {
-            return Effect.succeed([
-              "session.jsonl",
-              "agent-hash-1.jsonl",
-              "other-file.txt",
-            ]);
-          }
-          return Effect.succeed([]);
-        },
-        exists: () => Effect.succeed(false),
-        makeDirectory: () => Effect.void,
-        writeFileString: () => Effect.void,
-      });
-
-      const PathMock = makePathMock();
-      const PersistentServiceMock = makePersistentServiceMock();
-
-      const program = Effect.gen(function* () {
-        const storage = yield* SessionMetaService;
-        const projectId = Buffer.from("/test/project").toString("base64url");
-        const sessionId = "session";
-
-        return yield* storage.getSessionMeta(projectId, sessionId);
-      });
-
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(SessionMetaService.Live),
-          Effect.provide(FileSystemMock),
-          Effect.provide(PathMock),
-          Effect.provide(PersistentServiceMock),
-        ),
-      );
-
-      // Verify costs include both main and agent sessions
-      // Main: input=1000, output=500
-      // Agent: input=300, output=150, cache_creation=50, cache_read=25
-      // Total: input=1300, output=650, cache_creation=50, cache_read=25
-      expect(result.cost.tokenUsage.inputTokens).toBe(1300);
-      expect(result.cost.tokenUsage.outputTokens).toBe(650);
-      expect(result.cost.tokenUsage.cacheCreationTokens).toBe(50);
-      expect(result.cost.tokenUsage.cacheReadTokens).toBe(25);
-      expect(result.cost.totalUsd).toBeGreaterThan(0);
-    });
-
-    it("includes costs from multiple agent session files", async () => {
-      const FileSystemMock = makeFileSystemMock({
-        readFileString: (path: string) => {
-          if (path === "/test/project/session.jsonl") {
-            return Effect.succeed(
-              '{"type":"assistant","uuid":"550e8400-e29b-41d4-a716-446655440001","timestamp":"2024-01-01T00:00:01.000Z","isSidechain":false,"userType":"external","cwd":"/test","sessionId":"test-session","version":"1.0.0","parentUuid":"550e8400-e29b-41d4-a716-446655440000","message":{"type":"message","role":"assistant","model":"claude-3-5-sonnet-20240620","content":[],"usage":{"input_tokens":1000,"output_tokens":500,"cache_creation_input_tokens":0,"cache_read_input_tokens":0},"stop_reason":null,"stop_sequence":null,"id":"msg_01"}}',
-            );
-          }
-          if (path === "/test/project/agent-hash-1.jsonl") {
-            return Effect.succeed(
-              '{"type":"assistant","uuid":"a1111111-1111-4111-a111-111111111111","timestamp":"2024-01-01T00:00:02.000Z","isSidechain":true,"userType":"external","cwd":"/test","sessionId":"test-session","version":"1.0.0","parentUuid":"550e8400-e29b-41d4-a716-446655440001","message":{"type":"message","role":"assistant","model":"claude-3-5-sonnet-20240620","content":[],"usage":{"input_tokens":200,"output_tokens":100,"cache_creation_input_tokens":0,"cache_read_input_tokens":0},"stop_reason":null,"stop_sequence":null,"id":"msg_02"}}',
-            );
-          }
-          if (path === "/test/project/agent-hash-2.jsonl") {
-            return Effect.succeed(
-              '{"type":"assistant","uuid":"a2222222-2222-4222-a222-222222222222","timestamp":"2024-01-01T00:00:03.000Z","isSidechain":true,"userType":"external","cwd":"/test","sessionId":"test-session","version":"1.0.0","parentUuid":"a1111111-1111-4111-a111-111111111111","message":{"type":"message","role":"assistant","model":"claude-3-5-sonnet-20240620","content":[],"usage":{"input_tokens":300,"output_tokens":150,"cache_creation_input_tokens":50,"cache_read_input_tokens":25},"stop_reason":null,"stop_sequence":null,"id":"msg_03"}}',
-            );
-          }
-          return Effect.fail({
-            _tag: "SystemError",
-            reason: "NotFound",
-            module: "FileSystem",
-            method: "readFileString",
-            pathOrDescriptor: path,
-            message: `File not found: ${path}`,
-          } as PlatformError);
-        },
-        readDirectory: (dirPath: string) => {
-          if (dirPath === "/test/project") {
-            return Effect.succeed([
-              "session.jsonl",
-              "agent-hash-1.jsonl",
-              "agent-hash-2.jsonl",
-            ]);
-          }
-          return Effect.succeed([]);
-        },
-        exists: () => Effect.succeed(false),
-        makeDirectory: () => Effect.void,
-        writeFileString: () => Effect.void,
-      });
-
-      const PathMock = makePathMock();
-      const PersistentServiceMock = makePersistentServiceMock();
-
-      const program = Effect.gen(function* () {
-        const storage = yield* SessionMetaService;
-        const projectId = Buffer.from("/test/project").toString("base64url");
-        const sessionId = "session";
-
-        return yield* storage.getSessionMeta(projectId, sessionId);
-      });
-
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(SessionMetaService.Live),
-          Effect.provide(FileSystemMock),
-          Effect.provide(PathMock),
-          Effect.provide(PersistentServiceMock),
-        ),
-      );
-
-      // Main: input=1000, output=500
-      // Agent1: input=200, output=100
-      // Agent2: input=300, output=150, cache_creation=50, cache_read=25
-      // Total: input=1500, output=750, cache_creation=50, cache_read=25
-      expect(result.cost.tokenUsage.inputTokens).toBe(1500);
-      expect(result.cost.tokenUsage.outputTokens).toBe(750);
-      expect(result.cost.tokenUsage.cacheCreationTokens).toBe(50);
-      expect(result.cost.tokenUsage.cacheReadTokens).toBe(25);
-    });
-
-    it("handles case when no agent files exist", async () => {
-      const FileSystemMock = makeFileSystemMock({
-        readFileString: (path: string) => {
-          if (path === "/test/project/session.jsonl") {
-            return Effect.succeed(
-              '{"type":"assistant","uuid":"550e8400-e29b-41d4-a716-446655440001","timestamp":"2024-01-01T00:00:01.000Z","isSidechain":false,"userType":"external","cwd":"/test","sessionId":"test-session","version":"1.0.0","parentUuid":"550e8400-e29b-41d4-a716-446655440000","message":{"type":"message","role":"assistant","model":"claude-3-5-sonnet-20240620","content":[],"usage":{"input_tokens":1000,"output_tokens":500,"cache_creation_input_tokens":0,"cache_read_input_tokens":0},"stop_reason":null,"stop_sequence":null,"id":"msg_01"}}',
-            );
-          }
-          return Effect.fail({
-            _tag: "SystemError",
-            reason: "NotFound",
-            module: "FileSystem",
-            method: "readFileString",
-            pathOrDescriptor: path,
-            message: `File not found: ${path}`,
-          } as PlatformError);
-        },
-        readDirectory: (dirPath: string) => {
-          if (dirPath === "/test/project") {
-            return Effect.succeed(["session.jsonl", "other-file.txt"]);
-          }
-          return Effect.succeed([]);
-        },
-        exists: () => Effect.succeed(false),
-        makeDirectory: () => Effect.void,
-        writeFileString: () => Effect.void,
-      });
-
-      const PathMock = makePathMock();
-      const PersistentServiceMock = makePersistentServiceMock();
-
-      const program = Effect.gen(function* () {
-        const storage = yield* SessionMetaService;
-        const projectId = Buffer.from("/test/project").toString("base64url");
-        const sessionId = "session";
-
-        return yield* storage.getSessionMeta(projectId, sessionId);
-      });
-
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(SessionMetaService.Live),
-          Effect.provide(FileSystemMock),
-          Effect.provide(PathMock),
-          Effect.provide(PersistentServiceMock),
-        ),
-      );
-
-      // Only main session costs
-      expect(result.cost.tokenUsage.inputTokens).toBe(1000);
-      expect(result.cost.tokenUsage.outputTokens).toBe(500);
-    });
-
-    it("skips agent files that do not match the sessionId", async () => {
-      const FileSystemMock = makeFileSystemMock({
-        readFileString: (path: string) => {
-          if (path === "/test/project/session.jsonl") {
-            return Effect.succeed(
-              '{"type":"assistant","uuid":"550e8400-e29b-41d4-a716-446655440001","timestamp":"2024-01-01T00:00:01.000Z","isSidechain":false,"userType":"external","cwd":"/test","sessionId":"test-session","version":"1.0.0","parentUuid":"550e8400-e29b-41d4-a716-446655440000","message":{"type":"message","role":"assistant","model":"claude-3-5-sonnet-20240620","content":[],"usage":{"input_tokens":1000,"output_tokens":500,"cache_creation_input_tokens":0,"cache_read_input_tokens":0},"stop_reason":null,"stop_sequence":null,"id":"msg_01"}}',
-            );
-          }
-          if (path === "/test/project/agent-matching.jsonl") {
-            return Effect.succeed(
-              '{"type":"assistant","uuid":"a1111111-1111-4111-a111-111111111111","timestamp":"2024-01-01T00:00:02.000Z","isSidechain":true,"userType":"external","cwd":"/test","sessionId":"test-session","version":"1.0.0","parentUuid":"550e8400-e29b-41d4-a716-446655440001","message":{"type":"message","role":"assistant","model":"claude-3-5-sonnet-20240620","content":[],"usage":{"input_tokens":300,"output_tokens":150,"cache_creation_input_tokens":0,"cache_read_input_tokens":0},"stop_reason":null,"stop_sequence":null,"id":"msg_02"}}',
-            );
-          }
-          if (path === "/test/project/agent-different.jsonl") {
-            return Effect.succeed(
-              '{"type":"assistant","uuid":"b1111111-1111-4111-b111-111111111111","timestamp":"2024-01-01T00:00:03.000Z","isSidechain":true,"userType":"external","cwd":"/test","sessionId":"different-session","version":"1.0.0","parentUuid":"550e8400-e29b-41d4-a716-446655440001","message":{"type":"message","role":"assistant","model":"claude-3-5-sonnet-20240620","content":[],"usage":{"input_tokens":999999,"output_tokens":999999,"cache_creation_input_tokens":0,"cache_read_input_tokens":0},"stop_reason":null,"stop_sequence":null,"id":"msg_03"}}',
-            );
-          }
-          return Effect.fail({
-            _tag: "SystemError",
-            reason: "NotFound",
-            module: "FileSystem",
-            method: "readFileString",
-            pathOrDescriptor: path,
-            message: `File not found: ${path}`,
-          } as PlatformError);
-        },
-        readDirectory: (dirPath: string) => {
-          if (dirPath === "/test/project") {
-            return Effect.succeed([
-              "session.jsonl",
-              "agent-matching.jsonl",
-              "agent-different.jsonl",
-            ]);
-          }
-          return Effect.succeed([]);
-        },
-        exists: () => Effect.succeed(false),
-        makeDirectory: () => Effect.void,
-        writeFileString: () => Effect.void,
-      });
-
-      const PathMock = makePathMock();
-      const PersistentServiceMock = makePersistentServiceMock();
-
-      const program = Effect.gen(function* () {
-        const storage = yield* SessionMetaService;
-        const projectId = Buffer.from("/test/project").toString("base64url");
-        const sessionId = "session";
-
-        return yield* storage.getSessionMeta(projectId, sessionId);
-      });
-
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(SessionMetaService.Live),
-          Effect.provide(FileSystemMock),
-          Effect.provide(PathMock),
-          Effect.provide(PersistentServiceMock),
-        ),
-      );
-
-      // Main: input=1000, output=500
-      // Agent matching: input=300, output=150
-      // Agent different: should NOT be included (different sessionId)
-      // Total: input=1300, output=650
-      expect(result.cost.tokenUsage.inputTokens).toBe(1300);
-      expect(result.cost.tokenUsage.outputTokens).toBe(650);
+      expect(result.cost.breakdown.inputTokensUsd).toBe(0);
     });
   });
 });

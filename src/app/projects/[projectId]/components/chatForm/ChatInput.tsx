@@ -47,7 +47,7 @@ import { ClaudeCodeSettingsPopover } from "./ClaudeCodeSettingsForm";
 import type { CommandCompletionRef } from "./CommandCompletion";
 import { isInCompletionContext } from "./completionUtils";
 import type { FileCompletionRef } from "./FileCompletion";
-import { processFile } from "./fileUtils";
+import { extractClipboardImageFiles, processFile } from "./fileUtils";
 import { InlineCompletion } from "./InlineCompletion";
 
 export interface MessageInput {
@@ -181,6 +181,19 @@ export const ChatInput: FC<ChatInputProps> = ({
     textarea.style.height = `${minHeightValue}px`;
   }, [minHeightValue]);
 
+  const appendAttachedFiles = (files: readonly File[]) => {
+    if (files.length === 0) {
+      return;
+    }
+
+    const newFiles = files.map((file) => ({
+      file,
+      id: `${file.name}-${Date.now()}-${Math.random()}`,
+    }));
+
+    setAttachedFiles((prev) => [...prev, ...newFiles]);
+  };
+
   const handleSubmit = async () => {
     if (!message.trim() && attachedFiles.length === 0) return;
     if (isPending || disabled || sendDisabled) return;
@@ -287,16 +300,21 @@ export const ChatInput: FC<ChatInputProps> = ({
     const files = e.target.files;
     if (!files) return;
 
-    const newFiles = Array.from(files).map((file) => ({
-      file,
-      id: `${file.name}-${Date.now()}-${Math.random()}`,
-    }));
-
-    setAttachedFiles((prev) => [...prev, ...newFiles]);
+    appendAttachedFiles(Array.from(files));
 
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
+  };
+
+  const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+    const imageFiles = extractClipboardImageFiles(e.clipboardData);
+    if (imageFiles.length === 0) {
+      return;
+    }
+
+    e.preventDefault();
+    appendAttachedFiles(imageFiles);
   };
 
   const handleRemoveFile = (id: string) => {
@@ -445,6 +463,7 @@ export const ChatInput: FC<ChatInputProps> = ({
                 setMessage(e.target.value);
               }}
               onKeyDown={handleKeyDown}
+              onPaste={handlePaste}
               placeholder={placeholder}
               className="resize-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent px-5 py-4 text-base transition-all duration-200 placeholder:text-muted-foreground/50 overflow-y-auto leading-relaxed antialiased font-normal"
               style={{

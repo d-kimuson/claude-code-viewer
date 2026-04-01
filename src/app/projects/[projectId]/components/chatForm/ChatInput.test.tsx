@@ -1,7 +1,168 @@
-import { describe, expect, it } from "vitest";
-import type { ChatInputProps } from "./ChatInput";
+/// <reference types="vitest" />
+/**
+ * @vitest-environment jsdom
+ */
 
-describe("ChatInput Props", () => {
+import { act } from "react";
+import { createRoot, type Root } from "react-dom/client";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { ChatInput, type ChatInputProps } from "./ChatInput";
+
+vi.mock("@lingui/react", () => ({
+  Trans: ({ id, message }: { id?: string; message?: string }) => (
+    <>{message ?? id ?? ""}</>
+  ),
+  useLingui: () => ({
+    i18n: {
+      _: (input: string | { id?: string; message?: string }) =>
+        typeof input === "string" ? input : (input.message ?? input.id ?? ""),
+    },
+  }),
+}));
+
+vi.mock("../../../../hooks/useConfig", () => ({
+  useConfig: () => ({
+    config: {
+      enterKeyBehavior: "shift-enter-send",
+      modelChoices: ["default"],
+    },
+  }),
+}));
+
+vi.mock("../../../../../hooks/useScheduler", () => ({
+  useCreateSchedulerJob: () => ({
+    mutateAsync: vi.fn(),
+  }),
+}));
+
+vi.mock("../../../../../hooks/useSpeechRecognition", () => ({
+  useSpeechRecognition: () => ({
+    isSupported: false,
+    isListening: false,
+    audioLevels: [0, 0, 0, 0],
+    toggle: vi.fn(),
+  }),
+}));
+
+vi.mock("../../../../../lib/atoms/chatInputDrafts", () => ({
+  useChatInputDraft: () => {
+    const setValue = vi.fn();
+    const clearValue = vi.fn();
+    return ["", setValue, clearValue];
+  },
+}));
+
+vi.mock("./InlineCompletion", () => ({
+  InlineCompletion: () => null,
+}));
+
+describe("ChatInput", () => {
+  let root: Root | null = null;
+  let container: HTMLDivElement | null = null;
+
+  const renderComponent = (props?: Partial<ChatInputProps>) => {
+    container = document.createElement("div");
+    document.body.appendChild(container);
+    root = createRoot(container);
+
+    const defaultProps: ChatInputProps = {
+      projectId: "test-project",
+      onSubmit: async () => {},
+      isPending: false,
+      placeholder: "Type your message...",
+      buttonText: "Send",
+    };
+
+    act(() => {
+      root?.render(<ChatInput {...defaultProps} {...props} />);
+    });
+  };
+
+  const getTextarea = () => {
+    const textarea = container?.querySelector("textarea");
+    expect(textarea).not.toBeNull();
+    if (textarea == null) {
+      throw new Error("Textarea not found");
+    }
+    return textarea;
+  };
+
+  const dispatchPasteEvent = ({
+    items,
+    files,
+  }: {
+    items: unknown[];
+    files: File[];
+  }) => {
+    const event = new Event("paste", {
+      bubbles: true,
+      cancelable: true,
+    });
+
+    Object.defineProperty(event, "clipboardData", {
+      value: {
+        items,
+        files,
+      },
+    });
+
+    act(() => {
+      getTextarea().dispatchEvent(event);
+    });
+
+    return event;
+  };
+
+  afterEach(() => {
+    act(() => {
+      root?.unmount();
+    });
+    root = null;
+    container?.remove();
+    container = null;
+    vi.clearAllMocks();
+  });
+
+  it("attaches pasted clipboard images", () => {
+    renderComponent();
+
+    const imageFile = new File(["image"], "clipboard-image.png", {
+      type: "image/png",
+    });
+
+    const event = dispatchPasteEvent({
+      items: [
+        {
+          kind: "file",
+          type: "image/png",
+          getAsFile: () => imageFile,
+        },
+      ],
+      files: [imageFile],
+    });
+
+    expect(event.defaultPrevented).toBe(true);
+    expect(container?.textContent).toContain("clipboard-image.png");
+  });
+
+  it("ignores non-image clipboard content", () => {
+    renderComponent();
+
+    const event = dispatchPasteEvent({
+      items: [
+        {
+          kind: "string",
+          type: "text/plain",
+          getAsFile: () => null,
+        },
+      ],
+      files: [],
+    });
+
+    expect(event.defaultPrevented).toBe(false);
+    expect(container?.textContent).not.toContain("clipboard-image.png");
+  });
+
   it("should have correct type definition for enableScheduledSend", () => {
     const props: ChatInputProps = {
       projectId: "test-project",
@@ -40,58 +201,5 @@ describe("ChatInput Props", () => {
     };
 
     expect(props.baseSessionId).toBe("session-123");
-  });
-
-  it("should validate datetime format parsing logic", () => {
-    const scheduledTime = "2025-10-26T15:30";
-    const match = scheduledTime.match(
-      /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/,
-    );
-
-    expect(match).not.toBeNull();
-
-    if (match) {
-      const year = Number(match[1]);
-      const month = Number(match[2]);
-      const day = Number(match[3]);
-      const hours = Number(match[4]);
-      const minutes = Number(match[5]);
-
-      expect(year).toBe(2025);
-      expect(month).toBe(10);
-      expect(day).toBe(26);
-      expect(hours).toBe(15);
-      expect(minutes).toBe(30);
-
-      const localDate = new Date(year, month - 1, day, hours, minutes);
-      expect(localDate.getFullYear()).toBe(2025);
-      expect(localDate.getMonth()).toBe(9); // 0-indexed
-      expect(localDate.getDate()).toBe(26);
-      expect(localDate.getHours()).toBe(15);
-      expect(localDate.getMinutes()).toBe(30);
-    }
-  });
-
-  it("should handle invalid datetime format", () => {
-    const invalidTime = "invalid-datetime";
-    const match = invalidTime.match(
-      /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/,
-    );
-
-    expect(match).toBeNull();
-  });
-
-  it("should generate default scheduled time with correct format", () => {
-    const now = new Date();
-    now.setHours(now.getHours() + 1);
-    const formatted = now.toISOString().slice(0, 16);
-
-    // Verify format is correct (YYYY-MM-DDTHH:mm)
-    expect(formatted).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/);
-
-    // Verify the format can be parsed back
-    const parsed = new Date(formatted);
-    expect(parsed).toBeInstanceOf(Date);
-    expect(Number.isNaN(parsed.getTime())).toBe(false);
   });
 });

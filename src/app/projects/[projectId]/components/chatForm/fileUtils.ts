@@ -40,6 +40,36 @@ export const isSupportedMimeType = (mimeType: string): boolean => {
 };
 
 /**
+ * Extract image files from clipboard data for paste-to-attach support.
+ */
+export const extractClipboardImageFiles = (
+  clipboardData: DataTransfer | null,
+): File[] => {
+  if (clipboardData === null) {
+    return [];
+  }
+
+  const imageFilesFromItems = Array.from(clipboardData.items).flatMap(
+    (item) => {
+      if (item.kind !== "file" || !item.type.startsWith("image/")) {
+        return [];
+      }
+
+      const file = item.getAsFile();
+      return file === null ? [] : [file];
+    },
+  );
+
+  if (imageFilesFromItems.length > 0) {
+    return imageFilesFromItems;
+  }
+
+  return Array.from(clipboardData.files).filter((file) =>
+    file.type.startsWith("image/"),
+  );
+};
+
+/**
  * Convert File to base64 encoded string (without data URL prefix)
  */
 export const fileToBase64 = (file: File): Promise<string> => {

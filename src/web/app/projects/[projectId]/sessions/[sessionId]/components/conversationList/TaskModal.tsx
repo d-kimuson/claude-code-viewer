@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/react";
 import { useQuery } from "@tanstack/react-query";
 import { Eye, Loader2, MessageSquare, XCircle } from "lucide-react";
-import { type FC, useState } from "react";
+import { type FC, useRef, useState } from "react";
 import { z } from "zod";
 import type { SidechainConversation } from "@/lib/conversation-schema";
 import type { ToolResultContent } from "@/lib/conversation-schema/content/ToolResultContentSchema";
@@ -100,6 +100,7 @@ export const TaskModal: FC<TaskModalProps> = ({
   getToolResult,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
   // Check local sidechain data (loaded from agent-*.jsonl files or embedded)
   const localConversation =
@@ -203,7 +204,7 @@ export const TaskModal: FC<TaskModalProps> = ({
             </div>
           </div>
         </DialogHeader>
-        <div className="flex-1 overflow-auto px-6 py-4">
+        <div ref={scrollContainerRef} className="flex-1 overflow-auto px-6 py-4">
           {showLoading && (
             <div className="flex flex-col items-center justify-center h-full gap-4">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -274,6 +275,7 @@ export const TaskModal: FC<TaskModalProps> = ({
               projectId={projectId}
               sessionId={sessionId}
               scheduledJobs={[]}
+              scrollContainerRef={scrollContainerRef}
             />
           )}
         </div>

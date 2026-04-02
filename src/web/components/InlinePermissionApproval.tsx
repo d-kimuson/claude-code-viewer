@@ -16,6 +16,268 @@ type InlinePermissionApprovalProps = {
   onResponse: (response: PermissionResponse) => Promise<void>;
 };
 
+const basename = (filePath: string): string => filePath.split("/").at(-1) ?? filePath;
+
+const describeGitSubcommand = (args: readonly string[]): string => {
+  switch (args[0]?.toLowerCase() ?? "") {
+    case "commit":
+      return "コミットしようとしています";
+    case "push":
+      return "プッシュしようとしています";
+    case "pull":
+      return "プルしようとしています";
+    case "clone":
+      return "リポジトリをクローンしようとしています";
+    case "checkout":
+    case "switch":
+      return "ブランチを切り替えようとしています";
+    case "branch":
+      return "ブランチを操作しようとしています";
+    case "merge":
+      return "マージしようとしています";
+    case "rebase":
+      return "リベースしようとしています";
+    case "add":
+      return "変更をステージしようとしています";
+    case "status":
+      return "git の状態を確認しようとしています";
+    case "log":
+      return "git ログを確認しようとしています";
+    case "diff":
+      return "差分を確認しようとしています";
+    case "reset":
+      return "変更をリセットしようとしています";
+    case "stash":
+      return "変更を一時保存しようとしています";
+    case "fetch":
+      return "リモートの情報を取得しようとしています";
+    default:
+      return "git を操作しようとしています";
+  }
+};
+
+const describePackageManagerSubcommand = (args: readonly string[]): string => {
+  switch (args[0]?.toLowerCase() ?? "") {
+    case "install":
+    case "add":
+    case "i":
+      return "パッケージをインストールしようとしています";
+    case "uninstall":
+    case "remove":
+    case "rm":
+      return "パッケージを削除しようとしています";
+    case "update":
+    case "upgrade":
+      return "パッケージを更新しようとしています";
+    case "run":
+      return args[1] !== undefined
+        ? `${args[1]} スクリプトを実行しようとしています`
+        : "スクリプトを実行しようとしています";
+    case "build":
+      return "ビルドしようとしています";
+    case "test":
+      return "テストを実行しようとしています";
+    case "lint":
+      return "Lint を実行しようとしています";
+    default:
+      return "パッケージを管理しようとしています";
+  }
+};
+
+const describeBashCommand = (command: string): string => {
+  const firstSegment = command.split(/\s*(?:&&|\|\||;)\s*/)[0]?.trim() ?? command;
+  const tokens = firstSegment.trim().split(/\s+/);
+
+  // Skip sudo and env var assignments (VAR=value)
+  let idx = 0;
+  while (idx < tokens.length) {
+    const token = tokens[idx] ?? "";
+    if (token === "sudo" || token === "env" || token.includes("=")) {
+      idx++;
+    } else {
+      break;
+    }
+  }
+
+  const baseCmd = tokens[idx]?.toLowerCase() ?? "";
+  const args = tokens.slice(idx + 1).filter((t) => !t.startsWith("-"));
+  const firstArg = args[0];
+
+  switch (baseCmd) {
+    case "rm":
+    case "rmdir":
+      return firstArg !== undefined
+        ? `${firstArg} を削除しようとしています`
+        : "ファイルを削除しようとしています";
+    case "ls":
+      return firstArg !== undefined
+        ? `${firstArg} フォルダを確認しようとしています`
+        : "フォルダを確認しようとしています";
+    case "mkdir":
+      return firstArg !== undefined
+        ? `${firstArg} フォルダを作成しようとしています`
+        : "フォルダを作成しようとしています";
+    case "cp":
+      return "ファイルをコピーしようとしています";
+    case "mv":
+      return "ファイルを移動しようとしています";
+    case "cat":
+      return firstArg !== undefined
+        ? `${firstArg} を確認しようとしています`
+        : "ファイルを確認しようとしています";
+    case "touch":
+      return firstArg !== undefined
+        ? `${firstArg} を作成しようとしています`
+        : "ファイルを作成しようとしています";
+    case "find":
+      return "ファイルを検索しようとしています";
+    case "grep":
+    case "rg":
+      return "ファイル内を検索しようとしています";
+    case "git":
+      return describeGitSubcommand(args);
+    case "npm":
+    case "pnpm":
+    case "yarn":
+    case "bun":
+      return describePackageManagerSubcommand(args);
+    case "curl":
+    case "wget":
+      return "ファイルをダウンロードしようとしています";
+    case "chmod":
+    case "chown":
+      return "ファイルの権限を変更しようとしています";
+    case "kill":
+    case "killall":
+    case "pkill":
+      return "プロセスを終了しようとしています";
+    case "ps":
+      return "プロセスを確認しようとしています";
+    case "docker":
+      return "Docker を操作しようとしています";
+    case "ssh":
+      return "リモートサーバーに接続しようとしています";
+    case "make":
+      return "ビルドしようとしています";
+    case "python":
+    case "python3":
+      return "Python スクリプトを実行しようとしています";
+    case "node":
+    case "npx":
+    case "tsx":
+    case "ts-node":
+      return "スクリプトを実行しようとしています";
+    case "echo":
+      return "テキストを出力しようとしています";
+    case "cd":
+      return firstArg !== undefined
+        ? `${firstArg} に移動しようとしています`
+        : "ディレクトリを移動しようとしています";
+    case "tar":
+    case "zip":
+    case "unzip":
+    case "gzip":
+      return "アーカイブを操作しようとしています";
+    case "open":
+      return firstArg !== undefined
+        ? `${firstArg} を開こうとしています`
+        : "ファイルを開こうとしています";
+    default:
+      return "コマンドを実行しようとしています";
+  }
+};
+
+const describePermissionRequest = (
+  toolName: string,
+  toolInput: Record<string, unknown>,
+): string => {
+  switch (toolName.toLowerCase()) {
+    case "read": {
+      if (typeof toolInput["file_path"] === "string") {
+        return `${basename(toolInput["file_path"])} を読もうとしています`;
+      }
+      return "ファイルを読もうとしています";
+    }
+    case "write": {
+      if (typeof toolInput["file_path"] === "string") {
+        return `${basename(toolInput["file_path"])} を書き込もうとしています`;
+      }
+      return "ファイルを書き込もうとしています";
+    }
+    case "edit":
+    case "multiedit": {
+      if (typeof toolInput["file_path"] === "string") {
+        return `${basename(toolInput["file_path"])} を編集しようとしています`;
+      }
+      return "ファイルを編集しようとしています";
+    }
+    case "bash": {
+      if (typeof toolInput["command"] === "string") {
+        return describeBashCommand(toolInput["command"]);
+      }
+      return "コマンドを実行しようとしています";
+    }
+    case "glob": {
+      if (typeof toolInput["pattern"] === "string") {
+        return `${toolInput["pattern"]} に一致するファイルを検索しようとしています`;
+      }
+      return "ファイルを検索しようとしています";
+    }
+    case "grep": {
+      if (typeof toolInput["pattern"] === "string") {
+        return `「${toolInput["pattern"]}」をファイル内で検索しようとしています`;
+      }
+      return "ファイル内を検索しようとしています";
+    }
+    case "ls": {
+      if (typeof toolInput["path"] === "string") {
+        return `${toolInput["path"]} フォルダを確認しようとしています`;
+      }
+      return "フォルダを確認しようとしています";
+    }
+    case "webfetch": {
+      return "Web ページを取得しようとしています";
+    }
+    case "websearch": {
+      if (typeof toolInput["query"] === "string") {
+        return `「${toolInput["query"]}」を検索しようとしています`;
+      }
+      return "Web を検索しようとしています";
+    }
+    case "notebookread": {
+      if (typeof toolInput["notebook_path"] === "string") {
+        return `${basename(toolInput["notebook_path"])} を読もうとしています`;
+      }
+      return "ノートブックを読もうとしています";
+    }
+    case "notebookedit": {
+      if (typeof toolInput["notebook_path"] === "string") {
+        return `${basename(toolInput["notebook_path"])} を編集しようとしています`;
+      }
+      return "ノートブックを編集しようとしています";
+    }
+    case "todowrite": {
+      return "タスクリストを更新しようとしています";
+    }
+    case "agent": {
+      if (typeof toolInput["description"] === "string") {
+        return `サブエージェント（${toolInput["description"]}）を起動しようとしています`;
+      }
+      return "サブエージェントを起動しようとしています";
+    }
+    default: {
+      // MCP tools: mcp__serverName__toolName
+      if (toolName.toLowerCase().startsWith("mcp__")) {
+        const parts = toolName.split("__");
+        const serverName = parts[1] ?? "";
+        const toolPart = parts.slice(2).join("__");
+        return `${serverName} の ${toolPart} を実行しようとしています`;
+      }
+      return `${toolName} を実行しようとしています`;
+    }
+  }
+};
+
 const formatValue = (value: unknown): string => {
   if (value === null) return "null";
   if (value === undefined) return "undefined";
@@ -114,7 +376,7 @@ export const InlinePermissionApproval: FC<InlinePermissionApprovalProps> = ({
             </span>
           </div>
           <p className="text-xs text-muted-foreground mt-1.5 ml-[2.125rem]">
-            Claude Code wants to execute a tool and needs your permission.
+            {describePermissionRequest(permissionRequest.toolName, permissionRequest.toolInput)}
           </p>
         </div>
 

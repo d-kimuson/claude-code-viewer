@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { AgentNameEntrySchema } from "./entry/AgentNameEntrySchema.ts";
+import { AgentSettingEntrySchema } from "./entry/AgentSettingEntrySchema.ts";
 import { type AssistantEntry, AssistantEntrySchema } from "./entry/AssistantEntrySchema.ts";
 import { CustomTitleEntrySchema } from "./entry/CustomTitleEntrySchema.ts";
 import { FileHistorySnapshotEntrySchema } from "./entry/FileHIstorySnapshotEntrySchema.ts";
@@ -21,6 +22,7 @@ export const ConversationSchema = z.union([
   ProgressEntrySchema,
   CustomTitleEntrySchema,
   AgentNameEntrySchema,
+  AgentSettingEntrySchema,
   PrLinkEntrySchema,
   LastPromptEntrySchema,
 ]);

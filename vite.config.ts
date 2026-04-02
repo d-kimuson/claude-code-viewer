@@ -6,6 +6,7 @@ import viteReact from "@vitejs/plugin-react-swc";
 import dotenv from "dotenv";
 import { defineConfig } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
+import { getManualChunkName } from "./src/web/lib/build/chunking";
 
 dotenv.config({ path: ".env.local" });
 
@@ -69,6 +70,14 @@ export default defineConfig({
   },
   build: {
     outDir: "dist/static",
+    chunkSizeWarningLimit: 700,
+    rolldownOptions: {
+      output: {
+        manualChunks(moduleId) {
+          return getManualChunkName(moduleId);
+        },
+      },
+    },
   },
   server: {
     port: parseInt(process.env.DEV_FE_PORT ?? "3400", 10),

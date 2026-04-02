@@ -11,9 +11,14 @@ vi.mock("../../hooks/useTheme", () => ({
   }),
 }));
 
-vi.mock("react-syntax-highlighter", () => ({
-  Prism: ({ children }: { children: string }) => <div>{children}</div>,
-}));
+vi.mock("react-syntax-highlighter/dist/esm/prism-light", () => {
+  const mockComponent = ({ children }: { children: string }) => <div>{children}</div>;
+  Object.assign(mockComponent, { registerLanguage: vi.fn() });
+
+  return {
+    default: mockComponent,
+  };
+});
 
 describe("MarkdownContent", () => {
   let root: Root | null = null;

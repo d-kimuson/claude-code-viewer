@@ -433,7 +433,11 @@ const LayerImpl = Effect.gen(function* () {
             const sessionId = encodeSessionId(filePath);
             yield* parseAndUpsertSession(projectId, sessionId, filePath, fileMtimeMs).pipe(
               Effect.catchAll((e) => {
-                console.error(`[SyncService] Failed to upsert session ${filePath}:`, e);
+                Effect.runFork(
+                  Effect.logError(
+                    `[SyncService] Failed to upsert session ${filePath}: ${String(e)}`,
+                  ),
+                );
                 return Effect.void;
               }),
             );
@@ -550,7 +554,9 @@ const LayerImpl = Effect.gen(function* () {
 
           yield* parseAndUpsertSession(projectId, sessionId, filePath, fileMtimeMs).pipe(
             Effect.catchAll((e) => {
-              console.error(`[SyncService] Failed to upsert session ${filePath}:`, e);
+              Effect.runFork(
+                Effect.logError(`[SyncService] Failed to upsert session ${filePath}: ${String(e)}`),
+              );
               return Effect.void;
             }),
           );

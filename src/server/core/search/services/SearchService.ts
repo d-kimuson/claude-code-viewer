@@ -124,8 +124,9 @@ const LayerImpl = Effect.gen(function* () {
       return { results };
     }).pipe(
       Effect.catchAll((err) => {
-        console.error("SearchService.search error:", err);
-        return Effect.succeed({ results: [] as SearchResult[] });
+        return Effect.logError(`SearchService.search error: ${String(err)}`).pipe(
+          Effect.zipRight(Effect.succeed({ results: [] as SearchResult[] })),
+        );
       }),
     );
 

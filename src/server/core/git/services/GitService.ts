@@ -523,11 +523,13 @@ const LayerImpl = Effect.gen(function* () {
       // Parse commit SHA from output
       // Git commit output format: "[branch SHA] commit message"
       const shaMatch = result.match(/\[.+\s+([a-f0-9]+)\]/);
+      yield* Effect.logDebug(`[GitService.commit] SHA match: ${shaMatch?.[1] ?? "none"}`);
       if (shaMatch?.[1] !== undefined && shaMatch[1] !== "") {
         return shaMatch[1];
       }
 
       // Fallback: Get SHA from git log
+      yield* Effect.logDebug("[GitService.commit] Falling back to rev-parse HEAD");
       const sha = yield* execGitCommand(["rev-parse", "HEAD"], cwd);
       return sha.trim();
     });

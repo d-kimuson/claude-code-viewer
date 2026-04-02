@@ -12,9 +12,7 @@ export const parseJsonl = (content: string): ExtendedConversation[] => {
     let parsed: unknown;
     try {
       parsed = JSON.parse(line);
-    } catch (e) {
-      const errorMessage = e instanceof Error ? e.message : String(e);
-      console.warn(`[parseJsonl] Skipping malformed JSON line ${index + 1}: ${errorMessage}`);
+    } catch {
       const errorData: ErrorJsonl = {
         type: "x-error",
         line,

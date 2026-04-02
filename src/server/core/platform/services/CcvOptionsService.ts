@@ -4,6 +4,7 @@ import type { InferEffect } from "../../../lib/effect/types.ts";
 export type CliOptions = {
   port: string;
   hostname: string;
+  verbose?: boolean | undefined;
   password?: string | undefined;
   executable?: string | undefined;
   claudeDir?: string | undefined;
@@ -16,6 +17,7 @@ export type CliOptions = {
 export type CcvOptions = {
   port: number;
   hostname: string;
+  verbose?: boolean | undefined;
   password?: string | undefined;
   executable?: string | undefined;
   claudeDir?: string | undefined;
@@ -45,6 +47,8 @@ const LayerImpl = Effect.gen(function* () {
         return {
           port: Number.parseInt(cliOptions.port ?? getOptionalEnv("PORT") ?? "3000", 10),
           hostname: cliOptions.hostname ?? getOptionalEnv("HOSTNAME") ?? "localhost",
+          verbose:
+            cliOptions.verbose ?? (isFlagEnabled(getOptionalEnv("CCV_VERBOSE")) ? true : undefined),
           password: cliOptions.password ?? getOptionalEnv("CCV_PASSWORD") ?? undefined,
           executable:
             cliOptions.executable ?? getOptionalEnv("CCV_CC_EXECUTABLE_PATH") ?? undefined,

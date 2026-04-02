@@ -82,7 +82,7 @@ const LayerImpl = Effect.gen(function* () {
   }).pipe(
     Effect.catchAll((error) =>
       Effect.sync(() => {
-        console.warn(error.message);
+        Effect.runFork(Effect.logWarning(error.message));
         return null;
       }),
     ),
@@ -277,7 +277,7 @@ const LayerImpl = Effect.gen(function* () {
       for (const line of lines) {
         const trimmed = line.trim();
         if (trimmed.length > 0) {
-          console.log(`[terminal] session ${session.id} command: ${trimmed}`);
+          Effect.runFork(Effect.logDebug(`[terminal] session ${session.id} command: ${trimmed}`));
         }
       }
       session.pty.write(data);

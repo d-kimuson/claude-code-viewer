@@ -186,8 +186,10 @@ const LayerImpl = Effect.gen(function* () {
         });
 
       const handleSessionProcessDaemon = async () => {
-        console.log(
-          `[SessionProcessDaemon] Starting daemon for ${sessionProcess.def.sessionProcessId} (${task.def.type})`,
+        await Runtime.runPromise(runtime)(
+          Effect.logInfo(
+            `[SessionProcessDaemon] Starting daemon for ${sessionProcess.def.sessionProcessId} (${task.def.type})`,
+          ),
         );
         const messageIter = await Runtime.runPromise(runtime)(
           Effect.gen(function* () {
@@ -271,8 +273,10 @@ const LayerImpl = Effect.gen(function* () {
       };
 
       const daemonPromise = handleSessionProcessDaemon()
-        .catch((error: unknown) => {
-          console.error("Error occur in task daemon process", error);
+        .catch(async (error: unknown) => {
+          await Runtime.runPromise(runtime)(
+            Effect.logError(`Error occur in task daemon process: ${String(error)}`),
+          );
           throw error;
         })
         .finally(() => {

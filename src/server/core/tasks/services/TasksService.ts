@@ -233,7 +233,9 @@ export class TasksService extends Context.Tag("TasksService")<
               if (parsed.success) {
                 tasks.push(parsed.data);
               } else {
-                console.warn(`Invalid task file ${file}:`, parsed.error);
+                Effect.runFork(
+                  Effect.logWarning(`Invalid task file ${file}: ${parsed.error.message}`),
+                );
                 // Create a fallback task for invalid schema
                 const fallbackSchema = z.object({
                   id: z.string().optional(),
@@ -257,7 +259,7 @@ export class TasksService extends Context.Tag("TasksService")<
                 tasks.push(fallbackTask);
               }
             } catch (e) {
-              console.error(`Failed to parse task file ${file}`, e);
+              Effect.runFork(Effect.logError(`Failed to parse task file ${file}: ${String(e)}`));
               const fallbackTask: Task = {
                 id: file.replace(".json", ""),
                 subject: "Corrupted Task File",

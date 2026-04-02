@@ -94,12 +94,10 @@ const LayerImpl = Effect.gen(function* () {
         const result = yield* executeJob(job).pipe(
           Effect.matchEffect({
             onSuccess: () => {
-              console.log(`[Scheduler] Reserved job ${job.id} executed successfully`);
-              return Effect.void;
+              return Effect.logInfo(`[Scheduler] Reserved job ${job.id} executed successfully`);
             },
             onFailure: (error) => {
-              console.error(`[Scheduler] Reserved job ${job.id} failed:`, error);
-              return Effect.void;
+              return Effect.logError(`[Scheduler] Reserved job ${job.id} failed: ${String(error)}`);
             },
           }),
         );
@@ -112,7 +110,11 @@ const LayerImpl = Effect.gen(function* () {
         // Delete reserved job after execution (skip fiber stop, just delete from config)
         yield* deleteJobFromConfig(job.id).pipe(
           Effect.catchAll((error) => {
-            console.error(`[Scheduler] Failed to delete reserved job ${job.id}:`, error);
+            Effect.runFork(
+              Effect.logError(
+                `[Scheduler] Failed to delete reserved job ${job.id}: ${String(error)}`,
+              ),
+            );
             return Effect.void;
           }),
         );
@@ -125,14 +127,14 @@ const LayerImpl = Effect.gen(function* () {
       // For non-reserved jobs, update status
       const result = yield* executeJob(job).pipe(
         Effect.matchEffect({
-          onSuccess: () => {
-            console.log(`[Scheduler] Job ${job.id} executed successfully`);
-            return updateJobStatus(job.id, "success", new Date().toISOString());
-          },
-          onFailure: (error) => {
-            console.error(`[Scheduler] Job ${job.id} failed:`, error);
-            return updateJobStatus(job.id, "failed", new Date().toISOString());
-          },
+          onSuccess: () =>
+            Effect.logInfo(`[Scheduler] Job ${job.id} executed successfully`).pipe(
+              Effect.zipRight(updateJobStatus(job.id, "success", new Date().toISOString())),
+            ),
+          onFailure: (error) =>
+            Effect.logError(`[Scheduler] Job ${job.id} failed: ${String(error)}`).pipe(
+              Effect.zipRight(updateJobStatus(job.id, "failed", new Date().toISOString())),
+            ),
         }),
       );
 

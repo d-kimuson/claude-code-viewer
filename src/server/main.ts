@@ -14,6 +14,7 @@ program.name(packageJson.name).version(packageJson.version).description(packageJ
 program
   .option("-p, --port <port>", "port to listen on")
   .option("-h, --hostname <hostname>", "hostname to listen on")
+  .option("-v, --verbose", "enable verbose debug logging")
   .option("-P, --password <password>", "password to authenticate")
   .option("-e, --executable <executable>", "path to claude code executable")
   .option("--claude-dir <claude-dir>", "path to claude directory")
@@ -35,6 +36,6 @@ const main = async () => {
 };
 
 main().catch((error: unknown) => {
-  console.error(error);
+  process.stderr.write(`${String(error)}\n`);
   process.exit(1);
 });

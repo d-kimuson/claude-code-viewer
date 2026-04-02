@@ -148,15 +148,16 @@ const LayerImpl = Effect.gen(function* () {
         })
         .pipe(
           Effect.catchAll((error) => {
-            console.error(
-              `[RateLimitAutoScheduleService] Failed to add job for session ${sessionId}:`,
-              error,
+            Effect.runFork(
+              Effect.logError(
+                `[RateLimitAutoScheduleService] Failed to add job for session ${sessionId}: ${String(error)}`,
+              ),
             );
             return Effect.void;
           }),
         );
 
-      console.log(
+      yield* Effect.logInfo(
         `[RateLimitAutoScheduleService] Scheduled continue task for session ${sessionId} at ${resetTime}`,
       );
     });
@@ -189,7 +190,7 @@ const LayerImpl = Effect.gen(function* () {
       yield* Ref.set(listenerRef, listener);
       yield* eventBus.on("sessionChanged", listener);
 
-      console.log("[RateLimitAutoScheduleService] Started");
+      yield* Effect.logInfo("[RateLimitAutoScheduleService] Started");
     });
 
   /**
@@ -202,7 +203,7 @@ const LayerImpl = Effect.gen(function* () {
         yield* eventBus.off("sessionChanged", listener);
         yield* Ref.set(listenerRef, null);
       }
-      console.log("[RateLimitAutoScheduleService] Stopped");
+      yield* Effect.logInfo("[RateLimitAutoScheduleService] Stopped");
     });
 
   return {

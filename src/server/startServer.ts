@@ -46,9 +46,15 @@ import { AuthMiddleware } from "./hono/middleware/auth.middleware.ts";
 import { routes } from "./hono/routes/index.ts";
 import { DrizzleService } from "./lib/db/DrizzleService.ts";
 import { platformLayer } from "./lib/effect/layers.ts";
+import { serverLoggerLayer, withServerLogLevel } from "./logging.ts";
 import { setupTerminalWebSocket } from "./terminal/terminalWebSocket.ts";
 
 export const startServer = async (options: CliOptions) => {
+  const runWithLogger = <A, E>(effect: Effect.Effect<A, E, never>) =>
+    Effect.runPromise(
+      effect.pipe(withServerLogLevel(options.verbose), Effect.provide(serverLoggerLayer)),
+    );
+
   // biome-ignore lint/style/noProcessEnv: allow only here
   // oxlint-disable-next-line node/no-process-env -- configuration boundary
   const isDevelopment = isDevelopmentEnv(process.env.CCV_ENV);
@@ -61,7 +67,7 @@ export const startServer = async (options: CliOptions) => {
         return path.resolve(import.meta.dirname, "static");
       }).pipe(Effect.provide(NodeContext.layer)),
     );
-    console.log("Serving static files from ", staticPath);
+    await runWithLogger(Effect.logInfo(`Serving static files from ${staticPath}`));
     const indexHtml = await Effect.runPromise(
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
@@ -117,7 +123,9 @@ export const startServer = async (options: CliOptions) => {
     const info = server.address();
     const serverPort = typeof info === "object" && info !== null ? info.port : port;
     const mode = apiOnly ? " (API-only mode)" : "";
-    console.log(`Server is running on http://${hostname}:${serverPort}${mode}`);
+    void runWithLogger(
+      Effect.logInfo(`Server is running on http://${hostname}:${serverPort}${mode}`),
+    );
   });
 };
 

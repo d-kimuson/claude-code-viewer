@@ -57,14 +57,14 @@ export class InitializeService extends Context.Tag("InitializeService")<
       const startInitialization = (): Effect.Effect<void> => {
         return Effect.gen(function* () {
           // Run full sync to populate SQLite cache
-          console.log("Starting fullSync...");
+          yield* Effect.logInfo("Starting fullSync...");
           yield* syncService.fullSync().pipe(
             Effect.catchAll((e) => {
-              console.error("[InitializeService] fullSync failed:", e);
+              Effect.runFork(Effect.logError(`[InitializeService] fullSync failed: ${String(e)}`));
               return Effect.void;
             }),
           );
-          console.log("fullSync completed");
+          yield* Effect.logInfo("fullSync completed");
 
           // ファイルウォッチャーを開始
           yield* fileWatcher.startWatching();
@@ -73,7 +73,9 @@ export class InitializeService extends Context.Tag("InitializeService")<
           yield* schedulerService.startScheduler.pipe(
             Effect.provide(schedulerRuntimeLayer),
             Effect.catchAll((error) => {
-              console.error("[InitializeService] startScheduler failed:", error);
+              Effect.runFork(
+                Effect.logError(`[InitializeService] startScheduler failed: ${String(error)}`),
+              );
               return Effect.void;
             }),
           );
@@ -87,9 +89,9 @@ export class InitializeService extends Context.Tag("InitializeService")<
             Schedule.fixed("10 seconds"),
           );
 
-          console.log("start heartbeat");
+          yield* Effect.logInfo("start heartbeat");
           yield* Effect.forkDaemon(daemon);
-          console.log("after starting heartbeat fork");
+          yield* Effect.logInfo("after starting heartbeat fork");
 
           // sessionChanged イベントのリスナーを登録
           const onSessionChanged = (event: InternalEventDeclaration["sessionChanged"]) => {
@@ -103,7 +105,9 @@ export class InitializeService extends Context.Tag("InitializeService")<
             Effect.runFork(
               syncService.syncProjectList(event.projectId).pipe(
                 Effect.catchAll((e) => {
-                  console.error("[InitializeService] syncProjectList failed:", e);
+                  Effect.runFork(
+                    Effect.logError(`[InitializeService] syncProjectList failed: ${String(e)}`),
+                  );
                   return Effect.void;
                 }),
               ),
@@ -132,7 +136,9 @@ export class InitializeService extends Context.Tag("InitializeService")<
           yield* Ref.set(listenersRef, {});
           yield* schedulerService.stopScheduler.pipe(
             Effect.catchAll((error) => {
-              console.error("[InitializeService] stopScheduler failed:", error);
+              Effect.runFork(
+                Effect.logError(`[InitializeService] stopScheduler failed: ${String(error)}`),
+              );
               return Effect.void;
             }),
           );

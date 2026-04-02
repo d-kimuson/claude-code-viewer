@@ -31,7 +31,9 @@ const layerImpl = Effect.sync(() => {
       ).then((results) => {
         for (const r of results) {
           if (r.status === "rejected") {
-            console.error(`[EventBus] listener error for "${event}":`, r.reason);
+            Effect.runFork(
+              Effect.logError(`[EventBus] listener error for "${event}": ${String(r.reason)}`),
+            );
           }
         }
       });

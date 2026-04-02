@@ -121,7 +121,7 @@ export class FileWatcherService extends Context.Tag("FileWatcherService")<
           const claudeCodePaths = yield* context.claudeCodePaths;
           const claudeProjectsDirPath = claudeCodePaths.claudeProjectsDirPath;
 
-          console.log("Starting file watcher on:", claudeProjectsDirPath);
+          yield* Effect.logInfo(`Starting file watcher on: ${claudeProjectsDirPath}`);
 
           const watcherFiber = yield* fs.watch(claudeProjectsDirPath, { recursive: true }).pipe(
             Stream.runForEach((event) => handleWatchEvent(claudeProjectsDirPath, event.path)),
@@ -130,10 +130,10 @@ export class FileWatcherService extends Context.Tag("FileWatcherService")<
 
           yield* Ref.set(watcherFiberRef, watcherFiber);
           yield* Ref.set(isWatchingRef, true);
-          console.log("File watcher initialization completed");
+          yield* Effect.logInfo("File watcher initialization completed");
         }).pipe(
           Effect.catchAll((error) => {
-            console.error("Failed to start file watching:", error);
+            Effect.runFork(Effect.logError(`Failed to start file watching: ${String(error)}`));
             return Effect.void;
           }),
         );

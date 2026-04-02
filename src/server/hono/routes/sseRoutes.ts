@@ -18,9 +18,8 @@ const sseRoutes = Effect.gen(function* () {
           sseController.handleSSE(rawStream).pipe(Effect.provide(TypeSafeSSE.make(rawStream))),
         );
       },
-      // oxlint-disable-next-line typescript/require-await -- streamSSE error callback requires Promise<void> return type
       async (err) => {
-        console.error("Streaming error:", err);
+        await Runtime.runPromise(runtime)(Effect.logError(`Streaming error: ${String(err)}`));
       },
     );
   });

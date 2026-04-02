@@ -47,7 +47,7 @@ export const getDirectoryListing = (
 
     const filenames = yield* fs.readDirectory(targetPath).pipe(
       Effect.catchAll((error) => {
-        console.error("Error reading directory:", error);
+        Effect.runFork(Effect.logError(`Error reading directory: ${String(error)}`));
         return Effect.succeed([] as string[]);
       }),
     );

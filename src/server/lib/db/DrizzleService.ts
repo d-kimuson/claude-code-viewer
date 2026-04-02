@@ -64,9 +64,8 @@ export class DrizzleService extends Context.Tag("DrizzleService")<
       }
 
       const error = dbResult.left;
-      console.warn(
-        "[DrizzleService] Migration failed, recreating cache DB:",
-        error instanceof Error ? error.message : error,
+      yield* Effect.logWarning(
+        `[DrizzleService] Migration failed, recreating cache DB: ${error instanceof Error ? error.message : String(error)}`,
       );
 
       try {

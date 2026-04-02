@@ -211,7 +211,7 @@ const LayerImpl = Effect.gen(function* () {
         });
       }
 
-      console.log(
+      yield* Effect.logDebug(
         `sessionProcessStateChanged(${sessionProcessId}): ${targetProcess?.type} -> ${nextState.type}`,
       );
 

@@ -36,7 +36,7 @@ const LayerImpl = Effect.gen(function* () {
         ),
       );
       if (Either.isLeft(result)) {
-        console.error("File completion error:", result.left);
+        yield* Effect.logError(`File completion error: ${String(result.left)}`);
         return {
           response: { error: "Failed to get file completion" },
           status: 500,
@@ -72,7 +72,7 @@ const LayerImpl = Effect.gen(function* () {
       );
 
       if (Either.isLeft(result)) {
-        console.error("Directory listing error:", result.left);
+        yield* Effect.logError(`Directory listing error: ${String(result.left)}`);
         return {
           response: { error: "Failed to list directory" },
           status: 500,

@@ -72,11 +72,15 @@ const LayerImpl = Effect.gen(function* () {
   // Load or generate VAPID keys
   const vapidKeys = yield* loadOrCreateVapidKeys(fs).pipe(
     Effect.catchAll((error) => {
-      console.warn("Failed to load VAPID keys, generating in-memory:", error);
-      const keys = webpush.generateVAPIDKeys();
-      return Effect.succeed({
-        publicKey: keys.publicKey,
-        privateKey: keys.privateKey,
+      return Effect.gen(function* () {
+        yield* Effect.logWarning(
+          `Failed to load VAPID keys, generating in-memory: ${String(error)}`,
+        );
+        const keys = webpush.generateVAPIDKeys();
+        return {
+          publicKey: keys.publicKey,
+          privateKey: keys.privateKey,
+        };
       });
     }),
   );

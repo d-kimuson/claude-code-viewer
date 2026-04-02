@@ -391,6 +391,7 @@ export const ConversationList: FC<ConversationListProps> = ({
       if (conv.type === "progress") return false;
       if (conv.type === "custom-title") return false;
       if (conv.type === "agent-name") return false;
+      if (conv.type === "agent-setting") return false;
       if (conv.type === "pr-link") return false;
       if (conv.type === "last-prompt") return false;
 
@@ -629,6 +630,7 @@ export const ConversationList: FC<ConversationListProps> = ({
       conversation.type !== "progress" &&
       conversation.type !== "custom-title" &&
       conversation.type !== "agent-name" &&
+      conversation.type !== "agent-setting" &&
       conversation.type !== "pr-link" &&
       conversation.type !== "last-prompt" &&
       conversation.isSidechain;

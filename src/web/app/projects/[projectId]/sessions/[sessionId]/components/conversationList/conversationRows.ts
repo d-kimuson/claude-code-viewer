@@ -14,6 +14,7 @@ const noTimestampConversationTypes = new Set<Conversation["type"]>([
   "file-history-snapshot",
   "custom-title",
   "agent-name",
+  "agent-setting",
 ]);
 
 export const getConversationKey = (conversation: Conversation) => {
@@ -51,6 +52,10 @@ export const getConversationKey = (conversation: Conversation) => {
 
   if (conversation.type === "agent-name") {
     return `agent-name_${conversation.sessionId}_${conversation.agentName}`;
+  }
+
+  if (conversation.type === "agent-setting") {
+    return `agent-setting_${conversation.sessionId}_${conversation.agentSetting}`;
   }
 
   if (conversation.type === "pr-link") {

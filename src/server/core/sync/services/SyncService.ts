@@ -64,6 +64,7 @@ const extractCwdFromContent = (content: string): string | null => {
       conversation.type === "queue-operation" ||
       conversation.type === "custom-title" ||
       conversation.type === "agent-name" ||
+      conversation.type === "agent-setting" ||
       conversation.type === "pr-link" ||
       conversation.type === "last-prompt"
     ) {

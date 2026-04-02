@@ -26,6 +26,10 @@ export const extractSearchableText = (conversation: ExtendedConversation): strin
     return null;
   }
 
+  if (conversation.type === "agent-setting") {
+    return null;
+  }
+
   return null;
 };
 

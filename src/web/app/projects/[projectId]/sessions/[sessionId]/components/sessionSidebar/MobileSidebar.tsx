@@ -1,5 +1,5 @@
 import { Trans, useLingui } from "@lingui/react";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { PlusIcon, XIcon } from "lucide-react";
 import { type FC, Suspense, useEffect, useState } from "react";
 import { NotificationSettings } from "@/web/components/NotificationSettings";
@@ -38,6 +38,7 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
   initialTab = "sessions",
 }) => {
   const { i18n } = useLingui();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<Tab>(initialTab);
   const currentTab = activeTab;
 
@@ -85,6 +86,11 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
   });
 
   const handleTabChange = (value: string) => {
+    if (value === "projects") {
+      void navigate({ to: "/projects" });
+      onClose();
+      return;
+    }
     const parsed = tabSchema.safeParse(value);
     if (parsed.success) {
       setActiveTab(parsed.data);
@@ -170,6 +176,9 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
+            <SelectItem value="projects" className="text-xs">
+              {i18n._({ id: "sidebar.tab.projects", message: "Projects" })}
+            </SelectItem>
             {tabSchema.options.map((tab) => (
               <SelectItem key={tab} value={tab} className="text-xs">
                 {tabLabels[tab]}

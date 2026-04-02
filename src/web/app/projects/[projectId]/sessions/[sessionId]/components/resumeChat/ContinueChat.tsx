@@ -67,7 +67,7 @@ export const ContinueChat: FC<{
   };
 
   return (
-    <div className="w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 pb-3">
+    <div className="w-full px-4 pb-3">
       <ChatInput
         projectId={projectId}
         onSubmit={handleSubmit}

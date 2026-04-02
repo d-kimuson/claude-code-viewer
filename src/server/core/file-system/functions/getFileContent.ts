@@ -1,4 +1,4 @@
-import { readFile, stat } from "node:fs/promises";
+import { readFile } from "node:fs/promises";
 import { extname, normalize, resolve } from "node:path";
 
 /** Default maximum file size in bytes (1MB) */
@@ -297,18 +297,7 @@ export const getFileContent = async (
   }
 
   try {
-    // Check if file exists and is a file (not directory)
-    const fileStat = await stat(resolvedPath);
-    if (!fileStat.isFile()) {
-      return {
-        success: false,
-        error: "NOT_FOUND",
-        message: "File not found or is a directory",
-        filePath,
-      };
-    }
-
-    // Read file content
+    // Read file content directly (avoid TOCTOU by not pre-checking with stat)
     const buffer = await readFile(resolvedPath);
 
     // Check for binary content
@@ -352,6 +341,16 @@ export const getFileContent = async (
         success: false,
         error: "NOT_FOUND",
         message: "File not found",
+        filePath,
+      };
+    }
+
+    // Handle attempting to read a directory
+    if (error instanceof Error && "code" in error && error.code === "EISDIR") {
+      return {
+        success: false,
+        error: "NOT_FOUND",
+        message: "Path is a directory, not a file",
         filePath,
       };
     }

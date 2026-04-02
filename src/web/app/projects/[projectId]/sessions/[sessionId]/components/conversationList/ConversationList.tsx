@@ -1,5 +1,4 @@
 import { Trans } from "@lingui/react";
-import { useVirtualizer } from "@tanstack/react-virtual";
 import {
   AlertTriangle,
   ChevronDown,
@@ -242,6 +241,7 @@ export const ConversationList: FC<ConversationListProps> = ({
   const [committedSearchQuery, setCommittedSearchQuery] = useState("");
   const [activeMatchPosition, setActiveMatchPosition] = useState(0);
   const highlightRetryRafIdRef = useRef<number | null>(null);
+  const rowRefsMap = useRef(new Map<number, HTMLLIElement>());
 
   const validConversations = useMemo(
     () => conversations.filter((conversation) => conversation.type !== "x-error"),
@@ -479,20 +479,8 @@ export const ConversationList: FC<ConversationListProps> = ({
     setActiveMatchPosition(0);
   }, []);
 
-  const virtualizer = useVirtualizer({
-    count: renderableRows.length,
-    getScrollElement: () => scrollContainerRef.current,
-    getItemKey: (index) => renderableRows[index]?.rowKey ?? index,
-    estimateSize: () => 140,
-    overscan: 320,
-    useAnimationFrameWithResizeObserver: true,
-  });
-
   useEffect(() => {
-    const containerElement = scrollContainerRef.current;
-
     if (matchedRowIndices.length === 0) {
-      clearActiveSearchHighlights(containerElement);
       return;
     }
 
@@ -506,8 +494,11 @@ export const ConversationList: FC<ConversationListProps> = ({
       return;
     }
 
-    virtualizer.scrollToIndex(rowIndex, { align: "center" });
-  }, [activeMatchPosition, matchedRowIndices, scrollContainerRef, virtualizer]);
+    const rowElement = rowRefsMap.current.get(rowIndex);
+    if (rowElement !== undefined) {
+      rowElement.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [activeMatchPosition, matchedRowIndices]);
 
   useEffect(() => {
     const rootElement = scrollContainerRef.current;
@@ -532,7 +523,7 @@ export const ConversationList: FC<ConversationListProps> = ({
     }
 
     const applyHighlight = (retriesLeft: number) => {
-      const rowElement = rootElement.querySelector(`li[data-index='${targetRowIndex}']`);
+      const rowElement = rowRefsMap.current.get(targetRowIndex);
       if (!(rowElement instanceof HTMLElement)) {
         if (retriesLeft > 0) {
           highlightRetryRafIdRef.current = window.requestAnimationFrame(() => {
@@ -577,13 +568,6 @@ export const ConversationList: FC<ConversationListProps> = ({
     };
   }, [scrollContainerRef]);
 
-  const virtualItems = virtualizer.getVirtualItems();
-  const totalSize = virtualizer.getTotalSize();
-  const firstVirtualItem = virtualItems[0];
-  const lastVirtualItem = virtualItems[virtualItems.length - 1];
-  const paddingTop = firstVirtualItem?.start ?? 0;
-  const paddingBottom = totalSize - (lastVirtualItem?.end ?? 0);
-
   const jumpToPreviousMatch = () => {
     if (matchedRowIndices.length === 0) {
       return;
@@ -602,8 +586,16 @@ export const ConversationList: FC<ConversationListProps> = ({
     setActiveMatchPosition((current) => (current + 1) % matchedRowIndices.length);
   };
 
-  const renderConversationRow = (virtualRowIndex: number) => {
-    const row = renderableRows[virtualRowIndex];
+  const setRowRef = useCallback((index: number, element: HTMLLIElement | null) => {
+    if (element !== null) {
+      rowRefsMap.current.set(index, element);
+    } else {
+      rowRefsMap.current.delete(index);
+    }
+  }, []);
+
+  const renderConversationRow = (rowIndex: number) => {
+    const row = renderableRows[rowIndex];
     if (row === undefined) {
       return null;
     }
@@ -749,26 +741,15 @@ export const ConversationList: FC<ConversationListProps> = ({
           </div>
         </div>
       )}
-      <ul
-        className="w-full"
-        style={{
-          paddingTop: `${paddingTop}px`,
-          paddingBottom: `${paddingBottom}px`,
-        }}
-      >
-        {virtualItems.map((virtualRow) => {
-          const row = renderableRows[virtualRow.index];
-          if (row === undefined) {
-            return null;
-          }
-
-          const rowElement = renderConversationRow(virtualRow.index);
+      <ul className="w-full">
+        {renderableRows.map((row, index) => {
+          const rowElement = renderConversationRow(index);
           if (rowElement === null) {
             return null;
           }
 
           return (
-            <li key={row.rowKey} ref={virtualizer.measureElement} data-index={virtualRow.index}>
+            <li key={row.rowKey} ref={(el) => setRowRef(index, el)}>
               {rowElement}
             </li>
           );

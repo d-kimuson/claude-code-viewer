@@ -2,13 +2,17 @@ import { FileSystem, Path } from "@effect/platform";
 import { Context, Effect, Layer } from "effect";
 import { z } from "zod";
 import { parseJsonl } from "../../claude-code/functions/parseJsonl.ts";
-import { decodeProjectId } from "../../project/functions/id.ts";
+import { ApplicationContext } from "../../platform/services/ApplicationContext.ts";
+import { decodeProjectId, validateProjectPath } from "../../project/functions/id.ts";
 import { extractFirstUserText } from "../../session/functions/extractFirstUserText.ts";
 import type { ExtendedConversation } from "../../types.ts";
+
+const SAFE_AGENT_ID_PATTERN = /^[a-zA-Z0-9_-]+$/;
 
 const LayerImpl = Effect.gen(function* () {
   const fs = yield* FileSystem.FileSystem;
   const path = yield* Path.Path;
+  const appContext = yield* ApplicationContext;
 
   /**
    * Get agent session conversations by agentId.
@@ -21,7 +25,18 @@ const LayerImpl = Effect.gen(function* () {
     sessionId?: string,
   ): Effect.Effect<ExtendedConversation[] | null, Error> =>
     Effect.gen(function* () {
+      // Validate agentId to prevent path traversal
+      if (!SAFE_AGENT_ID_PATTERN.test(agentId)) {
+        return yield* Effect.fail(new Error("Invalid agent ID: contains disallowed characters"));
+      }
+
       const projectPath = decodeProjectId(projectId);
+
+      // Validate that the project path is within the Claude projects directory
+      const { claudeProjectsDirPath } = yield* appContext.claudeCodePaths;
+      if (!validateProjectPath(projectPath, claudeProjectsDirPath)) {
+        return yield* Effect.fail(new Error("Invalid project path: outside allowed directory"));
+      }
 
       // Try new path if sessionId is provided
       if (sessionId !== undefined && sessionId !== "") {
@@ -57,6 +72,12 @@ const LayerImpl = Effect.gen(function* () {
   ): Effect.Effect<{ agentId: string; firstMessage: string | null }[], Error> =>
     Effect.gen(function* () {
       const projectPath = decodeProjectId(projectId);
+
+      // Validate that the project path is within the Claude projects directory
+      const { claudeProjectsDirPath } = yield* appContext.claudeCodePaths;
+      if (!validateProjectPath(projectPath, claudeProjectsDirPath)) {
+        return yield* Effect.fail(new Error("Invalid project path: outside allowed directory"));
+      }
       const results: { agentId: string; firstMessage: string | null }[] = [];
 
       const extractAgentId = (filename: string): string | null => {

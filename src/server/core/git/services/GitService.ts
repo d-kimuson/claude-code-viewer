@@ -18,6 +18,17 @@ class DetachedHeadError extends Data.TaggedError("DetachedHeadError")<{
   cwd: string;
 }> {}
 
+class GitInvalidRefError extends Data.TaggedError("GitInvalidRefError")<{
+  ref: string;
+}> {}
+
+/** Validates that a git ref (branch name, hash, etc.) is safe to pass as a command argument */
+const isValidGitRef = (ref: string): boolean =>
+  ref.length > 0 && !ref.startsWith("-") && !ref.includes("\0");
+
+const validateGitRef = (ref: string) =>
+  isValidGitRef(ref) ? Effect.void : Effect.fail(new GitInvalidRefError({ ref }));
+
 const LayerImpl = Effect.gen(function* () {
   const fs = yield* FileSystem.FileSystem;
   const path = yield* Path.Path;
@@ -75,6 +86,7 @@ const LayerImpl = Effect.gen(function* () {
 
   const branchExists = (cwd: string, branchName: string) =>
     Effect.gen(function* () {
+      yield* validateGitRef(branchName);
       const result = yield* Effect.either(execGitCommand(["branch", "--exists", branchName], cwd));
 
       if (Either.isLeft(result)) {
@@ -200,6 +212,7 @@ const LayerImpl = Effect.gen(function* () {
 
   const getBranchHash = (cwd: string, branchName: string) =>
     Effect.gen(function* () {
+      yield* validateGitRef(branchName);
       const result = yield* execGitCommand(["rev-parse", branchName], cwd).pipe(
         Effect.map((output) => output.trim().split("\n")[0] ?? null),
       );
@@ -208,6 +221,7 @@ const LayerImpl = Effect.gen(function* () {
 
   const getBranchNamesByCommitHash = (cwd: string, hash: string) =>
     Effect.gen(function* () {
+      yield* validateGitRef(hash);
       const result = yield* execGitCommand(
         ["branch", "--contains", hash, "--format=%(refname:short)"],
         cwd,
@@ -220,6 +234,8 @@ const LayerImpl = Effect.gen(function* () {
 
   const compareCommitHash = (cwd: string, targetHash: string, compareHash: string) =>
     Effect.gen(function* () {
+      yield* validateGitRef(targetHash);
+      yield* validateGitRef(compareHash);
       const aheadResult = yield* execGitCommand(["rev-list", `${targetHash}..${compareHash}`], cwd);
       const aheadCounts = aheadResult
         .split("\n")
@@ -321,6 +337,8 @@ const LayerImpl = Effect.gen(function* () {
 
   const getCommitsBetweenBranches = (cwd: string, baseBranch: string, targetBranch: string) =>
     Effect.gen(function* () {
+      yield* validateGitRef(baseBranch);
+      yield* validateGitRef(targetBranch);
       const result = yield* execGitCommand(
         ["log", `${baseBranch}..${targetBranch}`, "--format=%H|%s|%an|%ad", "--date=iso"],
         cwd,
@@ -331,6 +349,7 @@ const LayerImpl = Effect.gen(function* () {
 
   const checkout = (cwd: string, branchName: string) =>
     Effect.gen(function* () {
+      yield* validateGitRef(branchName);
       yield* execGitCommand(["checkout", branchName], cwd);
       return { success: true, branch: branchName };
     });

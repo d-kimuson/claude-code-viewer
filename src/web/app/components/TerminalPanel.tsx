@@ -1,6 +1,6 @@
 import { FitAddon } from "@xterm/addon-fit";
 import { Terminal } from "@xterm/xterm";
-import { type FC, useEffect, useRef } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
 import "@xterm/xterm/css/xterm.css";
 
 type ServerMessage =
@@ -68,144 +68,196 @@ const buildWebSocketUrl = (sessionId: string | undefined, cwd: string | undefine
   return `${protocol}://${host}/ws/terminal${query ? `?${query}` : ""}`;
 };
 
+const clearStoredSession = (cwd: string | undefined) => {
+  localStorage.removeItem(getSessionIdStorageKey(cwd));
+};
+
+export type TerminalHandle = {
+  sendData: (data: string) => void;
+  sendSignal: (name: string) => void;
+  scrollLines: (lines: number) => void;
+};
+
 type TerminalPanelProps = {
   resetToken?: number;
   cwd?: string;
   onProcessExit?: () => void;
 };
 
-const clearStoredSession = (cwd: string | undefined) => {
-  localStorage.removeItem(getSessionIdStorageKey(cwd));
-};
+export const TerminalPanel = forwardRef<TerminalHandle, TerminalPanelProps>(
+  ({ resetToken = 0, cwd, onProcessExit }, ref) => {
+    const containerRef = useRef<HTMLDivElement | null>(null);
+    const terminalRef = useRef<Terminal | null>(null);
+    const fitRef = useRef<FitAddon | null>(null);
+    const socketRef = useRef<WebSocket | null>(null);
+    const sessionIdRef = useRef<string | undefined>(undefined);
+    const lastSeqRef = useRef<number>(0);
+    const refreshRequestedRef = useRef(false);
+    const onProcessExitRef = useRef(onProcessExit);
+    onProcessExitRef.current = onProcessExit;
+    const sendJsonRef = useRef<((payload: object) => void) | undefined>(undefined);
 
-export const TerminalPanel: FC<TerminalPanelProps> = ({ resetToken = 0, cwd, onProcessExit }) => {
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const terminalRef = useRef<Terminal | null>(null);
-  const fitRef = useRef<FitAddon | null>(null);
-  const socketRef = useRef<WebSocket | null>(null);
-  const sessionIdRef = useRef<string | undefined>(undefined);
-  const lastSeqRef = useRef<number>(0);
-  const refreshRequestedRef = useRef(false);
-  const onProcessExitRef = useRef(onProcessExit);
-  onProcessExitRef.current = onProcessExit;
+    useImperativeHandle(ref, () => ({
+      sendData: (data: string) => {
+        sendJsonRef.current?.({ type: "input", data });
+      },
+      sendSignal: (name: string) => {
+        sendJsonRef.current?.({ type: "signal", name });
+      },
+      scrollLines: (lines: number) => {
+        terminalRef.current?.scrollLines(lines);
+      },
+    }));
 
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
+    useEffect(() => {
+      const container = containerRef.current;
+      if (!container) return;
 
-    if (resetToken > 0) {
-      clearStoredSession(cwd);
-    }
-
-    const term = new Terminal({
-      convertEol: true,
-      cursorBlink: true,
-      fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas",
-    });
-    const fit = new FitAddon();
-    term.loadAddon(fit);
-    term.open(container);
-    const fitAndRefresh = () => {
-      fit.fit();
-      if (term.rows > 0) {
-        term.refresh(0, term.rows - 1);
+      if (resetToken > 0) {
+        clearStoredSession(cwd);
       }
-    };
-    const scheduleRefresh = () => {
-      if (refreshRequestedRef.current) return;
-      refreshRequestedRef.current = true;
-      requestAnimationFrame(() => {
-        refreshRequestedRef.current = false;
+
+      const term = new Terminal({
+        convertEol: true,
+        cursorBlink: true,
+        fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas",
+      });
+      const fit = new FitAddon();
+      term.loadAddon(fit);
+      term.open(container);
+      const fitAndRefresh = () => {
+        fit.fit();
         if (term.rows > 0) {
           term.refresh(0, term.rows - 1);
         }
+      };
+      const scheduleRefresh = () => {
+        if (refreshRequestedRef.current) return;
+        refreshRequestedRef.current = true;
+        requestAnimationFrame(() => {
+          refreshRequestedRef.current = false;
+          if (term.rows > 0) {
+            term.refresh(0, term.rows - 1);
+          }
+        });
+      };
+      fitAndRefresh();
+      requestAnimationFrame(() => {
+        fitAndRefresh();
       });
-    };
-    fitAndRefresh();
-    requestAnimationFrame(() => {
-      fitAndRefresh();
-    });
 
-    terminalRef.current = term;
-    fitRef.current = fit;
+      terminalRef.current = term;
+      fitRef.current = fit;
 
-    const storedSessionId = getStoredSessionId(cwd);
-    sessionIdRef.current = storedSessionId;
-    lastSeqRef.current = 0;
+      const storedSessionId = getStoredSessionId(cwd);
+      sessionIdRef.current = storedSessionId;
+      lastSeqRef.current = 0;
 
-    const socket = new WebSocket(buildWebSocketUrl(storedSessionId, cwd));
-    socketRef.current = socket;
+      const socket = new WebSocket(buildWebSocketUrl(storedSessionId, cwd));
+      socketRef.current = socket;
 
-    const sendJson = (payload: object) => {
-      if (socket.readyState !== WebSocket.OPEN) return;
-      socket.send(JSON.stringify(payload));
-    };
+      const sendJson = (payload: object) => {
+        if (socket.readyState !== WebSocket.OPEN) return;
+        socket.send(JSON.stringify(payload));
+      };
+      sendJsonRef.current = sendJson;
 
-    const sendResize = () => {
-      sendJson({ type: "resize", cols: term.cols, rows: term.rows });
-    };
+      const sendResize = () => {
+        sendJson({ type: "resize", cols: term.cols, rows: term.rows });
+      };
 
-    socket.addEventListener("open", () => {
-      sendJson({ type: "sync", lastSeq: lastSeqRef.current });
-      fitAndRefresh();
-      sendResize();
-    });
+      socket.addEventListener("open", () => {
+        sendJson({ type: "sync", lastSeq: lastSeqRef.current });
+        fitAndRefresh();
+        sendResize();
+      });
 
-    socket.addEventListener("message", (event) => {
-      if (typeof event.data !== "string") return;
-      const message = parseServerMessage(event.data);
-      if (!message) return;
-      if (message.type === "hello") {
-        sessionIdRef.current = message.sessionId;
-        localStorage.setItem(getSessionIdStorageKey(cwd), message.sessionId);
-        return;
-      }
-      if (message.type === "output" || message.type === "snapshot") {
-        term.write(message.data);
-        scheduleRefresh();
-        lastSeqRef.current = message.seq;
-        return;
-      }
-      if (message.type === "exit") {
-        term.write(`\r\n[process exited with code ${message.code}]\r\n`);
-        onProcessExitRef.current?.();
-        return;
-      }
-    });
+      socket.addEventListener("message", (event) => {
+        if (typeof event.data !== "string") return;
+        const message = parseServerMessage(event.data);
+        if (!message) return;
+        if (message.type === "hello") {
+          sessionIdRef.current = message.sessionId;
+          localStorage.setItem(getSessionIdStorageKey(cwd), message.sessionId);
+          return;
+        }
+        if (message.type === "output" || message.type === "snapshot") {
+          term.write(message.data);
+          scheduleRefresh();
+          lastSeqRef.current = message.seq;
+          return;
+        }
+        if (message.type === "exit") {
+          term.write(`\r\n[process exited with code ${message.code}]\r\n`);
+          onProcessExitRef.current?.();
+          return;
+        }
+      });
 
-    const dataDisposable = term.onData((data) => {
-      sendJson({ type: "input", data });
-    });
+      const dataDisposable = term.onData((data) => {
+        sendJson({ type: "input", data });
+      });
 
-    const keyDisposable = term.onKey(({ domEvent }) => {
-      if (domEvent.ctrlKey && domEvent.key.toLowerCase() === "c") {
-        domEvent.preventDefault();
-        domEvent.stopPropagation();
-        sendJson({ type: "signal", name: "SIGINT" });
-      }
-    });
+      const keyDisposable = term.onKey(({ domEvent }) => {
+        if (domEvent.ctrlKey && domEvent.key.toLowerCase() === "c") {
+          domEvent.preventDefault();
+          domEvent.stopPropagation();
+          sendJson({ type: "signal", name: "SIGINT" });
+        }
+      });
 
-    const resizeObserver = new ResizeObserver(() => {
-      fitAndRefresh();
-      sendResize();
-    });
-    resizeObserver.observe(container);
+      const resizeObserver = new ResizeObserver(() => {
+        fitAndRefresh();
+        sendResize();
+      });
+      resizeObserver.observe(container);
 
-    const pingInterval = window.setInterval(() => {
-      if (socket.readyState === WebSocket.OPEN) {
-        socket.send(JSON.stringify({ type: "ping" }));
-      }
-    }, 20_000);
+      const pingInterval = window.setInterval(() => {
+        if (socket.readyState === WebSocket.OPEN) {
+          socket.send(JSON.stringify({ type: "ping" }));
+        }
+      }, 20_000);
 
-    return () => {
-      window.clearInterval(pingInterval);
-      resizeObserver.disconnect();
-      dataDisposable.dispose();
-      keyDisposable.dispose();
-      socket.close();
-      term.dispose();
-    };
-  }, [resetToken, cwd]);
+      // Touch scroll support for mobile
+      let touchStartY = 0;
 
-  return <div ref={containerRef} className="h-full w-full" />;
-};
+      const handleTouchStart = (e: TouchEvent) => {
+        const touch = e.touches[0];
+        if (touch) {
+          touchStartY = touch.clientY;
+        }
+      };
+
+      const handleTouchMove = (e: TouchEvent) => {
+        e.preventDefault();
+        const touch = e.touches[0];
+        if (!touch) return;
+        const deltaY = touchStartY - touch.clientY;
+        touchStartY = touch.clientY;
+        const lines = Math.round(deltaY / 20);
+        if (lines !== 0) {
+          term.scrollLines(lines);
+        }
+      };
+
+      container.addEventListener("touchstart", handleTouchStart, { passive: true });
+      container.addEventListener("touchmove", handleTouchMove, { passive: false });
+
+      return () => {
+        sendJsonRef.current = undefined;
+        container.removeEventListener("touchstart", handleTouchStart);
+        container.removeEventListener("touchmove", handleTouchMove);
+        window.clearInterval(pingInterval);
+        resizeObserver.disconnect();
+        dataDisposable.dispose();
+        keyDisposable.dispose();
+        socket.close();
+        term.dispose();
+      };
+    }, [resetToken, cwd]);
+
+    return <div ref={containerRef} className="h-full w-full" />;
+  },
+);
+
+TerminalPanel.displayName = "TerminalPanel";

@@ -1,9 +1,31 @@
 import { Trans } from "@lingui/react";
-import { PanelBottomCloseIcon, RocketIcon, RotateCcwIcon } from "lucide-react";
+import {
+  ChevronsDownIcon,
+  ChevronsUpIcon,
+  PanelBottomCloseIcon,
+  RocketIcon,
+  RotateCcwIcon,
+} from "lucide-react";
 import { type FC, useCallback, useEffect, useRef, useState } from "react";
 import { useDragResize } from "@/web/hooks/useDragResize";
+import { useIsMobile } from "@/web/hooks/useIsMobile";
 import { useBottomPanelActions, useBottomPanelState } from "@/web/hooks/useLayoutPanels";
-import { TerminalPanel } from "./TerminalPanel";
+import { type TerminalHandle, TerminalPanel } from "./TerminalPanel";
+
+type KeyDef =
+  | { label: string; type: "data"; data: string }
+  | { label: string; type: "signal"; signal: string };
+
+const MOBILE_KEYS: readonly KeyDef[] = [
+  { label: "Esc", type: "data", data: "\x1b" },
+  { label: "Tab", type: "data", data: "\t" },
+  { label: "↑", type: "data", data: "\x1b[A" },
+  { label: "↓", type: "data", data: "\x1b[B" },
+  { label: "←", type: "data", data: "\x1b[D" },
+  { label: "→", type: "data", data: "\x1b[C" },
+  { label: "Ctrl+C", type: "signal", signal: "SIGINT" },
+  { label: "Ctrl+U", type: "data", data: "\x15" },
+];
 
 type BottomPanelProps = {
   cwd?: string;
@@ -12,9 +34,11 @@ type BottomPanelProps = {
 export const BottomPanel: FC<BottomPanelProps> = ({ cwd }) => {
   const { isBottomPanelOpen, bottomPanelHeight } = useBottomPanelState();
   const { setIsBottomPanelOpen, setBottomPanelHeight } = useBottomPanelActions();
+  const isMobile = useIsMobile();
 
   const [terminalResetToken, setTerminalResetToken] = useState(0);
   const collapseTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const terminalRef = useRef<TerminalHandle>(null);
 
   // Clean up timer on unmount
   useEffect(() => {
@@ -61,6 +85,14 @@ export const BottomPanel: FC<BottomPanelProps> = ({ cwd }) => {
       document.body.style.pointerEvents = "";
     };
   }, [isResizing]);
+
+  const handleKeyPress = useCallback((key: KeyDef) => {
+    if (key.type === "data") {
+      terminalRef.current?.sendData(key.data);
+    } else {
+      terminalRef.current?.sendSignal(key.signal);
+    }
+  }, []);
 
   if (!isBottomPanelOpen) return null;
 
@@ -112,11 +144,58 @@ export const BottomPanel: FC<BottomPanelProps> = ({ cwd }) => {
       {/* Content */}
       <div className="flex-1 min-h-0 bg-muted/5">
         <TerminalPanel
+          ref={terminalRef}
           resetToken={terminalResetToken}
           cwd={cwd}
           onProcessExit={handleProcessExit}
         />
       </div>
+
+      {/* Mobile keyboard shortcut bar */}
+      {isMobile && (
+        <div className="flex items-center gap-1 px-2 py-1.5 border-t border-border/40 bg-muted/10 overflow-x-auto flex-shrink-0">
+          {/* Scrollback buttons */}
+          <button
+            type="button"
+            className="flex items-center justify-center min-w-[40px] h-9 rounded border border-border/60 text-muted-foreground active:bg-muted transition-colors flex-shrink-0"
+            onPointerDown={(e) => {
+              e.preventDefault();
+              terminalRef.current?.scrollLines(-5);
+            }}
+            aria-label="Scroll up"
+          >
+            <ChevronsUpIcon className="w-3.5 h-3.5" />
+          </button>
+          <button
+            type="button"
+            className="flex items-center justify-center min-w-[40px] h-9 rounded border border-border/60 text-muted-foreground active:bg-muted transition-colors flex-shrink-0"
+            onPointerDown={(e) => {
+              e.preventDefault();
+              terminalRef.current?.scrollLines(5);
+            }}
+            aria-label="Scroll down"
+          >
+            <ChevronsDownIcon className="w-3.5 h-3.5" />
+          </button>
+
+          <div className="w-px h-5 bg-border/60 mx-0.5 flex-shrink-0" />
+
+          {/* Key shortcut buttons */}
+          {MOBILE_KEYS.map((key) => (
+            <button
+              key={key.label}
+              type="button"
+              className="flex items-center justify-center min-w-[44px] h-9 px-2 rounded border border-border/60 text-xs font-mono text-muted-foreground active:bg-muted transition-colors flex-shrink-0"
+              onPointerDown={(e) => {
+                e.preventDefault();
+                handleKeyPress(key);
+              }}
+            >
+              {key.label}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

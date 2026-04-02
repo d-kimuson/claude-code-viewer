@@ -794,10 +794,6 @@
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
         492
-      ],
-      [
-        "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        645
       ]
     ],
     "translation": "今すぐ送信"
@@ -809,10 +805,6 @@
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
         477
-      ],
-      [
-        "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        630
       ]
     ],
     "translation": "送信モード"
@@ -827,11 +819,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        648
-      ],
-      [
-        "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        670
+        642
       ]
     ],
     "translation": "予約送信"
@@ -846,17 +834,6 @@
       ]
     ],
     "translation": "送信予定時刻"
-  },
-  "chat.status.processing": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        732
-      ]
-    ],
-    "translation": "処理中..."
   },
   "chat.toolbar.effort.tooltip": {
     "message": "Select reasoning effort",
@@ -961,7 +938,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        710
+        682
       ]
     ],
     "translation": "音声入力"
@@ -2466,7 +2443,7 @@
     "origin": [
       [
         "src/web/app/projects/page.tsx",
-        13
+        33
       ]
     ],
     "translation": "Claude Codeの会話履歴とプロジェクトの操作を閲覧"
@@ -2477,7 +2454,7 @@
     "origin": [
       [
         "src/web/app/projects/page.tsx",
-        29
+        49
       ]
     ],
     "translation": "プロジェクトを読み込み中..."
@@ -2488,7 +2465,7 @@
     "origin": [
       [
         "src/web/app/projects/page.tsx",
-        21
+        41
       ]
     ],
     "translation": "プロジェクト"

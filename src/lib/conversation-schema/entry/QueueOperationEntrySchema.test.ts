@@ -93,14 +93,14 @@ describe("QueueOperationEntrySchema", () => {
       expect(result.success).toBe(false);
     });
 
-    test("rejects missing content", () => {
+    test("accepts missing content", () => {
       const result = QueueOperationEntrySchema.safeParse({
         type: "queue-operation",
         operation: "enqueue",
-        timestamp: "2025-11-15T04:36:38.085Z",
-        sessionId: "abc123",
+        timestamp: "2026-04-02T02:34:31.612Z",
+        sessionId: "5b01fec7-c96d-416d-a6dc-637624126d88",
       });
-      expect(result.success).toBe(false);
+      expect(result.success).toBe(true);
     });
   });
 

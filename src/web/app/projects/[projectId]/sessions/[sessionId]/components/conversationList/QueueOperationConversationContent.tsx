@@ -37,7 +37,7 @@ export const QueueOperationConversationContent: FC<{
               <span className="font-medium text-muted-foreground">Timestamp:</span>{" "}
               {conversation.timestamp}
             </div>
-            {conversation.operation === "enqueue" && (
+            {conversation.operation === "enqueue" && conversation.content !== undefined && (
               <div>
                 <span className="font-medium text-muted-foreground">Content:</span>
                 <pre className="mt-1 overflow-x-auto whitespace-pre-wrap">

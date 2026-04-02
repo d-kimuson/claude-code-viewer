@@ -1,0 +1,39 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/on-session-start.sh",
+            "timeout": 600
+          }
+        ]
+      }
+    ],
+    "CwdChanged": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/on-cwd-changed.sh",
+            "timeout": 300
+          }
+        ]
+      }
+    ],
+    "FileChanged": [
+      {
+        "matcher": "^\\.envrc$|^flake\\.nix$|^flake\\.lock$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/on-file-changed.sh",
+            "timeout": 300
+          }
+        ]
+      }
+    ]
+  }
+}

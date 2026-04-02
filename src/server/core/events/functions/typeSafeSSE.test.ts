@@ -1,6 +1,7 @@
+import { it } from "@effect/vitest";
 import { Effect } from "effect";
 import { SSEStreamingApi } from "hono/streaming";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, vi } from "vitest";
 import { z } from "zod";
 import { TypeSafeSSE } from "./typeSafeSSE.ts";
 
@@ -51,7 +52,7 @@ const createMockStream = (writtenEvents: Array<{ event: string; id: string; data
 
 describe("typeSafeSSE", () => {
   describe("writeTypeSafeSSE", () => {
-    it("can correctly format and write SSE events", async () => {
+    it.live("can correctly format and write SSE events", () => {
       const writtenEvents: Array<{
         event: string;
         id: string;
@@ -60,35 +61,29 @@ describe("typeSafeSSE", () => {
 
       const mockStream = createMockStream(writtenEvents);
 
-      const program = Effect.gen(function* () {
+      return Effect.gen(function* () {
         const typeSafeSSE = yield* TypeSafeSSE;
 
         yield* typeSafeSSE.writeSSE("heartbeat", {});
 
-        return writtenEvents;
-      });
+        expect(writtenEvents).toHaveLength(1);
 
-      const result = await Effect.runPromise(
-        program.pipe(Effect.provide(TypeSafeSSE.make(mockStream))),
-      );
+        const item = writtenEvents.at(0);
+        expect(item).toBeDefined();
+        if (!item) {
+          throw new Error("item is undefined");
+        }
 
-      expect(result).toHaveLength(1);
+        expect(item.event).toBe("heartbeat");
+        expect(item.id).toBeDefined();
 
-      const item = result.at(0);
-      expect(item).toBeDefined();
-      if (!item) {
-        throw new Error("item is undefined");
-      }
-
-      expect(item.event).toBe("heartbeat");
-      expect(item.id).toBeDefined();
-
-      const data = parseBaseEvent(item.data);
-      expect(data.kind).toBe("heartbeat");
-      expect(data.timestamp).toBeDefined();
+        const data = parseBaseEvent(item.data);
+        expect(data.kind).toBe("heartbeat");
+        expect(data.timestamp).toBeDefined();
+      }).pipe(Effect.provide(TypeSafeSSE.make(mockStream)));
     });
 
-    it("can correctly write connect event", async () => {
+    it.live("can correctly write connect event", () => {
       const writtenEvents: Array<{
         event: string;
         id: string;
@@ -97,32 +92,26 @@ describe("typeSafeSSE", () => {
 
       const mockStream = createMockStream(writtenEvents);
 
-      const program = Effect.gen(function* () {
+      return Effect.gen(function* () {
         const typeSafeSSE = yield* TypeSafeSSE;
 
         yield* typeSafeSSE.writeSSE("connect", {});
 
-        return writtenEvents;
-      });
+        expect(writtenEvents).toHaveLength(1);
+        const item = writtenEvents.at(0);
+        expect(item).toBeDefined();
+        if (!item) {
+          throw new Error("item is undefined");
+        }
+        expect(item.event).toBe("connect");
 
-      const result = await Effect.runPromise(
-        program.pipe(Effect.provide(TypeSafeSSE.make(mockStream))),
-      );
-
-      expect(result).toHaveLength(1);
-      const item = result.at(0);
-      expect(item).toBeDefined();
-      if (!item) {
-        throw new Error("item is undefined");
-      }
-      expect(item.event).toBe("connect");
-
-      const data = parseBaseEvent(item.data);
-      expect(data.kind).toBe("connect");
-      expect(data.timestamp).toBeDefined();
+        const data = parseBaseEvent(item.data);
+        expect(data.kind).toBe("connect");
+        expect(data.timestamp).toBeDefined();
+      }).pipe(Effect.provide(TypeSafeSSE.make(mockStream)));
     });
 
-    it("can correctly write sessionChanged event", async () => {
+    it.live("can correctly write sessionChanged event", () => {
       const writtenEvents: Array<{
         event: string;
         id: string;
@@ -131,7 +120,7 @@ describe("typeSafeSSE", () => {
 
       const mockStream = createMockStream(writtenEvents);
 
-      const program = Effect.gen(function* () {
+      return Effect.gen(function* () {
         const typeSafeSSE = yield* TypeSafeSSE;
 
         yield* typeSafeSSE.writeSSE("sessionChanged", {
@@ -139,29 +128,23 @@ describe("typeSafeSSE", () => {
           sessionId: "session-1",
         });
 
-        return writtenEvents;
-      });
+        expect(writtenEvents).toHaveLength(1);
+        const item = writtenEvents.at(0);
+        expect(item).toBeDefined();
+        if (!item) {
+          throw new Error("item is undefined");
+        }
+        expect(item.event).toBe("sessionChanged");
 
-      const result = await Effect.runPromise(
-        program.pipe(Effect.provide(TypeSafeSSE.make(mockStream))),
-      );
-
-      expect(result).toHaveLength(1);
-      const item = result.at(0);
-      expect(item).toBeDefined();
-      if (!item) {
-        throw new Error("item is undefined");
-      }
-      expect(item.event).toBe("sessionChanged");
-
-      const data = parseSessionChangedEvent(item.data);
-      expect(data.kind).toBe("sessionChanged");
-      expect(data.projectId).toBe("project-1");
-      expect(data.sessionId).toBe("session-1");
-      expect(data.timestamp).toBeDefined();
+        const data = parseSessionChangedEvent(item.data);
+        expect(data.kind).toBe("sessionChanged");
+        expect(data.projectId).toBe("project-1");
+        expect(data.sessionId).toBe("session-1");
+        expect(data.timestamp).toBeDefined();
+      }).pipe(Effect.provide(TypeSafeSSE.make(mockStream)));
     });
 
-    it("can correctly write permission_requested event", async () => {
+    it.live("can correctly write permission_requested event", () => {
       const writtenEvents: Array<{
         event: string;
         id: string;
@@ -170,35 +153,29 @@ describe("typeSafeSSE", () => {
 
       const mockStream = createMockStream(writtenEvents);
 
-      const program = Effect.gen(function* () {
+      return Effect.gen(function* () {
         const typeSafeSSE = yield* TypeSafeSSE;
 
         yield* typeSafeSSE.writeSSE("permissionRequested", {
           sessionId: "session-1",
         });
 
-        return writtenEvents;
-      });
+        expect(writtenEvents).toHaveLength(1);
+        const item = writtenEvents.at(0);
+        expect(item).toBeDefined();
+        if (!item) {
+          throw new Error("item is undefined");
+        }
+        expect(item.event).toBe("permissionRequested");
 
-      const result = await Effect.runPromise(
-        program.pipe(Effect.provide(TypeSafeSSE.make(mockStream))),
-      );
-
-      expect(result).toHaveLength(1);
-      const item = result.at(0);
-      expect(item).toBeDefined();
-      if (!item) {
-        throw new Error("item is undefined");
-      }
-      expect(item.event).toBe("permissionRequested");
-
-      const data = parsePermissionRequestedEvent(item.data);
-      expect(data.kind).toBe("permissionRequested");
-      expect(data.sessionId).toBe("session-1");
-      expect(data.timestamp).toBeDefined();
+        const data = parsePermissionRequestedEvent(item.data);
+        expect(data.kind).toBe("permissionRequested");
+        expect(data.sessionId).toBe("session-1");
+        expect(data.timestamp).toBeDefined();
+      }).pipe(Effect.provide(TypeSafeSSE.make(mockStream)));
     });
 
-    it("can write multiple events consecutively", async () => {
+    it.live("can write multiple events consecutively", () => {
       const writtenEvents: Array<{
         event: string;
         id: string;
@@ -207,7 +184,7 @@ describe("typeSafeSSE", () => {
 
       const mockStream = createMockStream(writtenEvents);
 
-      const program = Effect.gen(function* () {
+      return Effect.gen(function* () {
         const typeSafeSSE = yield* TypeSafeSSE;
 
         yield* typeSafeSSE.writeSSE("connect", {});
@@ -216,20 +193,14 @@ describe("typeSafeSSE", () => {
           projectId: "project-1",
         });
 
-        return writtenEvents;
-      });
-
-      const result = await Effect.runPromise(
-        program.pipe(Effect.provide(TypeSafeSSE.make(mockStream))),
-      );
-
-      expect(result).toHaveLength(3);
-      expect(result.at(0)?.event).toBe("connect");
-      expect(result.at(1)?.event).toBe("heartbeat");
-      expect(result.at(2)?.event).toBe("sessionListChanged");
+        expect(writtenEvents).toHaveLength(3);
+        expect(writtenEvents.at(0)?.event).toBe("connect");
+        expect(writtenEvents.at(1)?.event).toBe("heartbeat");
+        expect(writtenEvents.at(2)?.event).toBe("sessionListChanged");
+      }).pipe(Effect.provide(TypeSafeSSE.make(mockStream)));
     });
 
-    it("assigns unique ID to each event", async () => {
+    it.live("assigns unique ID to each event", () => {
       const writtenEvents: Array<{
         event: string;
         id: string;
@@ -238,23 +209,17 @@ describe("typeSafeSSE", () => {
 
       const mockStream = createMockStream(writtenEvents);
 
-      const program = Effect.gen(function* () {
+      return Effect.gen(function* () {
         const typeSafeSSE = yield* TypeSafeSSE;
 
         yield* typeSafeSSE.writeSSE("heartbeat", {});
         yield* typeSafeSSE.writeSSE("heartbeat", {});
         yield* typeSafeSSE.writeSSE("heartbeat", {});
 
-        return writtenEvents;
-      });
-
-      const result = await Effect.runPromise(
-        program.pipe(Effect.provide(TypeSafeSSE.make(mockStream))),
-      );
-
-      expect(result).toHaveLength(3);
-      const ids = result.map((e) => e.id);
-      expect(new Set(ids).size).toBe(3); // All IDs are unique
+        expect(writtenEvents).toHaveLength(3);
+        const ids = writtenEvents.map((e) => e.id);
+        expect(new Set(ids).size).toBe(3); // All IDs are unique
+      }).pipe(Effect.provide(TypeSafeSSE.make(mockStream)));
     });
   });
 });

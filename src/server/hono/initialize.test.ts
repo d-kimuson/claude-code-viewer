@@ -1,5 +1,6 @@
+import { describe, it } from "@effect/vitest";
 import { Effect, Layer, Ref } from "effect";
-import { describe, expect, it } from "vitest";
+import { expect } from "vitest";
 import { testPlatformLayer } from "../../testing/layers/testPlatformLayer.ts";
 import { testProjectMetaServiceLayer } from "../../testing/layers/testProjectMetaServiceLayer.ts";
 import { testProjectRepositoryLayer } from "../../testing/layers/testProjectRepositoryLayer.ts";
@@ -55,67 +56,63 @@ const sharedTestLayer = Layer.provide(InitializeService.Live, allDependencies).p
 
 describe("InitializeService", () => {
   describe("basic initialization process", () => {
-    it("service initialization succeeds", async () => {
-      const program = Effect.gen(function* () {
+    it.live("service initialization succeeds", () =>
+      Effect.gen(function* () {
         const initialize = yield* InitializeService;
-        return yield* initialize.startInitialization();
-      });
+        const result = yield* initialize.startInitialization();
 
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(sharedTestLayer),
-          Effect.provide(
-            testProjectRepositoryLayer({
-              projects: [
-                {
-                  id: "project-1",
-                  claudeProjectPath: "/path/to/project-1",
-                  lastModifiedAt: new Date(),
-                  meta: {
-                    projectName: "Project 1",
-                    projectPath: "/path/to/project-1",
-                    sessionCount: 2,
-                  },
+        expect(result).toBeUndefined();
+      }).pipe(
+        Effect.provide(sharedTestLayer),
+        Effect.provide(
+          testProjectRepositoryLayer({
+            projects: [
+              {
+                id: "project-1",
+                claudeProjectPath: "/path/to/project-1",
+                lastModifiedAt: new Date(),
+                meta: {
+                  projectName: "Project 1",
+                  projectPath: "/path/to/project-1",
+                  sessionCount: 2,
                 },
-              ],
-            }),
-          ),
-          Effect.provide(
-            testSessionRepositoryLayer({
-              sessions: [
-                {
-                  id: "session-1",
-                  jsonlFilePath: "/path/to/session-1.jsonl",
-                  lastModifiedAt: new Date(),
-                  meta: createMockSessionMeta({
-                    messageCount: 5,
-                    firstUserMessage: {
-                      kind: "command",
-                      commandName: "test",
-                    },
-                  }),
-                },
-                {
-                  id: "session-2",
-                  jsonlFilePath: "/path/to/session-2.jsonl",
-                  lastModifiedAt: new Date(),
-                  meta: createMockSessionMeta({
-                    messageCount: 3,
-                    firstUserMessage: null,
-                  }),
-                },
-              ],
-            }),
-          ),
-          Effect.provide(testPlatformLayer()),
+              },
+            ],
+          }),
         ),
-      );
+        Effect.provide(
+          testSessionRepositoryLayer({
+            sessions: [
+              {
+                id: "session-1",
+                jsonlFilePath: "/path/to/session-1.jsonl",
+                lastModifiedAt: new Date(),
+                meta: createMockSessionMeta({
+                  messageCount: 5,
+                  firstUserMessage: {
+                    kind: "command",
+                    commandName: "test",
+                  },
+                }),
+              },
+              {
+                id: "session-2",
+                jsonlFilePath: "/path/to/session-2.jsonl",
+                lastModifiedAt: new Date(),
+                meta: createMockSessionMeta({
+                  messageCount: 3,
+                  firstUserMessage: null,
+                }),
+              },
+            ],
+          }),
+        ),
+        Effect.provide(testPlatformLayer()),
+      ),
+    );
 
-      expect(result).toBeUndefined();
-    });
-
-    it("file watcher is started", async () => {
-      const program = Effect.gen(function* () {
+    it.live("file watcher is started", () =>
+      Effect.gen(function* () {
         const initialize = yield* InitializeService;
 
         yield* initialize.startInitialization();
@@ -123,24 +120,18 @@ describe("InitializeService", () => {
         // Verify file watcher is started
         // (In actual implementation, verify that startWatching is called)
         return "file watcher started";
-      });
-
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(sharedTestLayer),
-          Effect.provide(testProjectRepositoryLayer()),
-          Effect.provide(testSessionRepositoryLayer()),
-          Effect.provide(testPlatformLayer()),
-        ),
-      );
-
-      expect(result).toBe("file watcher started");
-    });
+      }).pipe(
+        Effect.provide(sharedTestLayer),
+        Effect.provide(testProjectRepositoryLayer()),
+        Effect.provide(testSessionRepositoryLayer()),
+        Effect.provide(testPlatformLayer()),
+      ),
+    );
   });
 
   describe("event processing", () => {
-    it("receives sessionChanged event", async () => {
-      const program = Effect.gen(function* () {
+    it.live("receives sessionChanged event", () =>
+      Effect.gen(function* () {
         const initialize = yield* InitializeService;
         const eventBus = yield* EventBus;
         const eventsRef = yield* Ref.make<Array<InternalEventDeclaration["sessionChanged"]>>([]);
@@ -161,28 +152,22 @@ describe("InitializeService", () => {
         // Wait a bit for event to be processed
         yield* Effect.sleep("50 millis");
 
-        const events = yield* Ref.get(eventsRef);
-        return events;
-      });
+        const result = yield* Ref.get(eventsRef);
+        expect(result).toHaveLength(1);
+        expect(result[0]).toEqual({
+          projectId: "project-1",
+          sessionId: "session-1",
+        });
+      }).pipe(
+        Effect.provide(sharedTestLayer),
+        Effect.provide(testProjectRepositoryLayer()),
+        Effect.provide(testSessionRepositoryLayer()),
+        Effect.provide(testPlatformLayer()),
+      ),
+    );
 
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(sharedTestLayer),
-          Effect.provide(testProjectRepositoryLayer()),
-          Effect.provide(testSessionRepositoryLayer()),
-          Effect.provide(testPlatformLayer()),
-        ),
-      );
-
-      expect(result).toHaveLength(1);
-      expect(result[0]).toEqual({
-        projectId: "project-1",
-        sessionId: "session-1",
-      });
-    });
-
-    it("heartbeat event is emitted periodically", async () => {
-      const program = Effect.gen(function* () {
+    it.live("heartbeat event is emitted periodically", () =>
+      Effect.gen(function* () {
         const initialize = yield* InitializeService;
         const eventBus = yield* EventBus;
         const heartbeatCountRef = yield* Ref.make(0);
@@ -198,70 +183,51 @@ describe("InitializeService", () => {
         // (In actual tests, should use mock to shorten time)
         yield* Effect.sleep("100 millis");
 
-        const count = yield* Ref.get(heartbeatCountRef);
-        return count;
-      });
-
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(sharedTestLayer),
-          Effect.provide(testProjectRepositoryLayer()),
-          Effect.provide(testSessionRepositoryLayer()),
-          Effect.provide(testPlatformLayer()),
-        ),
-      );
-
-      // heartbeat is emitted immediately once first, then every 10 seconds
-      // At 100ms, only the first one is emitted
-      expect(result).toBeGreaterThanOrEqual(1);
-    });
+        const result = yield* Ref.get(heartbeatCountRef);
+        // heartbeat is emitted immediately once first, then every 10 seconds
+        // At 100ms, only the first one is emitted
+        expect(result).toBeGreaterThanOrEqual(1);
+      }).pipe(
+        Effect.provide(sharedTestLayer),
+        Effect.provide(testProjectRepositoryLayer()),
+        Effect.provide(testSessionRepositoryLayer()),
+        Effect.provide(testPlatformLayer()),
+      ),
+    );
   });
 
   describe("cache initialization", () => {
-    it("doesn't throw error even if cache initialization fails", async () => {
+    it.live("doesn't throw error even if cache initialization fails", () => {
       const mockProjectRepositoryLayer = Layer.mock(ProjectRepository, {
         getProjects: () => Effect.fail(new Error("Failed to get projects")),
         getProject: () => Effect.fail(new Error("Not implemented in mock")),
       });
 
-      const program = Effect.gen(function* () {
+      return Effect.gen(function* () {
         const initialize = yield* InitializeService;
-        return yield* initialize.startInitialization();
-      });
-
-      // Completes without throwing error
-      await expect(
-        Effect.runPromise(
-          program.pipe(
-            Effect.provide(sharedTestLayer),
-            Effect.provide(mockProjectRepositoryLayer),
-            Effect.provide(testSessionRepositoryLayer()),
-            Effect.provide(testPlatformLayer()),
-          ),
-        ),
-      ).resolves.toBeUndefined();
+        const result = yield* initialize.startInitialization();
+        expect(result).toBeUndefined();
+      }).pipe(
+        Effect.provide(sharedTestLayer),
+        Effect.provide(mockProjectRepositoryLayer),
+        Effect.provide(testSessionRepositoryLayer()),
+        Effect.provide(testPlatformLayer()),
+      );
     });
   });
 
   describe("cleanup", () => {
-    it("resources are cleaned up with stopCleanup", async () => {
-      const program = Effect.gen(function* () {
+    it.live("resources are cleaned up with stopCleanup", () =>
+      Effect.gen(function* () {
         const initialize = yield* InitializeService;
         yield* initialize.startInitialization();
         yield* initialize.stopCleanup();
-        return "cleaned up";
-      });
-
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(sharedTestLayer),
-          Effect.provide(testProjectRepositoryLayer()),
-          Effect.provide(testSessionRepositoryLayer()),
-          Effect.provide(testPlatformLayer()),
-        ),
-      );
-
-      expect(result).toBe("cleaned up");
-    });
+      }).pipe(
+        Effect.provide(sharedTestLayer),
+        Effect.provide(testProjectRepositoryLayer()),
+        Effect.provide(testSessionRepositoryLayer()),
+        Effect.provide(testPlatformLayer()),
+      ),
+    );
   });
 });

@@ -1,6 +1,7 @@
+import { it } from "@effect/vitest";
 /* oxlint-disable node/no-process-env -- testing environment variable detection */
-import { Effect } from "effect";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { Effect, Either } from "effect";
+import { beforeEach, describe, expect, vi } from "vitest";
 
 // We need to access the internal functions for testing
 // Since they're not exported, we'll test the public API via Effect
@@ -17,119 +18,154 @@ describe("DeprecatedEnvDetector", () => {
     delete process.env.CCV_PASSWORD;
   });
 
-  it("should not show warnings when no deprecated env vars are set", async () => {
-    const consoleSpy = vi.spyOn(console, "log");
+  it.live("should not show warnings when no deprecated env vars are set", () =>
+    Effect.gen(function* () {
+      const consoleSpy = vi.spyOn(console, "log");
 
-    // Set only valid env vars
-    // biome-ignore lint/style/noProcessEnv: Testing environment variable detection
-    process.env.CCV_PASSWORD = "test";
+      // Set only valid env vars
+      // biome-ignore lint/style/noProcessEnv: Testing environment variable detection
+      process.env.CCV_PASSWORD = "test";
 
-    // Dynamically import after env vars are set
-    const { checkDeprecatedEnvs } = await import("./DeprecatedEnvDetector.ts");
+      // Dynamically import after env vars are set
+      const { checkDeprecatedEnvs } = yield* Effect.promise(
+        () => import("./DeprecatedEnvDetector.ts"),
+      );
 
-    await Effect.runPromise(checkDeprecatedEnvs);
+      yield* checkDeprecatedEnvs;
 
-    expect(consoleSpy).not.toHaveBeenCalled();
+      expect(consoleSpy).not.toHaveBeenCalled();
 
-    // biome-ignore lint/style/noProcessEnv: Testing environment variable detection
-    delete process.env.CCV_PASSWORD;
-  });
+      // biome-ignore lint/style/noProcessEnv: Testing environment variable detection
+      delete process.env.CCV_PASSWORD;
+    }),
+  );
 
-  it("should show warning and throw error for removed CLAUDE_CODE_VIEWER_AUTH_PASSWORD", async () => {
-    const consoleSpy = vi.spyOn(console, "log");
+  it.live("should show warning and throw error for removed CLAUDE_CODE_VIEWER_AUTH_PASSWORD", () =>
+    Effect.gen(function* () {
+      const consoleSpy = vi.spyOn(console, "log");
 
-    // biome-ignore lint/style/noProcessEnv: Testing environment variable detection
-    process.env.CLAUDE_CODE_VIEWER_AUTH_PASSWORD = "test";
+      // biome-ignore lint/style/noProcessEnv: Testing environment variable detection
+      process.env.CLAUDE_CODE_VIEWER_AUTH_PASSWORD = "test";
 
-    const { checkDeprecatedEnvs } = await import("./DeprecatedEnvDetector.ts");
+      const { checkDeprecatedEnvs } = yield* Effect.promise(
+        () => import("./DeprecatedEnvDetector.ts"),
+      );
 
-    await expect(Effect.runPromise(checkDeprecatedEnvs)).rejects.toThrow(
-      "Cannot start server: removed environment variables detected",
-    );
+      const result = yield* Effect.either(checkDeprecatedEnvs);
 
-    expect(consoleSpy).toHaveBeenCalled();
+      expect(Either.isLeft(result)).toBe(true);
+      if (Either.isLeft(result)) {
+        expect(String(result.left)).toContain(
+          "Cannot start server: removed environment variables detected",
+        );
+      }
 
-    const output = consoleSpy.mock.calls.flat().join("\n");
-    expect(output).toContain("REMOVED");
-    expect(output).toContain("CLAUDE_CODE_VIEWER_AUTH_PASSWORD");
-    expect(output).toContain("CCV_PASSWORD");
-    expect(output).toContain("--password");
+      expect(consoleSpy).toHaveBeenCalled();
 
-    // biome-ignore lint/style/noProcessEnv: Testing environment variable detection
-    delete process.env.CLAUDE_CODE_VIEWER_AUTH_PASSWORD;
-  });
+      const output = consoleSpy.mock.calls.flat().join("\n");
+      expect(output).toContain("REMOVED");
+      expect(output).toContain("CLAUDE_CODE_VIEWER_AUTH_PASSWORD");
+      expect(output).toContain("CCV_PASSWORD");
+      expect(output).toContain("--password");
 
-  it("should show warning and throw error for removed CLAUDE_CODE_VIEWER_CC_EXECUTABLE_PATH", async () => {
-    const consoleSpy = vi.spyOn(console, "log");
+      // biome-ignore lint/style/noProcessEnv: Testing environment variable detection
+      delete process.env.CLAUDE_CODE_VIEWER_AUTH_PASSWORD;
+    }),
+  );
 
-    // biome-ignore lint/style/noProcessEnv: Testing environment variable detection
-    process.env.CLAUDE_CODE_VIEWER_CC_EXECUTABLE_PATH = "/path/to/claude";
+  it.live(
+    "should show warning and throw error for removed CLAUDE_CODE_VIEWER_CC_EXECUTABLE_PATH",
+    () =>
+      Effect.gen(function* () {
+        const consoleSpy = vi.spyOn(console, "log");
 
-    const { checkDeprecatedEnvs } = await import("./DeprecatedEnvDetector.ts");
+        // biome-ignore lint/style/noProcessEnv: Testing environment variable detection
+        process.env.CLAUDE_CODE_VIEWER_CC_EXECUTABLE_PATH = "/path/to/claude";
 
-    await expect(Effect.runPromise(checkDeprecatedEnvs)).rejects.toThrow(
-      "Cannot start server: removed environment variables detected",
-    );
+        const { checkDeprecatedEnvs } = yield* Effect.promise(
+          () => import("./DeprecatedEnvDetector.ts"),
+        );
 
-    expect(consoleSpy).toHaveBeenCalled();
+        const result = yield* Effect.either(checkDeprecatedEnvs);
 
-    const output = consoleSpy.mock.calls.flat().join("\n");
-    expect(output).toContain("REMOVED");
-    expect(output).toContain("CLAUDE_CODE_VIEWER_CC_EXECUTABLE_PATH");
-    expect(output).toContain("CCV_CC_EXECUTABLE_PATH");
-    expect(output).toContain("--executable");
+        expect(Either.isLeft(result)).toBe(true);
+        if (Either.isLeft(result)) {
+          expect(String(result.left)).toContain(
+            "Cannot start server: removed environment variables detected",
+          );
+        }
 
-    // biome-ignore lint/style/noProcessEnv: Testing environment variable detection
-    delete process.env.CLAUDE_CODE_VIEWER_CC_EXECUTABLE_PATH;
-  });
+        expect(consoleSpy).toHaveBeenCalled();
 
-  it("should show error for multiple removed env vars", async () => {
-    const consoleSpy = vi.spyOn(console, "log");
+        const output = consoleSpy.mock.calls.flat().join("\n");
+        expect(output).toContain("REMOVED");
+        expect(output).toContain("CLAUDE_CODE_VIEWER_CC_EXECUTABLE_PATH");
+        expect(output).toContain("CCV_CC_EXECUTABLE_PATH");
+        expect(output).toContain("--executable");
 
-    // biome-ignore lint/style/noProcessEnv: Testing environment variable detection
-    process.env.CLAUDE_CODE_VIEWER_AUTH_PASSWORD = "test";
-    // biome-ignore lint/style/noProcessEnv: Testing environment variable detection
-    process.env.CLAUDE_CODE_VIEWER_CC_EXECUTABLE_PATH = "/path/to/claude";
+        // biome-ignore lint/style/noProcessEnv: Testing environment variable detection
+        delete process.env.CLAUDE_CODE_VIEWER_CC_EXECUTABLE_PATH;
+      }),
+  );
 
-    const { checkDeprecatedEnvs } = await import("./DeprecatedEnvDetector.ts");
+  it.live("should show error for multiple removed env vars", () =>
+    Effect.gen(function* () {
+      const consoleSpy = vi.spyOn(console, "log");
 
-    await expect(Effect.runPromise(checkDeprecatedEnvs)).rejects.toThrow(
-      "Cannot start server: removed environment variables detected",
-    );
+      // biome-ignore lint/style/noProcessEnv: Testing environment variable detection
+      process.env.CLAUDE_CODE_VIEWER_AUTH_PASSWORD = "test";
+      // biome-ignore lint/style/noProcessEnv: Testing environment variable detection
+      process.env.CLAUDE_CODE_VIEWER_CC_EXECUTABLE_PATH = "/path/to/claude";
 
-    expect(consoleSpy).toHaveBeenCalled();
+      const { checkDeprecatedEnvs } = yield* Effect.promise(
+        () => import("./DeprecatedEnvDetector.ts"),
+      );
 
-    const output = consoleSpy.mock.calls.flat().join("\n");
+      const result = yield* Effect.either(checkDeprecatedEnvs);
 
-    // Check both removed env vars are present
-    expect(output).toContain("CLAUDE_CODE_VIEWER_AUTH_PASSWORD");
-    expect(output).toContain("CLAUDE_CODE_VIEWER_CC_EXECUTABLE_PATH");
+      expect(Either.isLeft(result)).toBe(true);
+      if (Either.isLeft(result)) {
+        expect(String(result.left)).toContain(
+          "Cannot start server: removed environment variables detected",
+        );
+      }
 
-    // Check the migration guide link
-    expect(output).toContain("https://github.com/d-kimuson/claude-code-viewer#configuration");
+      expect(consoleSpy).toHaveBeenCalled();
 
-    // biome-ignore lint/style/noProcessEnv: Testing environment variable detection
-    delete process.env.CLAUDE_CODE_VIEWER_AUTH_PASSWORD;
-    // biome-ignore lint/style/noProcessEnv: Testing environment variable detection
-    delete process.env.CLAUDE_CODE_VIEWER_CC_EXECUTABLE_PATH;
-  });
+      const output = consoleSpy.mock.calls.flat().join("\n");
 
-  it("should include configuration link in output", async () => {
-    const consoleSpy = vi.spyOn(console, "log");
+      // Check both removed env vars are present
+      expect(output).toContain("CLAUDE_CODE_VIEWER_AUTH_PASSWORD");
+      expect(output).toContain("CLAUDE_CODE_VIEWER_CC_EXECUTABLE_PATH");
 
-    // biome-ignore lint/style/noProcessEnv: Testing environment variable detection
-    process.env.CLAUDE_CODE_VIEWER_AUTH_PASSWORD = "test";
+      // Check the migration guide link
+      expect(output).toContain("https://github.com/d-kimuson/claude-code-viewer#configuration");
 
-    const { checkDeprecatedEnvs } = await import("./DeprecatedEnvDetector.ts");
+      // biome-ignore lint/style/noProcessEnv: Testing environment variable detection
+      delete process.env.CLAUDE_CODE_VIEWER_AUTH_PASSWORD;
+      // biome-ignore lint/style/noProcessEnv: Testing environment variable detection
+      delete process.env.CLAUDE_CODE_VIEWER_CC_EXECUTABLE_PATH;
+    }),
+  );
 
-    await expect(Effect.runPromise(checkDeprecatedEnvs)).rejects.toThrow(
-      "Cannot start server: removed environment variables detected",
-    );
+  it.live("should include configuration link in output", () =>
+    Effect.gen(function* () {
+      const consoleSpy = vi.spyOn(console, "log");
 
-    const output = consoleSpy.mock.calls.flat().join("\n");
-    expect(output).toContain("https://github.com/d-kimuson/claude-code-viewer#configuration");
+      // biome-ignore lint/style/noProcessEnv: Testing environment variable detection
+      process.env.CLAUDE_CODE_VIEWER_AUTH_PASSWORD = "test";
 
-    // biome-ignore lint/style/noProcessEnv: Testing environment variable detection
-    delete process.env.CLAUDE_CODE_VIEWER_AUTH_PASSWORD;
-  });
+      const { checkDeprecatedEnvs } = yield* Effect.promise(
+        () => import("./DeprecatedEnvDetector.ts"),
+      );
+
+      yield* Effect.either(checkDeprecatedEnvs);
+
+      const output = consoleSpy.mock.calls.flat().join("\n");
+      expect(output).toContain("https://github.com/d-kimuson/claude-code-viewer#configuration");
+
+      // biome-ignore lint/style/noProcessEnv: Testing environment variable detection
+      delete process.env.CLAUDE_CODE_VIEWER_AUTH_PASSWORD;
+    }),
+  );
 });

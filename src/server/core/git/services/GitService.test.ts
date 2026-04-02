@@ -1,6 +1,7 @@
 import { NodeContext } from "@effect/platform-node";
+import { it } from "@effect/vitest";
 import { Effect, Either, Layer } from "effect";
-import { describe, expect, test } from "vitest";
+import { expect } from "vitest";
 import { testPlatformLayer } from "../../../../testing/layers/testPlatformLayer.ts";
 import { GitService } from "./GitService.ts";
 
@@ -10,49 +11,53 @@ const testLayer = GitService.Live.pipe(
 );
 
 describe("GitService.stageFiles", () => {
-  test("rejects empty files array", async () => {
-    const gitService = await Effect.runPromise(GitService.pipe(Effect.provide(testLayer)));
+  it.live("rejects empty files array", () =>
+    Effect.gen(function* () {
+      const gitService = yield* GitService;
 
-    const result = await Effect.runPromise(
-      Effect.either(gitService.stageFiles("/tmp/repo", [])).pipe(Effect.provide(NodeContext.layer)),
-    );
+      const result = yield* Effect.either(
+        gitService.stageFiles("/tmp/repo", []).pipe(Effect.provide(NodeContext.layer)),
+      );
 
-    expect(Either.isLeft(result)).toBe(true);
-  });
+      expect(Either.isLeft(result)).toBe(true);
+    }).pipe(Effect.provide(testLayer)),
+  );
 
   // Note: Real git operations would require a mock git repository
   // For now, we verify the validation logic works
 });
 
 describe("GitService.commit", () => {
-  test("rejects empty message", async () => {
-    const gitService = await Effect.runPromise(GitService.pipe(Effect.provide(testLayer)));
+  it.live("rejects empty message", () =>
+    Effect.gen(function* () {
+      const gitService = yield* GitService;
 
-    const result = await Effect.runPromise(
-      Effect.either(gitService.commit("/tmp/repo", "   ")).pipe(Effect.provide(NodeContext.layer)),
-    );
+      const result = yield* Effect.either(
+        gitService.commit("/tmp/repo", "   ").pipe(Effect.provide(NodeContext.layer)),
+      );
 
-    expect(Either.isLeft(result)).toBe(true);
-  });
+      expect(Either.isLeft(result)).toBe(true);
+    }).pipe(Effect.provide(testLayer)),
+  );
 
-  test("trims whitespace from message", async () => {
-    const gitService = await Effect.runPromise(GitService.pipe(Effect.provide(testLayer)));
+  it.live("trims whitespace from message", () =>
+    Effect.gen(function* () {
+      const gitService = yield* GitService;
 
-    // This test verifies the trimming logic
-    // Actual git commit would fail without a proper repo
-    const result = await Effect.runPromise(
-      Effect.either(gitService.commit("/tmp/nonexistent", "  test  ")).pipe(
-        Effect.provide(NodeContext.layer),
-      ),
-    );
+      // This test verifies the trimming logic
+      // Actual git commit would fail without a proper repo
+      const result = yield* Effect.either(
+        gitService.commit("/tmp/nonexistent", "  test  ").pipe(Effect.provide(NodeContext.layer)),
+      );
 
-    // Should fail due to missing repo, but message should have been trimmed
-    expect(Either.isLeft(result)).toBe(true);
-  });
+      // Should fail due to missing repo, but message should have been trimmed
+      expect(Either.isLeft(result)).toBe(true);
+    }).pipe(Effect.provide(testLayer)),
+  );
 });
 
 describe("GitService.push", () => {
-  test("returns timeout error after 60 seconds", () => {
+  it("returns timeout error after 60 seconds", () => {
     // This test would require mocking Command execution
     // to simulate a delayed response > 60s
     // Skipping for now as it requires complex mocking
@@ -61,31 +66,35 @@ describe("GitService.push", () => {
 });
 
 describe("GitService.findBaseBranch", () => {
-  test("should return null when no base branch is found", async () => {
-    const gitService = await Effect.runPromise(GitService.pipe(Effect.provide(testLayer)));
+  it.live("should return null when no base branch is found", () =>
+    Effect.gen(function* () {
+      const gitService = yield* GitService;
 
-    const result = await Effect.runPromise(
-      Effect.either(gitService.findBaseBranch("/tmp/nonexistent", "feature-branch")).pipe(
-        Effect.provide(NodeContext.layer),
-      ),
-    );
+      const result = yield* Effect.either(
+        gitService
+          .findBaseBranch("/tmp/nonexistent", "feature-branch")
+          .pipe(Effect.provide(NodeContext.layer)),
+      );
 
-    // Should fail due to missing repo
-    expect(Either.isLeft(result)).toBe(true);
-  });
+      // Should fail due to missing repo
+      expect(Either.isLeft(result)).toBe(true);
+    }).pipe(Effect.provide(testLayer)),
+  );
 });
 
 describe("GitService.getCommitsBetweenBranches", () => {
-  test("should fail with missing repo", async () => {
-    const gitService = await Effect.runPromise(GitService.pipe(Effect.provide(testLayer)));
+  it.live("should fail with missing repo", () =>
+    Effect.gen(function* () {
+      const gitService = yield* GitService;
 
-    const result = await Effect.runPromise(
-      Effect.either(
-        gitService.getCommitsBetweenBranches("/tmp/nonexistent", "base-branch", "HEAD"),
-      ).pipe(Effect.provide(NodeContext.layer)),
-    );
+      const result = yield* Effect.either(
+        gitService
+          .getCommitsBetweenBranches("/tmp/nonexistent", "base-branch", "HEAD")
+          .pipe(Effect.provide(NodeContext.layer)),
+      );
 
-    // Should fail due to missing repo
-    expect(Either.isLeft(result)).toBe(true);
-  });
+      // Should fail due to missing repo
+      expect(Either.isLeft(result)).toBe(true);
+    }).pipe(Effect.provide(testLayer)),
+  );
 });

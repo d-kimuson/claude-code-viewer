@@ -1,4 +1,6 @@
+import { it } from "@effect/vitest";
 import { Effect, Layer } from "effect";
+import { expect } from "vitest";
 import {
   createInMemoryDrizzle,
   makeDrizzleTestServiceLayer,
@@ -82,153 +84,136 @@ const sessionId = "test-session-id";
 
 describe("SessionMetaService", () => {
   describe("getSessionMeta", () => {
-    it("returns session metadata from DB row", async () => {
-      const row = makeSessionRow({ id: sessionId });
-
-      const program = Effect.gen(function* () {
+    it.live("returns session metadata from DB row", () =>
+      Effect.gen(function* () {
         const service = yield* SessionMetaService;
-        return yield* service.getSessionMeta(projectId, sessionId);
-      });
+        const result = yield* service.getSessionMeta(projectId, sessionId);
 
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(SessionMetaService.Live),
-          Effect.provide(
-            makeDrizzleServiceWithData({
-              projectRows: [defaultProjectRow],
-              sessionRows: [row],
-            }),
-          ),
-          Effect.provide(makeSyncServiceMock()),
+        expect(result.messageCount).toBe(5);
+        expect(result.firstUserMessage).toEqual({
+          kind: "text",
+          content: "hello",
+        });
+        expect(result.cost.totalUsd).toBeCloseTo(0.01);
+        expect(result.cost.tokenUsage.inputTokens).toBe(1000);
+        expect(result.cost.tokenUsage.outputTokens).toBe(500);
+        expect(result.modelName).toBe("claude-3-5-sonnet-20240620");
+        expect(result.prLinks).toEqual([]);
+        expect(result.customTitle).toBeNull();
+      }).pipe(
+        Effect.provide(SessionMetaService.Live),
+        Effect.provide(
+          makeDrizzleServiceWithData({
+            projectRows: [defaultProjectRow],
+            sessionRows: [makeSessionRow({ id: sessionId })],
+          }),
         ),
-      );
+        Effect.provide(makeSyncServiceMock()),
+      ),
+    );
 
-      expect(result.messageCount).toBe(5);
-      expect(result.firstUserMessage).toEqual({
-        kind: "text",
-        content: "hello",
-      });
-      expect(result.cost.totalUsd).toBeCloseTo(0.01);
-      expect(result.cost.tokenUsage.inputTokens).toBe(1000);
-      expect(result.cost.tokenUsage.outputTokens).toBe(500);
-      expect(result.modelName).toBe("claude-3-5-sonnet-20240620");
-      expect(result.prLinks).toEqual([]);
-      expect(result.customTitle).toBeNull();
-    });
-
-    it("returns null firstUserMessage when column is null", async () => {
-      const row = makeSessionRow({
-        id: sessionId,
-        firstUserMessageJson: null,
-      });
-
-      const program = Effect.gen(function* () {
+    it.live("returns null firstUserMessage when column is null", () =>
+      Effect.gen(function* () {
         const service = yield* SessionMetaService;
-        return yield* service.getSessionMeta(projectId, sessionId);
-      });
+        const result = yield* service.getSessionMeta(projectId, sessionId);
 
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(SessionMetaService.Live),
-          Effect.provide(
-            makeDrizzleServiceWithData({
-              projectRows: [defaultProjectRow],
-              sessionRows: [row],
-            }),
-          ),
-          Effect.provide(makeSyncServiceMock()),
+        expect(result.firstUserMessage).toBeNull();
+      }).pipe(
+        Effect.provide(SessionMetaService.Live),
+        Effect.provide(
+          makeDrizzleServiceWithData({
+            projectRows: [defaultProjectRow],
+            sessionRows: [
+              makeSessionRow({
+                id: sessionId,
+                firstUserMessageJson: null,
+              }),
+            ],
+          }),
         ),
-      );
+        Effect.provide(makeSyncServiceMock()),
+      ),
+    );
 
-      expect(result.firstUserMessage).toBeNull();
-    });
-
-    it("parses customTitle from DB row", async () => {
-      const row = makeSessionRow({
-        id: sessionId,
-        customTitle: "My Custom Title",
-      });
-
-      const program = Effect.gen(function* () {
+    it.live("parses customTitle from DB row", () =>
+      Effect.gen(function* () {
         const service = yield* SessionMetaService;
-        return yield* service.getSessionMeta(projectId, sessionId);
-      });
+        const result = yield* service.getSessionMeta(projectId, sessionId);
 
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(SessionMetaService.Live),
-          Effect.provide(
-            makeDrizzleServiceWithData({
-              projectRows: [defaultProjectRow],
-              sessionRows: [row],
-            }),
-          ),
-          Effect.provide(makeSyncServiceMock()),
+        expect(result.customTitle).toBe("My Custom Title");
+      }).pipe(
+        Effect.provide(SessionMetaService.Live),
+        Effect.provide(
+          makeDrizzleServiceWithData({
+            projectRows: [defaultProjectRow],
+            sessionRows: [
+              makeSessionRow({
+                id: sessionId,
+                customTitle: "My Custom Title",
+              }),
+            ],
+          }),
         ),
-      );
+        Effect.provide(makeSyncServiceMock()),
+      ),
+    );
 
-      expect(result.customTitle).toBe("My Custom Title");
-    });
+    it.live("parses prLinks from DB row", () =>
+      Effect.gen(function* () {
+        const prLinks = [
+          {
+            prNumber: 42,
+            prUrl: "https://github.com/test/repo/pull/42",
+            prRepository: "test/repo",
+          },
+        ];
 
-    it("parses prLinks from DB row", async () => {
-      const prLinks = [
-        {
-          prNumber: 42,
-          prUrl: "https://github.com/test/repo/pull/42",
-          prRepository: "test/repo",
-        },
-      ];
-      const row = makeSessionRow({
-        id: sessionId,
-        prLinksJson: JSON.stringify(prLinks),
-      });
-
-      const program = Effect.gen(function* () {
         const service = yield* SessionMetaService;
-        return yield* service.getSessionMeta(projectId, sessionId);
-      });
+        const result = yield* service.getSessionMeta(projectId, sessionId);
 
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(SessionMetaService.Live),
-          Effect.provide(
-            makeDrizzleServiceWithData({
-              projectRows: [defaultProjectRow],
-              sessionRows: [row],
-            }),
-          ),
-          Effect.provide(makeSyncServiceMock()),
+        expect(result.prLinks).toEqual(prLinks);
+      }).pipe(
+        Effect.provide(SessionMetaService.Live),
+        Effect.provide(
+          makeDrizzleServiceWithData({
+            projectRows: [defaultProjectRow],
+            sessionRows: [
+              makeSessionRow({
+                id: sessionId,
+                prLinksJson: JSON.stringify([
+                  {
+                    prNumber: 42,
+                    prUrl: "https://github.com/test/repo/pull/42",
+                    prRepository: "test/repo",
+                  },
+                ]),
+              }),
+            ],
+          }),
         ),
-      );
+        Effect.provide(makeSyncServiceMock()),
+      ),
+    );
 
-      expect(result.prLinks).toEqual(prLinks);
-    });
-
-    it("returns empty prLinks when pr_links_json is null", async () => {
-      const row = makeSessionRow({ id: sessionId, prLinksJson: null });
-
-      const program = Effect.gen(function* () {
+    it.live("returns empty prLinks when pr_links_json is null", () =>
+      Effect.gen(function* () {
         const service = yield* SessionMetaService;
-        return yield* service.getSessionMeta(projectId, sessionId);
-      });
+        const result = yield* service.getSessionMeta(projectId, sessionId);
 
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(SessionMetaService.Live),
-          Effect.provide(
-            makeDrizzleServiceWithData({
-              projectRows: [defaultProjectRow],
-              sessionRows: [row],
-            }),
-          ),
-          Effect.provide(makeSyncServiceMock()),
+        expect(result.prLinks).toEqual([]);
+      }).pipe(
+        Effect.provide(SessionMetaService.Live),
+        Effect.provide(
+          makeDrizzleServiceWithData({
+            projectRows: [defaultProjectRow],
+            sessionRows: [makeSessionRow({ id: sessionId, prLinksJson: null })],
+          }),
         ),
-      );
+        Effect.provide(makeSyncServiceMock()),
+      ),
+    );
 
-      expect(result.prLinks).toEqual([]);
-    });
-
-    it("triggers syncSession and retries when session not in DB", async () => {
+    it.live("triggers syncSession and retries when session not in DB", () => {
       let syncCalled = false;
       const { db, rawDb } = createInMemoryDrizzle();
 
@@ -236,147 +221,127 @@ describe("SessionMetaService", () => {
       db.insert(projects).values(defaultProjectRow).run();
 
       // DB starts empty — no session rows
-      const program = Effect.gen(function* () {
+      return Effect.gen(function* () {
         const service = yield* SessionMetaService;
-        return yield* service.getSessionMeta(projectId, sessionId);
-      });
+        const result = yield* service.getSessionMeta(projectId, sessionId);
 
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(SessionMetaService.Live),
-          Effect.provide(Layer.succeed(DrizzleService, { db, rawDb })),
-          Effect.provide(
-            makeSyncServiceMock({
-              syncSession: () =>
-                Effect.sync(() => {
-                  syncCalled = true;
-                  // Insert the session row so retry finds it
-                  db.insert(sessions)
-                    .values(makeSessionRow({ id: sessionId }))
-                    .run();
-                }),
-            }),
-          ),
+        expect(syncCalled).toBe(true);
+        expect(result.messageCount).toBe(5);
+      }).pipe(
+        Effect.provide(SessionMetaService.Live),
+        Effect.provide(Layer.succeed(DrizzleService, { db, rawDb })),
+        Effect.provide(
+          makeSyncServiceMock({
+            syncSession: () =>
+              Effect.sync(() => {
+                syncCalled = true;
+                // Insert the session row so retry finds it
+                db.insert(sessions)
+                  .values(makeSessionRow({ id: sessionId }))
+                  .run();
+              }),
+          }),
         ),
       );
-
-      expect(syncCalled).toBe(true);
-      expect(result.messageCount).toBe(5);
     });
 
-    it("fails when session not found even after sync", async () => {
+    it.live("fails when session not found even after sync", () => {
       const { db, rawDb } = createInMemoryDrizzle();
 
-      const program = Effect.gen(function* () {
+      return Effect.gen(function* () {
         const service = yield* SessionMetaService;
-        return yield* service.getSessionMeta(projectId, "nonexistent-session");
-      });
+        const result = yield* service
+          .getSessionMeta(projectId, "nonexistent-session")
+          .pipe(Effect.flip);
 
-      await expect(
-        Effect.runPromise(
-          program.pipe(
-            Effect.provide(SessionMetaService.Live),
-            Effect.provide(Layer.succeed(DrizzleService, { db, rawDb })),
-            Effect.provide(makeSyncServiceMock()),
-          ),
-        ),
-      ).rejects.toThrow("Session not found: nonexistent-session");
+        expect(String(result)).toContain("Session not found: nonexistent-session");
+      }).pipe(
+        Effect.provide(SessionMetaService.Live),
+        Effect.provide(Layer.succeed(DrizzleService, { db, rawDb })),
+        Effect.provide(makeSyncServiceMock()),
+      );
     });
   });
 
   describe("invalidateSession", () => {
-    it("calls syncSession on invalidate", async () => {
+    it.live("calls syncSession on invalidate", () => {
       let syncCalled = false;
       const row = makeSessionRow({ id: sessionId });
 
-      const program = Effect.gen(function* () {
+      return Effect.gen(function* () {
         const service = yield* SessionMetaService;
         yield* service.invalidateSession(projectId, sessionId);
-      });
 
-      await Effect.runPromise(
-        program.pipe(
-          Effect.provide(SessionMetaService.Live),
-          Effect.provide(
-            makeDrizzleServiceWithData({
-              projectRows: [defaultProjectRow],
-              sessionRows: [row],
-            }),
-          ),
-          Effect.provide(
-            makeSyncServiceMock({
-              syncSession: () =>
-                Effect.sync(() => {
-                  syncCalled = true;
-                }),
-            }),
-          ),
+        expect(syncCalled).toBe(true);
+      }).pipe(
+        Effect.provide(SessionMetaService.Live),
+        Effect.provide(
+          makeDrizzleServiceWithData({
+            projectRows: [defaultProjectRow],
+            sessionRows: [row],
+          }),
+        ),
+        Effect.provide(
+          makeSyncServiceMock({
+            syncSession: () =>
+              Effect.sync(() => {
+                syncCalled = true;
+              }),
+          }),
         ),
       );
-
-      expect(syncCalled).toBe(true);
     });
 
-    it("does not throw even if syncSession fails", async () => {
-      const row = makeSessionRow({ id: sessionId });
-
-      const program = Effect.gen(function* () {
+    it.live("does not throw even if syncSession fails", () =>
+      Effect.gen(function* () {
         const service = yield* SessionMetaService;
-        yield* service.invalidateSession(projectId, sessionId);
-      });
+        const result = yield* service.invalidateSession(projectId, sessionId);
 
-      await expect(
-        Effect.runPromise(
-          program.pipe(
-            Effect.provide(SessionMetaService.Live),
-            Effect.provide(
-              makeDrizzleServiceWithData({
-                projectRows: [defaultProjectRow],
-                sessionRows: [row],
-              }),
-            ),
-            Effect.provide(
-              makeSyncServiceMock({
-                syncSession: () => Effect.fail(new Error("sync failed")),
-              }),
-            ),
-          ),
+        expect(result).toBeUndefined();
+      }).pipe(
+        Effect.provide(SessionMetaService.Live),
+        Effect.provide(
+          makeDrizzleServiceWithData({
+            projectRows: [defaultProjectRow],
+            sessionRows: [makeSessionRow({ id: sessionId })],
+          }),
         ),
-      ).resolves.toBeUndefined();
-    });
+        Effect.provide(
+          makeSyncServiceMock({
+            syncSession: () => Effect.fail(new Error("sync failed")),
+          }),
+        ),
+      ),
+    );
   });
 
   describe("cost calculation", () => {
-    it("returns zero cost when breakdown columns are null", async () => {
-      const row = makeSessionRow({
-        id: sessionId,
-        totalCostUsd: 0,
-        costBreakdownJson: null,
-        tokenUsageJson: null,
-      });
-
-      const program = Effect.gen(function* () {
+    it.live("returns zero cost when breakdown columns are null", () =>
+      Effect.gen(function* () {
         const service = yield* SessionMetaService;
-        return yield* service.getSessionMeta(projectId, sessionId);
-      });
+        const result = yield* service.getSessionMeta(projectId, sessionId);
 
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(SessionMetaService.Live),
-          Effect.provide(
-            makeDrizzleServiceWithData({
-              projectRows: [defaultProjectRow],
-              sessionRows: [row],
-            }),
-          ),
-          Effect.provide(makeSyncServiceMock()),
+        expect(result.cost.totalUsd).toBe(0);
+        expect(result.cost.tokenUsage.inputTokens).toBe(0);
+        expect(result.cost.tokenUsage.outputTokens).toBe(0);
+        expect(result.cost.breakdown.inputTokensUsd).toBe(0);
+      }).pipe(
+        Effect.provide(SessionMetaService.Live),
+        Effect.provide(
+          makeDrizzleServiceWithData({
+            projectRows: [defaultProjectRow],
+            sessionRows: [
+              makeSessionRow({
+                id: sessionId,
+                totalCostUsd: 0,
+                costBreakdownJson: null,
+                tokenUsageJson: null,
+              }),
+            ],
+          }),
         ),
-      );
-
-      expect(result.cost.totalUsd).toBe(0);
-      expect(result.cost.tokenUsage.inputTokens).toBe(0);
-      expect(result.cost.tokenUsage.outputTokens).toBe(0);
-      expect(result.cost.breakdown.inputTokensUsd).toBe(0);
-    });
+        Effect.provide(makeSyncServiceMock()),
+      ),
+    );
   });
 });

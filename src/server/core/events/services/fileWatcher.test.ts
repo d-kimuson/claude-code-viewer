@@ -1,6 +1,7 @@
 import { Path } from "@effect/platform";
+import { it } from "@effect/vitest";
 import { Effect } from "effect";
-import { describe, expect, it } from "vitest";
+import { describe, expect } from "vitest";
 import { testPlatformLayer } from "../../../../testing/layers/testPlatformLayer.ts";
 import type { InternalEventDeclaration } from "../types/InternalEventDeclaration.ts";
 import { EventBus } from "./EventBus.ts";
@@ -8,30 +9,24 @@ import { FileWatcherService } from "./fileWatcher.ts";
 
 describe("FileWatcherService", () => {
   describe("startWatching", () => {
-    it("can start file watching", async () => {
-      const program = Effect.gen(function* () {
+    it.live("can start file watching", () =>
+      Effect.gen(function* () {
         const watcher = yield* FileWatcherService;
 
         // Start watching
         yield* watcher.startWatching();
 
         // Confirm successful start (no errors)
-        return true;
-      });
+        expect(true).toBe(true);
+      }).pipe(
+        Effect.provide(FileWatcherService.Live),
+        Effect.provide(testPlatformLayer()),
+        Effect.provide(Path.layer),
+      ),
+    );
 
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(FileWatcherService.Live),
-          Effect.provide(testPlatformLayer()),
-          Effect.provide(Path.layer),
-        ),
-      );
-
-      expect(result).toBe(true);
-    });
-
-    it("can stop watching with stop", async () => {
-      const program = Effect.gen(function* () {
+    it.live("can stop watching with stop", () =>
+      Effect.gen(function* () {
         const watcher = yield* FileWatcherService;
 
         // Start watching
@@ -40,22 +35,16 @@ describe("FileWatcherService", () => {
         // Stop watching
         yield* watcher.stop();
 
-        return true;
-      });
+        expect(true).toBe(true);
+      }).pipe(
+        Effect.provide(FileWatcherService.Live),
+        Effect.provide(testPlatformLayer()),
+        Effect.provide(Path.layer),
+      ),
+    );
 
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(FileWatcherService.Live),
-          Effect.provide(testPlatformLayer()),
-          Effect.provide(Path.layer),
-        ),
-      );
-
-      expect(result).toBe(true);
-    });
-
-    it("only starts once even when startWatching is called multiple times", async () => {
-      const program = Effect.gen(function* () {
+    it.live("only starts once even when startWatching is called multiple times", () =>
+      Effect.gen(function* () {
         const watcher = yield* FileWatcherService;
 
         // Start watching multiple times
@@ -64,22 +53,16 @@ describe("FileWatcherService", () => {
         yield* watcher.startWatching();
 
         // Confirm no errors occur
-        return true;
-      });
+        expect(true).toBe(true);
+      }).pipe(
+        Effect.provide(FileWatcherService.Live),
+        Effect.provide(testPlatformLayer()),
+        Effect.provide(Path.layer),
+      ),
+    );
 
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(FileWatcherService.Live),
-          Effect.provide(testPlatformLayer()),
-          Effect.provide(Path.layer),
-        ),
-      );
-
-      expect(result).toBe(true);
-    });
-
-    it("can call startWatching again after stop", async () => {
-      const program = Effect.gen(function* () {
+    it.live("can call startWatching again after stop", () =>
+      Effect.gen(function* () {
         const watcher = yield* FileWatcherService;
 
         // Start watching
@@ -94,24 +77,18 @@ describe("FileWatcherService", () => {
         // Stop watching
         yield* watcher.stop();
 
-        return true;
-      });
-
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(FileWatcherService.Live),
-          Effect.provide(testPlatformLayer()),
-          Effect.provide(Path.layer),
-        ),
-      );
-
-      expect(result).toBe(true);
-    });
+        expect(true).toBe(true);
+      }).pipe(
+        Effect.provide(FileWatcherService.Live),
+        Effect.provide(testPlatformLayer()),
+        Effect.provide(Path.layer),
+      ),
+    );
   });
 
   describe("verify event firing behavior", () => {
-    it("file change events propagate to EventBus (integration test)", async () => {
-      const program = Effect.gen(function* () {
+    it.live("file change events propagate to EventBus (integration test)", () =>
+      Effect.gen(function* () {
         const watcher = yield* FileWatcherService;
         const eventBus = yield* EventBus;
 
@@ -137,24 +114,18 @@ describe("FileWatcherService", () => {
         yield* eventBus.off("sessionChanged", listener);
 
         // Confirm watching started
-        return true;
-      });
-
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(FileWatcherService.Live),
-          Effect.provide(testPlatformLayer()),
-          Effect.provide(Path.layer),
-        ),
-      );
-
-      expect(result).toBe(true);
-    });
+        expect(true).toBe(true);
+      }).pipe(
+        Effect.provide(FileWatcherService.Live),
+        Effect.provide(testPlatformLayer()),
+        Effect.provide(Path.layer),
+      ),
+    );
   });
 
   describe("error handling", () => {
-    it("continues processing without throwing errors even with invalid directories", async () => {
-      const program = Effect.gen(function* () {
+    it.live("continues processing without throwing errors even with invalid directories", () =>
+      Effect.gen(function* () {
         const watcher = yield* FileWatcherService;
 
         // Start watching (catches errors and continues even with invalid directories)
@@ -163,18 +134,12 @@ describe("FileWatcherService", () => {
         // Confirm no errors occur and processing continues normally
         yield* watcher.stop();
 
-        return true;
-      });
-
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(FileWatcherService.Live),
-          Effect.provide(testPlatformLayer()),
-          Effect.provide(Path.layer),
-        ),
-      );
-
-      expect(result).toBe(true);
-    });
+        expect(true).toBe(true);
+      }).pipe(
+        Effect.provide(FileWatcherService.Live),
+        Effect.provide(testPlatformLayer()),
+        Effect.provide(Path.layer),
+      ),
+    );
   });
 });

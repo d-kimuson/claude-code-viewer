@@ -1,5 +1,6 @@
-import { Effect } from "effect";
-import { describe, expect, it } from "vitest";
+import { it } from "@effect/vitest";
+import { Effect, Layer } from "effect";
+import { describe, expect } from "vitest";
 import { testPlatformLayer } from "../../../../testing/layers/testPlatformLayer.ts";
 import type * as CCSessionProcess from "../models/CCSessionProcess.ts";
 import type * as CCTurn from "../models/ClaudeCodeTurn.ts";
@@ -52,10 +53,12 @@ const createMockResultMessage = (sessionId: string) => ({
   session_id: sessionId,
 });
 
+const serviceLayer = Layer.provide(ClaudeCodeSessionProcessService.Live, testPlatformLayer());
+
 describe("ClaudeCodeSessionProcessService", () => {
   describe("startSessionProcess", () => {
-    it("can start new session process in starting state", async () => {
-      const program = Effect.gen(function* () {
+    it.live("can start new session process in starting state", () =>
+      Effect.gen(function* () {
         const service = yield* ClaudeCodeSessionProcessService;
 
         const sessionDef = createMockSessionProcessDef("process-1");
@@ -66,25 +69,16 @@ describe("ClaudeCodeSessionProcessService", () => {
           turnDef,
         });
 
-        return result;
-      });
+        expect(result.sessionProcess.type).toBe("starting");
+        expect(result.sessionProcess.def.sessionProcessId).toBe("process-1");
+        expect(result.sessionProcess.sessionId).toBe("session-abc");
+        expect(result.task.status).toBe("running");
+        expect(result.task.def.turnId).toBe("task-1");
+      }).pipe(Effect.provide(serviceLayer)),
+    );
 
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(ClaudeCodeSessionProcessService.Live),
-          Effect.provide(testPlatformLayer()),
-        ),
-      );
-
-      expect(result.sessionProcess.type).toBe("starting");
-      expect(result.sessionProcess.def.sessionProcessId).toBe("process-1");
-      expect(result.sessionProcess.sessionId).toBe("session-abc");
-      expect(result.task.status).toBe("running");
-      expect(result.task.def.turnId).toBe("task-1");
-    });
-
-    it("creates session process with correct task structure", async () => {
-      const program = Effect.gen(function* () {
+    it.live("creates session process with correct task structure", () =>
+      Effect.gen(function* () {
         const service = yield* ClaudeCodeSessionProcessService;
 
         const sessionDef = createMockSessionProcessDef("process-1");
@@ -95,25 +89,16 @@ describe("ClaudeCodeSessionProcessService", () => {
           turnDef,
         });
 
-        return { result, turnDef };
-      });
-
-      const { result, turnDef } = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(ClaudeCodeSessionProcessService.Live),
-          Effect.provide(testPlatformLayer()),
-        ),
-      );
-
-      expect(result.sessionProcess.tasks).toHaveLength(1);
-      expect(result.sessionProcess.currentTask).toBe(result.task);
-      expect(result.sessionProcess.currentTask.def).toBe(turnDef);
-    });
+        expect(result.sessionProcess.tasks).toHaveLength(1);
+        expect(result.sessionProcess.currentTask).toBe(result.task);
+        expect(result.sessionProcess.currentTask.def).toBe(turnDef);
+      }).pipe(Effect.provide(serviceLayer)),
+    );
   });
 
   describe("getSessionProcess", () => {
-    it("can retrieve created session process", async () => {
-      const program = Effect.gen(function* () {
+    it.live("can retrieve created session process", () =>
+      Effect.gen(function* () {
         const service = yield* ClaudeCodeSessionProcessService;
 
         const sessionDef = createMockSessionProcessDef("process-1");
@@ -126,65 +111,38 @@ describe("ClaudeCodeSessionProcessService", () => {
 
         const process = yield* service.getSessionProcess("process-1");
 
-        return process;
-      });
+        expect(process.def.sessionProcessId).toBe("process-1");
+        expect(process.type).toBe("starting");
+      }).pipe(Effect.provide(serviceLayer)),
+    );
 
-      const process = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(ClaudeCodeSessionProcessService.Live),
-          Effect.provide(testPlatformLayer()),
-        ),
-      );
-
-      expect(process.def.sessionProcessId).toBe("process-1");
-      expect(process.type).toBe("starting");
-    });
-
-    it("fails with SessionProcessNotFoundError for non-existent process", async () => {
-      const program = Effect.gen(function* () {
+    it.live("fails with SessionProcessNotFoundError for non-existent process", () =>
+      Effect.gen(function* () {
         const service = yield* ClaudeCodeSessionProcessService;
 
         const result = yield* Effect.flip(service.getSessionProcess("non-existent"));
 
-        return result;
-      });
-
-      const error = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(ClaudeCodeSessionProcessService.Live),
-          Effect.provide(testPlatformLayer()),
-        ),
-      );
-
-      expect(error).toMatchObject({
-        _tag: "SessionProcessNotFoundError",
-        sessionProcessId: "non-existent",
-      });
-    });
+        expect(result).toMatchObject({
+          _tag: "SessionProcessNotFoundError",
+          sessionProcessId: "non-existent",
+        });
+      }).pipe(Effect.provide(serviceLayer)),
+    );
   });
 
   describe("getSessionProcesses", () => {
-    it("returns empty array when no processes exist", async () => {
-      const program = Effect.gen(function* () {
+    it.live("returns empty array when no processes exist", () =>
+      Effect.gen(function* () {
         const service = yield* ClaudeCodeSessionProcessService;
 
         const processes = yield* service.getSessionProcesses();
 
-        return processes;
-      });
+        expect(processes).toHaveLength(0);
+      }).pipe(Effect.provide(serviceLayer)),
+    );
 
-      const processes = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(ClaudeCodeSessionProcessService.Live),
-          Effect.provide(testPlatformLayer()),
-        ),
-      );
-
-      expect(processes).toHaveLength(0);
-    });
-
-    it("returns all created processes", async () => {
-      const program = Effect.gen(function* () {
+    it.live("returns all created processes", () =>
+      Effect.gen(function* () {
         const service = yield* ClaudeCodeSessionProcessService;
 
         const sessionDef1 = createMockSessionProcessDef("process-1");
@@ -204,26 +162,17 @@ describe("ClaudeCodeSessionProcessService", () => {
 
         const processes = yield* service.getSessionProcesses();
 
-        return processes;
-      });
-
-      const processes = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(ClaudeCodeSessionProcessService.Live),
-          Effect.provide(testPlatformLayer()),
-        ),
-      );
-
-      expect(processes).toHaveLength(2);
-      expect(processes.map((p) => p.def.sessionProcessId)).toEqual(
-        expect.arrayContaining(["process-1", "process-2"]),
-      );
-    });
+        expect(processes).toHaveLength(2);
+        expect(processes.map((p) => p.def.sessionProcessId)).toEqual(
+          expect.arrayContaining(["process-1", "process-2"]),
+        );
+      }).pipe(Effect.provide(serviceLayer)),
+    );
   });
 
   describe("continueSessionProcess", () => {
-    it("can continue paused session process", async () => {
-      const program = Effect.gen(function* () {
+    it.live("can continue paused session process", () =>
+      Effect.gen(function* () {
         const service = yield* ClaudeCodeSessionProcessService;
 
         // Start and progress to paused state
@@ -262,23 +211,14 @@ describe("ClaudeCodeSessionProcessService", () => {
           turnDef: continueTaskDef,
         });
 
-        return result;
-      });
+        expect(result.sessionProcess.type).toBe("starting");
+        expect(result.task.def.turnId).toBe("task-2");
+        expect(result.sessionProcess.tasks).toHaveLength(2);
+      }).pipe(Effect.provide(serviceLayer)),
+    );
 
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(ClaudeCodeSessionProcessService.Live),
-          Effect.provide(testPlatformLayer()),
-        ),
-      );
-
-      expect(result.sessionProcess.type).toBe("starting");
-      expect(result.task.def.turnId).toBe("task-2");
-      expect(result.sessionProcess.tasks).toHaveLength(2);
-    });
-
-    it("fails with SessionProcessNotPausedError when process is not paused", async () => {
-      const program = Effect.gen(function* () {
+    it.live("fails with SessionProcessNotPausedError when process is not paused", () =>
+      Effect.gen(function* () {
         const service = yield* ClaudeCodeSessionProcessService;
 
         const sessionDef = createMockSessionProcessDef("process-1");
@@ -298,24 +238,15 @@ describe("ClaudeCodeSessionProcessService", () => {
           }),
         );
 
-        return result;
-      });
+        expect(result).toMatchObject({
+          _tag: "SessionProcessNotPausedError",
+          sessionProcessId: "process-1",
+        });
+      }).pipe(Effect.provide(serviceLayer)),
+    );
 
-      const error = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(ClaudeCodeSessionProcessService.Live),
-          Effect.provide(testPlatformLayer()),
-        ),
-      );
-
-      expect(error).toMatchObject({
-        _tag: "SessionProcessNotPausedError",
-        sessionProcessId: "process-1",
-      });
-    });
-
-    it("fails with SessionProcessNotFoundError for non-existent process", async () => {
-      const program = Effect.gen(function* () {
+    it.live("fails with SessionProcessNotFoundError for non-existent process", () =>
+      Effect.gen(function* () {
         const service = yield* ClaudeCodeSessionProcessService;
 
         const continueTaskDef = createMockContinueTaskDef("task-1", "session-1", "session-1");
@@ -327,26 +258,17 @@ describe("ClaudeCodeSessionProcessService", () => {
           }),
         );
 
-        return result;
-      });
-
-      const error = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(ClaudeCodeSessionProcessService.Live),
-          Effect.provide(testPlatformLayer()),
-        ),
-      );
-
-      expect(error).toMatchObject({
-        _tag: "SessionProcessNotFoundError",
-        sessionProcessId: "non-existent",
-      });
-    });
+        expect(result).toMatchObject({
+          _tag: "SessionProcessNotFoundError",
+          sessionProcessId: "non-existent",
+        });
+      }).pipe(Effect.provide(serviceLayer)),
+    );
   });
 
   describe("updateRawUserMessage", () => {
-    it("can update raw user message in starting state", async () => {
-      const program = Effect.gen(function* () {
+    it.live("can update raw user message in starting state", () =>
+      Effect.gen(function* () {
         const service = yield* ClaudeCodeSessionProcessService;
 
         const sessionDef = createMockSessionProcessDef("process-1");
@@ -362,22 +284,13 @@ describe("ClaudeCodeSessionProcessService", () => {
           rawUserMessage: "test message",
         });
 
-        return result;
-      });
+        expect(result.sessionProcess.type).toBe("starting");
+        expect(result.sessionProcess.rawUserMessage).toBe("test message");
+      }).pipe(Effect.provide(serviceLayer)),
+    );
 
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(ClaudeCodeSessionProcessService.Live),
-          Effect.provide(testPlatformLayer()),
-        ),
-      );
-
-      expect(result.sessionProcess.type).toBe("starting");
-      expect(result.sessionProcess.rawUserMessage).toBe("test message");
-    });
-
-    it("fails with IllegalStateChangeError when not in starting state", async () => {
-      const program = Effect.gen(function* () {
+    it.live("fails with IllegalStateChangeError when not in starting state", () =>
+      Effect.gen(function* () {
         const service = yield* ClaudeCodeSessionProcessService;
 
         const sessionDef = createMockSessionProcessDef("process-1");
@@ -401,27 +314,18 @@ describe("ClaudeCodeSessionProcessService", () => {
           }),
         );
 
-        return result;
-      });
-
-      const error = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(ClaudeCodeSessionProcessService.Live),
-          Effect.provide(testPlatformLayer()),
-        ),
-      );
-
-      expect(error).toMatchObject({
-        _tag: "IllegalStateChangeError",
-        from: "initialized",
-        to: "starting",
-      });
-    });
+        expect(result).toMatchObject({
+          _tag: "IllegalStateChangeError",
+          from: "initialized",
+          to: "starting",
+        });
+      }).pipe(Effect.provide(serviceLayer)),
+    );
   });
 
   describe("toInitializedState", () => {
-    it("can transition from starting to initialized", async () => {
-      const program = Effect.gen(function* () {
+    it.live("can transition from starting to initialized", () =>
+      Effect.gen(function* () {
         const service = yield* ClaudeCodeSessionProcessService;
 
         const sessionDef = createMockSessionProcessDef("process-1");
@@ -439,23 +343,14 @@ describe("ClaudeCodeSessionProcessService", () => {
           initContext,
         });
 
-        return result;
-      });
+        expect(result.sessionProcess.type).toBe("initialized");
+        expect(result.sessionProcess.sessionId).toBe("session-1");
+        expect(result.sessionProcess.initContext).toBeDefined();
+      }).pipe(Effect.provide(serviceLayer)),
+    );
 
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(ClaudeCodeSessionProcessService.Live),
-          Effect.provide(testPlatformLayer()),
-        ),
-      );
-
-      expect(result.sessionProcess.type).toBe("initialized");
-      expect(result.sessionProcess.sessionId).toBe("session-1");
-      expect(result.sessionProcess.initContext).toBeDefined();
-    });
-
-    it("fails with IllegalStateChangeError when not in starting state", async () => {
-      const program = Effect.gen(function* () {
+    it.live("fails with IllegalStateChangeError when not in starting state", () =>
+      Effect.gen(function* () {
         const service = yield* ClaudeCodeSessionProcessService;
 
         const sessionDef = createMockSessionProcessDef("process-1");
@@ -479,27 +374,18 @@ describe("ClaudeCodeSessionProcessService", () => {
           }),
         );
 
-        return result;
-      });
-
-      const error = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(ClaudeCodeSessionProcessService.Live),
-          Effect.provide(testPlatformLayer()),
-        ),
-      );
-
-      expect(error).toMatchObject({
-        _tag: "IllegalStateChangeError",
-        from: "initialized",
-        to: "initialized",
-      });
-    });
+        expect(result).toMatchObject({
+          _tag: "IllegalStateChangeError",
+          from: "initialized",
+          to: "initialized",
+        });
+      }).pipe(Effect.provide(serviceLayer)),
+    );
   });
 
   describe("toPausedState", () => {
-    it("can transition from initialized to paused", async () => {
-      const program = Effect.gen(function* () {
+    it.live("can transition from initialized to paused", () =>
+      Effect.gen(function* () {
         const service = yield* ClaudeCodeSessionProcessService;
 
         const sessionDef = createMockSessionProcessDef("process-1");
@@ -522,22 +408,13 @@ describe("ClaudeCodeSessionProcessService", () => {
           resultMessage,
         });
 
-        return result;
-      });
+        expect(result.sessionProcess.type).toBe("paused");
+        expect(result.sessionProcess.sessionId).toBe("session-1");
+      }).pipe(Effect.provide(serviceLayer)),
+    );
 
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(ClaudeCodeSessionProcessService.Live),
-          Effect.provide(testPlatformLayer()),
-        ),
-      );
-
-      expect(result.sessionProcess.type).toBe("paused");
-      expect(result.sessionProcess.sessionId).toBe("session-1");
-    });
-
-    it("can transition from file_created to paused", async () => {
-      const program = Effect.gen(function* () {
+    it.live("can transition from file_created to paused", () =>
+      Effect.gen(function* () {
         const service = yield* ClaudeCodeSessionProcessService;
 
         const sessionDef = createMockSessionProcessDef("process-1");
@@ -564,22 +441,13 @@ describe("ClaudeCodeSessionProcessService", () => {
           resultMessage,
         });
 
-        return result;
-      });
+        expect(result.sessionProcess.type).toBe("paused");
+        expect(result.sessionProcess.sessionId).toBe("session-1");
+      }).pipe(Effect.provide(serviceLayer)),
+    );
 
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(ClaudeCodeSessionProcessService.Live),
-          Effect.provide(testPlatformLayer()),
-        ),
-      );
-
-      expect(result.sessionProcess.type).toBe("paused");
-      expect(result.sessionProcess.sessionId).toBe("session-1");
-    });
-
-    it("marks current task as completed", async () => {
-      const program = Effect.gen(function* () {
+    it.live("marks current task as completed", () =>
+      Effect.gen(function* () {
         const service = yield* ClaudeCodeSessionProcessService;
 
         const sessionDef = createMockSessionProcessDef("process-1");
@@ -606,64 +474,48 @@ describe("ClaudeCodeSessionProcessService", () => {
 
         const process = yield* service.getSessionProcess("process-1");
 
-        return process;
-      });
+        const completedTask = process.tasks.find((t) => t.def.turnId === "task-1");
+        expect(completedTask?.status).toBe("completed");
+        if (completedTask?.status !== "completed") {
+          throw new Error("Expected completed task");
+        }
+        expect(completedTask.sessionId).toBe("session-1");
+      }).pipe(Effect.provide(serviceLayer)),
+    );
 
-      const process = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(ClaudeCodeSessionProcessService.Live),
-          Effect.provide(testPlatformLayer()),
-        ),
-      );
+    it.live(
+      "fails with IllegalStateChangeError when not in initialized or file_created state",
+      () =>
+        Effect.gen(function* () {
+          const service = yield* ClaudeCodeSessionProcessService;
 
-      const completedTask = process.tasks.find((t) => t.def.turnId === "task-1");
-      expect(completedTask?.status).toBe("completed");
-      if (completedTask?.status !== "completed") {
-        throw new Error("Expected completed task");
-      }
-      expect(completedTask.sessionId).toBe("session-1");
-    });
+          const sessionDef = createMockSessionProcessDef("process-1");
+          const turnDef = createMockNewTaskDef("task-1");
 
-    it("fails with IllegalStateChangeError when not in initialized or file_created state", async () => {
-      const program = Effect.gen(function* () {
-        const service = yield* ClaudeCodeSessionProcessService;
+          yield* service.startSessionProcess({
+            sessionDef,
+            turnDef,
+          });
 
-        const sessionDef = createMockSessionProcessDef("process-1");
-        const turnDef = createMockNewTaskDef("task-1");
+          const result = yield* Effect.flip(
+            service.toPausedState({
+              sessionProcessId: "process-1",
+              resultMessage: createMockResultMessage("session-1"),
+            }),
+          );
 
-        yield* service.startSessionProcess({
-          sessionDef,
-          turnDef,
-        });
-
-        const result = yield* Effect.flip(
-          service.toPausedState({
-            sessionProcessId: "process-1",
-            resultMessage: createMockResultMessage("session-1"),
-          }),
-        );
-
-        return result;
-      });
-
-      const error = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(ClaudeCodeSessionProcessService.Live),
-          Effect.provide(testPlatformLayer()),
-        ),
-      );
-
-      expect(error).toMatchObject({
-        _tag: "IllegalStateChangeError",
-        from: "starting",
-        to: "paused",
-      });
-    });
+          expect(result).toMatchObject({
+            _tag: "IllegalStateChangeError",
+            from: "starting",
+            to: "paused",
+          });
+        }).pipe(Effect.provide(serviceLayer)),
+    );
   });
 
   describe("toCompletedState", () => {
-    it("can transition to completed state from starting state", async () => {
-      const program = Effect.gen(function* () {
+    it.live("can transition to completed state from starting state", () =>
+      Effect.gen(function* () {
         const service = yield* ClaudeCodeSessionProcessService;
 
         const sessionDef = createMockSessionProcessDef("process-1");
@@ -678,21 +530,12 @@ describe("ClaudeCodeSessionProcessService", () => {
           sessionProcessId: "process-1",
         });
 
-        return result;
-      });
+        expect(result.sessionProcess.type).toBe("completed");
+      }).pipe(Effect.provide(serviceLayer)),
+    );
 
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(ClaudeCodeSessionProcessService.Live),
-          Effect.provide(testPlatformLayer()),
-        ),
-      );
-
-      expect(result.sessionProcess.type).toBe("completed");
-    });
-
-    it("marks current task as completed when no error", async () => {
-      const program = Effect.gen(function* () {
+    it.live("marks current task as completed when no error", () =>
+      Effect.gen(function* () {
         const service = yield* ClaudeCodeSessionProcessService;
 
         const sessionDef = createMockSessionProcessDef("process-1");
@@ -712,21 +555,12 @@ describe("ClaudeCodeSessionProcessService", () => {
           sessionProcessId: "process-1",
         });
 
-        return result;
-      });
+        expect(result.task?.status).toBe("completed");
+      }).pipe(Effect.provide(serviceLayer)),
+    );
 
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(ClaudeCodeSessionProcessService.Live),
-          Effect.provide(testPlatformLayer()),
-        ),
-      );
-
-      expect(result.task?.status).toBe("completed");
-    });
-
-    it("marks current task as failed when error is provided", async () => {
-      const program = Effect.gen(function* () {
+    it.live("marks current task as failed when error is provided", () =>
+      Effect.gen(function* () {
         const service = yield* ClaudeCodeSessionProcessService;
 
         const sessionDef = createMockSessionProcessDef("process-1");
@@ -744,27 +578,18 @@ describe("ClaudeCodeSessionProcessService", () => {
           error,
         });
 
-        return result;
-      });
-
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(ClaudeCodeSessionProcessService.Live),
-          Effect.provide(testPlatformLayer()),
-        ),
-      );
-
-      expect(result.task?.status).toBe("failed");
-      if (result.task?.status !== "failed") {
-        throw new Error("Expected failed task");
-      }
-      expect(result.task.error).toBeInstanceOf(Error);
-    });
+        expect(result.task?.status).toBe("failed");
+        if (result.task?.status !== "failed") {
+          throw new Error("Expected failed task");
+        }
+        expect(result.task.error).toBeInstanceOf(Error);
+      }).pipe(Effect.provide(serviceLayer)),
+    );
   });
 
   describe("getTask", () => {
-    it("can retrieve task by turnId", async () => {
-      const program = Effect.gen(function* () {
+    it.live("can retrieve task by turnId", () =>
+      Effect.gen(function* () {
         const service = yield* ClaudeCodeSessionProcessService;
 
         const sessionDef = createMockSessionProcessDef("process-1");
@@ -777,46 +602,28 @@ describe("ClaudeCodeSessionProcessService", () => {
 
         const result = yield* service.getTask("task-1");
 
-        return result;
-      });
+        expect(result.task.def.turnId).toBe("task-1");
+        expect(result.sessionProcess.def.sessionProcessId).toBe("process-1");
+      }).pipe(Effect.provide(serviceLayer)),
+    );
 
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(ClaudeCodeSessionProcessService.Live),
-          Effect.provide(testPlatformLayer()),
-        ),
-      );
-
-      expect(result.task.def.turnId).toBe("task-1");
-      expect(result.sessionProcess.def.sessionProcessId).toBe("process-1");
-    });
-
-    it("fails with TaskNotFoundError for non-existent task", async () => {
-      const program = Effect.gen(function* () {
+    it.live("fails with TaskNotFoundError for non-existent task", () =>
+      Effect.gen(function* () {
         const service = yield* ClaudeCodeSessionProcessService;
 
         const result = yield* Effect.flip(service.getTask("non-existent-task"));
 
-        return result;
-      });
-
-      const error = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(ClaudeCodeSessionProcessService.Live),
-          Effect.provide(testPlatformLayer()),
-        ),
-      );
-
-      expect(error).toMatchObject({
-        _tag: "TaskNotFoundError",
-        turnId: "non-existent-task",
-      });
-    });
+        expect(result).toMatchObject({
+          _tag: "TaskNotFoundError",
+          turnId: "non-existent-task",
+        });
+      }).pipe(Effect.provide(serviceLayer)),
+    );
   });
 
   describe("state transitions flow", () => {
-    it("can complete full lifecycle: starting -> initialized -> file_created -> paused", async () => {
-      const program = Effect.gen(function* () {
+    it.live("can complete full lifecycle: starting -> initialized -> file_created -> paused", () =>
+      Effect.gen(function* () {
         const service = yield* ClaudeCodeSessionProcessService;
 
         const sessionDef = createMockSessionProcessDef("process-1");
@@ -850,22 +657,13 @@ describe("ClaudeCodeSessionProcessService", () => {
         });
         expect(pausedResult.sessionProcess.type).toBe("paused");
 
-        return pausedResult;
-      });
+        expect(pausedResult.sessionProcess.type).toBe("paused");
+        expect(pausedResult.sessionProcess.sessionId).toBe("session-1");
+      }).pipe(Effect.provide(serviceLayer)),
+    );
 
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(ClaudeCodeSessionProcessService.Live),
-          Effect.provide(testPlatformLayer()),
-        ),
-      );
-
-      expect(result.sessionProcess.type).toBe("paused");
-      expect(result.sessionProcess.sessionId).toBe("session-1");
-    });
-
-    it("can continue paused process and complete another task", async () => {
-      const program = Effect.gen(function* () {
+    it.live("can continue paused process and complete another task", () =>
+      Effect.gen(function* () {
         const service = yield* ClaudeCodeSessionProcessService;
 
         // First task lifecycle
@@ -914,19 +712,12 @@ describe("ClaudeCodeSessionProcessService", () => {
           resultMessage: createMockResultMessage("session-1"),
         });
 
-        return finalResult;
-      });
-
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(ClaudeCodeSessionProcessService.Live),
-          Effect.provide(testPlatformLayer()),
-        ),
-      );
-
-      expect(result.sessionProcess.type).toBe("paused");
-      expect(result.sessionProcess.tasks).toHaveLength(2);
-      expect(result.sessionProcess.tasks.filter((t) => t.status === "completed")).toHaveLength(2);
-    });
+        expect(finalResult.sessionProcess.type).toBe("paused");
+        expect(finalResult.sessionProcess.tasks).toHaveLength(2);
+        expect(
+          finalResult.sessionProcess.tasks.filter((t) => t.status === "completed"),
+        ).toHaveLength(2);
+      }).pipe(Effect.provide(serviceLayer)),
+    );
   });
 });

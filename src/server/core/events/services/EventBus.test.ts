@@ -1,5 +1,6 @@
+import { describe, it } from "@effect/vitest";
 import { Effect } from "effect";
-import { describe, expect, it } from "vitest";
+import { expect } from "vitest";
 import type { PermissionRequest } from "../../../../types/permissions.ts";
 import type { PublicSessionProcess } from "../../../../types/session-process.ts";
 import type { CCSessionProcessState } from "../../claude-code/models/CCSessionProcess.ts";
@@ -8,8 +9,8 @@ import { EventBus } from "./EventBus.ts";
 
 describe("EventBus", () => {
   describe("basic event processing", () => {
-    it("can send and receive events with emit and on", async () => {
-      const program = Effect.gen(function* () {
+    it.live("can send and receive events with emit and on", () =>
+      Effect.gen(function* () {
         const eventBus = yield* EventBus;
         const events: Array<InternalEventDeclaration["heartbeat"]> = [];
 
@@ -23,17 +24,13 @@ describe("EventBus", () => {
         // Wait a bit since events are processed asynchronously
         yield* Effect.sleep("10 millis");
 
-        return events;
-      });
+        expect(events).toHaveLength(1);
+        expect(events[0]).toEqual({});
+      }).pipe(Effect.provide(EventBus.Live)),
+    );
 
-      const result = await Effect.runPromise(program.pipe(Effect.provide(EventBus.Live)));
-
-      expect(result).toHaveLength(1);
-      expect(result[0]).toEqual({});
-    });
-
-    it("events are delivered to multiple listeners", async () => {
-      const program = Effect.gen(function* () {
+    it.live("events are delivered to multiple listeners", () =>
+      Effect.gen(function* () {
         const eventBus = yield* EventBus;
         const events1: Array<InternalEventDeclaration["sessionChanged"]> = [];
         const events2: Array<InternalEventDeclaration["sessionChanged"]> = [];
@@ -56,25 +53,21 @@ describe("EventBus", () => {
 
         yield* Effect.sleep("10 millis");
 
-        return { events1, events2 };
-      });
+        expect(events1).toHaveLength(1);
+        expect(events2).toHaveLength(1);
+        expect(events1[0]).toEqual({
+          projectId: "project-1",
+          sessionId: "session-1",
+        });
+        expect(events2[0]).toEqual({
+          projectId: "project-1",
+          sessionId: "session-1",
+        });
+      }).pipe(Effect.provide(EventBus.Live)),
+    );
 
-      const result = await Effect.runPromise(program.pipe(Effect.provide(EventBus.Live)));
-
-      expect(result.events1).toHaveLength(1);
-      expect(result.events2).toHaveLength(1);
-      expect(result.events1[0]).toEqual({
-        projectId: "project-1",
-        sessionId: "session-1",
-      });
-      expect(result.events2[0]).toEqual({
-        projectId: "project-1",
-        sessionId: "session-1",
-      });
-    });
-
-    it("can remove listener with off", async () => {
-      const program = Effect.gen(function* () {
+    it.live("can remove listener with off", () =>
+      Effect.gen(function* () {
         const eventBus = yield* EventBus;
         const events: Array<InternalEventDeclaration["heartbeat"]> = [];
 
@@ -91,19 +84,15 @@ describe("EventBus", () => {
         yield* eventBus.emit("heartbeat", {});
         yield* Effect.sleep("10 millis");
 
-        return events;
-      });
-
-      const result = await Effect.runPromise(program.pipe(Effect.provide(EventBus.Live)));
-
-      // Only receives first emit
-      expect(result).toHaveLength(1);
-    });
+        // Only receives first emit
+        expect(events).toHaveLength(1);
+      }).pipe(Effect.provide(EventBus.Live)),
+    );
   });
 
   describe("different event types", () => {
-    it("can process sessionListChanged event", async () => {
-      const program = Effect.gen(function* () {
+    it.live("can process sessionListChanged event", () =>
+      Effect.gen(function* () {
         const eventBus = yield* EventBus;
         const events: Array<InternalEventDeclaration["sessionListChanged"]> = [];
 
@@ -118,17 +107,13 @@ describe("EventBus", () => {
 
         yield* Effect.sleep("10 millis");
 
-        return events;
-      });
+        expect(events).toHaveLength(1);
+        expect(events[0]).toEqual({ projectId: "project-1" });
+      }).pipe(Effect.provide(EventBus.Live)),
+    );
 
-      const result = await Effect.runPromise(program.pipe(Effect.provide(EventBus.Live)));
-
-      expect(result).toHaveLength(1);
-      expect(result[0]).toEqual({ projectId: "project-1" });
-    });
-
-    it("can process sessionProcessChanged event", async () => {
-      const program = Effect.gen(function* () {
+    it.live("can process sessionProcessChanged event", () =>
+      Effect.gen(function* () {
         const eventBus = yield* EventBus;
         const events: Array<InternalEventDeclaration["sessionProcessChanged"]> = [];
 
@@ -179,17 +164,13 @@ describe("EventBus", () => {
 
         yield* Effect.sleep("10 millis");
 
-        return events;
-      });
+        expect(events).toHaveLength(1);
+        expect(events.at(0)?.processes).toHaveLength(1);
+      }).pipe(Effect.provide(EventBus.Live)),
+    );
 
-      const result = await Effect.runPromise(program.pipe(Effect.provide(EventBus.Live)));
-
-      expect(result).toHaveLength(1);
-      expect(result.at(0)?.processes).toHaveLength(1);
-    });
-
-    it("can process permissionRequested event", async () => {
-      const program = Effect.gen(function* () {
+    it.live("can process permissionRequested event", () =>
+      Effect.gen(function* () {
         const eventBus = yield* EventBus;
         const events: Array<InternalEventDeclaration["permissionRequested"]> = [];
 
@@ -215,21 +196,16 @@ describe("EventBus", () => {
 
         yield* Effect.sleep("10 millis");
 
-        return events;
-      });
-
-      const result = await Effect.runPromise(program.pipe(Effect.provide(EventBus.Live)));
-
-      expect(result).toHaveLength(1);
-      expect(result.at(0)?.permissionRequest.id).toBe("permission-1");
-    });
+        expect(events).toHaveLength(1);
+        expect(events.at(0)?.permissionRequest.id).toBe("permission-1");
+      }).pipe(Effect.provide(EventBus.Live)),
+    );
   });
 
   describe("error handling", () => {
-    it("errors thrown by listeners don't affect other listeners", async () => {
-      const program = Effect.gen(function* () {
+    it.live("errors thrown by listeners don't affect other listeners", () =>
+      Effect.gen(function* () {
         const eventBus = yield* EventBus;
-        const events1: Array<InternalEventDeclaration["heartbeat"]> = [];
         const events2: Array<InternalEventDeclaration["heartbeat"]> = [];
 
         const failingListener = (_event: InternalEventDeclaration["heartbeat"]) => {
@@ -246,13 +222,9 @@ describe("EventBus", () => {
         yield* eventBus.emit("heartbeat", {});
         yield* Effect.sleep("10 millis");
 
-        return { events1, events2 };
-      });
-
-      const result = await Effect.runPromise(program.pipe(Effect.provide(EventBus.Live)));
-
-      // failingListener fails, but successListener works normally
-      expect(result.events2).toHaveLength(1);
-    });
+        // failingListener fails, but successListener works normally
+        expect(events2).toHaveLength(1);
+      }).pipe(Effect.provide(EventBus.Live)),
+    );
   });
 });

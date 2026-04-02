@@ -1,7 +1,8 @@
 import { FileSystem } from "@effect/platform";
 import { NodeContext } from "@effect/platform-node";
+import { it } from "@effect/vitest";
 import { Effect, Layer } from "effect";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect } from "vitest";
 import { testPlatformLayer } from "../../../../testing/layers/testPlatformLayer.ts";
 import { extractLastNonEmptyLine, readLastLine } from "./readLastLine.ts";
 
@@ -74,161 +75,141 @@ describe("readLastLine", () => {
     );
   });
 
-  it("should return the last line of a single-line file", async () => {
-    const filePath = `${testDir}/single-line.txt`;
-    await Effect.runPromise(
-      Effect.gen(function* () {
-        const fs = yield* FileSystem.FileSystem;
-        yield* fs.writeFileString(filePath, "only line");
-      }).pipe(Effect.provide(testLayer)),
-    );
+  it.live("should return the last line of a single-line file", () =>
+    Effect.gen(function* () {
+      const filePath = `${testDir}/single-line.txt`;
+      const fs = yield* FileSystem.FileSystem;
+      yield* fs.writeFileString(filePath, "only line");
 
-    const result = await Effect.runPromise(readLastLine(filePath).pipe(Effect.provide(testLayer)));
+      const result = yield* readLastLine(filePath);
 
-    expect(result).toBe("only line");
-  });
+      expect(result).toBe("only line");
+    }).pipe(Effect.provide(testLayer)),
+  );
 
-  it("should return the last line of a multi-line file", async () => {
-    const filePath = `${testDir}/multi-line.txt`;
-    await Effect.runPromise(
-      Effect.gen(function* () {
-        const fs = yield* FileSystem.FileSystem;
-        yield* fs.writeFileString(filePath, "first line\nsecond line\nlast line");
-      }).pipe(Effect.provide(testLayer)),
-    );
+  it.live("should return the last line of a multi-line file", () =>
+    Effect.gen(function* () {
+      const filePath = `${testDir}/multi-line.txt`;
+      const fs = yield* FileSystem.FileSystem;
+      yield* fs.writeFileString(filePath, "first line\nsecond line\nlast line");
 
-    const result = await Effect.runPromise(readLastLine(filePath).pipe(Effect.provide(testLayer)));
+      const result = yield* readLastLine(filePath);
 
-    expect(result).toBe("last line");
-  });
+      expect(result).toBe("last line");
+    }).pipe(Effect.provide(testLayer)),
+  );
 
-  it("should ignore trailing newlines", async () => {
-    const filePath = `${testDir}/trailing-newline.txt`;
-    await Effect.runPromise(
-      Effect.gen(function* () {
-        const fs = yield* FileSystem.FileSystem;
-        yield* fs.writeFileString(filePath, "first line\nsecond line\nlast line\n");
-      }).pipe(Effect.provide(testLayer)),
-    );
+  it.live("should ignore trailing newlines", () =>
+    Effect.gen(function* () {
+      const filePath = `${testDir}/trailing-newline.txt`;
+      const fs = yield* FileSystem.FileSystem;
+      yield* fs.writeFileString(filePath, "first line\nsecond line\nlast line\n");
 
-    const result = await Effect.runPromise(readLastLine(filePath).pipe(Effect.provide(testLayer)));
+      const result = yield* readLastLine(filePath);
 
-    expect(result).toBe("last line");
-  });
+      expect(result).toBe("last line");
+    }).pipe(Effect.provide(testLayer)),
+  );
 
-  it("should ignore multiple trailing newlines", async () => {
-    const filePath = `${testDir}/multiple-trailing.txt`;
-    await Effect.runPromise(
-      Effect.gen(function* () {
-        const fs = yield* FileSystem.FileSystem;
-        yield* fs.writeFileString(filePath, "first line\nsecond line\nlast line\n\n\n");
-      }).pipe(Effect.provide(testLayer)),
-    );
+  it.live("should ignore multiple trailing newlines", () =>
+    Effect.gen(function* () {
+      const filePath = `${testDir}/multiple-trailing.txt`;
+      const fs = yield* FileSystem.FileSystem;
+      yield* fs.writeFileString(filePath, "first line\nsecond line\nlast line\n\n\n");
 
-    const result = await Effect.runPromise(readLastLine(filePath).pipe(Effect.provide(testLayer)));
+      const result = yield* readLastLine(filePath);
 
-    expect(result).toBe("last line");
-  });
+      expect(result).toBe("last line");
+    }).pipe(Effect.provide(testLayer)),
+  );
 
-  it("should return empty string for empty file", async () => {
-    const filePath = `${testDir}/empty.txt`;
-    await Effect.runPromise(
-      Effect.gen(function* () {
-        const fs = yield* FileSystem.FileSystem;
-        yield* fs.writeFileString(filePath, "");
-      }).pipe(Effect.provide(testLayer)),
-    );
+  it.live("should return empty string for empty file", () =>
+    Effect.gen(function* () {
+      const filePath = `${testDir}/empty.txt`;
+      const fs = yield* FileSystem.FileSystem;
+      yield* fs.writeFileString(filePath, "");
 
-    const result = await Effect.runPromise(readLastLine(filePath).pipe(Effect.provide(testLayer)));
+      const result = yield* readLastLine(filePath);
 
-    expect(result).toBe("");
-  });
+      expect(result).toBe("");
+    }).pipe(Effect.provide(testLayer)),
+  );
 
-  it("should return empty string for file with only newlines", async () => {
-    const filePath = `${testDir}/only-newlines.txt`;
-    await Effect.runPromise(
-      Effect.gen(function* () {
-        const fs = yield* FileSystem.FileSystem;
-        yield* fs.writeFileString(filePath, "\n\n\n");
-      }).pipe(Effect.provide(testLayer)),
-    );
+  it.live("should return empty string for file with only newlines", () =>
+    Effect.gen(function* () {
+      const filePath = `${testDir}/only-newlines.txt`;
+      const fs = yield* FileSystem.FileSystem;
+      yield* fs.writeFileString(filePath, "\n\n\n");
 
-    const result = await Effect.runPromise(readLastLine(filePath).pipe(Effect.provide(testLayer)));
+      const result = yield* readLastLine(filePath);
 
-    expect(result).toBe("");
-  });
+      expect(result).toBe("");
+    }).pipe(Effect.provide(testLayer)),
+  );
 
-  it("should handle CRLF line endings", async () => {
-    const filePath = `${testDir}/crlf.txt`;
-    await Effect.runPromise(
-      Effect.gen(function* () {
-        const fs = yield* FileSystem.FileSystem;
-        yield* fs.writeFileString(filePath, "first line\r\nsecond line\r\nlast line\r\n");
-      }).pipe(Effect.provide(testLayer)),
-    );
+  it.live("should handle CRLF line endings", () =>
+    Effect.gen(function* () {
+      const filePath = `${testDir}/crlf.txt`;
+      const fs = yield* FileSystem.FileSystem;
+      yield* fs.writeFileString(filePath, "first line\r\nsecond line\r\nlast line\r\n");
 
-    const result = await Effect.runPromise(readLastLine(filePath).pipe(Effect.provide(testLayer)));
+      const result = yield* readLastLine(filePath);
 
-    expect(result).toBe("last line");
-  });
+      expect(result).toBe("last line");
+    }).pipe(Effect.provide(testLayer)),
+  );
 
-  it("should handle JSON line content (JSONL format)", async () => {
-    const jsonContent = '{"sessionId":"abc123","type":"assistant"}';
-    const filePath = `${testDir}/session.jsonl`;
-    await Effect.runPromise(
-      Effect.gen(function* () {
-        const fs = yield* FileSystem.FileSystem;
-        yield* fs.writeFileString(filePath, `{"first":"line"}\n${jsonContent}\n`);
-      }).pipe(Effect.provide(testLayer)),
-    );
+  it.live("should handle JSON line content (JSONL format)", () =>
+    Effect.gen(function* () {
+      const jsonContent = '{"sessionId":"abc123","type":"assistant"}';
+      const filePath = `${testDir}/session.jsonl`;
+      const fs = yield* FileSystem.FileSystem;
+      yield* fs.writeFileString(filePath, `{"first":"line"}\n${jsonContent}\n`);
 
-    const result = await Effect.runPromise(readLastLine(filePath).pipe(Effect.provide(testLayer)));
+      const result = yield* readLastLine(filePath);
 
-    expect(result).toBe(jsonContent);
-  });
+      expect(result).toBe(jsonContent);
+    }).pipe(Effect.provide(testLayer)),
+  );
 
-  it("should fail for non-existent file", async () => {
-    const filePath = `${testDir}/non-existent.txt`;
+  it.live("should fail for non-existent file", () =>
+    Effect.gen(function* () {
+      const filePath = `${testDir}/non-existent.txt`;
 
-    const result = await Effect.runPromise(
-      readLastLine(filePath).pipe(Effect.flip, Effect.provide(testLayer)),
-    );
+      const result = yield* readLastLine(filePath).pipe(Effect.flip);
 
-    expect(result._tag).toBe("SystemError");
-  });
+      expect(result._tag).toBe("SystemError");
+    }).pipe(Effect.provide(testLayer)),
+  );
 
-  it("should handle large file by reading only the tail", async () => {
-    // Create a file larger than the buffer size (10KB = 10240 bytes)
-    // Use 1KB lines so we have clear boundaries
-    const lineContent = "x".repeat(1000);
-    // Create 15 lines (15KB total) - more than the 10KB buffer
-    const lines = Array.from({ length: 15 }, (_, i) =>
-      i === 14 ? "last-unique-line" : `${lineContent}-line-${i}`,
-    );
-    const filePath = `${testDir}/large-file.txt`;
-    await Effect.runPromise(
-      Effect.gen(function* () {
-        const fs = yield* FileSystem.FileSystem;
-        yield* fs.writeFileString(filePath, `${lines.join("\n")}\n`);
-      }).pipe(Effect.provide(testLayer)),
-    );
+  it.live("should handle large file by reading only the tail", () =>
+    Effect.gen(function* () {
+      // Create a file larger than the buffer size (10KB = 10240 bytes)
+      // Use 1KB lines so we have clear boundaries
+      const lineContent = "x".repeat(1000);
+      // Create 15 lines (15KB total) - more than the 10KB buffer
+      const lines = Array.from({ length: 15 }, (_, i) =>
+        i === 14 ? "last-unique-line" : `${lineContent}-line-${i}`,
+      );
+      const filePath = `${testDir}/large-file.txt`;
+      const fs = yield* FileSystem.FileSystem;
+      yield* fs.writeFileString(filePath, `${lines.join("\n")}\n`);
 
-    const result = await Effect.runPromise(readLastLine(filePath).pipe(Effect.provide(testLayer)));
+      const result = yield* readLastLine(filePath);
 
-    expect(result).toBe("last-unique-line");
-  });
+      expect(result).toBe("last-unique-line");
+    }).pipe(Effect.provide(testLayer)),
+  );
 
-  it("should handle file smaller than buffer size", async () => {
-    const filePath = `${testDir}/small.txt`;
-    await Effect.runPromise(
-      Effect.gen(function* () {
-        const fs = yield* FileSystem.FileSystem;
-        yield* fs.writeFileString(filePath, "small content");
-      }).pipe(Effect.provide(testLayer)),
-    );
+  it.live("should handle file smaller than buffer size", () =>
+    Effect.gen(function* () {
+      const filePath = `${testDir}/small.txt`;
+      const fs = yield* FileSystem.FileSystem;
+      yield* fs.writeFileString(filePath, "small content");
 
-    const result = await Effect.runPromise(readLastLine(filePath).pipe(Effect.provide(testLayer)));
+      const result = yield* readLastLine(filePath);
 
-    expect(result).toBe("small content");
-  });
+      expect(result).toBe("small content");
+    }).pipe(Effect.provide(testLayer)),
+  );
 });

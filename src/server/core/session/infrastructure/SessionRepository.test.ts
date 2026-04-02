@@ -1,5 +1,7 @@
 import { SystemError } from "@effect/platform/Error";
+import { it } from "@effect/vitest";
 import { Effect, Layer, Option } from "effect";
+import { expect } from "vitest";
 import {
   createInMemoryDrizzle,
   makeDrizzleTestServiceLayer,
@@ -85,27 +87,25 @@ const makeDrizzleServiceWithData = (opts: {
 
 describe("SessionRepository", () => {
   describe("getSession", () => {
-    it("returns session details when session file exists", async () => {
-      const projectId = Buffer.from("/test/project").toString("base64url");
-      const sessionId = "test-session";
-      const sessionPath = `/test/project/${sessionId}.jsonl`;
-      const mockDate = new Date("2024-01-01T00:00:00.000Z");
-      const mockMeta: SessionMeta = createMockSessionMeta({
-        messageCount: 3,
-        firstUserMessage: null,
-      });
+    it.live("returns session details when session file exists", () =>
+      Effect.gen(function* () {
+        const projectId = Buffer.from("/test/project").toString("base64url");
+        const sessionId = "test-session";
+        const sessionPath = `/test/project/${sessionId}.jsonl`;
+        const mockDate = new Date("2024-01-01T00:00:00.000Z");
+        const mockMeta: SessionMeta = createMockSessionMeta({
+          messageCount: 3,
+          firstUserMessage: null,
+        });
 
-      const mockContent = `{"type":"user","message":{"role":"user","content":"Hello"}}\n{"type":"assistant","message":{"role":"assistant","content":"Hi"}}\n{"type":"user","message":{"role":"user","content":"Test"}}`;
+        const mockContent = `{"type":"user","message":{"role":"user","content":"Hello"}}\n{"type":"assistant","message":{"role":"assistant","content":"Hi"}}\n{"type":"user","message":{"role":"user","content":"Test"}}`;
 
-      const SessionMetaServiceMock = testSessionMetaServiceLayer(mockMeta);
+        const SessionMetaServiceMock = testSessionMetaServiceLayer(mockMeta);
 
-      const program = Effect.gen(function* () {
-        const repo = yield* SessionRepository;
-        return yield* repo.getSession(projectId, sessionId);
-      });
-
-      const result = await Effect.runPromise(
-        program.pipe(
+        const result = yield* Effect.gen(function* () {
+          const repo = yield* SessionRepository;
+          return yield* repo.getSession(projectId, sessionId);
+        }).pipe(
           Effect.provide(SessionRepository.Live),
           Effect.provide(SessionMetaServiceMock),
           Effect.provide(
@@ -142,42 +142,40 @@ describe("SessionRepository", () => {
               claudeCodePaths: { claudeProjectsDirPath: "/test" },
             }),
           ),
-        ),
-      );
+        );
 
-      expect(result.session).not.toBeNull();
-      if (result.session === null) {
-        throw new Error("Expected session to exist");
-      }
-      expect(result.session.id).toBe(sessionId);
-      expect(result.session.jsonlFilePath).toBe(sessionPath);
-      expect(result.session.meta).toEqual(mockMeta);
-      expect(result.session.conversations).toHaveLength(3);
-      expect(result.session.lastModifiedAt).toEqual(mockDate);
-    });
+        expect(result.session).not.toBeNull();
+        if (result.session === null) {
+          throw new Error("Expected session to exist");
+        }
+        expect(result.session.id).toBe(sessionId);
+        expect(result.session.jsonlFilePath).toBe(sessionPath);
+        expect(result.session.meta).toEqual(mockMeta);
+        expect(result.session.conversations).toHaveLength(3);
+        expect(result.session.lastModifiedAt).toEqual(mockDate);
+      }),
+    );
 
-    it("returns null when session does not exist", async () => {
-      const projectId = Buffer.from("/test/project").toString("base64url");
-      const sessionId = "nonexistent-session";
+    it.live("returns null when session does not exist", () =>
+      Effect.gen(function* () {
+        const projectId = Buffer.from("/test/project").toString("base64url");
+        const sessionId = "nonexistent-session";
 
-      const FileSystemMock = testFileSystemLayer({
-        exists: () => Effect.succeed(false),
-      });
+        const FileSystemMock = testFileSystemLayer({
+          exists: () => Effect.succeed(false),
+        });
 
-      const SessionMetaServiceMock = testSessionMetaServiceLayer(
-        createMockSessionMeta({
-          messageCount: 0,
-          firstUserMessage: null,
-        }),
-      );
+        const SessionMetaServiceMock = testSessionMetaServiceLayer(
+          createMockSessionMeta({
+            messageCount: 0,
+            firstUserMessage: null,
+          }),
+        );
 
-      const program = Effect.gen(function* () {
-        const repo = yield* SessionRepository;
-        return yield* repo.getSession(projectId, sessionId);
-      });
-
-      const result = await Effect.runPromise(
-        program.pipe(
+        const result = yield* Effect.gen(function* () {
+          const repo = yield* SessionRepository;
+          return yield* repo.getSession(projectId, sessionId);
+        }).pipe(
           Effect.provide(SessionRepository.Live),
           Effect.provide(SessionMetaServiceMock),
           Effect.provide(
@@ -192,176 +190,168 @@ describe("SessionRepository", () => {
               claudeCodePaths: { claudeProjectsDirPath: "/test" },
             }),
           ),
-        ),
-      );
+        );
 
-      expect(result.session).toBeNull();
-    });
+        expect(result.session).toBeNull();
+      }),
+    );
   });
 
   describe("getSessions", () => {
-    it("returns list of sessions within project ordered by last_modified_at DESC", async () => {
-      const projectPath = "/test/project";
-      const projectId = Buffer.from(projectPath).toString("base64url");
-      const date1 = new Date("2024-01-01T00:00:00.000Z");
-      const date2 = new Date("2024-01-02T00:00:00.000Z");
+    it.live("returns list of sessions within project ordered by last_modified_at DESC", () =>
+      Effect.gen(function* () {
+        const projectPath = "/test/project";
+        const projectId = Buffer.from(projectPath).toString("base64url");
+        const date1 = new Date("2024-01-01T00:00:00.000Z");
+        const date2 = new Date("2024-01-02T00:00:00.000Z");
 
-      const mockMeta: SessionMeta = createMockSessionMeta({
-        messageCount: 1,
-        firstUserMessage: null,
-      });
-
-      // DB rows ordered by last_modified_at DESC (newer first)
-      const sessionRows = [
-        makeSessionRow("session1", projectId, date2), // newer
-        makeSessionRow("session2", projectId, date1), // older
-      ];
-
-      const SessionMetaServiceMock = testSessionMetaServiceLayer(mockMeta);
-
-      const program = Effect.gen(function* () {
-        const repo = yield* SessionRepository;
-        return yield* repo.getSessions(projectId);
-      });
-
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(SessionRepository.Live),
-          Effect.provide(SessionMetaServiceMock),
-          Effect.provide(
-            makeDrizzleServiceWithData({
-              projectRows: [defaultProjectRow],
-              sessionRows,
-            }),
-          ),
-          Effect.provide(makeSyncServiceMock()),
-          Effect.provide(testFileSystemLayer({})),
-          Effect.provide(
-            testPlatformLayer({
-              claudeCodePaths: { claudeProjectsDirPath: "/test" },
-            }),
-          ),
-        ),
-      );
-
-      expect(result.sessions).toHaveLength(2);
-      expect(result.sessions.at(0)?.id).toBe("session1");
-      expect(result.sessions.at(1)?.id).toBe("session2");
-    });
-
-    it("can limit number of results with maxCount option", async () => {
-      const projectPath = "/test/project";
-      const projectId = Buffer.from(projectPath).toString("base64url");
-      const mockDate = new Date("2024-01-01T00:00:00.000Z");
-
-      const mockMeta: SessionMeta = createMockSessionMeta({
-        messageCount: 1,
-        firstUserMessage: null,
-      });
-
-      const sessionRows = [
-        makeSessionRow("session1", projectId, mockDate),
-        makeSessionRow("session2", projectId, mockDate),
-        makeSessionRow("session3", projectId, mockDate),
-      ];
-
-      const SessionMetaServiceMock = testSessionMetaServiceLayer(mockMeta);
-
-      const program = Effect.gen(function* () {
-        const repo = yield* SessionRepository;
-        return yield* repo.getSessions(projectId, { maxCount: 2 });
-      });
-
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(SessionRepository.Live),
-          Effect.provide(SessionMetaServiceMock),
-          Effect.provide(
-            makeDrizzleServiceWithData({
-              projectRows: [defaultProjectRow],
-              sessionRows,
-            }),
-          ),
-          Effect.provide(makeSyncServiceMock()),
-          Effect.provide(testFileSystemLayer({})),
-          Effect.provide(
-            testPlatformLayer({
-              claudeCodePaths: { claudeProjectsDirPath: "/test" },
-            }),
-          ),
-        ),
-      );
-
-      expect(result.sessions).toHaveLength(2);
-    });
-
-    it("can paginate with cursor option", async () => {
-      const projectPath = "/test/project";
-      const projectId = Buffer.from(projectPath).toString("base64url");
-      const mockDate = new Date("2024-01-01T00:00:00.000Z");
-
-      const mockMeta: SessionMeta = createMockSessionMeta({
-        messageCount: 1,
-        firstUserMessage: null,
-      });
-
-      // 3 sessions, cursor=session1 should return session2 and session3
-      const sessionRows = [
-        makeSessionRow("session1", projectId, mockDate),
-        makeSessionRow("session2", projectId, mockDate),
-        makeSessionRow("session3", projectId, mockDate),
-      ];
-
-      const SessionMetaServiceMock = testSessionMetaServiceLayer(mockMeta);
-
-      const program = Effect.gen(function* () {
-        const repo = yield* SessionRepository;
-        return yield* repo.getSessions(projectId, {
-          cursor: "session1",
-        });
-      });
-
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(SessionRepository.Live),
-          Effect.provide(SessionMetaServiceMock),
-          Effect.provide(
-            makeDrizzleServiceWithData({
-              projectRows: [defaultProjectRow],
-              sessionRows,
-            }),
-          ),
-          Effect.provide(makeSyncServiceMock()),
-          Effect.provide(testFileSystemLayer({})),
-          Effect.provide(
-            testPlatformLayer({
-              claudeCodePaths: { claudeProjectsDirPath: "/test" },
-            }),
-          ),
-        ),
-      );
-
-      expect(result.sessions.length).toBeGreaterThan(0);
-      expect(result.sessions.every((s) => s.id !== "session1")).toBe(true);
-    });
-
-    it("returns empty array when project has no sessions in DB", async () => {
-      const projectId = Buffer.from("/test/nonexistent").toString("base64url");
-
-      const SessionMetaServiceMock = testSessionMetaServiceLayer(
-        createMockSessionMeta({
-          messageCount: 0,
+        const mockMeta: SessionMeta = createMockSessionMeta({
+          messageCount: 1,
           firstUserMessage: null,
-        }),
-      );
+        });
 
-      const program = Effect.gen(function* () {
-        const repo = yield* SessionRepository;
-        return yield* repo.getSessions(projectId);
-      });
+        // DB rows ordered by last_modified_at DESC (newer first)
+        const sessionRows = [
+          makeSessionRow("session1", projectId, date2), // newer
+          makeSessionRow("session2", projectId, date1), // older
+        ];
 
-      const result = await Effect.runPromise(
-        program.pipe(
+        const SessionMetaServiceMock = testSessionMetaServiceLayer(mockMeta);
+
+        const result = yield* Effect.gen(function* () {
+          const repo = yield* SessionRepository;
+          return yield* repo.getSessions(projectId);
+        }).pipe(
+          Effect.provide(SessionRepository.Live),
+          Effect.provide(SessionMetaServiceMock),
+          Effect.provide(
+            makeDrizzleServiceWithData({
+              projectRows: [defaultProjectRow],
+              sessionRows,
+            }),
+          ),
+          Effect.provide(makeSyncServiceMock()),
+          Effect.provide(testFileSystemLayer({})),
+          Effect.provide(
+            testPlatformLayer({
+              claudeCodePaths: { claudeProjectsDirPath: "/test" },
+            }),
+          ),
+        );
+
+        expect(result.sessions).toHaveLength(2);
+        expect(result.sessions.at(0)?.id).toBe("session1");
+        expect(result.sessions.at(1)?.id).toBe("session2");
+      }),
+    );
+
+    it.live("can limit number of results with maxCount option", () =>
+      Effect.gen(function* () {
+        const projectPath = "/test/project";
+        const projectId = Buffer.from(projectPath).toString("base64url");
+        const mockDate = new Date("2024-01-01T00:00:00.000Z");
+
+        const mockMeta: SessionMeta = createMockSessionMeta({
+          messageCount: 1,
+          firstUserMessage: null,
+        });
+
+        const sessionRows = [
+          makeSessionRow("session1", projectId, mockDate),
+          makeSessionRow("session2", projectId, mockDate),
+          makeSessionRow("session3", projectId, mockDate),
+        ];
+
+        const SessionMetaServiceMock = testSessionMetaServiceLayer(mockMeta);
+
+        const result = yield* Effect.gen(function* () {
+          const repo = yield* SessionRepository;
+          return yield* repo.getSessions(projectId, { maxCount: 2 });
+        }).pipe(
+          Effect.provide(SessionRepository.Live),
+          Effect.provide(SessionMetaServiceMock),
+          Effect.provide(
+            makeDrizzleServiceWithData({
+              projectRows: [defaultProjectRow],
+              sessionRows,
+            }),
+          ),
+          Effect.provide(makeSyncServiceMock()),
+          Effect.provide(testFileSystemLayer({})),
+          Effect.provide(
+            testPlatformLayer({
+              claudeCodePaths: { claudeProjectsDirPath: "/test" },
+            }),
+          ),
+        );
+
+        expect(result.sessions).toHaveLength(2);
+      }),
+    );
+
+    it.live("can paginate with cursor option", () =>
+      Effect.gen(function* () {
+        const projectPath = "/test/project";
+        const projectId = Buffer.from(projectPath).toString("base64url");
+        const mockDate = new Date("2024-01-01T00:00:00.000Z");
+
+        const mockMeta: SessionMeta = createMockSessionMeta({
+          messageCount: 1,
+          firstUserMessage: null,
+        });
+
+        // 3 sessions, cursor=session1 should return session2 and session3
+        const sessionRows = [
+          makeSessionRow("session1", projectId, mockDate),
+          makeSessionRow("session2", projectId, mockDate),
+          makeSessionRow("session3", projectId, mockDate),
+        ];
+
+        const SessionMetaServiceMock = testSessionMetaServiceLayer(mockMeta);
+
+        const result = yield* Effect.gen(function* () {
+          const repo = yield* SessionRepository;
+          return yield* repo.getSessions(projectId, {
+            cursor: "session1",
+          });
+        }).pipe(
+          Effect.provide(SessionRepository.Live),
+          Effect.provide(SessionMetaServiceMock),
+          Effect.provide(
+            makeDrizzleServiceWithData({
+              projectRows: [defaultProjectRow],
+              sessionRows,
+            }),
+          ),
+          Effect.provide(makeSyncServiceMock()),
+          Effect.provide(testFileSystemLayer({})),
+          Effect.provide(
+            testPlatformLayer({
+              claudeCodePaths: { claudeProjectsDirPath: "/test" },
+            }),
+          ),
+        );
+
+        expect(result.sessions.length).toBeGreaterThan(0);
+        expect(result.sessions.every((s) => s.id !== "session1")).toBe(true);
+      }),
+    );
+
+    it.live("returns empty array when project has no sessions in DB", () =>
+      Effect.gen(function* () {
+        const projectId = Buffer.from("/test/nonexistent").toString("base64url");
+
+        const SessionMetaServiceMock = testSessionMetaServiceLayer(
+          createMockSessionMeta({
+            messageCount: 0,
+            firstUserMessage: null,
+          }),
+        );
+
+        const result = yield* Effect.gen(function* () {
+          const repo = yield* SessionRepository;
+          return yield* repo.getSessions(projectId);
+        }).pipe(
           Effect.provide(SessionRepository.Live),
           Effect.provide(SessionMetaServiceMock),
           Effect.provide(
@@ -376,34 +366,32 @@ describe("SessionRepository", () => {
               claudeCodePaths: { claudeProjectsDirPath: "/test" },
             }),
           ),
-        ),
-      );
+        );
 
-      expect(result.sessions).toEqual([]);
-    });
+        expect(result.sessions).toEqual([]);
+      }),
+    );
 
-    it("triggers syncProjectList when project not in DB", async () => {
-      const projectPath = "/test/project";
-      const projectId = Buffer.from(projectPath).toString("base64url");
-      let syncCalled = false;
+    it.live("triggers syncProjectList when project not in DB", () =>
+      Effect.gen(function* () {
+        const projectPath = "/test/project";
+        const projectId = Buffer.from(projectPath).toString("base64url");
+        let syncCalled = false;
 
-      const mockMeta: SessionMeta = createMockSessionMeta({
-        messageCount: 1,
-        firstUserMessage: null,
-      });
+        const mockMeta: SessionMeta = createMockSessionMeta({
+          messageCount: 1,
+          firstUserMessage: null,
+        });
 
-      const SessionMetaServiceMock = testSessionMetaServiceLayer(mockMeta);
+        const SessionMetaServiceMock = testSessionMetaServiceLayer(mockMeta);
 
-      // Start with an empty DB — no project row
-      const { db, rawDb } = createInMemoryDrizzle();
+        // Start with an empty DB — no project row
+        const { db, rawDb } = createInMemoryDrizzle();
 
-      const program = Effect.gen(function* () {
-        const repo = yield* SessionRepository;
-        return yield* repo.getSessions(projectId);
-      });
-
-      await Effect.runPromise(
-        program.pipe(
+        yield* Effect.gen(function* () {
+          const repo = yield* SessionRepository;
+          return yield* repo.getSessions(projectId);
+        }).pipe(
           Effect.provide(SessionRepository.Live),
           Effect.provide(SessionMetaServiceMock),
           Effect.provide(Layer.succeed(DrizzleService, { db, rawDb })),
@@ -421,10 +409,10 @@ describe("SessionRepository", () => {
               claudeCodePaths: { claudeProjectsDirPath: "/test" },
             }),
           ),
-        ),
-      );
+        );
 
-      expect(syncCalled).toBe(true);
-    });
+        expect(syncCalled).toBe(true);
+      }),
+    );
   });
 });

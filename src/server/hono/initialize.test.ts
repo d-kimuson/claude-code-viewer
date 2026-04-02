@@ -1,3 +1,4 @@
+import { NodeFileSystem } from "@effect/platform-node";
 import { describe, it } from "@effect/vitest";
 import { Effect, Layer, Ref } from "effect";
 import { expect } from "vitest";
@@ -6,11 +7,14 @@ import { testProjectMetaServiceLayer } from "../../testing/layers/testProjectMet
 import { testProjectRepositoryLayer } from "../../testing/layers/testProjectRepositoryLayer.ts";
 import { testSessionMetaServiceLayer } from "../../testing/layers/testSessionMetaServiceLayer.ts";
 import { testSessionRepositoryLayer } from "../../testing/layers/testSessionRepositoryLayer.ts";
+import { ClaudeCodeLifeCycleService } from "../core/claude-code/services/ClaudeCodeLifeCycleService.ts";
 import { EventBus } from "../core/events/services/EventBus.ts";
 import { FileWatcherService } from "../core/events/services/fileWatcher.ts";
 import type { InternalEventDeclaration } from "../core/events/types/InternalEventDeclaration.ts";
 import { ProjectRepository } from "../core/project/infrastructure/ProjectRepository.ts";
 import { RateLimitAutoScheduleService } from "../core/rate-limit/services/RateLimitAutoScheduleService.ts";
+import { SchedulerConfigBaseDir } from "../core/scheduler/config.ts";
+import { SchedulerService } from "../core/scheduler/domain/Scheduler.ts";
 import { createMockSessionMeta } from "../core/session/testing/createMockSessionMeta.ts";
 import { SyncService } from "../core/sync/services/SyncService.ts";
 import { InitializeService } from "./initialize.ts";
@@ -30,6 +34,34 @@ const mockSyncService = Layer.succeed(SyncService, {
   syncProjectList: () => Effect.void,
 });
 
+// Mock SchedulerService for testing
+const mockSchedulerService = Layer.succeed(SchedulerService, {
+  startScheduler: Effect.void,
+  stopScheduler: Effect.void,
+  getJobs: () => Effect.succeed([]),
+  addJob: () => Effect.die("Not implemented in tests"),
+  updateJob: () => Effect.die("Not implemented in tests"),
+  deleteJob: () => Effect.die("Not implemented in tests"),
+});
+
+// Mock ClaudeCodeLifeCycleService for testing
+const mockLifeCycleService = Layer.succeed(ClaudeCodeLifeCycleService, {
+  startSessionProcess: () => Effect.die("Not implemented in tests"),
+  continueSessionProcess: () => Effect.die("Not implemented in tests"),
+  abortTask: () => Effect.die("Not implemented in tests"),
+  abortAllTasks: () => Effect.die("Not implemented in tests"),
+  getPublicSessionProcesses: () => Effect.succeed([]),
+});
+
+const mockSchedulerConfigBaseDir = Layer.succeed(SchedulerConfigBaseDir, "/tmp/test-scheduler");
+
+const schedulerDependencies = Layer.mergeAll(
+  NodeFileSystem.layer,
+  mockSchedulerService,
+  mockLifeCycleService,
+  mockSchedulerConfigBaseDir,
+);
+
 const allDependencies = Layer.mergeAll(
   fileWatcherWithEventBus,
   mockRateLimitAutoScheduleService,
@@ -48,7 +80,7 @@ const allDependencies = Layer.mergeAll(
     }),
   }),
   testPlatformLayer(),
-);
+).pipe(Layer.provideMerge(schedulerDependencies));
 
 const sharedTestLayer = Layer.provide(InitializeService.Live, allDependencies).pipe(
   Layer.merge(allDependencies),

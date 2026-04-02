@@ -110,6 +110,10 @@ const LayerImpl = Effect.gen(function* () {
         );
       };
 
+      const onSchedulerJobsChanged = () => {
+        Effect.runFork(typeSafeSSE.writeSSE("schedulerJobsChanged", {}));
+      };
+
       yield* eventBus.on("sessionListChanged", onSessionListChanged);
       yield* eventBus.on("sessionChanged", onSessionChanged);
       yield* eventBus.on("agentSessionChanged", onAgentSessionChanged);
@@ -121,6 +125,7 @@ const LayerImpl = Effect.gen(function* () {
       yield* eventBus.on("questionResolved", onQuestionResolved);
       yield* eventBus.on("notificationCreated", onNotificationCreated);
       yield* eventBus.on("notificationConsumed", onNotificationConsumed);
+      yield* eventBus.on("schedulerJobsChanged", onSchedulerJobsChanged);
 
       const { connectionPromise } = adaptInternalEventToSSE(rawStream, {
         timeout: 5 /* min */ * 60 /* sec */ * 1000,
@@ -138,6 +143,7 @@ const LayerImpl = Effect.gen(function* () {
               yield* eventBus.off("questionResolved", onQuestionResolved);
               yield* eventBus.off("notificationCreated", onNotificationCreated);
               yield* eventBus.off("notificationConsumed", onNotificationConsumed);
+              yield* eventBus.off("schedulerJobsChanged", onSchedulerJobsChanged);
             }),
           );
         },

@@ -1,6 +1,7 @@
 import { Context, Cron, Data, Duration, Effect, Fiber, Layer, Ref, Schedule } from "effect";
 import { ulid } from "ulid";
 import type { InferEffect } from "../../../lib/effect/types.ts";
+import { EventBus } from "../../events/services/EventBus.ts";
 import { initializeConfig, readConfig, writeConfig } from "../config.ts";
 import type {
   NewSchedulerJob,
@@ -20,8 +21,11 @@ class InvalidCronExpressionError extends Data.TaggedError("InvalidCronExpression
 }> {}
 
 const LayerImpl = Effect.gen(function* () {
+  const eventBus = yield* EventBus;
   const fibersRef = yield* Ref.make<Map<string, Fiber.RuntimeFiber<unknown, unknown>>>(new Map());
   const runningJobsRef = yield* Ref.make<Set<string>>(new Set());
+
+  const emitSchedulerJobsChanged = eventBus.emit("schedulerJobsChanged", {});
 
   const startJob = (job: SchedulerJob) =>
     Effect.gen(function* () {
@@ -89,8 +93,14 @@ const LayerImpl = Effect.gen(function* () {
       if (job.schedule.type === "reserved") {
         const result = yield* executeJob(job).pipe(
           Effect.matchEffect({
-            onSuccess: () => Effect.void,
-            onFailure: () => Effect.void,
+            onSuccess: () => {
+              console.log(`[Scheduler] Reserved job ${job.id} executed successfully`);
+              return Effect.void;
+            },
+            onFailure: (error) => {
+              console.error(`[Scheduler] Reserved job ${job.id} failed:`, error);
+              return Effect.void;
+            },
           }),
         );
         yield* Ref.update(runningJobsRef, (jobs) => {
@@ -107,14 +117,22 @@ const LayerImpl = Effect.gen(function* () {
           }),
         );
 
+        yield* emitSchedulerJobsChanged;
+
         return result;
       }
 
       // For non-reserved jobs, update status
       const result = yield* executeJob(job).pipe(
         Effect.matchEffect({
-          onSuccess: () => updateJobStatus(job.id, "success", new Date().toISOString()),
-          onFailure: () => updateJobStatus(job.id, "failed", new Date().toISOString()),
+          onSuccess: () => {
+            console.log(`[Scheduler] Job ${job.id} executed successfully`);
+            return updateJobStatus(job.id, "success", new Date().toISOString());
+          },
+          onFailure: (error) => {
+            console.error(`[Scheduler] Job ${job.id} failed:`, error);
+            return updateJobStatus(job.id, "failed", new Date().toISOString());
+          },
         }),
       );
 
@@ -222,6 +240,8 @@ const LayerImpl = Effect.gen(function* () {
         yield* startJob(job);
       }
 
+      yield* emitSchedulerJobsChanged;
+
       return job;
     });
 
@@ -255,6 +275,8 @@ const LayerImpl = Effect.gen(function* () {
       if (updatedJob.enabled) {
         yield* startJob(updatedJob);
       }
+
+      yield* emitSchedulerJobsChanged;
 
       return updatedJob;
     });
@@ -296,6 +318,7 @@ const LayerImpl = Effect.gen(function* () {
 
       yield* stopJob(jobId);
       yield* deleteJobFromConfig(jobId);
+      yield* emitSchedulerJobsChanged;
     });
 
   return {

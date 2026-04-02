@@ -132,7 +132,8 @@ export const SchedulerJobDialog: FC<SchedulerJobDialogProps> = ({
       message: {
         content: messageContent,
         projectId,
-        baseSession: null,
+        sessionId: crypto.randomUUID(),
+        resume: false,
       },
       enabled,
     };

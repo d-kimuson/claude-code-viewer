@@ -13,7 +13,9 @@ export const useCreateSessionProcessMutation = (projectId: string, onSuccess?: (
   return useMutation({
     mutationFn: async (options: { input: MessageInput; baseSessionId?: string }) => {
       const { ccOptions, ...input } = options.input;
-      const sessionId = options.baseSessionId ?? crypto.randomUUID();
+      const baseSessionId = options.baseSessionId;
+      const resume = baseSessionId !== undefined && baseSessionId !== "";
+      const sessionId = resume ? baseSessionId : crypto.randomUUID();
 
       // Add virtual message to store before navigation
       addVirtualMessage({
@@ -32,21 +34,13 @@ export const useCreateSessionProcessMutation = (projectId: string, onSuccess?: (
       onSuccess?.();
 
       // Then fire API call
-      const getBaseSession = (): undefined | { type: "resume"; sessionId: string } => {
-        if (options.baseSessionId === undefined || options.baseSessionId === "") return undefined;
-        return { type: "resume", sessionId: options.baseSessionId };
-      };
-
       try {
         const response = await honoClient.api["claude-code"]["session-processes"].$post(
           {
             json: {
               projectId,
-              sessionId:
-                options.baseSessionId !== undefined && options.baseSessionId !== ""
-                  ? undefined
-                  : sessionId,
-              baseSession: getBaseSession(),
+              sessionId,
+              resume,
               input,
               ccOptions,
             },

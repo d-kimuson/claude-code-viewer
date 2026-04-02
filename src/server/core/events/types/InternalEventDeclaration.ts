@@ -50,4 +50,7 @@ export type InternalEventDeclaration = {
   notificationConsumed: {
     sessionId: string;
   };
+
+  // biome-ignore lint/complexity/noBannedTypes: correct type
+  schedulerJobsChanged: Record<string, never>;
 };

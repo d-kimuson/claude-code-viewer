@@ -67,16 +67,11 @@ const LayerImpl = Effect.gen(function* () {
     projectId: string;
     cwd: string;
     input: UserMessageInput;
-    sessionId?: string;
-    baseSession:
-      | undefined
-      | {
-          type: "resume";
-          sessionId: string;
-        };
+    sessionId: string;
+    resume: boolean;
     ccOptions?: CCTurn.CCOptions;
   }) => {
-    const { projectId, cwd, input, sessionId, baseSession, ccOptions } = options;
+    const { projectId, cwd, input, sessionId, resume, ccOptions } = options;
 
     return Effect.gen(function* () {
       const {
@@ -85,21 +80,20 @@ const LayerImpl = Effect.gen(function* () {
         setHooks: setMessageGeneratorHooks,
       } = createMessageGenerator();
 
-      const turnDef: CCTurn.NewClaudeCodeTurnDef | CCTurn.ResumeClaudeCodeTurnDef =
-        baseSession === undefined
-          ? {
-              type: "new",
-              turnId: ulid(),
-              sessionId: sessionId ?? ulid(),
-              ccOptions,
-            }
-          : {
-              type: "resume",
-              turnId: ulid(),
-              sessionId: baseSession.sessionId,
-              baseSessionId: baseSession.sessionId,
-              ccOptions,
-            };
+      const turnDef: CCTurn.NewClaudeCodeTurnDef | CCTurn.ResumeClaudeCodeTurnDef = !resume
+        ? {
+            type: "new",
+            turnId: ulid(),
+            sessionId,
+            ccOptions,
+          }
+        : {
+            type: "resume",
+            turnId: ulid(),
+            sessionId,
+            baseSessionId: sessionId,
+            ccOptions,
+          };
 
       const { sessionProcess, task } = yield* sessionProcessService.startSessionProcess({
         sessionDef: {
@@ -192,6 +186,9 @@ const LayerImpl = Effect.gen(function* () {
         });
 
       const handleSessionProcessDaemon = async () => {
+        console.log(
+          `[SessionProcessDaemon] Starting daemon for ${sessionProcess.def.sessionProcessId} (${task.def.type})`,
+        );
         const messageIter = await Runtime.runPromise(runtime)(
           Effect.gen(function* () {
             const permissionOptions = yield* permissionService.createCanUseToolRelatedOptions({

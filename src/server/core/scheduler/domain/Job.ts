@@ -20,7 +20,8 @@ export const executeJob = (job: SchedulerJob) =>
     yield* lifeCycleService.startSessionProcess({
       projectId: message.projectId,
       cwd: project.meta.projectPath,
-      baseSession: message.baseSession ?? undefined,
+      sessionId: message.sessionId,
+      resume: message.resume,
       input: {
         text: message.content,
       },

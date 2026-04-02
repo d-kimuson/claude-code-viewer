@@ -377,10 +377,8 @@ describe("RateLimitAutoScheduleService", () => {
             expect(typeof firstJob.schedule.reservedExecutionTime).toBe("string");
             expect(firstJob.message.content).toBe("continue");
             expect(firstJob.message.projectId).toBe("test-project");
-            expect(firstJob.message.baseSession).toEqual({
-              type: "resume",
-              sessionId: "9112408c-3585-4a39-a13f-11045828d870",
-            });
+            expect(firstJob.message.sessionId).toBe("9112408c-3585-4a39-a13f-11045828d870");
+            expect(firstJob.message.resume).toBe(true);
             expect(firstJob.enabled).toBe(true);
           }),
         ),

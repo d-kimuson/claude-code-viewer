@@ -68,28 +68,20 @@ const claudeCodeRoutes = Effect.gen(function* () {
         "json",
         z.object({
           projectId: z.string(),
-          sessionId: z.uuid().optional(),
+          sessionId: z.uuid(),
           input: userMessageInputSchema,
-          baseSession: z.union([
-            z.undefined(),
-            z.object({
-              type: z.literal("resume"),
-              sessionId: z.string(),
-            }),
-          ]),
+          resume: z.boolean(),
           ccOptions: ccOptionsSchema.optional(),
         }),
       ),
       async (c) => {
         const body = c.req.valid("json");
         const input = normalizeUserMessageInput(body.input);
-        const { baseSession, ...rest } = body;
         const response = await effectToResponse(
           c,
           claudeCodeSessionProcessController.createSessionProcess({
-            ...rest,
+            ...body,
             input,
-            baseSession: baseSession ?? undefined,
           }),
         );
         return response;

@@ -211,7 +211,8 @@ const SessionPageMainContent: FC<
     if (!hasSessionId || allSchedulerJobs === undefined) return [];
     return allSchedulerJobs.filter(
       (job) =>
-        job.message.baseSession?.sessionId === sessionId &&
+        job.message.resume &&
+        job.message.sessionId === sessionId &&
         job.message.projectId === projectId &&
         job.schedule.type === "reserved" &&
         job.lastRunStatus === null, // Only show jobs that haven't been executed yet

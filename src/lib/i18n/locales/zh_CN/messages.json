@@ -135,7 +135,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        446
+        445
       ]
     ],
     "translation": "带补全支持的消息输入"
@@ -529,7 +529,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        539
+        538
       ]
     ],
     "translation": "附加"
@@ -551,7 +551,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        412
+        411
       ]
     ],
     "translation": "发送消息失败。请重试。"
@@ -581,7 +581,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        645
+        646
       ]
     ],
     "translation": "最近会话"
@@ -596,11 +596,11 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        363
+        364
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        633
+        634
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
@@ -747,7 +747,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        260
+        259
       ]
     ],
     "translation": "定时发送消息失败"
@@ -759,7 +759,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        244
+        243
       ]
     ],
     "translation": "消息定时发送成功"
@@ -771,7 +771,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        249
+        248
       ]
     ],
     "translation": "您可以在定时任务选项卡中查看和管理"
@@ -793,7 +793,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        492
+        491
       ]
     ],
     "translation": "立即发送"
@@ -804,7 +804,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        477
+        476
       ]
     ],
     "translation": "发送模式"
@@ -815,11 +815,11 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        495
+        494
       ],
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        642
+        641
       ]
     ],
     "translation": "定时发送"
@@ -830,7 +830,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        502
+        501
       ]
     ],
     "translation": "定时发送时间"
@@ -842,7 +842,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        604
+        603
       ]
     ],
     "translation": "选择推理努力程度"
@@ -854,7 +854,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        572
+        571
       ]
     ],
     "translation": "选择模型"
@@ -938,7 +938,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        682
+        681
       ]
     ],
     "translation": "语音输入"
@@ -960,7 +960,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/scheduler/SchedulerJobDialog.tsx",
-        313
+        314
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/DeleteSessionDialog.tsx",
@@ -979,7 +979,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/scheduler/SchedulerJobDialog.tsx",
-        321
+        322
       ]
     ],
     "translation": "创建"
@@ -1066,7 +1066,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/scheduler/SchedulerJobDialog.tsx",
-        317
+        318
       ]
     ],
     "translation": "保存中..."
@@ -1077,7 +1077,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/scheduler/SchedulerJobDialog.tsx",
-        319
+        320
       ]
     ],
     "translation": "更新"
@@ -1088,7 +1088,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        490
+        491
       ]
     ],
     "translation": "分支"
@@ -1099,7 +1099,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        471
+        472
       ]
     ],
     "translation": "元数据"
@@ -1110,7 +1110,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        517
+        518
       ]
     ],
     "translation": "模型"
@@ -1144,7 +1144,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        477
+        478
       ]
     ],
     "translation": "项目路径"
@@ -1179,7 +1179,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        504
+        505
       ]
     ],
     "translation": "会话 ID"
@@ -2602,7 +2602,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/scheduler/SchedulerJobDialog.tsx",
-        157
+        158
       ]
     ],
     "translation": "配置定时任务以向 Claude Code 发送消息"
@@ -2613,7 +2613,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/scheduler/SchedulerJobDialog.tsx",
-        153
+        154
       ]
     ],
     "translation": "创建定时任务"
@@ -2624,7 +2624,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/scheduler/SchedulerJobDialog.tsx",
-        151
+        152
       ]
     ],
     "translation": "编辑定时任务"
@@ -2650,7 +2650,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/scheduler/SchedulerJobDialog.tsx",
-        288
+        289
       ]
     ],
     "translation": "并发策略"
@@ -2661,7 +2661,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/scheduler/SchedulerJobDialog.tsx",
-        303
+        304
       ]
     ],
     "translation": "即使已在运行也执行"
@@ -2672,7 +2672,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/scheduler/SchedulerJobDialog.tsx",
-        300
+        301
       ]
     ],
     "translation": "如果已在运行则跳过"
@@ -2683,7 +2683,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/scheduler/SchedulerJobDialog.tsx",
-        166
+        167
       ]
     ],
     "translation": "启用"
@@ -2694,7 +2694,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/scheduler/SchedulerJobDialog.tsx",
-        169
+        170
       ]
     ],
     "translation": "启用或禁用此定时任务"
@@ -2705,7 +2705,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/scheduler/SchedulerJobDialog.tsx",
-        245
+        246
       ]
     ],
     "translation": "消息内容"
@@ -2717,7 +2717,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/scheduler/SchedulerJobDialog.tsx",
-        261
+        262
       ]
     ],
     "translation": "带补全支持的消息输入(输入 / 使用命令,@ 使用文件)"
@@ -2728,7 +2728,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/scheduler/SchedulerJobDialog.tsx",
-        280
+        281
       ]
     ],
     "translation": "输入 / 获取命令补全,@ 获取文件补全"
@@ -2740,7 +2740,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/scheduler/SchedulerJobDialog.tsx",
-        254
+        255
       ]
     ],
     "translation": "输入要发送给 Claude Code 的消息...(输入 / 使用命令,@ 使用文件)"
@@ -2751,7 +2751,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/scheduler/SchedulerJobDialog.tsx",
-        183
+        184
       ]
     ],
     "translation": "任务名称"
@@ -2762,7 +2762,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/scheduler/SchedulerJobDialog.tsx",
-        227
+        228
       ]
     ],
     "translation": "预定执行时间"
@@ -2773,7 +2773,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/scheduler/SchedulerJobDialog.tsx",
-        237
+        238
       ]
     ],
     "translation": "将在指定的日期和时间执行一次,然后自动删除"
@@ -2784,7 +2784,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/scheduler/SchedulerJobDialog.tsx",
-        200
+        201
       ]
     ],
     "translation": "调度类型"
@@ -2795,7 +2795,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/scheduler/SchedulerJobDialog.tsx",
-        212
+        213
       ]
     ],
     "translation": "循环执行(Cron)"
@@ -2806,7 +2806,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/scheduler/SchedulerJobDialog.tsx",
-        215
+        216
       ]
     ],
     "translation": "一次性执行"
@@ -2955,7 +2955,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        571
+        572
       ]
     ],
     "translation": "缓存创建"
@@ -2966,7 +2966,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        585
+        586
       ]
     ],
     "translation": "缓存读取"
@@ -2977,7 +2977,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        543
+        544
       ]
     ],
     "translation": "输入令牌"
@@ -2988,7 +2988,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        530
+        531
       ]
     ],
     "translation": "会话成本"
@@ -2999,7 +2999,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        557
+        558
       ]
     ],
     "translation": "输出令牌"
@@ -3010,7 +3010,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        537
+        538
       ]
     ],
     "translation": "总计"
@@ -3060,7 +3060,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        464
+        465
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/DeleteSessionDialog.tsx",
@@ -3079,7 +3079,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        636
+        637
       ]
     ],
     "translation": "开始新对话以展开交流"
@@ -3090,7 +3090,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        454
+        455
       ]
     ],
     "translation": "复制会话文件路径"
@@ -3101,7 +3101,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        432
+        433
       ]
     ],
     "translation": "导出为 HTML"
@@ -3112,7 +3112,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        441
+        442
       ]
     ],
     "translation": "导出为 JSONL"
@@ -3123,7 +3123,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        723
+        724
       ]
     ],
     "translation": "Claude Code 正在处理..."
@@ -3171,7 +3171,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        688
+        689
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
@@ -3190,7 +3190,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        686
+        687
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",

@@ -9,6 +9,7 @@ import { afterEach, beforeEach, describe, expect } from "vitest";
 import { DEFAULT_LOCALE } from "../../../../lib/i18n/localeDetection.ts";
 import { ClaudeCodeLifeCycleService } from "../../claude-code/services/ClaudeCodeLifeCycleService.ts";
 import { ClaudeCodeSessionProcessService } from "../../claude-code/services/ClaudeCodeSessionProcessService.ts";
+import { EventBus } from "../../events/services/EventBus.ts";
 import { EnvService } from "../../platform/services/EnvService.ts";
 import { UserConfigService } from "../../platform/services/UserConfigService.ts";
 import { ProjectRepository } from "../../project/infrastructure/ProjectRepository.ts";
@@ -92,6 +93,7 @@ describe("SchedulerService", () => {
       NodeFileSystem.layer,
       NodePath.layer,
       NodeContext.layer,
+      EventBus.Live,
       mockSessionProcessService,
       mockLifeCycleService,
       mockProjectRepository,
@@ -100,9 +102,7 @@ describe("SchedulerService", () => {
       testConfigBaseDir,
     );
 
-    testLayer = Layer.mergeAll(SchedulerService.Live, baseLayers).pipe(
-      Layer.provideMerge(baseLayers),
-    );
+    testLayer = SchedulerService.Live.pipe(Layer.provideMerge(baseLayers));
   });
 
   afterEach(async () => {
@@ -121,7 +121,8 @@ describe("SchedulerService", () => {
         message: {
           content: "test message",
           projectId: "project-1",
-          baseSession: null,
+          sessionId: "00000000-0000-4000-8000-000000000001",
+          resume: false,
         },
         enabled: false,
       };
@@ -149,7 +150,8 @@ describe("SchedulerService", () => {
         message: {
           content: "test message",
           projectId: "project-1",
-          baseSession: null,
+          sessionId: "00000000-0000-4000-8000-000000000001",
+          resume: false,
         },
         enabled: false,
       };
@@ -175,7 +177,8 @@ describe("SchedulerService", () => {
         message: {
           content: "test message",
           projectId: "project-1",
-          baseSession: null,
+          sessionId: "00000000-0000-4000-8000-000000000001",
+          resume: false,
         },
         enabled: false,
       };
@@ -202,7 +205,8 @@ describe("SchedulerService", () => {
         message: {
           content: "test message",
           projectId: "project-1",
-          baseSession: null,
+          sessionId: "00000000-0000-4000-8000-000000000001",
+          resume: false,
         },
         enabled: false,
       };

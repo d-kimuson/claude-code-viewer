@@ -24,13 +24,8 @@ export const scheduleSchema = z.discriminatedUnion("type", [
 export const messageConfigSchema = z.object({
   content: z.string(),
   projectId: z.string(),
-  baseSession: z.union([
-    z.null(),
-    z.object({
-      type: z.literal("resume"),
-      sessionId: z.string(),
-    }),
-  ]),
+  sessionId: z.uuid(),
+  resume: z.boolean(),
 });
 
 // Job status

@@ -77,5 +77,11 @@ export const SSEEventListeners: FC<PropsWithChildren> = ({ children }) => {
     });
   });
 
+  useServerEventListener("schedulerJobsChanged", () => {
+    void queryClient.invalidateQueries({
+      queryKey: ["scheduler"],
+    });
+  });
+
   return <>{children}</>;
 };

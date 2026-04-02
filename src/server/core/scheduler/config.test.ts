@@ -57,7 +57,8 @@ describe("scheduler config", () => {
             message: {
               content: "test message",
               projectId: "project-1",
-              baseSession: null,
+              sessionId: "00000000-0000-4000-8000-000000000001",
+              resume: false,
             },
             enabled: true,
             createdAt: "2025-10-25T00:00:00Z",

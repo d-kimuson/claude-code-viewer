@@ -232,10 +232,9 @@ export const ChatInput: FC<ChatInputProps> = ({
           message: {
             content: message,
             projectId,
-            baseSession:
-              baseSessionId !== null && baseSessionId !== ""
-                ? { type: "resume", sessionId: baseSessionId }
-                : null,
+            sessionId:
+              baseSessionId !== null && baseSessionId !== "" ? baseSessionId : crypto.randomUUID(),
+            resume: baseSessionId !== null && baseSessionId !== "",
           },
           enabled: true,
         });

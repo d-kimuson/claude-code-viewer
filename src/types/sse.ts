@@ -51,6 +51,9 @@ export type SSEEventDeclaration = {
   notificationConsumed: {
     sessionId: string;
   };
+
+  // oxlint-disable-next-line typescript/no-empty-object-type -- intentionally empty event payload
+  schedulerJobsChanged: {};
 };
 
 export type SSEEventMap = {

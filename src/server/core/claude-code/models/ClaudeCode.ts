@@ -174,8 +174,8 @@ export const query = (prompt: AgentSdkPrompt, options: AgentSdkQueryOptions) => 
 
     const options: AgentSdkQueryOptions = {
       ...baseOptions,
-      systemPrompt,
-      settingSources,
+      ...(systemPrompt !== undefined ? { systemPrompt } : {}),
+      ...(settingSources !== undefined ? { settingSources } : {}),
       pathToClaudeCodeExecutable: claudeCodeExecutablePath,
       disallowedTools: ["AskUserQuestion", ...(baseOptions.disallowedTools ?? [])], // Cannot answer from web interface instead of CLI
       ...(availableFeatures.canUseTool

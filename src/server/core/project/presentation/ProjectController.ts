@@ -132,7 +132,8 @@ const LayerImpl = Effect.gen(function* () {
       const result = yield* claudeCodeLifeCycleService.startSessionProcess({
         projectId,
         cwd: projectPath,
-        baseSession: undefined,
+        sessionId: crypto.randomUUID(),
+        resume: false,
         input: {
           text: claudeMdExists ? "describe this project" : "/init",
         },

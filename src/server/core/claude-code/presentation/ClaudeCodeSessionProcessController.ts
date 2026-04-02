@@ -32,18 +32,13 @@ const LayerImpl = Effect.gen(function* () {
 
   const createSessionProcess = (options: {
     projectId: string;
-    sessionId?: string;
+    sessionId: string;
     input: UserMessageInput;
-    baseSession:
-      | undefined
-      | {
-          type: "resume";
-          sessionId: string;
-        };
+    resume: boolean;
     ccOptions?: CCTurn.CCOptions;
   }) =>
     Effect.gen(function* () {
-      const { projectId, sessionId, input, baseSession, ccOptions } = options;
+      const { projectId, sessionId, input, resume, ccOptions } = options;
 
       const { project } = yield* projectRepository.getProject(projectId);
 
@@ -58,7 +53,7 @@ const LayerImpl = Effect.gen(function* () {
         projectId,
         cwd: project.meta.projectPath,
         sessionId,
-        baseSession,
+        resume,
         input,
         ccOptions,
       });

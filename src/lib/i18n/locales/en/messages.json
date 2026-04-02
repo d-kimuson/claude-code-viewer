@@ -1957,7 +1957,7 @@
     "origin": [
       [
         "src/web/components/NotificationSettings.tsx",
-        147
+        159
       ]
     ],
     "translation": "Select sound to play when Claude Code task completes"
@@ -2023,7 +2023,7 @@
     "origin": [
       [
         "src/web/components/NotificationSettings.tsx",
-        98
+        110
       ]
     ],
     "translation": "Notifications blocked in browser settings"
@@ -2034,7 +2034,11 @@
     "origin": [
       [
         "src/web/components/NotificationSettings.tsx",
-        110
+        103
+      ],
+      [
+        "src/web/components/NotificationSettings.tsx",
+        122
       ]
     ],
     "translation": "Enable push notifications"
@@ -2045,7 +2049,7 @@
     "origin": [
       [
         "src/web/components/NotificationSettings.tsx",
-        91
+        92
       ]
     ],
     "translation": "Enabled"
@@ -2100,7 +2104,7 @@
     "origin": [
       [
         "src/web/components/NotificationSettings.tsx",
-        140
+        152
       ]
     ],
     "translation": "Test"

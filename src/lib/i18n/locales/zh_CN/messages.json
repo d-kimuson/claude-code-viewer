@@ -1957,7 +1957,7 @@
     "origin": [
       [
         "src/web/components/NotificationSettings.tsx",
-        147
+        159
       ]
     ],
     "translation": "选择 Claude Code 任务完成时播放的提示音"
@@ -2023,7 +2023,7 @@
     "origin": [
       [
         "src/web/components/NotificationSettings.tsx",
-        98
+        110
       ]
     ],
     "translation": "浏览器已拒绝通知权限"
@@ -2034,7 +2034,11 @@
     "origin": [
       [
         "src/web/components/NotificationSettings.tsx",
-        110
+        103
+      ],
+      [
+        "src/web/components/NotificationSettings.tsx",
+        122
       ]
     ],
     "translation": "启用推送通知"
@@ -2045,7 +2049,7 @@
     "origin": [
       [
         "src/web/components/NotificationSettings.tsx",
-        91
+        92
       ]
     ],
     "translation": "已启用"
@@ -2100,7 +2104,7 @@
     "origin": [
       [
         "src/web/components/NotificationSettings.tsx",
-        140
+        152
       ]
     ],
     "translation": "测试"

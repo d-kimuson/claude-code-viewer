@@ -85,11 +85,23 @@ export const NotificationSettings: FC<NotificationSettingsProps> = ({
 
           <div className="flex items-center gap-2">
             {pushPermission === "granted" ? (
-              <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                <BellRingIcon className="w-3.5 h-3.5 text-primary" />
-                <span>
-                  <Trans id="notification.push.enabled" />
-                </span>
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                  <BellRingIcon className="w-3.5 h-3.5 text-primary" />
+                  <span>
+                    <Trans id="notification.push.enabled" />
+                  </span>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleEnablePush}
+                  disabled={isSubscribing}
+                  className="gap-1.5"
+                >
+                  <BellIcon className="w-3.5 h-3.5" />
+                  <Trans id="notification.push.enable" />
+                </Button>
               </div>
             ) : pushPermission === "denied" ? (
               <div className="flex items-center gap-1.5 text-sm text-muted-foreground">

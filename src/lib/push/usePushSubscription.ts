@@ -15,12 +15,23 @@ const urlBase64ToUint8Array = (base64String: string): ArrayBuffer => {
 const isPushSupported = (): boolean =>
   "serviceWorker" in navigator && "PushManager" in window && "Notification" in window;
 
-const subscribeToServer = async (): Promise<void> => {
+const subscribeToServer = async (options?: { forceResubscribe?: boolean }): Promise<void> => {
+  const forceResubscribe = options?.forceResubscribe === true;
   const registration = await navigator.serviceWorker.ready;
 
   const existingSubscription = await registration.pushManager.getSubscription();
-  if (existingSubscription) {
+  if (existingSubscription && !forceResubscribe) {
     await sendSubscriptionToServer(existingSubscription);
+    return;
+  }
+
+  if (existingSubscription && forceResubscribe) {
+    await existingSubscription.unsubscribe();
+  }
+
+  const currentSubscription = await registration.pushManager.getSubscription();
+  if (currentSubscription) {
+    await sendSubscriptionToServer(currentSubscription);
     return;
   }
 
@@ -69,7 +80,7 @@ export const requestPushPermissionAndSubscribe = async (): Promise<NotificationP
   const permission = await Notification.requestPermission();
   if (permission !== "granted") return permission;
 
-  await subscribeToServer();
+  await subscribeToServer({ forceResubscribe: true });
   return permission;
 };
 

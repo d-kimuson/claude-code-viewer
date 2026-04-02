@@ -9,6 +9,7 @@ import type {
 } from "../../../../types/notification.ts";
 import type { InferEffect } from "../../../lib/effect/types.ts";
 import { EventBus } from "../../events/services/EventBus.ts";
+import { formatPushError, shouldDropSubscriptionForPushError } from "./pushError.ts";
 
 type PushSubscriptionRecord = {
   endpoint: string;
@@ -26,6 +27,7 @@ const vapidKeysSchema = z.object({
 type VapidKeys = z.infer<typeof vapidKeysSchema>;
 
 const VAPID_KEYS_FILENAME = ".claude-code-viewer/vapid-keys.json";
+const DEFAULT_VAPID_SUBJECT = "mailto:noreply@example.com";
 
 const getVapidKeysPath = (fs: FileSystem.FileSystem) =>
   Effect.gen(function* () {
@@ -84,11 +86,7 @@ const LayerImpl = Effect.gen(function* () {
       });
     }),
   );
-  webpush.setVapidDetails(
-    "mailto:noreply@claude-code-viewer.local",
-    vapidKeys.publicKey,
-    vapidKeys.privateKey,
-  );
+  webpush.setVapidDetails(DEFAULT_VAPID_SUBJECT, vapidKeys.publicKey, vapidKeys.privateKey);
 
   // Subscribe to session process state changes to auto-create notifications
   yield* eventBus.on("sessionProcessChanged", (event) => {
@@ -222,10 +220,21 @@ const LayerImpl = Effect.gen(function* () {
                 },
                 payload,
               ),
-            catch: () => {
-              invalidEndpoints.push(sub.endpoint);
+            catch: (error) => {
+              return error;
             },
-          }).pipe(Effect.catchAll(() => Effect.void)),
+          }).pipe(
+            Effect.catchAll((error) =>
+              Effect.gen(function* () {
+                yield* Effect.logWarning(
+                  `WebPush send failed for endpoint ${sub.endpoint}: ${formatPushError(error)}`,
+                );
+                if (shouldDropSubscriptionForPushError(error)) {
+                  invalidEndpoints.push(sub.endpoint);
+                }
+              }),
+            ),
+          ),
         { concurrency: "unbounded" },
       );
 

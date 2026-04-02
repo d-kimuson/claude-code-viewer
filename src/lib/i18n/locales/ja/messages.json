@@ -1957,7 +1957,7 @@
     "origin": [
       [
         "src/web/components/NotificationSettings.tsx",
-        147
+        159
       ]
     ],
     "translation": "Claude Code のタスクが完了した時に再生する音を選択してください"
@@ -2023,7 +2023,7 @@
     "origin": [
       [
         "src/web/components/NotificationSettings.tsx",
-        98
+        110
       ]
     ],
     "translation": "ブラウザで通知が拒否されています"
@@ -2034,7 +2034,11 @@
     "origin": [
       [
         "src/web/components/NotificationSettings.tsx",
-        110
+        103
+      ],
+      [
+        "src/web/components/NotificationSettings.tsx",
+        122
       ]
     ],
     "translation": "Push 通知を有効にする"
@@ -2045,7 +2049,7 @@
     "origin": [
       [
         "src/web/components/NotificationSettings.tsx",
-        91
+        92
       ]
     ],
     "translation": "有効"
@@ -2100,7 +2104,7 @@
     "origin": [
       [
         "src/web/components/NotificationSettings.tsx",
-        140
+        152
       ]
     ],
     "translation": "テスト"

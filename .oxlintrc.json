@@ -228,8 +228,9 @@
             "message": "Use @effect/platform CommandExecutor instead."
           },
           { "name": "node:fs", "message": "Use @effect/platform FileSystem instead." },
-          // 本当は設定したいが参照箇所がすでに多いのと副作用も少ないので許容
-          // { "name": "node:path", "message": "Use @effect/platform Path instead." },
+          { "name": "node:fs/promises", "message": "Use @effect/platform FileSystem instead." },
+          { "name": "node:path", "message": "Use @effect/platform Path instead." },
+          { "name": "node:os", "message": "Use application/platform services instead." },
           { "name": "node:sqlite", "message": "Use DrizzleService service instead." }
         ],
         "patterns": [
@@ -255,8 +256,15 @@
   },
   "overrides": [
     {
+      "files": ["**/*.test.ts", "**/*.spec.ts", "**/*.test.tsx", "**/*.spec.tsx"],
+      "rules": {
+        "no-restricted-imports": "off"
+      }
+    },
+    {
       "files": ["**/*.{test,spec}.?([mc])[jt]s?(x)"],
       "rules": {
+        "no-restricted-imports": "off",
         "jest/expect-expect": "error", // テスト関数に expect の呼び出しを強制
         "jest/no-conditional-expect": "error", // 条件分岐内での expect を禁止
         "jest/no-disabled-tests": "off", // test.skip の使用はプロジェクト運用に依存

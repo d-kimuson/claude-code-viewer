@@ -1,3 +1,5 @@
+/* oxlint-disable no-restricted-imports */
+/* Exception: this module still relies on Node homedir for default local config path. */
 import { homedir } from "node:os";
 import { FileSystem, Path } from "@effect/platform";
 import { Context, Data, Effect, Layer } from "effect";

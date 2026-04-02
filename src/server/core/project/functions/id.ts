@@ -1,3 +1,5 @@
+/* oxlint-disable no-restricted-imports */
+/* Exception: this file currently exports synchronous helpers and has not been migrated to Effect Path yet. */
 import { dirname, resolve } from "node:path";
 
 export const encodeProjectId = (fullPath: string) => {

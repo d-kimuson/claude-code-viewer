@@ -1,5 +1,7 @@
-import { readFile } from "node:fs/promises";
-import { extname, normalize, resolve } from "node:path";
+import { FileSystem, Path } from "@effect/platform";
+import { NodeContext } from "@effect/platform-node";
+import type { PlatformError } from "@effect/platform/Error";
+import { Effect } from "effect";
 
 /** Default maximum file size in bytes (1MB) */
 export const DEFAULT_MAX_FILE_SIZE = 1024 * 1024;
@@ -179,7 +181,8 @@ export type GetFileContentOptions = {
  * Detects the programming language from a file path
  */
 export const detectLanguage = (filePath: string): string => {
-  const ext = extname(filePath).toLowerCase().slice(1);
+  const extensionIndex = filePath.lastIndexOf(".");
+  const ext = extensionIndex === -1 ? "" : filePath.slice(extensionIndex + 1).toLowerCase();
 
   // Handle special filenames without extension
   const basename = filePath.split("/").pop() ?? "";
@@ -196,7 +199,8 @@ export const detectLanguage = (filePath: string): string => {
  * Checks if a file extension indicates a binary file
  */
 export const isBinaryExtension = (filePath: string): boolean => {
-  const ext = extname(filePath).toLowerCase().slice(1);
+  const extensionIndex = filePath.lastIndexOf(".");
+  const ext = extensionIndex === -1 ? "" : filePath.slice(extensionIndex + 1).toLowerCase();
   return BINARY_EXTENSIONS.has(ext);
 };
 
@@ -204,7 +208,7 @@ export const isBinaryExtension = (filePath: string): boolean => {
  * Checks if file content appears to be binary
  * Detects null bytes which are common in binary files
  */
-export const isBinaryContent = (buffer: Buffer): boolean => {
+export const isBinaryContent = (buffer: Uint8Array): boolean => {
   // Check first 8KB for null bytes
   const checkLength = Math.min(buffer.length, 8192);
   for (let i = 0; i < checkLength; i++) {
@@ -220,6 +224,7 @@ export const isBinaryContent = (buffer: Buffer): boolean => {
  * Accepts both absolute paths (must be within project root) and relative paths
  */
 export const validateFilePath = (
+  path: Path.Path,
   projectRoot: string,
   filePath: string,
 ): { valid: true; resolvedPath: string } | { valid: false; message: string } => {
@@ -238,16 +243,16 @@ export const validateFilePath = (
     return { valid: false, message: "Path traversal (..) is not allowed" };
   }
 
-  const resolvedRoot = resolve(projectRoot);
+  const resolvedRoot = path.resolve(projectRoot);
   let resolvedPath: string;
 
   // Handle absolute paths
   if (filePath.startsWith("/")) {
-    resolvedPath = normalize(filePath);
+    resolvedPath = path.normalize(filePath);
   } else {
     // Handle relative paths
-    const normalizedPath = normalize(filePath);
-    resolvedPath = resolve(projectRoot, normalizedPath);
+    const normalizedPath = path.normalize(filePath);
+    resolvedPath = path.resolve(projectRoot, normalizedPath);
   }
 
   // Ensure the resolved path is within the project root
@@ -270,37 +275,66 @@ export const getFileContent = async (
   projectRoot: string,
   filePath: string,
   options: GetFileContentOptions = {},
-): Promise<FileContentResult> => {
-  const { maxFileSize = DEFAULT_MAX_FILE_SIZE } = options;
+): Promise<FileContentResult> =>
+  Effect.runPromise(
+    getFileContentEffect(projectRoot, filePath, options).pipe(Effect.provide(NodeContext.layer)),
+  );
 
-  // Validate the file path
-  const validation = validateFilePath(projectRoot, filePath);
-  if (!validation.valid) {
-    return {
-      success: false,
-      error: "INVALID_PATH",
-      message: validation.message,
-      filePath,
-    };
-  }
+export const getFileContentEffect = (
+  projectRoot: string,
+  filePath: string,
+  options: GetFileContentOptions = {},
+): Effect.Effect<FileContentResult, PlatformError, FileSystem.FileSystem | Path.Path> =>
+  Effect.gen(function* () {
+    const fs = yield* FileSystem.FileSystem;
+    const path = yield* Path.Path;
 
-  const { resolvedPath } = validation;
+    const { maxFileSize = DEFAULT_MAX_FILE_SIZE } = options;
 
-  // Check if file is binary by extension first
-  if (isBinaryExtension(filePath)) {
-    return {
-      success: false,
-      error: "BINARY_FILE",
-      message: "Binary file cannot be displayed",
-      filePath,
-    };
-  }
+    const validation = validateFilePath(path, projectRoot, filePath);
+    if (!validation.valid) {
+      return {
+        success: false,
+        error: "INVALID_PATH",
+        message: validation.message,
+        filePath,
+      };
+    }
 
-  try {
-    // Read file content directly (avoid TOCTOU by not pre-checking with stat)
-    const buffer = await readFile(resolvedPath);
+    const { resolvedPath } = validation;
 
-    // Check for binary content
+    if (isBinaryExtension(filePath)) {
+      return {
+        success: false,
+        error: "BINARY_FILE",
+        message: "Binary file cannot be displayed",
+        filePath,
+      };
+    }
+
+    const readFileResult = yield* Effect.either(fs.readFile(resolvedPath));
+    if (readFileResult._tag === "Left") {
+      const error = readFileResult.left;
+      if (error._tag === "SystemError") {
+        if (error.reason === "NotFound" || error.reason === "BadResource") {
+          return {
+            success: false,
+            error: "NOT_FOUND",
+            message: "File not found",
+            filePath,
+          };
+        }
+      }
+
+      return {
+        success: false,
+        error: "READ_ERROR",
+        message: error.message,
+        filePath,
+      };
+    }
+
+    const buffer = readFileResult.right;
     if (isBinaryContent(buffer)) {
       return {
         success: false,
@@ -310,17 +344,9 @@ export const getFileContent = async (
       };
     }
 
-    // Convert to string and handle size limit
-    let content = buffer.toString("utf-8");
     const truncated = buffer.length > maxFileSize;
-
-    if (truncated) {
-      // Truncate at a UTF-8 safe boundary
-      const truncatedBuffer = buffer.subarray(0, maxFileSize);
-      content = truncatedBuffer.toString("utf-8");
-    }
-
-    // Detect language
+    const contentBuffer = truncated ? buffer.subarray(0, maxFileSize) : buffer;
+    const content = new TextDecoder("utf-8").decode(contentBuffer);
     const language = detectLanguage(filePath);
 
     return {
@@ -330,37 +356,4 @@ export const getFileContent = async (
       truncated,
       language,
     };
-  } catch (error) {
-    // Handle file not found
-    if (
-      error instanceof Error &&
-      "code" in error &&
-      (error.code === "ENOENT" || error.code === "ENOTDIR")
-    ) {
-      return {
-        success: false,
-        error: "NOT_FOUND",
-        message: "File not found",
-        filePath,
-      };
-    }
-
-    // Handle attempting to read a directory
-    if (error instanceof Error && "code" in error && error.code === "EISDIR") {
-      return {
-        success: false,
-        error: "NOT_FOUND",
-        message: "Path is a directory, not a file",
-        filePath,
-      };
-    }
-
-    // Handle other errors
-    return {
-      success: false,
-      error: "READ_ERROR",
-      message: error instanceof Error ? error.message : "Failed to read file",
-      filePath,
-    };
-  }
-};
+  });

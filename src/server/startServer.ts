@@ -1,3 +1,5 @@
+/* oxlint-disable no-restricted-imports */
+/* Exception: static asset bootstrap still uses direct Node fs/path until server startup is migrated to Effect wrappers. */
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { NodeContext } from "@effect/platform-node";

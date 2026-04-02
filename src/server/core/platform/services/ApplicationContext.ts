@@ -1,3 +1,5 @@
+/* oxlint-disable no-restricted-imports */
+/* Exception: this service still relies on Node homedir until a dedicated Effect home-directory service is introduced. */
 import { homedir } from "node:os";
 import { Path } from "@effect/platform";
 import { Effect, Context as EffectContext, Layer } from "effect";

@@ -1,8 +1,6 @@
-/* oxlint-disable no-restricted-imports */
-/* Exception: this file still uses Node built-ins because full migration to Effect FileSystem is high-cost. Keep this exception scoped to this file so new code does not copy this pattern. */
-import { existsSync } from "node:fs";
-import { readdir } from "node:fs/promises";
-import { join, resolve } from "node:path";
+import { FileSystem, Path } from "@effect/platform";
+import type { PlatformError } from "@effect/platform/Error";
+import { Effect } from "effect";
 
 export type FileCompletionEntry = {
   name: string;
@@ -22,57 +20,69 @@ export type FileCompletionResult = {
  * @param basePath - The relative path from project root (default: "/")
  * @returns File and directory entries at the specified path level
  */
-export const getFileCompletion = async (
+export const getFileCompletion = (
   projectPath: string,
   basePath = "/",
-): Promise<FileCompletionResult> => {
-  // Normalize basePath to prevent directory traversal
-  const normalizedBasePath = basePath.startsWith("/") ? basePath.slice(1) : basePath;
-  const targetPath = resolve(projectPath, normalizedBasePath);
+): Effect.Effect<FileCompletionResult, Error | PlatformError, FileSystem.FileSystem | Path.Path> =>
+  Effect.gen(function* () {
+    const fs = yield* FileSystem.FileSystem;
+    const path = yield* Path.Path;
 
-  // Security check: ensure target path is within project directory
-  if (!targetPath.startsWith(resolve(projectPath))) {
-    throw new Error("Invalid path: outside project directory");
-  }
+    const normalizedBasePath = basePath.startsWith("/") ? basePath.slice(1) : basePath;
+    const resolvedProjectPath = path.resolve(projectPath);
+    const targetPath = path.resolve(projectPath, normalizedBasePath);
 
-  // Check if the target path exists
-  if (!existsSync(targetPath)) {
-    return {
-      entries: [],
-      basePath: normalizedBasePath,
-      projectPath,
-    };
-  }
+    if (!targetPath.startsWith(resolvedProjectPath)) {
+      return yield* Effect.fail(new Error("Invalid path: outside project directory"));
+    }
 
-  try {
-    const dirents = await readdir(targetPath, { withFileTypes: true });
+    const exists = yield* fs.exists(targetPath);
+    if (!exists) {
+      return {
+        entries: [],
+        basePath: normalizedBasePath,
+        projectPath,
+      };
+    }
+
+    const filenames = yield* fs.readDirectory(targetPath).pipe(
+      Effect.catchAll((error) => {
+        console.error("Error reading directory:", error);
+        return Effect.succeed([] as string[]);
+      }),
+    );
+
     const entries: FileCompletionEntry[] = [];
 
-    // Process each directory entry
-    for (const dirent of dirents) {
-      // Skip hidden files and directories (starting with .)
-      if (dirent.name.startsWith(".")) {
+    for (const filename of filenames) {
+      if (filename.startsWith(".")) {
         continue;
       }
 
-      const entryPath = join(normalizedBasePath, dirent.name);
+      const fullPath = path.join(targetPath, filename);
+      const fileInfo = yield* fs.stat(fullPath).pipe(Effect.catchAll(() => Effect.succeed(null)));
+      if (fileInfo === null) {
+        continue;
+      }
 
-      if (dirent.isDirectory()) {
+      const entryPath =
+        normalizedBasePath === "" ? filename : path.join(normalizedBasePath, filename);
+
+      if (fileInfo.type === "Directory") {
         entries.push({
-          name: dirent.name,
+          name: filename,
           type: "directory",
           path: entryPath,
         });
-      } else if (dirent.isFile()) {
+      } else if (fileInfo.type === "File") {
         entries.push({
-          name: dirent.name,
+          name: filename,
           type: "file",
           path: entryPath,
         });
       }
     }
 
-    // Sort entries: directories first, then files, both alphabetically
     entries.sort((a, b) => {
       if (a.type !== b.type) {
         return a.type === "directory" ? -1 : 1;
@@ -85,12 +95,4 @@ export const getFileCompletion = async (
       basePath: normalizedBasePath,
       projectPath,
     };
-  } catch (error) {
-    console.error("Error reading directory:", error);
-    return {
-      entries: [],
-      basePath: normalizedBasePath,
-      projectPath,
-    };
-  }
-};
+  });

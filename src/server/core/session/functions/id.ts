@@ -1,3 +1,5 @@
+/* oxlint-disable no-restricted-imports */
+/* Exception: this file currently exports synchronous helpers and has not been migrated to Effect Path yet. */
 import { basename, extname, resolve } from "node:path";
 import { decodeProjectId } from "../../project/functions/id.ts";
 

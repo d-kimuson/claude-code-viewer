@@ -1,3 +1,5 @@
+/* oxlint-disable no-restricted-imports */
+/* Exception: test helper uses Node path to build fixture directories. */
 import { resolve } from "node:path";
 import { Path } from "@effect/platform";
 import { Effect, Layer } from "effect";

@@ -1,13 +1,17 @@
-import { homedir } from "node:os";
-import { Context, Effect, Layer } from "effect";
+import { FileSystem, Path } from "@effect/platform";
+import { Context, Effect, Either, Layer } from "effect";
 import type { ControllerResponse } from "../../../lib/effect/toEffectResponse.ts";
 import type { InferEffect } from "../../../lib/effect/types.ts";
+import { ApplicationContext } from "../../platform/services/ApplicationContext.ts";
 import { ProjectRepository } from "../../project/infrastructure/ProjectRepository.ts";
 import { getDirectoryListing } from "../functions/getDirectoryListing.ts";
 import { getFileCompletion } from "../functions/getFileCompletion.ts";
-import { getFileContent } from "../functions/getFileContent.ts";
+import { getFileContentEffect } from "../functions/getFileContent.ts";
 
 const LayerImpl = Effect.gen(function* () {
+  const path = yield* Path.Path;
+  const fs = yield* FileSystem.FileSystem;
+  const context = yield* ApplicationContext;
   const projectRepository = yield* ProjectRepository;
 
   const getFileCompletionRoute = (options: { projectId: string; basePath: string }) =>
@@ -25,50 +29,60 @@ const LayerImpl = Effect.gen(function* () {
 
       const projectPath = project.meta.projectPath;
 
-      try {
-        const result = yield* Effect.promise(() => getFileCompletion(projectPath, basePath));
-        return {
-          response: result,
-          status: 200,
-        } as const satisfies ControllerResponse;
-      } catch (error) {
-        console.error("File completion error:", error);
+      const result = yield* Effect.either(
+        getFileCompletion(projectPath, basePath).pipe(
+          Effect.provideService(Path.Path, path),
+          Effect.provideService(FileSystem.FileSystem, fs),
+        ),
+      );
+      if (Either.isLeft(result)) {
+        console.error("File completion error:", result.left);
         return {
           response: { error: "Failed to get file completion" },
           status: 500,
         } as const satisfies ControllerResponse;
       }
+
+      return {
+        response: result.right,
+        status: 200,
+      } as const satisfies ControllerResponse;
     });
 
   const getDirectoryListingRoute = (options: {
     currentPath?: string | undefined;
     showHidden?: boolean | undefined;
   }) =>
-    Effect.promise(async () => {
+    Effect.gen(function* () {
       const { currentPath, showHidden = false } = options;
+      const claudeCodePaths = yield* context.claudeCodePaths;
 
-      const rootPath = homedir();
-      const defaultPath = homedir();
+      const rootPath = path.dirname(claudeCodePaths.globalClaudeDirectoryPath);
+      const defaultPath = rootPath;
 
-      try {
-        const targetPath = currentPath ?? defaultPath;
-        const relativePath = targetPath.startsWith(rootPath)
-          ? targetPath.slice(rootPath.length)
-          : targetPath;
+      const targetPath = currentPath ?? defaultPath;
+      const relativePath = targetPath.startsWith(rootPath)
+        ? targetPath.slice(rootPath.length)
+        : targetPath;
+      const result = yield* Effect.either(
+        getDirectoryListing(rootPath, relativePath, showHidden).pipe(
+          Effect.provideService(Path.Path, path),
+          Effect.provideService(FileSystem.FileSystem, fs),
+        ),
+      );
 
-        const result = await getDirectoryListing(rootPath, relativePath, showHidden);
-
-        return {
-          response: result,
-          status: 200,
-        } as const satisfies ControllerResponse;
-      } catch (error) {
-        console.error("Directory listing error:", error);
+      if (Either.isLeft(result)) {
+        console.error("Directory listing error:", result.left);
         return {
           response: { error: "Failed to list directory" },
           status: 500,
         } as const satisfies ControllerResponse;
       }
+
+      return {
+        response: result.right,
+        status: 200,
+      } as const satisfies ControllerResponse;
     });
 
   const getFileContentRoute = (options: { projectId: string; filePath: string }) =>
@@ -91,7 +105,10 @@ const LayerImpl = Effect.gen(function* () {
 
       const projectPath = project.meta.projectPath;
 
-      const result = yield* Effect.promise(() => getFileContent(projectPath, filePath));
+      const result = yield* getFileContentEffect(projectPath, filePath).pipe(
+        Effect.provideService(Path.Path, path),
+        Effect.provideService(FileSystem.FileSystem, fs),
+      );
 
       if (!result.success) {
         const statusCode = result.error === "NOT_FOUND" ? 404 : 400;

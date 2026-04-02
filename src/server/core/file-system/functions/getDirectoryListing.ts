@@ -1,8 +1,6 @@
-/* oxlint-disable no-restricted-imports */
-/* Exception: this file still uses Node built-ins because full migration to Effect FileSystem is high-cost. Keep this exception scoped to this file so new code does not copy this pattern. */
-import { existsSync } from "node:fs";
-import { readdir } from "node:fs/promises";
-import { dirname, join, resolve } from "node:path";
+import { FileSystem, Path } from "@effect/platform";
+import type { PlatformError } from "@effect/platform/Error";
+import { Effect } from "effect";
 
 export type DirectoryEntry = {
   name: string;
@@ -16,33 +14,48 @@ export type DirectoryListingResult = {
   currentPath: string;
 };
 
-export const getDirectoryListing = async (
+export const getDirectoryListing = (
   rootPath: string,
   basePath = "/",
   showHidden = false,
-): Promise<DirectoryListingResult> => {
-  const normalizedBasePath =
-    basePath === "/" ? "" : basePath.startsWith("/") ? basePath.slice(1) : basePath;
-  const targetPath = resolve(rootPath, normalizedBasePath);
+): Effect.Effect<
+  DirectoryListingResult,
+  Error | PlatformError,
+  FileSystem.FileSystem | Path.Path
+> =>
+  Effect.gen(function* () {
+    const fs = yield* FileSystem.FileSystem;
+    const path = yield* Path.Path;
 
-  if (!targetPath.startsWith(resolve(rootPath))) {
-    throw new Error("Invalid path: outside root directory");
-  }
+    const normalizedBasePath =
+      basePath === "/" ? "" : basePath.startsWith("/") ? basePath.slice(1) : basePath;
+    const resolvedRootPath = path.resolve(rootPath);
+    const targetPath = path.resolve(rootPath, normalizedBasePath);
 
-  if (!existsSync(targetPath)) {
-    return {
-      entries: [],
-      basePath: "/",
-      currentPath: rootPath,
-    };
-  }
+    if (!targetPath.startsWith(resolvedRootPath)) {
+      return yield* Effect.fail(new Error("Invalid path: outside root directory"));
+    }
 
-  try {
-    const dirents = await readdir(targetPath, { withFileTypes: true });
+    const exists = yield* fs.exists(targetPath);
+    if (!exists) {
+      return {
+        entries: [],
+        basePath: "/",
+        currentPath: rootPath,
+      };
+    }
+
+    const filenames = yield* fs.readDirectory(targetPath).pipe(
+      Effect.catchAll((error) => {
+        console.error("Error reading directory:", error);
+        return Effect.succeed([] as string[]);
+      }),
+    );
+
     const entries: DirectoryEntry[] = [];
 
     if (normalizedBasePath !== "") {
-      const parentPath = dirname(normalizedBasePath);
+      const parentPath = path.dirname(normalizedBasePath);
       entries.push({
         name: "..",
         type: "directory",
@@ -50,22 +63,28 @@ export const getDirectoryListing = async (
       });
     }
 
-    for (const dirent of dirents) {
-      if (!showHidden && dirent.name.startsWith(".")) {
+    for (const filename of filenames) {
+      if (!showHidden && filename.startsWith(".")) {
         continue;
       }
 
-      const entryPath = normalizedBasePath ? join(normalizedBasePath, dirent.name) : dirent.name;
+      const fullPath = path.join(targetPath, filename);
+      const fileInfo = yield* fs.stat(fullPath).pipe(Effect.catchAll(() => Effect.succeed(null)));
+      if (fileInfo === null) {
+        continue;
+      }
 
-      if (dirent.isDirectory()) {
+      const entryPath = normalizedBasePath ? path.join(normalizedBasePath, filename) : filename;
+
+      if (fileInfo.type === "Directory") {
         entries.push({
-          name: dirent.name,
+          name: filename,
           type: "directory",
           path: entryPath,
         });
-      } else if (dirent.isFile()) {
+      } else if (fileInfo.type === "File") {
         entries.push({
-          name: dirent.name,
+          name: filename,
           type: "file",
           path: entryPath,
         });
@@ -86,12 +105,4 @@ export const getDirectoryListing = async (
       basePath: normalizedBasePath || "/",
       currentPath: targetPath,
     };
-  } catch (error) {
-    console.error("Error reading directory:", error);
-    return {
-      entries: [],
-      basePath: normalizedBasePath || "/",
-      currentPath: targetPath,
-    };
-  }
-};
+  });

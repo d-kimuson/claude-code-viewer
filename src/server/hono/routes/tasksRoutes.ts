@@ -1,3 +1,5 @@
+/* oxlint-disable no-restricted-imports */
+/* Exception: this route still derives fallback claudeDir from Node homedir; migration should consolidate on ApplicationContext. */
 import { homedir } from "node:os";
 import { Path } from "@effect/platform";
 import { zValidator } from "@hono/zod-validator";

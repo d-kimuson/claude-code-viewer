@@ -1,10 +1,9 @@
 // oxlint-disable-next-line jsdoc/check-tag-names -- effect-diagnostics is a valid Effect-TS directive
 /** @effect-diagnostics globalErrorInEffectFailure:skip-file */
-import { homedir } from "node:os";
-import { join } from "node:path";
 import { FileSystem, Path } from "@effect/platform";
 import { Context, Effect, Layer, Option } from "effect";
 import { z } from "zod";
+import { ApplicationContext } from "../../platform/services/ApplicationContext.ts";
 import { type Task, type TaskCreate, TaskSchema, type TaskUpdate } from "../schema.ts";
 
 const TASKS_DIR_NAME = "tasks";
@@ -37,9 +36,11 @@ export class TasksService extends Context.Tag("TasksService")<
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
+      const appContext = yield* ApplicationContext;
 
       // Helper to find the Global Claude Directory
-      const getClaudeDir = () => Effect.succeed(join(homedir(), CLAUDE_DIR_NAME));
+      const getClaudeDir = () =>
+        appContext.claudeCodePaths.pipe(Effect.map((paths) => paths.globalClaudeDirectoryPath));
 
       const normalizeProjectPath = (projectPath: string) => {
         // e.g. /Users/foo/bar -> -Users-foo-bar
@@ -76,7 +77,7 @@ export class TasksService extends Context.Tag("TasksService")<
           // Check if the projectPath is already pointing to a metadata directory in .claude/projects
           // Path structure: .../.claude/projects/<normalized-id>
           const isMetadataPath =
-            projectPath.includes(join(CLAUDE_DIR_NAME, PROJECTS_DIR_NAME)) &&
+            projectPath.includes(path.join(CLAUDE_DIR_NAME, PROJECTS_DIR_NAME)) &&
             projectPath.split(path.sep).pop()?.startsWith("-");
 
           let projectMetaDir: string;

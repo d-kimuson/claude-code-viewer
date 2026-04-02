@@ -1,17 +1,18 @@
 import { mkdir, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { NodeContext } from "@effect/platform-node";
+import { Effect } from "effect";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import {
   DEFAULT_MAX_FILE_SIZE,
-  getFileContent,
+  getFileContentEffect,
+  type FileContentResult,
   type FileContentError,
   type FileContentSuccess,
 } from "./getFileContent.ts";
 
-const expectSuccessResult = (
-  result: Awaited<ReturnType<typeof getFileContent>>,
-): FileContentSuccess => {
+const expectSuccessResult = (result: FileContentResult): FileContentSuccess => {
   expect(result.success).toBe(true);
   if (result.success !== true) {
     throw new Error("Expected successful file content result");
@@ -19,9 +20,7 @@ const expectSuccessResult = (
   return result;
 };
 
-const expectErrorResult = (
-  result: Awaited<ReturnType<typeof getFileContent>>,
-): FileContentError => {
+const expectErrorResult = (result: FileContentResult): FileContentError => {
   expect(result.success).toBe(false);
   if (result.success !== false) {
     throw new Error("Expected failed file content result");
@@ -31,6 +30,14 @@ const expectErrorResult = (
 
 describe("getFileContent", () => {
   let testDir: string;
+  const runGetFileContent = (projectRoot: string, filePath: string, maxFileSize?: number) =>
+    Effect.runPromise(
+      getFileContentEffect(
+        projectRoot,
+        filePath,
+        maxFileSize === undefined ? {} : { maxFileSize },
+      ).pipe(Effect.provide(NodeContext.layer)),
+    );
 
   beforeEach(async () => {
     testDir = join(tmpdir(), `test-file-content-${Date.now()}`);
@@ -46,7 +53,7 @@ describe("getFileContent", () => {
       const content = "Hello, World!";
       await writeFile(join(testDir, "test.txt"), content);
 
-      const result = expectSuccessResult(await getFileContent(testDir, "test.txt"));
+      const result = expectSuccessResult(await runGetFileContent(testDir, "test.txt"));
 
       expect(result.content).toBe(content);
       expect(result.filePath).toBe("test.txt");
@@ -75,7 +82,7 @@ describe("getFileContent", () => {
 
       for (const { ext, expectedLang } of testCases) {
         await writeFile(join(testDir, `test.${ext}`), "content");
-        const result = expectSuccessResult(await getFileContent(testDir, `test.${ext}`));
+        const result = expectSuccessResult(await runGetFileContent(testDir, `test.${ext}`));
         expect(result.language).toBe(expectedLang);
       }
     });
@@ -84,7 +91,7 @@ describe("getFileContent", () => {
       await mkdir(join(testDir, "nested", "deep"), { recursive: true });
       await writeFile(join(testDir, "nested", "deep", "file.txt"), "nested content");
 
-      const result = expectSuccessResult(await getFileContent(testDir, "nested/deep/file.txt"));
+      const result = expectSuccessResult(await runGetFileContent(testDir, "nested/deep/file.txt"));
 
       expect(result.content).toBe("nested content");
       expect(result.filePath).toBe("nested/deep/file.txt");
@@ -95,20 +102,20 @@ describe("getFileContent", () => {
     test("should reject path traversal with ..", async () => {
       await writeFile(join(testDir, "secret.txt"), "secret");
 
-      const result = expectErrorResult(await getFileContent(testDir, "../secret.txt"));
+      const result = expectErrorResult(await runGetFileContent(testDir, "../secret.txt"));
 
       expect(result.error).toBe("INVALID_PATH");
       expect(result.message).toContain("Path traversal");
     });
 
     test("should reject path with multiple .. segments", async () => {
-      const result = expectErrorResult(await getFileContent(testDir, "foo/../../bar/file.txt"));
+      const result = expectErrorResult(await runGetFileContent(testDir, "foo/../../bar/file.txt"));
 
       expect(result.error).toBe("INVALID_PATH");
     });
 
     test("should reject absolute path outside project root", async () => {
-      const result = expectErrorResult(await getFileContent(testDir, "/etc/passwd"));
+      const result = expectErrorResult(await runGetFileContent(testDir, "/etc/passwd"));
 
       expect(result.error).toBe("INVALID_PATH");
       expect(result.message).toContain("outside the project root");
@@ -118,7 +125,7 @@ describe("getFileContent", () => {
       const absolutePath = join(testDir, "absolute-test.txt");
       await writeFile(absolutePath, "absolute path content");
 
-      const result = expectSuccessResult(await getFileContent(testDir, absolutePath));
+      const result = expectSuccessResult(await runGetFileContent(testDir, absolutePath));
 
       expect(result.content).toBe("absolute path content");
     });
@@ -129,14 +136,16 @@ describe("getFileContent", () => {
       const specialFile = join(specialDir, "file.txt");
       await writeFile(specialFile, "special content");
 
-      const result = expectSuccessResult(await getFileContent(testDir, specialFile));
+      const result = expectSuccessResult(await runGetFileContent(testDir, specialFile));
 
       expect(result.content).toBe("special content");
     });
 
     test("should reject path outside project root after normalization", async () => {
       // Create a path that would escape the project root
-      const result = expectErrorResult(await getFileContent(testDir, "subdir/../../../etc/passwd"));
+      const result = expectErrorResult(
+        await runGetFileContent(testDir, "subdir/../../../etc/passwd"),
+      );
 
       expect(result.error).toBe("INVALID_PATH");
     });
@@ -144,19 +153,19 @@ describe("getFileContent", () => {
     test("should accept valid relative path with ./", async () => {
       await writeFile(join(testDir, "valid.txt"), "valid content");
 
-      const result = expectSuccessResult(await getFileContent(testDir, "./valid.txt"));
+      const result = expectSuccessResult(await runGetFileContent(testDir, "./valid.txt"));
 
       expect(result.content).toBe("valid content");
     });
 
     test("should reject empty file path", async () => {
-      const result = expectErrorResult(await getFileContent(testDir, ""));
+      const result = expectErrorResult(await runGetFileContent(testDir, ""));
 
       expect(result.error).toBe("INVALID_PATH");
     });
 
     test("should reject path with null bytes", async () => {
-      const result = expectErrorResult(await getFileContent(testDir, "file\x00.txt"));
+      const result = expectErrorResult(await runGetFileContent(testDir, "file\x00.txt"));
 
       expect(result.error).toBe("INVALID_PATH");
     });
@@ -164,7 +173,7 @@ describe("getFileContent", () => {
 
   describe("file not found", () => {
     test("should return NOT_FOUND error for non-existent file", async () => {
-      const result = expectErrorResult(await getFileContent(testDir, "nonexistent.txt"));
+      const result = expectErrorResult(await runGetFileContent(testDir, "nonexistent.txt"));
 
       expect(result.error).toBe("NOT_FOUND");
       expect(result.message).toContain("File not found");
@@ -173,7 +182,7 @@ describe("getFileContent", () => {
     test("should return NOT_FOUND for directory path", async () => {
       await mkdir(join(testDir, "subdir"));
 
-      const result = expectErrorResult(await getFileContent(testDir, "subdir"));
+      const result = expectErrorResult(await runGetFileContent(testDir, "subdir"));
 
       expect(result.error).toBe("NOT_FOUND");
     });
@@ -186,11 +195,7 @@ describe("getFileContent", () => {
       const largeContent = "x".repeat(maxSize + 500);
       await writeFile(join(testDir, "large.txt"), largeContent);
 
-      const result = expectSuccessResult(
-        await getFileContent(testDir, "large.txt", {
-          maxFileSize: maxSize,
-        }),
-      );
+      const result = expectSuccessResult(await runGetFileContent(testDir, "large.txt", maxSize));
 
       expect(result.truncated).toBe(true);
       expect(result.content.length).toBeLessThanOrEqual(maxSize);
@@ -200,11 +205,7 @@ describe("getFileContent", () => {
       const content = "small content";
       await writeFile(join(testDir, "small.txt"), content);
 
-      const result = expectSuccessResult(
-        await getFileContent(testDir, "small.txt", {
-          maxFileSize: 1024,
-        }),
-      );
+      const result = expectSuccessResult(await runGetFileContent(testDir, "small.txt", 1024));
 
       expect(result.truncated).toBe(false);
       expect(result.content).toBe(content);
@@ -221,7 +222,7 @@ describe("getFileContent", () => {
       const binaryContent = Buffer.from([0x00, 0x01, 0x02, 0xff, 0xfe]);
       await writeFile(join(testDir, "binary.bin"), binaryContent);
 
-      const result = expectErrorResult(await getFileContent(testDir, "binary.bin"));
+      const result = expectErrorResult(await runGetFileContent(testDir, "binary.bin"));
 
       expect(result.error).toBe("BINARY_FILE");
       expect(result.message).toContain("Binary file");
@@ -234,7 +235,7 @@ describe("getFileContent", () => {
         // Create file with image extension (content doesn't matter for extension check)
         await writeFile(join(testDir, `image.${ext}`), "fake content");
 
-        const result = expectErrorResult(await getFileContent(testDir, `image.${ext}`));
+        const result = expectErrorResult(await runGetFileContent(testDir, `image.${ext}`));
         expect(result.error).toBe("BINARY_FILE");
       }
     });
@@ -245,7 +246,7 @@ describe("getFileContent", () => {
       for (const ext of binaryExtensions) {
         await writeFile(join(testDir, `file.${ext}`), "fake content");
 
-        const result = expectErrorResult(await getFileContent(testDir, `file.${ext}`));
+        const result = expectErrorResult(await runGetFileContent(testDir, `file.${ext}`));
         expect(result.error).toBe("BINARY_FILE");
       }
     });
@@ -254,7 +255,7 @@ describe("getFileContent", () => {
       const utf8Content = "Hello 世界 🌍 こんにちは";
       await writeFile(join(testDir, "utf8.txt"), utf8Content, "utf-8");
 
-      const result = expectSuccessResult(await getFileContent(testDir, "utf8.txt"));
+      const result = expectSuccessResult(await runGetFileContent(testDir, "utf8.txt"));
 
       expect(result.content).toBe(utf8Content);
     });
@@ -264,7 +265,7 @@ describe("getFileContent", () => {
     test("should handle empty file", async () => {
       await writeFile(join(testDir, "empty.txt"), "");
 
-      const result = expectSuccessResult(await getFileContent(testDir, "empty.txt"));
+      const result = expectSuccessResult(await runGetFileContent(testDir, "empty.txt"));
 
       expect(result.content).toBe("");
       expect(result.truncated).toBe(false);
@@ -274,7 +275,7 @@ describe("getFileContent", () => {
       const fileName = "file with spaces & special.txt";
       await writeFile(join(testDir, fileName), "content");
 
-      const result = expectSuccessResult(await getFileContent(testDir, fileName));
+      const result = expectSuccessResult(await runGetFileContent(testDir, fileName));
 
       expect(result.content).toBe("content");
     });
@@ -284,7 +285,7 @@ describe("getFileContent", () => {
       await mkdir(join(testDir, deepPath), { recursive: true });
       await writeFile(join(testDir, deepPath, "deep.txt"), "deep content");
 
-      const result = expectSuccessResult(await getFileContent(testDir, `${deepPath}/deep.txt`));
+      const result = expectSuccessResult(await runGetFileContent(testDir, `${deepPath}/deep.txt`));
 
       expect(result.content).toBe("deep content");
     });

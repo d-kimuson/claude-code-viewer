@@ -1,12 +1,12 @@
-import { homedir } from "node:os";
 import { Path } from "@effect/platform";
 import { it } from "@effect/vitest";
-import { Effect } from "effect";
+import { Effect, Layer } from "effect";
 import { describe, expect } from "vitest";
 import {
   createFileInfo,
   testFileSystemLayer,
 } from "../../../../testing/layers/testFileSystemLayer.ts";
+import { ApplicationContext } from "../../platform/services/ApplicationContext.ts";
 import { TasksService } from "./TasksService.ts";
 
 /**
@@ -17,7 +17,16 @@ const testPathLayer = Path.layer;
 /**
  * Helper to get claude directory path for tests
  */
-const getClaudeDir = () => `${homedir()}/.claude`;
+const getClaudeDir = () => "/test-home/.claude";
+
+const testApplicationContextLayer = Layer.succeed(ApplicationContext, {
+  claudeCodePaths: Effect.succeed({
+    globalClaudeDirectoryPath: getClaudeDir(),
+    claudeCommandsDirPath: `${getClaudeDir()}/commands`,
+    claudeSkillsDirPath: `${getClaudeDir()}/skills`,
+    claudeProjectsDirPath: `${getClaudeDir()}/projects`,
+  }),
+});
 
 describe("TasksService", () => {
   describe("listTasks", () => {
@@ -35,6 +44,7 @@ describe("TasksService", () => {
           }),
         ),
         Effect.provide(testPathLayer),
+        Effect.provide(testApplicationContextLayer),
       ),
     );
 
@@ -56,6 +66,7 @@ describe("TasksService", () => {
           }),
         ),
         Effect.provide(testPathLayer),
+        Effect.provide(testApplicationContextLayer),
       );
     });
 
@@ -73,6 +84,7 @@ describe("TasksService", () => {
           }),
         ),
         Effect.provide(testPathLayer),
+        Effect.provide(testApplicationContextLayer),
       ),
     );
 
@@ -108,6 +120,7 @@ describe("TasksService", () => {
           }),
         ),
         Effect.provide(testPathLayer),
+        Effect.provide(testApplicationContextLayer),
       );
     });
 
@@ -156,6 +169,7 @@ describe("TasksService", () => {
           }),
         ),
         Effect.provide(testPathLayer),
+        Effect.provide(testApplicationContextLayer),
       );
     });
   });
@@ -175,6 +189,7 @@ describe("TasksService", () => {
           }),
         ),
         Effect.provide(testPathLayer),
+        Effect.provide(testApplicationContextLayer),
       ),
     );
 
@@ -210,6 +225,7 @@ describe("TasksService", () => {
           }),
         ),
         Effect.provide(testPathLayer),
+        Effect.provide(testApplicationContextLayer),
       );
     });
   });
@@ -259,6 +275,7 @@ describe("TasksService", () => {
           }),
         ),
         Effect.provide(testPathLayer),
+        Effect.provide(testApplicationContextLayer),
       );
     });
   });
@@ -283,6 +300,7 @@ describe("TasksService", () => {
           }),
         ),
         Effect.provide(testPathLayer),
+        Effect.provide(testApplicationContextLayer),
       ),
     );
   });

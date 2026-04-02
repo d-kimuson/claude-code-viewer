@@ -1,5 +1,74 @@
 # Changelog
 
+## 0.6.1-beta.1
+
+### &nbsp;&nbsp;&nbsp;Features
+
+- Scroll active session into view and allow typing while running &nbsp;-&nbsp; by **Vic liu** and **Claude Sonnet 4.6** [<samp>(1e7fe)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/1e7fee0)
+- Add PWA support for installable app experience &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(1d148)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/1d148f8)
+- Improve mobile UI with touch target expansion and swipe gestures &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(65b13)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/65b132c)
+- Support pr-link and last-prompt schema entries with PR metadata display &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(b89fd)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/b89fd24)
+- Improve header and sidebar layout for mobile and desktop &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(38b9a)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/38b9abf)
+- Add project switcher combobox in header &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(2f00b)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/2f00b80)
+- Add copy buttons to markdown messages &nbsp;-&nbsp; by **d-kimsuon** [<samp>(be316)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/be31686)
+- Inline session options toolbar with per-project persistence &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(23d0a)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/23d0ae9)
+- Add session completion notifications with PWA push support &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(9b3ea)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/9b3ea07)
+- Add voice input button to chat input &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(dae6e)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/dae6ef2)
+- Event-based approval system with CCVAskUserQuestion MCP tool &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(ef574)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/ef574c0)
+- Add push-style mobile sidebar with tab selector &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(1aa74)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/1aa74d0)
+- Add visual mode for tool displays with Raw toggle &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(92a61)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/92a611b)
+- Save chat input drafts per project and session &nbsp;-&nbsp; by **d-kimsuon** [<samp>(8e44c)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/8e44c9d)
+- Support pasting clipboard images into chat input &nbsp;-&nbsp; by **d-kimsuon** [<samp>(e743f)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/e743f83)
+- Enhance review with inline diff comments and move commit UI to git view &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(59fbd)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/59fbd90)
+- Rename Files/Tools tab to Explorer and reorder right panel tabs &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(cd059)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/cd05952)
+- Speed up review panel by virtualizing diff rendering &nbsp;-&nbsp; by **d-kimsuon** [<samp>(78ee5)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/78ee5c8)
+- Speed up review panel by virtualizing diff rendering" &nbsp;-&nbsp; by **d-kimsuon** [<samp>(1f3a0)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/1f3a005)
+- Add mobile search button and project list navigation in sidebar &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(ab249)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/ab249b9)
+- Add scope toggle to search dialog for cross-project search &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(e5dab)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/e5dabbf)
+- Add header to projects list page &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(4ec88)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/4ec884f)
+- Add inline TodoWrite visualizer in conversation list &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(ae3d6)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/ae3d66d)
+- Add configurable find hotkey (Ctrl+F / Command+F) for in-page search &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(cedb9)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/cedb975)
+- Improve terminal UX on mobile with keyboard shortcuts and touch scroll &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(d47b2)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/d47b2a4)
+
+### &nbsp;&nbsp;&nbsp;Bug Fixes
+
+- Right panel opening by default on mobile devices &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(2dfe2)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/2dfe2d5)
+- Show user-renamed session title in session list &nbsp;-&nbsp; by **Vic liu** and **Claude Sonnet 4.6** [<samp>(0bfe9)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/0bfe92b)
+- Apply customTitle to recent sessions list in SessionPageMain &nbsp;-&nbsp; by **Vic liu** and **Claude Sonnet 4.6** [<samp>(2053e)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/2053e71)
+- Suppress false "Task completed" toast when switching sessions &nbsp;-&nbsp; by **Vic liu** and **Claude Sonnet 4.6** [<samp>(0c974)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/0c9748e)
+- Reset running state on session switch to prevent false completion toast &nbsp;-&nbsp; by **Vic liu** [<samp>(0bd58)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/0bd5823)
+- Scroll conversation to bottom when switching sessions &nbsp;-&nbsp; by **Vic liu** and **Claude Sonnet 4.6** [<samp>(fc71f)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/fc71f17)
+- Support Agent tool for subagent display and hide empty thinking blocks &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(e3f92)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/e3f9215)
+- Tool_result entries with tool_reference content failing to parse &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(55222)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/55222d8)
+- SSE event listeners not working due to StrictMode stale ref &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(24dc9)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/24dc905)
+- Right panel overlapping dialogs and modals &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(61586)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/6158654)
+- Improve inline code wrapping and diff viewer layout &nbsp;-&nbsp; by **d-kimsuon** [<samp>(5b3aa)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/5b3aa70)
+- Improve diff viewer scrolling and code font &nbsp;-&nbsp; by **d-kimsuon** [<samp>(38ddf)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/38ddf4a)
+- Unify horizontal scrolling across diff hunks &nbsp;-&nbsp; by **d-kimsuon** [<samp>(f673f)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/f673faf)
+- Improve right panel resize performance and review tab rendering &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(c5767)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/c576736)
+- Move commit section above file list in git view &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(37d96)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/37d96ee)
+- Prevent shell injection in getMcpListOutput &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(fb103)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/fb103b4)
+- Replace dead try/catch with Effect error handling in GitController &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(61890)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/61890d5)
+- Hash session token and improve error handling &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(64f74)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/64f741a)
+- Add boundary validation for projectId and sessionId &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(7c094)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/7c09409)
+- Resolve nested button warning in git file list &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(1f1ff)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/1f1ff42)
+- Prevent black screen when switching projects in Project Switcher &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(c49e0)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/c49e00b)
+- Clarify empty explorer state in right panel &nbsp;-&nbsp; by **d-kimsuon** [<samp>(4eae9)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/4eae92e)
+- Stabilize virtualized session conversation rendering &nbsp;-&nbsp; by **d-kimsuon** [<samp>(fddf7)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/fddf74f)
+- Resolve claude executable path without shell mode &nbsp;-&nbsp; by **d-kimsuon** [<samp>(602c4)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/602c4f4)
+- Support enqueue queue-operation without content field &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(fc5ab)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/fc5ab1a)
+- Hide timestamp-only rows for assistant messages with no renderable content &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(04449)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/044495f)
+- Scheduled sessions not executing due to ULID sessionId &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(882e1)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/882e174)
+- Notification not consumed when navigating directly to session via hard reload &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(5285e)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/5285e13)
+- Resolve QA issues in parsing and schema validation &nbsp;-&nbsp; by **d-kimsuon** [<samp>(1a54e)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/1a54ed5)
+- Prevent startup crash before CLI options load &nbsp;-&nbsp; by **d-kimsuon** [<samp>(7c12d)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/7c12dc0)
+
+### &nbsp;&nbsp;&nbsp;Performance
+
+- Reduce unnecessary re-renders and polling overhead &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(a5931)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/a5931b0)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.6.0...0.6.1-beta.1)
+
 ## 0.6.0
 
 ### &nbsp;&nbsp;&nbsp;Features

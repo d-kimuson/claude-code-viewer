@@ -237,7 +237,11 @@
     "conventions/no-barrel-file": "error",
     "conventions/colocated-tests": "error",
     "conventions/module-boundaries": "error",
-    "conventions/no-project-alias-outside-web": "error"
+    "conventions/no-project-alias-outside-web": "error",
+
+    // @effect/vitest の it.live/it.effect パターンでは expect が Effect.gen コールバック内に
+    // 配置されるため、oxlint が test ブロック外と誤検出する。グローバルで無効化
+    "jest/no-standalone-expect": "off"
   },
   "overrides": [
     {
@@ -248,7 +252,6 @@
         "jest/no-disabled-tests": "off", // test.skip の使用はプロジェクト運用に依存
         "jest/no-export": "error", // テストファイルからの export を禁止
         "jest/no-focused-tests": "error", // test.only の使用を禁止（コミット防止）
-        "jest/no-standalone-expect": "error", // test/it ブロック外での expect を禁止
         "jest/require-to-throw-message": "off", // エラーメッセージの検証強制はプロジェクト依存
         "jest/valid-describe-callback": "error", // describe コールバックの制約（非同期禁止等）を検証
         "jest/valid-expect": "error", // expect 後のアサーションメソッド呼び出しを強制

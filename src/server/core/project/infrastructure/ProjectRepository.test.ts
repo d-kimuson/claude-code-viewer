@@ -1,4 +1,6 @@
+import { it } from "@effect/vitest";
 import { Effect, Option, type Layer } from "effect";
+import { describe, expect } from "vitest";
 import { makeDrizzleTestServiceLayer } from "../../../../testing/layers/testDrizzleServiceLayer.ts";
 import {
   createFileInfo,
@@ -43,7 +45,7 @@ const makeProjectRow = (
 
 describe("ProjectRepository", () => {
   describe("getProject", () => {
-    it("returns project information when project exists", async () => {
+    it.live("returns project information when project exists", () => {
       const projectPath = "/test/project";
       const projectId = Buffer.from(projectPath).toString("base64url");
       const mockDate = new Date("2024-01-01T00:00:00.000Z");
@@ -59,38 +61,34 @@ describe("ProjectRepository", () => {
           Effect.succeed(createFileInfo({ type: "Directory", mtime: Option.some(mockDate) })),
       });
 
-      const program = Effect.gen(function* () {
+      return Effect.gen(function* () {
         const repo = yield* ProjectRepository;
-        return yield* repo.getProject(projectId);
-      });
+        const result = yield* repo.getProject(projectId);
 
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(ProjectRepository.Live),
-          Effect.provide(
-            testProjectMetaServiceLayer({
-              meta: mockMeta,
-            }),
-          ),
-          Effect.provide(makeDrizzleServiceWithData({ projectRows: [] })),
-          Effect.provide(FileSystemMock),
-          Effect.provide(
-            testPlatformLayer({
-              claudeCodePaths: { claudeProjectsDirPath: "/test" },
-            }),
-          ),
+        expect(result.project).toEqual({
+          id: projectId,
+          claudeProjectPath: projectPath,
+          lastModifiedAt: mockDate,
+          meta: mockMeta,
+        });
+      }).pipe(
+        Effect.provide(ProjectRepository.Live),
+        Effect.provide(
+          testProjectMetaServiceLayer({
+            meta: mockMeta,
+          }),
+        ),
+        Effect.provide(makeDrizzleServiceWithData({ projectRows: [] })),
+        Effect.provide(FileSystemMock),
+        Effect.provide(
+          testPlatformLayer({
+            claudeCodePaths: { claudeProjectsDirPath: "/test" },
+          }),
         ),
       );
-
-      expect(result.project).toEqual({
-        id: projectId,
-        claudeProjectPath: projectPath,
-        lastModifiedAt: mockDate,
-        meta: mockMeta,
-      });
     });
 
-    it("returns error when project does not exist", async () => {
+    it.live("returns error when project does not exist", () => {
       const projectPath = "/test/nonexistent";
       const projectId = Buffer.from(projectPath).toString("base64url");
       const mockMeta: ProjectMeta = {
@@ -110,64 +108,56 @@ describe("ProjectRepository", () => {
           ),
       });
 
-      const program = Effect.gen(function* () {
+      return Effect.gen(function* () {
         const repo = yield* ProjectRepository;
-        return yield* repo.getProject(projectId);
-      });
+        const error = yield* repo.getProject(projectId).pipe(Effect.flip);
 
-      await expect(
-        Effect.runPromise(
-          program.pipe(
-            Effect.provide(ProjectRepository.Live),
-            Effect.provide(
-              testProjectMetaServiceLayer({
-                meta: mockMeta,
-              }),
-            ),
-            Effect.provide(makeDrizzleServiceWithData({ projectRows: [] })),
-            Effect.provide(FileSystemMock),
-            Effect.provide(
-              testPlatformLayer({
-                claudeCodePaths: { claudeProjectsDirPath: "/test" },
-              }),
-            ),
-          ),
+        expect(String(error)).toContain("Project not found");
+      }).pipe(
+        Effect.provide(ProjectRepository.Live),
+        Effect.provide(
+          testProjectMetaServiceLayer({
+            meta: mockMeta,
+          }),
         ),
-      ).rejects.toThrow("Project not found");
+        Effect.provide(makeDrizzleServiceWithData({ projectRows: [] })),
+        Effect.provide(FileSystemMock),
+        Effect.provide(
+          testPlatformLayer({
+            claudeCodePaths: { claudeProjectsDirPath: "/test" },
+          }),
+        ),
+      );
     });
   });
 
   describe("getProjects", () => {
-    it("returns empty array when no projects in DB", async () => {
+    it.live("returns empty array when no projects in DB", () => {
       const mockMeta: ProjectMeta = {
         projectName: null,
         projectPath: null,
         sessionCount: 0,
       };
 
-      const program = Effect.gen(function* () {
+      return Effect.gen(function* () {
         const repo = yield* ProjectRepository;
-        return yield* repo.getProjects();
-      });
+        const result = yield* repo.getProjects();
 
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(ProjectRepository.Live),
-          Effect.provide(
-            testProjectMetaServiceLayer({
-              meta: mockMeta,
-            }),
-          ),
-          Effect.provide(makeDrizzleServiceWithData({ projectRows: [] })),
-          Effect.provide(testFileSystemLayer({})),
-          Effect.provide(testPlatformLayer()),
+        expect(result.projects).toEqual([]);
+      }).pipe(
+        Effect.provide(ProjectRepository.Live),
+        Effect.provide(
+          testProjectMetaServiceLayer({
+            meta: mockMeta,
+          }),
         ),
+        Effect.provide(makeDrizzleServiceWithData({ projectRows: [] })),
+        Effect.provide(testFileSystemLayer({})),
+        Effect.provide(testPlatformLayer()),
       );
-
-      expect(result.projects).toEqual([]);
     });
 
-    it("returns multiple projects from DB ordered by dir_mtime_ms DESC", async () => {
+    it.live("returns multiple projects from DB ordered by dir_mtime_ms DESC", () => {
       const date1 = new Date("2024-01-01T00:00:00.000Z");
       const date2 = new Date("2024-01-02T00:00:00.000Z");
       const date3 = new Date("2024-01-03T00:00:00.000Z");
@@ -201,29 +191,25 @@ describe("ProjectRepository", () => {
         sessionCount: 1,
       };
 
-      const program = Effect.gen(function* () {
+      return Effect.gen(function* () {
         const repo = yield* ProjectRepository;
-        return yield* repo.getProjects();
-      });
+        const result = yield* repo.getProjects();
 
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(ProjectRepository.Live),
-          Effect.provide(testProjectMetaServiceLayer({ meta: mockMeta })),
-          Effect.provide(makeDrizzleServiceWithData({ projectRows })),
-          Effect.provide(testFileSystemLayer({})),
-          Effect.provide(testPlatformLayer()),
-        ),
+        expect(result.projects.length).toBe(3);
+        // Projects should be in the order returned by DB (newest first)
+        expect(result.projects.at(0)?.lastModifiedAt).toEqual(date3);
+        expect(result.projects.at(1)?.lastModifiedAt).toEqual(date2);
+        expect(result.projects.at(2)?.lastModifiedAt).toEqual(date1);
+      }).pipe(
+        Effect.provide(ProjectRepository.Live),
+        Effect.provide(testProjectMetaServiceLayer({ meta: mockMeta })),
+        Effect.provide(makeDrizzleServiceWithData({ projectRows })),
+        Effect.provide(testFileSystemLayer({})),
+        Effect.provide(testPlatformLayer()),
       );
-
-      expect(result.projects.length).toBe(3);
-      // Projects should be in the order returned by DB (newest first)
-      expect(result.projects.at(0)?.lastModifiedAt).toEqual(date3);
-      expect(result.projects.at(1)?.lastModifiedAt).toEqual(date2);
-      expect(result.projects.at(2)?.lastModifiedAt).toEqual(date1);
     });
 
-    it("uses row.path for claudeProjectPath when available", async () => {
+    it.live("uses row.path for claudeProjectPath when available", () => {
       const projectId = Buffer.from("/test/project").toString("base64url");
 
       const projectRows = [makeProjectRow({ id: projectId, path: "/test/project" })];
@@ -234,25 +220,21 @@ describe("ProjectRepository", () => {
         sessionCount: 0,
       };
 
-      const program = Effect.gen(function* () {
+      return Effect.gen(function* () {
         const repo = yield* ProjectRepository;
-        return yield* repo.getProjects();
-      });
+        const result = yield* repo.getProjects();
 
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(ProjectRepository.Live),
-          Effect.provide(testProjectMetaServiceLayer({ meta: mockMeta })),
-          Effect.provide(makeDrizzleServiceWithData({ projectRows })),
-          Effect.provide(testFileSystemLayer({})),
-          Effect.provide(testPlatformLayer()),
-        ),
+        expect(result.projects.at(0)?.claudeProjectPath).toBe("/test/project");
+      }).pipe(
+        Effect.provide(ProjectRepository.Live),
+        Effect.provide(testProjectMetaServiceLayer({ meta: mockMeta })),
+        Effect.provide(makeDrizzleServiceWithData({ projectRows })),
+        Effect.provide(testFileSystemLayer({})),
+        Effect.provide(testPlatformLayer()),
       );
-
-      expect(result.projects.at(0)?.claudeProjectPath).toBe("/test/project");
     });
 
-    it("falls back to decodeProjectId when path is null", async () => {
+    it.live("falls back to decodeProjectId when path is null", () => {
       const projectPath = "/test/project";
       const projectId = Buffer.from(projectPath).toString("base64url");
 
@@ -264,23 +246,19 @@ describe("ProjectRepository", () => {
         sessionCount: 0,
       };
 
-      const program = Effect.gen(function* () {
+      return Effect.gen(function* () {
         const repo = yield* ProjectRepository;
-        return yield* repo.getProjects();
-      });
+        const result = yield* repo.getProjects();
 
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(ProjectRepository.Live),
-          Effect.provide(testProjectMetaServiceLayer({ meta: mockMeta })),
-          Effect.provide(makeDrizzleServiceWithData({ projectRows })),
-          Effect.provide(testFileSystemLayer({})),
-          Effect.provide(testPlatformLayer()),
-        ),
+        // Falls back to decoding project ID
+        expect(result.projects.at(0)?.claudeProjectPath).toBe(projectPath);
+      }).pipe(
+        Effect.provide(ProjectRepository.Live),
+        Effect.provide(testProjectMetaServiceLayer({ meta: mockMeta })),
+        Effect.provide(makeDrizzleServiceWithData({ projectRows })),
+        Effect.provide(testFileSystemLayer({})),
+        Effect.provide(testPlatformLayer()),
       );
-
-      // Falls back to decoding project ID
-      expect(result.projects.at(0)?.claudeProjectPath).toBe(projectPath);
     });
   });
 });

@@ -3,8 +3,9 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { FileSystem, Path } from "@effect/platform";
 import { NodeFileSystem, NodePath } from "@effect/platform-node";
+import { it } from "@effect/vitest";
 import { Effect, Layer } from "effect";
-import { afterEach, beforeEach, describe, expect, test } from "vitest";
+import { afterEach, beforeEach, describe, expect } from "vitest";
 import {
   getConfigPath,
   initializeConfig,
@@ -32,98 +33,92 @@ describe("scheduler config", () => {
     await rm(testDir, { recursive: true, force: true });
   });
 
-  test("getConfigPath returns correct path", async () => {
-    const result = await Effect.runPromise(getConfigPath.pipe(Effect.provide(testLayer)));
+  it.live("getConfigPath returns correct path", () =>
+    Effect.gen(function* () {
+      const result = yield* getConfigPath;
 
-    expect(result).toContain("/scheduler/schedules.json");
-    expect(result).toContain(testDir);
-  });
+      expect(result).toContain("/scheduler/schedules.json");
+      expect(result).toContain(testDir);
+    }).pipe(Effect.provide(testLayer)),
+  );
 
-  test("writeConfig and readConfig work correctly", async () => {
-    const config: SchedulerConfig = {
-      jobs: [
-        {
-          id: "test-job-1",
-          name: "Test Job",
-          schedule: {
-            type: "cron",
-            expression: "0 0 * * *",
-            concurrencyPolicy: "skip",
+  it.live("writeConfig and readConfig work correctly", () =>
+    Effect.gen(function* () {
+      const config: SchedulerConfig = {
+        jobs: [
+          {
+            id: "test-job-1",
+            name: "Test Job",
+            schedule: {
+              type: "cron",
+              expression: "0 0 * * *",
+              concurrencyPolicy: "skip",
+            },
+            message: {
+              content: "test message",
+              projectId: "project-1",
+              baseSession: null,
+            },
+            enabled: true,
+            createdAt: "2025-10-25T00:00:00Z",
+            lastRunAt: null,
+            lastRunStatus: null,
           },
-          message: {
-            content: "test message",
-            projectId: "project-1",
-            baseSession: null,
-          },
-          enabled: true,
-          createdAt: "2025-10-25T00:00:00Z",
-          lastRunAt: null,
-          lastRunStatus: null,
-        },
-      ],
-    };
+        ],
+      };
 
-    const result = await Effect.runPromise(
-      Effect.gen(function* () {
-        yield* writeConfig(config);
-        return yield* readConfig;
-      }).pipe(Effect.provide(testLayer)),
-    );
+      yield* writeConfig(config);
+      const result = yield* readConfig;
 
-    expect(result).toEqual(config);
-  });
+      expect(result).toEqual(config);
+    }).pipe(Effect.provide(testLayer)),
+  );
 
-  test("initializeConfig creates file if not exists", async () => {
-    const result = await Effect.runPromise(
-      Effect.gen(function* () {
-        const configPath = yield* getConfigPath;
-        const fs = yield* FileSystem.FileSystem;
+  it.live("initializeConfig creates file if not exists", () =>
+    Effect.gen(function* () {
+      const configPath = yield* getConfigPath;
+      const fs = yield* FileSystem.FileSystem;
 
-        const exists = yield* fs.exists(configPath);
-        if (exists) {
-          yield* fs.remove(configPath);
-        }
+      const exists = yield* fs.exists(configPath);
+      if (exists) {
+        yield* fs.remove(configPath);
+      }
 
-        return yield* initializeConfig;
-      }).pipe(Effect.provide(testLayer)),
-    );
+      const result = yield* initializeConfig;
 
-    expect(result).toEqual({ jobs: [] });
-  });
+      expect(result).toEqual({ jobs: [] });
+    }).pipe(Effect.provide(testLayer)),
+  );
 
-  test("readConfig fails with ConfigFileNotFoundError when file does not exist", async () => {
-    const result = await Effect.runPromise(
-      Effect.gen(function* () {
-        const fs = yield* FileSystem.FileSystem;
-        const configPath = yield* getConfigPath;
+  it.live("readConfig fails with ConfigFileNotFoundError when file does not exist", () =>
+    Effect.gen(function* () {
+      const fs = yield* FileSystem.FileSystem;
+      const configPath = yield* getConfigPath;
 
-        const exists = yield* fs.exists(configPath);
-        if (exists) {
-          yield* fs.remove(configPath);
-        }
+      const exists = yield* fs.exists(configPath);
+      if (exists) {
+        yield* fs.remove(configPath);
+      }
 
-        return yield* readConfig;
-      }).pipe(Effect.provide(testLayer), Effect.flip),
-    );
+      const result = yield* readConfig.pipe(Effect.flip);
 
-    expect(result._tag).toBe("ConfigFileNotFoundError");
-  });
+      expect(result._tag).toBe("ConfigFileNotFoundError");
+    }).pipe(Effect.provide(testLayer)),
+  );
 
-  test("readConfig fails with ConfigParseError for invalid JSON", async () => {
-    const result = await Effect.runPromise(
-      Effect.gen(function* () {
-        const fs = yield* FileSystem.FileSystem;
-        const path = yield* Path.Path;
-        const configPath = yield* getConfigPath;
-        const configDir = path.dirname(configPath);
+  it.live("readConfig fails with ConfigParseError for invalid JSON", () =>
+    Effect.gen(function* () {
+      const fs = yield* FileSystem.FileSystem;
+      const path = yield* Path.Path;
+      const configPath = yield* getConfigPath;
+      const configDir = path.dirname(configPath);
 
-        yield* fs.makeDirectory(configDir, { recursive: true });
-        yield* fs.writeFileString(configPath, "{ invalid json }");
+      yield* fs.makeDirectory(configDir, { recursive: true });
+      yield* fs.writeFileString(configPath, "{ invalid json }");
 
-        return yield* readConfig;
-      }).pipe(Effect.provide(testLayer), Effect.flip),
-    );
+      const result = yield* readConfig.pipe(Effect.flip);
 
-    expect(result._tag).toBe("ConfigParseError");
-  });
+      expect(result._tag).toBe("ConfigParseError");
+    }).pipe(Effect.provide(testLayer)),
+  );
 });

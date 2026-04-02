@@ -3,8 +3,9 @@ import { mkdir, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { NodeContext, NodeFileSystem, NodePath } from "@effect/platform-node";
+import { it } from "@effect/vitest";
 import { Effect, Layer } from "effect";
-import { afterEach, beforeEach, describe, expect, test } from "vitest";
+import { afterEach, beforeEach, describe, expect } from "vitest";
 import { DEFAULT_LOCALE } from "../../../../lib/i18n/localeDetection.ts";
 import { ClaudeCodeLifeCycleService } from "../../claude-code/services/ClaudeCodeLifeCycleService.ts";
 import { ClaudeCodeSessionProcessService } from "../../claude-code/services/ClaudeCodeSessionProcessService.ts";
@@ -108,142 +109,130 @@ describe("SchedulerService", () => {
     await rm(testDir, { recursive: true, force: true });
   });
 
-  test("addJob creates a new job with generated id", async () => {
-    const newJob: NewSchedulerJob = {
-      name: "Test Job",
-      schedule: {
-        type: "cron",
-        expression: "0 0 * * *",
-        concurrencyPolicy: "skip",
-      },
-      message: {
-        content: "test message",
-        projectId: "project-1",
-        baseSession: null,
-      },
-      enabled: false,
-    };
+  it.live("addJob creates a new job with generated id", () =>
+    Effect.gen(function* () {
+      const newJob: NewSchedulerJob = {
+        name: "Test Job",
+        schedule: {
+          type: "cron",
+          expression: "0 0 * * *",
+          concurrencyPolicy: "skip",
+        },
+        message: {
+          content: "test message",
+          projectId: "project-1",
+          baseSession: null,
+        },
+        enabled: false,
+      };
 
-    const result = await Effect.runPromise(
-      Effect.gen(function* () {
-        const service = yield* SchedulerService;
-        const job = yield* service.addJob(newJob);
-        return job;
-      }).pipe(Effect.provide(testLayer)),
-    );
+      const service = yield* SchedulerService;
+      const result = yield* service.addJob(newJob);
 
-    expect(result.id).toBeDefined();
-    expect(result.name).toBe("Test Job");
-    expect(result.createdAt).toBeDefined();
-    expect(result.lastRunAt).toBe(null);
-    expect(result.lastRunStatus).toBe(null);
-  });
+      expect(result.id).toBeDefined();
+      expect(result.name).toBe("Test Job");
+      expect(result.createdAt).toBeDefined();
+      expect(result.lastRunAt).toBe(null);
+      expect(result.lastRunStatus).toBe(null);
+    }).pipe(Effect.provide(testLayer)),
+  );
 
-  test("getJobs returns all jobs", async () => {
-    const newJob: NewSchedulerJob = {
-      name: "Test Job",
-      schedule: {
-        type: "cron",
-        expression: "0 0 * * *",
-        concurrencyPolicy: "skip",
-      },
-      message: {
-        content: "test message",
-        projectId: "project-1",
-        baseSession: null,
-      },
-      enabled: false,
-    };
+  it.live("getJobs returns all jobs", () =>
+    Effect.gen(function* () {
+      const newJob: NewSchedulerJob = {
+        name: "Test Job",
+        schedule: {
+          type: "cron",
+          expression: "0 0 * * *",
+          concurrencyPolicy: "skip",
+        },
+        message: {
+          content: "test message",
+          projectId: "project-1",
+          baseSession: null,
+        },
+        enabled: false,
+      };
 
-    const result = await Effect.runPromise(
-      Effect.gen(function* () {
-        const service = yield* SchedulerService;
-        yield* service.addJob(newJob);
-        yield* service.addJob(newJob);
-        return yield* service.getJobs();
-      }).pipe(Effect.provide(testLayer)),
-    );
+      const service = yield* SchedulerService;
+      yield* service.addJob(newJob);
+      yield* service.addJob(newJob);
+      const result = yield* service.getJobs();
 
-    expect(result).toHaveLength(2);
-  });
+      expect(result).toHaveLength(2);
+    }).pipe(Effect.provide(testLayer)),
+  );
 
-  test("updateJob modifies an existing job", async () => {
-    const newJob: NewSchedulerJob = {
-      name: "Test Job",
-      schedule: {
-        type: "cron",
-        expression: "0 0 * * *",
-        concurrencyPolicy: "skip",
-      },
-      message: {
-        content: "test message",
-        projectId: "project-1",
-        baseSession: null,
-      },
-      enabled: false,
-    };
+  it.live("updateJob modifies an existing job", () =>
+    Effect.gen(function* () {
+      const newJob: NewSchedulerJob = {
+        name: "Test Job",
+        schedule: {
+          type: "cron",
+          expression: "0 0 * * *",
+          concurrencyPolicy: "skip",
+        },
+        message: {
+          content: "test message",
+          projectId: "project-1",
+          baseSession: null,
+        },
+        enabled: false,
+      };
 
-    const result = await Effect.runPromise(
-      Effect.gen(function* () {
-        const service = yield* SchedulerService;
-        const job = yield* service.addJob(newJob);
-        const updated = yield* service.updateJob(job.id, {
-          name: "Updated Job",
-        });
-        return updated;
-      }).pipe(Effect.provide(testLayer)),
-    );
+      const service = yield* SchedulerService;
+      const job = yield* service.addJob(newJob);
+      const result = yield* service.updateJob(job.id, {
+        name: "Updated Job",
+      });
 
-    expect(result.name).toBe("Updated Job");
-  });
+      expect(result.name).toBe("Updated Job");
+    }).pipe(Effect.provide(testLayer)),
+  );
 
-  test("deleteJob removes a job", async () => {
-    const newJob: NewSchedulerJob = {
-      name: "Test Job",
-      schedule: {
-        type: "cron",
-        expression: "0 0 * * *",
-        concurrencyPolicy: "skip",
-      },
-      message: {
-        content: "test message",
-        projectId: "project-1",
-        baseSession: null,
-      },
-      enabled: false,
-    };
+  it.live("deleteJob removes a job", () =>
+    Effect.gen(function* () {
+      const newJob: NewSchedulerJob = {
+        name: "Test Job",
+        schedule: {
+          type: "cron",
+          expression: "0 0 * * *",
+          concurrencyPolicy: "skip",
+        },
+        message: {
+          content: "test message",
+          projectId: "project-1",
+          baseSession: null,
+        },
+        enabled: false,
+      };
 
-    const result = await Effect.runPromise(
-      Effect.gen(function* () {
-        const service = yield* SchedulerService;
-        const job = yield* service.addJob(newJob);
-        yield* service.deleteJob(job.id);
-        return yield* service.getJobs();
-      }).pipe(Effect.provide(testLayer)),
-    );
+      const service = yield* SchedulerService;
+      const job = yield* service.addJob(newJob);
+      yield* service.deleteJob(job.id);
+      const result = yield* service.getJobs();
 
-    expect(result).toHaveLength(0);
-  });
+      expect(result).toHaveLength(0);
+    }).pipe(Effect.provide(testLayer)),
+  );
 
-  test("updateJob fails with SchedulerJobNotFoundError for non-existent job", async () => {
-    const result = await Effect.runPromise(
-      Effect.gen(function* () {
-        const service = yield* SchedulerService;
-        return yield* service.updateJob("non-existent-id", { name: "Updated" });
-      }).pipe(Effect.provide(testLayer), Effect.flip),
-    );
+  it.live("updateJob fails with SchedulerJobNotFoundError for non-existent job", () =>
+    Effect.gen(function* () {
+      const service = yield* SchedulerService;
+      const result = yield* service
+        .updateJob("non-existent-id", { name: "Updated" })
+        .pipe(Effect.flip);
 
-    expect(result._tag).toBe("SchedulerJobNotFoundError");
-  });
+      expect(result._tag).toBe("SchedulerJobNotFoundError");
+    }).pipe(Effect.provide(testLayer)),
+  );
 
-  test("deleteJob fails with SchedulerJobNotFoundError for non-existent job", async () => {
-    const result = await Effect.runPromise(
-      Effect.gen(function* () {
-        const service = yield* SchedulerService;
-        return yield* service.deleteJob("non-existent-id");
-      }).pipe(Effect.provide(testLayer), Effect.flip),
-    );
+  it.live("deleteJob fails with SchedulerJobNotFoundError for non-existent job", () =>
+    Effect.gen(function* () {
+      const service = yield* SchedulerService;
+      const result = yield* service.deleteJob("non-existent-id").pipe(Effect.flip);
 
-    expect(result._tag).toBe("SchedulerJobNotFoundError");
-  });
+      expect(result._tag).toBe("SchedulerJobNotFoundError");
+    }).pipe(Effect.provide(testLayer)),
+  );
 });

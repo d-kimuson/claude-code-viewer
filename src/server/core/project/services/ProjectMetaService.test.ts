@@ -1,5 +1,7 @@
 import { Path } from "@effect/platform";
+import { it } from "@effect/vitest";
 import { Effect, Layer } from "effect";
+import { describe, expect } from "vitest";
 import {
   createInMemoryDrizzle,
   makeDrizzleTestServiceLayer,
@@ -51,163 +53,137 @@ const projectId = Buffer.from("/test/project").toString("base64url");
 
 describe("ProjectMetaService", () => {
   describe("getProjectMeta", () => {
-    it("returns project metadata from DB row", async () => {
+    it.live("returns project metadata from DB row", () => {
       const row = makeProjectRow({
         id: projectId,
         path: "/test/project",
         sessionCount: 5,
       });
 
-      const program = Effect.gen(function* () {
+      return Effect.gen(function* () {
         const service = yield* ProjectMetaService;
-        return yield* service.getProjectMeta(projectId);
-      });
+        const result = yield* service.getProjectMeta(projectId);
 
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(ProjectMetaService.Live),
-          Effect.provide(makeDrizzleServiceWithData({ projectRows: [row] })),
-          Effect.provide(makeSyncServiceMock()),
-          Effect.provide(Path.layer),
-        ),
+        expect(result.projectPath).toBe("/test/project");
+        expect(result.projectName).toBe("project");
+        expect(result.sessionCount).toBe(5);
+      }).pipe(
+        Effect.provide(ProjectMetaService.Live),
+        Effect.provide(makeDrizzleServiceWithData({ projectRows: [row] })),
+        Effect.provide(makeSyncServiceMock()),
+        Effect.provide(Path.layer),
       );
-
-      expect(result.projectPath).toBe("/test/project");
-      expect(result.projectName).toBe("project");
-      expect(result.sessionCount).toBe(5);
     });
 
-    it("returns null projectName and projectPath when path column is null", async () => {
+    it.live("returns null projectName and projectPath when path column is null", () => {
       const row = makeProjectRow({
         id: projectId,
         path: null,
         sessionCount: 2,
       });
 
-      const program = Effect.gen(function* () {
+      return Effect.gen(function* () {
         const service = yield* ProjectMetaService;
-        return yield* service.getProjectMeta(projectId);
-      });
+        const result = yield* service.getProjectMeta(projectId);
 
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(ProjectMetaService.Live),
-          Effect.provide(makeDrizzleServiceWithData({ projectRows: [row] })),
-          Effect.provide(makeSyncServiceMock()),
-          Effect.provide(Path.layer),
-        ),
+        expect(result.projectPath).toBeNull();
+        expect(result.projectName).toBeNull();
+        expect(result.sessionCount).toBe(2);
+      }).pipe(
+        Effect.provide(ProjectMetaService.Live),
+        Effect.provide(makeDrizzleServiceWithData({ projectRows: [row] })),
+        Effect.provide(makeSyncServiceMock()),
+        Effect.provide(Path.layer),
       );
-
-      expect(result.projectPath).toBeNull();
-      expect(result.projectName).toBeNull();
-      expect(result.sessionCount).toBe(2);
     });
 
-    it("triggers syncProjectList and retries when project not in DB", async () => {
+    it.live("triggers syncProjectList and retries when project not in DB", () => {
       let syncCalled = false;
       const row = makeProjectRow({ id: projectId });
       const { db, rawDb } = createInMemoryDrizzle();
 
       // DB starts empty — no project rows
-      const program = Effect.gen(function* () {
+      return Effect.gen(function* () {
         const service = yield* ProjectMetaService;
-        return yield* service.getProjectMeta(projectId);
-      });
+        const result = yield* service.getProjectMeta(projectId);
 
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(ProjectMetaService.Live),
-          Effect.provide(Layer.succeed(DrizzleService, { db, rawDb })),
-          Effect.provide(
-            makeSyncServiceMock({
-              syncProjectList: () =>
-                Effect.sync(() => {
-                  syncCalled = true;
-                  // Insert the project row so retry finds it
-                  db.insert(projects).values(row).run();
-                }),
-            }),
-          ),
-          Effect.provide(Path.layer),
+        expect(syncCalled).toBe(true);
+        expect(result.projectPath).toBe("/test/project");
+      }).pipe(
+        Effect.provide(ProjectMetaService.Live),
+        Effect.provide(Layer.succeed(DrizzleService, { db, rawDb })),
+        Effect.provide(
+          makeSyncServiceMock({
+            syncProjectList: () =>
+              Effect.sync(() => {
+                syncCalled = true;
+                // Insert the project row so retry finds it
+                db.insert(projects).values(row).run();
+              }),
+          }),
         ),
+        Effect.provide(Path.layer),
       );
-
-      expect(syncCalled).toBe(true);
-      expect(result.projectPath).toBe("/test/project");
     });
 
-    it("fails when project not found even after sync", async () => {
+    it.live("fails when project not found even after sync", () => {
       const { db, rawDb } = createInMemoryDrizzle();
 
-      const program = Effect.gen(function* () {
+      return Effect.gen(function* () {
         const service = yield* ProjectMetaService;
-        return yield* service.getProjectMeta("nonexistent-project-id");
-      });
+        const result = yield* service.getProjectMeta("nonexistent-project-id").pipe(Effect.flip);
 
-      await expect(
-        Effect.runPromise(
-          program.pipe(
-            Effect.provide(ProjectMetaService.Live),
-            Effect.provide(Layer.succeed(DrizzleService, { db, rawDb })),
-            Effect.provide(makeSyncServiceMock()),
-            Effect.provide(Path.layer),
-          ),
-        ),
-      ).rejects.toThrow("Project not found: nonexistent-project-id");
+        expect(String(result)).toContain("Project not found: nonexistent-project-id");
+      }).pipe(
+        Effect.provide(ProjectMetaService.Live),
+        Effect.provide(Layer.succeed(DrizzleService, { db, rawDb })),
+        Effect.provide(makeSyncServiceMock()),
+        Effect.provide(Path.layer),
+      );
     });
   });
 
   describe("invalidateProject", () => {
-    it("calls syncProjectList on invalidate", async () => {
+    it.live("calls syncProjectList on invalidate", () => {
       let syncCalled = false;
       const row = makeProjectRow({ id: projectId });
 
-      const program = Effect.gen(function* () {
+      return Effect.gen(function* () {
         const service = yield* ProjectMetaService;
         yield* service.invalidateProject(projectId);
-      });
 
-      await Effect.runPromise(
-        program.pipe(
-          Effect.provide(ProjectMetaService.Live),
-          Effect.provide(makeDrizzleServiceWithData({ projectRows: [row] })),
-          Effect.provide(
-            makeSyncServiceMock({
-              syncProjectList: () =>
-                Effect.sync(() => {
-                  syncCalled = true;
-                }),
-            }),
-          ),
-          Effect.provide(Path.layer),
+        expect(syncCalled).toBe(true);
+      }).pipe(
+        Effect.provide(ProjectMetaService.Live),
+        Effect.provide(makeDrizzleServiceWithData({ projectRows: [row] })),
+        Effect.provide(
+          makeSyncServiceMock({
+            syncProjectList: () =>
+              Effect.sync(() => {
+                syncCalled = true;
+              }),
+          }),
         ),
+        Effect.provide(Path.layer),
       );
-
-      expect(syncCalled).toBe(true);
     });
 
-    it("does not throw even if syncProjectList fails", async () => {
+    it.live("does not throw even if syncProjectList fails", () => {
       const row = makeProjectRow({ id: projectId });
 
-      const program = Effect.gen(function* () {
+      return Effect.gen(function* () {
         const service = yield* ProjectMetaService;
         yield* service.invalidateProject(projectId);
-      });
-
-      await expect(
-        Effect.runPromise(
-          program.pipe(
-            Effect.provide(ProjectMetaService.Live),
-            Effect.provide(makeDrizzleServiceWithData({ projectRows: [row] })),
-            Effect.provide(
-              makeSyncServiceMock({
-                syncProjectList: () => Effect.fail(new Error("sync failed")),
-              }),
-            ),
-            Effect.provide(Path.layer),
-          ),
+      }).pipe(
+        Effect.provide(ProjectMetaService.Live),
+        Effect.provide(makeDrizzleServiceWithData({ projectRows: [row] })),
+        Effect.provide(
+          makeSyncServiceMock({
+            syncProjectList: () => Effect.fail(new Error("sync failed")),
+          }),
         ),
-      ).resolves.toBeUndefined();
+        Effect.provide(Path.layer),
+      );
     });
   });
 });

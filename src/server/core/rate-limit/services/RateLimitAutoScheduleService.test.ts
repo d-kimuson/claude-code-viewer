@@ -1,6 +1,7 @@
 import { FileSystem, Path } from "@effect/platform";
+import { it } from "@effect/vitest";
 import { Effect, Layer } from "effect";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, vi } from "vitest";
 import { testPlatformLayer } from "../../../../testing/layers/testPlatformLayer.ts";
 import { ClaudeCodeLifeCycleService } from "../../claude-code/services/ClaudeCodeLifeCycleService.ts";
 import { ClaudeCodeSessionProcessService } from "../../claude-code/services/ClaudeCodeSessionProcessService.ts";
@@ -198,32 +199,27 @@ describe("RateLimitAutoScheduleService", () => {
   });
 
   describe("initialization", () => {
-    it("can initialize the service", async () => {
-      const program = Effect.gen(function* () {
+    it.live("can initialize the service", () =>
+      Effect.gen(function* () {
         const service = yield* RateLimitAutoScheduleService;
-        return service;
-      });
 
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(RateLimitAutoScheduleService.Live),
-          Effect.provide(createMockSchedulerService()),
-          Effect.provide(createMockSessionProcessService(new Set(), new Map())),
-          Effect.provide(createMockFileSystem("")),
-          Effect.provide(additionalLayers),
-          Effect.provide(testPlatformLayer()),
-        ),
-      );
-
-      expect(result).toBeDefined();
-      expect(result.start).toBeDefined();
-      expect(result.stop).toBeDefined();
-    });
+        expect(service).toBeDefined();
+        expect(service.start).toBeDefined();
+        expect(service.stop).toBeDefined();
+      }).pipe(
+        Effect.provide(RateLimitAutoScheduleService.Live),
+        Effect.provide(createMockSchedulerService()),
+        Effect.provide(createMockSessionProcessService(new Set(), new Map())),
+        Effect.provide(createMockFileSystem("")),
+        Effect.provide(additionalLayers),
+        Effect.provide(testPlatformLayer()),
+      ),
+    );
   });
 
   describe("rate limit detection and job scheduling", () => {
-    it("does not schedule job when autoScheduleContinueOnRateLimit is disabled", async () => {
-      const program = Effect.gen(function* () {
+    it.live("does not schedule job when autoScheduleContinueOnRateLimit is disabled", () =>
+      Effect.gen(function* () {
         const service = yield* RateLimitAutoScheduleService;
         const eventBus = yield* EventBus;
 
@@ -234,36 +230,35 @@ describe("RateLimitAutoScheduleService", () => {
           projectId: "test-project",
           sessionId: "9112408c-3585-4a39-a13f-11045828d870",
         });
-      });
-
-      await Effect.runPromise(
-        program.pipe(
-          Effect.provide(RateLimitAutoScheduleService.Live),
-          Effect.provide(createMockSchedulerService()),
-          Effect.provide(
-            createMockSessionProcessService(
-              new Set(["9112408c-3585-4a39-a13f-11045828d870"]),
-              new Map([["9112408c-3585-4a39-a13f-11045828d870", "test-project"]]),
-            ),
-          ),
-          Effect.provide(createMockFileSystem(rateLimitJsonLine)),
-          Effect.provide(additionalLayers),
-          Effect.provide(
-            testPlatformLayer({
-              userConfig: { autoScheduleContinueOnRateLimit: false },
-            }),
+      }).pipe(
+        Effect.provide(RateLimitAutoScheduleService.Live),
+        Effect.provide(createMockSchedulerService()),
+        Effect.provide(
+          createMockSessionProcessService(
+            new Set(["9112408c-3585-4a39-a13f-11045828d870"]),
+            new Map([["9112408c-3585-4a39-a13f-11045828d870", "test-project"]]),
           ),
         ),
-      );
+        Effect.provide(createMockFileSystem(rateLimitJsonLine)),
+        Effect.provide(additionalLayers),
+        Effect.provide(
+          testPlatformLayer({
+            userConfig: { autoScheduleContinueOnRateLimit: false },
+          }),
+        ),
+        Effect.tap(() =>
+          Effect.promise(async () => {
+            // Wait for async event processing
+            await waitForEventProcessing();
 
-      // Wait for async event processing
-      await waitForEventProcessing();
+            expect(addedJobs).toHaveLength(0);
+          }),
+        ),
+      ),
+    );
 
-      expect(addedJobs).toHaveLength(0);
-    });
-
-    it("does not schedule job when session has no live process", async () => {
-      const program = Effect.gen(function* () {
+    it.live("does not schedule job when session has no live process", () =>
+      Effect.gen(function* () {
         const service = yield* RateLimitAutoScheduleService;
         const eventBus = yield* EventBus;
 
@@ -274,31 +269,30 @@ describe("RateLimitAutoScheduleService", () => {
           projectId: "test-project",
           sessionId: "non-existent-session",
         });
-      });
-
-      await Effect.runPromise(
-        program.pipe(
-          Effect.provide(RateLimitAutoScheduleService.Live),
-          Effect.provide(createMockSchedulerService()),
-          Effect.provide(createMockSessionProcessService(new Set(), new Map())),
-          Effect.provide(createMockFileSystem(rateLimitJsonLine)),
-          Effect.provide(additionalLayers),
-          Effect.provide(
-            testPlatformLayer({
-              userConfig: { autoScheduleContinueOnRateLimit: true },
-            }),
-          ),
+      }).pipe(
+        Effect.provide(RateLimitAutoScheduleService.Live),
+        Effect.provide(createMockSchedulerService()),
+        Effect.provide(createMockSessionProcessService(new Set(), new Map())),
+        Effect.provide(createMockFileSystem(rateLimitJsonLine)),
+        Effect.provide(additionalLayers),
+        Effect.provide(
+          testPlatformLayer({
+            userConfig: { autoScheduleContinueOnRateLimit: true },
+          }),
         ),
-      );
+        Effect.tap(() =>
+          Effect.promise(async () => {
+            // Wait for async event processing
+            await waitForEventProcessing();
 
-      // Wait for async event processing
-      await waitForEventProcessing();
+            expect(addedJobs).toHaveLength(0);
+          }),
+        ),
+      ),
+    );
 
-      expect(addedJobs).toHaveLength(0);
-    });
-
-    it("does not schedule job when last line is not a rate limit message", async () => {
-      const program = Effect.gen(function* () {
+    it.live("does not schedule job when last line is not a rate limit message", () =>
+      Effect.gen(function* () {
         const service = yield* RateLimitAutoScheduleService;
         const eventBus = yield* EventBus;
 
@@ -308,39 +302,38 @@ describe("RateLimitAutoScheduleService", () => {
           projectId: "test-project",
           sessionId: "some-session-id",
         });
-      });
-
-      await Effect.runPromise(
-        program.pipe(
-          Effect.provide(RateLimitAutoScheduleService.Live),
-          Effect.provide(createMockSchedulerService()),
-          Effect.provide(
-            createMockSessionProcessService(
-              new Set(["some-session-id"]),
-              new Map([["some-session-id", "test-project"]]),
-            ),
-          ),
-          Effect.provide(createMockFileSystem(normalJsonLine)),
-          Effect.provide(additionalLayers),
-          Effect.provide(
-            testPlatformLayer({
-              userConfig: { autoScheduleContinueOnRateLimit: true },
-            }),
+      }).pipe(
+        Effect.provide(RateLimitAutoScheduleService.Live),
+        Effect.provide(createMockSchedulerService()),
+        Effect.provide(
+          createMockSessionProcessService(
+            new Set(["some-session-id"]),
+            new Map([["some-session-id", "test-project"]]),
           ),
         ),
-      );
+        Effect.provide(createMockFileSystem(normalJsonLine)),
+        Effect.provide(additionalLayers),
+        Effect.provide(
+          testPlatformLayer({
+            userConfig: { autoScheduleContinueOnRateLimit: true },
+          }),
+        ),
+        Effect.tap(() =>
+          Effect.promise(async () => {
+            // Wait for async event processing
+            await waitForEventProcessing();
 
-      // Wait for async event processing
-      await waitForEventProcessing();
+            expect(addedJobs).toHaveLength(0);
+          }),
+        ),
+      ),
+    );
 
-      expect(addedJobs).toHaveLength(0);
-    });
-
-    it("schedules a reserved job when rate limit is detected on a live session", async () => {
+    it.live("schedules a reserved job when rate limit is detected on a live session", () => {
       // Set a fixed time for consistent test results
       vi.setSystemTime(new Date("2026-01-24T10:00:00.000Z"));
 
-      const program = Effect.gen(function* () {
+      return Effect.gen(function* () {
         const service = yield* RateLimitAutoScheduleService;
         const eventBus = yield* EventBus;
 
@@ -350,58 +343,57 @@ describe("RateLimitAutoScheduleService", () => {
           projectId: "test-project",
           sessionId: "9112408c-3585-4a39-a13f-11045828d870",
         });
-      });
-
-      await Effect.runPromise(
-        program.pipe(
-          Effect.provide(RateLimitAutoScheduleService.Live),
-          Effect.provide(createMockSchedulerService()),
-          Effect.provide(
-            createMockSessionProcessService(
-              new Set(["9112408c-3585-4a39-a13f-11045828d870"]),
-              new Map([["9112408c-3585-4a39-a13f-11045828d870", "test-project"]]),
-            ),
-          ),
-          Effect.provide(createMockFileSystem(rateLimitJsonLine)),
-          Effect.provide(additionalLayers),
-          Effect.provide(
-            testPlatformLayer({
-              userConfig: { autoScheduleContinueOnRateLimit: true },
-            }),
+      }).pipe(
+        Effect.provide(RateLimitAutoScheduleService.Live),
+        Effect.provide(createMockSchedulerService()),
+        Effect.provide(
+          createMockSessionProcessService(
+            new Set(["9112408c-3585-4a39-a13f-11045828d870"]),
+            new Map([["9112408c-3585-4a39-a13f-11045828d870", "test-project"]]),
           ),
         ),
+        Effect.provide(createMockFileSystem(rateLimitJsonLine)),
+        Effect.provide(additionalLayers),
+        Effect.provide(
+          testPlatformLayer({
+            userConfig: { autoScheduleContinueOnRateLimit: true },
+          }),
+        ),
+        Effect.tap(() =>
+          Effect.promise(async () => {
+            // Wait for async event processing
+            await waitForEventProcessing();
+
+            expect(addedJobs).toHaveLength(1);
+            const [firstJob] = addedJobs;
+            if (firstJob === undefined) {
+              throw new Error("Expected first scheduled job to exist");
+            }
+            expect(firstJob.name).toContain("Rate limit");
+            expect(firstJob.schedule.type).toBe("reserved");
+            if (firstJob.schedule.type !== "reserved") {
+              throw new Error("Expected reserved schedule");
+            }
+            expect(typeof firstJob.schedule.reservedExecutionTime).toBe("string");
+            expect(firstJob.message.content).toBe("continue");
+            expect(firstJob.message.projectId).toBe("test-project");
+            expect(firstJob.message.baseSession).toEqual({
+              type: "resume",
+              sessionId: "9112408c-3585-4a39-a13f-11045828d870",
+            });
+            expect(firstJob.enabled).toBe(true);
+          }),
+        ),
       );
-
-      // Wait for async event processing
-      await waitForEventProcessing();
-
-      expect(addedJobs).toHaveLength(1);
-      const [firstJob] = addedJobs;
-      if (firstJob === undefined) {
-        throw new Error("Expected first scheduled job to exist");
-      }
-      expect(firstJob.name).toContain("Rate limit");
-      expect(firstJob.schedule.type).toBe("reserved");
-      if (firstJob.schedule.type !== "reserved") {
-        throw new Error("Expected reserved schedule");
-      }
-      expect(typeof firstJob.schedule.reservedExecutionTime).toBe("string");
-      expect(firstJob.message.content).toBe("continue");
-      expect(firstJob.message.projectId).toBe("test-project");
-      expect(firstJob.message.baseSession).toEqual({
-        type: "resume",
-        sessionId: "9112408c-3585-4a39-a13f-11045828d870",
-      });
-      expect(firstJob.enabled).toBe(true);
     });
 
-    it("does not create duplicate jobs for the same session", async () => {
+    it.live("does not create duplicate jobs for the same session", () => {
       vi.setSystemTime(new Date("2026-01-24T10:00:00.000Z"));
 
       // Use a shared scheduler service to track jobs across both events
       const schedulerServiceLayer = createMockSchedulerService();
 
-      const program = Effect.gen(function* () {
+      return Effect.gen(function* () {
         const service = yield* RateLimitAutoScheduleService;
         const eventBus = yield* EventBus;
 
@@ -424,30 +416,29 @@ describe("RateLimitAutoScheduleService", () => {
 
         // Wait for async processing again
         yield* Effect.promise(waitForEventProcessing);
-      });
-
-      await Effect.runPromise(
-        program.pipe(
-          Effect.provide(RateLimitAutoScheduleService.Live),
-          Effect.provide(schedulerServiceLayer),
-          Effect.provide(
-            createMockSessionProcessService(
-              new Set(["9112408c-3585-4a39-a13f-11045828d870"]),
-              new Map([["9112408c-3585-4a39-a13f-11045828d870", "test-project"]]),
-            ),
-          ),
-          Effect.provide(createMockFileSystem(rateLimitJsonLine)),
-          Effect.provide(additionalLayers),
-          Effect.provide(
-            testPlatformLayer({
-              userConfig: { autoScheduleContinueOnRateLimit: true },
-            }),
+      }).pipe(
+        Effect.provide(RateLimitAutoScheduleService.Live),
+        Effect.provide(schedulerServiceLayer),
+        Effect.provide(
+          createMockSessionProcessService(
+            new Set(["9112408c-3585-4a39-a13f-11045828d870"]),
+            new Map([["9112408c-3585-4a39-a13f-11045828d870", "test-project"]]),
           ),
         ),
+        Effect.provide(createMockFileSystem(rateLimitJsonLine)),
+        Effect.provide(additionalLayers),
+        Effect.provide(
+          testPlatformLayer({
+            userConfig: { autoScheduleContinueOnRateLimit: true },
+          }),
+        ),
+        Effect.tap(() =>
+          Effect.sync(() => {
+            // Should only create one job even though two events were emitted
+            expect(addedJobs).toHaveLength(1);
+          }),
+        ),
       );
-
-      // Should only create one job even though two events were emitted
-      expect(addedJobs).toHaveLength(1);
     });
   });
 });

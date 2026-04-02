@@ -1,6 +1,8 @@
 import { CommandExecutor } from "@effect/platform";
 import { NodeContext } from "@effect/platform-node";
+import { it } from "@effect/vitest";
 import { Effect, Layer } from "effect";
+import { describe, expect } from "vitest";
 import { testPlatformLayer } from "../../../../testing/layers/testPlatformLayer.ts";
 import * as ClaudeCode from "./ClaudeCode.ts";
 
@@ -87,170 +89,155 @@ describe("ClaudeCode.claudeCodePathPriority", () => {
 
 describe("ClaudeCode.Config", () => {
   describe("when environment variable CLAUDE_CODE_VIEWER_CC_EXECUTABLE_PATH is not set", () => {
-    it("should resolve claude path without shell execution", async () => {
-      const shellModes: Array<boolean | string> = [];
+    it.live("should resolve claude path without shell execution", () =>
+      Effect.gen(function* () {
+        const shellModes: Array<boolean | string> = [];
 
-      const CommandExecutorTest = Layer.effect(
-        CommandExecutor.CommandExecutor,
-        Effect.map(CommandExecutor.CommandExecutor, (realExecutor) => ({
-          ...realExecutor,
-          string: (command, _encoding) => {
-            if (command._tag === "StandardCommand") {
-              shellModes.push(command.shell);
+        const CommandExecutorTest = Layer.effect(
+          CommandExecutor.CommandExecutor,
+          Effect.map(CommandExecutor.CommandExecutor, (realExecutor) => ({
+            ...realExecutor,
+            string: (command, _encoding) => {
+              if (command._tag === "StandardCommand") {
+                shellModes.push(command.shell);
 
-              if (command.command === "which") {
-                return Effect.succeed("/usr/local/bin/claude\n");
+                if (command.command === "which") {
+                  return Effect.succeed("/usr/local/bin/claude\n");
+                }
+
+                if (command.args.includes("--version")) {
+                  return Effect.succeed("1.0.125 (Claude Code)\n");
+                }
               }
 
-              if (command.args.includes("--version")) {
-                return Effect.succeed("1.0.125 (Claude Code)\n");
-              }
-            }
+              return Effect.succeed("");
+            },
+          })),
+        ).pipe(Layer.provide(NodeContext.layer));
 
-            return Effect.succeed("");
-          },
-        })),
-      ).pipe(Layer.provide(NodeContext.layer));
+        const config = yield* ClaudeCode.Config.pipe(Effect.provide(CommandExecutorTest));
 
-      const config = await Effect.runPromise(
-        ClaudeCode.Config.pipe(
-          Effect.provide(testPlatformLayer()),
-          Effect.provide(CommandExecutorTest),
-        ),
-      );
+        expect(config.claudeCodeExecutablePath).toBe("/usr/local/bin/claude");
+        expect(shellModes.every((mode) => mode === false)).toBe(true);
+      }).pipe(Effect.provide(testPlatformLayer())),
+    );
 
-      expect(config.claudeCodeExecutablePath).toBe("/usr/local/bin/claude");
-      expect(shellModes.every((mode) => mode === false)).toBe(true);
-    });
+    it.live("should correctly parse results of 'which claude' and 'claude --version'", () =>
+      Effect.gen(function* () {
+        const CommandExecutorTest = Layer.effect(
+          CommandExecutor.CommandExecutor,
+          Effect.map(CommandExecutor.CommandExecutor, (realExecutor) => ({
+            ...realExecutor,
+            string: (() => {
+              const responses = ["/path/to/claude", "1.0.53 (Claude Code)\n"];
+              return () => Effect.succeed(responses.shift() ?? "");
+            })(),
+          })),
+        ).pipe(Layer.provide(NodeContext.layer));
 
-    it("should correctly parse results of 'which claude' and 'claude --version'", async () => {
-      const CommandExecutorTest = Layer.effect(
-        CommandExecutor.CommandExecutor,
-        Effect.map(CommandExecutor.CommandExecutor, (realExecutor) => ({
-          ...realExecutor,
-          string: (() => {
-            const responses = ["/path/to/claude", "1.0.53 (Claude Code)\n"];
-            return () => Effect.succeed(responses.shift() ?? "");
-          })(),
-        })),
-      ).pipe(Layer.provide(NodeContext.layer));
+        const config = yield* ClaudeCode.Config.pipe(Effect.provide(CommandExecutorTest));
 
-      const config = await Effect.runPromise(
-        ClaudeCode.Config.pipe(
-          Effect.provide(testPlatformLayer()),
-          Effect.provide(CommandExecutorTest),
-        ),
-      );
+        expect(config.claudeCodeExecutablePath).toBe("/path/to/claude");
 
-      expect(config.claudeCodeExecutablePath).toBe("/path/to/claude");
+        expect(config.claudeCodeVersion).toStrictEqual({
+          major: 1,
+          minor: 0,
+          patch: 53,
+        });
+      }).pipe(Effect.provide(testPlatformLayer())),
+    );
 
-      expect(config.claudeCodeVersion).toStrictEqual({
-        major: 1,
-        minor: 0,
-        patch: 53,
-      });
-    });
+    it.live("should skip npx shim path and use legitimate path with higher priority", () =>
+      Effect.gen(function* () {
+        const CommandExecutorTest = Layer.effect(
+          CommandExecutor.CommandExecutor,
+          Effect.map(CommandExecutor.CommandExecutor, (realExecutor) => ({
+            ...realExecutor,
+            string: (() => {
+              const responses = [
+                // 1st: which -a claude returns multiple paths (npx shim + legitimate)
+                "/home/user/.npm/_npx/abc123/node_modules/.bin/claude\n/usr/local/bin/claude",
+                // 2nd: claude --version
+                "1.0.100 (Claude Code)\n",
+              ];
+              return () => Effect.succeed(responses.shift() ?? "");
+            })(),
+          })),
+        ).pipe(Layer.provide(NodeContext.layer));
 
-    it("should skip npx shim path and use legitimate path with higher priority", async () => {
-      const CommandExecutorTest = Layer.effect(
-        CommandExecutor.CommandExecutor,
-        Effect.map(CommandExecutor.CommandExecutor, (realExecutor) => ({
-          ...realExecutor,
-          string: (() => {
-            const responses = [
-              // 1st: which -a claude returns multiple paths (npx shim + legitimate)
-              "/home/user/.npm/_npx/abc123/node_modules/.bin/claude\n/usr/local/bin/claude",
-              // 2nd: claude --version
-              "1.0.100 (Claude Code)\n",
-            ];
-            return () => Effect.succeed(responses.shift() ?? "");
-          })(),
-        })),
-      ).pipe(Layer.provide(NodeContext.layer));
+        const config = yield* ClaudeCode.Config.pipe(Effect.provide(CommandExecutorTest));
 
-      const config = await Effect.runPromise(
-        ClaudeCode.Config.pipe(
-          Effect.provide(testPlatformLayer()),
-          Effect.provide(CommandExecutorTest),
-        ),
-      );
+        // npx shim がスキップされ、高優先度の /usr/local/bin/claude が使用される
+        expect(config.claudeCodeExecutablePath).toBe("/usr/local/bin/claude");
+        expect(config.claudeCodeVersion).toStrictEqual({
+          major: 1,
+          minor: 0,
+          patch: 100,
+        });
+      }).pipe(Effect.provide(testPlatformLayer())),
+    );
 
-      // npx shim がスキップされ、高優先度の /usr/local/bin/claude が使用される
-      expect(config.claudeCodeExecutablePath).toBe("/usr/local/bin/claude");
-      expect(config.claudeCodeVersion).toStrictEqual({
-        major: 1,
-        minor: 0,
-        patch: 100,
-      });
-    });
+    it.live("should use first npx shim path when all paths are npx shims", () =>
+      Effect.gen(function* () {
+        const CommandExecutorTest = Layer.effect(
+          CommandExecutor.CommandExecutor,
+          Effect.map(CommandExecutor.CommandExecutor, (realExecutor) => ({
+            ...realExecutor,
+            string: (() => {
+              const responses = [
+                // 1st: which -a claude returns only npx shim paths
+                "/home/user/.npm/_npx/abc123/node_modules/.bin/claude\n/custom/cache/_npx/def456/node_modules/.bin/claude",
+                // 2nd: claude --version
+                "1.0.50 (Claude Code)\n",
+              ];
+              return () => Effect.succeed(responses.shift() ?? "");
+            })(),
+          })),
+        ).pipe(Layer.provide(NodeContext.layer));
 
-    it("should use first npx shim path when all paths are npx shims", async () => {
-      const CommandExecutorTest = Layer.effect(
-        CommandExecutor.CommandExecutor,
-        Effect.map(CommandExecutor.CommandExecutor, (realExecutor) => ({
-          ...realExecutor,
-          string: (() => {
-            const responses = [
-              // 1st: which -a claude returns only npx shim paths
-              "/home/user/.npm/_npx/abc123/node_modules/.bin/claude\n/custom/cache/_npx/def456/node_modules/.bin/claude",
-              // 2nd: claude --version
-              "1.0.50 (Claude Code)\n",
-            ];
-            return () => Effect.succeed(responses.shift() ?? "");
-          })(),
-        })),
-      ).pipe(Layer.provide(NodeContext.layer));
+        const config = yield* ClaudeCode.Config.pipe(Effect.provide(CommandExecutorTest));
 
-      const config = await Effect.runPromise(
-        ClaudeCode.Config.pipe(
-          Effect.provide(testPlatformLayer()),
-          Effect.provide(CommandExecutorTest),
-        ),
-      );
+        // すべてが同じ優先度（0）の場合、最初のパスが使用される
+        expect(config.claudeCodeExecutablePath).toBe(
+          "/home/user/.npm/_npx/abc123/node_modules/.bin/claude",
+        );
+        expect(config.claudeCodeVersion).toStrictEqual({
+          major: 1,
+          minor: 0,
+          patch: 50,
+        });
+      }).pipe(Effect.provide(testPlatformLayer())),
+    );
 
-      // すべてが同じ優先度（0）の場合、最初のパスが使用される
-      expect(config.claudeCodeExecutablePath).toBe(
-        "/home/user/.npm/_npx/abc123/node_modules/.bin/claude",
-      );
-      expect(config.claudeCodeVersion).toStrictEqual({
-        major: 1,
-        minor: 0,
-        patch: 50,
-      });
-    });
+    it.live("should use project-local node_modules/.bin if it is the first result (not _npx)", () =>
+      Effect.gen(function* () {
+        const CommandExecutorTest = Layer.effect(
+          CommandExecutor.CommandExecutor,
+          Effect.map(CommandExecutor.CommandExecutor, (realExecutor) => ({
+            ...realExecutor,
+            string: (() => {
+              const responses = [
+                // 1st: which claude (without shell) returns local node_modules (NOT _npx)
+                "/some/project/node_modules/.bin/claude",
+                // 2nd: claude --version
+                "2.0.30 (Claude Code)\n",
+              ];
+              return () => Effect.succeed(responses.shift() ?? "");
+            })(),
+          })),
+        ).pipe(Layer.provide(NodeContext.layer));
 
-    it("should use project-local node_modules/.bin if it is the first result (not _npx)", async () => {
-      const CommandExecutorTest = Layer.effect(
-        CommandExecutor.CommandExecutor,
-        Effect.map(CommandExecutor.CommandExecutor, (realExecutor) => ({
-          ...realExecutor,
-          string: (() => {
-            const responses = [
-              // 1st: which claude (without shell) returns local node_modules (NOT _npx)
-              "/some/project/node_modules/.bin/claude",
-              // 2nd: claude --version
-              "2.0.30 (Claude Code)\n",
-            ];
-            return () => Effect.succeed(responses.shift() ?? "");
-          })(),
-        })),
-      ).pipe(Layer.provide(NodeContext.layer));
+        const config = yield* ClaudeCode.Config.pipe(Effect.provide(CommandExecutorTest));
 
-      const config = await Effect.runPromise(
-        ClaudeCode.Config.pipe(
-          Effect.provide(testPlatformLayer()),
-          Effect.provide(CommandExecutorTest),
-        ),
-      );
-
-      // プロジェクトローカルの node_modules/.bin はユーザーが意図的に PATH を通している可能性があるので使用する
-      expect(config.claudeCodeExecutablePath).toBe("/some/project/node_modules/.bin/claude");
-      expect(config.claudeCodeVersion).toStrictEqual({
-        major: 2,
-        minor: 0,
-        patch: 30,
-      });
-    });
+        // プロジェクトローカルの node_modules/.bin はユーザーが意図的に PATH を通している可能性があるので使用する
+        expect(config.claudeCodeExecutablePath).toBe("/some/project/node_modules/.bin/claude");
+        expect(config.claudeCodeVersion).toStrictEqual({
+          major: 2,
+          minor: 0,
+          patch: 30,
+        });
+      }).pipe(Effect.provide(testPlatformLayer())),
+    );
   });
 });
 

@@ -1,5 +1,7 @@
 import { SystemError } from "@effect/platform/Error";
+import { it } from "@effect/vitest";
 import { Effect, Layer } from "effect";
+import { expect } from "vitest";
 import { testFileSystemLayer } from "../../../../testing/layers/testFileSystemLayer.ts";
 import { testPlatformLayer } from "../../../../testing/layers/testPlatformLayer.ts";
 import { AgentSessionRepository } from "../../agent-session/infrastructure/AgentSessionRepository.ts";
@@ -108,7 +110,7 @@ describe("SessionController", () => {
       };
     };
 
-    it("successfully deletes a session file and returns 200", async () => {
+    it.live("successfully deletes a session file and returns 200", () => {
       let removedPath: string | undefined;
       const { projectId, sessionId, sessionPath, layers } = createTestLayers({
         fileExists: true,
@@ -118,25 +120,21 @@ describe("SessionController", () => {
         },
       });
 
-      const program = Effect.gen(function* () {
+      return Effect.gen(function* () {
         const controller = yield* SessionController;
-        return yield* controller.deleteSession({ projectId, sessionId });
-      });
+        const result = yield* controller.deleteSession({ projectId, sessionId });
 
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(SessionController.Live),
-          Effect.provide(layers),
-          Effect.provide(testPlatformLayer()),
-        ),
+        expect(result.status).toBe(200);
+        expect(result.response).toEqual({ success: true });
+        expect(removedPath).toBe(sessionPath);
+      }).pipe(
+        Effect.provide(SessionController.Live),
+        Effect.provide(layers),
+        Effect.provide(testPlatformLayer()),
       );
-
-      expect(result.status).toBe(200);
-      expect(result.response).toEqual({ success: true });
-      expect(removedPath).toBe(sessionPath);
     });
 
-    it("emits sessionListChanged event after successful deletion", async () => {
+    it.live("emits sessionListChanged event after successful deletion", () => {
       const emittedEvents: Array<{
         event: keyof InternalEventDeclaration;
         data: InternalEventDeclaration[keyof InternalEventDeclaration];
@@ -149,68 +147,56 @@ describe("SessionController", () => {
         },
       });
 
-      const program = Effect.gen(function* () {
+      return Effect.gen(function* () {
         const controller = yield* SessionController;
-        return yield* controller.deleteSession({ projectId, sessionId });
-      });
+        yield* controller.deleteSession({ projectId, sessionId });
 
-      await Effect.runPromise(
-        program.pipe(
-          Effect.provide(SessionController.Live),
-          Effect.provide(layers),
-          Effect.provide(testPlatformLayer()),
-        ),
+        expect(emittedEvents).toContainEqual({
+          event: "sessionListChanged",
+          data: { projectId },
+        });
+      }).pipe(
+        Effect.provide(SessionController.Live),
+        Effect.provide(layers),
+        Effect.provide(testPlatformLayer()),
       );
-
-      expect(emittedEvents).toContainEqual({
-        event: "sessionListChanged",
-        data: { projectId },
-      });
     });
 
-    it("returns 404 when session file does not exist", async () => {
+    it.live("returns 404 when session file does not exist", () => {
       const { projectId, sessionId, layers } = createTestLayers({
         fileExists: false,
       });
 
-      const program = Effect.gen(function* () {
+      return Effect.gen(function* () {
         const controller = yield* SessionController;
-        return yield* controller.deleteSession({ projectId, sessionId });
-      });
+        const result = yield* controller.deleteSession({ projectId, sessionId });
 
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(SessionController.Live),
-          Effect.provide(layers),
-          Effect.provide(testPlatformLayer()),
-        ),
+        expect(result.status).toBe(404);
+        expect(result.response).toEqual({ error: "Session not found" });
+      }).pipe(
+        Effect.provide(SessionController.Live),
+        Effect.provide(layers),
+        Effect.provide(testPlatformLayer()),
       );
-
-      expect(result.status).toBe(404);
-      expect(result.response).toEqual({ error: "Session not found" });
     });
 
-    it("returns 500 when file system error occurs during deletion", async () => {
+    it.live("returns 500 when file system error occurs during deletion", () => {
       const { projectId, sessionId, layers } = createTestLayers({
         fileExists: true,
         removeSuccess: false,
       });
 
-      const program = Effect.gen(function* () {
+      return Effect.gen(function* () {
         const controller = yield* SessionController;
-        return yield* controller.deleteSession({ projectId, sessionId });
-      });
+        const result = yield* controller.deleteSession({ projectId, sessionId });
 
-      const result = await Effect.runPromise(
-        program.pipe(
-          Effect.provide(SessionController.Live),
-          Effect.provide(layers),
-          Effect.provide(testPlatformLayer()),
-        ),
+        expect(result.status).toBe(500);
+        expect(result.response).toHaveProperty("error");
+      }).pipe(
+        Effect.provide(SessionController.Live),
+        Effect.provide(layers),
+        Effect.provide(testPlatformLayer()),
       );
-
-      expect(result.status).toBe(500);
-      expect(result.response).toHaveProperty("error");
     });
   });
 });

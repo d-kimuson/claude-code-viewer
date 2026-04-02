@@ -1,6 +1,7 @@
+import { describe, it } from "@effect/vitest";
 import { Effect } from "effect";
 import { Hono } from "hono";
-import { describe, expect, it } from "vitest";
+import { expect } from "vitest";
 import { CcvOptionsService } from "../../core/platform/services/CcvOptionsService.ts";
 import type { HonoContext } from "../app.ts";
 import { AuthMiddleware } from "./auth.middleware.ts";
@@ -29,69 +30,71 @@ const createTestApp = (password?: string) =>
   });
 
 describe("auth required middleware", () => {
-  it("blocks protected APIs when password is configured", async () => {
-    const { app, validSessionToken } = await Effect.runPromise(
-      createTestApp("secret").pipe(
-        Effect.provide(AuthMiddleware.Live),
-        Effect.provide(CcvOptionsService.Live),
-      ),
-    );
+  it.live("blocks protected APIs when password is configured", () =>
+    Effect.gen(function* () {
+      const { app, validSessionToken } = yield* createTestApp("secret");
 
-    const unauthorized = await app.request("/api/projects");
-    expect(unauthorized.status).toBe(401);
+      const unauthorized = yield* Effect.promise(() =>
+        Promise.resolve(app.request("/api/projects")),
+      );
+      expect(unauthorized.status).toBe(401);
 
-    const authorized = await app.request("/api/projects", {
-      headers: {
-        Cookie: `ccv-session=${validSessionToken}`,
-      },
-    });
-    expect(authorized.status).toBe(200);
-  });
+      const authorized = yield* Effect.promise(() =>
+        Promise.resolve(
+          app.request("/api/projects", {
+            headers: {
+              Cookie: `ccv-session=${validSessionToken}`,
+            },
+          }),
+        ),
+      );
+      expect(authorized.status).toBe(200);
+    }).pipe(Effect.provide(AuthMiddleware.Live), Effect.provide(CcvOptionsService.Live)),
+  );
 
-  it("accepts bearer token authorization when password is configured", async () => {
-    const { app } = await Effect.runPromise(
-      createTestApp("secret").pipe(
-        Effect.provide(AuthMiddleware.Live),
-        Effect.provide(CcvOptionsService.Live),
-      ),
-    );
+  it.live("accepts bearer token authorization when password is configured", () =>
+    Effect.gen(function* () {
+      const { app } = yield* createTestApp("secret");
 
-    const authorized = await app.request("/api/projects", {
-      headers: {
-        Authorization: "Bearer secret",
-      },
-    });
-    expect(authorized.status).toBe(200);
+      const authorized = yield* Effect.promise(() =>
+        Promise.resolve(
+          app.request("/api/projects", {
+            headers: {
+              Authorization: "Bearer secret",
+            },
+          }),
+        ),
+      );
+      expect(authorized.status).toBe(200);
 
-    const unauthorized = await app.request("/api/projects", {
-      headers: {
-        Authorization: "Bearer wrong",
-      },
-    });
-    expect(unauthorized.status).toBe(401);
-  });
+      const unauthorized = yield* Effect.promise(() =>
+        Promise.resolve(
+          app.request("/api/projects", {
+            headers: {
+              Authorization: "Bearer wrong",
+            },
+          }),
+        ),
+      );
+      expect(unauthorized.status).toBe(401);
+    }).pipe(Effect.provide(AuthMiddleware.Live), Effect.provide(CcvOptionsService.Live)),
+  );
 
-  it("allows access to routes defined before authRequired", async () => {
-    const { app } = await Effect.runPromise(
-      createTestApp("secret").pipe(
-        Effect.provide(AuthMiddleware.Live),
-        Effect.provide(CcvOptionsService.Live),
-      ),
-    );
+  it.live("allows access to routes defined before authRequired", () =>
+    Effect.gen(function* () {
+      const { app } = yield* createTestApp("secret");
 
-    const response = await app.request("/api/auth/check");
-    expect(response.status).toBe(200);
-  });
+      const response = yield* Effect.promise(() => Promise.resolve(app.request("/api/auth/check")));
+      expect(response.status).toBe(200);
+    }).pipe(Effect.provide(AuthMiddleware.Live), Effect.provide(CcvOptionsService.Live)),
+  );
 
-  it("allows API access when password is not configured", async () => {
-    const { app } = await Effect.runPromise(
-      createTestApp(undefined).pipe(
-        Effect.provide(AuthMiddleware.Live),
-        Effect.provide(CcvOptionsService.Live),
-      ),
-    );
+  it.live("allows API access when password is not configured", () =>
+    Effect.gen(function* () {
+      const { app } = yield* createTestApp(undefined);
 
-    const response = await app.request("/api/projects");
-    expect(response.status).toBe(200);
-  });
+      const response = yield* Effect.promise(() => Promise.resolve(app.request("/api/projects")));
+      expect(response.status).toBe(200);
+    }).pipe(Effect.provide(AuthMiddleware.Live), Effect.provide(CcvOptionsService.Live)),
+  );
 });

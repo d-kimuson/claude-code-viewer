@@ -104,6 +104,7 @@
   },
   "devDependencies": {
     "@effect/language-service": "0.84.2",
+    "@effect/vitest": "^0.29.0",
     "@lingui/cli": "5.9.4",
     "@lingui/conf": "5.9.4",
     "@lingui/format-json": "5.9.4",

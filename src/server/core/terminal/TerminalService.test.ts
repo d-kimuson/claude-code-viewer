@@ -1,34 +1,31 @@
+import { it } from "@effect/vitest";
 import { Effect, Either } from "effect";
-import { expect, test } from "vitest";
+import { expect } from "vitest";
 import { testPlatformLayer } from "../../../testing/layers/testPlatformLayer.ts";
 import { TerminalService } from "./TerminalService.ts";
 
-test("disables terminal when CCV_TERMINAL_DISABLED is enabled", async () => {
-  const program = Effect.gen(function* () {
+it.live("disables terminal when CCV_TERMINAL_DISABLED is enabled", () =>
+  Effect.gen(function* () {
     const terminalService = yield* TerminalService;
-    return yield* Effect.either(terminalService.getOrCreateSession(undefined));
+    const result = yield* Effect.either(terminalService.getOrCreateSession(undefined));
+
+    expect(Either.isLeft(result)).toBe(true);
   }).pipe(
     Effect.provide(TerminalService.Live),
     Effect.provide(testPlatformLayer({ env: { CCV_TERMINAL_DISABLED: "1" } })),
     Effect.scoped,
-  );
+  ),
+);
 
-  const result = await Effect.runPromise(program);
-
-  expect(Either.isLeft(result)).toBe(true);
-});
-
-test("disables terminal when --terminal-disabled is enabled", async () => {
-  const program = Effect.gen(function* () {
+it.live("disables terminal when --terminal-disabled is enabled", () =>
+  Effect.gen(function* () {
     const terminalService = yield* TerminalService;
-    return yield* Effect.either(terminalService.getOrCreateSession(undefined));
+    const result = yield* Effect.either(terminalService.getOrCreateSession(undefined));
+
+    expect(Either.isLeft(result)).toBe(true);
   }).pipe(
     Effect.provide(TerminalService.Live),
     Effect.provide(testPlatformLayer({ ccvOptions: { terminalDisabled: true } })),
     Effect.scoped,
-  );
-
-  const result = await Effect.runPromise(program);
-
-  expect(Either.isLeft(result)).toBe(true);
-});
+  ),
+);

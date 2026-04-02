@@ -1,6 +1,13 @@
 import { Trans } from "@lingui/react";
-import { GitBranchIcon, PanelBottomIcon, PanelLeftIcon, PanelRightIcon } from "lucide-react";
-import type { FC, ReactNode } from "react";
+import {
+  GitBranchIcon,
+  PanelBottomIcon,
+  PanelLeftIcon,
+  PanelRightIcon,
+  SearchIcon,
+} from "lucide-react";
+import { type FC, type ReactNode, useState } from "react";
+import { SearchDialog } from "@/web/components/SearchDialog";
 import { Badge } from "@/web/components/ui/badge";
 import {
   Tooltip,
@@ -41,6 +48,7 @@ export const AppLayout: FC<AppLayoutProps> = ({
   const { setIsBottomPanelOpen } = useBottomPanelActions();
   const isRightPanelOpen = useRightPanelOpen();
   const { togglePanel: toggleRightPanel } = useRightPanelActions();
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   return (
     <div className="flex flex-col h-screen w-screen overflow-hidden bg-background">
@@ -72,6 +80,14 @@ export const AppLayout: FC<AppLayoutProps> = ({
 
         {/* Right: Notifications + Panel Toggle Buttons */}
         <div className="flex items-center gap-1 shrink-0">
+          <button
+            type="button"
+            onClick={() => setIsSearchOpen(true)}
+            className="md:hidden w-11 h-11 flex items-center justify-center rounded transition-colors hover:bg-muted text-muted-foreground hover:text-foreground"
+            aria-label="Search"
+          >
+            <SearchIcon className="w-3.5 h-3.5" />
+          </button>
           <NotificationBell sessionId={sessionId} />
           <TooltipProvider>
             <Tooltip>
@@ -144,6 +160,8 @@ export const AppLayout: FC<AppLayoutProps> = ({
 
       {/* Main Content Area */}
       <div className="flex-1 min-h-0 overflow-hidden">{children}</div>
+
+      <SearchDialog open={isSearchOpen} onOpenChange={setIsSearchOpen} projectId={projectId} />
     </div>
   );
 };

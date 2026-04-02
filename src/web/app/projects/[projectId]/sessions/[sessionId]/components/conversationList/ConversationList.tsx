@@ -15,6 +15,7 @@ import type { AssistantMessageContent } from "@/lib/conversation-schema/message/
 import { calculateDuration } from "@/lib/date/formatDuration";
 import type { SchedulerJob } from "@/server/core/scheduler/schema";
 import type { ErrorJsonl } from "@/server/core/types";
+import { useConfig } from "@/web/app/hooks/useConfig";
 import { Alert, AlertDescription, AlertTitle } from "@/web/components/ui/alert";
 import { Button } from "@/web/components/ui/button";
 import {
@@ -237,6 +238,7 @@ export const ConversationList: FC<ConversationListProps> = ({
   scrollContainerRef,
   enableInPageSearch = false,
 }) => {
+  const { config } = useConfig();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [committedSearchQuery, setCommittedSearchQuery] = useState("");
   const [activeMatchPosition, setActiveMatchPosition] = useState(0);
@@ -438,8 +440,14 @@ export const ConversationList: FC<ConversationListProps> = ({
       return;
     }
 
+    const findHotkey = config?.findHotkey ?? "command-f";
     const handleKeyDown = (event: KeyboardEvent) => {
-      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "f") {
+      const shouldOpenFind =
+        findHotkey === "command-f"
+          ? event.metaKey && !event.ctrlKey && event.key.toLowerCase() === "f"
+          : !event.metaKey && event.ctrlKey && event.key.toLowerCase() === "f";
+
+      if (shouldOpenFind) {
         event.preventDefault();
         setIsSearchOpen(true);
       }
@@ -453,7 +461,7 @@ export const ConversationList: FC<ConversationListProps> = ({
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [enableInPageSearch, isSearchOpen]);
+  }, [enableInPageSearch, isSearchOpen, config?.findHotkey]);
 
   useEffect(() => {
     setActiveMatchPosition(0);

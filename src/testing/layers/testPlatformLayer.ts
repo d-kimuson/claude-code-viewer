@@ -77,6 +77,7 @@ export const testPlatformLayer = (overrides?: {
         locale: overrides?.userConfig?.locale ?? DEFAULT_LOCALE,
         theme: overrides?.userConfig?.theme ?? "system",
         searchHotkey: overrides?.userConfig?.searchHotkey ?? "command-k",
+        findHotkey: overrides?.userConfig?.findHotkey ?? "command-f",
         autoScheduleContinueOnRateLimit:
           overrides?.userConfig?.autoScheduleContinueOnRateLimit ?? false,
         modelChoices: overrides?.userConfig?.modelChoices ?? ["default", "haiku", "sonnet", "opus"],

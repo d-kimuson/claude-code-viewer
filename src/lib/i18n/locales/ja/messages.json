@@ -183,10 +183,21 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        222
+        238
       ]
     ],
     "translation": "Enterキーの動作を選択"
+  },
+  "Select find hotkey": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        296
+      ]
+    ],
+    "translation": "ページ内検索ホットキーを選択"
   },
   "Select language": {
     "placeholders": {},
@@ -194,7 +205,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        340
+        382
       ]
     ],
     "translation": "言語を選択"
@@ -205,7 +216,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        254
+        270
       ]
     ],
     "translation": "検索ホットキーを選択"
@@ -216,7 +227,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        369
+        411
       ]
     ],
     "translation": "テーマを選択"
@@ -1226,7 +1237,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        207
+        208
       ]
     ],
     "translation": "生データ："
@@ -1237,7 +1248,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        200
+        201
       ]
     ],
     "translation": "この問題を報告"
@@ -1248,7 +1259,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        178
+        179
       ]
     ],
     "translation": "スキーマエラー"
@@ -1259,7 +1270,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        190
+        191
       ]
     ],
     "translation": "スキーマ検証エラー"
@@ -1270,7 +1281,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        193
+        194
       ]
     ],
     "translation": "この会話エントリの解析に失敗しました。フォーマットの変更または解析の問題が考えられます。"
@@ -1957,7 +1968,7 @@
     "origin": [
       [
         "src/web/app/components/NotificationBell.tsx",
-        109
+        115
       ]
     ],
     "translation": "新しい通知はありません"
@@ -1979,7 +1990,7 @@
     "origin": [
       [
         "src/web/app/components/NotificationBell.tsx",
-        130
+        136
       ]
     ],
     "translation": "権限の許可が必要です"
@@ -2012,7 +2023,7 @@
     "origin": [
       [
         "src/web/app/components/NotificationBell.tsx",
-        132
+        138
       ]
     ],
     "translation": "Claudeからの質問"
@@ -2023,7 +2034,7 @@
     "origin": [
       [
         "src/web/app/components/NotificationBell.tsx",
-        128
+        134
       ]
     ],
     "translation": "セッションが完了しました"
@@ -2034,7 +2045,7 @@
     "origin": [
       [
         "src/web/app/components/NotificationBell.tsx",
-        126
+        132
       ]
     ],
     "translation": "セッションが一時停止しました"
@@ -2056,11 +2067,11 @@
     "origin": [
       [
         "src/web/app/components/NotificationBell.tsx",
-        87
+        93
       ],
       [
         "src/web/app/components/NotificationBell.tsx",
-        99
+        105
       ]
     ],
     "translation": "通知"
@@ -3303,7 +3314,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        214
+        230
       ]
     ],
     "translation": "Enterキーの動作"
@@ -3314,7 +3325,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        232
+        248
       ]
     ],
     "translation": "Command+Enterで送信"
@@ -3325,7 +3336,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        238
+        254
       ]
     ],
     "translation": "メッセージ入力でのEnterキーの動作を選択"
@@ -3336,7 +3347,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        229
+        245
       ]
     ],
     "translation": "Enterで送信"
@@ -3347,10 +3358,54 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        226
+        242
       ]
     ],
     "translation": "Shift+Enterで送信（デフォルト）"
+  },
+  "settings.input.find_hotkey": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        291
+      ]
+    ],
+    "translation": "ページ内検索ホットキー"
+  },
+  "settings.input.find_hotkey.command_f": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        303
+      ]
+    ],
+    "translation": "Command+F"
+  },
+  "settings.input.find_hotkey.ctrl_f": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        300
+      ]
+    ],
+    "translation": "Ctrl+F"
+  },
+  "settings.input.find_hotkey.description": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        309
+      ]
+    ],
+    "translation": "ページ内検索を開くホットキーを選択します"
   },
   "settings.input.search_hotkey": {
     "placeholders": {},
@@ -3358,7 +3413,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        246
+        262
       ]
     ],
     "translation": "検索ホットキー"
@@ -3369,7 +3424,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        261
+        277
       ]
     ],
     "translation": "Command+K"
@@ -3380,7 +3435,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        258
+        274
       ]
     ],
     "translation": "Ctrl+K"
@@ -3391,7 +3446,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        267
+        283
       ]
     ],
     "translation": "検索ダイアログを開くホットキーを選択します"
@@ -3417,7 +3472,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        335
+        377
       ]
     ],
     "translation": "言語"
@@ -3428,7 +3483,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        356
+        398
       ]
     ],
     "translation": "お好みの言語を選択"
@@ -3439,7 +3494,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        347
+        389
       ]
     ],
     "translation": "English"
@@ -3450,7 +3505,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        344
+        386
       ]
     ],
     "translation": "日本語"
@@ -3461,7 +3516,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        350
+        392
       ]
     ],
     "translation": "中国語（簡体字）"
@@ -3509,7 +3564,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        324
+        366
       ]
     ],
     "translation": "セッションツールバーで利用可能なモデル選択肢を設定します"
@@ -3521,7 +3576,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        275
+        317
       ]
     ],
     "translation": "モデル選択肢"
@@ -3533,7 +3588,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        305
+        347
       ]
     ],
     "translation": "モデル選択肢を追加..."
@@ -3660,7 +3715,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        201
+        217
       ]
     ],
     "translation": "レート制限時に自動的に継続をスケジュール"
@@ -3671,7 +3726,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        207
+        223
       ]
     ],
     "translation": "Claude がレート制限に達した際に、自動的に継続メッセージをスケジュール実行します"
@@ -3693,7 +3748,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        159
+        175
       ]
     ],
     "translation": "ユーザーメッセージのないセッションを非表示"
@@ -3704,7 +3759,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        165
+        181
       ]
     ],
     "translation": "ユーザーコマンドまたはメッセージを含むセッションのみを表示"
@@ -3715,7 +3770,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        180
+        196
       ]
     ],
     "translation": "同じタイトルのセッションを統合"
@@ -3726,7 +3781,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        186
+        202
       ]
     ],
     "translation": "同じタイトルの複数のセッションがある場合、最新のセッションのみを表示"
@@ -3760,7 +3815,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        364
+        406
       ]
     ],
     "translation": "テーマ"
@@ -3771,7 +3826,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        376
+        418
       ]
     ],
     "translation": "ダーク"
@@ -3782,7 +3837,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        385
+        427
       ]
     ],
     "translation": "お好みのカラーテーマを選択"
@@ -3793,7 +3848,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        373
+        415
       ]
     ],
     "translation": "ライト"
@@ -3804,7 +3859,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        379
+        421
       ]
     ],
     "translation": "システム"

@@ -11,6 +11,7 @@ const LayerImpl = Effect.gen(function* () {
     locale: DEFAULT_LOCALE,
     theme: "system",
     searchHotkey: "command-k",
+    findHotkey: "command-f",
     autoScheduleContinueOnRateLimit: false,
     modelChoices: ["default", "haiku", "sonnet", "opus"],
   });

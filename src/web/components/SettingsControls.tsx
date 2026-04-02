@@ -29,6 +29,10 @@ const isSearchHotkey = (value: string): value is "ctrl-k" | "command-k" => {
   return value === "ctrl-k" || value === "command-k";
 };
 
+const isFindHotkey = (value: string): value is "ctrl-f" | "command-f" => {
+  return value === "ctrl-f" || value === "command-f";
+};
+
 export const SettingsControls: FC<SettingsControlsProps> = ({
   openingProjectId,
   showLabels = true,
@@ -39,6 +43,7 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
   const checkboxId = useId();
   const enterKeyBehaviorId = useId();
   const searchHotkeyId = useId();
+  const findHotkeyId = useId();
   const localeId = useId();
   const themeId = useId();
   const { config, updateConfig } = useConfig();
@@ -105,6 +110,17 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
     const newConfig = {
       ...config,
       searchHotkey: value,
+    };
+    updateConfig(newConfig);
+  };
+
+  const handleFindHotkeyChange = (value: string) => {
+    if (!isFindHotkey(value)) {
+      return;
+    }
+    const newConfig = {
+      ...config,
+      findHotkey: value,
     };
     updateConfig(newConfig);
   };
@@ -265,6 +281,32 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
         {showDescriptions && (
           <p className="text-xs text-muted-foreground mt-1">
             <Trans id="settings.input.search_hotkey.description" />
+          </p>
+        )}
+      </div>
+
+      <div className="space-y-2">
+        {showLabels && (
+          <label htmlFor={findHotkeyId} className="text-sm font-medium leading-none">
+            <Trans id="settings.input.find_hotkey" />
+          </label>
+        )}
+        <Select value={config?.findHotkey || "command-f"} onValueChange={handleFindHotkeyChange}>
+          <SelectTrigger id={findHotkeyId} className="w-full">
+            <SelectValue placeholder={i18n._("Select find hotkey")} />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="ctrl-f">
+              <Trans id="settings.input.find_hotkey.ctrl_f" />
+            </SelectItem>
+            <SelectItem value="command-f">
+              <Trans id="settings.input.find_hotkey.command_f" />
+            </SelectItem>
+          </SelectContent>
+        </Select>
+        {showDescriptions && (
+          <p className="text-xs text-muted-foreground mt-1">
+            <Trans id="settings.input.find_hotkey.description" />
           </p>
         )}
       </div>

@@ -9,7 +9,7 @@ import {
   SendIcon,
   XIcon,
 } from "lucide-react";
-import { type FC, useCallback, useEffect, useId, useRef, useState } from "react";
+import { type FC, useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useChatInputDraft } from "@/lib/atoms/chatInputDrafts";
 import type {
@@ -126,7 +126,6 @@ export const ChatInput: FC<ChatInputProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const commandCompletionRef = useRef<CommandCompletionRef>(null);
   const fileCompletionRef = useRef<FileCompletionRef>(null);
-  const helpId = useId();
   const { config } = useConfig();
   const createSchedulerJob = useCreateSchedulerJob();
 
@@ -443,7 +442,6 @@ export const ChatInput: FC<ChatInputProps> = ({
               }}
               disabled={isPending || disabled}
               aria-label={i18n._("Message input with completion support")}
-              aria-describedby={helpId}
               aria-expanded={isInCompletionContext(message)}
             />
           </div>
@@ -513,7 +511,7 @@ export const ChatInput: FC<ChatInputProps> = ({
             )}
 
             <div className="flex items-center justify-between gap-2">
-              <div className="flex items-center gap-0.5 text-muted-foreground/70">
+              <div className="flex items-center gap-0.5 text-muted-foreground/70 flex-1 min-w-0 flex-wrap">
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -604,14 +602,6 @@ export const ChatInput: FC<ChatInputProps> = ({
                       </TooltipContent>
                     </Tooltip>
                   </>
-                )}
-                {message.length > 0 && (
-                  <span
-                    className="text-[10px] font-medium bg-muted/50 px-2 py-0.5 rounded-full border border-border/30 transition-all duration-200"
-                    id={helpId}
-                  >
-                    {message.length}
-                  </span>
                 )}
                 {enableCCOptions && onCCOptionsChange && (
                   <ClaudeCodeSettingsPopover

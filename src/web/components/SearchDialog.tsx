@@ -19,9 +19,12 @@ export const SearchDialog = ({ open, onOpenChange, projectId }: SearchDialogProp
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [searchAllProjects, setSearchAllProjects] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const resultRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const navigate = useNavigate();
+
+  const effectiveProjectId = searchAllProjects ? undefined : projectId;
 
   // Debounce search query
   useEffect(() => {
@@ -37,12 +40,13 @@ export const SearchDialog = ({ open, onOpenChange, projectId }: SearchDialogProp
       setQuery("");
       setDebouncedQuery("");
       setSelectedIndex(0);
+      setSearchAllProjects(false);
       setTimeout(() => inputRef.current?.focus(), 0);
     }
   }, [open]);
 
   const { data, isLoading } = useQuery({
-    ...searchQuery(debouncedQuery, { projectId }),
+    ...searchQuery(debouncedQuery, { projectId: effectiveProjectId }),
     enabled: debouncedQuery.length >= 2,
   });
 
@@ -113,7 +117,7 @@ export const SearchDialog = ({ open, onOpenChange, projectId }: SearchDialogProp
           <Input
             ref={inputRef}
             placeholder={
-              projectId !== undefined ? "Search this project..." : "Search all projects..."
+              effectiveProjectId !== undefined ? "Search this project..." : "Search all projects..."
             }
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -183,6 +187,20 @@ export const SearchDialog = ({ open, onOpenChange, projectId }: SearchDialogProp
           <span>
             <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-mono">esc</kbd> close
           </span>
+          {projectId !== undefined && (
+            <button
+              type="button"
+              data-testid="scope-toggle"
+              onClick={() => setSearchAllProjects((prev) => !prev)}
+              className={`ml-auto px-2 py-0.5 rounded text-[10px] font-medium transition-colors ${
+                searchAllProjects
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted hover:bg-muted/80"
+              }`}
+            >
+              {searchAllProjects ? "All projects" : "This project"}
+            </button>
+          )}
         </div>
       </DialogContent>
     </Dialog>

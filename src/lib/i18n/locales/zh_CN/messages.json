@@ -36,7 +36,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/ReviewTabContent.tsx", 257],
+      [
+        "src/web/app/components/rightPanel/ReviewTabContent.tsx",
+        257
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         376
@@ -48,7 +51,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/ReviewTabContent.tsx", 265],
+      [
+        "src/web/app/components/rightPanel/ReviewTabContent.tsx",
+        265
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         382
@@ -71,7 +77,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/GitTabContent.tsx", 464],
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        464
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         293
@@ -83,7 +92,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/GitTabContent.tsx", 519],
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        519
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         361
@@ -95,7 +107,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/GitTabContent.tsx", 478],
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        478
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         311
@@ -151,7 +166,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/GitTabContent.tsx", 506],
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        506
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         346
@@ -162,38 +180,66 @@
   "Select enter key behavior": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 238]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        238
+      ]
+    ],
     "translation": "选择回车键行为"
   },
   "Select find hotkey": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 296]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        296
+      ]
+    ],
     "translation": "选择页内搜索快捷键"
   },
   "Select language": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 382]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        382
+      ]
+    ],
     "translation": "选择语言"
   },
   "Select search hotkey": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 270]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        270
+      ]
+    ],
     "translation": "选择搜索快捷键"
   },
   "Select theme": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 411]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        411
+      ]
+    ],
     "translation": "选择主题"
   },
   "Uncommitted changes": {
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/ReviewTabContent.tsx", 172],
+      [
+        "src/web/app/components/rightPanel/ReviewTabContent.tsx",
+        172
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         177
@@ -227,7 +273,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/GitTabContent.tsx", 339],
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        339
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
         179
@@ -239,7 +288,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/GitTabContent.tsx", 321],
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        321
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
         161
@@ -251,7 +303,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/FilesToolsTabContent.tsx", 344],
+      [
+        "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
+        344
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
         220
@@ -263,7 +318,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/GitTabContent.tsx", 338],
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        338
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
         178
@@ -297,7 +355,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/GitTabContent.tsx", 340],
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        340
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
         180
@@ -309,7 +370,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/GitTabContent.tsx", 313],
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        313
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
         153
@@ -321,7 +385,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/FilesToolsTabContent.tsx", 336],
+      [
+        "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
+        336
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
         212
@@ -331,11 +398,16 @@
   },
   "assistant.tool.message_count": {
     "placeholders": {
-      "count": ["conversations.length"]
+      "count": [
+        "conversations.length"
+      ]
     },
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/FilesToolsTabContent.tsx", 322],
+      [
+        "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
+        322
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
         198
@@ -347,7 +419,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/FilesToolsTabContent.tsx", 354],
+      [
+        "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
+        354
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
         236
@@ -370,7 +445,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/GitTabContent.tsx", 341],
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        341
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
         181
@@ -393,8 +471,14 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/FilesToolsTabContent.tsx", 347],
-      ["src/web/app/components/rightPanel/GitTabContent.tsx", 330],
+      [
+        "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
+        347
+      ],
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        330
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
         170
@@ -487,8 +571,14 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/SessionHistoryPopover.tsx", 88],
-      ["src/web/app/components/SessionHistoryPopover.tsx", 107]
+      [
+        "src/web/app/components/SessionHistoryPopover.tsx",
+        88
+      ],
+      [
+        "src/web/app/components/SessionHistoryPopover.tsx",
+        107
+      ]
     ],
     "translation": "会话历史"
   },
@@ -496,7 +586,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/SessionHistoryPopover.tsx", 120],
+      [
+        "src/web/app/components/SessionHistoryPopover.tsx",
+        120
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
         646
@@ -508,7 +601,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/SessionHistoryPopover.tsx", 150],
+      [
+        "src/web/app/components/SessionHistoryPopover.tsx",
+        150
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
         364
@@ -861,7 +957,12 @@
   "common.action.cancel": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/components/SetupProjectDialog.tsx", 82]],
+    "origin": [
+      [
+        "src/web/app/projects/components/SetupProjectDialog.tsx",
+        82
+      ]
+    ],
     "translation": "取消"
   },
   "common.cancel": {
@@ -943,7 +1044,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/ReviewTabContent.tsx", 281],
+      [
+        "src/web/app/components/rightPanel/ReviewTabContent.tsx",
+        281
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         396
@@ -1392,7 +1496,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/GitTabContent.tsx", 625],
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        625
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         533
@@ -1404,7 +1511,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/GitTabContent.tsx", 554],
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        554
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         442
@@ -1416,7 +1526,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/GitTabContent.tsx", 596],
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        596
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         505
@@ -1428,7 +1541,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/GitTabContent.tsx", 661],
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        661
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         567
@@ -1440,7 +1556,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/GitTabContent.tsx", 622],
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        622
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         530
@@ -1452,7 +1571,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/GitTabContent.tsx", 658],
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        658
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         564
@@ -1464,7 +1586,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/GitTabContent.tsx", 583],
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        583
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         471
@@ -1498,7 +1623,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/ReviewTabContent.tsx", 59],
+      [
+        "src/web/app/components/rightPanel/ReviewTabContent.tsx",
+        59
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         45
@@ -1510,7 +1638,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/ReviewTabContent.tsx", 389],
+      [
+        "src/web/app/components/rightPanel/ReviewTabContent.tsx",
+        389
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         613
@@ -1522,7 +1653,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/GitTabContent.tsx", 643],
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        643
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         550
@@ -1534,7 +1668,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/GitTabContent.tsx", 640],
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        640
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         547
@@ -1546,7 +1683,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/GitTabContent.tsx", 574],
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        574
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffModal.tsx",
         463
@@ -1568,25 +1708,45 @@
   "directory_picker.current": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/components/DirectoryPicker.tsx", 39]],
+    "origin": [
+      [
+        "src/web/app/projects/components/DirectoryPicker.tsx",
+        39
+      ]
+    ],
     "translation": "当前:"
   },
   "directory_picker.loading": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/components/DirectoryPicker.tsx", 56]],
+    "origin": [
+      [
+        "src/web/app/projects/components/DirectoryPicker.tsx",
+        56
+      ]
+    ],
     "translation": "加载中..."
   },
   "directory_picker.no_directories": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/components/DirectoryPicker.tsx", 81]],
+    "origin": [
+      [
+        "src/web/app/projects/components/DirectoryPicker.tsx",
+        81
+      ]
+    ],
     "translation": "未找到目录"
   },
   "directory_picker.show_hidden": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/components/DirectoryPicker.tsx", 50]],
+    "origin": [
+      [
+        "src/web/app/projects/components/DirectoryPicker.tsx",
+        50
+      ]
+    ],
     "translation": "显示隐藏文件"
   },
   "e.g., 1.00": {
@@ -1636,30 +1796,52 @@
   "layout.bottom_panel.title": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/BottomPanel.tsx", 120]],
+    "origin": [
+      [
+        "src/web/app/components/BottomPanel.tsx",
+        120
+      ]
+    ],
     "translation": "终端"
   },
   "layout.toggle_bottom_panel": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/AppLayout.tsx", 133]],
+    "origin": [
+      [
+        "src/web/app/components/AppLayout.tsx",
+        133
+      ]
+    ],
     "translation": "切换底部面板"
   },
   "layout.toggle_left_panel": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/AppLayout.tsx", 112]],
+    "origin": [
+      [
+        "src/web/app/components/AppLayout.tsx",
+        112
+      ]
+    ],
     "translation": "切换左侧面板"
   },
   "layout.toggle_right_panel": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/AppLayout.tsx", 154]],
+    "origin": [
+      [
+        "src/web/app/components/AppLayout.tsx",
+        154
+      ]
+    ],
     "translation": "切换右侧面板"
   },
   "mcp.error.load_failed": {
     "placeholders": {
-      "error": ["error.message"]
+      "error": [
+        "error.message"
+      ]
     },
     "comments": [],
     "origin": [
@@ -1695,156 +1877,283 @@
   "notfound.button.go_home": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/NotFound.tsx", 43]],
+    "origin": [
+      [
+        "src/web/components/NotFound.tsx",
+        43
+      ]
+    ],
     "translation": "返回首页"
   },
   "notfound.default.description": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/NotFound.tsx", 20]],
+    "origin": [
+      [
+        "src/web/components/NotFound.tsx",
+        20
+      ]
+    ],
     "translation": "您查找的页面不存在或已被移动。"
   },
   "notfound.default.title": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/NotFound.tsx", 19]],
+    "origin": [
+      [
+        "src/web/components/NotFound.tsx",
+        19
+      ]
+    ],
     "translation": "页面未找到"
   },
   "notfound.session.description": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/routes/projects/$projectId/session.tsx", 36]],
+    "origin": [
+      [
+        "src/web/routes/projects/$projectId/session.tsx",
+        36
+      ]
+    ],
     "translation": "您查找的会话不存在。"
   },
   "notfound.session.title": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/routes/projects/$projectId/session.tsx", 35]],
+    "origin": [
+      [
+        "src/web/routes/projects/$projectId/session.tsx",
+        35
+      ]
+    ],
     "translation": "会话未找到"
   },
   "notification.beep": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/lib/notifications.tsx", 95]],
+    "origin": [
+      [
+        "src/lib/notifications.tsx",
+        95
+      ]
+    ],
     "translation": "哔哔声"
   },
   "notification.chime": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/lib/notifications.tsx", 96]],
+    "origin": [
+      [
+        "src/lib/notifications.tsx",
+        96
+      ]
+    ],
     "translation": "铃声"
   },
   "notification.description": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/NotificationSettings.tsx", 83]],
+    "origin": [
+      [
+        "src/web/components/NotificationSettings.tsx",
+        147
+      ]
+    ],
     "translation": "选择 Claude Code 任务完成时播放的提示音"
   },
   "notification.empty": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/NotificationBell.tsx", 116]],
+    "origin": [
+      [
+        "src/web/app/components/NotificationBell.tsx",
+        116
+      ]
+    ],
     "translation": "没有新通知"
   },
   "notification.none": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/lib/notifications.tsx", 94]],
+    "origin": [
+      [
+        "src/lib/notifications.tsx",
+        94
+      ]
+    ],
     "translation": "无"
   },
   "notification.permission_requested": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/NotificationBell.tsx", 138]],
+    "origin": [
+      [
+        "src/web/app/components/NotificationBell.tsx",
+        138
+      ]
+    ],
     "translation": "需要权限许可"
   },
   "notification.ping": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/lib/notifications.tsx", 97]],
+    "origin": [
+      [
+        "src/lib/notifications.tsx",
+        97
+      ]
+    ],
     "translation": "Ping 音"
   },
   "notification.pop": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/lib/notifications.tsx", 98]],
+    "origin": [
+      [
+        "src/lib/notifications.tsx",
+        98
+      ]
+    ],
     "translation": "Pop 音"
-  },
-  "notification.question_asked": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [["src/web/app/components/NotificationBell.tsx", 140]],
-    "translation": "来自Claude的提问"
-  },
-  "notification.session_completed": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [["src/web/app/components/NotificationBell.tsx", 136]],
-    "translation": "会话已完成"
-  },
-  "notification.session_paused": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [["src/web/app/components/NotificationBell.tsx", 134]],
-    "translation": "会话已暂停"
   },
   "notification.push.denied": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/NotificationSettings.tsx", 0]],
+    "origin": [
+      [
+        "src/web/components/NotificationSettings.tsx",
+        98
+      ]
+    ],
     "translation": "浏览器已拒绝通知权限"
   },
   "notification.push.enable": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/NotificationSettings.tsx", 0]],
+    "origin": [
+      [
+        "src/web/components/NotificationSettings.tsx",
+        110
+      ]
+    ],
     "translation": "启用推送通知"
   },
   "notification.push.enabled": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/NotificationSettings.tsx", 0]],
+    "origin": [
+      [
+        "src/web/components/NotificationSettings.tsx",
+        91
+      ]
+    ],
     "translation": "已启用"
   },
   "notification.push.label": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/NotificationSettings.tsx", 0]],
+    "origin": [
+      [
+        "src/web/components/NotificationSettings.tsx",
+        82
+      ]
+    ],
     "translation": "推送通知"
+  },
+  "notification.question_asked": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/app/components/NotificationBell.tsx",
+        140
+      ]
+    ],
+    "translation": "来自Claude的提问"
+  },
+  "notification.session_completed": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/app/components/NotificationBell.tsx",
+        136
+      ]
+    ],
+    "translation": "会话已完成"
+  },
+  "notification.session_paused": {
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/app/components/NotificationBell.tsx",
+        134
+      ]
+    ],
+    "translation": "会话已暂停"
   },
   "notification.test": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/NotificationSettings.tsx", 76]],
+    "origin": [
+      [
+        "src/web/components/NotificationSettings.tsx",
+        140
+      ]
+    ],
     "translation": "测试"
   },
   "notification.title": {
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/NotificationBell.tsx", 94],
-      ["src/web/app/components/NotificationBell.tsx", 106]
+      [
+        "src/web/app/components/NotificationBell.tsx",
+        94
+      ],
+      [
+        "src/web/app/components/NotificationBell.tsx",
+        106
+      ]
     ],
     "translation": "通知"
   },
   "panel.browser.empty.description": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/RightPanel.tsx", 327]],
+    "origin": [
+      [
+        "src/web/app/components/RightPanel.tsx",
+        327
+      ]
+    ],
     "translation": "在上方输入URL或点击对话中的链接"
   },
   "panel.browser.empty.title": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/RightPanel.tsx", 324]],
+    "origin": [
+      [
+        "src/web/app/components/RightPanel.tsx",
+        324
+      ]
+    ],
     "translation": "未加载页面"
   },
   "panel.files.edited_section": {
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/FilesToolsTabContent.tsx", 414],
-      ["src/web/app/components/rightPanel/FilesToolsTabContent.tsx", 544]
+      [
+        "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
+        414
+      ],
+      [
+        "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
+        544
+      ]
     ],
     "translation": "已编辑文件"
   },
@@ -1852,7 +2161,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/FilesToolsTabContent.tsx", 611]
+      [
+        "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
+        611
+      ]
     ],
     "translation": "按工具筛选"
   },
@@ -1860,7 +2172,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/FilesToolsTabContent.tsx", 686]
+      [
+        "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
+        686
+      ]
     ],
     "translation": "正在加载 Agent..."
   },
@@ -1868,8 +2183,14 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/FilesToolsTabContent.tsx", 445],
-      ["src/web/app/components/rightPanel/FilesToolsTabContent.tsx", 702]
+      [
+        "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
+        445
+      ],
+      [
+        "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
+        702
+      ]
     ],
     "translation": "还没有 Agent"
   },
@@ -1877,8 +2198,14 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/FilesToolsTabContent.tsx", 421],
-      ["src/web/app/components/rightPanel/FilesToolsTabContent.tsx", 585]
+      [
+        "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
+        421
+      ],
+      [
+        "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
+        585
+      ]
     ],
     "translation": "还没有已编辑文件"
   },
@@ -1886,7 +2213,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/FilesToolsTabContent.tsx", 667]
+      [
+        "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
+        667
+      ]
     ],
     "translation": "没有与所选筛选条件匹配的工具调用"
   },
@@ -1894,8 +2224,14 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/FilesToolsTabContent.tsx", 433],
-      ["src/web/app/components/rightPanel/FilesToolsTabContent.tsx", 669]
+      [
+        "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
+        433
+      ],
+      [
+        "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
+        669
+      ]
     ],
     "translation": "暂无工具调用"
   },
@@ -1903,63 +2239,114 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/FilesToolsTabContent.tsx", 426],
-      ["src/web/app/components/rightPanel/FilesToolsTabContent.tsx", 592]
+      [
+        "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
+        426
+      ],
+      [
+        "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
+        592
+      ]
     ],
     "translation": "工具调用"
   },
   "panel.git.empty": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/rightPanel/GitTabContent.tsx", 536]],
+    "origin": [
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        536
+      ]
+    ],
     "translation": "没有Git更改"
   },
   "panel.git.pr_links": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/rightPanel/GitTabContent.tsx", 754]],
+    "origin": [
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        754
+      ]
+    ],
     "translation": "拉取请求"
   },
   "panel.git.view_content": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/rightPanel/GitTabContent.tsx", 283]],
+    "origin": [
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        283
+      ]
+    ],
     "translation": "内容"
   },
   "panel.git.view_diff": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/rightPanel/GitTabContent.tsx", 279]],
+    "origin": [
+      [
+        "src/web/app/components/rightPanel/GitTabContent.tsx",
+        279
+      ]
+    ],
     "translation": "差异"
   },
   "panel.review.empty": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/rightPanel/ReviewTabContent.tsx", 308]],
+    "origin": [
+      [
+        "src/web/app/components/rightPanel/ReviewTabContent.tsx",
+        308
+      ]
+    ],
     "translation": "没有待审查内容"
   },
   "panel.tab.browser": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/RightPanel.tsx", 58]],
+    "origin": [
+      [
+        "src/web/app/components/RightPanel.tsx",
+        58
+      ]
+    ],
     "translation": "浏览器"
   },
   "panel.tab.explorer": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/RightPanel.tsx", 46]],
+    "origin": [
+      [
+        "src/web/app/components/RightPanel.tsx",
+        46
+      ]
+    ],
     "translation": "资源管理器"
   },
   "panel.tab.git": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/RightPanel.tsx", 51]],
+    "origin": [
+      [
+        "src/web/app/components/RightPanel.tsx",
+        51
+      ]
+    ],
     "translation": "Git"
   },
   "panel.tab.review": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/RightPanel.tsx", 56]],
+    "origin": [
+      [
+        "src/web/app/components/RightPanel.tsx",
+        56
+      ]
+    ],
     "translation": "审查"
   },
   "panel.todo.collapsed_title": {
@@ -1976,115 +2363,210 @@
   "project.new": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/components/SetupProjectDialog.tsx", 60]],
+    "origin": [
+      [
+        "src/web/app/projects/components/SetupProjectDialog.tsx",
+        60
+      ]
+    ],
     "translation": "新建项目"
   },
   "project.setup.action.setting_up": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/components/SetupProjectDialog.tsx", 93]],
+    "origin": [
+      [
+        "src/web/app/projects/components/SetupProjectDialog.tsx",
+        93
+      ]
+    ],
     "translation": "正在设置..."
   },
   "project.setup.action.setup": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/components/SetupProjectDialog.tsx", 96]],
+    "origin": [
+      [
+        "src/web/app/projects/components/SetupProjectDialog.tsx",
+        96
+      ]
+    ],
     "translation": "设置项目"
   },
   "project.setup.description": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/components/SetupProjectDialog.tsx", 69]],
+    "origin": [
+      [
+        "src/web/app/projects/components/SetupProjectDialog.tsx",
+        69
+      ]
+    ],
     "translation": "导航到要设置为 Claude Code 项目的目录。如果存在 CLAUDE.md,它将描述项目;否则使用 <0>/init</0> 初始化。"
   },
   "project.setup.title": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/components/SetupProjectDialog.tsx", 66]],
+    "origin": [
+      [
+        "src/web/app/projects/components/SetupProjectDialog.tsx",
+        66
+      ]
+    ],
     "translation": "设置新项目"
   },
   "project_list.last_modified": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/components/ProjectList.tsx", 54]],
+    "origin": [
+      [
+        "src/web/app/projects/components/ProjectList.tsx",
+        54
+      ]
+    ],
     "translation": "最后修改时间:"
   },
   "project_list.messages": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/components/ProjectList.tsx", 63]],
+    "origin": [
+      [
+        "src/web/app/projects/components/ProjectList.tsx",
+        63
+      ]
+    ],
     "translation": "消息数:"
   },
   "project_list.no_projects.description": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/components/ProjectList.tsx", 31]],
+    "origin": [
+      [
+        "src/web/app/projects/components/ProjectList.tsx",
+        31
+      ]
+    ],
     "translation": "在您的 ~/.claude/projects 目录中未找到 Claude Code 项目。与 Claude Code 开始对话以创建您的第一个项目。"
   },
   "project_list.no_projects.title": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/components/ProjectList.tsx", 28]],
+    "origin": [
+      [
+        "src/web/app/projects/components/ProjectList.tsx",
+        28
+      ]
+    ],
     "translation": "未找到项目"
   },
   "project_list.view_conversations": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/components/ProjectList.tsx", 69]],
+    "origin": [
+      [
+        "src/web/app/projects/components/ProjectList.tsx",
+        69
+      ]
+    ],
     "translation": "查看对话"
   },
   "project_switcher.no_project": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/ProjectSwitcher.tsx", 71]],
+    "origin": [
+      [
+        "src/web/app/components/ProjectSwitcher.tsx",
+        71
+      ]
+    ],
     "translation": "没有项目"
   },
   "project_switcher.no_results": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/ProjectSwitcher.tsx", 81]],
+    "origin": [
+      [
+        "src/web/app/components/ProjectSwitcher.tsx",
+        81
+      ]
+    ],
     "translation": "没有匹配的项目"
   },
   "projects.page.description": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/page.tsx", 33]],
+    "origin": [
+      [
+        "src/web/app/projects/page.tsx",
+        33
+      ]
+    ],
     "translation": "查看 Claude Code 对话历史和项目操作"
   },
   "projects.page.loading": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/page.tsx", 49]],
+    "origin": [
+      [
+        "src/web/app/projects/page.tsx",
+        49
+      ]
+    ],
     "translation": "正在加载项目..."
   },
   "projects.page.title": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/projects/page.tsx", 41]],
+    "origin": [
+      [
+        "src/web/app/projects/page.tsx",
+        41
+      ]
+    ],
     "translation": "项目"
   },
   "review.action.insert": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/rightPanel/ReviewTabContent.tsx", 345]],
+    "origin": [
+      [
+        "src/web/app/components/rightPanel/ReviewTabContent.tsx",
+        345
+      ]
+    ],
     "translation": "插入审查"
   },
   "review.action.insert.success": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/rightPanel/ReviewTabContent.tsx", 232]],
+    "origin": [
+      [
+        "src/web/app/components/rightPanel/ReviewTabContent.tsx",
+        232
+      ]
+    ],
     "translation": "审查已插入聊天输入"
   },
   "review.action.reset": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/rightPanel/ReviewTabContent.tsx", 335]],
+    "origin": [
+      [
+        "src/web/app/components/rightPanel/ReviewTabContent.tsx",
+        335
+      ]
+    ],
     "translation": "重置"
   },
   "review.action.reset.success": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/rightPanel/ReviewTabContent.tsx", 226]],
+    "origin": [
+      [
+        "src/web/app/components/rightPanel/ReviewTabContent.tsx",
+        226
+      ]
+    ],
     "translation": "已清除所有评论"
   },
   "review.comment.placeholder": {
@@ -2111,16 +2593,28 @@
   },
   "review.comments.count": {
     "placeholders": {
-      "count": ["comments.length"]
+      "count": [
+        "comments.length"
+      ]
     },
     "comments": [],
-    "origin": [["src/web/app/components/rightPanel/ReviewTabContent.tsx", 322]],
+    "origin": [
+      [
+        "src/web/app/components/rightPanel/ReviewTabContent.tsx",
+        322
+      ]
+    ],
     "translation": "{count} 条评论"
   },
   "review.comments.empty": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/app/components/rightPanel/ReviewTabContent.tsx", 321]],
+    "origin": [
+      [
+        "src/web/app/components/rightPanel/ReviewTabContent.tsx",
+        321
+      ]
+    ],
     "translation": "无评论"
   },
   "scheduler.create_job": {
@@ -2192,7 +2686,9 @@
   },
   "scheduler.error.load_failed": {
     "placeholders": {
-      "error": ["error.message"]
+      "error": [
+        "error.message"
+      ]
     },
     "comments": [],
     "origin": [
@@ -2600,7 +3096,9 @@
   },
   "session.delete_dialog.description": {
     "placeholders": {
-      "title": ["sessionTitle"]
+      "title": [
+        "sessionTitle"
+      ]
     },
     "comments": [],
     "origin": [
@@ -2630,7 +3128,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/FilesToolsTabContent.tsx", 409],
+      [
+        "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
+        409
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
         637
@@ -2719,7 +3220,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/SessionHistoryPopover.tsx", 197],
+      [
+        "src/web/app/components/SessionHistoryPopover.tsx",
+        197
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
         689
@@ -2735,7 +3239,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/SessionHistoryPopover.tsx", 195],
+      [
+        "src/web/app/components/SessionHistoryPopover.tsx",
+        195
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
         687
@@ -2751,7 +3258,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/SessionHistoryPopover.tsx", 232],
+      [
+        "src/web/app/components/SessionHistoryPopover.tsx",
+        232
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
         214
@@ -2774,7 +3284,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/SessionHistoryPopover.tsx", 123],
+      [
+        "src/web/app/components/SessionHistoryPopover.tsx",
+        123
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
         103
@@ -2797,7 +3310,12 @@
   "settings.description": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/GlobalSidebar.tsx", 73]],
+    "origin": [
+      [
+        "src/web/components/GlobalSidebar.tsx",
+        73
+      ]
+    ],
     "translation": "显示和行为设置"
   },
   "settings.disallowedTools.label": {
@@ -2837,79 +3355,144 @@
   "settings.input.enter_key_behavior": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 230]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        230
+      ]
+    ],
     "translation": "回车键行为"
   },
   "settings.input.enter_key_behavior.command_enter": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 248]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        248
+      ]
+    ],
     "translation": "使用 Command+Enter 发送"
   },
   "settings.input.enter_key_behavior.description": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 254]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        254
+      ]
+    ],
     "translation": "选择消息输入的回车键行为"
   },
   "settings.input.enter_key_behavior.enter": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 245]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        245
+      ]
+    ],
     "translation": "使用 Enter 发送"
   },
   "settings.input.enter_key_behavior.shift_enter": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 242]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        242
+      ]
+    ],
     "translation": "使用 Shift+Enter 发送(默认)"
   },
   "settings.input.find_hotkey": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 291]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        291
+      ]
+    ],
     "translation": "页内搜索快捷键"
   },
   "settings.input.find_hotkey.command_f": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 303]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        303
+      ]
+    ],
     "translation": "Command+F"
   },
   "settings.input.find_hotkey.ctrl_f": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 300]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        300
+      ]
+    ],
     "translation": "Ctrl+F"
   },
   "settings.input.find_hotkey.description": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 309]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        309
+      ]
+    ],
     "translation": "选择打开页内搜索的快捷键"
   },
   "settings.input.search_hotkey": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 262]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        262
+      ]
+    ],
     "translation": "搜索快捷键"
   },
   "settings.input.search_hotkey.command_k": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 277]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        277
+      ]
+    ],
     "translation": "Command+K"
   },
   "settings.input.search_hotkey.ctrl_k": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 274]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        274
+      ]
+    ],
     "translation": "Ctrl+K"
   },
   "settings.input.search_hotkey.description": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 283]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        283
+      ]
+    ],
     "translation": "选择打开搜索对话框的快捷键"
   },
   "settings.loading": {
@@ -2920,38 +3503,66 @@
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
         123
       ],
-      ["src/web/components/GlobalSidebar.tsx", 81]
+      [
+        "src/web/components/GlobalSidebar.tsx",
+        81
+      ]
     ],
     "translation": "正在加载设置..."
   },
   "settings.locale": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 377]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        377
+      ]
+    ],
     "translation": "语言"
   },
   "settings.locale.description": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 398]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        398
+      ]
+    ],
     "translation": "选择您偏好的语言"
   },
   "settings.locale.en": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 389]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        389
+      ]
+    ],
     "translation": "英语"
   },
   "settings.locale.ja": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 386]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        386
+      ]
+    ],
     "translation": "日语"
   },
   "settings.locale.zh_CN": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 392]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        392
+      ]
+    ],
     "translation": "简体中文"
   },
   "settings.maxBudgetUsd.label": {
@@ -2994,21 +3605,36 @@
     "message": "Configure the model options available in the session toolbar",
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 366]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        366
+      ]
+    ],
     "translation": "配置会话工具栏中可用的模型选项"
   },
   "settings.model_choices.label": {
     "message": "Model Choices",
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 317]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        317
+      ]
+    ],
     "translation": "模型选项"
   },
   "settings.model_choices.placeholder": {
     "message": "Add model choice...",
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 347]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        347
+      ]
+    ],
     "translation": "添加模型选项..."
   },
   "settings.notifications": {
@@ -3097,31 +3723,56 @@
   "settings.section.notifications": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/GlobalSidebar.tsx", 96]],
+    "origin": [
+      [
+        "src/web/components/GlobalSidebar.tsx",
+        96
+      ]
+    ],
     "translation": "通知"
   },
   "settings.section.session_display": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/GlobalSidebar.tsx", 89]],
+    "origin": [
+      [
+        "src/web/components/GlobalSidebar.tsx",
+        89
+      ]
+    ],
     "translation": "会话显示"
   },
   "settings.section.system_info": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/GlobalSidebar.tsx", 109]],
+    "origin": [
+      [
+        "src/web/components/GlobalSidebar.tsx",
+        109
+      ]
+    ],
     "translation": "系统信息"
   },
   "settings.session.auto_schedule_continue_on_rate_limit": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 217]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        217
+      ]
+    ],
     "translation": "达到速率限制时自动调度继续"
   },
   "settings.session.auto_schedule_continue_on_rate_limit.description": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 223]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        223
+      ]
+    ],
     "translation": "当 Claude 达到速率限制时,自动调度继续消息"
   },
   "settings.session.display": {
@@ -3138,25 +3789,45 @@
   "settings.session.hide_no_user_message": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 175]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        175
+      ]
+    ],
     "translation": "隐藏无用户消息的会话"
   },
   "settings.session.hide_no_user_message.description": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 181]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        181
+      ]
+    ],
     "translation": "仅显示包含用户命令或消息的会话"
   },
   "settings.session.unify_same_title": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 196]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        196
+      ]
+    ],
     "translation": "合并同名会话"
   },
   "settings.session.unify_same_title.description": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 202]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        202
+      ]
+    ],
     "translation": "当多个会话标题相同时,仅显示最新的会话"
   },
   "settings.settingSources.label": {
@@ -3174,37 +3845,67 @@
   "settings.tab.title": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/GlobalSidebar.tsx", 65]],
+    "origin": [
+      [
+        "src/web/components/GlobalSidebar.tsx",
+        65
+      ]
+    ],
     "translation": "显示和通知设置"
   },
   "settings.theme": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 406]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        406
+      ]
+    ],
     "translation": "主题"
   },
   "settings.theme.dark": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 418]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        418
+      ]
+    ],
     "translation": "深色"
   },
   "settings.theme.description": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 427]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        427
+      ]
+    ],
     "translation": "选择您偏好的颜色主题"
   },
   "settings.theme.light": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 415]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        415
+      ]
+    ],
     "translation": "浅色"
   },
   "settings.theme.system": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SettingsControls.tsx", 421]],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        421
+      ]
+    ],
     "translation": "跟随系统"
   },
   "settings.title": {
@@ -3216,7 +3917,10 @@
         "src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
         555
       ],
-      ["src/web/components/GlobalSidebar.tsx", 70]
+      [
+        "src/web/components/GlobalSidebar.tsx",
+        70
+      ]
     ],
     "translation": "设置"
   },
@@ -3233,7 +3937,9 @@
   },
   "sidebar.edited_files.count": {
     "placeholders": {
-      "count": ["editedFiles.length"]
+      "count": [
+        "editedFiles.length"
+      ]
     },
     "comments": [],
     "origin": [
@@ -3259,7 +3965,10 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/app/components/rightPanel/FilesToolsTabContent.tsx", 567],
+      [
+        "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
+        567
+      ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/EditedFilesTab.tsx",
         156
@@ -3414,105 +4123,191 @@
   "system_info.available_features": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SystemInfoCard.tsx", 126]],
+    "origin": [
+      [
+        "src/web/components/SystemInfoCard.tsx",
+        126
+      ]
+    ],
     "translation": "可用功能"
   },
   "system_info.claude_code": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SystemInfoCard.tsx", 94]],
+    "origin": [
+      [
+        "src/web/components/SystemInfoCard.tsx",
+        94
+      ]
+    ],
     "translation": "Claude Code"
   },
   "system_info.description": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SystemInfoCard.tsx", 71]],
+    "origin": [
+      [
+        "src/web/components/SystemInfoCard.tsx",
+        71
+      ]
+    ],
     "translation": "版本和功能信息"
   },
   "system_info.executable_path": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SystemInfoCard.tsx", 99]],
+    "origin": [
+      [
+        "src/web/components/SystemInfoCard.tsx",
+        99
+      ]
+    ],
     "translation": "可执行文件路径"
   },
   "system_info.feature.agent_sdk.description": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SystemInfoCard.tsx", 26]],
+    "origin": [
+      [
+        "src/web/components/SystemInfoCard.tsx",
+        26
+      ]
+    ],
     "translation": "使用 @anthropic-ai/claude-agent-sdk 而非 @anthropic-ai/claude-code"
   },
   "system_info.feature.agent_sdk.title": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SystemInfoCard.tsx", 25]],
+    "origin": [
+      [
+        "src/web/components/SystemInfoCard.tsx",
+        25
+      ]
+    ],
     "translation": "扩展 Agent 模式"
   },
   "system_info.feature.run_skills_directly.description": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SystemInfoCard.tsx", 41]],
+    "origin": [
+      [
+        "src/web/components/SystemInfoCard.tsx",
+        41
+      ]
+    ],
     "translation": "启用直接执行技能功能"
   },
   "system_info.feature.run_skills_directly.title": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SystemInfoCard.tsx", 40]],
+    "origin": [
+      [
+        "src/web/components/SystemInfoCard.tsx",
+        40
+      ]
+    ],
     "translation": "直接执行技能"
   },
   "system_info.feature.sidechain_separation.description": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SystemInfoCard.tsx", 31]],
+    "origin": [
+      [
+        "src/web/components/SystemInfoCard.tsx",
+        31
+      ]
+    ],
     "translation": "侧链对话将单独存储在 agent-*.jsonl 文件中"
   },
   "system_info.feature.sidechain_separation.title": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SystemInfoCard.tsx", 30]],
+    "origin": [
+      [
+        "src/web/components/SystemInfoCard.tsx",
+        30
+      ]
+    ],
     "translation": "侧链分离"
   },
   "system_info.feature.tool_approval.description": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SystemInfoCard.tsx", 21]],
+    "origin": [
+      [
+        "src/web/components/SystemInfoCard.tsx",
+        21
+      ]
+    ],
     "translation": "在 Claude 执行工具前批准或拒绝,让您完全掌控操作"
   },
   "system_info.feature.tool_approval.title": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SystemInfoCard.tsx", 20]],
+    "origin": [
+      [
+        "src/web/components/SystemInfoCard.tsx",
+        20
+      ]
+    ],
     "translation": "工具审批"
   },
   "system_info.feature.unknown.description": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SystemInfoCard.tsx", 46]],
+    "origin": [
+      [
+        "src/web/components/SystemInfoCard.tsx",
+        46
+      ]
+    ],
     "translation": "功能信息不可用"
   },
   "system_info.feature.uuid_on_sdk_message.description": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SystemInfoCard.tsx", 36]],
+    "origin": [
+      [
+        "src/web/components/SystemInfoCard.tsx",
+        36
+      ]
+    ],
     "translation": "SDK 消息包含 UUID 用于跟踪"
   },
   "system_info.feature.uuid_on_sdk_message.title": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SystemInfoCard.tsx", 35]],
+    "origin": [
+      [
+        "src/web/components/SystemInfoCard.tsx",
+        35
+      ]
+    ],
     "translation": "SDK 消息 UUID"
   },
   "system_info.title": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SystemInfoCard.tsx", 68]],
+    "origin": [
+      [
+        "src/web/components/SystemInfoCard.tsx",
+        68
+      ]
+    ],
     "translation": "系统信息"
   },
   "system_info.unknown": {
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/components/SystemInfoCard.tsx", 104],
-      ["src/web/components/SystemInfoCard.tsx", 115]
+      [
+        "src/web/components/SystemInfoCard.tsx",
+        104
+      ],
+      [
+        "src/web/components/SystemInfoCard.tsx",
+        115
+      ]
     ],
     "translation": "未知"
   },
@@ -3520,15 +4315,26 @@
     "placeholders": {},
     "comments": [],
     "origin": [
-      ["src/web/components/SystemInfoCard.tsx", 83],
-      ["src/web/components/SystemInfoCard.tsx", 112]
+      [
+        "src/web/components/SystemInfoCard.tsx",
+        83
+      ],
+      [
+        "src/web/components/SystemInfoCard.tsx",
+        112
+      ]
     ],
     "translation": "版本"
   },
   "system_info.viewer_version": {
     "placeholders": {},
     "comments": [],
-    "origin": [["src/web/components/SystemInfoCard.tsx", 79]],
+    "origin": [
+      [
+        "src/web/components/SystemInfoCard.tsx",
+        79
+      ]
+    ],
     "translation": "Claude Code Viewer"
   },
   "user.content.document.pdf": {

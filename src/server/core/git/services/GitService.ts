@@ -518,23 +518,17 @@ const LayerImpl = Effect.gen(function* () {
         );
       }
 
-      console.log("[GitService.commit] Committing with message:", trimmedMessage, "in", cwd);
       const result = yield* execGitCommand(["commit", "-m", trimmedMessage], cwd);
-      console.log("[GitService.commit] Commit result:", result);
 
       // Parse commit SHA from output
       // Git commit output format: "[branch SHA] commit message"
       const shaMatch = result.match(/\[.+\s+([a-f0-9]+)\]/);
-      console.log("[GitService.commit] SHA match:", shaMatch);
       if (shaMatch?.[1] !== undefined && shaMatch[1] !== "") {
-        console.log("[GitService.commit] Returning SHA from match:", shaMatch[1]);
         return shaMatch[1];
       }
 
       // Fallback: Get SHA from git log
-      console.log("[GitService.commit] No SHA match, falling back to rev-parse HEAD");
       const sha = yield* execGitCommand(["rev-parse", "HEAD"], cwd);
-      console.log("[GitService.commit] Returning SHA from rev-parse:", sha.trim());
       return sha.trim();
     });
 
@@ -557,7 +551,6 @@ const LayerImpl = Effect.gen(function* () {
       );
 
       if (Either.isLeft(exitCodeResult)) {
-        console.log("[GitService.push] Command failed or timeout");
         return yield* Effect.fail(
           new GitCommandError({
             cwd: absoluteCwd,
@@ -567,7 +560,6 @@ const LayerImpl = Effect.gen(function* () {
       }
 
       const exitCode = exitCodeResult.right;
-      console.log("[GitService.push] Exit code:", exitCode);
 
       if (exitCode !== 0) {
         // Get stderr for error details
@@ -582,7 +574,6 @@ const LayerImpl = Effect.gen(function* () {
         ).pipe(Effect.orElse(() => Effect.succeed([])));
 
         const stderr = Array.from(stderrLines).join("\n");
-        console.log("[GitService.push] Failed with stderr:", stderr);
 
         return yield* Effect.fail(
           new GitCommandError({
@@ -592,7 +583,6 @@ const LayerImpl = Effect.gen(function* () {
         );
       }
 
-      console.log("[GitService.push] Push succeeded");
       return { branch, output: "success" };
     });
 

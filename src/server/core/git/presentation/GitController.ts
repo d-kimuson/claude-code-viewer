@@ -2,7 +2,7 @@ import { Context, Effect, Either, Layer } from "effect";
 import type { ControllerResponse } from "../../../lib/effect/toEffectResponse.ts";
 import type { InferEffect } from "../../../lib/effect/types.ts";
 import { ProjectRepository } from "../../project/infrastructure/ProjectRepository.ts";
-import type { CommitErrorCode, PushErrorCode } from "../schema.ts";
+import type { PushErrorCode } from "../schema.ts";
 import { GitService } from "../services/GitService.ts";
 
 const LayerImpl = Effect.gen(function* () {
@@ -51,7 +51,6 @@ const LayerImpl = Effect.gen(function* () {
 
       const { project } = yield* projectRepository.getProject(projectId);
       if (project.meta.projectPath === null) {
-        console.log("[GitController.commitFiles] Project path is null");
         return {
           response: { error: "Project path not found" },
           status: 400,
@@ -59,30 +58,21 @@ const LayerImpl = Effect.gen(function* () {
       }
 
       const projectPath = project.meta.projectPath;
-      console.log("[GitController.commitFiles] Project path:", projectPath);
-
-      // Stage files
-      console.log("[GitController.commitFiles] Staging files...");
       const stageResult = yield* Effect.either(gitService.stageFiles(projectPath, files));
       if (Either.isLeft(stageResult)) {
-        console.log("[GitController.commitFiles] Stage failed:", stageResult.left);
         return {
           response: {
             success: false,
             error: "Failed to stage files",
-            errorCode: "GIT_COMMAND_ERROR" as CommitErrorCode,
+            errorCode: "GIT_COMMAND_ERROR",
             details: stageResult.left.message,
           },
           status: 200,
         } as const satisfies ControllerResponse;
       }
-      console.log("[GitController.commitFiles] Stage succeeded");
 
-      // Commit
-      console.log("[GitController.commitFiles] Committing...");
       const commitResult = yield* Effect.either(gitService.commit(projectPath, message));
       if (Either.isLeft(commitResult)) {
-        console.log("[GitController.commitFiles] Commit failed:", commitResult.left);
         const error = commitResult.left;
         const errorMessage =
           "_tag" in error && error._tag === "GitCommandError"
@@ -95,14 +85,12 @@ const LayerImpl = Effect.gen(function* () {
           response: {
             success: false,
             error: isHookFailure ? "Pre-commit hook failed" : "Commit failed",
-            errorCode: (isHookFailure ? "HOOK_FAILED" : "GIT_COMMAND_ERROR") as CommitErrorCode,
+            errorCode: isHookFailure ? "HOOK_FAILED" : "GIT_COMMAND_ERROR",
             details: errorMessage,
           },
           status: 200,
         } as const satisfies ControllerResponse;
       }
-
-      console.log("[GitController.commitFiles] Commit succeeded, SHA:", commitResult.right);
 
       return {
         response: {
@@ -119,11 +107,8 @@ const LayerImpl = Effect.gen(function* () {
     Effect.gen(function* () {
       const { projectId } = options;
 
-      console.log("[GitController.pushCommits] Request:", { projectId });
-
       const { project } = yield* projectRepository.getProject(projectId);
       if (project.meta.projectPath === null) {
-        console.log("[GitController.pushCommits] Project path is null");
         return {
           response: { error: "Project path not found" },
           status: 400,
@@ -131,14 +116,9 @@ const LayerImpl = Effect.gen(function* () {
       }
 
       const projectPath = project.meta.projectPath;
-      console.log("[GitController.pushCommits] Project path:", projectPath);
-
-      // Push
-      console.log("[GitController.pushCommits] Pushing...");
       const pushResult = yield* Effect.either(gitService.push(projectPath));
 
       if (Either.isLeft(pushResult)) {
-        console.log("[GitController.pushCommits] Push failed:", pushResult.left);
         const error = pushResult.left;
         const errorMessage =
           "_tag" in error && error._tag === "GitCommandError"
@@ -159,8 +139,6 @@ const LayerImpl = Effect.gen(function* () {
         } as const satisfies ControllerResponse;
       }
 
-      console.log("[GitController.pushCommits] Push succeeded");
-
       return {
         response: {
           success: true,
@@ -175,28 +153,19 @@ const LayerImpl = Effect.gen(function* () {
     Effect.gen(function* () {
       const { projectId, files, message } = options;
 
-      console.log("[GitController.commitAndPush] Request:", {
-        projectId,
-        files,
-        message,
-      });
-
       // First, commit
       const commitResult = yield* commitFiles({ projectId, files, message });
 
       if (commitResult.status !== 200 || !commitResult.response.success) {
-        console.log("[GitController.commitAndPush] Commit failed:", commitResult);
         return commitResult; // Return commit error
       }
 
       const commitSha = commitResult.response.commitSha;
-      console.log("[GitController.commitAndPush] Commit succeeded, SHA:", commitSha);
 
       // Then, push
       const pushResult = yield* pushCommits({ projectId });
 
       if (pushResult.status !== 200 || !pushResult.response.success) {
-        console.log("[GitController.commitAndPush] Push failed, partial failure:", pushResult);
         // Partial failure: commit succeeded, push failed
         return {
           response: {
@@ -210,8 +179,6 @@ const LayerImpl = Effect.gen(function* () {
           status: 200,
         } as const satisfies ControllerResponse;
       }
-
-      console.log("[GitController.commitAndPush] Both operations succeeded");
 
       // Full success
       return {

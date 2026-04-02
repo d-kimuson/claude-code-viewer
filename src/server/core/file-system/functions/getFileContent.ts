@@ -1,5 +1,4 @@
 import { FileSystem, Path } from "@effect/platform";
-import { NodeContext } from "@effect/platform-node";
 import type { PlatformError } from "@effect/platform/Error";
 import { Effect } from "effect";
 
@@ -262,23 +261,6 @@ export const validateFilePath = (
 
   return { valid: true, resolvedPath };
 };
-
-/**
- * Reads file content from a project directory with security validations
- *
- * @param projectRoot - The root directory of the project
- * @param filePath - Relative path to the file within the project
- * @param options - Optional configuration (maxFileSize)
- * @returns FileContentResult with either success data or error information
- */
-export const getFileContent = async (
-  projectRoot: string,
-  filePath: string,
-  options: GetFileContentOptions = {},
-): Promise<FileContentResult> =>
-  Effect.runPromise(
-    getFileContentEffect(projectRoot, filePath, options).pipe(Effect.provide(NodeContext.layer)),
-  );
 
 export const getFileContentEffect = (
   projectRoot: string,

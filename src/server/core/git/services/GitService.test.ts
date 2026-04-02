@@ -82,6 +82,44 @@ describe("GitService.findBaseBranch", () => {
   );
 });
 
+describe("GitService.getDiff", () => {
+  it.live("returns empty result for same refs without filesystem access", () =>
+    Effect.gen(function* () {
+      const gitService = yield* GitService;
+
+      const result = yield* Effect.either(
+        gitService
+          .getDiff("/tmp/nonexistent", "base:main", "compare:main")
+          .pipe(Effect.provide(NodeContext.layer)),
+      );
+
+      expect(Either.isRight(result)).toBe(true);
+      if (Either.isRight(result)) {
+        expect(result.right.files).toHaveLength(0);
+        expect(result.right.diffs).toHaveLength(0);
+        expect(result.right.summary.totalFiles).toBe(0);
+      }
+    }).pipe(Effect.provide(testLayer)),
+  );
+
+  it.live("fails on invalid diff ref format", () =>
+    Effect.gen(function* () {
+      const gitService = yield* GitService;
+
+      const result = yield* Effect.either(
+        gitService
+          .getDiff("/tmp/nonexistent", "invalid-ref-format", "compare:feature")
+          .pipe(Effect.provide(NodeContext.layer)),
+      );
+
+      expect(Either.isLeft(result)).toBe(true);
+      if (Either.isLeft(result)) {
+        expect(result.left).toHaveProperty("_tag", "GitInvalidDiffRefError");
+      }
+    }).pipe(Effect.provide(testLayer)),
+  );
+});
+
 describe("GitService.getCommitsBetweenBranches", () => {
   it.live("should fail with missing repo", () =>
     Effect.gen(function* () {

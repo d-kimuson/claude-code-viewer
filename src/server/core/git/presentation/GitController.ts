@@ -2,7 +2,6 @@ import { Context, Effect, Either, Layer } from "effect";
 import type { ControllerResponse } from "../../../lib/effect/toEffectResponse.ts";
 import type { InferEffect } from "../../../lib/effect/types.ts";
 import { ProjectRepository } from "../../project/infrastructure/ProjectRepository.ts";
-import { getDiff } from "../functions/getDiff.ts";
 import type { CommitErrorCode, PushErrorCode } from "../schema.ts";
 import { GitService } from "../services/GitService.ts";
 
@@ -25,23 +24,23 @@ const LayerImpl = Effect.gen(function* () {
 
       const projectPath = project.meta.projectPath;
 
-      const diffResult = yield* Effect.either(
-        Effect.tryPromise({
-          try: () => getDiff(projectPath, fromRef, toRef),
-          catch: (error) => (error instanceof Error ? error : new Error("Failed to get diff")),
-        }),
-      );
+      const diffResult = yield* Effect.either(gitService.getDiff(projectPath, fromRef, toRef));
 
       if (Either.isLeft(diffResult)) {
-        console.error("Get diff error:", diffResult.left);
         return {
-          response: { error: diffResult.left.message },
-          status: 400,
+          response: {
+            success: false,
+            error: parseDiffError(diffResult.left),
+          },
+          status: 200,
         } as const satisfies ControllerResponse;
       }
 
       return {
-        response: diffResult.right,
+        response: {
+          success: true,
+          data: diffResult.right,
+        },
         status: 200,
       } as const satisfies ControllerResponse;
     });
@@ -435,6 +434,55 @@ const getPushErrorMessage = (code: PushErrorCode): string => {
     NOT_A_REPOSITORY: "Not a git repository.",
   };
   return messages[code];
+};
+
+const parseDiffError = (error: unknown) => {
+  if (typeof error === "object" && error !== null && "_tag" in error) {
+    const tag = String(error._tag);
+
+    if (tag === "NotARepositoryError") {
+      const message =
+        "cwd" in error && typeof error.cwd === "string"
+          ? `Not a git repository: ${error.cwd}`
+          : "Not a git repository";
+      return {
+        code: "NOT_A_REPOSITORY" as const,
+        message,
+      };
+    }
+
+    if (tag === "GitInvalidRefError" || tag === "GitInvalidDiffRefError") {
+      return {
+        code: "BRANCH_NOT_FOUND" as const,
+        message: "Branch or commit not found",
+      };
+    }
+
+    if (tag === "GitDiffParseError") {
+      const message =
+        "reason" in error && typeof error.reason === "string"
+          ? `Failed to parse diff: ${error.reason}`
+          : "Failed to parse diff";
+      return {
+        code: "PARSE_ERROR" as const,
+        message,
+      };
+    }
+
+    if (tag === "GitCommandError") {
+      return {
+        code: "COMMAND_FAILED" as const,
+        message: "Git command failed",
+        command:
+          "command" in error && typeof error.command === "string" ? error.command : undefined,
+      };
+    }
+  }
+
+  return {
+    code: "COMMAND_FAILED" as const,
+    message: "Git command failed",
+  };
 };
 
 export type IGitController = InferEffect<typeof LayerImpl>;

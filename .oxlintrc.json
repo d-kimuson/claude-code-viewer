@@ -231,6 +231,16 @@
           // 本当は設定したいが参照箇所がすでに多いのと副作用も少ないので許容
           // { "name": "node:path", "message": "Use @effect/platform Path instead." },
           { "name": "node:sqlite", "message": "Use DrizzleService service instead." }
+        ],
+        "patterns": [
+          {
+            "group": ["**/src/server/core/git/functions/getDiff.ts"],
+            "message": "Use GitService.getDiff (Effect-based implementation) instead."
+          },
+          {
+            "group": ["**/src/server/core/git/functions/utils.ts"],
+            "message": "Legacy Git command helpers are removed. Use GitService APIs instead."
+          }
         ]
       }
     ],

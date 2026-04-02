@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.6.1-beta.2
+
+### &nbsp;&nbsp;&nbsp;Bug Fixes
+
+- Long URLs in user messages overflowing content width &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(8b65a)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/8b65a57)
+- PWA の静的ファイルが正しく配信されない問題を修正 &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(8c83f)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/8c83f11)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.6.1-beta.1...0.6.1-beta.2)
+
 ## 0.6.1-beta.1
 
 ### &nbsp;&nbsp;&nbsp;Features

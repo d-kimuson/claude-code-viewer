@@ -1799,7 +1799,7 @@
     "origin": [
       [
         "src/web/app/components/BottomPanel.tsx",
-        88
+        120
       ]
     ],
     "translation": "终端"
@@ -1968,7 +1968,7 @@
     "origin": [
       [
         "src/web/app/components/NotificationBell.tsx",
-        115
+        116
       ]
     ],
     "translation": "没有新通知"
@@ -1990,7 +1990,7 @@
     "origin": [
       [
         "src/web/app/components/NotificationBell.tsx",
-        136
+        138
       ]
     ],
     "translation": "需要权限许可"
@@ -2023,7 +2023,7 @@
     "origin": [
       [
         "src/web/app/components/NotificationBell.tsx",
-        138
+        140
       ]
     ],
     "translation": "来自Claude的提问"
@@ -2034,7 +2034,7 @@
     "origin": [
       [
         "src/web/app/components/NotificationBell.tsx",
-        134
+        136
       ]
     ],
     "translation": "会话已完成"
@@ -2045,7 +2045,7 @@
     "origin": [
       [
         "src/web/app/components/NotificationBell.tsx",
-        132
+        134
       ]
     ],
     "translation": "会话已暂停"
@@ -2067,11 +2067,11 @@
     "origin": [
       [
         "src/web/app/components/NotificationBell.tsx",
-        93
+        94
       ],
       [
         "src/web/app/components/NotificationBell.tsx",
-        105
+        106
       ]
     ],
     "translation": "通知"

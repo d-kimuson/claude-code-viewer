@@ -7,7 +7,17 @@ const TodoSchema = z.object({
   id: z.string(),
 });
 
-export const TodoToolResultSchema = z.object({
-  oldTodos: z.array(TodoSchema).optional(),
-  newTodos: z.array(TodoSchema).optional(),
-});
+export const TodoToolResultSchema = z.union([
+  z
+    .object({
+      oldTodos: z.array(TodoSchema),
+      newTodos: z.array(TodoSchema).optional(),
+    })
+    .strict(),
+  z
+    .object({
+      oldTodos: z.array(TodoSchema).optional(),
+      newTodos: z.array(TodoSchema),
+    })
+    .strict(),
+]);

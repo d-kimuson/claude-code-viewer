@@ -1799,7 +1799,7 @@
     "origin": [
       [
         "src/web/app/components/BottomPanel.tsx",
-        88
+        120
       ]
     ],
     "translation": "ターミナル"
@@ -1968,7 +1968,7 @@
     "origin": [
       [
         "src/web/app/components/NotificationBell.tsx",
-        115
+        116
       ]
     ],
     "translation": "新しい通知はありません"
@@ -1990,7 +1990,7 @@
     "origin": [
       [
         "src/web/app/components/NotificationBell.tsx",
-        136
+        138
       ]
     ],
     "translation": "権限の許可が必要です"
@@ -2023,7 +2023,7 @@
     "origin": [
       [
         "src/web/app/components/NotificationBell.tsx",
-        138
+        140
       ]
     ],
     "translation": "Claudeからの質問"
@@ -2034,7 +2034,7 @@
     "origin": [
       [
         "src/web/app/components/NotificationBell.tsx",
-        134
+        136
       ]
     ],
     "translation": "セッションが完了しました"
@@ -2045,7 +2045,7 @@
     "origin": [
       [
         "src/web/app/components/NotificationBell.tsx",
-        132
+        134
       ]
     ],
     "translation": "セッションが一時停止しました"
@@ -2067,11 +2067,11 @@
     "origin": [
       [
         "src/web/app/components/NotificationBell.tsx",
-        93
+        94
       ],
       [
         "src/web/app/components/NotificationBell.tsx",
-        105
+        106
       ]
     ],
     "translation": "通知"

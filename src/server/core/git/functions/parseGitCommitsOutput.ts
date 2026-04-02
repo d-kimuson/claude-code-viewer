@@ -13,7 +13,11 @@ export const parseGitCommitsOutput = (output: string) => {
     const parts = line.split("|");
     if (parts.length < 4) continue;
 
-    const [sha, message, author, date] = parts;
+    const sha = parts[0];
+    const date = parts.at(-1);
+    const author = parts.at(-2);
+    const messageParts = parts.slice(1, -2);
+    const message = messageParts.join("|");
     if (sha === undefined || message === undefined || author === undefined || date === undefined)
       continue;
     if (sha.trim() === "" || message.trim() === "" || author.trim() === "" || date.trim() === "") {

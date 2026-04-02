@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.6.1-beta.3
+
+### &nbsp;&nbsp;&nbsp;Features
+
+- Push 通知を有効化するボタンを設定画面に追加 &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(0311d)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/0311d63)
+
+### &nbsp;&nbsp;&nbsp;Bug Fixes
+
+- IOS PWA の overscroll バウンスを無効化 &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(8f13f)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/8f13f62)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.6.1-beta.2...0.6.1-beta.3)
+
 ## 0.6.1-beta.2
 
 ### &nbsp;&nbsp;&nbsp;Bug Fixes

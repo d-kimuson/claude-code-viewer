@@ -38,43 +38,39 @@ const isFlagEnabled = (value: string | undefined) => {
   return value === "1" || value.toLowerCase() === "true";
 };
 
+const toCcvOptions = (cliOptions?: CliOptions): CcvOptions => {
+  return {
+    port: Number.parseInt(cliOptions?.port ?? getOptionalEnv("PORT") ?? "3000", 10),
+    hostname: cliOptions?.hostname ?? getOptionalEnv("HOSTNAME") ?? "localhost",
+    verbose:
+      cliOptions?.verbose ?? (isFlagEnabled(getOptionalEnv("CCV_VERBOSE")) ? true : undefined),
+    password: cliOptions?.password ?? getOptionalEnv("CCV_PASSWORD") ?? undefined,
+    executable: cliOptions?.executable ?? getOptionalEnv("CCV_CC_EXECUTABLE_PATH") ?? undefined,
+    claudeDir: cliOptions?.claudeDir ?? getOptionalEnv("CCV_GLOBAL_CLAUDE_DIR"),
+    terminalDisabled:
+      cliOptions?.terminalDisabled ??
+      (isFlagEnabled(getOptionalEnv("CCV_TERMINAL_DISABLED")) ? true : undefined),
+    terminalShell: cliOptions?.terminalShell ?? getOptionalEnv("CCV_TERMINAL_SHELL") ?? undefined,
+    terminalUnrestricted:
+      cliOptions?.terminalUnrestricted ??
+      (isFlagEnabled(getOptionalEnv("CCV_TERMINAL_UNRESTRICTED")) ? true : undefined),
+    apiOnly:
+      cliOptions?.apiOnly ?? (isFlagEnabled(getOptionalEnv("CCV_API_ONLY")) ? true : undefined),
+  };
+};
+
 const LayerImpl = Effect.gen(function* () {
-  const ccvOptionsRef = yield* Ref.make<CcvOptions | undefined>(undefined);
+  const ccvOptionsRef = yield* Ref.make<CcvOptions>(toCcvOptions());
 
   const loadCliOptions = (cliOptions: CliOptions) => {
     return Effect.gen(function* () {
-      yield* Ref.update(ccvOptionsRef, () => {
-        return {
-          port: Number.parseInt(cliOptions.port ?? getOptionalEnv("PORT") ?? "3000", 10),
-          hostname: cliOptions.hostname ?? getOptionalEnv("HOSTNAME") ?? "localhost",
-          verbose:
-            cliOptions.verbose ?? (isFlagEnabled(getOptionalEnv("CCV_VERBOSE")) ? true : undefined),
-          password: cliOptions.password ?? getOptionalEnv("CCV_PASSWORD") ?? undefined,
-          executable:
-            cliOptions.executable ?? getOptionalEnv("CCV_CC_EXECUTABLE_PATH") ?? undefined,
-          claudeDir: cliOptions.claudeDir ?? getOptionalEnv("CCV_GLOBAL_CLAUDE_DIR"),
-          terminalDisabled:
-            cliOptions.terminalDisabled ??
-            (isFlagEnabled(getOptionalEnv("CCV_TERMINAL_DISABLED")) ? true : undefined),
-          terminalShell:
-            cliOptions.terminalShell ?? getOptionalEnv("CCV_TERMINAL_SHELL") ?? undefined,
-          terminalUnrestricted:
-            cliOptions.terminalUnrestricted ??
-            (isFlagEnabled(getOptionalEnv("CCV_TERMINAL_UNRESTRICTED")) ? true : undefined),
-          apiOnly:
-            cliOptions.apiOnly ??
-            (isFlagEnabled(getOptionalEnv("CCV_API_ONLY")) ? true : undefined),
-        };
-      });
+      yield* Ref.update(ccvOptionsRef, () => toCcvOptions(cliOptions));
     });
   };
 
   const getCcvOptions = <K extends keyof CcvOptions>(key: K) => {
     return Effect.gen(function* () {
       const ccvOptions = yield* Ref.get(ccvOptionsRef);
-      if (ccvOptions === undefined) {
-        throw new Error("Unexpected error: CCV options are not loaded");
-      }
       return ccvOptions[key];
     });
   };

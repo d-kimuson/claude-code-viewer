@@ -135,7 +135,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        445
+        444
       ]
     ],
     "translation": "補完機能付きメッセージ入力"
@@ -540,7 +540,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        538
+        536
       ]
     ],
     "translation": "添付"
@@ -562,7 +562,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        411
+        410
       ]
     ],
     "translation": "メッセージの送信に失敗しました。もう一度お試しください。"
@@ -758,7 +758,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        259
+        258
       ]
     ],
     "translation": "メッセージの予約に失敗しました"
@@ -770,7 +770,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        243
+        242
       ]
     ],
     "translation": "メッセージを予約しました"
@@ -782,7 +782,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        248
+        247
       ]
     ],
     "translation": "スケジューラタブで確認・管理できます"
@@ -804,7 +804,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        491
+        489
       ]
     ],
     "translation": "今すぐ送信"
@@ -815,7 +815,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        476
+        474
       ]
     ],
     "translation": "送信モード"
@@ -826,11 +826,11 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        494
+        492
       ],
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        641
+        631
       ]
     ],
     "translation": "予約送信"
@@ -841,7 +841,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        501
+        499
       ]
     ],
     "translation": "送信予定時刻"
@@ -853,7 +853,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        603
+        601
       ]
     ],
     "translation": "Reasoning effort を選択"
@@ -865,7 +865,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        571
+        569
       ]
     ],
     "translation": "モデルを選択"
@@ -949,7 +949,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        681
+        671
       ]
     ],
     "translation": "音声入力"

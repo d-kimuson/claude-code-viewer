@@ -39,11 +39,19 @@ export const NotificationBell: FC<NotificationBellProps> = ({ sessionId }) => {
     },
   });
 
-  // Auto-consume notifications when the target session is opened
+  // Auto-consume notifications only when navigating to a session (sessionId change).
+  // Notifications that arrive while already on the session are NOT auto-consumed;
+  // the user must click the notification or re-navigate to dismiss them.
   const consumedSessionRef = useRef<string | null>(null);
   useEffect(() => {
-    if (sessionId === undefined || sessionId === "") return;
-    if (consumedSessionRef.current === sessionId) return;
+    if (sessionId === undefined || sessionId === "") {
+      consumedSessionRef.current = null;
+      return;
+    }
+    if (data === undefined) return; // Wait for notifications to load (handles hard navigation)
+    if (consumedSessionRef.current === sessionId) return; // Already handled this navigation
+
+    consumedSessionRef.current = sessionId; // Mark navigation as processed
 
     const hasNotification = notifications.some(
       (n) =>
@@ -51,10 +59,9 @@ export const NotificationBell: FC<NotificationBellProps> = ({ sessionId }) => {
         (n.type === "session_paused" || n.type === "session_completed"),
     );
     if (hasNotification) {
-      consumedSessionRef.current = sessionId;
       consumeMutation.mutate(sessionId);
     }
-  }, [sessionId, notifications, consumeMutation]);
+  }, [sessionId, data, notifications, consumeMutation]);
 
   const count = notifications.length;
 
@@ -118,6 +125,7 @@ export const NotificationBell: FC<NotificationBellProps> = ({ sessionId }) => {
                     params={{ projectId: notification.projectId }}
                     search={{ sessionId: notification.sessionId }}
                     className="flex items-start gap-2.5 rounded-md p-2 text-sm transition-colors hover:bg-muted/50"
+                    onClick={() => consumeMutation.mutate(notification.sessionId)}
                   >
                     <div className="mt-0.5 h-2 w-2 rounded-full bg-primary flex-shrink-0" />
                     <div className="min-w-0 flex-1">

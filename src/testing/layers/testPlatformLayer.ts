@@ -1,6 +1,3 @@
-/* oxlint-disable no-restricted-imports */
-/* Exception: test helper uses Node path to build fixture directories. */
-import { resolve } from "node:path";
 import { Path } from "@effect/platform";
 import { Effect, Layer } from "effect";
 import { DEFAULT_LOCALE } from "../../lib/i18n/localeDetection";
@@ -18,7 +15,7 @@ import { EnvService } from "../../server/core/platform/services/EnvService";
 import { UserConfigService } from "../../server/core/platform/services/UserConfigService";
 import type { UserConfig } from "../../server/lib/config/config";
 
-const claudeDirForTest = resolve(process.cwd(), "mock-global-claude-dir");
+const claudeDirForTest = `${process.cwd()}/mock-global-claude-dir`;
 
 export const testPlatformLayer = (overrides?: {
   claudeCodePaths?: Partial<ClaudeCodePaths>;
@@ -28,10 +25,10 @@ export const testPlatformLayer = (overrides?: {
 }) => {
   const applicationContextLayer = Layer.mock(ApplicationContext, {
     claudeCodePaths: Effect.succeed({
-      globalClaudeDirectoryPath: resolve(claudeDirForTest),
-      claudeCommandsDirPath: resolve(claudeDirForTest, "commands"),
-      claudeSkillsDirPath: resolve(claudeDirForTest, "skills"),
-      claudeProjectsDirPath: resolve(claudeDirForTest, "projects"),
+      globalClaudeDirectoryPath: claudeDirForTest,
+      claudeCommandsDirPath: `${claudeDirForTest}/commands`,
+      claudeSkillsDirPath: `${claudeDirForTest}/skills`,
+      claudeProjectsDirPath: `${claudeDirForTest}/projects`,
       ...overrides?.claudeCodePaths,
     }),
   });
@@ -53,6 +50,8 @@ export const testPlatformLayer = (overrides?: {
             return overrides?.env?.CCV_ENV ?? "development";
           case "NEXT_PHASE":
             return overrides?.env?.NEXT_PHASE ?? "phase-test";
+          case "HOME":
+            return overrides?.env?.HOME ?? process.cwd();
           case "PATH":
             return overrides?.env?.PATH ?? undefined;
           case "SHELL":

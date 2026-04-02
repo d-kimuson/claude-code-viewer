@@ -1,6 +1,11 @@
-/* oxlint-disable no-restricted-imports */
-/* Exception: cache path constant still uses synchronous Node path composition. */
-import { homedir } from "node:os";
-import { resolve } from "node:path";
+import { Path } from "@effect/platform";
+import { Effect } from "effect";
+import { ApplicationContext } from "../../core/platform/services/ApplicationContext.ts";
 
-export const claudeCodeViewerCacheDirPath = resolve(homedir(), ".claude-code-viewer", "cache");
+export const getClaudeCodeViewerCacheDirPath = Effect.gen(function* () {
+  const path = yield* Path.Path;
+  const context = yield* ApplicationContext;
+  const claudeCodePaths = yield* context.claudeCodePaths;
+  const homeDirectory = path.dirname(claudeCodePaths.globalClaudeDirectoryPath);
+  return path.resolve(homeDirectory, ".claude-code-viewer", "cache");
+});

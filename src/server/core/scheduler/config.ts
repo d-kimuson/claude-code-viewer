@@ -1,8 +1,6 @@
-/* oxlint-disable no-restricted-imports */
-/* Exception: this module still relies on Node homedir for default local config path. */
-import { homedir } from "node:os";
 import { FileSystem, Path } from "@effect/platform";
 import { Context, Data, Effect, Layer } from "effect";
+import { EnvService } from "../platform/services/EnvService.ts";
 import { type SchedulerConfig, schedulerConfigSchema } from "./schema.ts";
 
 class ConfigFileNotFoundError extends Data.TaggedError("ConfigFileNotFoundError")<{
@@ -22,7 +20,15 @@ export class SchedulerConfigBaseDir extends Context.Tag("SchedulerConfigBaseDir"
   SchedulerConfigBaseDir,
   string
 >() {
-  static Live = Layer.succeed(this, `${homedir()}/.claude-code-viewer`);
+  static Live = Layer.effect(
+    this,
+    Effect.gen(function* () {
+      const envService = yield* EnvService;
+      const path = yield* Path.Path;
+      const homeDirectory = yield* envService.getEnv("HOME");
+      return path.resolve(homeDirectory ?? "/", ".claude-code-viewer");
+    }),
+  );
 }
 
 export const getConfigPath = Effect.gen(function* () {

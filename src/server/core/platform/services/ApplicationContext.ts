@@ -1,10 +1,8 @@
-/* oxlint-disable no-restricted-imports */
-/* Exception: this service still relies on Node homedir until a dedicated Effect home-directory service is introduced. */
-import { homedir } from "node:os";
 import { Path } from "@effect/platform";
 import { Effect, Context as EffectContext, Layer } from "effect";
 import type { InferEffect } from "../../../lib/effect/types.ts";
 import { CcvOptionsService } from "./CcvOptionsService.ts";
+import { EnvService } from "./EnvService.ts";
 
 export type ClaudeCodePaths = {
   globalClaudeDirectoryPath: string;
@@ -16,15 +14,15 @@ export type ClaudeCodePaths = {
 const LayerImpl = Effect.gen(function* () {
   const path = yield* Path.Path;
   const ccvOptionsService = yield* CcvOptionsService;
+  const envService = yield* EnvService;
 
   const claudeCodePaths = Effect.gen(function* () {
-    const globalClaudeDirectoryPath = yield* ccvOptionsService
-      .getCcvOptions("claudeDir")
-      .pipe(
-        Effect.map((envVar) =>
-          envVar === undefined ? path.resolve(homedir(), ".claude") : path.resolve(envVar),
-        ),
-      );
+    const cliClaudeDir = yield* ccvOptionsService.getCcvOptions("claudeDir");
+    const homeDirectory = yield* envService.getEnv("HOME");
+    const globalClaudeDirectoryPath =
+      cliClaudeDir === undefined
+        ? path.resolve(homeDirectory ?? "/", ".claude")
+        : path.resolve(cliClaudeDir);
 
     return {
       globalClaudeDirectoryPath,

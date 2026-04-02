@@ -1,13 +1,9 @@
-/* oxlint-disable no-restricted-imports */
-/* Exception: this route still derives fallback claudeDir from Node homedir; migration should consolidate on ApplicationContext. */
-import { homedir } from "node:os";
-import { Path } from "@effect/platform";
 import { zValidator } from "@hono/zod-validator";
 import { Effect } from "effect";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { z } from "zod";
-import { CcvOptionsService } from "../../core/platform/services/CcvOptionsService.ts";
+import { ApplicationContext } from "../../core/platform/services/ApplicationContext.ts";
 import { decodeProjectId, validateProjectPath } from "../../core/project/functions/id.ts";
 import { TasksController } from "../../core/tasks/presentation/TasksController.ts";
 import { TaskCreateSchema, TaskUpdateSchema } from "../../core/tasks/schema.ts";
@@ -16,12 +12,9 @@ import type { HonoContext } from "../app.ts";
 import { getHonoRuntime } from "../runtime.ts";
 
 const getClaudeProjectsDirPath = Effect.gen(function* () {
-  const path = yield* Path.Path;
-  const ccvOptionsService = yield* CcvOptionsService;
-  const claudeDir = yield* ccvOptionsService.getCcvOptions("claudeDir");
-  const globalClaudeDirectoryPath =
-    claudeDir === undefined ? path.resolve(homedir(), ".claude") : path.resolve(claudeDir);
-  return path.resolve(globalClaudeDirectoryPath, "projects");
+  const applicationContext = yield* ApplicationContext;
+  const claudeCodePaths = yield* applicationContext.claudeCodePaths;
+  return claudeCodePaths.claudeProjectsDirPath;
 });
 
 const tasksRoutes = Effect.gen(function* () {

@@ -1,7 +1,4 @@
-/* oxlint-disable no-restricted-imports */
-/* Exception: static asset bootstrap still uses direct Node fs/path until server startup is migrated to Effect wrappers. */
-import { readFile } from "node:fs/promises";
-import { resolve } from "node:path";
+import { FileSystem, Path } from "@effect/platform";
 import { NodeContext } from "@effect/platform-node";
 import { createAdaptorServer } from "@hono/node-server";
 import { serveStatic } from "@hono/node-server/serve-static";
@@ -58,8 +55,20 @@ export const startServer = async (options: CliOptions) => {
   const apiOnly = options.apiOnly === true;
 
   if (!isDevelopment && !apiOnly) {
-    const staticPath = resolve(import.meta.dirname, "static");
+    const staticPath = await Effect.runPromise(
+      Effect.gen(function* () {
+        const path = yield* Path.Path;
+        return path.resolve(import.meta.dirname, "static");
+      }).pipe(Effect.provide(NodeContext.layer)),
+    );
     console.log("Serving static files from ", staticPath);
+    const indexHtml = await Effect.runPromise(
+      Effect.gen(function* () {
+        const fs = yield* FileSystem.FileSystem;
+        const path = yield* Path.Path;
+        return yield* fs.readFileString(path.resolve(staticPath, "index.html"));
+      }).pipe(Effect.provide(NodeContext.layer)),
+    );
 
     honoApp.use(
       "/assets/*",
@@ -73,8 +82,7 @@ export const startServer = async (options: CliOptions) => {
         return next();
       }
 
-      const html = await readFile(resolve(staticPath, "index.html"), "utf-8");
-      return c.html(html);
+      return c.html(indexHtml);
     });
   }
 

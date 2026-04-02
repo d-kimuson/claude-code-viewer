@@ -4,6 +4,7 @@ export const envSchema = z.object({
   // Frameworks
   CCV_ENV: z.enum(["development", "production", "test"]).optional().default("development"),
   NEXT_PHASE: z.string().optional(),
+  HOME: z.string().optional(),
   PATH: z.string().optional(),
   SHELL: z.string().optional(),
   CCV_TERMINAL_SHELL: z.string().optional(),

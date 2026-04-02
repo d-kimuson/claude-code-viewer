@@ -1,8 +1,5 @@
-/* oxlint-disable no-restricted-imports */
-/* Exception: this file still uses Node watcher APIs because full migration to Effect FileSystem is high-cost. Keep this exception scoped to this file so new code does not copy this pattern. */
-import { type FSWatcher, watch } from "node:fs";
-import { Path } from "@effect/platform";
-import { Context, Effect, Layer, Ref } from "effect";
+import { FileSystem, Path } from "@effect/platform";
+import { Context, Effect, Fiber, Layer, Ref, Stream } from "effect";
 import { ApplicationContext } from "../../platform/services/ApplicationContext.ts";
 import { encodeProjectIdFromSessionFilePath } from "../../project/functions/id.ts";
 import { parseSessionFilePath } from "../functions/parseSessionFilePath.ts";
@@ -20,130 +17,141 @@ export class FileWatcherService extends Context.Tag("FileWatcherService")<
   static Live = Layer.effect(
     this,
     Effect.gen(function* () {
+      const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
       const eventBus = yield* EventBus;
       const context = yield* ApplicationContext;
 
       const isWatchingRef = yield* Ref.make(false);
-      const watcherRef = yield* Ref.make<FSWatcher | null>(null);
-      const projectWatchersRef = yield* Ref.make<Map<string, FSWatcher>>(new Map());
+      const watcherFiberRef = yield* Ref.make<Fiber.RuntimeFiber<void, unknown> | null>(null);
       const debounceTimersRef = yield* Ref.make<Map<string, ReturnType<typeof setTimeout>>>(
         new Map(),
       );
 
+      const clearDebounceTimer = (debounceKey: string) =>
+        Effect.gen(function* () {
+          const timers = yield* Ref.get(debounceTimersRef);
+          const timer = timers.get(debounceKey);
+          if (timer !== undefined) {
+            clearTimeout(timer);
+            timers.delete(debounceKey);
+            yield* Ref.set(debounceTimersRef, timers);
+          }
+        });
+
+      const scheduleDebouncedEmit = (
+        debounceKey: string,
+        payload:
+          | { type: "agent"; projectId: string; agentSessionId: string }
+          | { type: "session"; projectId: string; sessionId: string },
+      ) =>
+        Effect.gen(function* () {
+          yield* clearDebounceTimer(debounceKey);
+
+          const timers = yield* Ref.get(debounceTimersRef);
+          const timer = setTimeout(() => {
+            if (payload.type === "agent") {
+              Effect.runFork(
+                eventBus.emit("agentSessionChanged", {
+                  projectId: payload.projectId,
+                  agentSessionId: payload.agentSessionId,
+                }),
+              );
+            } else {
+              Effect.runFork(
+                eventBus.emit("sessionChanged", {
+                  projectId: payload.projectId,
+                  sessionId: payload.sessionId,
+                }),
+              );
+              Effect.runFork(
+                eventBus.emit("sessionListChanged", {
+                  projectId: payload.projectId,
+                }),
+              );
+            }
+
+            void Effect.runPromise(clearDebounceTimer(debounceKey));
+          }, 100);
+
+          timers.set(debounceKey, timer);
+          yield* Ref.set(debounceTimersRef, timers);
+        });
+
+      const handleWatchEvent = (claudeProjectsDirPath: string, changedPath: string) =>
+        Effect.gen(function* () {
+          const relativePath = changedPath.startsWith(claudeProjectsDirPath)
+            ? path.relative(claudeProjectsDirPath, changedPath)
+            : changedPath;
+          const parsed = parseSessionFilePath(relativePath);
+          if (parsed === null) {
+            return;
+          }
+
+          const fullPath = path.isAbsolute(changedPath)
+            ? changedPath
+            : path.join(claudeProjectsDirPath, changedPath);
+          const encodedProjectId = encodeProjectIdFromSessionFilePath(fullPath);
+
+          if (parsed.type === "agent") {
+            const debounceKey = `${encodedProjectId}/agent-${parsed.agentSessionId}`;
+            yield* scheduleDebouncedEmit(debounceKey, {
+              type: "agent",
+              projectId: encodedProjectId,
+              agentSessionId: parsed.agentSessionId,
+            });
+            return;
+          }
+
+          const debounceKey = `${encodedProjectId}/${parsed.sessionId}`;
+          yield* scheduleDebouncedEmit(debounceKey, {
+            type: "session",
+            projectId: encodedProjectId,
+            sessionId: parsed.sessionId,
+          });
+        });
+
       const startWatching = (): Effect.Effect<void> =>
         Effect.gen(function* () {
           const isWatching = yield* Ref.get(isWatchingRef);
-          if (isWatching) return;
+          if (isWatching) {
+            return;
+          }
 
           const claudeCodePaths = yield* context.claudeCodePaths;
+          const claudeProjectsDirPath = claudeCodePaths.claudeProjectsDirPath;
 
-          yield* Ref.set(isWatchingRef, true);
+          console.log("Starting file watcher on:", claudeProjectsDirPath);
 
-          yield* Effect.tryPromise({
-            try: async () => {
-              console.log("Starting file watcher on:", claudeCodePaths.claudeProjectsDirPath);
-
-              const watcher = watch(
-                claudeCodePaths.claudeProjectsDirPath,
-                { persistent: false, recursive: true },
-                (_eventType, filename) => {
-                  if (filename === undefined || filename === null || filename === "") return;
-
-                  const fileMatch = parseSessionFilePath(filename);
-                  if (fileMatch === null) return;
-
-                  // Build full path to get encoded projectId
-                  const fullPath = path.join(claudeCodePaths.claudeProjectsDirPath, filename);
-                  const encodedProjectId = encodeProjectIdFromSessionFilePath(fullPath);
-
-                  // Determine debounce key based on file type
-                  const debounceKey =
-                    fileMatch.type === "agent"
-                      ? `${encodedProjectId}/agent-${fileMatch.agentSessionId}`
-                      : `${encodedProjectId}/${fileMatch.sessionId}`;
-
-                  void Effect.runPromise(
-                    Effect.gen(function* () {
-                      const timers = yield* Ref.get(debounceTimersRef);
-                      const existingTimer = timers.get(debounceKey);
-                      if (existingTimer) {
-                        clearTimeout(existingTimer);
-                      }
-
-                      const newTimer = setTimeout(() => {
-                        if (fileMatch.type === "agent") {
-                          // Agent session file changed
-                          Effect.runFork(
-                            eventBus.emit("agentSessionChanged", {
-                              projectId: encodedProjectId,
-                              agentSessionId: fileMatch.agentSessionId,
-                            }),
-                          );
-                        } else {
-                          // Regular session file changed
-                          Effect.runFork(
-                            eventBus.emit("sessionChanged", {
-                              projectId: encodedProjectId,
-                              sessionId: fileMatch.sessionId,
-                            }),
-                          );
-
-                          Effect.runFork(
-                            eventBus.emit("sessionListChanged", {
-                              projectId: encodedProjectId,
-                            }),
-                          );
-                        }
-
-                        void Effect.runPromise(
-                          Effect.gen(function* () {
-                            const currentTimers = yield* Ref.get(debounceTimersRef);
-                            currentTimers.delete(debounceKey);
-                            yield* Ref.set(debounceTimersRef, currentTimers);
-                          }),
-                        );
-                      }, 100); // Reduced from 300ms to improve message latency
-
-                      timers.set(debounceKey, newTimer);
-                      yield* Ref.set(debounceTimersRef, timers);
-                    }),
-                  );
-                },
-              );
-
-              await Effect.runPromise(Ref.set(watcherRef, watcher));
-              console.log("File watcher initialization completed");
-            },
-            catch: (error) => {
-              console.error("Failed to start file watching:", error);
-              return new Error(`Failed to start file watching: ${String(error)}`);
-            },
-          }).pipe(
-            // エラーが発生しても続行する
-            Effect.catchAll(() => Effect.void),
+          const watcherFiber = yield* fs.watch(claudeProjectsDirPath, { recursive: true }).pipe(
+            Stream.runForEach((event) => handleWatchEvent(claudeProjectsDirPath, event.path)),
+            Effect.forkDaemon,
           );
-        });
+
+          yield* Ref.set(watcherFiberRef, watcherFiber);
+          yield* Ref.set(isWatchingRef, true);
+          console.log("File watcher initialization completed");
+        }).pipe(
+          Effect.catchAll((error) => {
+            console.error("Failed to start file watching:", error);
+            return Effect.void;
+          }),
+        );
 
       const stop = (): Effect.Effect<void> =>
         Effect.gen(function* () {
           const timers = yield* Ref.get(debounceTimersRef);
-          for (const [, timer] of timers) {
+          for (const timer of timers.values()) {
             clearTimeout(timer);
           }
           yield* Ref.set(debounceTimersRef, new Map());
 
-          const watcher = yield* Ref.get(watcherRef);
-          if (watcher) {
-            yield* Effect.sync(() => watcher.close());
-            yield* Ref.set(watcherRef, null);
+          const watcherFiber = yield* Ref.get(watcherFiberRef);
+          if (watcherFiber !== null) {
+            yield* Fiber.interrupt(watcherFiber);
+            yield* Ref.set(watcherFiberRef, null);
           }
 
-          const projectWatchers = yield* Ref.get(projectWatchersRef);
-          for (const [, projectWatcher] of projectWatchers) {
-            yield* Effect.sync(() => projectWatcher.close());
-          }
-          yield* Ref.set(projectWatchersRef, new Map());
           yield* Ref.set(isWatchingRef, false);
         });
 

@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.6.1-beta.4
+
+### &nbsp;&nbsp;&nbsp;Bug Fixes
+
+- IOS PWA のバウンススクロールを修正 &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(9cb5f)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/9cb5fd4)
+- Restore reliable web push delivery and resubscription &nbsp;-&nbsp; by **d-kimsuon** [<samp>(93cd3)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/93cd35d)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.6.1-beta.3...0.6.1-beta.4)
+
 ## 0.6.1-beta.3
 
 ### &nbsp;&nbsp;&nbsp;Features

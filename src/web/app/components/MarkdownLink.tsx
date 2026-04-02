@@ -39,7 +39,7 @@ export const MarkdownLink: FC<MarkdownLinkProps> = ({ href, children }) => {
         href={href}
         target="_blank"
         rel="noopener noreferrer"
-        className="text-primary hover:text-primary/80 underline underline-offset-4 decoration-primary/30 hover:decoration-primary/60 transition-colors"
+        className="text-primary hover:text-primary/80 underline underline-offset-4 decoration-primary/30 hover:decoration-primary/60 transition-colors break-all"
       >
         {children}
       </a>
@@ -48,7 +48,7 @@ export const MarkdownLink: FC<MarkdownLinkProps> = ({ href, children }) => {
 
   return (
     <span
-      className="relative inline-block pr-8"
+      className="relative inline-block pr-8 max-w-full break-all"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -56,7 +56,7 @@ export const MarkdownLink: FC<MarkdownLinkProps> = ({ href, children }) => {
         href={href}
         target="_blank"
         rel="noopener noreferrer"
-        className="text-primary hover:text-primary/80 underline underline-offset-4 decoration-primary/30 hover:decoration-primary/60 transition-colors"
+        className="text-primary hover:text-primary/80 underline underline-offset-4 decoration-primary/30 hover:decoration-primary/60 transition-colors break-all"
       >
         {children}
       </a>

@@ -57,7 +57,7 @@ export const CopyableMarkdownContent: FC<CopyableMarkdownContentProps> = ({
           type="button"
           variant="ghost"
           size="icon"
-          className="pointer-events-auto h-7 w-7 bg-background/85 opacity-0 shadow-sm transition-opacity group-hover:opacity-100 group-focus-within:opacity-100 backdrop-blur supports-[backdrop-filter]:bg-background/70"
+          className="pointer-events-auto h-7 w-7 bg-background/85 opacity-100 md:opacity-0 shadow-sm transition-opacity md:group-hover:opacity-100 group-focus-within:opacity-100 backdrop-blur supports-[backdrop-filter]:bg-background/70"
           onClick={() => {
             void handleCopy();
           }}

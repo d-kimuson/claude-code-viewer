@@ -114,31 +114,101 @@ export const BottomPanel: FC<BottomPanelProps> = ({ cwd }) => {
 
       {/* Header */}
       <div className="flex items-center justify-between px-3 py-1.5 border-b border-border/40 bg-muted/20 flex-shrink-0">
-        <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
-          <RocketIcon className="w-3.5 h-3.5" />
-          <span>
-            <Trans id="layout.bottom_panel.title" />
-          </span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <button
-            type="button"
-            onClick={() => setTerminalResetToken((value) => value + 1)}
-            className="h-6 px-2 text-[11px] rounded border border-border/60 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors flex items-center gap-1"
-            aria-label="Start a new terminal session"
-          >
-            <RotateCcwIcon className="w-3 h-3" />
-            New session
-          </button>
-          <button
-            type="button"
-            onClick={() => setIsBottomPanelOpen(false)}
-            className="w-5 h-5 flex items-center justify-center rounded hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
-            aria-label="Collapse terminal panel"
-          >
-            <PanelBottomCloseIcon className="w-3 h-3" />
-          </button>
-        </div>
+        {isMobile ? (
+          <>
+            {/* Mobile: icon-only buttons + shortcut keys in header */}
+            <div className="flex items-center gap-1 overflow-x-auto flex-1 min-w-0">
+              <button
+                type="button"
+                onClick={() => setTerminalResetToken((value) => value + 1)}
+                className="flex items-center justify-center min-w-[32px] h-7 rounded border border-border/60 text-muted-foreground active:bg-muted transition-colors flex-shrink-0"
+                aria-label="Start a new terminal session"
+              >
+                <RotateCcwIcon className="w-3.5 h-3.5" />
+              </button>
+
+              <div className="w-px h-4 bg-border/60 mx-0.5 flex-shrink-0" />
+
+              {/* Scrollback buttons */}
+              <button
+                type="button"
+                className="flex items-center justify-center min-w-[32px] h-7 rounded border border-border/60 text-muted-foreground active:bg-muted transition-colors flex-shrink-0"
+                onPointerDown={(e) => {
+                  e.preventDefault();
+                  terminalRef.current?.scrollLines(-5);
+                }}
+                aria-label="Scroll up"
+              >
+                <ChevronsUpIcon className="w-3.5 h-3.5" />
+              </button>
+              <button
+                type="button"
+                className="flex items-center justify-center min-w-[32px] h-7 rounded border border-border/60 text-muted-foreground active:bg-muted transition-colors flex-shrink-0"
+                onPointerDown={(e) => {
+                  e.preventDefault();
+                  terminalRef.current?.scrollLines(5);
+                }}
+                aria-label="Scroll down"
+              >
+                <ChevronsDownIcon className="w-3.5 h-3.5" />
+              </button>
+
+              <div className="w-px h-4 bg-border/60 mx-0.5 flex-shrink-0" />
+
+              {/* Key shortcut buttons */}
+              {MOBILE_KEYS.map((key) => (
+                <button
+                  key={key.label}
+                  type="button"
+                  className="flex items-center justify-center min-w-[36px] h-7 px-1.5 rounded border border-border/60 text-[11px] font-mono text-muted-foreground active:bg-muted transition-colors flex-shrink-0"
+                  onPointerDown={(e) => {
+                    e.preventDefault();
+                    handleKeyPress(key);
+                  }}
+                >
+                  {key.label}
+                </button>
+              ))}
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsBottomPanelOpen(false)}
+              className="w-7 h-7 flex items-center justify-center rounded hover:bg-muted text-muted-foreground hover:text-foreground transition-colors flex-shrink-0 ml-1"
+              aria-label="Collapse terminal panel"
+            >
+              <PanelBottomCloseIcon className="w-3.5 h-3.5" />
+            </button>
+          </>
+        ) : (
+          <>
+            {/* Desktop: original header */}
+            <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
+              <RocketIcon className="w-3.5 h-3.5" />
+              <span>
+                <Trans id="layout.bottom_panel.title" />
+              </span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <button
+                type="button"
+                onClick={() => setTerminalResetToken((value) => value + 1)}
+                className="h-6 px-2 text-[11px] rounded border border-border/60 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors flex items-center gap-1"
+                aria-label="Start a new terminal session"
+              >
+                <RotateCcwIcon className="w-3 h-3" />
+                New session
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsBottomPanelOpen(false)}
+                className="w-5 h-5 flex items-center justify-center rounded hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
+                aria-label="Collapse terminal panel"
+              >
+                <PanelBottomCloseIcon className="w-3 h-3" />
+              </button>
+            </div>
+          </>
+        )}
       </div>
 
       {/* Content */}
@@ -150,52 +220,6 @@ export const BottomPanel: FC<BottomPanelProps> = ({ cwd }) => {
           onProcessExit={handleProcessExit}
         />
       </div>
-
-      {/* Mobile keyboard shortcut bar */}
-      {isMobile && (
-        <div className="flex items-center gap-1 px-2 py-1.5 border-t border-border/40 bg-muted/10 overflow-x-auto flex-shrink-0">
-          {/* Scrollback buttons */}
-          <button
-            type="button"
-            className="flex items-center justify-center min-w-[40px] h-9 rounded border border-border/60 text-muted-foreground active:bg-muted transition-colors flex-shrink-0"
-            onPointerDown={(e) => {
-              e.preventDefault();
-              terminalRef.current?.scrollLines(-5);
-            }}
-            aria-label="Scroll up"
-          >
-            <ChevronsUpIcon className="w-3.5 h-3.5" />
-          </button>
-          <button
-            type="button"
-            className="flex items-center justify-center min-w-[40px] h-9 rounded border border-border/60 text-muted-foreground active:bg-muted transition-colors flex-shrink-0"
-            onPointerDown={(e) => {
-              e.preventDefault();
-              terminalRef.current?.scrollLines(5);
-            }}
-            aria-label="Scroll down"
-          >
-            <ChevronsDownIcon className="w-3.5 h-3.5" />
-          </button>
-
-          <div className="w-px h-5 bg-border/60 mx-0.5 flex-shrink-0" />
-
-          {/* Key shortcut buttons */}
-          {MOBILE_KEYS.map((key) => (
-            <button
-              key={key.label}
-              type="button"
-              className="flex items-center justify-center min-w-[44px] h-9 px-2 rounded border border-border/60 text-xs font-mono text-muted-foreground active:bg-muted transition-colors flex-shrink-0"
-              onPointerDown={(e) => {
-                e.preventDefault();
-                handleKeyPress(key);
-              }}
-            >
-              {key.label}
-            </button>
-          ))}
-        </div>
-      )}
     </div>
   );
 };

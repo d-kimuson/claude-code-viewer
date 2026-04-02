@@ -1799,7 +1799,7 @@
     "origin": [
       [
         "src/web/app/components/BottomPanel.tsx",
-        120
+        188
       ]
     ],
     "translation": "终端"
@@ -2502,7 +2502,7 @@
     "origin": [
       [
         "src/web/app/projects/page.tsx",
-        33
+        55
       ]
     ],
     "translation": "查看 Claude Code 对话历史和项目操作"
@@ -2513,7 +2513,7 @@
     "origin": [
       [
         "src/web/app/projects/page.tsx",
-        49
+        71
       ]
     ],
     "translation": "正在加载项目..."
@@ -2524,7 +2524,7 @@
     "origin": [
       [
         "src/web/app/projects/page.tsx",
-        41
+        63
       ]
     ],
     "translation": "项目"
@@ -3182,7 +3182,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        724
+        726
       ]
     ],
     "translation": "Claude Code 正在处理..."
@@ -3230,7 +3230,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        689
+        691
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
@@ -3249,7 +3249,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        687
+        689
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",

@@ -1799,7 +1799,7 @@
     "origin": [
       [
         "src/web/app/components/BottomPanel.tsx",
-        120
+        188
       ]
     ],
     "translation": "Terminal"
@@ -2502,7 +2502,7 @@
     "origin": [
       [
         "src/web/app/projects/page.tsx",
-        33
+        55
       ]
     ],
     "translation": "View Claude Code conversation history and project operations"
@@ -2513,7 +2513,7 @@
     "origin": [
       [
         "src/web/app/projects/page.tsx",
-        49
+        71
       ]
     ],
     "translation": "Loading projects..."
@@ -2524,7 +2524,7 @@
     "origin": [
       [
         "src/web/app/projects/page.tsx",
-        41
+        63
       ]
     ],
     "translation": "Projects"
@@ -3182,7 +3182,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        724
+        726
       ]
     ],
     "translation": "Claude Code is processing..."
@@ -3230,7 +3230,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        689
+        691
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
@@ -3249,7 +3249,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        687
+        689
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",

@@ -670,8 +670,10 @@ const SessionPageMainContent: FC<
                               "border-border/40 hover:bg-muted/50 hover:border-primary/30",
                             )}
                           >
-                            <div className="flex items-start justify-between gap-2 mb-1">
-                              <h4 className="text-sm font-medium line-clamp-1 flex-1">{title}</h4>
+                            <div className="flex items-start justify-between gap-2 mb-1 min-w-0">
+                              <h4 className="text-sm font-medium line-clamp-1 flex-1 min-w-0 break-all">
+                                {title}
+                              </h4>
                               {(isRunning || isPaused) && (
                                 <Badge
                                   variant="secondary"

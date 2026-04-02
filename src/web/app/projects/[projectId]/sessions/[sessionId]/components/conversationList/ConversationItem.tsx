@@ -222,6 +222,16 @@ const ConversationItemComponent: FC<ConversationItemProps> = ({
   }
 
   if (conversation.type === "assistant") {
+    const renderableContent = conversation.message.content.filter((content) => {
+      if (content.type === "thinking" && content.thinking === "") return false;
+      if (content.type === "tool_result") return false;
+      return true;
+    });
+
+    if (renderableContent.length === 0 && getTurnDuration(conversation.uuid) === undefined) {
+      return null;
+    }
+
     const turnDuration = getTurnDuration(conversation.uuid);
     return (
       <div className="w-full">
@@ -234,7 +244,7 @@ const ConversationItemComponent: FC<ConversationItemProps> = ({
           </div>
         )}
         <ul className="w-full">
-          {conversation.message.content.map((content, index) => (
+          {renderableContent.map((content, index) => (
             // biome-ignore lint/suspicious/noArrayIndexKey: Order is static
             <li key={index}>
               <AssistantConversationContent

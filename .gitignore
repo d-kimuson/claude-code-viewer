@@ -49,6 +49,7 @@ dist/*
 
 # claude code
 .claude/settings.local.json
+.claude/hooks/logs
 CLAUDE.local.md
 
 # cc-delegate

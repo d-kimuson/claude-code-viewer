@@ -77,7 +77,7 @@ export const startServer = async (options: CliOptions) => {
     );
 
     honoApp.use(
-      "/assets/*",
+      "/*",
       serveStatic({
         root: staticPath,
       }),

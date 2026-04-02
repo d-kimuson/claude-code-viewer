@@ -12,9 +12,38 @@ const urlBase64ToUint8Array = (base64String: string): ArrayBuffer => {
   return outputArray.buffer;
 };
 
+const isPushSupported = (): boolean =>
+  "serviceWorker" in navigator && "PushManager" in window && "Notification" in window;
+
+const subscribeToServer = async (): Promise<void> => {
+  const registration = await navigator.serviceWorker.ready;
+
+  const existingSubscription = await registration.pushManager.getSubscription();
+  if (existingSubscription) {
+    await sendSubscriptionToServer(existingSubscription);
+    return;
+  }
+
+  const vapidResponse = await honoClient.api.notifications["vapid-public-key"].$get();
+  if (!vapidResponse.ok) {
+    return;
+  }
+
+  const { publicKey } = await vapidResponse.json();
+
+  const subscription = await registration.pushManager.subscribe({
+    userVisibleOnly: true,
+    applicationServerKey: urlBase64ToUint8Array(publicKey),
+  });
+
+  await sendSubscriptionToServer(subscription);
+};
+
 /**
  * Hook to subscribe the current browser to push notifications.
- * Should be called once near the app root after the service worker is registered.
+ * Only auto-subscribes if permission is already granted (e.g. after server restart).
+ * To request permission for the first time, call requestPushPermissionAndSubscribe
+ * from a user gesture (button click).
  */
 export const usePushSubscription = (): void => {
   const hasSubscribed = useRef(false);
@@ -23,52 +52,25 @@ export const usePushSubscription = (): void => {
     if (hasSubscribed.current) return;
     hasSubscribed.current = true;
 
-    const subscribe = async () => {
-      // Check if push is supported
-      if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
-        return;
-      }
+    if (!isPushSupported()) return;
+    if (Notification.permission !== "granted") return;
 
-      // Request permission
-      const permission = await Notification.requestPermission();
-      if (permission !== "granted") {
-        return;
-      }
-
-      // Get service worker registration
-      const registration = await navigator.serviceWorker.ready;
-
-      // Check for existing subscription
-      const existingSubscription = await registration.pushManager.getSubscription();
-      if (existingSubscription) {
-        // Already subscribed, send to server in case it's a new server instance
-        await sendSubscriptionToServer(existingSubscription);
-        return;
-      }
-
-      // Fetch VAPID public key
-      const vapidResponse = await honoClient.api.notifications["vapid-public-key"].$get();
-
-      if (!vapidResponse.ok) {
-        console.warn("Failed to fetch VAPID public key");
-        return;
-      }
-
-      const { publicKey } = await vapidResponse.json();
-
-      // Subscribe to push
-      const subscription = await registration.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(publicKey),
-      });
-
-      await sendSubscriptionToServer(subscription);
-    };
-
-    void subscribe().catch((error: unknown) => {
-      console.warn("Failed to subscribe to push notifications:", error);
-    });
+    void subscribeToServer().catch((_error: unknown) => {});
   }, []);
+};
+
+/**
+ * Request notification permission and subscribe to push notifications.
+ * Must be called from a user gesture (e.g. button click) for iOS compatibility.
+ */
+export const requestPushPermissionAndSubscribe = async (): Promise<NotificationPermission> => {
+  if (!isPushSupported()) return "denied";
+
+  const permission = await Notification.requestPermission();
+  if (permission !== "granted") return permission;
+
+  await subscribeToServer();
+  return permission;
 };
 
 const sendSubscriptionToServer = async (subscription: PushSubscription): Promise<void> => {

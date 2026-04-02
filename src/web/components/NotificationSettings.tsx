@@ -1,12 +1,14 @@
 import { Trans } from "@lingui/react";
 import { useAtom } from "jotai";
-import { type FC, useCallback, useId } from "react";
+import { BellIcon, BellOffIcon, BellRingIcon } from "lucide-react";
+import { type FC, useCallback, useId, useState } from "react";
 import { type NotificationSoundType, notificationSettingsAtom } from "@/lib/atoms/notifications";
 import {
   getAvailableSoundTypes,
   getSoundDisplayName,
   playNotificationSound,
 } from "@/lib/notifications";
+import { requestPushPermissionAndSubscribe } from "@/lib/push/usePushSubscription";
 import { Button } from "@/web/components/ui/button";
 import {
   Select,
@@ -22,6 +24,14 @@ type NotificationSettingsProps = {
   className?: string;
 };
 
+const isPushSupported = (): boolean =>
+  "serviceWorker" in navigator && "PushManager" in window && "Notification" in window;
+
+const getInitialPermission = (): NotificationPermission | "unsupported" => {
+  if (!isPushSupported()) return "unsupported";
+  return Notification.permission;
+};
+
 export const NotificationSettings: FC<NotificationSettingsProps> = ({
   showLabels = true,
   showDescriptions = true,
@@ -29,6 +39,10 @@ export const NotificationSettings: FC<NotificationSettingsProps> = ({
 }: NotificationSettingsProps) => {
   const selectId = useId();
   const [settings, setSettings] = useAtom(notificationSettingsAtom);
+  const [pushPermission, setPushPermission] = useState<NotificationPermission | "unsupported">(
+    getInitialPermission,
+  );
+  const [isSubscribing, setIsSubscribing] = useState(false);
 
   const handleSoundTypeChange = useCallback(
     (value: NotificationSoundType) => {
@@ -46,10 +60,60 @@ export const NotificationSettings: FC<NotificationSettingsProps> = ({
     }
   }, [settings.soundType]);
 
+  const handleEnablePush = useCallback(() => {
+    setIsSubscribing(true);
+    void requestPushPermissionAndSubscribe()
+      .then((permission) => {
+        setPushPermission(permission);
+      })
+      .finally(() => {
+        setIsSubscribing(false);
+      });
+  }, []);
+
   const availableSoundTypes = getAvailableSoundTypes();
 
   return (
     <div className={`space-y-4 ${className}`}>
+      {pushPermission !== "unsupported" && (
+        <div className="space-y-2">
+          {showLabels && (
+            <p className="text-sm font-medium leading-none">
+              <Trans id="notification.push.label" />
+            </p>
+          )}
+
+          <div className="flex items-center gap-2">
+            {pushPermission === "granted" ? (
+              <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                <BellRingIcon className="w-3.5 h-3.5 text-primary" />
+                <span>
+                  <Trans id="notification.push.enabled" />
+                </span>
+              </div>
+            ) : pushPermission === "denied" ? (
+              <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                <BellOffIcon className="w-3.5 h-3.5" />
+                <span>
+                  <Trans id="notification.push.denied" />
+                </span>
+              </div>
+            ) : (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleEnablePush}
+                disabled={isSubscribing}
+                className="gap-1.5"
+              >
+                <BellIcon className="w-3.5 h-3.5" />
+                <Trans id="notification.push.enable" />
+              </Button>
+            )}
+          </div>
+        </div>
+      )}
+
       <div className="space-y-2">
         {showLabels && (
           <label htmlFor={selectId} className="text-sm font-medium leading-none">

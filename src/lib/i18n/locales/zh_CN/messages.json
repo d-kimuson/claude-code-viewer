@@ -794,10 +794,6 @@
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
         492
-      ],
-      [
-        "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        645
       ]
     ],
     "translation": "立即发送"
@@ -809,10 +805,6 @@
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
         477
-      ],
-      [
-        "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        630
       ]
     ],
     "translation": "发送模式"
@@ -827,11 +819,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        648
-      ],
-      [
-        "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        670
+        642
       ]
     ],
     "translation": "定时发送"
@@ -846,17 +834,6 @@
       ]
     ],
     "translation": "定时发送时间"
-  },
-  "chat.status.processing": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        732
-      ]
-    ],
-    "translation": "处理中..."
   },
   "chat.toolbar.effort.tooltip": {
     "message": "Select reasoning effort",
@@ -961,7 +938,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        710
+        682
       ]
     ],
     "translation": "语音输入"
@@ -2466,7 +2443,7 @@
     "origin": [
       [
         "src/web/app/projects/page.tsx",
-        13
+        33
       ]
     ],
     "translation": "查看 Claude Code 对话历史和项目操作"
@@ -2477,7 +2454,7 @@
     "origin": [
       [
         "src/web/app/projects/page.tsx",
-        29
+        49
       ]
     ],
     "translation": "正在加载项目..."
@@ -2488,7 +2465,7 @@
     "origin": [
       [
         "src/web/app/projects/page.tsx",
-        21
+        41
       ]
     ],
     "translation": "项目"

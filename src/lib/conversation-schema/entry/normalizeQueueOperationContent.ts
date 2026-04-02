@@ -10,6 +10,10 @@ type EnqueueContent = Extract<QueueOperationEntry, { operation: "enqueue" }>["co
  * @returns Normalized string representation
  */
 export const normalizeQueueOperationContent = (content: EnqueueContent): string => {
+  if (content === undefined) {
+    return "";
+  }
+
   // Legacy format: string
   if (typeof content === "string") {
     return content;

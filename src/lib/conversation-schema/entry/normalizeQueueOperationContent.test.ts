@@ -78,6 +78,11 @@ describe("normalizeQueueOperationContent", () => {
     expect(result).toBe("Text\n[Tool Result]");
   });
 
+  test("returns empty string for undefined content", () => {
+    const result = normalizeQueueOperationContent(undefined);
+    expect(result).toBe("");
+  });
+
   test("handles empty array", () => {
     const result = normalizeQueueOperationContent([]);
     expect(result).toBe("");

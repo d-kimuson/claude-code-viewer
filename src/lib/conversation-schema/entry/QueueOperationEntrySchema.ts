@@ -16,7 +16,9 @@ export const QueueOperationEntrySchema = z.union([
   z.object({
     type: z.literal("queue-operation"),
     operation: z.literal("enqueue"),
-    content: z.union([z.string(), z.array(z.union([z.string(), QueueOperationContentSchema]))]),
+    content: z
+      .union([z.string(), z.array(z.union([z.string(), QueueOperationContentSchema]))])
+      .optional(),
     sessionId: z.string(),
     timestamp: z.iso.datetime(),
   }),

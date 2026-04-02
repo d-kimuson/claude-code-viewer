@@ -1,4 +1,4 @@
-import type { Conversation } from "../conversation-schema/index.ts";
+import type { ExtendedConversation } from "../../types/conversation.ts";
 import { extractEditedFilePaths } from "./extractEditedFilePaths.ts";
 
 export type EditedFileInfo = {
@@ -7,14 +7,6 @@ export type EditedFileInfo = {
   readonly toolUseId: string;
   readonly timestamp: string;
 };
-
-type ErrorJsonl = {
-  type: "x-error";
-  line: string;
-  lineNumber: number;
-};
-
-type ExtendedConversation = Conversation | ErrorJsonl;
 
 /**
  * Extracts all edited files from a session's conversations

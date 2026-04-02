@@ -1,4 +1,4 @@
-import type { Conversation } from "../conversation-schema/index.ts";
+import type { ExtendedConversation } from "../../types/conversation.ts";
 
 export type ToolCallInfo = {
   readonly id: string;
@@ -6,14 +6,6 @@ export type ToolCallInfo = {
   readonly timestamp: string;
   readonly inputSummary: string;
 };
-
-type ErrorJsonl = {
-  type: "x-error";
-  line: string;
-  lineNumber: number;
-};
-
-type ExtendedConversation = Conversation | ErrorJsonl;
 
 const summarizeInput = (input: unknown): string => {
   if (input === null || input === undefined) {

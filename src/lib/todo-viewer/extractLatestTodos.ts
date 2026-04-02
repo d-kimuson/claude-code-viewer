@@ -1,17 +1,9 @@
-import type { Conversation } from "../conversation-schema/index.ts";
+import type { ExtendedConversation } from "../../types/conversation.ts";
 
 export type TodoItem = {
   readonly content: string;
   readonly status: "pending" | "in_progress" | "completed";
 };
-
-type ErrorJsonl = {
-  type: "x-error";
-  line: string;
-  lineNumber: number;
-};
-
-type ExtendedConversation = Conversation | ErrorJsonl;
 
 const isTodoWriteInput = (
   input: Record<string, unknown>,

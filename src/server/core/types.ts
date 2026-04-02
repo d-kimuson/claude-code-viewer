@@ -1,7 +1,8 @@
 import type { z } from "zod";
-import type { Conversation } from "../../lib/conversation-schema/index.ts";
+import type { ExtendedConversation } from "../../types/conversation.ts";
 import type { projectMetaSchema } from "./project/schema.ts";
 import type { sessionMetaSchema } from "./session/schema.ts";
+export type { ErrorJsonl, ExtendedConversation } from "../../types/conversation.ts";
 
 export type Project = {
   id: string;
@@ -20,14 +21,6 @@ export type Session = {
 };
 
 export type SessionMeta = z.infer<typeof sessionMetaSchema>;
-
-export type ErrorJsonl = {
-  type: "x-error";
-  line: string;
-  lineNumber: number;
-};
-
-export type ExtendedConversation = Conversation | ErrorJsonl;
 
 export type SessionDetail = Session & {
   conversations: ExtendedConversation[];

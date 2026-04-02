@@ -16,7 +16,7 @@ const fileSystemRoutes = Effect.gen(function* () {
         "query",
         z.object({
           projectId: z.string(),
-          basePath: z.string().optional().default("/api/"),
+          basePath: z.string().optional().default("/"),
         }),
       ),
       async (c) => {

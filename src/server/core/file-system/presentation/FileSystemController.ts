@@ -47,7 +47,7 @@ const LayerImpl = Effect.gen(function* () {
     Effect.promise(async () => {
       const { currentPath, showHidden = false } = options;
 
-      const rootPath = "/";
+      const rootPath = homedir();
       const defaultPath = homedir();
 
       try {

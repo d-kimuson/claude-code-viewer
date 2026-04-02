@@ -1,3 +1,4 @@
+import { timingSafeEqual } from "node:crypto";
 import { zValidator } from "@hono/zod-validator";
 import { Effect } from "effect";
 import { Hono } from "hono";
@@ -5,6 +6,15 @@ import { deleteCookie, getCookie, setCookie } from "hono/cookie";
 import { z } from "zod";
 import type { HonoContext } from "../app.ts";
 import { AuthMiddleware } from "../middleware/auth.middleware.ts";
+
+/**
+ * Compare two strings in constant time to prevent timing attacks.
+ * Returns false immediately if lengths differ (length is already leaked by nature).
+ */
+const safeEqual = (a: string, b: string): boolean => {
+  if (a.length !== b.length) return false;
+  return timingSafeEqual(Buffer.from(a, "utf-8"), Buffer.from(b, "utf-8"));
+};
 
 const authRoutes = Effect.gen(function* () {
   const { getAuthState } = yield* AuthMiddleware;
@@ -25,7 +35,7 @@ const authRoutes = Effect.gen(function* () {
         );
       }
 
-      if (password !== authPassword) {
+      if (authPassword === undefined || !safeEqual(password, authPassword)) {
         return c.json({ error: "Invalid password" }, 401);
       }
 
@@ -47,7 +57,11 @@ const authRoutes = Effect.gen(function* () {
 
     .get("/check", (c) => {
       const sessionToken = getCookie(c, "ccv-session");
-      const isAuthenticated = authEnabled ? sessionToken === validSessionToken : true;
+      const isAuthenticated = authEnabled
+        ? sessionToken !== undefined &&
+          validSessionToken !== "" &&
+          safeEqual(sessionToken, validSessionToken)
+        : true;
       return c.json({ authenticated: isAuthenticated, authEnabled });
     });
 });

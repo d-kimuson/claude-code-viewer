@@ -1,13 +1,26 @@
+import { homedir } from "node:os";
+import { Path } from "@effect/platform";
 import { zValidator } from "@hono/zod-validator";
 import { Effect } from "effect";
 import { Hono } from "hono";
+import { HTTPException } from "hono/http-exception";
 import { z } from "zod";
-import { decodeProjectId } from "../../core/project/functions/id.ts";
+import { CcvOptionsService } from "../../core/platform/services/CcvOptionsService.ts";
+import { decodeProjectId, validateProjectPath } from "../../core/project/functions/id.ts";
 import { TasksController } from "../../core/tasks/presentation/TasksController.ts";
 import { TaskCreateSchema, TaskUpdateSchema } from "../../core/tasks/schema.ts";
 import { effectToResponse } from "../../lib/effect/toEffectResponse.ts";
 import type { HonoContext } from "../app.ts";
 import { getHonoRuntime } from "../runtime.ts";
+
+const getClaudeProjectsDirPath = Effect.gen(function* () {
+  const path = yield* Path.Path;
+  const ccvOptionsService = yield* CcvOptionsService;
+  const claudeDir = yield* ccvOptionsService.getCcvOptions("claudeDir");
+  const globalClaudeDirectoryPath =
+    claudeDir === undefined ? path.resolve(homedir(), ".claude") : path.resolve(claudeDir);
+  return path.resolve(globalClaudeDirectoryPath, "projects");
+});
 
 const tasksRoutes = Effect.gen(function* () {
   const tasksController = yield* TasksController;
@@ -26,6 +39,14 @@ const tasksRoutes = Effect.gen(function* () {
       async (c) => {
         const { projectId, sessionId } = c.req.valid("query");
         const projectPath = decodeProjectId(projectId);
+
+        const claudeProjectsDirPath = await Effect.runPromise(
+          getClaudeProjectsDirPath.pipe(Effect.provide(runtime)),
+        );
+        if (!validateProjectPath(projectPath, claudeProjectsDirPath)) {
+          throw new HTTPException(403, { message: "Invalid project path" });
+        }
+
         const status = 200 as const;
 
         const response = await effectToResponse(
@@ -55,6 +76,14 @@ const tasksRoutes = Effect.gen(function* () {
         const { projectId, sessionId } = c.req.valid("query");
         const body = c.req.valid("json");
         const projectPath = decodeProjectId(projectId);
+
+        const claudeProjectsDirPath = await Effect.runPromise(
+          getClaudeProjectsDirPath.pipe(Effect.provide(runtime)),
+        );
+        if (!validateProjectPath(projectPath, claudeProjectsDirPath)) {
+          throw new HTTPException(403, { message: "Invalid project path" });
+        }
+
         const status = 200 as const;
 
         const response = await effectToResponse(
@@ -85,6 +114,14 @@ const tasksRoutes = Effect.gen(function* () {
         const { projectId, sessionId } = c.req.valid("query");
         const body = c.req.valid("json");
         const projectPath = decodeProjectId(projectId);
+
+        const claudeProjectsDirPath = await Effect.runPromise(
+          getClaudeProjectsDirPath.pipe(Effect.provide(runtime)),
+        );
+        if (!validateProjectPath(projectPath, claudeProjectsDirPath)) {
+          throw new HTTPException(403, { message: "Invalid project path" });
+        }
+
         const status = 200 as const;
 
         const response = await effectToResponse(

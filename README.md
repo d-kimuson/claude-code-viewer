@@ -16,40 +16,11 @@ Claude Code Viewer is a web-based Claude Code client focused on **comprehensive 
 
 **Core Philosophy**: Zero data loss + Effective organization + Remote-friendly design
 
-## Features
+## System Requirements
 
-| Feature                 | Description                                                                                                                                                                                                                                                                                                                                                              |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| View Chat Logs          | View Claude Code session logs in real-time through the web UI. Supports historical logs as it uses standard Claude Code logs (~/.claude/projects/...) as the data source                                                                                                                                                                                                 |
-| Search Conversations    | Full-text search across conversations with `⌘K` (macOS) or `Ctrl+K` (Linux). Search within a specific project or across all projects. Features fuzzy matching, prefix search, and keyboard navigation (↑↓ to navigate, Enter to select)                                                                                                                                  |
-| In-page Find            | Jump to any text in the current conversation with a configurable hotkey (`Ctrl+F` / `Command+F`). Cycles through all matches with keyboard navigation                                                                                                                                                                                                                    |
-| Start Conversations     | Start Claude Code sessions directly from Claude Code Viewer. Enjoy core functionality like file/command completion, pause/resume, and tool approval through a superior web experience                                                                                                                                                                                    |
-| Resume Sessions         | Resume conversations directly from existing session logs                                                                                                                                                                                                                                                                                                                 |
-| Continue Sessions       | Claude Code Viewer provides advanced session process control. Sessions started through Claude Code Viewer remain alive (unless aborted), allowing you to continue conversations without resuming (no session-id reassignment)                                                                                                                                            |
-| Create Projects         | Create new projects from Claude Code Viewer. Select a directory through the web UI to execute the `/init` command and begin project setup                                                                                                                                                                                                                                |
-| Session Options Toolbar | Inline toolbar above the chat input for configuring per-project session options: model selection, thinking effort (low/medium/high/max), permission mode, and system prompt preset. Settings persist per project                                                                                                                                                         |
-| Voice Input             | Dictate messages directly in the chat input using the built-in voice input button. Transcribed text is inserted into the input field for review before sending                                                                                                                                                                                                           |
-| File Upload & Preview   | Upload images (PNG, JPEG, GIF, WebP), PDFs, and text files directly from the chat interface. Each file type displays with dedicated preview components—images render inline, PDFs embed with a viewer, and text files show formatted content                                                                                                                             |
-| Clipboard Image Paste   | Paste images directly from the clipboard into the chat input with `Ctrl+V` / `⌘+V`. Pasted images are attached and previewed before sending                                                                                                                                                                                                                              |
-| Chat Draft Saving       | Chat input drafts are automatically saved per project and session. Unsent text is restored when returning to the same conversation                                                                                                                                                                                                                                       |
-| Browser Preview         | Preview web applications directly within Claude Code Viewer. Click the preview button on any URL in chat messages to open a resizable browser panel on the right side. Features include URL input with keyboard navigation, reload functionality, and automatic chat window width adjustment. The embedded browser tracks URL changes as you navigate (same-origin only) |
-| Message Scheduler       | Schedule Claude Code messages using cron expressions for recurring tasks or specific datetime for one-time execution. Supports concurrency control (skip/run) for periodic jobs and auto-deletion for reserved jobs                                                                                                                                                      |
-| Review Changes          | Built-in Git Diff Viewer lets you review all changes directly within Claude Code Viewer. Supports inline diff comments for annotating specific lines                                                                                                                                                                                                                     |
-| Commit Changes          | Execute Git commits directly from the web interface within the Git Diff Viewer                                                                                                                                                                                                                                                                                           |
-| Push Changes            | Push committed changes directly from the Git Diff Viewer. Supports both separate push operations and combined commit-and-push workflows for streamlined deployment                                                                                                                                                                                                       |
-| Branch Switcher         | Switch local Git branches directly from the Git tab (with search and status indicators)                                                                                                                                                                                                                                                                                  |
-| Explorer                | Right panel tab that summarizes edited files with action buttons, groups them by project, lists tool invocations with filters and quick file preview, and shows agent sub-sessions in a dedicated section                                                                                                                                                                |
-| Visual Tool Display     | Tool invocations render with dedicated visual components (e.g. file diffs, structured outputs). A Raw toggle switches to the plain JSON view when needed                                                                                                                                                                                                                 |
-| Todo Viewer             | Extracts the latest `TodoWrite` items from sessions and displays them as inline collapsible checklists directly within the conversation                                                                                                                                                                                                                                  |
-| PR Link Display         | Pull request metadata (title, number, URL) from `pr-link` log entries is rendered as a rich card in the conversation, making it easy to navigate to associated PRs                                                                                                                                                                                                       |
-| Copy Buttons            | Every markdown message includes a copy button to copy the full text content to clipboard with a single click                                                                                                                                                                                                                                                             |
-| Project Switcher        | Quickly jump to any project via the combobox in the header without navigating back to the projects list                                                                                                                                                                                                                                                                  |
-| Inline Approvals        | Tool permission requests and custom questions from the `CCVAskUserQuestion` MCP tool are surfaced as inline panels directly in the chat, removing the need to switch to another window for approval                                                                                                                                                                      |
-| Terminal Panel          | Bottom panel terminal over WebSocket for running shell commands without leaving the UI                                                                                                                                                                                                                                                                                   |
-| MCP Server Viewer       | View MCP server configurations directly in the session sidebar. Lists all configured servers with their names and commands, with real-time reload capability                                                                                                                                                                                                             |
-| PWA Support             | Install Claude Code Viewer as a Progressive Web App on desktop or mobile. Supports home screen installation and push notifications for session completion events                                                                                                                                                                                                         |
-| System Information      | Monitor Claude Code and Claude Code Viewer versions, feature compatibility, and system status                                                                                                                                                                                                                                                                            |
-| Multi-language Support  | Full internationalization support with English, Japanese, and Simplified Chinese language options                                                                                                                                                                                                                                                                        |
+- **Node.js**: Version 22.13.0 or later
+- **Claude Code**: v1.0.125 or later
+- **Operating Systems**: macOS and Linux (Windows is not supported)
 
 ## Installation & Usage
 
@@ -85,88 +56,20 @@ Options:
   --api-only                       Run in API-only mode without Web UI
 ```
 
-### Docker Deployment
+### Remote Access via Tailscale (Mobile / PWA)
 
-Build the image locally:
+Claude Code Viewer works great as a persistent server you access from your phone. A convenient approach is to run it on a always-on machine and expose it over [Tailscale](https://tailscale.com/) with HTTPS:
 
-```bash
-docker build -t claude-code-viewer .
-```
+1. **Set up HTTPS on your Tailscale node** following the [Tailscale HTTPS certificates guide](https://tailscale.com/docs/how-to/set-up-https-certificates).
+2. **Start Claude Code Viewer** bound to all interfaces with a password:
 
-Run the container directly:
+   ```bash
+   claude-code-viewer --hostname 0.0.0.0 --port 3400 --password your-secret
+   ```
 
-```bash
-docker run --rm -p 3400:3400 \
-  -e PORT=3400 \
-  -e CCV_PASSWORD=your-password \
-  -e ANTHROPIC_BASE_URL=... \
-  -e ANTHROPIC_API_KEY=... \
-  -e ANTHROPIC_AUTH_TOKEN=... \
-  claude-code-viewer
-```
+3. **Access from your phone** via the Tailscale HTTPS URL (e.g. `https://your-machine.ts.net:3400`).
 
-Alternatively, use the provided Compose configuration:
-
-```bash
-docker compose up --build
-```
-
-> Note: `docker-compose.yml` ships without mounting `claude_home` by default. If you need the container to reuse an existing Claude workspace, map a volume to `/root/.claude`, for example:
->
-> ```yaml
-> services:
->   app:
->     volumes:
->       - /path/to/claude_home:/root/.claude
-> ```
-
-## Screenshots
-
-| Feature                       | Capture                                                                                                                                                                                                                                                                      |
-| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| BasicChat (Desktop)           | ![](./e2e/snapshots/projects/L2hvbWUvcnVubmVyL3dvcmsvY2xhdWRlLWNvZGUtdmlld2VyL2NsYXVkZS1jb2RlLXZpZXdlci9tb2NrLWdsb2JhbC1jbGF1ZGUtZGlyL3Byb2plY3RzL3NhbXBsZS1wcm9qZWN0/session_sessionId_fe5e1c67-53e7-4862-81ae-d0e013e3270b/desktop-dark.png)                               |
-| BasicChat (Mobile)            | ![](./e2e/snapshots/projects/L2hvbWUvcnVubmVyL3dvcmsvY2xhdWRlLWNvZGUtdmlld2VyL2NsYXVkZS1jb2RlLXZpZXdlci9tb2NrLWdsb2JhbC1jbGF1ZGUtZGlyL3Byb2plY3RzL3NhbXBsZS1wcm9qZWN0/session_sessionId_fe5e1c67-53e7-4862-81ae-d0e013e3270b/mobile-dark.png)                                |
-| Browser Preview (Right Panel) | ![](./e2e/snapshots/projects/L2hvbWUvcnVubmVyL3dvcmsvY2xhdWRlLWNvZGUtdmlld2VyL2NsYXVkZS1jb2RlLXZpZXdlci9tb2NrLWdsb2JhbC1jbGF1ZGUtZGlyL3Byb2plY3RzL3NhbXBsZS1wcm9qZWN0/session_sessionId_fe5e1c67-53e7-4862-81ae-d0e013e3270b/right-panel-browser-opened/desktop-dark.png)    |
-| Git Tab (Right Panel)         | ![](./e2e/snapshots/projects/L2hvbWUvcnVubmVyL3dvcmsvY2xhdWRlLWNvZGUtdmlld2VyL2NsYXVkZS1jb2RlLXZpZXdlci9tb2NrLWdsb2JhbC1jbGF1ZGUtZGlyL3Byb2plY3RzL3NhbXBsZS1wcm9qZWN0/session_sessionId_fe5e1c67-53e7-4862-81ae-d0e013e3270b/right-panel-git-tab-opened/desktop-dark.png)    |
-| Review Panel (Right Panel)    | ![](./e2e/snapshots/projects/L2hvbWUvcnVubmVyL3dvcmsvY2xhdWRlLWNvZGUtdmlld2VyL2NsYXVkZS1jb2RlLXZpZXdlci9tb2NrLWdsb2JhbC1jbGF1ZGUtZGlyL3Byb2plY3RzL3NhbXBsZS1wcm9qZWN0/session_sessionId_fe5e1c67-53e7-4862-81ae-d0e013e3270b/right-panel-review-opened/desktop-dark.png)     |
-| File Diffs (Right Panel)      | ![](./e2e/snapshots/projects/L2hvbWUvcnVubmVyL3dvcmsvY2xhdWRlLWNvZGUtdmlld2VyL2NsYXVkZS1jb2RlLXZpZXdlci9tb2NrLWdsb2JhbC1jbGF1ZGUtZGlyL3Byb2plY3RzL3NhbXBsZS1wcm9qZWN0/session_sessionId_fe5e1c67-53e7-4862-81ae-d0e013e3270b/right-panel-file-diffs-opened/desktop-dark.png) |
-| Settings                      | ![](./e2e/snapshots/projects/L2hvbWUvcnVubmVyL3dvcmsvY2xhdWRlLWNvZGUtdmlld2VyL2NsYXVkZS1jb2RlLXZpZXdlci9tb2NrLWdsb2JhbC1jbGF1ZGUtZGlyL3Byb2plY3RzL3NhbXBsZS1wcm9qZWN0/session_sessionId_fe5e1c67-53e7-4862-81ae-d0e013e3270b/settings-tab/desktop-dark.png)                  |
-| Start New Chat                | ![](./e2e/snapshots/projects/L2hvbWUvcnVubmVyL3dvcmsvY2xhdWRlLWNvZGUtdmlld2VyL2NsYXVkZS1jb2RlLXZpZXdlci9tb2NrLWdsb2JhbC1jbGF1ZGUtZGlyL3Byb2plY3RzL3NhbXBsZS1wcm9qZWN0/session_sessionId_fe5e1c67-53e7-4862-81ae-d0e013e3270b/start-new-chat/desktop-dark.png)                |
-| Projects List                 | ![](./e2e/snapshots/projects/desktop-dark.png)                                                                                                                                                                                                                               |
-| New Project Modal             | ![](./e2e/snapshots/projects/new-project-modal/desktop-dark.png)                                                                                                                                                                                                             |
-| CommandCompletion             | ![](./docs/assets/command_completion.png)                                                                                                                                                                                                                                    |
-| FileCompletion                | ![](./docs/assets/file_completion.png)                                                                                                                                                                                                                                       |
-| Diff Viewer                   | ![](./docs/assets/git_diff.png)                                                                                                                                                                                                                                              |
-
-Note: Additional UI screenshots are available in [/e2e/snapshots/](./e2e/snapshots/)
-
-## Data Source
-
-The application reads Claude Code conversation logs from:
-
-- **Location**: `~/.claude/projects/<project>/<session-id>.jsonl`
-- **Format**: JSONL files containing conversation entries
-- **Auto-detection**: Automatically discovers new projects and sessions
-
-## Requirements
-
-### System Requirements
-
-- **Node.js**: Version 20.19.0 or later
-- **Operating Systems**: macOS and Linux (Windows is not supported)
-
-### Claude Code Compatibility
-
-- **Minimum Version**: Claude Code v1.0.50 or later
-- **Tool Approval Feature**: Requires Claude Code v1.0.82 or later
-- **Agent SDK (start/continue sessions)**: Requires Claude Code v1.0.125 or later
-- **Agent Sub-session Separation**: Requires Claude Code v2.0.28 or later (agent sessions stored in separate `agent-*.jsonl` files)
-
-**Note on Version Support**: Recent versions of Claude Code have adopted more aggressive summarization behavior. To accommodate users who prefer to pin to specific versions, Claude Code Viewer maintains compatibility with Claude Code v1.0.50 and later for the foreseeable future.
-
-### Environment Variables
-
-**CCV_ENV Consideration**: If you have `CCV_ENV=development` set in your environment, the application will start in development mode. For production use, set `CCV_ENV=production` or leave it unset.
+Claude Code Viewer is a **PWA (Progressive Web App)**. On mobile, tap "Add to Home Screen" to get an app-like experience with an optimized UI and push notifications when sessions complete.
 
 ## Configuration
 
@@ -219,6 +122,73 @@ Settings can be configured from the sidebar in Claude Code Viewer.
 | Theme                                | System                       | Toggles between Dark Mode and Light Mode. Default follows system settings.                                                                                                                                                                                                                    |
 | Notifications                        | None                         | Enables sound notifications when running session processes complete. Choose from multiple notification sounds with test playback functionality.                                                                                                                                               |
 | Language                             | System                       | Interface language selection. Supports English, Japanese, and Simplified Chinese with automatic system detection.                                                                                                                                                                             |
+
+### Environment Variables
+
+**CCV_ENV Consideration**: If you have `CCV_ENV=development` set in your environment, the application will start in development mode. For production use, set `CCV_ENV=production` or leave it unset.
+
+## Features
+
+| Feature                 | Description                                                                                                                                                                                                                                                                                                                                                              |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| View Chat Logs          | View Claude Code session logs in real-time through the web UI. Supports historical logs as it uses standard Claude Code logs (~/.claude/projects/...) as the data source                                                                                                                                                                                                 |
+| Search Conversations    | Full-text search across conversations with `⌘K` (macOS) or `Ctrl+K` (Linux). Search within a specific project or across all projects. Features fuzzy matching, prefix search, and keyboard navigation (↑↓ to navigate, Enter to select)                                                                                                                                  |
+| In-page Find            | Jump to any text in the current conversation with a configurable hotkey (`Ctrl+F` / `Command+F`). Cycles through all matches with keyboard navigation                                                                                                                                                                                                                    |
+| Start Conversations     | Start Claude Code sessions directly from Claude Code Viewer. Enjoy core functionality like file/command completion, pause/resume, and tool approval through a superior web experience                                                                                                                                                                                    |
+| Resume Sessions         | Resume conversations directly from existing session logs                                                                                                                                                                                                                                                                                                                 |
+| Continue Sessions       | Claude Code Viewer provides advanced session process control. Sessions started through Claude Code Viewer remain alive (unless aborted), allowing you to continue conversations without resuming (no session-id reassignment)                                                                                                                                            |
+| Create Projects         | Create new projects from Claude Code Viewer. Select a directory through the web UI to execute the `/init` command and begin project setup                                                                                                                                                                                                                                |
+| Session Options Toolbar | Inline toolbar above the chat input for configuring per-project session options: model selection, thinking effort (low/medium/high/max), permission mode, and system prompt preset. Settings persist per project                                                                                                                                                         |
+| Voice Input             | Dictate messages directly in the chat input using the built-in voice input button. Transcribed text is inserted into the input field for review before sending                                                                                                                                                                                                           |
+| File Upload & Preview   | Upload images (PNG, JPEG, GIF, WebP), PDFs, and text files directly from the chat interface. Each file type displays with dedicated preview components—images render inline, PDFs embed with a viewer, and text files show formatted content                                                                                                                             |
+| Clipboard Image Paste   | Paste images directly from the clipboard into the chat input with `Ctrl+V` / `⌘+V`. Pasted images are attached and previewed before sending                                                                                                                                                                                                                              |
+| Chat Draft Saving       | Chat input drafts are automatically saved per project and session. Unsent text is restored when returning to the same conversation                                                                                                                                                                                                                                       |
+| Browser Preview         | Preview web applications directly within Claude Code Viewer. Click the preview button on any URL in chat messages to open a resizable browser panel on the right side. Features include URL input with keyboard navigation, reload functionality, and automatic chat window width adjustment. The embedded browser tracks URL changes as you navigate (same-origin only) |
+| Message Scheduler       | Schedule Claude Code messages using cron expressions for recurring tasks or specific datetime for one-time execution. Supports concurrency control (skip/run) for periodic jobs and auto-deletion for reserved jobs                                                                                                                                                      |
+| Review Changes          | Built-in Git Diff Viewer lets you review all changes directly within Claude Code Viewer. Supports inline diff comments for annotating specific lines                                                                                                                                                                                                                     |
+| Commit Changes          | Execute Git commits directly from the web interface within the Git Diff Viewer                                                                                                                                                                                                                                                                                           |
+| Push Changes            | Push committed changes directly from the Git Diff Viewer. Supports both separate push operations and combined commit-and-push workflows for streamlined deployment                                                                                                                                                                                                       |
+| Branch Switcher         | Switch local Git branches directly from the Git tab (with search and status indicators)                                                                                                                                                                                                                                                                                  |
+| Explorer                | Right panel tab that summarizes edited files with action buttons, groups them by project, lists tool invocations with filters and quick file preview, and shows agent sub-sessions in a dedicated section                                                                                                                                                                |
+| Visual Tool Display     | Tool invocations render with dedicated visual components (e.g. file diffs, structured outputs). A Raw toggle switches to the plain JSON view when needed                                                                                                                                                                                                                 |
+| Todo Viewer             | Extracts the latest `TodoWrite` items from sessions and displays them as inline collapsible checklists directly within the conversation                                                                                                                                                                                                                                  |
+| PR Link Display         | Pull request metadata (title, number, URL) from `pr-link` log entries is rendered as a rich card in the conversation, making it easy to navigate to associated PRs                                                                                                                                                                                                       |
+| Copy Buttons            | Every markdown message includes a copy button to copy the full text content to clipboard with a single click                                                                                                                                                                                                                                                             |
+| Project Switcher        | Quickly jump to any project via the combobox in the header without navigating back to the projects list                                                                                                                                                                                                                                                                  |
+| Inline Approvals        | Tool permission requests and custom questions from the `CCVAskUserQuestion` MCP tool are surfaced as inline panels directly in the chat, removing the need to switch to another window for approval                                                                                                                                                                      |
+| Terminal Panel          | Bottom panel terminal over WebSocket for running shell commands without leaving the UI                                                                                                                                                                                                                                                                                   |
+| MCP Server Viewer       | View MCP server configurations directly in the session sidebar. Lists all configured servers with their names and commands, with real-time reload capability                                                                                                                                                                                                             |
+| PWA Support             | Install Claude Code Viewer as a Progressive Web App on desktop or mobile. Supports home screen installation and push notifications for session completion events                                                                                                                                                                                                         |
+| System Information      | Monitor Claude Code and Claude Code Viewer versions, feature compatibility, and system status                                                                                                                                                                                                                                                                            |
+| Multi-language Support  | Full internationalization support with English, Japanese, and Simplified Chinese language options                                                                                                                                                                                                                                                                        |
+
+## Screenshots
+
+| Feature                       | Capture                                                                                                                                                                                                                                                                      |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BasicChat (Desktop)           | ![](./e2e/snapshots/projects/L2hvbWUvcnVubmVyL3dvcmsvY2xhdWRlLWNvZGUtdmlld2VyL2NsYXVkZS1jb2RlLXZpZXdlci9tb2NrLWdsb2JhbC1jbGF1ZGUtZGlyL3Byb2plY3RzL3NhbXBsZS1wcm9qZWN0/session_sessionId_fe5e1c67-53e7-4862-81ae-d0e013e3270b/desktop-dark.png)                               |
+| BasicChat (Mobile)            | ![](./e2e/snapshots/projects/L2hvbWUvcnVubmVyL3dvcmsvY2xhdWRlLWNvZGUtdmlld2VyL2NsYXVkZS1jb2RlLXZpZXdlci9tb2NrLWdsb2JhbC1jbGF1ZGUtZGlyL3Byb2plY3RzL3NhbXBsZS1wcm9qZWN0/session_sessionId_fe5e1c67-53e7-4862-81ae-d0e013e3270b/mobile-dark.png)                                |
+| Browser Preview (Right Panel) | ![](./e2e/snapshots/projects/L2hvbWUvcnVubmVyL3dvcmsvY2xhdWRlLWNvZGUtdmlld2VyL2NsYXVkZS1jb2RlLXZpZXdlci9tb2NrLWdsb2JhbC1jbGF1ZGUtZGlyL3Byb2plY3RzL3NhbXBsZS1wcm9qZWN0/session_sessionId_fe5e1c67-53e7-4862-81ae-d0e013e3270b/right-panel-browser-opened/desktop-dark.png)    |
+| Git Tab (Right Panel)         | ![](./e2e/snapshots/projects/L2hvbWUvcnVubmVyL3dvcmsvY2xhdWRlLWNvZGUtdmlld2VyL2NsYXVkZS1jb2RlLXZpZXdlci9tb2NrLWdsb2JhbC1jbGF1ZGUtZGlyL3Byb2plY3RzL3NhbXBsZS1wcm9qZWN0/session_sessionId_fe5e1c67-53e7-4862-81ae-d0e013e3270b/right-panel-git-tab-opened/desktop-dark.png)    |
+| Review Panel (Right Panel)    | ![](./e2e/snapshots/projects/L2hvbWUvcnVubmVyL3dvcmsvY2xhdWRlLWNvZGUtdmlld2VyL2NsYXVkZS1jb2RlLXZpZXdlci9tb2NrLWdsb2JhbC1jbGF1ZGUtZGlyL3Byb2plY3RzL3NhbXBsZS1wcm9qZWN0/session_sessionId_fe5e1c67-53e7-4862-81ae-d0e013e3270b/right-panel-review-opened/desktop-dark.png)     |
+| File Diffs (Right Panel)      | ![](./e2e/snapshots/projects/L2hvbWUvcnVubmVyL3dvcmsvY2xhdWRlLWNvZGUtdmlld2VyL2NsYXVkZS1jb2RlLXZpZXdlci9tb2NrLWdsb2JhbC1jbGF1ZGUtZGlyL3Byb2plY3RzL3NhbXBsZS1wcm9qZWN0/session_sessionId_fe5e1c67-53e7-4862-81ae-d0e013e3270b/right-panel-file-diffs-opened/desktop-dark.png) |
+| Settings                      | ![](./e2e/snapshots/projects/L2hvbWUvcnVubmVyL3dvcmsvY2xhdWRlLWNvZGUtdmlld2VyL2NsYXVkZS1jb2RlLXZpZXdlci9tb2NrLWdsb2JhbC1jbGF1ZGUtZGlyL3Byb2plY3RzL3NhbXBsZS1wcm9qZWN0/session_sessionId_fe5e1c67-53e7-4862-81ae-d0e013e3270b/settings-tab/desktop-dark.png)                  |
+| Start New Chat                | ![](./e2e/snapshots/projects/L2hvbWUvcnVubmVyL3dvcmsvY2xhdWRlLWNvZGUtdmlld2VyL2NsYXVkZS1jb2RlLXZpZXdlci9tb2NrLWdsb2JhbC1jbGF1ZGUtZGlyL3Byb2plY3RzL3NhbXBsZS1wcm9qZWN0/session_sessionId_fe5e1c67-53e7-4862-81ae-d0e013e3270b/start-new-chat/desktop-dark.png)                |
+| Projects List                 | ![](./e2e/snapshots/projects/desktop-dark.png)                                                                                                                                                                                                                               |
+| New Project Modal             | ![](./e2e/snapshots/projects/new-project-modal/desktop-dark.png)                                                                                                                                                                                                             |
+| CommandCompletion             | ![](./docs/assets/command_completion.png)                                                                                                                                                                                                                                    |
+| FileCompletion                | ![](./docs/assets/file_completion.png)                                                                                                                                                                                                                                       |
+| Diff Viewer                   | ![](./docs/assets/git_diff.png)                                                                                                                                                                                                                                              |
+
+Note: Additional UI screenshots are available in [/e2e/snapshots/](./e2e/snapshots/)
+
+## Data Source
+
+The application reads Claude Code conversation logs from:
+
+- **Location**: `~/.claude/projects/<project>/<session-id>.jsonl`
+- **Format**: JSONL files containing conversation entries
+- **Auto-detection**: Automatically discovers new projects and sessions
 
 ## Internationalization (i18n)
 

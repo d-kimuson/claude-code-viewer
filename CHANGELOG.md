@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.7.0
+
+### &nbsp;&nbsp;&nbsp;Features
+
+- Translate permission request tool actions to natural language &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(442bc)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/442bc40)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.6.1-beta.4...0.7.0)
+
 ## 0.6.1-beta.4
 
 ### &nbsp;&nbsp;&nbsp;Bug Fixes

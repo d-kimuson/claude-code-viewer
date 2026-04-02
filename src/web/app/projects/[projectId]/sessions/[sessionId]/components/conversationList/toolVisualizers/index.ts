@@ -3,6 +3,7 @@ import { CCVAskUserQuestionVisualizer } from "./CCVAskUserQuestionVisualizer";
 import { EditVisualizer } from "./EditVisualizer";
 import { ReadVisualizer } from "./ReadVisualizer";
 import { TaskVisualizer } from "./TaskVisualizer";
+import { TodoWriteVisualizer } from "./TodoWriteVisualizer";
 import type { ToolVisualizerComponent } from "./types";
 
 const TOOL_VISUALIZERS: Record<string, ToolVisualizerComponent> = {
@@ -11,6 +12,7 @@ const TOOL_VISUALIZERS: Record<string, ToolVisualizerComponent> = {
   Read: ReadVisualizer,
   Task: TaskVisualizer,
   Agent: TaskVisualizer,
+  TodoWrite: TodoWriteVisualizer,
   CCVAskUserQuestion: CCVAskUserQuestionVisualizer,
 };
 

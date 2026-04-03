@@ -15,6 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/web/components/ui/select";
+import { useIsSubscriptionMode } from "@/web/hooks/useIsSubscriptionMode";
 import { useTheme } from "@/web/hooks/useTheme";
 import { projectDetailQuery, projectListQuery } from "@/web/lib/api/queries";
 
@@ -41,6 +42,7 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
 }: SettingsControlsProps) => {
   const [newModelChoice, setNewModelChoice] = useState("");
   const checkboxId = useId();
+  const usageModeId = useId();
   const enterKeyBehaviorId = useId();
   const searchHotkeyId = useId();
   const findHotkeyId = useId();
@@ -50,6 +52,15 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
   const queryClient = useQueryClient();
   const { theme } = useTheme();
   const { i18n } = useLingui();
+  const isSubscriptionMode = useIsSubscriptionMode();
+
+  const isUsageMode = (value: string): value is "subscription" | "api" =>
+    value === "subscription" || value === "api";
+
+  const handleUsageModeChange = (value: string) => {
+    if (!isUsageMode(value)) return;
+    updateConfig({ ...config, usageMode: value });
+  };
 
   const inferredLocale = useMemo(() => {
     return detectLocaleFromNavigator() ?? DEFAULT_LOCALE;
@@ -161,6 +172,43 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
 
   return (
     <div className={`space-y-4 ${className}`}>
+      <div className="space-y-2">
+        {showLabels && (
+          <label htmlFor={usageModeId} className="text-sm font-medium leading-none">
+            <Trans id="settings.usage_mode" message="Usage Mode" />
+          </label>
+        )}
+        <Select value={config?.usageMode ?? ""} onValueChange={handleUsageModeChange}>
+          <SelectTrigger id={usageModeId} className="w-full">
+            <SelectValue
+              placeholder={i18n._({
+                id: "settings.usage_mode.select",
+                message: "Select usage mode",
+              })}
+            />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="subscription">
+              <Trans
+                id="settings.usage_mode.subscription"
+                message="Subscription (Max, Pro, etc.)"
+              />
+            </SelectItem>
+            <SelectItem value="api">
+              <Trans id="settings.usage_mode.api" message="API" />
+            </SelectItem>
+          </SelectContent>
+        </Select>
+        {showDescriptions && (
+          <p className="text-xs text-muted-foreground mt-1">
+            <Trans
+              id="settings.usage_mode.description"
+              message="Select how you use Claude Code. Subscription mode restricts features that require the Agent SDK."
+            />
+          </p>
+        )}
+      </div>
+
       <div className="flex items-center space-x-2">
         <Checkbox
           id={checkboxId}
@@ -203,25 +251,29 @@ export const SettingsControls: FC<SettingsControlsProps> = ({
         </p>
       )}
 
-      <div className="flex items-center space-x-2">
-        <Checkbox
-          id={`${checkboxId}-auto-schedule-continue`}
-          checked={config?.autoScheduleContinueOnRateLimit}
-          onCheckedChange={handleAutoScheduleContinueOnRateLimitChange}
-        />
-        {showLabels && (
-          <label
-            htmlFor={`${checkboxId}-auto-schedule-continue`}
-            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-          >
-            <Trans id="settings.session.auto_schedule_continue_on_rate_limit" />
-          </label>
-        )}
-      </div>
-      {showDescriptions && (
-        <p className="text-xs text-muted-foreground mt-1 ml-6">
-          <Trans id="settings.session.auto_schedule_continue_on_rate_limit.description" />
-        </p>
+      {!isSubscriptionMode && (
+        <>
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id={`${checkboxId}-auto-schedule-continue`}
+              checked={config?.autoScheduleContinueOnRateLimit}
+              onCheckedChange={handleAutoScheduleContinueOnRateLimitChange}
+            />
+            {showLabels && (
+              <label
+                htmlFor={`${checkboxId}-auto-schedule-continue`}
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                <Trans id="settings.session.auto_schedule_continue_on_rate_limit" />
+              </label>
+            )}
+          </div>
+          {showDescriptions && (
+            <p className="text-xs text-muted-foreground mt-1 ml-6">
+              <Trans id="settings.session.auto_schedule_continue_on_rate_limit.description" />
+            </p>
+          )}
+        </>
       )}
 
       <div className="space-y-2">

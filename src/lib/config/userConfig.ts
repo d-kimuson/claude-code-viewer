@@ -14,6 +14,7 @@ export const userConfigSchema = z.object({
   findHotkey: z.enum(["ctrl-f", "command-f"]).optional().default("command-f"),
   autoScheduleContinueOnRateLimit: z.boolean().optional().default(false),
   modelChoices: z.array(z.string()).optional().default(["default", "haiku", "sonnet", "opus"]),
+  usageMode: z.enum(["subscription", "api"]).optional(),
 });
 
 export const defaultUserConfig = userConfigSchema.parse({});

@@ -27,7 +27,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        212
+        227
       ]
     ],
     "translation": "关闭侧边栏"
@@ -135,7 +135,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        444
+        484
       ]
     ],
     "translation": "带补全支持的消息输入"
@@ -146,7 +146,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        201
+        216
       ]
     ],
     "translation": "新建聊天"
@@ -183,7 +183,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        238
+        290
       ]
     ],
     "translation": "选择回车键行为"
@@ -194,7 +194,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        296
+        348
       ]
     ],
     "translation": "选择页内搜索快捷键"
@@ -205,7 +205,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        382
+        434
       ]
     ],
     "translation": "选择语言"
@@ -216,7 +216,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        270
+        322
       ]
     ],
     "translation": "选择搜索快捷键"
@@ -227,7 +227,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        411
+        463
       ]
     ],
     "translation": "选择主题"
@@ -536,7 +536,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        536
+        576
       ]
     ],
     "translation": "附加"
@@ -547,10 +547,34 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/StartNewChat.tsx",
-        59
+        61
       ]
     ],
     "translation": "开始对话"
+  },
+  "chat.copy_command.failed": {
+    "message": "Failed to copy command",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        206
+      ]
+    ],
+    "translation": "复制命令失败"
+  },
+  "chat.copy_command.success": {
+    "message": "Command copied to clipboard",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        199
+      ]
+    ],
+    "translation": "命令已复制到剪贴板"
   },
   "chat.error.send_failed": {
     "placeholders": {},
@@ -558,7 +582,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        410
+        450
       ]
     ],
     "translation": "发送消息失败。请重试。"
@@ -627,7 +651,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/StartNewChat.tsx",
-        39
+        41
       ]
     ],
     "translation": "输入消息...(输入 / 使用命令,@ 使用文件,Command+Enter 发送)"
@@ -643,7 +667,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/StartNewChat.tsx",
-        33
+        35
       ]
     ],
     "translation": "输入消息...(输入 / 使用命令,@ 使用文件,Enter 发送)"
@@ -659,7 +683,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/StartNewChat.tsx",
-        45
+        47
       ]
     ],
     "translation": "输入消息...(输入 / 使用命令,@ 使用文件,Shift+Enter 发送)"
@@ -671,7 +695,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ResumeChat.tsx",
-        44
+        46
       ]
     ],
     "translation": "输入消息...(输入 / 使用命令,@ 使用文件,Command+Enter 发送)"
@@ -683,7 +707,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ResumeChat.tsx",
-        38
+        40
       ]
     ],
     "translation": "输入消息...(输入 / 使用命令,@ 使用文件,Enter 发送)"
@@ -695,7 +719,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ResumeChat.tsx",
-        50
+        52
       ]
     ],
     "translation": "输入消息...(输入 / 使用命令,@ 使用文件,Shift+Enter 发送)"
@@ -742,7 +766,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ResumeChat.tsx",
-        56
+        58
       ]
     ],
     "translation": "继续"
@@ -754,7 +778,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        258
+        296
       ]
     ],
     "translation": "定时发送消息失败"
@@ -766,7 +790,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        242
+        280
       ]
     ],
     "translation": "消息定时发送成功"
@@ -778,7 +802,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        247
+        285
       ]
     ],
     "translation": "您可以在定时任务选项卡中查看和管理"
@@ -800,7 +824,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        489
+        529
       ]
     ],
     "translation": "立即发送"
@@ -811,7 +835,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        474
+        514
       ]
     ],
     "translation": "发送模式"
@@ -822,11 +846,11 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        492
+        532
       ],
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        631
+        671
       ]
     ],
     "translation": "定时发送"
@@ -837,7 +861,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        499
+        539
       ]
     ],
     "translation": "定时发送时间"
@@ -877,7 +901,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        601
+        641
       ]
     ],
     "translation": "选择推理努力程度"
@@ -889,7 +913,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        569
+        609
       ]
     ],
     "translation": "选择模型"
@@ -973,7 +997,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        671
+        711
       ]
     ],
     "translation": "语音输入"
@@ -3386,7 +3410,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        230
+        282
       ]
     ],
     "translation": "回车键行为"
@@ -3397,7 +3421,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        248
+        300
       ]
     ],
     "translation": "使用 Command+Enter 发送"
@@ -3408,7 +3432,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        254
+        306
       ]
     ],
     "translation": "选择消息输入的回车键行为"
@@ -3419,7 +3443,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        245
+        297
       ]
     ],
     "translation": "使用 Enter 发送"
@@ -3430,7 +3454,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        242
+        294
       ]
     ],
     "translation": "使用 Shift+Enter 发送(默认)"
@@ -3441,7 +3465,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        291
+        343
       ]
     ],
     "translation": "页内搜索快捷键"
@@ -3452,7 +3476,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        303
+        355
       ]
     ],
     "translation": "Command+F"
@@ -3463,7 +3487,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        300
+        352
       ]
     ],
     "translation": "Ctrl+F"
@@ -3474,7 +3498,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        309
+        361
       ]
     ],
     "translation": "选择打开页内搜索的快捷键"
@@ -3485,7 +3509,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        262
+        314
       ]
     ],
     "translation": "搜索快捷键"
@@ -3496,7 +3520,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        277
+        329
       ]
     ],
     "translation": "Command+K"
@@ -3507,7 +3531,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        274
+        326
       ]
     ],
     "translation": "Ctrl+K"
@@ -3518,7 +3542,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        283
+        335
       ]
     ],
     "translation": "选择打开搜索对话框的快捷键"
@@ -3529,7 +3553,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        123
+        138
       ],
       [
         "src/web/components/GlobalSidebar.tsx",
@@ -3544,7 +3568,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        377
+        429
       ]
     ],
     "translation": "语言"
@@ -3555,7 +3579,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        398
+        450
       ]
     ],
     "translation": "选择您偏好的语言"
@@ -3566,7 +3590,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        389
+        441
       ]
     ],
     "translation": "英语"
@@ -3577,7 +3601,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        386
+        438
       ]
     ],
     "translation": "日语"
@@ -3588,7 +3612,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        392
+        444
       ]
     ],
     "translation": "简体中文"
@@ -3636,7 +3660,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        366
+        418
       ]
     ],
     "translation": "配置会话工具栏中可用的模型选项"
@@ -3648,7 +3672,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        317
+        369
       ]
     ],
     "translation": "模型选项"
@@ -3660,7 +3684,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        347
+        399
       ]
     ],
     "translation": "添加模型选项..."
@@ -3671,7 +3695,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        138
+        153
       ]
     ],
     "translation": "通知"
@@ -3787,7 +3811,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        217
+        267
       ]
     ],
     "translation": "达到速率限制时自动调度继续"
@@ -3798,7 +3822,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        223
+        273
       ]
     ],
     "translation": "当 Claude 达到速率限制时,自动调度继续消息"
@@ -3809,7 +3833,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        131
+        146
       ]
     ],
     "translation": "会话显示"
@@ -3820,7 +3844,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        175
+        223
       ]
     ],
     "translation": "隐藏无用户消息的会话"
@@ -3831,7 +3855,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        181
+        229
       ]
     ],
     "translation": "仅显示包含用户命令或消息的会话"
@@ -3842,7 +3866,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        196
+        244
       ]
     ],
     "translation": "合并同名会话"
@@ -3853,7 +3877,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        202
+        250
       ]
     ],
     "translation": "当多个会话标题相同时,仅显示最新的会话"
@@ -3887,7 +3911,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        406
+        458
       ]
     ],
     "translation": "主题"
@@ -3898,7 +3922,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        418
+        470
       ]
     ],
     "translation": "深色"
@@ -3909,7 +3933,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        427
+        479
       ]
     ],
     "translation": "选择您偏好的颜色主题"
@@ -3920,7 +3944,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        415
+        467
       ]
     ],
     "translation": "浅色"
@@ -3931,7 +3955,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        421
+        473
       ]
     ],
     "translation": "跟随系统"
@@ -3952,13 +3976,73 @@
     ],
     "translation": "设置"
   },
+  "settings.usage_mode": {
+    "message": "Usage Mode",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        178
+      ]
+    ],
+    "translation": "使用模式"
+  },
+  "settings.usage_mode.api": {
+    "message": "API",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        198
+      ]
+    ],
+    "translation": "API"
+  },
+  "settings.usage_mode.description": {
+    "message": "Select how you use Claude Code. Subscription mode restricts features that require the Agent SDK.",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        204
+      ]
+    ],
+    "translation": "选择您使用Claude Code的方式。订阅模式会限制需要Agent SDK的功能。"
+  },
+  "settings.usage_mode.select": {
+    "message": "Select usage mode",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        184
+      ]
+    ],
+    "translation": "选择使用模式"
+  },
+  "settings.usage_mode.subscription": {
+    "message": "Subscription (Max, Pro, etc.)",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        192
+      ]
+    ],
+    "translation": "订阅 (Max, Pro等)"
+  },
   "sidebar.back.to.projects": {
     "placeholders": {},
     "comments": [],
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        89
+        95
       ]
     ],
     "translation": "返回项目列表"
@@ -4032,7 +4116,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        51
+        53
       ]
     ],
     "translation": "显示 MCP 服务器设置"
@@ -4043,7 +4127,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        63
+        68
       ]
     ],
     "translation": "显示定时任务"
@@ -4054,7 +4138,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        41
+        43
       ]
     ],
     "translation": "显示会话列表"
@@ -4065,7 +4149,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        57
+        59
       ]
     ],
     "translation": "显示任务列表"
@@ -4076,7 +4160,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        47
+        62
       ]
     ],
     "translation": "MCP"
@@ -4088,7 +4172,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        180
+        195
       ]
     ],
     "translation": "项目列表"
@@ -4099,7 +4183,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        49
+        64
       ]
     ],
     "translation": "调度器"
@@ -4110,7 +4194,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        46
+        61
       ]
     ],
     "translation": "会话列表"
@@ -4121,7 +4205,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        50
+        65
       ]
     ],
     "translation": "设置"
@@ -4132,7 +4216,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        51
+        66
       ]
     ],
     "translation": "系统信息"
@@ -4143,7 +4227,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        48
+        63
       ]
     ],
     "translation": "任务列表"
@@ -4364,6 +4448,78 @@
       ]
     ],
     "translation": "Claude Code Viewer"
+  },
+  "usage_mode.api.description": {
+    "message": "You use Claude Code with API keys. All features are available.",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/components/UsageModeDialog.tsx",
+        75
+      ]
+    ],
+    "translation": "使用API密钥来使用Claude Code。所有功能均可用。"
+  },
+  "usage_mode.api.label": {
+    "message": "API",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/components/UsageModeDialog.tsx",
+        71
+      ]
+    ],
+    "translation": "API"
+  },
+  "usage_mode.dialog.description": {
+    "message": "Please select your usage mode. You can change this later in settings.",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/components/UsageModeDialog.tsx",
+        36
+      ]
+    ],
+    "translation": "请选择您的使用模式。您可以稍后在设置中更改。"
+  },
+  "usage_mode.dialog.title": {
+    "message": "How do you use Claude Code?",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/components/UsageModeDialog.tsx",
+        33
+      ]
+    ],
+    "translation": "您如何使用Claude Code？"
+  },
+  "usage_mode.subscription.description": {
+    "message": "You use Claude Code with a subscription plan (Max, Pro, etc.). Some features that require the Agent SDK will be restricted.",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/components/UsageModeDialog.tsx",
+        56
+      ]
+    ],
+    "translation": "使用订阅计划（Max、Pro等）来使用Claude Code。需要Agent SDK的部分功能将受到限制。"
+  },
+  "usage_mode.subscription.label": {
+    "message": "Subscription",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/components/UsageModeDialog.tsx",
+        52
+      ]
+    ],
+    "translation": "订阅"
   },
   "user.content.document.pdf": {
     "placeholders": {},

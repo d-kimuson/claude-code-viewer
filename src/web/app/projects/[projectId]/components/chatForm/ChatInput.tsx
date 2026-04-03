@@ -2,6 +2,7 @@ import { Trans, useLingui } from "@lingui/react";
 import {
   AlertCircleIcon,
   CalendarClockIcon,
+  CopyIcon,
   LoaderIcon,
   MicIcon,
   MicOffIcon,
@@ -17,6 +18,7 @@ import type {
   DocumentBlockParam,
   ImageBlockParam,
 } from "@/server/core/claude-code/schema";
+import { buildClaudeCommand } from "@/web/lib/claude-command";
 import { Button } from "../../../../../components/ui/button";
 import { Input } from "../../../../../components/ui/input";
 import { Label } from "../../../../../components/ui/label";
@@ -48,7 +50,7 @@ export type MessageInput = {
 
 export type ChatInputProps = {
   projectId: string;
-  onSubmit: (input: MessageInput) => Promise<void>;
+  onSubmit?: (input: MessageInput) => Promise<void>;
   isPending: boolean;
   error?: Error | null;
   placeholder: string;
@@ -64,6 +66,8 @@ export type ChatInputProps = {
   enableCCOptions?: boolean;
   ccOptions?: CCOptionsSchema;
   onCCOptionsChange?: (value: CCOptionsSchema | undefined) => void;
+  /** When true, the send button copies a CLI command to clipboard instead of submitting. */
+  copyCommandMode?: boolean;
 };
 
 export const ChatInput: FC<ChatInputProps> = ({
@@ -83,6 +87,7 @@ export const ChatInput: FC<ChatInputProps> = ({
   enableCCOptions = false,
   ccOptions,
   onCCOptionsChange,
+  copyCommandMode = false,
 }) => {
   // Parse minHeight prop to get pixel value (default to 48px for 1.5 lines)
   // Supports both "200px" and Tailwind format like "min-h-[200px]"
@@ -178,7 +183,40 @@ export const ChatInput: FC<ChatInputProps> = ({
     setAttachedFiles((prev) => [...prev, ...newFiles]);
   };
 
+  const handleCopyCommand = async () => {
+    if (!message.trim()) return;
+    if (disabled || sendDisabled) return;
+
+    const command = buildClaudeCommand({
+      text: message,
+      sessionId: baseSessionId ?? undefined,
+      ccOptions,
+    });
+
+    try {
+      await navigator.clipboard.writeText(command);
+      toast.success(
+        i18n._({
+          id: "chat.copy_command.success",
+          message: "Command copied to clipboard",
+        }),
+      );
+    } catch {
+      toast.error(
+        i18n._({
+          id: "chat.copy_command.failed",
+          message: "Failed to copy command",
+        }),
+      );
+    }
+  };
+
   const handleSubmit = async () => {
+    if (copyCommandMode) {
+      await handleCopyCommand();
+      return;
+    }
+
     if (!message.trim() && attachedFiles.length === 0) return;
     if (isPending || disabled || sendDisabled) return;
 
@@ -266,12 +304,14 @@ export const ChatInput: FC<ChatInputProps> = ({
       }
     } else {
       // Immediate send
-      await onSubmit({
-        text: message,
-        images: images.length > 0 ? images : undefined,
-        documents: documents.length > 0 ? documents : undefined,
-        ccOptions,
-      });
+      if (onSubmit !== undefined) {
+        await onSubmit({
+          text: message,
+          images: images.length > 0 ? images : undefined,
+          documents: documents.length > 0 ? documents : undefined,
+          ccOptions,
+        });
+      }
 
       clearMessage();
       setAttachedFiles([]);
@@ -688,6 +728,8 @@ export const ChatInput: FC<ChatInputProps> = ({
                 >
                   {isPending ? (
                     <LoaderIcon className="w-4 h-4 animate-spin" />
+                  ) : copyCommandMode ? (
+                    <CopyIcon className="w-4 h-4" />
                   ) : (
                     <SendIcon className="w-4 h-4" />
                   )}

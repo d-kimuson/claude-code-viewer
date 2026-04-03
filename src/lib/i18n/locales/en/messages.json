@@ -27,7 +27,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        212
+        227
       ]
     ],
     "translation": "Close Sidebar"
@@ -135,7 +135,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        444
+        484
       ]
     ],
     "translation": "Message input with autocomplete support"
@@ -146,7 +146,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        201
+        216
       ]
     ],
     "translation": "New Chat"
@@ -183,7 +183,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        238
+        290
       ]
     ],
     "translation": "Select Enter key behavior"
@@ -194,7 +194,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        296
+        348
       ]
     ],
     "translation": "Select Find Hotkey"
@@ -205,7 +205,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        382
+        434
       ]
     ],
     "translation": "Select Language"
@@ -216,7 +216,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        270
+        322
       ]
     ],
     "translation": "Select Search Hotkey"
@@ -227,7 +227,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        411
+        463
       ]
     ],
     "translation": "Select Theme"
@@ -536,7 +536,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        536
+        576
       ]
     ],
     "translation": "Attach"
@@ -547,10 +547,34 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/StartNewChat.tsx",
-        59
+        61
       ]
     ],
     "translation": "Start Chat"
+  },
+  "chat.copy_command.failed": {
+    "message": "Failed to copy command",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        206
+      ]
+    ],
+    "translation": "Failed to copy command"
+  },
+  "chat.copy_command.success": {
+    "message": "Command copied to clipboard",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
+        199
+      ]
+    ],
+    "translation": "Command copied to clipboard"
   },
   "chat.error.send_failed": {
     "placeholders": {},
@@ -558,7 +582,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        410
+        450
       ]
     ],
     "translation": "Failed to send message. Please try again."
@@ -627,7 +651,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/StartNewChat.tsx",
-        39
+        41
       ]
     ],
     "translation": "Type your message... (Start with / for commands, @ for files, Command+Enter to send)"
@@ -643,7 +667,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/StartNewChat.tsx",
-        33
+        35
       ]
     ],
     "translation": "Type your message... (Start with / for commands, @ for files, Enter to send)"
@@ -659,7 +683,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/StartNewChat.tsx",
-        45
+        47
       ]
     ],
     "translation": "Type your message... (Start with / for commands, @ for files, Shift+Enter to send)"
@@ -671,7 +695,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ResumeChat.tsx",
-        44
+        46
       ]
     ],
     "translation": "Type your message... (Start with / for commands, @ for files, Command+Enter to send)"
@@ -683,7 +707,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ResumeChat.tsx",
-        38
+        40
       ]
     ],
     "translation": "Type your message... (Start with / for commands, @ for files, Enter to send)"
@@ -695,7 +719,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ResumeChat.tsx",
-        50
+        52
       ]
     ],
     "translation": "Type your message... (Start with / for commands, @ for files, Shift+Enter to send)"
@@ -742,7 +766,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ResumeChat.tsx",
-        56
+        58
       ]
     ],
     "translation": "Resume"
@@ -754,7 +778,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        258
+        296
       ]
     ],
     "translation": "Failed to schedule message"
@@ -766,7 +790,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        242
+        280
       ]
     ],
     "translation": "Message scheduled successfully"
@@ -778,7 +802,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        247
+        285
       ]
     ],
     "translation": "You can view and manage it in the Scheduler tab"
@@ -800,7 +824,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        489
+        529
       ]
     ],
     "translation": "Send Now"
@@ -811,7 +835,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        474
+        514
       ]
     ],
     "translation": "Send Mode"
@@ -822,11 +846,11 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        492
+        532
       ],
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        631
+        671
       ]
     ],
     "translation": "Schedule Send"
@@ -837,7 +861,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        499
+        539
       ]
     ],
     "translation": "Scheduled Send Time"
@@ -877,7 +901,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        601
+        641
       ]
     ],
     "translation": "Select reasoning effort"
@@ -889,7 +913,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        569
+        609
       ]
     ],
     "translation": "Select model"
@@ -973,7 +997,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        671
+        711
       ]
     ],
     "translation": "Voice input"
@@ -3386,7 +3410,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        230
+        282
       ]
     ],
     "translation": "Enter Key Behavior"
@@ -3397,7 +3421,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        248
+        300
       ]
     ],
     "translation": "Send with Command+Enter"
@@ -3408,7 +3432,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        254
+        306
       ]
     ],
     "translation": "Select Enter key behavior for message input"
@@ -3419,7 +3443,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        245
+        297
       ]
     ],
     "translation": "Send with Enter"
@@ -3430,7 +3454,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        242
+        294
       ]
     ],
     "translation": "Send with Shift+Enter (Default)"
@@ -3441,7 +3465,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        291
+        343
       ]
     ],
     "translation": "Find Hotkey"
@@ -3452,7 +3476,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        303
+        355
       ]
     ],
     "translation": "Command+F"
@@ -3463,7 +3487,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        300
+        352
       ]
     ],
     "translation": "Ctrl+F"
@@ -3474,7 +3498,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        309
+        361
       ]
     ],
     "translation": "Select the hotkey to open in-page find"
@@ -3485,7 +3509,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        262
+        314
       ]
     ],
     "translation": "Search Hotkey"
@@ -3496,7 +3520,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        277
+        329
       ]
     ],
     "translation": "Command+K"
@@ -3507,7 +3531,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        274
+        326
       ]
     ],
     "translation": "Ctrl+K"
@@ -3518,7 +3542,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        283
+        335
       ]
     ],
     "translation": "Select the hotkey to open search dialog"
@@ -3529,7 +3553,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        123
+        138
       ],
       [
         "src/web/components/GlobalSidebar.tsx",
@@ -3544,7 +3568,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        377
+        429
       ]
     ],
     "translation": "Language"
@@ -3555,7 +3579,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        398
+        450
       ]
     ],
     "translation": "Select your preferred language"
@@ -3566,7 +3590,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        389
+        441
       ]
     ],
     "translation": "English"
@@ -3577,7 +3601,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        386
+        438
       ]
     ],
     "translation": "Japanese"
@@ -3588,7 +3612,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        392
+        444
       ]
     ],
     "translation": "Chinese (Simplified)"
@@ -3636,7 +3660,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        366
+        418
       ]
     ],
     "translation": "Configure the model options available in the session toolbar"
@@ -3648,7 +3672,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        317
+        369
       ]
     ],
     "translation": "Model Choices"
@@ -3660,7 +3684,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        347
+        399
       ]
     ],
     "translation": "Add model choice..."
@@ -3671,7 +3695,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        138
+        153
       ]
     ],
     "translation": "Notifications"
@@ -3787,7 +3811,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        217
+        267
       ]
     ],
     "translation": "Auto-schedule Continue on Rate Limit"
@@ -3798,7 +3822,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        223
+        273
       ]
     ],
     "translation": "Automatically schedule a continue message when Claude hits rate limits"
@@ -3809,7 +3833,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        131
+        146
       ]
     ],
     "translation": "Session Display"
@@ -3820,7 +3844,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        175
+        223
       ]
     ],
     "translation": "Hide Sessions Without User Messages"
@@ -3831,7 +3855,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        181
+        229
       ]
     ],
     "translation": "Show only sessions that contain user commands or messages"
@@ -3842,7 +3866,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        196
+        244
       ]
     ],
     "translation": "Unify Sessions with Same Title"
@@ -3853,7 +3877,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        202
+        250
       ]
     ],
     "translation": "When multiple sessions have the same title, show only the latest session"
@@ -3887,7 +3911,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        406
+        458
       ]
     ],
     "translation": "Theme"
@@ -3898,7 +3922,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        418
+        470
       ]
     ],
     "translation": "Dark"
@@ -3909,7 +3933,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        427
+        479
       ]
     ],
     "translation": "Select your preferred color theme"
@@ -3920,7 +3944,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        415
+        467
       ]
     ],
     "translation": "Light"
@@ -3931,7 +3955,7 @@
     "origin": [
       [
         "src/web/components/SettingsControls.tsx",
-        421
+        473
       ]
     ],
     "translation": "System"
@@ -3952,13 +3976,73 @@
     ],
     "translation": "Settings"
   },
+  "settings.usage_mode": {
+    "message": "Usage Mode",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        178
+      ]
+    ],
+    "translation": "Usage Mode"
+  },
+  "settings.usage_mode.api": {
+    "message": "API",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        198
+      ]
+    ],
+    "translation": "API"
+  },
+  "settings.usage_mode.description": {
+    "message": "Select how you use Claude Code. Subscription mode restricts features that require the Agent SDK.",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        204
+      ]
+    ],
+    "translation": "Select how you use Claude Code. Subscription mode restricts features that require the Agent SDK."
+  },
+  "settings.usage_mode.select": {
+    "message": "Select usage mode",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        184
+      ]
+    ],
+    "translation": "Select usage mode"
+  },
+  "settings.usage_mode.subscription": {
+    "message": "Subscription (Max, Pro, etc.)",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/components/SettingsControls.tsx",
+        192
+      ]
+    ],
+    "translation": "Subscription (Max, Pro, etc.)"
+  },
   "sidebar.back.to.projects": {
     "placeholders": {},
     "comments": [],
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        89
+        95
       ]
     ],
     "translation": "Back to Projects"
@@ -4032,7 +4116,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        51
+        53
       ]
     ],
     "translation": "Show MCP Server Settings"
@@ -4043,7 +4127,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        63
+        68
       ]
     ],
     "translation": "Show Scheduler Jobs"
@@ -4054,7 +4138,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        41
+        43
       ]
     ],
     "translation": "Show Session List"
@@ -4065,7 +4149,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        57
+        59
       ]
     ],
     "translation": "Show task list"
@@ -4076,7 +4160,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        47
+        62
       ]
     ],
     "translation": "MCP"
@@ -4088,7 +4172,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        180
+        195
       ]
     ],
     "translation": "Projects"
@@ -4099,7 +4183,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        49
+        64
       ]
     ],
     "translation": "Scheduler"
@@ -4110,7 +4194,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        46
+        61
       ]
     ],
     "translation": "Sessions"
@@ -4121,7 +4205,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        50
+        65
       ]
     ],
     "translation": "Settings"
@@ -4132,7 +4216,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        51
+        66
       ]
     ],
     "translation": "System Info"
@@ -4143,7 +4227,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        48
+        63
       ]
     ],
     "translation": "Tasks"
@@ -4364,6 +4448,78 @@
       ]
     ],
     "translation": "Claude Code Viewer"
+  },
+  "usage_mode.api.description": {
+    "message": "You use Claude Code with API keys. All features are available.",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/components/UsageModeDialog.tsx",
+        75
+      ]
+    ],
+    "translation": "You use Claude Code with API keys. All features are available."
+  },
+  "usage_mode.api.label": {
+    "message": "API",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/components/UsageModeDialog.tsx",
+        71
+      ]
+    ],
+    "translation": "API"
+  },
+  "usage_mode.dialog.description": {
+    "message": "Please select your usage mode. You can change this later in settings.",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/components/UsageModeDialog.tsx",
+        36
+      ]
+    ],
+    "translation": "Please select your usage mode. You can change this later in settings."
+  },
+  "usage_mode.dialog.title": {
+    "message": "How do you use Claude Code?",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/components/UsageModeDialog.tsx",
+        33
+      ]
+    ],
+    "translation": "How do you use Claude Code?"
+  },
+  "usage_mode.subscription.description": {
+    "message": "You use Claude Code with a subscription plan (Max, Pro, etc.). Some features that require the Agent SDK will be restricted.",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/components/UsageModeDialog.tsx",
+        56
+      ]
+    ],
+    "translation": "You use Claude Code with a subscription plan (Max, Pro, etc.). Some features that require the Agent SDK will be restricted."
+  },
+  "usage_mode.subscription.label": {
+    "message": "Subscription",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/components/UsageModeDialog.tsx",
+        52
+      ]
+    ],
+    "translation": "Subscription"
   },
   "user.content.document.pdf": {
     "placeholders": {},

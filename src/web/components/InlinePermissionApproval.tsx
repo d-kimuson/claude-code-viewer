@@ -1,8 +1,19 @@
-import { Check, ChevronDown, ChevronRight, Copy, ShieldAlert, X } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import {
+  Check,
+  ChevronDown,
+  ChevronRight,
+  Copy,
+  Loader2,
+  ShieldAlert,
+  ShieldCheck,
+  X,
+} from "lucide-react";
 import { type FC, useState } from "react";
 import { formatLocaleDate } from "@/lib/date/formatLocaleDate";
 import type { PermissionRequest, PermissionResponse } from "@/types/permissions";
 import { useConfig } from "@/web/app/hooks/useConfig";
+import { getToolVisualizer } from "@/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/toolVisualizers";
 import { Badge } from "@/web/components/ui/badge";
 import { Button } from "@/web/components/ui/button";
 import {
@@ -10,6 +21,12 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/web/components/ui/collapsible";
+import { Input } from "@/web/components/ui/input";
+import { generatePermissionRuleQuery } from "@/web/lib/api/queries";
+
+type AlwaysAllowState =
+  | { status: "idle" }
+  | { status: "editing"; rule: string; scope: "session" | "project" };
 
 type InlinePermissionApprovalProps = {
   permissionRequest: PermissionRequest | null;
@@ -328,13 +345,164 @@ const ParameterEntry: FC<{ paramKey: string; value: unknown }> = ({ paramKey, va
   );
 };
 
+const AlwaysAllowPanel: FC<{
+  permissionRequest: PermissionRequest;
+  alwaysAllowState: AlwaysAllowState & { status: "editing" };
+  onChangeRule: (rule: string) => void;
+  onChangeScope: (scope: "session" | "project") => void;
+  onCancel: () => void;
+  onConfirm: () => void;
+  isResponding: boolean;
+  isLoadingRule: boolean;
+}> = ({
+  permissionRequest: _permissionRequest,
+  alwaysAllowState,
+  onChangeRule,
+  onChangeScope,
+  onCancel,
+  onConfirm,
+  isResponding,
+  isLoadingRule,
+}) => (
+  <div className="rounded-lg border border-border/60 p-3.5 space-y-3 bg-muted/20">
+    <div className="flex items-center gap-2">
+      <ShieldCheck className="size-4 text-orange-500" />
+      <span className="text-sm font-medium">Always Allow Rule</span>
+    </div>
+
+    <div className="space-y-2">
+      {isLoadingRule ? (
+        <div className="flex items-center gap-2 py-2 text-xs text-muted-foreground">
+          <Loader2 className="size-3.5 animate-spin" />
+          Generating rule...
+        </div>
+      ) : (
+        <Input
+          value={alwaysAllowState.rule}
+          onChange={(e) => onChangeRule(e.target.value)}
+          className="font-mono text-xs h-8"
+          placeholder="Permission rule..."
+        />
+      )}
+
+      <div className="flex items-center gap-1.5">
+        <span className="text-xs text-muted-foreground mr-1">Scope:</span>
+        <Button
+          variant={alwaysAllowState.scope === "session" ? "default" : "outline"}
+          size="sm"
+          className="h-6 px-2.5 text-xs"
+          onClick={() => onChangeScope("session")}
+        >
+          Session
+        </Button>
+        <Button
+          variant={alwaysAllowState.scope === "project" ? "default" : "outline"}
+          size="sm"
+          className="h-6 px-2.5 text-xs"
+          onClick={() => onChangeScope("project")}
+        >
+          Project
+        </Button>
+      </div>
+    </div>
+
+    <div className="flex gap-2 justify-end">
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={onCancel}
+        disabled={isResponding}
+        className="h-7 text-xs"
+      >
+        Cancel
+      </Button>
+      <Button
+        size="sm"
+        onClick={onConfirm}
+        disabled={isResponding || isLoadingRule || alwaysAllowState.rule.trim() === ""}
+        className="h-7 text-xs gap-1.5"
+      >
+        <ShieldCheck className="size-3" />
+        Confirm
+      </Button>
+    </div>
+  </div>
+);
+
+const ToolVisualizerOrParameters: FC<{
+  permissionRequest: PermissionRequest;
+}> = ({ permissionRequest }) => {
+  const [isParametersExpanded, setIsParametersExpanded] = useState(false);
+  const parameterEntries = Object.entries(permissionRequest.toolInput);
+  const hasParameters = parameterEntries.length > 0;
+
+  const Visualizer = getToolVisualizer(permissionRequest.toolName);
+
+  if (Visualizer !== undefined) {
+    return (
+      <div className="rounded-lg border border-border/60 overflow-hidden max-h-64 overflow-y-auto">
+        <Visualizer
+          input={permissionRequest.toolInput}
+          output={undefined}
+          toolUseResult={undefined}
+        />
+      </div>
+    );
+  }
+
+  if (hasParameters) {
+    return (
+      <div className="rounded-lg border border-border/60 overflow-hidden">
+        <Collapsible open={isParametersExpanded} onOpenChange={setIsParametersExpanded}>
+          <CollapsibleTrigger className="flex w-full items-center justify-between px-3.5 py-2.5 hover:bg-muted/40 transition-colors">
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium">Parameters</span>
+              <Badge variant="outline" className="text-[11px] font-mono">
+                {parameterEntries.length}
+              </Badge>
+            </div>
+            {isParametersExpanded ? (
+              <ChevronDown className="size-4 text-muted-foreground" />
+            ) : (
+              <ChevronRight className="size-4 text-muted-foreground" />
+            )}
+          </CollapsibleTrigger>
+
+          <CollapsibleContent>
+            <div className="px-3.5 pb-3.5 pt-0.5 space-y-3 max-h-48 overflow-y-auto border-t border-border/40">
+              {parameterEntries.map(([key, value]) => (
+                <ParameterEntry key={key} paramKey={key} value={value} />
+              ))}
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
+      </div>
+    );
+  }
+
+  return (
+    <div className="rounded-lg border border-border/60 px-3.5 py-2.5 text-center text-sm text-muted-foreground">
+      No parameters
+    </div>
+  );
+};
+
 export const InlinePermissionApproval: FC<InlinePermissionApprovalProps> = ({
   permissionRequest,
   onResponse,
 }) => {
   const [isResponding, setIsResponding] = useState(false);
-  const [isParametersExpanded, setIsParametersExpanded] = useState(false);
+  const [alwaysAllowState, setAlwaysAllowState] = useState<AlwaysAllowState>({ status: "idle" });
   const { config } = useConfig();
+
+  const ruleQuery = useQuery({
+    ...generatePermissionRuleQuery(
+      permissionRequest?.toolName ?? "",
+      permissionRequest?.toolInput ?? {},
+      permissionRequest?.projectId ?? "",
+    ),
+    enabled: permissionRequest !== null && alwaysAllowState.status === "editing",
+  });
 
   if (!permissionRequest) return null;
 
@@ -353,8 +521,44 @@ export const InlinePermissionApproval: FC<InlinePermissionApprovalProps> = ({
     }
   };
 
-  const parameterEntries = Object.entries(permissionRequest.toolInput);
-  const hasParameters = parameterEntries.length > 0;
+  const handleAlwaysAllowClick = () => {
+    setAlwaysAllowState({ status: "editing", rule: "", scope: "session" });
+  };
+
+  const handleAlwaysAllowConfirm = async () => {
+    if (alwaysAllowState.status !== "editing") return;
+
+    setIsResponding(true);
+
+    const response: PermissionResponse = {
+      permissionRequestId: permissionRequest.id,
+      decision: "always_allow",
+      alwaysAllowRule: alwaysAllowState.rule,
+      alwaysAllowScope: alwaysAllowState.scope,
+    };
+
+    try {
+      await onResponse(response);
+    } finally {
+      setIsResponding(false);
+      setAlwaysAllowState({ status: "idle" });
+    }
+  };
+
+  // Sync fetched rule into local state when query completes
+  const fetchedRule =
+    ruleQuery.data !== undefined && "rule" in ruleQuery.data ? (ruleQuery.data.rule ?? "") : "";
+  const shouldSyncRule =
+    alwaysAllowState.status === "editing" &&
+    alwaysAllowState.rule === "" &&
+    typeof fetchedRule === "string" &&
+    fetchedRule !== "";
+
+  if (shouldSyncRule) {
+    setAlwaysAllowState((prev) =>
+      prev.status === "editing" && prev.rule === "" ? { ...prev, rule: fetchedRule } : prev,
+    );
+  }
 
   return (
     <div className="mx-4 sm:mx-6 md:mx-8 lg:mx-12 xl:mx-16 mb-3 animate-in fade-in slide-in-from-bottom-2 duration-300">
@@ -388,39 +592,29 @@ export const InlinePermissionApproval: FC<InlinePermissionApprovalProps> = ({
             </Badge>
           </div>
 
-          {/* Parameters Section */}
-          {hasParameters && (
-            <div className="rounded-lg border border-border/60 overflow-hidden">
-              <Collapsible open={isParametersExpanded} onOpenChange={setIsParametersExpanded}>
-                <CollapsibleTrigger className="flex w-full items-center justify-between px-3.5 py-2.5 hover:bg-muted/40 transition-colors">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium">Parameters</span>
-                    <Badge variant="outline" className="text-[11px] font-mono">
-                      {parameterEntries.length}
-                    </Badge>
-                  </div>
-                  {isParametersExpanded ? (
-                    <ChevronDown className="size-4 text-muted-foreground" />
-                  ) : (
-                    <ChevronRight className="size-4 text-muted-foreground" />
-                  )}
-                </CollapsibleTrigger>
+          {/* Tool Visualizer or Parameters Section */}
+          <ToolVisualizerOrParameters permissionRequest={permissionRequest} />
 
-                <CollapsibleContent>
-                  <div className="px-3.5 pb-3.5 pt-0.5 space-y-3 max-h-48 overflow-y-auto border-t border-border/40">
-                    {parameterEntries.map(([key, value]) => (
-                      <ParameterEntry key={key} paramKey={key} value={value} />
-                    ))}
-                  </div>
-                </CollapsibleContent>
-              </Collapsible>
-            </div>
-          )}
-
-          {!hasParameters && (
-            <div className="rounded-lg border border-border/60 px-3.5 py-2.5 text-center text-sm text-muted-foreground">
-              No parameters
-            </div>
+          {/* Always Allow expanded panel */}
+          {alwaysAllowState.status === "editing" && (
+            <AlwaysAllowPanel
+              permissionRequest={permissionRequest}
+              alwaysAllowState={alwaysAllowState}
+              onChangeRule={(rule) =>
+                setAlwaysAllowState((prev) =>
+                  prev.status === "editing" ? { ...prev, rule } : prev,
+                )
+              }
+              onChangeScope={(scope) =>
+                setAlwaysAllowState((prev) =>
+                  prev.status === "editing" ? { ...prev, scope } : prev,
+                )
+              }
+              onCancel={() => setAlwaysAllowState({ status: "idle" })}
+              onConfirm={() => void handleAlwaysAllowConfirm()}
+              isResponding={isResponding}
+              isLoadingRule={ruleQuery.isLoading}
+            />
           )}
 
           {/* Action Buttons */}
@@ -435,6 +629,18 @@ export const InlinePermissionApproval: FC<InlinePermissionApprovalProps> = ({
               <X className="size-3.5" />
               Deny
             </Button>
+            {alwaysAllowState.status === "idle" && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleAlwaysAllowClick}
+                disabled={isResponding}
+                className="min-w-[4.5rem] gap-1.5"
+              >
+                <ShieldCheck className="size-3.5" />
+                Always Allow
+              </Button>
+            )}
             <Button
               size="sm"
               onClick={() => void handleResponse("allow")}

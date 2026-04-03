@@ -15,6 +15,7 @@ import { ClaudeCodeLifeCycleService } from "./core/claude-code/services/ClaudeCo
 import { ClaudeCodePermissionService } from "./core/claude-code/services/ClaudeCodePermissionService.ts";
 import { ClaudeCodeService } from "./core/claude-code/services/ClaudeCodeService.ts";
 import { ClaudeCodeSessionProcessService } from "./core/claude-code/services/ClaudeCodeSessionProcessService.ts";
+import { ProjectSettingsService } from "./core/claude-code/services/ProjectSettingsService.ts";
 import { SSEController } from "./core/events/presentation/SSEController.ts";
 import { FileWatcherService } from "./core/events/services/fileWatcher.ts";
 import { FeatureFlagController } from "./core/feature-flag/presentation/FeatureFlagController.ts";
@@ -155,7 +156,7 @@ const DomainBase = Layer.mergeAll(
   SchedulerConfigBaseDir.Live,
   SearchService.Live,
   TasksService.Live,
-);
+).pipe(Layer.provideMerge(ProjectSettingsService.Live));
 
 const DomainLayer = ClaudeCodeLifeCycleService.Live.pipe(Layer.provideMerge(DomainBase));
 

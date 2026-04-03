@@ -370,6 +370,26 @@ export const pendingPermissionRequestsQuery = {
   },
 } as const;
 
+export const generatePermissionRuleQuery = (
+  toolName: string,
+  toolInput: Record<string, unknown>,
+  projectId: string,
+) =>
+  ({
+    queryKey: ["generate-permission-rule", toolName, toolInput, projectId],
+    queryFn: async () => {
+      const response = await honoClient.api["claude-code"]["generate-permission-rule"].$post({
+        json: { toolName, toolInput, projectId },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to generate permission rule");
+      }
+
+      return await response.json();
+    },
+  }) as const;
+
 export const pendingQuestionRequestsQuery = {
   queryKey: ["pending-question-requests"],
   queryFn: async () => {

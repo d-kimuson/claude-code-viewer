@@ -10,6 +10,7 @@ import { EventBus } from "../../events/services/EventBus.ts";
 import { matchAnyRule } from "../functions/permissionRule.ts";
 import { SessionAllowlistRepository } from "../infrastructure/SessionAllowlistRepository.ts";
 import * as ClaudeCode from "../models/ClaudeCode.ts";
+import { ProjectSettingsService } from "./ProjectSettingsService.ts";
 
 const LayerImpl = Effect.gen(function* () {
   const pendingPermissionRequestsRef = yield* Ref.make<Map<string, PermissionRequest>>(new Map());
@@ -18,6 +19,7 @@ const LayerImpl = Effect.gen(function* () {
   );
   const eventBus = yield* EventBus;
   const sessionAllowlistRepository = yield* SessionAllowlistRepository;
+  const projectSettingsService = yield* ProjectSettingsService;
   const { db } = yield* DrizzleService;
 
   /**
@@ -168,12 +170,27 @@ const LayerImpl = Effect.gen(function* () {
           request !== undefined &&
           response.alwaysAllowRule !== undefined
         ) {
+          const rule = response.alwaysAllowRule;
+
           if (response.alwaysAllowScope === "session") {
-            yield* sessionAllowlistRepository.addRule(request.sessionId, response.alwaysAllowRule);
+            yield* sessionAllowlistRepository.addRule(request.sessionId, rule);
           } else if (response.alwaysAllowScope === "project") {
-            // TODO: Implement project-level permission rule persistence via ProjectSettingsService
-            // For now, fall back to session-level storage
-            yield* sessionAllowlistRepository.addRule(request.sessionId, response.alwaysAllowRule);
+            const projectPath = yield* resolveProjectCwd(request.projectId);
+            if (projectPath !== null) {
+              yield* projectSettingsService.addProjectPermissionRule(projectPath, rule).pipe(
+                Effect.catchAll((error) =>
+                  Effect.gen(function* () {
+                    yield* Effect.logWarning(
+                      `Failed to persist project permission rule, falling back to session: ${String(error)}`,
+                    );
+                    yield* sessionAllowlistRepository.addRule(request.sessionId, rule);
+                  }),
+                ),
+              );
+            } else {
+              // Project path not found — fall back to session-level storage
+              yield* sessionAllowlistRepository.addRule(request.sessionId, rule);
+            }
           }
         }
 

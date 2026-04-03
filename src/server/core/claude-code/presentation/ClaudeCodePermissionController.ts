@@ -1,11 +1,16 @@
+import { eq } from "drizzle-orm";
 import { Context, Effect, Layer } from "effect";
 import type { PermissionResponse } from "../../../../types/permissions.ts";
+import { DrizzleService } from "../../../lib/db/DrizzleService.ts";
+import { projects } from "../../../lib/db/schema.ts";
 import type { ControllerResponse } from "../../../lib/effect/toEffectResponse.ts";
 import type { InferEffect } from "../../../lib/effect/types.ts";
+import { generatePermissionRule } from "../functions/permissionRule.ts";
 import { ClaudeCodePermissionService } from "../services/ClaudeCodePermissionService.ts";
 
 const LayerImpl = Effect.gen(function* () {
   const claudeCodePermissionService = yield* ClaudeCodePermissionService;
+  const { db } = yield* DrizzleService;
 
   const permissionResponse = (options: { permissionResponse: PermissionResponse }) =>
     Effect.sync(() => {
@@ -33,9 +38,45 @@ const LayerImpl = Effect.gen(function* () {
       } as const satisfies ControllerResponse;
     });
 
+  const generatePermissionRuleForTool = (options: {
+    toolName: string;
+    toolInput: Record<string, unknown>;
+    projectId: string;
+  }) =>
+    Effect.sync(() => {
+      const { toolName, toolInput, projectId } = options;
+
+      // Resolve projectId to the actual project working directory
+      const row = db
+        .select({ path: projects.path })
+        .from(projects)
+        .where(eq(projects.id, projectId))
+        .get();
+
+      const projectCwd = row?.path ?? null;
+      if (projectCwd === null) {
+        // Can't relativize paths without project cwd, return tool name only as fallback
+        return {
+          status: 200,
+          response: {
+            rule: toolName,
+          },
+        } as const satisfies ControllerResponse;
+      }
+      const rule = generatePermissionRule(toolName, toolInput, projectCwd);
+
+      return {
+        status: 200,
+        response: {
+          rule,
+        },
+      } as const satisfies ControllerResponse;
+    });
+
   return {
     permissionResponse,
     getPendingPermissionRequests,
+    generatePermissionRuleForTool,
   };
 });
 

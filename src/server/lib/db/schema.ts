@@ -36,6 +36,7 @@ export const sessions = sqliteTable(
     fileMtimeMs: integer("file_mtime_ms").notNull(),
     lastModifiedAt: text("last_modified_at").notNull(),
     syncedAt: integer("synced_at").notNull(),
+    permissionAllowlistJson: text("permission_allowlist_json"),
   },
   (table) => [
     index("idx_sessions_project_id").on(table.projectId),

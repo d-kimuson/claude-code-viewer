@@ -5,6 +5,7 @@ import { serveStatic } from "@hono/node-server/serve-static";
 import { Effect, Layer } from "effect";
 import { AgentSessionLayer } from "./core/agent-session/index.ts";
 import { AgentSessionController } from "./core/agent-session/presentation/AgentSessionController.ts";
+import { SessionAllowlistRepository } from "./core/claude-code/infrastructure/SessionAllowlistRepository.ts";
 import { CCVAskUserQuestionController } from "./core/claude-code/presentation/CCVAskUserQuestionController.ts";
 import { ClaudeCodeController } from "./core/claude-code/presentation/ClaudeCodeController.ts";
 import { ClaudeCodePermissionController } from "./core/claude-code/presentation/ClaudeCodePermissionController.ts";
@@ -14,6 +15,7 @@ import { ClaudeCodeLifeCycleService } from "./core/claude-code/services/ClaudeCo
 import { ClaudeCodePermissionService } from "./core/claude-code/services/ClaudeCodePermissionService.ts";
 import { ClaudeCodeService } from "./core/claude-code/services/ClaudeCodeService.ts";
 import { ClaudeCodeSessionProcessService } from "./core/claude-code/services/ClaudeCodeSessionProcessService.ts";
+import { ProjectSettingsService } from "./core/claude-code/services/ProjectSettingsService.ts";
 import { SSEController } from "./core/events/presentation/SSEController.ts";
 import { FileWatcherService } from "./core/events/services/fileWatcher.ts";
 import { FeatureFlagController } from "./core/feature-flag/presentation/FeatureFlagController.ts";
@@ -131,10 +133,11 @@ export const startServer = async (options: CliOptions) => {
 
 const PlatformLayer = Layer.mergeAll(platformLayer, NodeContext.layer);
 
-const InfraBasics = Layer.mergeAll(ProjectMetaService.Live, SessionMetaService.Live).pipe(
-  Layer.provideMerge(SyncService.Live),
-  Layer.provideMerge(DrizzleService.Live),
-);
+const InfraBasics = Layer.mergeAll(
+  ProjectMetaService.Live,
+  SessionMetaService.Live,
+  SessionAllowlistRepository.Live,
+).pipe(Layer.provideMerge(SyncService.Live), Layer.provideMerge(DrizzleService.Live));
 
 const InfraRepos = Layer.mergeAll(ProjectRepository.Live, SessionRepository.Live).pipe(
   Layer.provideMerge(InfraBasics),
@@ -153,7 +156,7 @@ const DomainBase = Layer.mergeAll(
   SchedulerConfigBaseDir.Live,
   SearchService.Live,
   TasksService.Live,
-);
+).pipe(Layer.provideMerge(ProjectSettingsService.Live));
 
 const DomainLayer = ClaudeCodeLifeCycleService.Live.pipe(Layer.provideMerge(DomainBase));
 

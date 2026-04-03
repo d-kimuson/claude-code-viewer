@@ -150,6 +150,9 @@ importers:
       parse-git-diff:
         specifier: 0.0.20
         version: 0.0.20
+      picomatch:
+        specifier: ^4.0.4
+        version: 4.0.4
       prexit:
         specifier: 2.3.0
         version: 2.3.0
@@ -229,6 +232,9 @@ importers:
       '@types/node':
         specifier: 25.5.0
         version: 25.5.0
+      '@types/picomatch':
+        specifier: ^4.0.3
+        version: 4.0.3
       '@types/react':
         specifier: 19.2.14
         version: 19.2.14
@@ -3697,6 +3703,9 @@ packages:
   '@types/parse-path@7.1.0':
     resolution: {integrity: sha512-EULJ8LApcVEPbrfND0cRQqutIOdiIgJ1Mgrhpy755r14xMohPTEpkV/k28SJvuOs9bHRFW8x+KeDAEPiGQPB9Q==}
     deprecated: This is a stub types definition. parse-path provides its own type definitions, so you do not need this installed.
+
+  '@types/picomatch@4.0.3':
+    resolution: {integrity: sha512-iG0T6+nYJ9FAPmx9SsUlnwcq1ZVRuCXcVEvWnntoPlrOpwtSTKNDC9uVAxTsC3PUvJ+99n4RpAcNgBbHX3JSnQ==}
 
   '@types/prismjs@1.26.6':
     resolution: {integrity: sha512-vqlvI7qlMvcCBbVe0AKAb4f97//Hy0EBTaiW8AalRnG/xAN5zOiWWyrNqNXeq8+KAuvRewjCVY1+IPxk4RdNYw==}
@@ -10826,6 +10835,8 @@ snapshots:
   '@types/parse-path@7.1.0':
     dependencies:
       parse-path: 7.1.0
+
+  '@types/picomatch@4.0.3': {}
 
   '@types/prismjs@1.26.6': {}
 

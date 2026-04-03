@@ -142,7 +142,9 @@ const claudeCodeRoutes = Effect.gen(function* () {
         "json",
         z.object({
           permissionRequestId: z.string(),
-          decision: z.enum(["allow", "deny"]),
+          decision: z.enum(["allow", "deny", "always_allow"]),
+          alwaysAllowRule: z.string().optional(),
+          alwaysAllowScope: z.enum(["session", "project"]).optional(),
         }),
       ),
       async (c) => {
@@ -177,6 +179,25 @@ const claudeCodeRoutes = Effect.gen(function* () {
           ccvAskUserQuestionController.questionResponse({
             questionResponse: c.req.valid("json"),
           }),
+        );
+        return response;
+      },
+    )
+    .post(
+      "/generate-permission-rule",
+      zValidator(
+        "json",
+        z.object({
+          toolName: z.string(),
+          toolInput: z.record(z.string(), z.unknown()),
+          projectId: z.string(),
+        }),
+      ),
+      async (c) => {
+        const body = c.req.valid("json");
+        const response = await effectToResponse(
+          c,
+          claudeCodePermissionController.generatePermissionRuleForTool(body),
         );
         return response;
       },

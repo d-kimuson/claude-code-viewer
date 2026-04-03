@@ -1,15 +1,14 @@
-import { Check, ChevronDown, ChevronRight, Copy, ShieldAlert, X } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { Check, Loader2, RotateCcw, ShieldAlert, X } from "lucide-react";
 import { type FC, useState } from "react";
 import { formatLocaleDate } from "@/lib/date/formatLocaleDate";
 import type { PermissionRequest, PermissionResponse } from "@/types/permissions";
 import { useConfig } from "@/web/app/hooks/useConfig";
+import { getToolVisualizer } from "@/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/toolVisualizers";
 import { Badge } from "@/web/components/ui/badge";
 import { Button } from "@/web/components/ui/button";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/web/components/ui/collapsible";
+import { Input } from "@/web/components/ui/input";
+import { generatePermissionRuleQuery } from "@/web/lib/api/queries";
 
 type InlinePermissionApprovalProps = {
   permissionRequest: PermissionRequest | null;
@@ -278,51 +277,46 @@ const describePermissionRequest = (
   }
 };
 
-const formatValue = (value: unknown): string => {
-  if (value === null) return "null";
-  if (value === undefined) return "undefined";
-  if (typeof value === "boolean") return value.toString();
-  if (typeof value === "number") return value.toString();
+const formatParamValue = (value: unknown): string => {
   if (typeof value === "string") return value;
+  if (value === null || value === undefined) return String(value);
   return JSON.stringify(value, null, 2);
 };
 
-const ParameterEntry: FC<{ paramKey: string; value: unknown }> = ({ paramKey, value }) => {
-  const [copied, setCopied] = useState(false);
-  const formattedValue = formatValue(value);
-  const isLong = formattedValue.length > 100;
+const ToolPreview: FC<{
+  permissionRequest: PermissionRequest;
+}> = ({ permissionRequest }) => {
+  const Visualizer = getToolVisualizer(permissionRequest.toolName);
 
-  const copyToClipboard = async (text: string) => {
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
-    } catch (error) {
-      console.error("Failed to copy to clipboard:", error);
-    }
-  };
+  if (Visualizer !== undefined) {
+    return (
+      <div className="rounded-lg border border-border/60 overflow-hidden max-h-64 overflow-y-auto">
+        <Visualizer
+          input={permissionRequest.toolInput}
+          output={undefined}
+          toolUseResult={undefined}
+        />
+      </div>
+    );
+  }
+
+  // Inline parameters — no collapsible, max-height for overflow
+  const entries = Object.entries(permissionRequest.toolInput);
+  if (entries.length === 0) return null;
 
   return (
-    <div className="space-y-1.5">
-      <div className="flex items-center justify-between">
-        <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-          {paramKey}
-        </span>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => void copyToClipboard(formattedValue)}
-          className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
-        >
-          {copied ? <Check className="size-3 text-green-500" /> : <Copy className="size-3" />}
-        </Button>
-      </div>
-      <div
-        className={`rounded-md bg-muted/60 border border-border/40 px-3 py-2 ${isLong ? "max-h-32 overflow-y-auto" : ""}`}
-      >
-        <pre className="text-xs font-mono whitespace-pre-wrap break-words leading-relaxed text-foreground/80">
-          {formattedValue}
-        </pre>
+    <div className="rounded-lg border border-border/60 overflow-hidden max-h-48 overflow-y-auto">
+      <div className="px-3.5 py-2.5 space-y-2">
+        {entries.map(([key, value]) => (
+          <div key={key} className="space-y-0.5">
+            <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+              {key}
+            </span>
+            <pre className="text-xs font-mono whitespace-pre-wrap break-words leading-relaxed text-foreground/80 bg-muted/60 rounded-md border border-border/40 px-2.5 py-1.5 max-h-32 overflow-y-auto">
+              {formatParamValue(value)}
+            </pre>
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -333,28 +327,52 @@ export const InlinePermissionApproval: FC<InlinePermissionApprovalProps> = ({
   onResponse,
 }) => {
   const [isResponding, setIsResponding] = useState(false);
-  const [isParametersExpanded, setIsParametersExpanded] = useState(false);
+  // null = not edited by user (use fetchedRule as-is)
+  // string = user edited the rule
+  const [editedRule, setEditedRule] = useState<string | null>(null);
   const { config } = useConfig();
+
+  const ruleQuery = useQuery({
+    ...generatePermissionRuleQuery(
+      permissionRequest?.toolName ?? "",
+      permissionRequest?.toolInput ?? {},
+      permissionRequest?.projectId ?? "",
+    ),
+    enabled: permissionRequest !== null,
+  });
 
   if (!permissionRequest) return null;
 
+  const fetchedRule =
+    ruleQuery.data !== undefined && "rule" in ruleQuery.data ? (ruleQuery.data.rule ?? "") : "";
+
+  // Derived: current rule to display and to send
+  const currentRule = editedRule ?? fetchedRule;
+  // If user has edited the rule, "Allow once" is ambiguous — disable it
+  const isRuleModified = editedRule !== null;
+
   const handleResponse = async (decision: "allow" | "deny") => {
     setIsResponding(true);
-
-    const response: PermissionResponse = {
-      permissionRequestId: permissionRequest.id,
-      decision,
-    };
-
     try {
-      await onResponse(response);
+      await onResponse({ permissionRequestId: permissionRequest.id, decision });
     } finally {
       setIsResponding(false);
     }
   };
 
-  const parameterEntries = Object.entries(permissionRequest.toolInput);
-  const hasParameters = parameterEntries.length > 0;
+  const handleAlwaysAllow = async (scope: "session" | "project") => {
+    setIsResponding(true);
+    try {
+      await onResponse({
+        permissionRequestId: permissionRequest.id,
+        decision: "always_allow",
+        alwaysAllowRule: currentRule,
+        alwaysAllowScope: scope,
+      });
+    } finally {
+      setIsResponding(false);
+    }
+  };
 
   return (
     <div className="mx-4 sm:mx-6 md:mx-8 lg:mx-12 xl:mx-16 mb-3 animate-in fade-in slide-in-from-bottom-2 duration-300">
@@ -388,42 +406,39 @@ export const InlinePermissionApproval: FC<InlinePermissionApprovalProps> = ({
             </Badge>
           </div>
 
-          {/* Parameters Section */}
-          {hasParameters && (
-            <div className="rounded-lg border border-border/60 overflow-hidden">
-              <Collapsible open={isParametersExpanded} onOpenChange={setIsParametersExpanded}>
-                <CollapsibleTrigger className="flex w-full items-center justify-between px-3.5 py-2.5 hover:bg-muted/40 transition-colors">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium">Parameters</span>
-                    <Badge variant="outline" className="text-[11px] font-mono">
-                      {parameterEntries.length}
-                    </Badge>
-                  </div>
-                  {isParametersExpanded ? (
-                    <ChevronDown className="size-4 text-muted-foreground" />
-                  ) : (
-                    <ChevronRight className="size-4 text-muted-foreground" />
-                  )}
-                </CollapsibleTrigger>
+          {/* Tool Visualizer or Parameters Section */}
+          <ToolPreview permissionRequest={permissionRequest} />
 
-                <CollapsibleContent>
-                  <div className="px-3.5 pb-3.5 pt-0.5 space-y-3 max-h-48 overflow-y-auto border-t border-border/40">
-                    {parameterEntries.map(([key, value]) => (
-                      <ParameterEntry key={key} paramKey={key} value={value} />
-                    ))}
-                  </div>
-                </CollapsibleContent>
-              </Collapsible>
-            </div>
-          )}
+          {/* Always Allow Rule — editable, shown by default */}
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-muted-foreground shrink-0">Always Allow Rule:</span>
+            {ruleQuery.isLoading ? (
+              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                <Loader2 className="size-3 animate-spin" />
+                Generating...
+              </div>
+            ) : (
+              <Input
+                value={currentRule}
+                onChange={(e) => setEditedRule(e.target.value)}
+                className="font-mono text-xs h-7 flex-1"
+                placeholder="Permission rule..."
+              />
+            )}
+            {isRuleModified && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setEditedRule(null)}
+                className="h-7 w-7 p-0 text-muted-foreground hover:text-foreground shrink-0"
+                title="Reset to generated rule"
+              >
+                <RotateCcw className="size-3.5" />
+              </Button>
+            )}
+          </div>
 
-          {!hasParameters && (
-            <div className="rounded-lg border border-border/60 px-3.5 py-2.5 text-center text-sm text-muted-foreground">
-              No parameters
-            </div>
-          )}
-
-          {/* Action Buttons */}
+          {/* Action Buttons — 1-click, 4 direct options */}
           <div className="flex gap-2.5 justify-end pt-1">
             <Button
               variant="ghost"
@@ -438,11 +453,31 @@ export const InlinePermissionApproval: FC<InlinePermissionApprovalProps> = ({
             <Button
               size="sm"
               onClick={() => void handleResponse("allow")}
-              disabled={isResponding}
+              disabled={isResponding || isRuleModified}
               className="min-w-[4.5rem] gap-1.5"
             >
               <Check className="size-3.5" />
               Allow
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => void handleAlwaysAllow("session")}
+              disabled={isResponding || ruleQuery.isLoading || currentRule === ""}
+              className="min-w-[5.5rem] gap-1.5"
+            >
+              <Check className="size-3.5" />
+              Session
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => void handleAlwaysAllow("project")}
+              disabled={isResponding || ruleQuery.isLoading || currentRule === ""}
+              className="min-w-[5.5rem] gap-1.5"
+            >
+              <Check className="size-3.5" />
+              Project
             </Button>
           </div>
         </div>

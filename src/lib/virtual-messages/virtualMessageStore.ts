@@ -5,6 +5,7 @@ export type VirtualMessage = {
   readonly projectId: string;
   readonly userMessage: string;
   readonly sentAt: string; // ISO timestamp
+  readonly isNewSession: boolean;
 };
 
 export const virtualMessagesAtom = atom<ReadonlyMap<string, VirtualMessage>>(new Map());

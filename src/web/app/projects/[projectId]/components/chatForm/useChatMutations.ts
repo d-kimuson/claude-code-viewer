@@ -1,14 +1,16 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import {
   addVirtualMessage,
   removeVirtualMessage,
 } from "@/lib/virtual-messages/virtualMessageStore";
 import { honoClient } from "@/web/lib/api/client";
+import { sessionDetailQuery } from "@/web/lib/api/queries";
 import type { MessageInput } from "./ChatInput";
 
 export const useCreateSessionProcessMutation = (projectId: string, onSuccess?: () => void) => {
   const navigate = useNavigate({ from: "/projects/$projectId/session" });
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (options: { input: MessageInput; baseSessionId?: string }) => {
@@ -23,6 +25,12 @@ export const useCreateSessionProcessMutation = (projectId: string, onSuccess?: (
         projectId,
         userMessage: input.text,
         sentAt: new Date().toISOString(),
+        isNewSession: !resume,
+      });
+
+      // Invalidate session detail query so it re-runs and picks up the VM
+      void queryClient.invalidateQueries({
+        queryKey: sessionDetailQuery(projectId, sessionId).queryKey,
       });
 
       // Navigate immediately (before API response)
@@ -67,6 +75,8 @@ export const useCreateSessionProcessMutation = (projectId: string, onSuccess?: (
 };
 
 export const useContinueSessionProcessMutation = (projectId: string, baseSessionId: string) => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async (options: { input: MessageInput; sessionProcessId: string }) => {
       // Add virtual message to store for continue
@@ -75,6 +85,12 @@ export const useContinueSessionProcessMutation = (projectId: string, baseSession
         projectId,
         userMessage: options.input.text,
         sentAt: new Date().toISOString(),
+        isNewSession: false,
+      });
+
+      // Invalidate session detail query so it re-runs and picks up the VM
+      void queryClient.invalidateQueries({
+        queryKey: sessionDetailQuery(projectId, baseSessionId).queryKey,
       });
 
       try {

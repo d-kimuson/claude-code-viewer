@@ -4,7 +4,10 @@ import type { Conversation } from "@/lib/conversation-schema";
 import { sseAtom } from "@/lib/sse/store/sseAtom";
 import { createVirtualUserEntry } from "@/lib/virtual-messages/createVirtualUserEntry";
 import { shouldRemoveVirtualMessage } from "@/lib/virtual-messages/shouldRemoveVirtualMessage";
-import { getVirtualMessage } from "@/lib/virtual-messages/virtualMessageStore";
+import {
+  getVirtualMessage,
+  removeVirtualMessage,
+} from "@/lib/virtual-messages/virtualMessageStore";
 import { sessionDetailQuery } from "@/web/lib/api/queries";
 
 const filterConversations = (
@@ -63,14 +66,20 @@ export const useSessionQuery = (projectId: string, sessionId: string) => {
       }
 
       // Server returned real data. If virtual message exists and real message
-      // hasn't appeared yet, prepend virtual entry so the user sees their message.
+      // hasn't appeared yet, append virtual entry so the user sees their message.
       if (virtualMessage) {
         if (
-          !shouldRemoveVirtualMessage(
+          shouldRemoveVirtualMessage(
             filterConversations(result.session.conversations),
             virtualMessage.sentAt,
           )
         ) {
+          // For continue/resume VMs, clean up from store here since SessionsTab
+          // doesn't handle them (the session already exists in the server list).
+          if (!virtualMessage.isNewSession) {
+            removeVirtualMessage(sessionId);
+          }
+        } else {
           const virtualEntry = createVirtualUserEntry(virtualMessage);
           return {
             ...result,

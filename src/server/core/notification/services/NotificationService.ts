@@ -92,15 +92,12 @@ const LayerImpl = Effect.gen(function* () {
   yield* eventBus.on("sessionProcessChanged", (event) => {
     const { changed } = event;
 
-    if (changed.type === "paused" || changed.type === "completed") {
-      const notificationType: SessionNotificationType =
-        changed.type === "paused" ? "session_paused" : "session_completed";
-
+    if (changed.type === "paused") {
       Effect.runFork(
         createNotification({
           projectId: changed.def.projectId,
           sessionId: changed.sessionId,
-          type: notificationType,
+          type: "session_paused",
         }),
       );
     }

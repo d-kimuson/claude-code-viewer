@@ -396,7 +396,11 @@ const LayerImpl = Effect.gen(function* () {
     });
   };
 
-  const toCompletedState = (options: { sessionProcessId: string; error?: unknown }) => {
+  const toCompletedState = (options: {
+    sessionProcessId: string;
+    error?: unknown;
+    abortedByUser?: boolean;
+  }) => {
     const { sessionProcessId, error } = options;
 
     return Effect.gen(function* () {
@@ -442,6 +446,7 @@ const LayerImpl = Effect.gen(function* () {
               ? currentProcess.tasks.map((t) => (t.def.turnId === newTask.def.turnId ? newTask : t))
               : currentProcess.tasks,
           sessionId: currentProcess.sessionId,
+          abortedByUser: options.abortedByUser ?? false,
         },
       });
 

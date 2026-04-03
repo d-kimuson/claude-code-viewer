@@ -585,6 +585,55 @@ describe("ClaudeCodeSessionProcessService", () => {
         expect(result.task.error).toBeInstanceOf(Error);
       }).pipe(Effect.provide(serviceLayer)),
     );
+
+    it.live("sets abortedByUser to false by default", () =>
+      Effect.gen(function* () {
+        const service = yield* ClaudeCodeSessionProcessService;
+
+        const sessionDef = createMockSessionProcessDef("process-1");
+        const turnDef = createMockNewTaskDef("task-1");
+
+        yield* service.startSessionProcess({
+          sessionDef,
+          turnDef,
+        });
+
+        const result = yield* service.toCompletedState({
+          sessionProcessId: "process-1",
+        });
+
+        expect(result.sessionProcess.type).toBe("completed");
+        if (result.sessionProcess.type !== "completed") {
+          throw new Error("Expected completed state");
+        }
+        expect(result.sessionProcess.abortedByUser).toBe(false);
+      }).pipe(Effect.provide(serviceLayer)),
+    );
+
+    it.live("sets abortedByUser to true when specified", () =>
+      Effect.gen(function* () {
+        const service = yield* ClaudeCodeSessionProcessService;
+
+        const sessionDef = createMockSessionProcessDef("process-1");
+        const turnDef = createMockNewTaskDef("task-1");
+
+        yield* service.startSessionProcess({
+          sessionDef,
+          turnDef,
+        });
+
+        const result = yield* service.toCompletedState({
+          sessionProcessId: "process-1",
+          abortedByUser: true,
+        });
+
+        expect(result.sessionProcess.type).toBe("completed");
+        if (result.sessionProcess.type !== "completed") {
+          throw new Error("Expected completed state");
+        }
+        expect(result.sessionProcess.abortedByUser).toBe(true);
+      }).pipe(Effect.provide(serviceLayer)),
+    );
   });
 
   describe("getTask", () => {

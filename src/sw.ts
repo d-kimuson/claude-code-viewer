@@ -72,10 +72,10 @@ self.addEventListener("notificationclick", (event) => {
 
   event.waitUntil(
     self.clients.matchAll({ type: "window" }).then((clientList) => {
-      // Focus existing window if available
+      // Navigate and focus existing window if available
       for (const client of clientList) {
-        if ("focus" in client) {
-          return client.focus();
+        if ("navigate" in client) {
+          return client.navigate(url).then((c) => c?.focus());
         }
       }
       // Otherwise open new window

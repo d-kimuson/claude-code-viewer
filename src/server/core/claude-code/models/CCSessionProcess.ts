@@ -46,6 +46,7 @@ export type CCSessionProcessPausedState = CCSessionProcessStateBase & {
 export type CCSessionProcessCompletedState = CCSessionProcessStateBase & {
   type: "completed" /* paused or running task was aborted. Cannot resume */;
   sessionId: string;
+  abortedByUser: boolean;
 };
 
 export type CCSessionProcessStatePublic =

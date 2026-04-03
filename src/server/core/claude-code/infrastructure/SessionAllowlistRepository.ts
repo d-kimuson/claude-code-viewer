@@ -22,12 +22,12 @@ const LayerImpl = Effect.gen(function* () {
         return [];
       }
 
-      const parsed = allowlistSchema.safeParse(JSON.parse(row.permissionAllowlistJson));
-      if (!parsed.success) {
+      try {
+        const parsed = allowlistSchema.safeParse(JSON.parse(row.permissionAllowlistJson));
+        return parsed.success ? parsed.data : [];
+      } catch {
         return [];
       }
-
-      return parsed.data;
     });
 
   const addRule = (sessionId: string, rule: string): Effect.Effect<void> =>

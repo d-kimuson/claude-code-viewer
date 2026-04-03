@@ -9,7 +9,7 @@ import {
   ShieldCheck,
   X,
 } from "lucide-react";
-import { type FC, useState } from "react";
+import { type FC, useEffect, useState } from "react";
 import { formatLocaleDate } from "@/lib/date/formatLocaleDate";
 import type { PermissionRequest, PermissionResponse } from "@/types/permissions";
 import { useConfig } from "@/web/app/hooks/useConfig";
@@ -548,17 +548,16 @@ export const InlinePermissionApproval: FC<InlinePermissionApprovalProps> = ({
   // Sync fetched rule into local state when query completes
   const fetchedRule =
     ruleQuery.data !== undefined && "rule" in ruleQuery.data ? (ruleQuery.data.rule ?? "") : "";
-  const shouldSyncRule =
-    alwaysAllowState.status === "editing" &&
-    alwaysAllowState.rule === "" &&
-    typeof fetchedRule === "string" &&
-    fetchedRule !== "";
 
-  if (shouldSyncRule) {
-    setAlwaysAllowState((prev) =>
-      prev.status === "editing" && prev.rule === "" ? { ...prev, rule: fetchedRule } : prev,
-    );
-  }
+  const editingRule = alwaysAllowState.status === "editing" ? alwaysAllowState.rule : undefined;
+
+  useEffect(() => {
+    if (editingRule === "" && typeof fetchedRule === "string" && fetchedRule !== "") {
+      setAlwaysAllowState((prev) =>
+        prev.status === "editing" && prev.rule === "" ? { ...prev, rule: fetchedRule } : prev,
+      );
+    }
+  }, [editingRule, fetchedRule]);
 
   return (
     <div className="mx-4 sm:mx-6 md:mx-8 lg:mx-12 xl:mx-16 mb-3 animate-in fade-in slide-in-from-bottom-2 duration-300">

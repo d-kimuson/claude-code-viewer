@@ -53,7 +53,16 @@ const LayerImpl = Effect.gen(function* () {
         .where(eq(projects.id, projectId))
         .get();
 
-      const projectCwd = row?.path ?? "";
+      const projectCwd = row?.path ?? null;
+      if (projectCwd === null) {
+        // Can't relativize paths without project cwd, return tool name only as fallback
+        return {
+          status: 200,
+          response: {
+            rule: toolName,
+          },
+        } as const satisfies ControllerResponse;
+      }
       const rule = generatePermissionRule(toolName, toolInput, projectCwd);
 
       return {

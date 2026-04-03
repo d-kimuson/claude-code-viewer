@@ -10,5 +10,7 @@ export type PermissionRequest = {
 
 export type PermissionResponse = {
   permissionRequestId: string;
-  decision: "allow" | "deny";
+  decision: "allow" | "deny" | "always_allow";
+  alwaysAllowRule?: string;
+  alwaysAllowScope?: "session" | "project";
 };

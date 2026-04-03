@@ -142,7 +142,9 @@ const claudeCodeRoutes = Effect.gen(function* () {
         "json",
         z.object({
           permissionRequestId: z.string(),
-          decision: z.enum(["allow", "deny"]),
+          decision: z.enum(["allow", "deny", "always_allow"]),
+          alwaysAllowRule: z.string().optional(),
+          alwaysAllowScope: z.enum(["session", "project"]).optional(),
         }),
       ),
       async (c) => {

@@ -62,8 +62,15 @@ const ToolUseContent: FC<ToolUseContentProps> = ({
 
   const visualizerElement = useMemo(() => {
     if (!Visualizer || viewMode !== "visual") return null;
-    return <Visualizer input={content.input} output={toolResult} toolUseResult={toolUseResult} />;
-  }, [Visualizer, viewMode, content.input, toolResult, toolUseResult]);
+    return (
+      <Visualizer
+        toolUseId={content.id}
+        input={content.input}
+        output={toolResult}
+        toolUseResult={toolUseResult}
+      />
+    );
+  }, [Visualizer, viewMode, content.id, content.input, toolResult, toolUseResult]);
 
   // If visualizer returned null (validation failed), force raw mode
   const effectiveMode =

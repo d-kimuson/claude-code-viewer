@@ -264,7 +264,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        266
+        273
       ]
     ],
     "translation": "Thinking"
@@ -346,7 +346,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        161
+        168
       ]
     ],
     "translation": "Input Parameters"
@@ -458,7 +458,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        175
+        182
       ]
     ],
     "translation": "Tool Result"
@@ -849,11 +849,11 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        252
+        253
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        260
+        261
       ]
     ],
     "translation": "No Agent"
@@ -865,7 +865,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        277
+        287
       ]
     ],
     "translation": "Select agent"
@@ -901,7 +901,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        179
+        180
       ]
     ],
     "translation": "Accept Edits"
@@ -913,7 +913,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        185
+        186
       ]
     ],
     "translation": "Bypass"
@@ -925,7 +925,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        176
+        177
       ]
     ],
     "translation": "Default"
@@ -937,7 +937,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        188
+        189
       ]
     ],
     "translation": "Plan"
@@ -949,7 +949,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        195
+        196
       ]
     ],
     "translation": "Select permission mode"
@@ -961,7 +961,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        228
+        229
       ]
     ],
     "translation": "Include default Claude Code prompt"
@@ -1156,7 +1156,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        96
+        97
       ]
     ],
     "translation": "New"
@@ -1168,7 +1168,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        89
+        90
       ]
     ],
     "translation": "New Chat"
@@ -1191,7 +1191,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        123
+        124
       ]
     ],
     "translation": "Scroll to Bottom"
@@ -1203,7 +1203,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        107
+        108
       ]
     ],
     "translation": "Scroll to Top"
@@ -1261,7 +1261,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        208
+        209
       ]
     ],
     "translation": "Raw Data: "
@@ -1272,7 +1272,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        201
+        202
       ]
     ],
     "translation": "Report This Issue"
@@ -1283,7 +1283,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        179
+        180
       ]
     ],
     "translation": "Schema Error"
@@ -1294,7 +1294,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        191
+        192
       ]
     ],
     "translation": "Schema Validation Error"
@@ -1305,7 +1305,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        194
+        195
       ]
     ],
     "translation": "Failed to parse this conversation entry. This may be due to format changes or parsing issues."
@@ -3027,7 +3027,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        148
+        149
       ]
     ],
     "translation": "Abort"

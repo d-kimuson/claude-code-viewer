@@ -1,8 +1,14 @@
 import type { ExtendedConversation } from "../../types/conversation.ts";
+import { computeTaskStates, type TaskStates } from "../task-viewer/computeTaskStates.ts";
 
 export type TodoItem = {
   readonly content: string;
   readonly status: "pending" | "in_progress" | "completed";
+};
+
+export type TodoState = {
+  readonly todoWriteItems: readonly TodoItem[] | null;
+  readonly taskItems: readonly TodoItem[] | null;
 };
 
 const isTodoWriteInput = (
@@ -25,15 +31,16 @@ const isTodoWriteInput = (
 };
 
 /**
- * Extracts the latest TodoWrite result from a session's conversations
+ * Extracts the latest todo state from both TodoWrite and TaskCreate/TaskUpdate tool calls.
  *
  * @param conversations - Array of conversation entries from a session
- * @returns The latest todo items, or null if no TodoWrite has been used
+ * @returns Object containing both todoWriteItems and taskItems
  */
-export const extractLatestTodos = (
+export const extractLatestTodoState = (
   conversations: readonly ExtendedConversation[],
-): readonly TodoItem[] | null => {
-  let latestTodos: readonly TodoItem[] | null = null;
+  precomputedTaskStates?: TaskStates,
+): TodoState => {
+  let todoWriteItems: readonly TodoItem[] | null = null;
 
   for (const conversation of conversations) {
     if (conversation.type === "x-error" || conversation.type !== "assistant") {
@@ -41,9 +48,6 @@ export const extractLatestTodos = (
     }
 
     const content = conversation.message.content;
-    if (!Array.isArray(content)) {
-      continue;
-    }
 
     for (const item of content) {
       if (typeof item === "string" || item.type !== "tool_use") {
@@ -51,10 +55,37 @@ export const extractLatestTodos = (
       }
 
       if (item.name === "TodoWrite" && isTodoWriteInput(item.input)) {
-        latestTodos = item.input.todos;
+        todoWriteItems = item.input.todos;
       }
     }
   }
 
-  return latestTodos;
+  const taskStates = precomputedTaskStates ?? computeTaskStates(conversations);
+  const taskItems: readonly TodoItem[] | null = taskStates.latestTasks
+    ? taskStates.latestTasks.map((task) => ({
+        content: task.subject,
+        status: task.status,
+      }))
+    : null;
+
+  return { todoWriteItems, taskItems };
+};
+
+/**
+ * Extracts the latest TodoWrite result from a session's conversations.
+ * Returns combined list from both TodoWrite and TaskCreate/TaskUpdate.
+ *
+ * @param conversations - Array of conversation entries from a session
+ * @returns The latest todo items, or null if no TodoWrite or TaskCreate has been used
+ */
+export const extractLatestTodos = (
+  conversations: readonly ExtendedConversation[],
+): readonly TodoItem[] | null => {
+  const state = extractLatestTodoState(conversations);
+
+  if (state.todoWriteItems && state.taskItems) {
+    return [...state.todoWriteItems, ...state.taskItems];
+  }
+
+  return state.todoWriteItems ?? state.taskItems;
 };

@@ -264,7 +264,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        266
+        273
       ]
     ],
     "translation": "思考中"
@@ -346,7 +346,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        161
+        168
       ]
     ],
     "translation": "输入参数"
@@ -458,7 +458,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        175
+        182
       ]
     ],
     "translation": "工具结果"
@@ -849,11 +849,11 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        252
+        253
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        260
+        261
       ]
     ],
     "translation": "无代理"
@@ -865,7 +865,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        277
+        287
       ]
     ],
     "translation": "选择代理"
@@ -901,7 +901,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        179
+        180
       ]
     ],
     "translation": "接受编辑"
@@ -913,7 +913,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        185
+        186
       ]
     ],
     "translation": "跳过"
@@ -925,7 +925,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        176
+        177
       ]
     ],
     "translation": "默认"
@@ -937,7 +937,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        188
+        189
       ]
     ],
     "translation": "计划"
@@ -949,7 +949,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        195
+        196
       ]
     ],
     "translation": "选择权限模式"
@@ -961,7 +961,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        228
+        229
       ]
     ],
     "translation": "包含默认 Claude Code 提示词"
@@ -1156,7 +1156,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        96
+        97
       ]
     ],
     "translation": "新建"
@@ -1168,7 +1168,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        89
+        90
       ]
     ],
     "translation": "新建对话"
@@ -1191,7 +1191,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        123
+        124
       ]
     ],
     "translation": "滚动到底部"
@@ -1203,7 +1203,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        107
+        108
       ]
     ],
     "translation": "滚动到顶部"
@@ -1261,7 +1261,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        208
+        209
       ]
     ],
     "translation": "原始数据:"
@@ -1272,7 +1272,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        201
+        202
       ]
     ],
     "translation": "报告此问题"
@@ -1283,7 +1283,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        179
+        180
       ]
     ],
     "translation": "模式错误"
@@ -1294,7 +1294,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        191
+        192
       ]
     ],
     "translation": "模式验证错误"
@@ -1305,7 +1305,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        194
+        195
       ]
     ],
     "translation": "无法解析此对话条目。这可能是由于格式更改或解析问题。"
@@ -3027,7 +3027,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        148
+        149
       ]
     ],
     "translation": "中止"

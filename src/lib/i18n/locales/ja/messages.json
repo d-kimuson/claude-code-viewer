@@ -264,7 +264,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        266
+        273
       ]
     ],
     "translation": "思考中"
@@ -346,7 +346,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        161
+        168
       ]
     ],
     "translation": "入力パラメータ"
@@ -458,7 +458,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AssistantConversationContent.tsx",
-        175
+        182
       ]
     ],
     "translation": "ツール実行結果"
@@ -849,11 +849,11 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        252
+        253
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        260
+        261
       ]
     ],
     "translation": "エージェントなし"
@@ -865,7 +865,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        277
+        287
       ]
     ],
     "translation": "エージェントを選択"
@@ -901,7 +901,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        179
+        180
       ]
     ],
     "translation": "編集許可"
@@ -913,7 +913,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        185
+        186
       ]
     ],
     "translation": "バイパス"
@@ -925,7 +925,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        176
+        177
       ]
     ],
     "translation": "デフォルト"
@@ -937,7 +937,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        188
+        189
       ]
     ],
     "translation": "プラン"
@@ -949,7 +949,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        195
+        196
       ]
     ],
     "translation": "権限モードを選択"
@@ -961,7 +961,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        228
+        229
       ]
     ],
     "translation": "デフォルトの Claude Code プロンプトを含める"
@@ -1156,7 +1156,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        96
+        97
       ]
     ],
     "translation": "新規"
@@ -1168,7 +1168,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        89
+        90
       ]
     ],
     "translation": "新しいチャット"
@@ -1191,7 +1191,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        123
+        124
       ]
     ],
     "translation": "ボトムにスクロール"
@@ -1203,7 +1203,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        107
+        108
       ]
     ],
     "translation": "トップにスクロール"
@@ -1261,7 +1261,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        208
+        209
       ]
     ],
     "translation": "生データ："
@@ -1272,7 +1272,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        201
+        202
       ]
     ],
     "translation": "この問題を報告"
@@ -1283,7 +1283,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        179
+        180
       ]
     ],
     "translation": "スキーマエラー"
@@ -1294,7 +1294,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        191
+        192
       ]
     ],
     "translation": "スキーマ検証エラー"
@@ -1305,7 +1305,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        194
+        195
       ]
     ],
     "translation": "この会話エントリの解析に失敗しました。フォーマットの変更または解析の問題が考えられます。"
@@ -3027,7 +3027,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        148
+        149
       ]
     ],
     "translation": "中止"

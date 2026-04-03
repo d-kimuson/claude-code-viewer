@@ -24,6 +24,7 @@ import {
   CollapsibleTrigger,
 } from "@/web/components/ui/collapsible";
 import { Input } from "@/web/components/ui/input";
+import { TaskStateProvider } from "@/web/contexts/TaskStateContext";
 import { useSidechain } from "../../hooks/useSidechain";
 import { ConversationItem } from "./ConversationItem";
 import { buildRenderableConversationRows } from "./conversationRows";
@@ -671,7 +672,7 @@ export const ConversationList: FC<ConversationListProps> = ({
   };
 
   return (
-    <>
+    <TaskStateProvider conversations={validConversations}>
       {enableInPageSearch && isSearchOpen && (
         <div className="sticky top-2 z-20 mb-3 flex justify-end">
           <div className="flex items-center gap-2 rounded-md border bg-background/95 px-2 py-1.5 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/85">
@@ -768,6 +769,6 @@ export const ConversationList: FC<ConversationListProps> = ({
         })}
       </ul>
       <ScheduledMessageNotice scheduledJobs={scheduledJobs} />
-    </>
+    </TaskStateProvider>
   );
 };

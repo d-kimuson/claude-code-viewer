@@ -2,6 +2,7 @@ import { BashVisualizer } from "./BashVisualizer";
 import { CCVAskUserQuestionVisualizer } from "./CCVAskUserQuestionVisualizer";
 import { EditVisualizer } from "./EditVisualizer";
 import { ReadVisualizer } from "./ReadVisualizer";
+import { TaskManagementVisualizer } from "./TaskManagementVisualizer";
 import { TaskVisualizer } from "./TaskVisualizer";
 import { TodoWriteVisualizer } from "./TodoWriteVisualizer";
 import type { ToolVisualizerComponent } from "./types";
@@ -14,6 +15,8 @@ const TOOL_VISUALIZERS: Record<string, ToolVisualizerComponent> = {
   Write: WriteVisualizer,
   Task: TaskVisualizer,
   Agent: TaskVisualizer,
+  TaskCreate: TaskManagementVisualizer,
+  TaskUpdate: TaskManagementVisualizer,
   TodoWrite: TodoWriteVisualizer,
   CCVAskUserQuestion: CCVAskUserQuestionVisualizer,
 };

@@ -292,6 +292,7 @@ const ToolPreview: FC<{
     return (
       <div className="rounded-lg border border-border/60 overflow-hidden max-h-64 overflow-y-auto">
         <Visualizer
+          toolUseId=""
           input={permissionRequest.toolInput}
           output={undefined}
           toolUseResult={undefined}

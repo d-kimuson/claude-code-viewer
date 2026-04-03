@@ -1,4 +1,9 @@
-import { extractLatestTodos, type TodoItem } from "./extractLatestTodos.ts";
+import {
+  extractLatestTodoState,
+  extractLatestTodos,
+  type TodoItem,
+  type TodoState,
+} from "./extractLatestTodos.ts";
 
-export { extractLatestTodos };
-export type { TodoItem };
+export { extractLatestTodoState, extractLatestTodos };
+export type { TodoItem, TodoState };

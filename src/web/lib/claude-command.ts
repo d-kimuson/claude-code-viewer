@@ -1,11 +1,17 @@
 import type { CCOptionsSchema } from "@/server/core/claude-code/schema";
 
 /**
- * Shell-escape a string by wrapping in single quotes
- * and escaping any internal single quotes.
+ * Shell-escape a string using double quotes.
+ * Double quotes preserve UTF-8 characters correctly when pasted into terminals,
+ * while single quotes can cause mojibake with multibyte characters in some environments.
  */
 const shellEscape = (value: string): string => {
-  return `'${value.replace(/'/g, "'\\''")}'`;
+  const escaped = value
+    .replace(/\\/g, "\\\\")
+    .replace(/"/g, '\\"')
+    .replace(/\$/g, "\\$")
+    .replace(/`/g, "\\`");
+  return `"${escaped}"`;
 };
 
 type BuildClaudeCommandParams = {
@@ -47,6 +53,10 @@ export const buildClaudeCommand = ({
 
     if (typeof ccOptions.systemPrompt === "string") {
       parts.push("--system-prompt", shellEscape(ccOptions.systemPrompt));
+    }
+
+    if (ccOptions.agent !== undefined && ccOptions.agent !== "") {
+      parts.push("--agent", shellEscape(ccOptions.agent));
     }
   }
 

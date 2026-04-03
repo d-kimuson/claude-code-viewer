@@ -15,6 +15,7 @@ import { Button } from "@/web/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/web/components/ui/popover";
 import { Textarea } from "@/web/components/ui/textarea";
 import { cn } from "@/web/utils";
+import { codeMonoClass } from "../conversationList/toolVisualizers/constants";
 import type { DiffHunk, DiffLine, FileDiff } from "./types";
 
 type ReviewProps = {
@@ -40,8 +41,7 @@ type DiffContentRowsProps = {
   onRemoveComment?: (id: string) => void;
 };
 
-const diffMonoClass =
-  '[font-family:"Fira_Code","Fira_Mono",Menlo,Consolas,"DejaVu_Sans_Mono",monospace]';
+const diffMonoClass = codeMonoClass;
 
 const getRowClasses = (type: DiffHunk["lines"][number]["type"]) => {
   return cn({

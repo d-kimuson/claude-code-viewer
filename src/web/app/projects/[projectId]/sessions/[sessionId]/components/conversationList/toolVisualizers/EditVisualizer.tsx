@@ -90,7 +90,7 @@ export const EditVisualizer: FC<ToolVisualizerProps> = ({ input, output, toolUse
             Applying edit...
           </div>
         )}
-        <ToolResultStatusBanner output={output} />
+        <ToolResultStatusBanner output={output} showSuccess />
       </div>
     );
   }
@@ -119,7 +119,7 @@ export const EditVisualizer: FC<ToolVisualizerProps> = ({ input, output, toolUse
   return (
     <div className="overflow-hidden">
       <DiffViewer fileDiff={fileDiff} />
-      <ToolResultStatusBanner output={output} />
+      <ToolResultStatusBanner output={output} showSuccess />
     </div>
   );
 };

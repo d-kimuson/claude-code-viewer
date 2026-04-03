@@ -2,6 +2,8 @@ import type { FC } from "react";
 import { z } from "zod";
 import { DiffViewer } from "../../diffModal/DiffViewer";
 import type { DiffHunk, DiffLine, FileDiff } from "../../diffModal/types";
+import { codeMonoClass } from "./constants";
+import { ToolResultStatusBanner } from "./ToolResultStatusBanner";
 import type { ToolVisualizerProps } from "./types";
 
 const inputSchema = z.object({
@@ -89,7 +91,11 @@ const buildPatchFromStrings = (
   ];
 };
 
-const renderDiff = (filename: string, patches: z.infer<typeof structuredPatchSchema>) => {
+const renderDiff = (
+  filename: string,
+  patches: z.infer<typeof structuredPatchSchema>,
+  output: unknown,
+) => {
   const hunks = convertPatchToHunks(patches);
   let linesAdded = 0;
   let linesDeleted = 0;
@@ -111,29 +117,34 @@ const renderDiff = (filename: string, patches: z.infer<typeof structuredPatchSch
     linesDeleted,
   };
 
-  return <DiffViewer fileDiff={fileDiff} />;
+  return (
+    <div className="overflow-hidden">
+      <DiffViewer fileDiff={fileDiff} />
+      <ToolResultStatusBanner output={output} showSuccess />
+    </div>
+  );
 };
 
-export const EditVisualizer: FC<ToolVisualizerProps> = ({ input, toolUseResult }) => {
+export const EditVisualizer: FC<ToolVisualizerProps> = ({ input, output, toolUseResult }) => {
   const parsedInput = inputSchema.safeParse(input);
   if (!parsedInput.success) return null;
 
   // Prefer toolUseResult (has full structured patch with context lines)
   const parsedResult = toolUseResultSchema.safeParse(toolUseResult);
   if (parsedResult.success) {
-    return renderDiff(parsedResult.data.filePath, parsedResult.data.structuredPatch);
+    return renderDiff(parsedResult.data.filePath, parsedResult.data.structuredPatch, output);
   }
 
   // Fallback: build diff from old_string/new_string in input (permission request preview)
   const { old_string: oldStr, new_string: newStr } = parsedInput.data;
   if (oldStr !== undefined && newStr !== undefined) {
-    return renderDiff(parsedInput.data.file_path, buildPatchFromStrings(oldStr, newStr));
+    return renderDiff(parsedInput.data.file_path, buildPatchFromStrings(oldStr, newStr), output);
   }
 
   // No diff data available — show loading state
   return (
-    <div className="rounded border border-gray-200 dark:border-gray-700">
-      <div className="px-3 py-2 bg-gray-50 dark:bg-gray-800 font-mono text-xs font-medium">
+    <div className="rounded border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <div className={`px-3 py-2 bg-gray-50 dark:bg-gray-800 ${codeMonoClass} text-xs font-medium`}>
         {parsedInput.data.file_path}
       </div>
       {toolUseResult === undefined && (
@@ -141,6 +152,7 @@ export const EditVisualizer: FC<ToolVisualizerProps> = ({ input, toolUseResult }
           Applying edit...
         </div>
       )}
+      <ToolResultStatusBanner output={output} showSuccess />
     </div>
   );
 };

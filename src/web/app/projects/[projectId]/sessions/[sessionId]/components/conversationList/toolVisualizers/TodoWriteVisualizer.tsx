@@ -2,6 +2,7 @@ import { CheckCircle2Icon, CircleDotIcon, CircleIcon, ListTodoIcon } from "lucid
 import type { FC } from "react";
 import { z } from "zod";
 import { cn } from "@/web/utils";
+import { ToolResultStatusBanner } from "./ToolResultStatusBanner";
 import type { ToolVisualizerProps } from "./types";
 
 const todoItemSchema = z.object({
@@ -31,7 +32,7 @@ const TodoStatusIcon: FC<{ status: z.infer<typeof todoItemSchema>["status"] }> =
   }
 };
 
-export const TodoWriteVisualizer: FC<ToolVisualizerProps> = ({ input }) => {
+export const TodoWriteVisualizer: FC<ToolVisualizerProps> = ({ input, output }) => {
   const parsedInput = inputSchema.safeParse(input);
   if (!parsedInput.success) return null;
 
@@ -85,6 +86,9 @@ export const TodoWriteVisualizer: FC<ToolVisualizerProps> = ({ input }) => {
           </div>
         ))}
       </div>
+
+      {/* Result status */}
+      <ToolResultStatusBanner output={output} />
     </div>
   );
 };

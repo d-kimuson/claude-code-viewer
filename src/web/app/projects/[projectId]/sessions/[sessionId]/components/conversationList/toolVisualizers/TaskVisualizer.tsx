@@ -1,5 +1,13 @@
+import { AlertCircleIcon, ChevronDownIcon } from "lucide-react";
 import type { FC } from "react";
 import { z } from "zod";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/web/components/ui/collapsible";
+import { cn } from "@/web/utils";
+import { extractOutputInfo } from "./ToolResultStatusBanner";
 import type { ToolVisualizerProps } from "./types";
 
 const inputSchema = z.object({
@@ -23,7 +31,61 @@ const formatDuration = (ms: number): string => {
   return `${minutes}m ${remainingSeconds}s`;
 };
 
-export const TaskVisualizer: FC<ToolVisualizerProps> = ({ input, toolUseResult }) => {
+type TaskResultSectionProps = {
+  output: unknown;
+};
+
+const TaskResultSection: FC<TaskResultSectionProps> = ({ output }) => {
+  const { text, isError } = extractOutputInfo(output);
+  if (text === null) return null;
+
+  return (
+    <Collapsible>
+      <div
+        className={cn(
+          "border-t",
+          isError
+            ? "border-red-200 dark:border-red-800/50"
+            : "border-gray-200 dark:border-gray-700",
+        )}
+      >
+        <CollapsibleTrigger className="flex items-center gap-1.5 w-full text-left px-3 py-1.5 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors group">
+          {isError ? (
+            <AlertCircleIcon className="w-3.5 h-3.5 flex-shrink-0 text-red-600 dark:text-red-400" />
+          ) : null}
+          <span
+            className={cn(
+              "text-xs font-medium",
+              isError ? "text-red-700 dark:text-red-400" : "text-muted-foreground",
+            )}
+          >
+            Result
+          </span>
+          <ChevronDownIcon className="w-3 h-3 ml-auto transition-transform text-muted-foreground group-data-[state=open]:rotate-180" />
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <div
+            className={cn(
+              "px-3 py-2 max-h-64 overflow-y-auto",
+              isError && "bg-red-50/50 dark:bg-red-950/20",
+            )}
+          >
+            <pre
+              className={cn(
+                "text-xs whitespace-pre-wrap break-words",
+                isError ? "text-red-700 dark:text-red-400" : "text-foreground",
+              )}
+            >
+              {text}
+            </pre>
+          </div>
+        </CollapsibleContent>
+      </div>
+    </Collapsible>
+  );
+};
+
+export const TaskVisualizer: FC<ToolVisualizerProps> = ({ input, output, toolUseResult }) => {
   const parsedInput = inputSchema.safeParse(input);
   if (!parsedInput.success) return null;
 
@@ -70,6 +132,9 @@ export const TaskVisualizer: FC<ToolVisualizerProps> = ({ input, toolUseResult }
           )}
         </div>
       )}
+
+      {/* Result output */}
+      <TaskResultSection output={output} />
 
       {/* Loading state */}
       {toolUseResult === undefined && (

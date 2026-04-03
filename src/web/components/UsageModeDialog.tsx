@@ -12,9 +12,9 @@ import {
 } from "@/web/components/ui/dialog";
 
 export const UsageModeDialog: FC = () => {
-  const { config, updateConfig } = useConfig();
+  const { config, updateConfig, isConfigLoaded } = useConfig();
 
-  const isOpen = config.usageMode === undefined;
+  const isOpen = isConfigLoaded && config.usageMode === undefined;
 
   const handleSelect = (mode: "subscription" | "api") => {
     updateConfig({ ...config, usageMode: mode });

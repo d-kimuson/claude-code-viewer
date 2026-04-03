@@ -718,7 +718,9 @@ export const ChatInput: FC<ChatInputProps> = ({
                     void handleSubmit();
                   }}
                   disabled={
-                    (!message.trim() && attachedFiles.length === 0) ||
+                    (copyCommandMode
+                      ? !message.trim()
+                      : !message.trim() && attachedFiles.length === 0) ||
                     isPending ||
                     disabled ||
                     sendDisabled

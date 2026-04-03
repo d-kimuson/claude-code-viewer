@@ -1,14 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import {
-  Check,
-  ChevronDown,
-  ChevronRight,
-  Copy,
-  Loader2,
-  ShieldAlert,
-  ShieldCheck,
-  X,
-} from "lucide-react";
+import { Check, ChevronDown, ChevronRight, Copy, Loader2, ShieldAlert, X } from "lucide-react";
 import { type FC, useEffect, useState } from "react";
 import { formatLocaleDate } from "@/lib/date/formatLocaleDate";
 import type { PermissionRequest, PermissionResponse } from "@/types/permissions";
@@ -21,12 +12,9 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/web/components/ui/collapsible";
-import { Input } from "@/web/components/ui/input";
 import { generatePermissionRuleQuery } from "@/web/lib/api/queries";
 
-type AlwaysAllowState =
-  | { status: "idle" }
-  | { status: "editing"; rule: string; scope: "session" | "project" };
+type AlwaysAllowInProgress = null | "session" | "project";
 
 type InlinePermissionApprovalProps = {
   permissionRequest: PermissionRequest | null;
@@ -345,90 +333,6 @@ const ParameterEntry: FC<{ paramKey: string; value: unknown }> = ({ paramKey, va
   );
 };
 
-const AlwaysAllowPanel: FC<{
-  permissionRequest: PermissionRequest;
-  alwaysAllowState: AlwaysAllowState & { status: "editing" };
-  onChangeRule: (rule: string) => void;
-  onChangeScope: (scope: "session" | "project") => void;
-  onCancel: () => void;
-  onConfirm: () => void;
-  isResponding: boolean;
-  isLoadingRule: boolean;
-}> = ({
-  permissionRequest: _permissionRequest,
-  alwaysAllowState,
-  onChangeRule,
-  onChangeScope,
-  onCancel,
-  onConfirm,
-  isResponding,
-  isLoadingRule,
-}) => (
-  <div className="rounded-lg border border-border/60 p-3.5 space-y-3 bg-muted/20">
-    <div className="flex items-center gap-2">
-      <ShieldCheck className="size-4 text-orange-500" />
-      <span className="text-sm font-medium">Always Allow Rule</span>
-    </div>
-
-    <div className="space-y-2">
-      {isLoadingRule ? (
-        <div className="flex items-center gap-2 py-2 text-xs text-muted-foreground">
-          <Loader2 className="size-3.5 animate-spin" />
-          Generating rule...
-        </div>
-      ) : (
-        <Input
-          value={alwaysAllowState.rule}
-          onChange={(e) => onChangeRule(e.target.value)}
-          className="font-mono text-xs h-8"
-          placeholder="Permission rule..."
-        />
-      )}
-
-      <div className="flex items-center gap-1.5">
-        <span className="text-xs text-muted-foreground mr-1">Scope:</span>
-        <Button
-          variant={alwaysAllowState.scope === "session" ? "default" : "outline"}
-          size="sm"
-          className="h-6 px-2.5 text-xs"
-          onClick={() => onChangeScope("session")}
-        >
-          Session
-        </Button>
-        <Button
-          variant={alwaysAllowState.scope === "project" ? "default" : "outline"}
-          size="sm"
-          className="h-6 px-2.5 text-xs"
-          onClick={() => onChangeScope("project")}
-        >
-          Project
-        </Button>
-      </div>
-    </div>
-
-    <div className="flex gap-2 justify-end">
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={onCancel}
-        disabled={isResponding}
-        className="h-7 text-xs"
-      >
-        Cancel
-      </Button>
-      <Button
-        size="sm"
-        onClick={onConfirm}
-        disabled={isResponding || isLoadingRule || alwaysAllowState.rule.trim() === ""}
-        className="h-7 text-xs gap-1.5"
-      >
-        <ShieldCheck className="size-3" />
-        Confirm
-      </Button>
-    </div>
-  </div>
-);
-
 const ToolVisualizerOrParameters: FC<{
   permissionRequest: PermissionRequest;
 }> = ({ permissionRequest }) => {
@@ -492,7 +396,7 @@ export const InlinePermissionApproval: FC<InlinePermissionApprovalProps> = ({
   onResponse,
 }) => {
   const [isResponding, setIsResponding] = useState(false);
-  const [alwaysAllowState, setAlwaysAllowState] = useState<AlwaysAllowState>({ status: "idle" });
+  const [alwaysAllowInProgress, setAlwaysAllowInProgress] = useState<AlwaysAllowInProgress>(null);
   const { config } = useConfig();
 
   const ruleQuery = useQuery({
@@ -501,7 +405,7 @@ export const InlinePermissionApproval: FC<InlinePermissionApprovalProps> = ({
       permissionRequest?.toolInput ?? {},
       permissionRequest?.projectId ?? "",
     ),
-    enabled: permissionRequest !== null && alwaysAllowState.status === "editing",
+    enabled: permissionRequest !== null && alwaysAllowInProgress !== null,
   });
 
   if (!permissionRequest) return null;
@@ -521,43 +425,36 @@ export const InlinePermissionApproval: FC<InlinePermissionApprovalProps> = ({
     }
   };
 
-  const handleAlwaysAllowClick = () => {
-    setAlwaysAllowState({ status: "editing", rule: "", scope: "session" });
+  const handleAlwaysAllow = (scope: "session" | "project") => {
+    setAlwaysAllowInProgress(scope);
   };
 
-  const handleAlwaysAllowConfirm = async () => {
-    if (alwaysAllowState.status !== "editing") return;
-
-    setIsResponding(true);
-
-    const response: PermissionResponse = {
-      permissionRequestId: permissionRequest.id,
-      decision: "always_allow",
-      alwaysAllowRule: alwaysAllowState.rule,
-      alwaysAllowScope: alwaysAllowState.scope,
-    };
-
-    try {
-      await onResponse(response);
-    } finally {
-      setIsResponding(false);
-      setAlwaysAllowState({ status: "idle" });
-    }
-  };
-
-  // Sync fetched rule into local state when query completes
+  // When rule is fetched and alwaysAllowInProgress is set, immediately send the response
   const fetchedRule =
     ruleQuery.data !== undefined && "rule" in ruleQuery.data ? (ruleQuery.data.rule ?? "") : "";
 
-  const editingRule = alwaysAllowState.status === "editing" ? alwaysAllowState.rule : undefined;
-
   useEffect(() => {
-    if (editingRule === "" && typeof fetchedRule === "string" && fetchedRule !== "") {
-      setAlwaysAllowState((prev) =>
-        prev.status === "editing" && prev.rule === "" ? { ...prev, rule: fetchedRule } : prev,
-      );
+    if (
+      alwaysAllowInProgress !== null &&
+      ruleQuery.isSuccess &&
+      typeof fetchedRule === "string" &&
+      fetchedRule !== ""
+    ) {
+      setIsResponding(true);
+
+      const response: PermissionResponse = {
+        permissionRequestId: permissionRequest.id,
+        decision: "always_allow",
+        alwaysAllowRule: fetchedRule,
+        alwaysAllowScope: alwaysAllowInProgress,
+      };
+
+      void onResponse(response).finally(() => {
+        setIsResponding(false);
+        setAlwaysAllowInProgress(null);
+      });
     }
-  }, [editingRule, fetchedRule]);
+  }, [alwaysAllowInProgress, ruleQuery.isSuccess, fetchedRule, permissionRequest.id, onResponse]);
 
   return (
     <div className="mx-4 sm:mx-6 md:mx-8 lg:mx-12 xl:mx-16 mb-3 animate-in fade-in slide-in-from-bottom-2 duration-300">
@@ -594,60 +491,54 @@ export const InlinePermissionApproval: FC<InlinePermissionApprovalProps> = ({
           {/* Tool Visualizer or Parameters Section */}
           <ToolVisualizerOrParameters permissionRequest={permissionRequest} />
 
-          {/* Always Allow expanded panel */}
-          {alwaysAllowState.status === "editing" && (
-            <AlwaysAllowPanel
-              permissionRequest={permissionRequest}
-              alwaysAllowState={alwaysAllowState}
-              onChangeRule={(rule) =>
-                setAlwaysAllowState((prev) =>
-                  prev.status === "editing" ? { ...prev, rule } : prev,
-                )
-              }
-              onChangeScope={(scope) =>
-                setAlwaysAllowState((prev) =>
-                  prev.status === "editing" ? { ...prev, scope } : prev,
-                )
-              }
-              onCancel={() => setAlwaysAllowState({ status: "idle" })}
-              onConfirm={() => void handleAlwaysAllowConfirm()}
-              isResponding={isResponding}
-              isLoadingRule={ruleQuery.isLoading}
-            />
-          )}
-
-          {/* Action Buttons */}
+          {/* Action Buttons - 4 direct options */}
           <div className="flex gap-2.5 justify-end pt-1">
             <Button
               variant="ghost"
               size="sm"
               onClick={() => void handleResponse("deny")}
-              disabled={isResponding}
+              disabled={isResponding || ruleQuery.isLoading}
               className="min-w-[4.5rem] gap-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
             >
               <X className="size-3.5" />
               Deny
             </Button>
-            {alwaysAllowState.status === "idle" && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleAlwaysAllowClick}
-                disabled={isResponding}
-                className="min-w-[4.5rem] gap-1.5"
-              >
-                <ShieldCheck className="size-3.5" />
-                Always Allow
-              </Button>
-            )}
             <Button
               size="sm"
               onClick={() => void handleResponse("allow")}
-              disabled={isResponding}
+              disabled={isResponding || ruleQuery.isLoading}
               className="min-w-[4.5rem] gap-1.5"
             >
               <Check className="size-3.5" />
               Allow
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handleAlwaysAllow("session")}
+              disabled={isResponding || ruleQuery.isLoading || alwaysAllowInProgress === "session"}
+              className="min-w-[5.5rem] gap-1.5"
+            >
+              {alwaysAllowInProgress === "session" && ruleQuery.isLoading ? (
+                <Loader2 className="size-3.5 animate-spin" />
+              ) : (
+                <Check className="size-3.5" />
+              )}
+              {alwaysAllowInProgress === "session" && ruleQuery.isLoading ? "..." : "Session"}
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handleAlwaysAllow("project")}
+              disabled={isResponding || ruleQuery.isLoading || alwaysAllowInProgress === "project"}
+              className="min-w-[5.5rem] gap-1.5"
+            >
+              {alwaysAllowInProgress === "project" && ruleQuery.isLoading ? (
+                <Loader2 className="size-3.5 animate-spin" />
+              ) : (
+                <Check className="size-3.5" />
+              )}
+              {alwaysAllowInProgress === "project" && ruleQuery.isLoading ? "..." : "Project"}
             </Button>
           </div>
         </div>

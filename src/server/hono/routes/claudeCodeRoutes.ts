@@ -182,6 +182,25 @@ const claudeCodeRoutes = Effect.gen(function* () {
         );
         return response;
       },
+    )
+    .post(
+      "/generate-permission-rule",
+      zValidator(
+        "json",
+        z.object({
+          toolName: z.string(),
+          toolInput: z.record(z.string(), z.unknown()),
+          projectId: z.string(),
+        }),
+      ),
+      async (c) => {
+        const body = c.req.valid("json");
+        const response = await effectToResponse(
+          c,
+          claudeCodePermissionController.generatePermissionRuleForTool(body),
+        );
+        return response;
+      },
     );
 });
 

@@ -5,6 +5,7 @@ import { serveStatic } from "@hono/node-server/serve-static";
 import { Effect, Layer } from "effect";
 import { AgentSessionLayer } from "./core/agent-session/index.ts";
 import { AgentSessionController } from "./core/agent-session/presentation/AgentSessionController.ts";
+import { SessionAllowlistRepository } from "./core/claude-code/infrastructure/SessionAllowlistRepository.ts";
 import { CCVAskUserQuestionController } from "./core/claude-code/presentation/CCVAskUserQuestionController.ts";
 import { ClaudeCodeController } from "./core/claude-code/presentation/ClaudeCodeController.ts";
 import { ClaudeCodePermissionController } from "./core/claude-code/presentation/ClaudeCodePermissionController.ts";
@@ -131,10 +132,11 @@ export const startServer = async (options: CliOptions) => {
 
 const PlatformLayer = Layer.mergeAll(platformLayer, NodeContext.layer);
 
-const InfraBasics = Layer.mergeAll(ProjectMetaService.Live, SessionMetaService.Live).pipe(
-  Layer.provideMerge(SyncService.Live),
-  Layer.provideMerge(DrizzleService.Live),
-);
+const InfraBasics = Layer.mergeAll(
+  ProjectMetaService.Live,
+  SessionMetaService.Live,
+  SessionAllowlistRepository.Live,
+).pipe(Layer.provideMerge(SyncService.Live), Layer.provideMerge(DrizzleService.Live));
 
 const InfraRepos = Layer.mergeAll(ProjectRepository.Live, SessionRepository.Live).pipe(
   Layer.provideMerge(InfraBasics),

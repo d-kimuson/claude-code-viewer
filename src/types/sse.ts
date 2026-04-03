@@ -26,6 +26,9 @@ export type SSEEventDeclaration = {
 
   sessionProcessChanged: {
     processes: PublicSessionProcess[];
+    abortedByUser?: {
+      sessionId: string;
+    };
   };
 
   permissionRequested: {

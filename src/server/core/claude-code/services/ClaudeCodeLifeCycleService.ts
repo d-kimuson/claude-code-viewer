@@ -286,6 +286,12 @@ const LayerImpl = Effect.gen(function* () {
                 sessionProcess.def.sessionProcessId,
               );
 
+              // Skip if already completed (e.g., by abortTask) to avoid
+              // overwriting abortedByUser flag
+              if (currentProcess.type === "completed") {
+                return;
+              }
+
               yield* sessionProcessService.toCompletedState({
                 sessionProcessId: currentProcess.def.sessionProcessId,
               });
@@ -321,6 +327,7 @@ const LayerImpl = Effect.gen(function* () {
       yield* sessionProcessService.toCompletedState({
         sessionProcessId: currentProcess.def.sessionProcessId,
         error: new Error("Task aborted"),
+        abortedByUser: true,
       });
     });
 
@@ -329,9 +336,14 @@ const LayerImpl = Effect.gen(function* () {
       const processes = yield* sessionProcessService.getSessionProcesses();
 
       for (const process of processes) {
+        yield* permissionService.cancelPendingRequests(process.sessionId);
+        yield* ccvAskUserQuestionService.cancelPendingRequests(process.sessionId);
+        process.def.abortController.abort();
+
         yield* sessionProcessService.toCompletedState({
           sessionProcessId: process.def.sessionProcessId,
           error: new Error("Task aborted"),
+          abortedByUser: true,
         });
       }
     });

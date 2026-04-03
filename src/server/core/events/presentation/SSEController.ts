@@ -55,9 +55,15 @@ const LayerImpl = Effect.gen(function* () {
       const onSessionProcessChanged = (
         event: InternalEventDeclaration["sessionProcessChanged"],
       ) => {
+        const abortedByUser =
+          event.changed.type === "completed" && event.changed.abortedByUser
+            ? { sessionId: event.changed.sessionId }
+            : undefined;
+
         Effect.runFork(
           typeSafeSSE.writeSSE("sessionProcessChanged", {
             processes: event.processes,
+            abortedByUser,
           }),
         );
       };

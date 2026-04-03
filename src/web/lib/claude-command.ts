@@ -42,7 +42,7 @@ export const buildClaudeCommand = ({
     }
 
     if (ccOptions.disallowedTools !== undefined && ccOptions.disallowedTools.length > 0) {
-      parts.push("--disallowed-tools", shellEscape(ccOptions.disallowedTools.join(",")));
+      parts.push("--disallowedTools", shellEscape(ccOptions.disallowedTools.join(",")));
     }
 
     if (typeof ccOptions.systemPrompt === "string") {

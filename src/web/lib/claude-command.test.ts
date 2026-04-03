@@ -52,7 +52,7 @@ describe("buildClaudeCommand", () => {
       },
     });
     expect(result).toBe(
-      "claude --resume 'session-456' --model 'opus' --permission-mode 'acceptEdits' --max-turns 10 --disallowed-tools 'Bash,Write' --system-prompt 'Be concise' 'do something'",
+      "claude --resume 'session-456' --model 'opus' --permission-mode 'acceptEdits' --max-turns 10 --disallowedTools 'Bash,Write' --system-prompt 'Be concise' 'do something'",
     );
   });
 

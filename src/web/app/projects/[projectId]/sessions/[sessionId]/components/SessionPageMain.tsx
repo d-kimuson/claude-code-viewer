@@ -223,6 +223,8 @@ const SessionPageMainContent: FC<
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const scrollSettleRafIdRef = useRef<number | null>(null);
+  const isNearBottomRef = useRef(true);
+  const hadVirtualMessageRef = useRef(false);
 
   const scrollToBottomSettled = useCallback((frames: number) => {
     const scrollContainer = scrollContainerRef.current;
@@ -262,14 +264,9 @@ const SessionPageMainContent: FC<
   useEffect(() => {
     if (!isExistingSession) return;
     if (effectiveSessionStatus === "running" && conversationCount !== previousConversationLength) {
-      const scrollContainer = scrollContainerRef.current;
-      if (scrollContainer !== null) {
-        const distanceFromBottom =
-          scrollContainer.scrollHeight - scrollContainer.scrollTop - scrollContainer.clientHeight;
-        if (distanceFromBottom > 120) {
-          setPreviousConversationLength(conversationCount);
-          return;
-        }
+      if (!isNearBottomRef.current) {
+        setPreviousConversationLength(conversationCount);
+        return;
       }
 
       setPreviousConversationLength(conversationCount);
@@ -307,6 +304,33 @@ const SessionPageMainContent: FC<
       }
     };
   }, []);
+
+  // Continuously track whether the user is near the bottom of the scroll container
+  useEffect(() => {
+    const scrollContainer = scrollContainerRef.current;
+    if (scrollContainer === null) return;
+
+    const handleScroll = () => {
+      const distanceFromBottom =
+        scrollContainer.scrollHeight - scrollContainer.scrollTop - scrollContainer.clientHeight;
+      isNearBottomRef.current = distanceFromBottom <= 150;
+    };
+
+    scrollContainer.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      scrollContainer.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  // Auto-scroll to bottom when a virtual message is added (user sent a message)
+  useEffect(() => {
+    if (sessionId === undefined) return;
+    const hasVirtualMessage = virtualMessages.has(sessionId);
+    if (hasVirtualMessage && !hadVirtualMessageRef.current) {
+      scrollToBottomSettled(6);
+    }
+    hadVirtualMessageRef.current = hasVirtualMessage;
+  }, [virtualMessages, sessionId, scrollToBottomSettled]);
 
   const sessionTitle = resolveSessionTitle(
     sessionData?.session.meta.customTitle ?? null,

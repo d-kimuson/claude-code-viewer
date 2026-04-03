@@ -1,5 +1,6 @@
 import type { FC } from "react";
 import { z } from "zod";
+import { codeMonoClass } from "./constants";
 import type { ToolVisualizerProps } from "./types";
 
 const inputSchema = z.object({
@@ -21,7 +22,9 @@ export const BashVisualizer: FC<ToolVisualizerProps> = ({ input, toolUseResult }
   // result can be null (not yet received) - that's fine, show command only
 
   return (
-    <div className="font-mono text-xs rounded bg-gray-900 dark:bg-gray-950 text-gray-100 overflow-hidden">
+    <div
+      className={`${codeMonoClass} text-xs rounded bg-gray-900 dark:bg-gray-950 text-gray-100 overflow-hidden`}
+    >
       {/* Command line */}
       <div className="px-3 py-2 bg-gray-800 dark:bg-gray-900 border-b border-gray-700 flex items-start gap-2">
         <span className="text-green-400 select-none flex-shrink-0">$</span>

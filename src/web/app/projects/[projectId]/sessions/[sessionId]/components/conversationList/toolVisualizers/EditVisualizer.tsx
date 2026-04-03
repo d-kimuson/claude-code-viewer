@@ -2,6 +2,8 @@ import type { FC } from "react";
 import { z } from "zod";
 import { DiffViewer } from "../../diffModal/DiffViewer";
 import type { DiffHunk, DiffLine, FileDiff } from "../../diffModal/types";
+import { codeMonoClass } from "./constants";
+import { ToolResultStatusBanner } from "./ToolResultStatusBanner";
 import type { ToolVisualizerProps } from "./types";
 
 const inputSchema = z.object({
@@ -69,7 +71,7 @@ const convertPatchToHunks = (patches: z.infer<typeof structuredPatchSchema>): Di
   });
 };
 
-export const EditVisualizer: FC<ToolVisualizerProps> = ({ input, toolUseResult }) => {
+export const EditVisualizer: FC<ToolVisualizerProps> = ({ input, output, toolUseResult }) => {
   const parsedInput = inputSchema.safeParse(input);
   if (!parsedInput.success) return null;
 
@@ -77,8 +79,10 @@ export const EditVisualizer: FC<ToolVisualizerProps> = ({ input, toolUseResult }
 
   if (!parsedResult.success) {
     return (
-      <div className="rounded border border-gray-200 dark:border-gray-700">
-        <div className="px-3 py-2 bg-gray-50 dark:bg-gray-800 font-mono text-xs font-medium">
+      <div className="rounded border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div
+          className={`px-3 py-2 bg-gray-50 dark:bg-gray-800 ${codeMonoClass} text-xs font-medium`}
+        >
           {parsedInput.data.file_path}
         </div>
         {toolUseResult === undefined && (
@@ -86,6 +90,7 @@ export const EditVisualizer: FC<ToolVisualizerProps> = ({ input, toolUseResult }
             Applying edit...
           </div>
         )}
+        <ToolResultStatusBanner output={output} showSuccess />
       </div>
     );
   }
@@ -111,5 +116,10 @@ export const EditVisualizer: FC<ToolVisualizerProps> = ({ input, toolUseResult }
     linesDeleted,
   };
 
-  return <DiffViewer fileDiff={fileDiff} />;
+  return (
+    <div className="overflow-hidden">
+      <DiffViewer fileDiff={fileDiff} />
+      <ToolResultStatusBanner output={output} showSuccess />
+    </div>
+  );
 };

@@ -2579,7 +2579,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffViewer.tsx",
-        102
+        100
       ]
     ],
     "translation": "コメントを追加..."
@@ -2590,7 +2590,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffViewer.tsx",
-        123
+        121
       ]
     ],
     "translation": "保存"

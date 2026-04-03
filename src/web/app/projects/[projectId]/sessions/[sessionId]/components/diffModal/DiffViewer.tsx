@@ -41,8 +41,6 @@ type DiffContentRowsProps = {
   onRemoveComment?: (id: string) => void;
 };
 
-const diffMonoClass = codeMonoClass;
-
 const getRowClasses = (type: DiffHunk["lines"][number]["type"]) => {
   return cn({
     "bg-green-50 dark:bg-green-950/30": type === "added",
@@ -212,7 +210,7 @@ const DiffHunkComponent: FC<DiffHunkProps> = ({ hunk }) => {
             key={`gutter-${line.oldLineNumber ?? ""}-${line.newLineNumber ?? ""}`}
             className={cn(
               "grid grid-cols-[2.5rem_2.5rem] border-r border-l-4",
-              diffMonoClass,
+              codeMonoClass,
               getStickyCellClasses(line.type),
               {
                 "border-green-200 border-l-green-400 dark:border-green-800/50":
@@ -279,7 +277,7 @@ const DiffContentRows: FC<DiffContentRowsProps> = ({
                   data-slot="diff-row-content"
                   className={cn(
                     "relative min-w-0 px-2 py-0.5 pl-7 text-xs leading-tight whitespace-pre",
-                    diffMonoClass,
+                    codeMonoClass,
                   )}
                 >
                   {reviewProps !== undefined &&
@@ -392,7 +390,7 @@ const FileHeader: FC<FileHeaderProps> = ({ fileDiff, isCollapsed, onToggleCollap
           <div
             className={cn(
               "w-5 h-5 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-xs flex-shrink-0",
-              diffMonoClass,
+              codeMonoClass,
             )}
           >
             {getFileStatusIcon()}
@@ -400,7 +398,7 @@ const FileHeader: FC<FileHeaderProps> = ({ fileDiff, isCollapsed, onToggleCollap
           <span
             className={cn(
               "text-xs font-medium text-black dark:text-white text-left truncate flex-1 min-w-0",
-              diffMonoClass,
+              codeMonoClass,
             )}
           >
             {fileDiff.filename}

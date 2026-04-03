@@ -13,10 +13,17 @@ const outputStringSchema = z.object({
   is_error: z.boolean().optional(),
 });
 
+const outputContentItemSchema = z.union([
+  z.object({ type: z.literal("text"), text: z.string() }),
+  z.object({ type: z.string() }),
+]);
+
 const outputArraySchema = z.object({
-  content: z.array(z.object({ type: z.literal("text"), text: z.string() })),
+  content: z.array(outputContentItemSchema),
   is_error: z.boolean().optional(),
 });
+
+const textContentSchema = z.object({ type: z.literal("text"), text: z.string() });
 
 const isErrorSchema = z.object({
   is_error: z.literal(true),
@@ -34,8 +41,14 @@ export const extractOutputInfo = (output: unknown): { text: string | null; isErr
 
   const arrayResult = outputArraySchema.safeParse(output);
   if (arrayResult.success) {
-    const firstItem = arrayResult.data.content[0];
-    if (firstItem) return { text: firstItem.text, isError };
+    const texts: string[] = [];
+    for (const item of arrayResult.data.content) {
+      const textItem = textContentSchema.safeParse(item);
+      if (textItem.success) {
+        texts.push(textItem.data.text);
+      }
+    }
+    if (texts.length > 0) return { text: texts.join("\n"), isError };
   }
 
   return { text: null, isError };

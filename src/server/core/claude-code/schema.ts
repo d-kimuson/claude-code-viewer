@@ -101,6 +101,7 @@ export const ccOptionsSchema = z.object({
   maxBudgetUsd: z.number().optional(),
   effort: z.enum(["low", "medium", "high", "max"]).optional(),
   permissionMode: z.enum(["acceptEdits", "bypassPermissions", "default", "plan"]).optional(),
+  agent: z.string().optional(),
 });
 
 export type CCOptionsSchema = z.infer<typeof ccOptionsSchema>;

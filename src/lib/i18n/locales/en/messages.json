@@ -503,7 +503,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
-        311
+        310
       ]
     ],
     "translation": "View File"
@@ -842,6 +842,34 @@
     ],
     "translation": "Scheduled Send Time"
   },
+  "chat.toolbar.agent.none": {
+    "message": "No Agent",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
+        252
+      ],
+      [
+        "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
+        260
+      ]
+    ],
+    "translation": "No Agent"
+  },
+  "chat.toolbar.agent.tooltip": {
+    "message": "Select agent",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
+        277
+      ]
+    ],
+    "translation": "Select agent"
+  },
   "chat.toolbar.effort.tooltip": {
     "message": "Select reasoning effort",
     "placeholders": {},
@@ -873,7 +901,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        160
+        179
       ]
     ],
     "translation": "Accept Edits"
@@ -885,7 +913,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        166
+        185
       ]
     ],
     "translation": "Bypass"
@@ -897,7 +925,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        157
+        176
       ]
     ],
     "translation": "Default"
@@ -909,7 +937,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        169
+        188
       ]
     ],
     "translation": "Plan"
@@ -921,7 +949,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        176
+        195
       ]
     ],
     "translation": "Select permission mode"
@@ -933,7 +961,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        209
+        228
       ]
     ],
     "translation": "Include default Claude Code prompt"
@@ -1128,7 +1156,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        77
+        96
       ]
     ],
     "translation": "New"
@@ -1140,7 +1168,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        70
+        89
       ]
     ],
     "translation": "New Chat"
@@ -1163,7 +1191,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        104
+        123
       ]
     ],
     "translation": "Scroll to Bottom"
@@ -1175,7 +1203,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        88
+        107
       ]
     ],
     "translation": "Scroll to Top"
@@ -2999,7 +3027,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        129
+        148
       ]
     ],
     "translation": "Abort"

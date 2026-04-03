@@ -17,6 +17,7 @@ export type CCOptions = Pick<
   | "maxBudgetUsd"
   | "effort"
   | "permissionMode"
+  | "agent"
 >;
 
 export type NewClaudeCodeTurnDef = BaseClaudeCodeTurnDef & {

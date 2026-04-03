@@ -28,6 +28,7 @@ export const testPlatformLayer = (overrides?: {
       globalClaudeDirectoryPath: claudeDirForTest,
       claudeCommandsDirPath: `${claudeDirForTest}/commands`,
       claudeSkillsDirPath: `${claudeDirForTest}/skills`,
+      claudeAgentsDirPath: `${claudeDirForTest}/agents`,
       claudeProjectsDirPath: `${claudeDirForTest}/projects`,
       ...overrides?.claudeCodePaths,
     }),

@@ -24,6 +24,7 @@ const testApplicationContextLayer = Layer.succeed(ApplicationContext, {
     globalClaudeDirectoryPath: getClaudeDir(),
     claudeCommandsDirPath: `${getClaudeDir()}/commands`,
     claudeSkillsDirPath: `${getClaudeDir()}/skills`,
+    claudeAgentsDirPath: `${getClaudeDir()}/agents`,
     claudeProjectsDirPath: `${getClaudeDir()}/projects`,
   }),
 });

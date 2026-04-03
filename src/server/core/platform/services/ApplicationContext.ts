@@ -8,6 +8,7 @@ export type ClaudeCodePaths = {
   globalClaudeDirectoryPath: string;
   claudeCommandsDirPath: string;
   claudeSkillsDirPath: string;
+  claudeAgentsDirPath: string;
   claudeProjectsDirPath: string;
 };
 
@@ -28,6 +29,7 @@ const LayerImpl = Effect.gen(function* () {
       globalClaudeDirectoryPath,
       claudeCommandsDirPath: path.resolve(globalClaudeDirectoryPath, "commands"),
       claudeSkillsDirPath: path.resolve(globalClaudeDirectoryPath, "skills"),
+      claudeAgentsDirPath: path.resolve(globalClaudeDirectoryPath, "agents"),
       claudeProjectsDirPath: path.resolve(globalClaudeDirectoryPath, "projects"),
     } as const satisfies ClaudeCodePaths;
   });

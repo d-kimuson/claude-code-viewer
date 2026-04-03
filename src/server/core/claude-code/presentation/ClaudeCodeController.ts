@@ -49,6 +49,17 @@ const LayerImpl = Effect.gen(function* () {
             )
           : [];
 
+      const globalAgents: CommandInfo[] = yield* scanCommandFilesWithMetadata(
+        (yield* context.claudeCodePaths).claudeAgentsDirPath,
+      );
+
+      const projectAgents: CommandInfo[] =
+        project.meta.projectPath === null
+          ? []
+          : yield* scanCommandFilesWithMetadata(
+              path.resolve(project.meta.projectPath, ".claude", "agents"),
+            );
+
       const defaultCommands: CommandInfo[] = [
         {
           name: "init",
@@ -82,6 +93,8 @@ const LayerImpl = Effect.gen(function* () {
           projectCommands,
           globalSkills,
           projectSkills,
+          globalAgents,
+          projectAgents,
           defaultCommands,
           // Legacy format: string[] for backward compatibility
           globalCommandsLegacy: toNames(globalCommands),

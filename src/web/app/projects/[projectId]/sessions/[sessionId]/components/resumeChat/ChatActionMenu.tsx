@@ -1,8 +1,9 @@
 import { Trans, useLingui } from "@lingui/react";
-import type { UseMutationResult } from "@tanstack/react-query";
+import * as SelectPrimitive from "@radix-ui/react-select";
+import { type UseMutationResult, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { ArrowDownIcon, ArrowUpIcon, LoaderIcon, PlusIcon, XIcon } from "lucide-react";
-import { type FC, useId } from "react";
+import { ArrowDownIcon, ArrowUpIcon, CheckIcon, LoaderIcon, PlusIcon, XIcon } from "lucide-react";
+import { type FC, useId, useMemo } from "react";
 import type { CCOptionsSchema } from "@/server/core/claude-code/schema";
 import type { PublicSessionProcess } from "@/types/session-process";
 import { Button } from "@/web/components/ui/button";
@@ -16,6 +17,14 @@ import {
 } from "@/web/components/ui/select";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/web/components/ui/tooltip";
 import { useFeatureFlags } from "@/web/hooks/useFeatureFlags";
+import { claudeCommandsQuery } from "@/web/lib/api/queries";
+
+const AGENT_NONE_VALUE = "__none__";
+
+type AgentInfo = {
+  name: string;
+  description: string | null;
+};
 
 type ChatActionMenuProps = {
   projectId: string;
@@ -47,6 +56,17 @@ export const ChatActionMenu: FC<ChatActionMenuProps> = ({
   const navigate = useNavigate({ from: "/projects/$projectId/session" });
   const { isFlagEnabled } = useFeatureFlags();
   const isToolApprovalAvailable = isFlagEnabled("tool-approval");
+
+  const { data: commandData } = useQuery({
+    ...claudeCommandsQuery(projectId),
+    staleTime: 1000 * 60 * 5,
+  });
+
+  const availableAgents: AgentInfo[] = useMemo(() => {
+    const global = commandData?.globalAgents ?? [];
+    const project = commandData?.projectAgents ?? [];
+    return [...global, ...project];
+  }, [commandData?.globalAgents, commandData?.projectAgents]);
 
   const handleStartNewChat = () => {
     void navigate({
@@ -212,6 +232,62 @@ export const ChatActionMenu: FC<ChatActionMenuProps> = ({
                 />
               </TooltipContent>
             </Tooltip>
+
+            {/* Agent selector */}
+            {availableAgents.length > 0 && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span>
+                    <Select
+                      value={ccOptions?.agent ?? AGENT_NONE_VALUE}
+                      onValueChange={(value: string) =>
+                        onCCOptionsChange({
+                          ...ccOptions,
+                          agent: value === AGENT_NONE_VALUE ? undefined : value,
+                        })
+                      }
+                      disabled={isPending}
+                    >
+                      <SelectTrigger className="h-7 w-auto min-w-[80px] text-[11px] font-medium bg-background/50 border-border/30 shadow-none hover:bg-background hover:border-border/50 transition-all duration-200 gap-1 px-2">
+                        <SelectValue
+                          placeholder={i18n._({
+                            id: "chat.toolbar.agent.none",
+                            message: "No Agent",
+                          })}
+                        />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value={AGENT_NONE_VALUE}>
+                          <Trans id="chat.toolbar.agent.none" message="No Agent" />
+                        </SelectItem>
+                        {availableAgents.map((agent) => (
+                          <SelectPrimitive.Item
+                            key={agent.name}
+                            value={agent.name}
+                            className="relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
+                          >
+                            <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
+                              <SelectPrimitive.ItemIndicator>
+                                <CheckIcon className="h-4 w-4" />
+                              </SelectPrimitive.ItemIndicator>
+                            </span>
+                            <SelectPrimitive.ItemText>{agent.name}</SelectPrimitive.ItemText>
+                            {agent.description !== null && (
+                              <span className="ml-1.5 text-muted-foreground truncate max-w-[200px]">
+                                — {agent.description}
+                              </span>
+                            )}
+                          </SelectPrimitive.Item>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <Trans id="chat.toolbar.agent.tooltip" message="Select agent" />
+                </TooltipContent>
+              </Tooltip>
+            )}
           </>
         )}
       </div>

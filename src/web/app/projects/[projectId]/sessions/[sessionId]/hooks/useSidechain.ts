@@ -19,7 +19,8 @@ export const useSidechain = (conversations: Conversation[]) => {
             conv.type !== "agent-name" &&
             conv.type !== "agent-setting" &&
             conv.type !== "pr-link" &&
-            conv.type !== "last-prompt",
+            conv.type !== "last-prompt" &&
+            conv.type !== "permission-mode",
         )
         .filter((conv) => conv.isSidechain === true),
     [conversations],
@@ -111,7 +112,8 @@ export const useSidechain = (conversations: Conversation[]) => {
         conversation.type === "agent-name" ||
         conversation.type === "agent-setting" ||
         conversation.type === "pr-link" ||
-        conversation.type === "last-prompt"
+        conversation.type === "last-prompt" ||
+        conversation.type === "permission-mode"
       ) {
         return false;
       }

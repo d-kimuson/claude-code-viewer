@@ -5,6 +5,7 @@ import { type AssistantEntry, AssistantEntrySchema } from "./entry/AssistantEntr
 import { CustomTitleEntrySchema } from "./entry/CustomTitleEntrySchema.ts";
 import { FileHistorySnapshotEntrySchema } from "./entry/FileHIstorySnapshotEntrySchema.ts";
 import { LastPromptEntrySchema } from "./entry/LastPromptEntrySchema.ts";
+import { PermissionModeEntrySchema } from "./entry/PermissionModeEntrySchema.ts";
 import { PrLinkEntrySchema } from "./entry/PrLinkEntrySchema.ts";
 import { ProgressEntrySchema } from "./entry/ProgressEntrySchema.ts";
 import { QueueOperationEntrySchema } from "./entry/QueueOperationEntrySchema.ts";
@@ -23,6 +24,7 @@ export const ConversationSchema = z.union([
   CustomTitleEntrySchema,
   AgentNameEntrySchema,
   AgentSettingEntrySchema,
+  PermissionModeEntrySchema,
   PrLinkEntrySchema,
   LastPromptEntrySchema,
 ]);

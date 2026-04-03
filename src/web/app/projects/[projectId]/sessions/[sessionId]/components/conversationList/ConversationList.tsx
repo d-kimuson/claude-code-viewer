@@ -394,6 +394,7 @@ export const ConversationList: FC<ConversationListProps> = ({
       if (conv.type === "agent-setting") return false;
       if (conv.type === "pr-link") return false;
       if (conv.type === "last-prompt") return false;
+      if (conv.type === "permission-mode") return false;
 
       const isSidechain =
         conv.type !== "summary" &&
@@ -633,6 +634,7 @@ export const ConversationList: FC<ConversationListProps> = ({
       conversation.type !== "agent-setting" &&
       conversation.type !== "pr-link" &&
       conversation.type !== "last-prompt" &&
+      conversation.type !== "permission-mode" &&
       conversation.isSidechain;
 
     return (

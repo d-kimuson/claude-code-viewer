@@ -66,6 +66,10 @@ export const getConversationKey = (conversation: Conversation) => {
     return `last-prompt_${conversation.sessionId}`;
   }
 
+  if (conversation.type === "permission-mode") {
+    return `permission-mode_${conversation.sessionId}_${conversation.permissionMode}`;
+  }
+
   conversation satisfies never;
   throw new Error("Unknown conversation type");
 };

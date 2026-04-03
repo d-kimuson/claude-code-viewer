@@ -386,6 +386,7 @@ const buildSidechainData = (conversations: Array<Conversation>): SidechainData =
       conv.type !== "agent-setting" &&
       conv.type !== "pr-link" &&
       conv.type !== "last-prompt" &&
+      conv.type !== "permission-mode" &&
       conv.isSidechain === true,
   ) as Array<Extract<Conversation, { type: "user" | "assistant" | "system" }>>;
 
@@ -1019,6 +1020,7 @@ export const generateSessionHtml = (
         conv.type !== "agent-setting" &&
         conv.type !== "pr-link" &&
         conv.type !== "last-prompt" &&
+        conv.type !== "permission-mode" &&
         conv.isSidechain === true &&
         conv.agentId !== undefined
       ) {

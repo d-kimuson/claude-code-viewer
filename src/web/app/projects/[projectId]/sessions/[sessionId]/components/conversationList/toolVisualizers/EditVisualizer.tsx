@@ -6,6 +6,8 @@ import type { ToolVisualizerProps } from "./types";
 
 const inputSchema = z.object({
   file_path: z.string(),
+  old_string: z.string().optional(),
+  new_string: z.string().optional(),
 });
 
 const structuredPatchSchema = z.array(
@@ -69,28 +71,26 @@ const convertPatchToHunks = (patches: z.infer<typeof structuredPatchSchema>): Di
   });
 };
 
-export const EditVisualizer: FC<ToolVisualizerProps> = ({ input, toolUseResult }) => {
-  const parsedInput = inputSchema.safeParse(input);
-  if (!parsedInput.success) return null;
+// Build a structured patch from old_string/new_string (for permission request previews)
+const buildPatchFromStrings = (
+  oldStr: string,
+  newStr: string,
+): z.infer<typeof structuredPatchSchema> => {
+  const oldLines = oldStr.split("\n");
+  const newLines = newStr.split("\n");
+  return [
+    {
+      oldStart: 1,
+      oldLines: oldLines.length,
+      newStart: 1,
+      newLines: newLines.length,
+      lines: [...oldLines.map((line) => `-${line}`), ...newLines.map((line) => `+${line}`)],
+    },
+  ];
+};
 
-  const parsedResult = toolUseResultSchema.safeParse(toolUseResult);
-
-  if (!parsedResult.success) {
-    return (
-      <div className="rounded border border-gray-200 dark:border-gray-700">
-        <div className="px-3 py-2 bg-gray-50 dark:bg-gray-800 font-mono text-xs font-medium">
-          {parsedInput.data.file_path}
-        </div>
-        {toolUseResult === undefined && (
-          <div className="px-3 py-4 text-xs text-muted-foreground animate-pulse text-center">
-            Applying edit...
-          </div>
-        )}
-      </div>
-    );
-  }
-
-  const hunks = convertPatchToHunks(parsedResult.data.structuredPatch);
+const renderDiff = (filename: string, patches: z.infer<typeof structuredPatchSchema>) => {
+  const hunks = convertPatchToHunks(patches);
   let linesAdded = 0;
   let linesDeleted = 0;
   for (const hunk of hunks) {
@@ -101,7 +101,7 @@ export const EditVisualizer: FC<ToolVisualizerProps> = ({ input, toolUseResult }
   }
 
   const fileDiff: FileDiff = {
-    filename: parsedResult.data.filePath,
+    filename,
     isNew: false,
     isDeleted: false,
     isRenamed: false,
@@ -112,4 +112,35 @@ export const EditVisualizer: FC<ToolVisualizerProps> = ({ input, toolUseResult }
   };
 
   return <DiffViewer fileDiff={fileDiff} />;
+};
+
+export const EditVisualizer: FC<ToolVisualizerProps> = ({ input, toolUseResult }) => {
+  const parsedInput = inputSchema.safeParse(input);
+  if (!parsedInput.success) return null;
+
+  // Prefer toolUseResult (has full structured patch with context lines)
+  const parsedResult = toolUseResultSchema.safeParse(toolUseResult);
+  if (parsedResult.success) {
+    return renderDiff(parsedResult.data.filePath, parsedResult.data.structuredPatch);
+  }
+
+  // Fallback: build diff from old_string/new_string in input (permission request preview)
+  const { old_string: oldStr, new_string: newStr } = parsedInput.data;
+  if (oldStr !== undefined && newStr !== undefined) {
+    return renderDiff(parsedInput.data.file_path, buildPatchFromStrings(oldStr, newStr));
+  }
+
+  // No diff data available — show loading state
+  return (
+    <div className="rounded border border-gray-200 dark:border-gray-700">
+      <div className="px-3 py-2 bg-gray-50 dark:bg-gray-800 font-mono text-xs font-medium">
+        {parsedInput.data.file_path}
+      </div>
+      {toolUseResult === undefined && (
+        <div className="px-3 py-4 text-xs text-muted-foreground animate-pulse text-center">
+          Applying edit...
+        </div>
+      )}
+    </div>
+  );
 };

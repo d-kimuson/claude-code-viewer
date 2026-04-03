@@ -13,6 +13,7 @@ const makeMessage = (overrides: Partial<VirtualMessage> = {}): VirtualMessage =>
   projectId: "project-1",
   userMessage: "hello",
   sentAt: "2024-01-01T00:00:00.000Z",
+  isNewSession: true,
   ...overrides,
 });
 

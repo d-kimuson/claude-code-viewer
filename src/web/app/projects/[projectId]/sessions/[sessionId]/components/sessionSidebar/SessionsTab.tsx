@@ -42,7 +42,7 @@ export const SessionsTab: FC<{
   useEffect(() => {
     const serverIds = new Set(projectData.pages.flatMap((page) => page.sessions).map((s) => s.id));
     for (const vm of virtualMessages.values()) {
-      if (vm.projectId === projectId && serverIds.has(vm.sessionId)) {
+      if (vm.projectId === projectId && vm.isNewSession && serverIds.has(vm.sessionId)) {
         removeVirtualMessage(vm.sessionId);
       }
     }

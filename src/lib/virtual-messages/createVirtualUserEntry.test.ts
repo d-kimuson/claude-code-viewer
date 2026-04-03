@@ -8,6 +8,7 @@ describe("createVirtualUserEntry", () => {
     projectId: "proj-1",
     userMessage: "What is this code doing?",
     sentAt: "2024-06-15T12:30:00.000Z",
+    isNewSession: true,
   };
 
   test("returns a UserEntry with type 'user'", () => {

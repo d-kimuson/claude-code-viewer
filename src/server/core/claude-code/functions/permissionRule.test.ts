@@ -92,9 +92,9 @@ describe("generatePermissionRule", () => {
     ).toBe("WebFetch");
   });
 
-  test("Edit with file outside project uses double slash", () => {
+  test("Edit with file outside project uses absolute path", () => {
     expect(generatePermissionRule("Edit", { file_path: "/tmp/foo.ts" }, "/home/user/project")).toBe(
-      "Edit(//tmp/foo.ts)",
+      "Edit(/tmp/foo.ts)",
     );
   });
 
@@ -192,6 +192,18 @@ describe("matchPermissionRule", () => {
 
   test("Bash(*) is equivalent to Bash (matches all)", () => {
     expect(matchPermissionRule("Bash(*)", "Bash", { command: "anything" }, cwd)).toBe(true);
+  });
+
+  test("Edit with absolute path matches file outside project", () => {
+    expect(
+      matchPermissionRule("Edit(/tmp/foo.ts)", "Edit", { file_path: "/tmp/foo.ts" }, cwd),
+    ).toBe(true);
+  });
+
+  test("Edit with absolute path does not match different file", () => {
+    expect(
+      matchPermissionRule("Edit(/tmp/foo.ts)", "Edit", { file_path: "/tmp/bar.ts" }, cwd),
+    ).toBe(false);
   });
 });
 

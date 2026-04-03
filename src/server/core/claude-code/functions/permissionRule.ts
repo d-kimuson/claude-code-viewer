@@ -51,8 +51,8 @@ export const generatePermissionRule = (
         const relativePath = filePath.slice(projectCwd.length);
         return `${toolName}(${relativePath})`;
       }
-      // File is outside project - use double slash prefix
-      return `${toolName}(/${filePath})`;
+      // File is outside project - use absolute path as-is
+      return `${toolName}(${filePath})`;
     }
     return toolName;
   }
@@ -83,15 +83,14 @@ const getSpecifierValue = (
 
 /**
  * Relativize a file path for matching against a rule specifier.
- * Specifiers starting with "/" are relative to project root.
- * Specifiers starting with "//" are absolute paths (strip one "/").
+ * In-project files: strip project root to get "/src/foo.ts" form.
+ * Out-of-project files: keep absolute path as-is "/tmp/foo.ts".
  */
 const relativizeFilePath = (filePath: string, projectCwd: string): string => {
   if (filePath.startsWith(projectCwd + "/")) {
     return filePath.slice(projectCwd.length);
   }
-  // Outside project - prefix with "/" to get double-slash form
-  return `/${filePath}`;
+  return filePath;
 };
 
 /**

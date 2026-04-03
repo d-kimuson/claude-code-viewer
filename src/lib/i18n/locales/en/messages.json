@@ -279,7 +279,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
-        179
+        161
       ]
     ],
     "translation": "Binary file cannot be displayed"
@@ -294,7 +294,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
-        161
+        100
       ]
     ],
     "translation": "Failed to load file"
@@ -324,7 +324,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
-        178
+        160
       ]
     ],
     "translation": "File not found"
@@ -335,7 +335,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
-        140
+        193
       ]
     ],
     "translation": "Truncated"
@@ -361,7 +361,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
-        180
+        162
       ]
     ],
     "translation": "Invalid file path"
@@ -373,10 +373,6 @@
       [
         "src/web/app/components/rightPanel/GitTabContent.tsx",
         313
-      ],
-      [
-        "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
-        153
       ]
     ],
     "translation": "Loading file..."
@@ -451,7 +447,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
-        181
+        163
       ]
     ],
     "translation": "Error reading file"
@@ -481,7 +477,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
-        170
+        106
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
@@ -507,7 +503,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
-        86
+        311
       ]
     ],
     "translation": "View File"

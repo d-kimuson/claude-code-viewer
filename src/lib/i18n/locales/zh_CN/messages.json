@@ -279,7 +279,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
-        179
+        161
       ]
     ],
     "translation": "无法显示二进制文件"
@@ -294,7 +294,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
-        161
+        100
       ]
     ],
     "translation": "加载文件失败"
@@ -324,7 +324,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
-        178
+        160
       ]
     ],
     "translation": "文件未找到"
@@ -335,7 +335,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
-        140
+        193
       ]
     ],
     "translation": "已截断"
@@ -361,7 +361,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
-        180
+        162
       ]
     ],
     "translation": "无效的文件路径"
@@ -373,10 +373,6 @@
       [
         "src/web/app/components/rightPanel/GitTabContent.tsx",
         313
-      ],
-      [
-        "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
-        153
       ]
     ],
     "translation": "正在加载文件..."
@@ -451,7 +447,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
-        181
+        163
       ]
     ],
     "translation": "读取文件错误"
@@ -481,7 +477,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
-        170
+        106
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
@@ -507,7 +503,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/FileContentDialog.tsx",
-        86
+        311
       ]
     ],
     "translation": "查看文件"

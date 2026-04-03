@@ -121,9 +121,15 @@ export const ToolResultStatusBanner: FC<ToolResultStatusBannerProps> = ({
 
   if (showSuccess) {
     return (
-      <div className="px-3 py-1 border-t border-gray-200 dark:border-gray-700 flex items-center gap-1.5">
-        <CheckCircle2Icon className="w-3 h-3 flex-shrink-0 text-green-600 dark:text-green-500" />
-        <span className="text-[11px] text-muted-foreground">Success</span>
+      <div className="px-3 py-1.5 border-t border-gray-200 dark:border-gray-700 flex items-start gap-1.5">
+        <CheckCircle2Icon className="w-3 h-3 flex-shrink-0 text-green-600 dark:text-green-500 mt-0.5" />
+        {text !== null ? (
+          <pre className="text-xs text-muted-foreground whitespace-pre-wrap break-words max-h-24 overflow-y-auto">
+            {text}
+          </pre>
+        ) : (
+          <span className="text-[11px] text-muted-foreground">Success</span>
+        )}
       </div>
     );
   }

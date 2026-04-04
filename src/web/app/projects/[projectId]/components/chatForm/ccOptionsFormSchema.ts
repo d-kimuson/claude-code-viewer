@@ -8,7 +8,7 @@ import type { CCOptionsSchema } from "@/server/core/claude-code/schema";
 
 // System Prompt ADT (Algebraic Data Type)
 export const systemPromptFormSchema = z.object({
-  mode: z.literal("preset"),
+  mode: z.enum(["preset", "none"]),
   append: z.string().optional(),
 });
 
@@ -158,11 +158,17 @@ export const transformFormToSchema = (form: CCOptionsForm): CCOptionsSchema | un
   const buildSystemPrompt = (
     systemPrompt: SystemPromptForm | undefined,
   ): CCOptionsSchema["systemPrompt"] | undefined => {
-    if (
-      systemPrompt?.mode !== "preset" ||
-      systemPrompt.append === undefined ||
-      systemPrompt.append === ""
-    ) {
+    if (systemPrompt === undefined) {
+      return undefined;
+    }
+
+    // "none" mode: opt out of default system prompt
+    if (systemPrompt.mode === "none") {
+      return "";
+    }
+
+    // "preset" mode without append: use default (no flag needed)
+    if (systemPrompt.append === undefined || systemPrompt.append === "") {
       return undefined;
     }
 
@@ -232,7 +238,10 @@ export const transformSchemaToForm = (schema: CCOptionsSchema | undefined): CCOp
   // System Prompt (ADT transformation)
   if (schema.systemPrompt === undefined) {
     form.systemPrompt = { mode: "preset" };
-  } else if (typeof schema.systemPrompt !== "string") {
+  } else if (typeof schema.systemPrompt === "string") {
+    // Empty string means "no system prompt" (--system-prompt '')
+    form.systemPrompt = { mode: "none" };
+  } else {
     form.systemPrompt = {
       mode: "preset",
       append: schema.systemPrompt.append,

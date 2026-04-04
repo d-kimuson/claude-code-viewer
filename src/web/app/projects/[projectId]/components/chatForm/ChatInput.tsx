@@ -194,7 +194,10 @@ export const ChatInput: FC<ChatInputProps> = ({
     });
 
     try {
-      await navigator.clipboard.writeText(command);
+      // Use Clipboard API with explicit UTF-8 charset to ensure multibyte characters
+      // (e.g. Japanese) are preserved when pasting into terminals
+      const blob = new Blob([command], { type: "text/plain;charset=utf-8" });
+      await navigator.clipboard.write([new ClipboardItem({ "text/plain": blob })]);
       toast.success(
         i18n._({
           id: "chat.copy_command.success",

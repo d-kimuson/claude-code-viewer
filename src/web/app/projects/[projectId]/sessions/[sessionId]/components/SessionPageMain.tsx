@@ -122,7 +122,7 @@ const SessionPageMainContent: FC<
     ...(savedOptions.permissionMode !== undefined
       ? { permissionMode: savedOptions.permissionMode }
       : {}),
-    ...(savedOptions.useSystemPromptPreset === false ? { systemPrompt: undefined } : {}),
+    ...(savedOptions.useSystemPromptPreset === false ? { systemPrompt: "" } : {}),
   }));
   const handleCCOptionsChange = useCallback(
     (next: CCOptionsSchema | undefined) => {
@@ -131,7 +131,7 @@ const SessionPageMainContent: FC<
         model: next?.model,
         effort: next?.effort,
         permissionMode: next?.permissionMode,
-        useSystemPromptPreset: next?.systemPrompt !== undefined,
+        useSystemPromptPreset: next?.systemPrompt !== undefined && next?.systemPrompt !== "",
       });
     },
     [setSavedOptions],

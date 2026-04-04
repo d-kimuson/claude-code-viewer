@@ -71,14 +71,35 @@ describe("buildClaudeCommand", () => {
     expect(result).toBe('claude "path\\\\to\\\\file"');
   });
 
-  test("preserves UTF-8 characters (Japanese)", () => {
-    const result = buildClaudeCommand({ text: "こんにちは世界" });
-    expect(result).toBe('claude "こんにちは世界"');
+  test("encodes non-ASCII characters using ANSI-C $'...' quoting", () => {
+    const result = buildClaudeCommand({ text: "こんにちは" });
+    // "こんにちは" in UTF-8 bytes: e3 81 93 e3 82 93 e3 81 ab e3 81 a1 e3 81 af
+    expect(result).toBe(
+      "claude $'\\xe3\\x81\\x93\\xe3\\x82\\x93\\xe3\\x81\\xab\\xe3\\x81\\xa1\\xe3\\x81\\xaf'",
+    );
   });
 
-  test("preserves UTF-8 characters with special chars", () => {
-    const result = buildClaudeCommand({ text: 'テスト: "引用" と $変数' });
-    expect(result).toBe('claude "テスト: \\"引用\\" と \\$変数"');
+  test("encodes mixed ASCII and non-ASCII in ANSI-C quoting", () => {
+    const result = buildClaudeCommand({ text: "Hello こんにちは world" });
+    // Mixed: ASCII parts stay literal, non-ASCII bytes get \xNN
+    expect(result).toMatch(/\$'/);
+    expect(result).toContain("Hello ");
+    expect(result).toContain("\\xe3\\x81\\x93");
+    expect(result).toContain(" world");
+  });
+
+  test("ANSI-C quoting escapes single quotes", () => {
+    const result = buildClaudeCommand({ text: "it's テスト" });
+    expect(result).toMatch(/\$'/);
+    expect(result).toContain("\\'");
+  });
+
+  test("ASCII-only values use double quotes", () => {
+    const result = buildClaudeCommand({
+      text: "hello",
+      ccOptions: { model: "sonnet" },
+    });
+    expect(result).toBe('claude --model "sonnet" "hello"');
   });
 
   test("ignores non-CLI options like effort, maxThinkingTokens, maxBudgetUsd", () => {

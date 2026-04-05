@@ -19,6 +19,7 @@ import SyntaxHighlighter from "react-syntax-highlighter/dist/esm/prism-light";
 import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
 import remarkGfm from "remark-gfm";
 import { useTheme } from "../../hooks/useTheme";
+import { CodeBlock } from "./CodeBlock";
 import { MarkdownLink } from "./MarkdownLink";
 
 type MarkdownContentProps = {
@@ -146,37 +147,16 @@ export const MarkdownContent: FC<MarkdownContentProps> = ({ content, className =
           );
         }
 
-        return (() => {
-          const codeContent =
-            typeof children === "string"
-              ? children
-              : Array.isArray(children)
-                ? children.filter((child) => typeof child === "string").join("")
-                : "";
+        const codeContent =
+          typeof children === "string"
+            ? children
+            : Array.isArray(children)
+              ? children.filter((child) => typeof child === "string").join("")
+              : "";
 
-          return (
-            <div className="relative my-6">
-              <div className="flex items-center justify-between bg-muted/30 px-4 py-2 border-b border-border rounded-t-lg">
-                <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                  {match[1]}
-                </span>
-              </div>
-              <SyntaxHighlighter
-                style={syntaxTheme}
-                language={match[1]}
-                PreTag="div"
-                className="!mt-0 !rounded-t-none !rounded-b-lg !border-t-0 !border !border-border"
-                customStyle={{
-                  margin: 0,
-                  borderTopLeftRadius: 0,
-                  borderTopRightRadius: 0,
-                }}
-              >
-                {codeContent.replace(/\n$/, "")}
-              </SyntaxHighlighter>
-            </div>
-          );
-        })();
+        const language = match[1] ?? "";
+
+        return <CodeBlock language={language} code={codeContent} syntaxTheme={syntaxTheme} />;
       },
       pre({ children, ...props }) {
         return <pre {...props}>{children}</pre>;

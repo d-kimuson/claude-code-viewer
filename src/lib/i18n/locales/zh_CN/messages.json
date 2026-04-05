@@ -1002,6 +1002,46 @@
     ],
     "translation": "语音输入"
   },
+  "codeBlock.copy": {
+    "message": "Copy code",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/app/components/CodeBlock.tsx",
+        65
+      ],
+      [
+        "src/web/app/components/CodeBlock.tsx",
+        66
+      ]
+    ],
+    "translation": "复制代码"
+  },
+  "codeBlock.copy.failed": {
+    "message": "Failed to copy code",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/app/components/CodeBlock.tsx",
+        43
+      ]
+    ],
+    "translation": "复制代码失败"
+  },
+  "codeBlock.copy.success": {
+    "message": "Code copied",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/app/components/CodeBlock.tsx",
+        32
+      ]
+    ],
+    "translation": "代码已复制"
+  },
   "common.action.cancel": {
     "placeholders": {},
     "comments": [],

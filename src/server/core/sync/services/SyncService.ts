@@ -532,6 +532,32 @@ const LayerImpl = Effect.gen(function* () {
         .pipe(Effect.catchAll(() => Effect.succeed([] as string[])));
       const sessionFiles = fileNames.filter(isRegularSessionFile);
 
+      // Ensure project row exists (may be new since last fullSync)
+      const existingProject = db.select().from(projects).where(eq(projects.id, projectId)).get();
+
+      if (existingProject === undefined) {
+        const projectCwd = yield* extractProjectCwd(projectPath, sessionFiles);
+
+        const dirStat = yield* fs
+          .stat(projectPath)
+          .pipe(Effect.catchAll(() => Effect.succeed(null)));
+        const dirMtimeMs = dirStat
+          ? Option.getOrElse(dirStat.mtime, () => new Date(0)).getTime()
+          : 0;
+
+        db.insert(projects)
+          .values({
+            id: projectId,
+            name: projectCwd !== null ? path.basename(projectCwd) : null,
+            path: projectCwd,
+            sessionCount: 0,
+            dirMtimeMs,
+            syncedAt: Date.now(),
+          })
+          .onConflictDoNothing()
+          .run();
+      }
+
       const knownSessions = db
         .select()
         .from(sessions)

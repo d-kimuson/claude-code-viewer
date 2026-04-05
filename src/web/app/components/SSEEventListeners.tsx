@@ -6,6 +6,7 @@ import {
   pendingPermissionRequestsQuery,
   pendingQuestionRequestsQuery,
   projectDetailQuery,
+  projectListQuery,
   sessionDetailQuery,
 } from "@/web/lib/api/queries";
 
@@ -15,6 +16,9 @@ export const SSEEventListeners: FC<PropsWithChildren> = ({ children }) => {
   useServerEventListener("sessionListChanged", (event) => {
     void queryClient.invalidateQueries({
       queryKey: projectDetailQuery(event.projectId).queryKey,
+    });
+    void queryClient.invalidateQueries({
+      queryKey: projectListQuery.queryKey,
     });
   });
 

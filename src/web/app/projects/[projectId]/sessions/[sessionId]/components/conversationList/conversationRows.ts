@@ -15,6 +15,7 @@ const noTimestampConversationTypes = new Set<Conversation["type"]>([
   "custom-title",
   "agent-name",
   "agent-setting",
+  "attachment",
 ]);
 
 export const getConversationKey = (conversation: Conversation) => {
@@ -68,6 +69,10 @@ export const getConversationKey = (conversation: Conversation) => {
 
   if (conversation.type === "permission-mode") {
     return `permission-mode_${conversation.sessionId}_${conversation.permissionMode}`;
+  }
+
+  if (conversation.type === "attachment") {
+    return `attachment_${conversation.uuid}`;
   }
 
   conversation satisfies never;

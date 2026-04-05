@@ -72,6 +72,7 @@ export const useSessionQuery = (projectId: string, sessionId: string) => {
           shouldRemoveVirtualMessage(
             filterConversations(result.session.conversations),
             virtualMessage.sentAt,
+            virtualMessage.conversationCount,
           )
         ) {
           // For continue/resume VMs, clean up from store here since SessionsTab

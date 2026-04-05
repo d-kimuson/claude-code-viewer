@@ -6,6 +6,9 @@ export type VirtualMessage = {
   readonly userMessage: string;
   readonly sentAt: string; // ISO timestamp
   readonly isNewSession: boolean;
+  /** Number of conversations in the session when the virtual message was created.
+   *  Used as a fallback signal to detect when the real message has arrived. */
+  readonly conversationCount?: number;
 };
 
 export const virtualMessagesAtom = atom<ReadonlyMap<string, VirtualMessage>>(new Map());

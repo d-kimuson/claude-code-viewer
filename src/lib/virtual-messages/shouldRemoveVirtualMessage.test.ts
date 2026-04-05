@@ -87,4 +87,42 @@ describe("shouldRemoveVirtualMessage", () => {
     ];
     expect(shouldRemoveVirtualMessage(conversations, sentAt)).toBe(false);
   });
+
+  describe("conversationCount fallback", () => {
+    test("returns true when conversation count exceeds stored count even if timestamps are before sentAt", () => {
+      const conversations = [
+        makeUserConversation("2024-06-15T12:00:00.000Z"),
+        makeAssistantConversation("2024-06-15T12:15:00.000Z"),
+        // New user message added but with timestamp before sentAt (timestamp drift)
+        makeUserConversation("2024-06-15T12:29:59.999Z"),
+      ];
+      // At VM creation time there were 2 conversations; now there are 3
+      expect(shouldRemoveVirtualMessage(conversations, sentAt, 2)).toBe(true);
+    });
+
+    test("returns false when conversation count has not grown beyond stored count", () => {
+      const conversations = [
+        makeUserConversation("2024-06-15T12:00:00.000Z"),
+        makeAssistantConversation("2024-06-15T12:15:00.000Z"),
+      ];
+      // 2 conversations, same as stored count
+      expect(shouldRemoveVirtualMessage(conversations, sentAt, 2)).toBe(false);
+    });
+
+    test("returns false when conversationCount is undefined (backward compat)", () => {
+      const conversations = [
+        makeUserConversation("2024-06-15T12:00:00.000Z"),
+        makeAssistantConversation("2024-06-15T12:15:00.000Z"),
+        makeUserConversation("2024-06-15T12:29:59.999Z"),
+      ];
+      // No stored count → fallback not applied, relies on timestamp only
+      expect(shouldRemoveVirtualMessage(conversations, sentAt, undefined)).toBe(false);
+    });
+
+    test("timestamp check still takes priority when it matches", () => {
+      const conversations = [makeUserConversation("2024-06-15T12:31:00.000Z")];
+      // Timestamp matches even though count hasn't grown
+      expect(shouldRemoveVirtualMessage(conversations, sentAt, 1)).toBe(true);
+    });
+  });
 });

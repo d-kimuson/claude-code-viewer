@@ -8,6 +8,18 @@ import { honoClient } from "@/web/lib/api/client";
 import { sessionDetailQuery } from "@/web/lib/api/queries";
 import type { MessageInput } from "./ChatInput";
 
+/** Safely extract conversation count from TanStack Query cached data without type assertions. */
+const extractConversationCount = (data: unknown): number | undefined => {
+  if (data === null || data === undefined || typeof data !== "object") return undefined;
+  if (!("session" in data)) return undefined;
+  const { session } = data;
+  if (session === null || session === undefined || typeof session !== "object") return undefined;
+  if (!("conversations" in session)) return undefined;
+  const { conversations } = session;
+  if (!Array.isArray(conversations)) return undefined;
+  return conversations.length;
+};
+
 export const useCreateSessionProcessMutation = (projectId: string, onSuccess?: () => void) => {
   const navigate = useNavigate({ from: "/projects/$projectId/session" });
   const queryClient = useQueryClient();
@@ -19,6 +31,13 @@ export const useCreateSessionProcessMutation = (projectId: string, onSuccess?: (
       const resume = baseSessionId !== undefined && baseSessionId !== "";
       const sessionId = resume ? baseSessionId : crypto.randomUUID();
 
+      // Snapshot conversation count for resume case (new sessions have no prior conversations)
+      const conversationCount = resume
+        ? extractConversationCount(
+            queryClient.getQueryData(sessionDetailQuery(projectId, sessionId).queryKey),
+          )
+        : undefined;
+
       // Add virtual message to store before navigation
       addVirtualMessage({
         sessionId,
@@ -26,6 +45,7 @@ export const useCreateSessionProcessMutation = (projectId: string, onSuccess?: (
         userMessage: input.text,
         sentAt: new Date().toISOString(),
         isNewSession: !resume,
+        conversationCount,
       });
 
       // Invalidate session detail query so it re-runs and picks up the VM
@@ -79,6 +99,11 @@ export const useContinueSessionProcessMutation = (projectId: string, baseSession
 
   return useMutation({
     mutationFn: async (options: { input: MessageInput; sessionProcessId: string }) => {
+      // Snapshot conversation count before creating VM for robust removal detection
+      const conversationCount = extractConversationCount(
+        queryClient.getQueryData(sessionDetailQuery(projectId, baseSessionId).queryKey),
+      );
+
       // Add virtual message to store for continue
       addVirtualMessage({
         sessionId: baseSessionId,
@@ -86,6 +111,7 @@ export const useContinueSessionProcessMutation = (projectId: string, baseSession
         userMessage: options.input.text,
         sentAt: new Date().toISOString(),
         isNewSession: false,
+        conversationCount,
       });
 
       // Invalidate session detail query so it re-runs and picks up the VM

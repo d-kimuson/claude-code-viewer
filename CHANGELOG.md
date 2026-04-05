@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.7.3
+
+### &nbsp;&nbsp;&nbsp;Features
+
+- Add copy-to-clipboard button to code blocks &nbsp;-&nbsp; by **d-kimsuon** and **Claude Opus 4.6** in https://github.com/d-kimuson/claude-code-viewer/issues/179 [<samp>(69e3f)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/69e3f29)
+
+### &nbsp;&nbsp;&nbsp;Bug Fixes
+
+- Parse errors for deferred_tools_delta and mcp_instructions_delta session logs &nbsp;-&nbsp; by **d-kimsuon** and **Claude Opus 4.6** in https://github.com/d-kimuson/claude-code-viewer/issues/178 [<samp>(da05b)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/da05be7)
+- Duplicate user message appearing on continue chat &nbsp;-&nbsp; by **d-kimsuon** and **Claude Opus 4.6** [<samp>(b4be0)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/b4be0ba)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.7.2...0.7.3)
+
 ## 0.7.2
 
 ### &nbsp;&nbsp;&nbsp;Features

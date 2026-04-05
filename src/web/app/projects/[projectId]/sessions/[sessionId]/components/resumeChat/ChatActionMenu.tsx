@@ -206,7 +206,9 @@ export const ChatActionMenu: FC<ChatActionMenuProps> = ({
                 >
                   <Checkbox
                     id={systemPromptId}
-                    checked={ccOptions?.systemPrompt !== undefined}
+                    checked={
+                      ccOptions?.systemPrompt !== undefined && ccOptions?.systemPrompt !== ""
+                    }
                     onCheckedChange={(checked) => {
                       onCCOptionsChange({
                         ...ccOptions,
@@ -216,7 +218,7 @@ export const ChatActionMenu: FC<ChatActionMenuProps> = ({
                                 type: "preset",
                                 preset: "claude_code",
                               }
-                            : undefined,
+                            : "",
                       });
                     }}
                     disabled={isPending}

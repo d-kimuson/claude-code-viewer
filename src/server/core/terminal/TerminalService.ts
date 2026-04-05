@@ -157,10 +157,17 @@ const LayerImpl = Effect.gen(function* () {
   ) => {
     const id = requestedId ?? ulid();
     const shell = selectShell(options.shell, options.fallbackShell, options.unrestrictedFlag);
+    const ptyEnv = { ...options.env };
+    if (ptyEnv.LANG === undefined || !ptyEnv.LANG.includes("UTF-8")) {
+      ptyEnv.LANG = "en_US.UTF-8";
+    }
+    if (ptyEnv.LC_ALL === undefined || !ptyEnv.LC_ALL.includes("UTF-8")) {
+      ptyEnv.LC_ALL = "en_US.UTF-8";
+    }
     const { process: ptyProcess, read } = createRusptySession(ruspty, {
       command: shell.command,
       args: shell.args,
-      envs: options.env,
+      envs: ptyEnv,
       dir: options.cwd,
       size: { cols: DEFAULT_COLS, rows: DEFAULT_ROWS },
       onExit: (_error, exitCode) => {

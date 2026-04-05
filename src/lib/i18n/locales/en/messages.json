@@ -2667,7 +2667,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffViewer.tsx",
-        100
+        101
       ]
     ],
     "translation": "Add a comment..."
@@ -2678,7 +2678,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/diffModal/DiffViewer.tsx",
-        121
+        122
       ]
     ],
     "translation": "Save"

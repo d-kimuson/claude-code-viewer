@@ -10,6 +10,28 @@ A full-featured web-based Claude Code client that provides complete interactive 
 
 https://github.com/user-attachments/assets/090d4806-163f-4bac-972a-002c7433145e
 
+## Important Notice: Agent SDK and Subscription Usage
+
+> [!WARNING]
+> As of April 2026, Anthropic's [Terms of Service](https://code.claude.com/docs/en/legal-and-compliance#authentication-and-credential-use) prohibit using the Agent SDK to **send chat messages** with a subscription account. While Anthropic's X/Twitter announcements suggested personal use may be acceptable, the boundary between permitted and prohibited use remains ambiguous.
+>
+> In response, **chat sending, session resuming, permission approval, and `AskUserQuestion`** have been made opt-in.
+>
+> Note that real-time conversation log viewing, session history browsing, Git operations, and all other read-oriented features are implemented independently of the Agent SDK and remain fully available regardless of your authentication mode. You can start a Claude Code session from the CLI (or the built-in terminal) and watch it live in Claude Code Viewer without any restrictions.
+
+### Choosing Your Authentication Mode
+
+On first launch (or from the Settings screen), you will be prompted to select your authentication method:
+
+- **API Key** (default) — Uses the Anthropic API directly. All features, including chat sending, are fully available.
+- **Subscription** — Opts out of Agent SDK chat features. The chat input switches to a copy mode: configure your session options in the form, then click the **Copy** button to get the equivalent `claude` CLI command with the corresponding arguments already set. Paste and run it in any terminal to start or resume your session. Once the session is running, Claude Code Viewer will display the conversation in real-time as usual.
+
+### Built-in Terminal
+
+Claude Code Viewer includes an integrated terminal emulator accessible via the **panel at the bottom of the screen**. Open it, paste the copied command, and launch Claude Code without ever leaving the browser.
+
+---
+
 ## Introduction
 
 Claude Code Viewer is a web-based Claude Code client focused on **comprehensive session log analysis**. It preserves and organizes all conversation data through strict schema validation and a progressive disclosure UI that reveals details on demand.

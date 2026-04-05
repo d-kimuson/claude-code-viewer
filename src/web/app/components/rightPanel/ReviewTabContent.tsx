@@ -315,7 +315,7 @@ export const ReviewTabContent: FC<ReviewTabContentProps> = ({ projectId, session
         {diffResult !== undefined && (
           <div>
             {/* Review Actions bar - sticky */}
-            <div className="sticky top-0 z-10 flex items-center justify-between border-b border-border/40 bg-background/95 px-3 py-2 backdrop-blur-sm">
+            <div className="sticky top-0 z-30 flex items-center justify-between border-b border-border/40 bg-background/95 px-3 py-2 backdrop-blur-sm">
               <span className="text-xs text-muted-foreground">
                 {comments.length === 0
                   ? i18n._("review.comments.empty")

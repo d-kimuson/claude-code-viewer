@@ -186,7 +186,8 @@ const CommentButton: FC<CommentButtonProps> = ({
       <PopoverContent
         side="right"
         align="start"
-        className="w-80 overflow-hidden rounded-xl border-border/50 p-0 shadow-xl shadow-black/5 dark:shadow-black/20"
+        collisionPadding={8}
+        className="w-[min(320px,calc(100vw-1rem))] overflow-hidden rounded-xl border-border/50 p-0 shadow-xl shadow-black/5 dark:shadow-black/20"
       >
         {hasComments && (
           <div className="space-y-1.5 border-b border-border/40 bg-muted/20 p-3">

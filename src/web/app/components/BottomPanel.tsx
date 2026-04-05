@@ -1,7 +1,8 @@
 import { Trans } from "@lingui/react";
 import {
-  ChevronsDownIcon,
-  ChevronsUpIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
+  ClipboardPasteIcon,
   PanelBottomCloseIcon,
   RocketIcon,
   RotateCcwIcon,
@@ -10,6 +11,7 @@ import { type FC, useCallback, useEffect, useRef, useState } from "react";
 import { useDragResize } from "@/web/hooks/useDragResize";
 import { useIsMobile } from "@/web/hooks/useIsMobile";
 import { useBottomPanelActions, useBottomPanelState } from "@/web/hooks/useLayoutPanels";
+import { FlickArrowButton } from "./FlickArrowButton";
 import { type TerminalHandle, TerminalPanel } from "./TerminalPanel";
 
 type KeyDef =
@@ -19,10 +21,6 @@ type KeyDef =
 const MOBILE_KEYS: readonly KeyDef[] = [
   { label: "Esc", type: "data", data: "\x1b" },
   { label: "Tab", type: "data", data: "\t" },
-  { label: "↑", type: "data", data: "\x1b[A" },
-  { label: "↓", type: "data", data: "\x1b[B" },
-  { label: "←", type: "data", data: "\x1b[D" },
-  { label: "→", type: "data", data: "\x1b[C" },
   { label: "Ctrl+C", type: "signal", signal: "SIGINT" },
   { label: "Ctrl+U", type: "data", data: "\x15" },
 ];
@@ -57,14 +55,14 @@ export const BottomPanel: FC<BottomPanelProps> = ({ cwd }) => {
   }, [setIsBottomPanelOpen]);
 
   const handleResize = useCallback(
-    (event: MouseEvent) => {
-      const newHeight = ((window.innerHeight - event.clientY) / window.innerHeight) * 100;
+    (position: { clientX: number; clientY: number }) => {
+      const newHeight = ((window.innerHeight - position.clientY) / window.innerHeight) * 100;
       setBottomPanelHeight(newHeight);
     },
     [setBottomPanelHeight],
   );
 
-  const { isResizing, handleMouseDown } = useDragResize({
+  const { isResizing, handleMouseDown, handleTouchStart } = useDragResize({
     onResize: handleResize,
   });
 
@@ -94,6 +92,17 @@ export const BottomPanel: FC<BottomPanelProps> = ({ cwd }) => {
     }
   }, []);
 
+  const handlePaste = useCallback(async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      if (text) {
+        terminalRef.current?.sendData(text);
+      }
+    } catch {
+      // Clipboard access denied or not available
+    }
+  }, []);
+
   if (!isBottomPanelOpen) return null;
 
   return (
@@ -105,11 +114,12 @@ export const BottomPanel: FC<BottomPanelProps> = ({ cwd }) => {
       }}
     >
       {/* Resize handle */}
-      {/* oxlint-disable-next-line jsx-a11y/no-static-element-interactions -- Resize handle is mouse-only UI */}
+      {/* oxlint-disable-next-line jsx-a11y/no-static-element-interactions -- Resize handle is mouse/touch-only UI */}
       <div
-        className="h-1 cursor-ns-resize hover:bg-primary/40 active:bg-primary transition-colors flex-shrink-0"
-        style={{ pointerEvents: "auto" }}
+        className="h-2 cursor-ns-resize hover:bg-primary/40 active:bg-primary transition-colors flex-shrink-0"
+        style={{ pointerEvents: "auto", touchAction: "none" }}
         onMouseDown={handleMouseDown}
+        onTouchStart={handleTouchStart}
       />
 
       {/* Header */}
@@ -129,29 +139,21 @@ export const BottomPanel: FC<BottomPanelProps> = ({ cwd }) => {
 
               <div className="w-px h-4 bg-border/60 mx-0.5 flex-shrink-0" />
 
-              {/* Scrollback buttons */}
+              {/* Paste button */}
               <button
                 type="button"
                 className="flex items-center justify-center min-w-[32px] h-7 rounded border border-border/60 text-muted-foreground active:bg-muted transition-colors flex-shrink-0"
                 onPointerDown={(e) => {
                   e.preventDefault();
-                  terminalRef.current?.scrollLines(-5);
+                  void handlePaste();
                 }}
-                aria-label="Scroll up"
+                aria-label="Paste from clipboard"
               >
-                <ChevronsUpIcon className="w-3.5 h-3.5" />
+                <ClipboardPasteIcon className="w-3.5 h-3.5" />
               </button>
-              <button
-                type="button"
-                className="flex items-center justify-center min-w-[32px] h-7 rounded border border-border/60 text-muted-foreground active:bg-muted transition-colors flex-shrink-0"
-                onPointerDown={(e) => {
-                  e.preventDefault();
-                  terminalRef.current?.scrollLines(5);
-                }}
-                aria-label="Scroll down"
-              >
-                <ChevronsDownIcon className="w-3.5 h-3.5" />
-              </button>
+
+              {/* Arrow keys (flick / d-pad) */}
+              <FlickArrowButton onSendData={(data) => terminalRef.current?.sendData(data)} />
 
               <div className="w-px h-4 bg-border/60 mx-0.5 flex-shrink-0" />
 
@@ -212,13 +214,41 @@ export const BottomPanel: FC<BottomPanelProps> = ({ cwd }) => {
       </div>
 
       {/* Content */}
-      <div className="flex-1 min-h-0 bg-muted/5">
-        <TerminalPanel
-          ref={terminalRef}
-          resetToken={terminalResetToken}
-          cwd={cwd}
-          onProcessExit={handleProcessExit}
-        />
+      <div className="flex-1 min-h-0 bg-muted/5 flex">
+        <div className="flex-1 min-w-0">
+          <TerminalPanel
+            ref={terminalRef}
+            resetToken={terminalResetToken}
+            cwd={cwd}
+            onProcessExit={handleProcessExit}
+          />
+        </div>
+        {/* Scroll buttons on right side */}
+        <div className="flex flex-col w-7 flex-shrink-0 border-l border-border/30">
+          <button
+            type="button"
+            className="flex-1 flex items-center justify-center text-muted-foreground active:bg-muted hover:bg-muted/60 transition-colors"
+            onPointerDown={(e) => {
+              e.preventDefault();
+              terminalRef.current?.scrollLines(-5);
+            }}
+            aria-label="Scroll up"
+          >
+            <ChevronUpIcon className="w-4 h-4" />
+          </button>
+          <div className="h-px bg-border/30 flex-shrink-0" />
+          <button
+            type="button"
+            className="flex-1 flex items-center justify-center text-muted-foreground active:bg-muted hover:bg-muted/60 transition-colors"
+            onPointerDown={(e) => {
+              e.preventDefault();
+              terminalRef.current?.scrollLines(5);
+            }}
+            aria-label="Scroll down"
+          >
+            <ChevronDownIcon className="w-4 h-4" />
+          </button>
+        </div>
       </div>
     </div>
   );

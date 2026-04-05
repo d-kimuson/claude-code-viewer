@@ -109,8 +109,8 @@ export const RightPanel: FC<RightPanelProps> = ({
   }, [browserUrl, isOpen, setCurrentUrl, setInputUrl]);
 
   const handleResize = useCallback(
-    (event: MouseEvent) => {
-      const newWidth = ((window.innerWidth - event.clientX) / window.innerWidth) * 100;
+    (position: { clientX: number; clientY: number }) => {
+      const newWidth = ((window.innerWidth - position.clientX) / window.innerWidth) * 100;
       setWidth(newWidth);
     },
     [setWidth],

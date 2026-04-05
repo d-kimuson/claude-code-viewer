@@ -20,8 +20,8 @@ export const ResizableSidebar: FC<ResizableSidebarProps> = ({ children, classNam
   const isMobile = useIsMobile();
 
   const handleResize = useCallback(
-    (event: MouseEvent) => {
-      const newWidth = (event.clientX / window.innerWidth) * 100;
+    (position: { clientX: number; clientY: number }) => {
+      const newWidth = (position.clientX / window.innerWidth) * 100;
       setLeftPanelWidth(newWidth);
     },
     [setLeftPanelWidth],

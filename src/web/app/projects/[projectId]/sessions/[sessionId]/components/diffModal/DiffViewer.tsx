@@ -143,7 +143,7 @@ const ExistingComment: FC<{
       <button
         type="button"
         onClick={() => onRemove(comment.id)}
-        className="absolute right-1.5 top-1.5 rounded p-0.5 text-muted-foreground/40 opacity-100 md:opacity-0 transition-all hover:bg-destructive/10 hover:text-destructive md:group-hover/comment:opacity-100"
+        className="absolute right-1.5 top-1.5 rounded p-0.5 text-muted-foreground/40 opacity-100 md:opacity-0 transition-all hover:bg-destructive/10 hover:text-destructive md:group-hover/comment:opacity-100 group-focus-within/comment:opacity-100"
       >
         <Trash2Icon className="h-3 w-3" />
       </button>

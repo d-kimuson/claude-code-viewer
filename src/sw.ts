@@ -71,12 +71,11 @@ self.addEventListener("notificationclick", (event) => {
   const url = (event.notification.data as { url?: string } | undefined)?.url ?? "/";
 
   event.waitUntil(
-    self.clients.matchAll({ type: "window" }).then((clientList) => {
-      // Navigate and focus existing window if available
-      for (const client of clientList) {
-        if ("navigate" in client) {
-          return client.navigate(url).then((c) => c?.focus());
-        }
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((clientList) => {
+      // Focus and navigate existing window if available
+      const [firstClient] = clientList;
+      if (firstClient) {
+        return firstClient.focus().then((c) => c?.navigate(url));
       }
       // Otherwise open new window
       return self.clients.openWindow(url);

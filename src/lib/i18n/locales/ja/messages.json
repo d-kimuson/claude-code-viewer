@@ -1009,7 +1009,11 @@
     "origin": [
       [
         "src/web/app/components/CodeBlock.tsx",
-        53
+        65
+      ],
+      [
+        "src/web/app/components/CodeBlock.tsx",
+        66
       ]
     ],
     "translation": "コードをコピー"
@@ -1021,7 +1025,7 @@
     "origin": [
       [
         "src/web/app/components/CodeBlock.tsx",
-        31
+        43
       ]
     ],
     "translation": "コードのコピーに失敗しました"
@@ -1033,7 +1037,7 @@
     "origin": [
       [
         "src/web/app/components/CodeBlock.tsx",
-        23
+        32
       ]
     ],
     "translation": "コードをコピーしました"

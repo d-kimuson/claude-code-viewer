@@ -1009,7 +1009,11 @@
     "origin": [
       [
         "src/web/app/components/CodeBlock.tsx",
-        53
+        65
+      ],
+      [
+        "src/web/app/components/CodeBlock.tsx",
+        66
       ]
     ],
     "translation": "复制代码"
@@ -1021,7 +1025,7 @@
     "origin": [
       [
         "src/web/app/components/CodeBlock.tsx",
-        31
+        43
       ]
     ],
     "translation": "复制代码失败"
@@ -1033,7 +1037,7 @@
     "origin": [
       [
         "src/web/app/components/CodeBlock.tsx",
-        23
+        32
       ]
     ],
     "translation": "代码已复制"

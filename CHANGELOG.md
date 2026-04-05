@@ -1,5 +1,30 @@
 # Changelog
 
+## 0.7.1
+
+### &nbsp;&nbsp;&nbsp;Features
+
+- Support permission-mode entry in session logs &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(a80b7)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/a80b758)
+- Show tool results in visual view and unify code font &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(e384c)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/e384c75)
+- Optimize permission requests with auto-approve and tool visualizers &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** in https://github.com/d-kimuson/claude-code-viewer/issues/174 [<samp>(3a34b)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/3a34b27)
+- Improve file viewer dialog with Suspense loading and refined UI &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(cb562)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/cb56235)
+- Add agent selection to session creation menu &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(da6f5)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/da6f548)
+- Add visual view for TaskCreate/TaskUpdate tool calls &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(a12bb)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/a12bbab)
+- Add subscription mode to opt out of Agent SDK features &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(e9445)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/e9445ed)
+
+### &nbsp;&nbsp;&nbsp;Bug Fixes
+
+- Fix tool result display to show actual success/error messages instead of generic labels &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(36898)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/368987f)
+- Improve auto-scroll reliability and scroll to bottom on message send &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(eb36b)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/eb36be9)
+- Virtual message not displaying on continue/resume &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** in https://github.com/d-kimuson/claude-code-viewer/issues/176 [<samp>(178b8)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/178b8f6)
+- Improve push notification navigation and reduce excessive notifications &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** in https://github.com/d-kimuson/claude-code-viewer/issues/177 [<samp>(66977)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/6697738)
+- Fix overscroll behavior to prevent bounce and allow smooth conversation log scrolling &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(2e1a6)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/2e1a6b1)
+- Prevent usage mode dialog flash and fix copy button disabled state &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(c4a66)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/c4a661e)
+- Fix system prompt opt-out, agent flag, and UTF-8 encoding in terminal and clipboard &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(57bcb)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/57bcbb5)
+- Notification click focuses existing PWA window instead of opening a new one &nbsp;-&nbsp; by **d-kimsuon** and **Claude Sonnet 4.6** [<samp>(1c2bf)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/1c2bf0d)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.7.0...0.7.1)
+
 ## 0.7.0
 
 ### &nbsp;&nbsp;&nbsp;Features

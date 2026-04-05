@@ -6,6 +6,7 @@ import { AuthenticatedProviders } from "../components/AuthenticatedProviders";
 import { AuthProvider } from "../components/AuthProvider";
 import { ThemeProvider } from "../components/ThemeProvider";
 import { Toaster } from "../components/ui/sonner";
+import { UsageModeDialog } from "../components/UsageModeDialog";
 
 export const Route = createRootRoute({
   component: () => (
@@ -16,6 +17,7 @@ export const Route = createRootRoute({
             <AuthenticatedProviders>
               <LayoutPanelsProvider>
                 <Outlet />
+                <UsageModeDialog />
               </LayoutPanelsProvider>
             </AuthenticatedProviders>
           </LinguiClientProvider>

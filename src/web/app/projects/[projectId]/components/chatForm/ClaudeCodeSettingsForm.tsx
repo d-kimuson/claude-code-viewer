@@ -257,6 +257,29 @@ export const ClaudeCodeSettingsForm: FC<ClaudeCodeSettingsFormProps> = ({
 
   return (
     <div className="space-y-4 text-sm">
+      {/* System Prompt */}
+      <div className="space-y-1.5">
+        {/* biome-ignore lint/a11y/noLabelWithoutControl: Checkbox is a custom component that wraps input */}
+        <label className="flex items-center gap-2 cursor-pointer">
+          <Checkbox
+            checked={formData.systemPrompt?.mode !== "none"}
+            onCheckedChange={(checked) =>
+              setValue("systemPrompt", {
+                ...formData.systemPrompt,
+                mode: checked === true ? "preset" : "none",
+              })
+            }
+            disabled={disabled}
+          />
+          <span className="text-xs font-medium">
+            <Trans
+              id="settings.systemPrompt.includeDefault"
+              message="Include Claude Code system prompt"
+            />
+          </span>
+        </label>
+      </div>
+
       {/* Disallowed Tools */}
       <div className="space-y-1.5">
         <Label className="text-xs font-medium">

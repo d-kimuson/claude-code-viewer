@@ -1,7 +1,7 @@
 import { Trans, useLingui } from "@lingui/react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { PlusIcon, XIcon } from "lucide-react";
-import { type FC, Suspense, useEffect, useState } from "react";
+import { type FC, Suspense, useEffect, useMemo, useState } from "react";
 import { NotificationSettings } from "@/web/components/NotificationSettings";
 import { SettingsControls } from "@/web/components/SettingsControls";
 import { SystemInfoCard } from "@/web/components/SystemInfoCard";
@@ -13,6 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/web/components/ui/select";
+import { useIsSubscriptionMode } from "@/web/hooks/useIsSubscriptionMode";
 import { useSwipeGesture } from "@/web/hooks/useSwipeGesture";
 import { cn } from "@/web/utils";
 import { McpTab } from "./McpTab";
@@ -39,8 +40,22 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
 }) => {
   const { i18n } = useLingui();
   const navigate = useNavigate();
+  const isSubscriptionMode = useIsSubscriptionMode();
   const [activeTab, setActiveTab] = useState<Tab>(initialTab);
   const currentTab = activeTab;
+
+  const availableTabs = useMemo(
+    () =>
+      isSubscriptionMode ? tabSchema.options.filter((t) => t !== "scheduler") : tabSchema.options,
+    [isSubscriptionMode],
+  );
+
+  // Reset to sessions tab if current tab is scheduler and subscription mode
+  useEffect(() => {
+    if (activeTab === "scheduler" && isSubscriptionMode) {
+      setActiveTab("sessions");
+    }
+  }, [activeTab, isSubscriptionMode]);
 
   const tabLabels: Record<Tab, string> = {
     sessions: i18n._({ id: "sidebar.tab.sessions" }),
@@ -179,7 +194,7 @@ export const MobileSidebar: FC<MobileSidebarProps> = ({
             <SelectItem value="projects" className="text-xs">
               {i18n._({ id: "sidebar.tab.projects", message: "Projects" })}
             </SelectItem>
-            {tabSchema.options.map((tab) => (
+            {availableTabs.map((tab) => (
               <SelectItem key={tab} value={tab} className="text-xs">
                 {tabLabels[tab]}
               </SelectItem>

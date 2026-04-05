@@ -14,7 +14,7 @@ export const useConfig = () => {
   const authState = useAtomValue(authAtom);
   const shouldFetch = canFetchConfig(authState);
 
-  const { data } = useQuery<{ config: UserConfig }>({
+  const { data, isLoading } = useQuery<{ config: UserConfig }>({
     queryKey: configQuery.queryKey,
     queryFn: configQuery.queryFn,
     enabled: shouldFetch,
@@ -30,6 +30,7 @@ export const useConfig = () => {
 
   return {
     config: shouldFetch ? (data?.config ?? defaultUserConfig) : defaultUserConfig,
+    isConfigLoaded: shouldFetch && !isLoading,
     updateConfig: useCallback(
       (
         config: UserConfig,

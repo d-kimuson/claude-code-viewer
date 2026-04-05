@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.7.2
+
+### &nbsp;&nbsp;&nbsp;Features
+
+- Improve terminal mobile UX with touch resize, paste, flick arrow keys, and scroll buttons &nbsp;-&nbsp; by **d-kimsuon** and **Claude Opus 4.6** [<samp>(e44b2)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/e44b269)
+
+### &nbsp;&nbsp;&nbsp;Bug Fixes
+
+- New project directory not appearing until server restart &nbsp;-&nbsp; by **d-kimsuon** and **Claude Opus 4.6** [<samp>(9b151)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/9b15137)
+- Review action bar hidden behind code block headers &nbsp;-&nbsp; by **d-kimsuon** and **Claude Opus 4.6** [<samp>(776ac)</samp>](https://github.com/d-kimuson/claude-code-viewer/commit/776aca6)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/d-kimuson/claude-code-viewer/compare/v0.7.1...0.7.2)
+
 ## 0.7.1
 
 ### &nbsp;&nbsp;&nbsp;Features

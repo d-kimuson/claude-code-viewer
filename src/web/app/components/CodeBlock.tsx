@@ -1,6 +1,6 @@
 import { useLingui } from "@lingui/react";
 import { CheckIcon, CopyIcon } from "lucide-react";
-import { type CSSProperties, type FC, useState } from "react";
+import { type CSSProperties, type FC, useEffect, useRef, useState } from "react";
 import SyntaxHighlighter from "react-syntax-highlighter/dist/esm/prism-light";
 import { toast } from "sonner";
 import { Button } from "@/web/components/ui/button";
@@ -14,6 +14,15 @@ type CodeBlockProps = {
 export const CodeBlock: FC<CodeBlockProps> = ({ language, code, syntaxTheme }) => {
   const [copied, setCopied] = useState(false);
   const { i18n } = useLingui();
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current !== null) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, []);
 
   const handleCopy = async () => {
     try {
@@ -25,7 +34,10 @@ export const CodeBlock: FC<CodeBlockProps> = ({ language, code, syntaxTheme }) =
           message: "Code copied",
         }),
       );
-      setTimeout(() => setCopied(false), 2000);
+      if (timerRef.current !== null) {
+        clearTimeout(timerRef.current);
+      }
+      timerRef.current = setTimeout(() => setCopied(false), 2000);
     } catch {
       toast.error(
         i18n._({
@@ -50,6 +62,7 @@ export const CodeBlock: FC<CodeBlockProps> = ({ language, code, syntaxTheme }) =
           onClick={() => {
             void handleCopy();
           }}
+          title={i18n._({ id: "codeBlock.copy", message: "Copy code" })}
           aria-label={i18n._({ id: "codeBlock.copy", message: "Copy code" })}
         >
           {copied ? <CheckIcon className="h-3.5 w-3.5" /> : <CopyIcon className="h-3.5 w-3.5" />}

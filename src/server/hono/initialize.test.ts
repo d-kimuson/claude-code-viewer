@@ -48,6 +48,7 @@ const mockSchedulerService = Layer.succeed(SchedulerService, {
 const mockLifeCycleService = Layer.succeed(ClaudeCodeLifeCycleService, {
   startSessionProcess: () => Effect.die("Not implemented in tests"),
   continueSessionProcess: () => Effect.die("Not implemented in tests"),
+  enqueueMessage: () => Effect.die("Not implemented in tests"),
   abortTask: () => Effect.die("Not implemented in tests"),
   abortAllTasks: () => Effect.die("Not implemented in tests"),
   getPublicSessionProcesses: () => Effect.succeed([]),

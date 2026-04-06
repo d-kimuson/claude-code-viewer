@@ -129,6 +129,8 @@ describe("RateLimitAutoScheduleService", () => {
               cwd: "/test/path",
               abortController: new AbortController(),
               setNextMessage: () => {},
+              getQueuedMessages: () => [],
+              getQueueSize: () => 0,
             },
             tasks: [],
           })),
@@ -174,6 +176,7 @@ describe("RateLimitAutoScheduleService", () => {
   const mockLifeCycleServiceImpl = {
     continueSessionProcess: () => Effect.die(new Error("Not implemented in this test")),
     startSessionProcess: () => Effect.die(new Error("Not implemented in this test")),
+    enqueueMessage: () => Effect.die(new Error("Not implemented in this test")),
     abortTask: () => Effect.void,
     abortAllTasks: () => Effect.void,
     getPublicSessionProcesses: () => Effect.succeed([]),

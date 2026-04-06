@@ -146,6 +146,8 @@ describe("EventBus", () => {
             cwd: "/test/path",
             abortController: new AbortController(),
             setNextMessage: () => {},
+            getQueuedMessages: () => [],
+            getQueueSize: () => 0,
           },
           tasks: [],
         };
@@ -155,6 +157,8 @@ describe("EventBus", () => {
           projectId: "project-1",
           sessionId: "session-1",
           status: "running",
+          queuedMessageCount: 0,
+          queuedMessages: [],
         };
 
         yield* eventBus.emit("sessionProcessChanged", {

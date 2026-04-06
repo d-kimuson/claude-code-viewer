@@ -3,4 +3,6 @@ export type PublicSessionProcess = {
   projectId: string;
   sessionId: string;
   status: "paused" | "running";
+  queuedMessageCount: number;
+  queuedMessages: readonly { text: string; queuedAt: string }[];
 };

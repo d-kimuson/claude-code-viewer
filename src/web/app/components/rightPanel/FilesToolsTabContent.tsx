@@ -365,6 +365,7 @@ const AgentSessionDialog: FC<{
               projectId={projectId}
               sessionId={sessionId}
               scheduledJobs={[]}
+              queuedMessages={[]}
               scrollContainerRef={scrollContainerRef}
             />
           )}

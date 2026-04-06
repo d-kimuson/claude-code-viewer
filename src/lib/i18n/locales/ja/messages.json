@@ -612,7 +612,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        695
+        696
       ]
     ],
     "translation": "最近のセッション"
@@ -631,7 +631,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        683
+        684
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
@@ -647,7 +647,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ContinueChat.tsx",
-        33
+        44
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/StartNewChat.tsx",
@@ -663,7 +663,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ContinueChat.tsx",
-        27
+        38
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/StartNewChat.tsx",
@@ -679,7 +679,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ContinueChat.tsx",
-        39
+        50
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/StartNewChat.tsx",
@@ -731,7 +731,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ContinueChat.tsx",
-        56
+        65
       ]
     ],
     "translation": "Claudeが実行中… 次のメッセージを入力して準備ができたら送信してください（Command+Enterで送信）"
@@ -743,7 +743,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ContinueChat.tsx",
-        50
+        59
       ]
     ],
     "translation": "Claudeが実行中… 次のメッセージを入力して準備ができたら送信してください（Enterで送信）"
@@ -755,7 +755,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ContinueChat.tsx",
-        62
+        71
       ]
     ],
     "translation": "Claudeが実行中… 次のメッセージを入力して準備ができたら送信してください（Shift+Enterで送信）"
@@ -813,7 +813,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ContinueChat.tsx",
-        77
+        86
       ]
     ],
     "translation": "送信"
@@ -1325,7 +1325,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        209
+        210
       ]
     ],
     "translation": "生データ："
@@ -1336,7 +1336,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        202
+        203
       ]
     ],
     "translation": "この問題を報告"
@@ -1347,7 +1347,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        180
+        181
       ]
     ],
     "translation": "スキーマエラー"
@@ -1358,7 +1358,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        192
+        193
       ]
     ],
     "translation": "スキーマ検証エラー"
@@ -1369,7 +1369,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        195
+        196
       ]
     ],
     "translation": "この会話エントリの解析に失敗しました。フォーマットの変更または解析の問題が考えられます。"
@@ -2240,11 +2240,11 @@
     "origin": [
       [
         "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
-        414
+        415
       ],
       [
         "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
-        544
+        545
       ]
     ],
     "translation": "編集されたファイル"
@@ -2255,7 +2255,7 @@
     "origin": [
       [
         "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
-        611
+        612
       ]
     ],
     "translation": "ツールでフィルター"
@@ -2266,7 +2266,7 @@
     "origin": [
       [
         "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
-        686
+        687
       ]
     ],
     "translation": "Agent を読み込み中..."
@@ -2277,11 +2277,11 @@
     "origin": [
       [
         "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
-        445
+        446
       ],
       [
         "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
-        702
+        703
       ]
     ],
     "translation": "Agent はまだありません"
@@ -2292,11 +2292,11 @@
     "origin": [
       [
         "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
-        421
+        422
       ],
       [
         "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
-        585
+        586
       ]
     ],
     "translation": "編集されたファイルはまだありません"
@@ -2307,7 +2307,7 @@
     "origin": [
       [
         "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
-        667
+        668
       ]
     ],
     "translation": "選択したフィルタに一致するツール呼び出しはありません"
@@ -2318,11 +2318,11 @@
     "origin": [
       [
         "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
-        433
+        434
       ],
       [
         "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
-        669
+        670
       ]
     ],
     "translation": "ツール呼び出しはまだありません"
@@ -2333,11 +2333,11 @@
     "origin": [
       [
         "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
-        426
+        427
       ],
       [
         "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
-        592
+        593
       ]
     ],
     "translation": "ツール呼び出し"
@@ -3226,11 +3226,11 @@
     "origin": [
       [
         "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
-        409
+        410
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        686
+        687
       ]
     ],
     "translation": "新しいチャットを開始して会話を始めましょう"
@@ -3274,10 +3274,50 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        775
+        776
       ]
     ],
     "translation": "Claude Codeが処理中..."
+  },
+  "session.queued_messages.message_label": {
+    "message": "Message",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/QueuedMessagesNotice.tsx",
+        44
+      ]
+    ],
+    "translation": "メッセージ"
+  },
+  "session.queued_messages.position": {
+    "message": "#{position}",
+    "placeholders": {
+      "position": [
+        "index + 1"
+      ]
+    },
+    "comments": [],
+    "origin": [
+      [
+        "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/QueuedMessagesNotice.tsx",
+        36
+      ]
+    ],
+    "translation": "#{position}"
+  },
+  "session.queued_messages.title": {
+    "message": "Queued Messages",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/QueuedMessagesNotice.tsx",
+        22
+      ]
+    ],
+    "translation": "待機中のメッセージ"
   },
   "session.scheduled_messages.disabled": {
     "placeholders": {},
@@ -3322,7 +3362,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        740
+        741
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
@@ -3341,7 +3381,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        738
+        739
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
@@ -4135,7 +4175,7 @@
     "origin": [
       [
         "src/web/app/components/rightPanel/FilesToolsTabContent.tsx",
-        567
+        568
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/EditedFilesTab.tsx",

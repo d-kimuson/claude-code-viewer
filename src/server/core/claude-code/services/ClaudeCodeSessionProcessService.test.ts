@@ -17,6 +17,8 @@ const createMockSessionProcessDef = (
   cwd: "/test/path",
   abortController: new AbortController(),
   setNextMessage: () => {},
+  getQueuedMessages: () => [],
+  getQueueSize: () => 0,
 });
 
 // Helper function to create mock new task definition

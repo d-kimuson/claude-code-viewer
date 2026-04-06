@@ -77,6 +77,8 @@ const LayerImpl = Effect.gen(function* () {
       const {
         generateMessages,
         setNextMessage,
+        getQueuedMessages,
+        getQueueSize,
         setHooks: setMessageGeneratorHooks,
       } = createMessageGenerator();
 
@@ -101,14 +103,35 @@ const LayerImpl = Effect.gen(function* () {
           cwd,
           abortController: new AbortController(),
           setNextMessage,
+          getQueuedMessages,
+          getQueueSize,
           sessionProcessId: ulid(),
         },
         turnDef,
       });
 
       setMessageGeneratorHooks({
-        onNewUserMessageResolved: (input) => {
-          Effect.runFork(
+        onNewUserMessageResolved: async (input) => {
+          const processState = await Effect.runPromise(
+            sessionProcessService.getSessionProcess(sessionProcess.def.sessionProcessId),
+          );
+
+          if (processState.type === "paused") {
+            // Auto-continue: create a new turn for queued message
+            await Effect.runPromise(
+              sessionProcessService.continueSessionProcess({
+                sessionProcessId: sessionProcess.def.sessionProcessId,
+                turnDef: {
+                  type: "continue",
+                  sessionId: processState.sessionId,
+                  baseSessionId: processState.sessionId,
+                  turnId: ulid(),
+                },
+              }),
+            );
+          }
+
+          await Effect.runPromise(
             sessionProcessService.updateRawUserMessage({
               sessionProcessId: sessionProcess.def.sessionProcessId,
               rawUserMessage: input.text,
@@ -133,7 +156,10 @@ const LayerImpl = Effect.gen(function* () {
           }
 
           if (processState.type === "paused") {
-            return yield* Effect.die(new Error("Illegal state: paused is not expected"));
+            yield* Effect.logWarning(
+              `[handleMessage] Received message while paused for ${sessionProcess.def.sessionProcessId}. This may indicate a race condition.`,
+            );
+            return "continue" as const;
           }
 
           if (
@@ -315,6 +341,17 @@ const LayerImpl = Effect.gen(function* () {
       return processes.filter((process) => CCSessionProcess.isPublic(process));
     });
 
+  const enqueueMessage = (options: { sessionProcessId: string; input: UserMessageInput }) => {
+    return Effect.gen(function* () {
+      const process = yield* sessionProcessService.getSessionProcess(options.sessionProcessId);
+      if (process.type === "completed") {
+        return yield* Effect.fail(new Error("Cannot enqueue to completed process"));
+      }
+      process.def.setNextMessage(options.input);
+      return { queueSize: process.def.getQueueSize() };
+    });
+  };
+
   const abortTask = (sessionProcessId: string): Effect.Effect<void, Error> =>
     Effect.gen(function* () {
       const currentProcess = yield* sessionProcessService.getSessionProcess(sessionProcessId);
@@ -351,6 +388,7 @@ const LayerImpl = Effect.gen(function* () {
   return {
     continueSessionProcess,
     startSessionProcess,
+    enqueueMessage,
     abortTask,
     abortAllTasks,
     getPublicSessionProcesses,

@@ -28,6 +28,7 @@ import { TaskStateProvider } from "@/web/contexts/TaskStateContext";
 import { useSidechain } from "../../hooks/useSidechain";
 import { ConversationItem } from "./ConversationItem";
 import { buildRenderableConversationRows } from "./conversationRows";
+import { QueuedMessagesNotice } from "./QueuedMessagesNotice";
 import { ScheduledMessageNotice } from "./ScheduledMessageNotice";
 
 const searchInputId = "conversation-in-page-search";
@@ -226,6 +227,7 @@ type ConversationListProps = {
   projectId: string;
   sessionId: string;
   scheduledJobs: SchedulerJob[];
+  queuedMessages: readonly { text: string; queuedAt: string }[];
   scrollContainerRef: RefObject<HTMLDivElement | null>;
   enableInPageSearch?: boolean;
 };
@@ -236,6 +238,7 @@ export const ConversationList: FC<ConversationListProps> = ({
   projectId,
   sessionId,
   scheduledJobs,
+  queuedMessages,
   scrollContainerRef,
   enableInPageSearch = false,
 }) => {
@@ -769,6 +772,7 @@ export const ConversationList: FC<ConversationListProps> = ({
         })}
       </ul>
       <ScheduledMessageNotice scheduledJobs={scheduledJobs} />
+      <QueuedMessagesNotice queuedMessages={queuedMessages} />
     </TaskStateProvider>
   );
 };

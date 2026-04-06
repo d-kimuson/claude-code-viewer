@@ -23,6 +23,11 @@ const LayerImpl = Effect.gen(function* () {
               projectId: p.def.projectId,
               sessionId: p.sessionId,
               status: p.type === "paused" ? "paused" : "running",
+              queuedMessageCount: p.def.getQueueSize(),
+              queuedMessages: p.def.getQueuedMessages().map((m) => ({
+                text: m.input.text,
+                queuedAt: m.queuedAt,
+              })),
             }),
           ),
         },
@@ -106,10 +111,27 @@ const LayerImpl = Effect.gen(function* () {
       } as const satisfies ControllerResponse;
     });
 
+  const enqueueMessage = (options: {
+    projectId: string;
+    input: UserMessageInput;
+    sessionProcessId: string;
+  }) =>
+    Effect.gen(function* () {
+      const result = yield* claudeCodeLifeCycleService.enqueueMessage({
+        sessionProcessId: options.sessionProcessId,
+        input: options.input,
+      });
+      return {
+        response: { queueSize: result.queueSize },
+        status: 200,
+      } as const satisfies ControllerResponse;
+    });
+
   return {
     getSessionProcesses,
     createSessionProcess,
     continueSessionProcess,
+    enqueueMessage,
   };
 });
 

@@ -8,6 +8,7 @@ export { FileCompletion } from "./FileCompletion";
 export {
   useContinueSessionProcessMutation,
   useCreateSessionProcessMutation,
+  useEnqueueMessageMutation,
 } from "./useChatMutations";
 export type { UseMessageCompletionResult } from "./useMessageCompletion";
 export { useMessageCompletion } from "./useMessageCompletion";

@@ -8,6 +8,11 @@ export type UserMessageInput = {
   documents?: readonly DocumentBlockParam[];
 };
 
+export type QueuedMessage = {
+  readonly input: UserMessageInput;
+  readonly queuedAt: string;
+};
+
 export type OnMessage = (message: SDKMessage) => void | Promise<void>;
 
 export type MessageGenerator = () => AsyncGenerator<SDKUserMessage, void, unknown>;
@@ -15,12 +20,15 @@ export type MessageGenerator = () => AsyncGenerator<SDKUserMessage, void, unknow
 export const createMessageGenerator = (): {
   generateMessages: MessageGenerator;
   setNextMessage: (input: UserMessageInput) => void;
+  getQueuedMessages: () => readonly QueuedMessage[];
+  getQueueSize: () => number;
   setHooks: (hooks: {
     onNextMessageSet?: (input: UserMessageInput) => void | Promise<void>;
     onNewUserMessageResolved?: (input: UserMessageInput) => void | Promise<void>;
   }) => void;
 } => {
   let sendMessagePromise = controllablePromise<UserMessageInput>();
+  const queue: QueuedMessage[] = [];
   let registeredHooks: {
     onNextMessageSet: ((input: UserMessageInput) => void | Promise<void>)[];
     onNewUserMessageResolved: ((input: UserMessageInput) => void | Promise<void>)[];
@@ -64,25 +72,51 @@ export const createMessageGenerator = (): {
     sendMessagePromise = controllablePromise<UserMessageInput>();
 
     while (true) {
-      const message = await sendMessagePromise.promise;
-      sendMessagePromise = controllablePromise<UserMessageInput>();
-      void Promise.allSettled(
-        registeredHooks.onNewUserMessageResolved.map(async (hook) => {
-          await hook(message);
-        }),
-      );
+      // If the queue is empty, wait for a wake-up signal
+      if (queue.length === 0) {
+        await sendMessagePromise.promise;
+        sendMessagePromise = controllablePromise<UserMessageInput>();
+      }
 
-      yield createMessage(message);
+      // Drain messages from the queue in FIFO order
+      while (queue.length > 0) {
+        const queued = queue.shift();
+        if (queued === undefined) break;
+        await Promise.allSettled(
+          registeredHooks.onNewUserMessageResolved.map(async (hook) => {
+            await hook(queued.input);
+          }),
+        );
+
+        yield createMessage(queued.input);
+      }
     }
   };
 
   const setNextMessage = (input: UserMessageInput) => {
-    sendMessagePromise.resolve(input);
+    queue.push({
+      input,
+      queuedAt: new Date().toISOString(),
+    });
+
+    // Wake the generator if it is waiting
+    if (sendMessagePromise.status === "pending") {
+      sendMessagePromise.resolve(input);
+    }
+
     void Promise.allSettled(
       registeredHooks.onNextMessageSet.map(async (hook) => {
         await hook(input);
       }),
     );
+  };
+
+  const getQueuedMessages = (): readonly QueuedMessage[] => {
+    return [...queue];
+  };
+
+  const getQueueSize = (): number => {
+    return queue.length;
   };
 
   const setHooks = (hooks: {
@@ -104,6 +138,8 @@ export const createMessageGenerator = (): {
   return {
     generateMessages,
     setNextMessage,
+    getQueuedMessages,
+    getQueueSize,
     setHooks,
   };
 };

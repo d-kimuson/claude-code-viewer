@@ -5,6 +5,7 @@ import {
   ChatInput,
   type MessageInput,
   useContinueSessionProcessMutation,
+  useEnqueueMessageMutation,
 } from "../../../../components/chatForm";
 
 export const ContinueChat: FC<{
@@ -15,11 +16,21 @@ export const ContinueChat: FC<{
 }> = ({ projectId, sessionId, sessionProcessId, sessionProcessStatus }) => {
   const { i18n } = useLingui();
   const continueSessionProcess = useContinueSessionProcessMutation(projectId, sessionId);
+  const enqueueMessage = useEnqueueMessageMutation(projectId, sessionId);
   const { config } = useConfig();
 
+  const isRunning = sessionProcessStatus === "running";
+
   const handleSubmit = async (input: MessageInput) => {
-    await continueSessionProcess.mutateAsync({ input, sessionProcessId });
+    if (isRunning) {
+      await enqueueMessage.mutateAsync({ input, sessionProcessId });
+    } else {
+      await continueSessionProcess.mutateAsync({ input, sessionProcessId });
+    }
   };
+
+  const isPending = continueSessionProcess.isPending || enqueueMessage.isPending;
+  const error = continueSessionProcess.error ?? enqueueMessage.error;
 
   const getPlaceholder = () => {
     const behavior = config?.enterKeyBehavior;
@@ -41,8 +52,6 @@ export const ContinueChat: FC<{
       message: "Type your message... (Start with / for commands, @ for files, Shift+Enter to send)",
     });
   };
-
-  const isRunning = sessionProcessStatus === "running";
 
   const getRunningPlaceholder = () => {
     const behavior = config?.enterKeyBehavior;
@@ -71,15 +80,14 @@ export const ContinueChat: FC<{
       <ChatInput
         projectId={projectId}
         onSubmit={handleSubmit}
-        isPending={continueSessionProcess.isPending}
-        error={continueSessionProcess.error}
+        isPending={isPending}
+        error={error}
         placeholder={isRunning ? getRunningPlaceholder() : getPlaceholder()}
         buttonText={<Trans id="chat.send" />}
         containerClassName=""
         buttonSize="default"
         enableScheduledSend={!isRunning}
         baseSessionId={sessionId}
-        sendDisabled={isRunning}
       />
     </div>
   );

@@ -94,6 +94,62 @@ export const useCreateSessionProcessMutation = (projectId: string, onSuccess?: (
   });
 };
 
+export const useEnqueueMessageMutation = (projectId: string, baseSessionId: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (options: { input: MessageInput; sessionProcessId: string }) => {
+      // Snapshot conversation count for robust virtual message removal
+      const conversationCount = extractConversationCount(
+        queryClient.getQueryData(sessionDetailQuery(projectId, baseSessionId).queryKey),
+      );
+
+      // Add virtual message for optimistic UI
+      addVirtualMessage({
+        sessionId: baseSessionId,
+        projectId,
+        userMessage: options.input.text,
+        sentAt: new Date().toISOString(),
+        isNewSession: false,
+        conversationCount,
+      });
+
+      // Invalidate session detail query so it re-runs and picks up the VM
+      void queryClient.invalidateQueries({
+        queryKey: sessionDetailQuery(projectId, baseSessionId).queryKey,
+      });
+
+      try {
+        const response = await honoClient.api["claude-code"]["session-processes"][
+          ":sessionProcessId"
+        ].enqueue.$post(
+          {
+            param: { sessionProcessId: options.sessionProcessId },
+            json: {
+              projectId: projectId,
+              input: options.input,
+            },
+          },
+          {
+            init: {
+              signal: AbortSignal.timeout(10 * 1000),
+            },
+          },
+        );
+
+        if (!response.ok) {
+          throw new Error(response.statusText);
+        }
+
+        return await response.json();
+      } catch (error) {
+        removeVirtualMessage(baseSessionId);
+        throw error;
+      }
+    },
+  });
+};
+
 export const useContinueSessionProcessMutation = (projectId: string, baseSessionId: string) => {
   const queryClient = useQueryClient();
 

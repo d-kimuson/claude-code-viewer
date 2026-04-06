@@ -1,4 +1,4 @@
-import type { UserMessageInput } from "../functions/createMessageGenerator.ts";
+import type { QueuedMessage, UserMessageInput } from "../functions/createMessageGenerator.ts";
 import type { InitMessageContext } from "../types.ts";
 import type * as CCTurn from "./ClaudeCodeTurn.ts";
 
@@ -8,6 +8,8 @@ export type CCSessionProcessDef = {
   cwd: string;
   abortController: AbortController;
   setNextMessage: (input: UserMessageInput) => void;
+  getQueuedMessages: () => readonly QueuedMessage[];
+  getQueueSize: () => number;
 };
 
 type CCSessionProcessStateBase = {

@@ -275,6 +275,7 @@ export const TaskModal: FC<TaskModalProps> = ({
               projectId={projectId}
               sessionId={sessionId}
               scheduledJobs={[]}
+              queuedMessages={[]}
               scrollContainerRef={scrollContainerRef}
             />
           )}

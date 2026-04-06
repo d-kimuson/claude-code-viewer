@@ -40,6 +40,11 @@ const LayerImpl = Effect.gen(function* () {
         projectId: process.def.projectId,
         sessionId: process.sessionId,
         status: process.type === "paused" ? ("paused" as const) : ("running" as const),
+        queuedMessageCount: process.def.getQueueSize(),
+        queuedMessages: process.def.getQueuedMessages().map((m) => ({
+          text: m.input.text,
+          queuedAt: m.queuedAt,
+        })),
       }));
 
       yield* eventBus.emit("sessionProcessChanged", {
@@ -206,6 +211,11 @@ const LayerImpl = Effect.gen(function* () {
             projectId: process.def.projectId,
             sessionId: process.sessionId,
             status: process.type === "paused" ? "paused" : "running",
+            queuedMessageCount: process.def.getQueueSize(),
+            queuedMessages: process.def.getQueuedMessages().map((m) => ({
+              text: m.input.text,
+              queuedAt: m.queuedAt,
+            })),
           })),
           changed: nextState,
         });

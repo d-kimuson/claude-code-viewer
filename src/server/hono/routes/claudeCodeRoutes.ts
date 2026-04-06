@@ -114,6 +114,31 @@ const claudeCodeRoutes = Effect.gen(function* () {
       },
     )
     .post(
+      "/session-processes/:sessionProcessId/enqueue",
+      zValidator(
+        "json",
+        z.object({
+          projectId: z.string(),
+          input: userMessageInputSchema,
+        }),
+      ),
+      async (c) => {
+        const body = c.req.valid("json");
+        const input = normalizeUserMessageInput(body.input);
+        const response = await effectToResponse(
+          c,
+          claudeCodeSessionProcessController
+            .enqueueMessage({
+              ...c.req.param(),
+              ...body,
+              input,
+            })
+            .pipe(Effect.provide(runtime)),
+        );
+        return response;
+      },
+    )
+    .post(
       "/session-processes/:sessionProcessId/abort",
       zValidator("json", z.object({ projectId: z.string() })),
       (c) => {

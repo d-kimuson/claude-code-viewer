@@ -669,6 +669,7 @@ const SessionPageMainContent: FC<
               projectId={projectId}
               sessionId={sessionId ?? ""}
               scheduledJobs={sessionScheduledJobs}
+              queuedMessages={relatedSessionProcess?.queuedMessages ?? []}
               scrollContainerRef={scrollContainerRef}
               enableInPageSearch
             />

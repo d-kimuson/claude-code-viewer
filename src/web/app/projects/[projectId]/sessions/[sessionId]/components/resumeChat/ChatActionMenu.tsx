@@ -130,25 +130,32 @@ export const ChatActionMenu: FC<ChatActionMenuProps> = ({
           </Button>
         )}
         {sessionProcess && abortTask && (
-          <Button
-            type="button"
-            variant="destructive"
-            size="sm"
-            onClick={() => {
-              abortTask.mutate(sessionProcess.id);
-            }}
-            disabled={abortTask.isPending || isPending}
-            className="h-7 px-2 gap-1.5 text-xs rounded-lg"
-          >
-            {abortTask.isPending ? (
-              <LoaderIcon className="w-3.5 h-3.5 animate-spin" />
-            ) : (
-              <XIcon className="w-3.5 h-3.5" />
-            )}
-            <span>
-              <Trans id="session.conversation.abort" />
-            </span>
-          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                type="button"
+                variant="destructive"
+                size="sm"
+                onClick={() => {
+                  abortTask.mutate(sessionProcess.id);
+                }}
+                disabled={abortTask.isPending || isPending}
+                className="h-7 px-2 gap-1.5 text-xs rounded-lg"
+              >
+                {abortTask.isPending ? (
+                  <LoaderIcon className="w-3.5 h-3.5 animate-spin" />
+                ) : (
+                  <XIcon className="w-3.5 h-3.5" />
+                )}
+                <span>
+                  <Trans id="session.conversation.abort" />
+                </span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <Trans id="session.conversation.abort" /> (Esc)
+            </TooltipContent>
+          </Tooltip>
         )}
 
         {enableCCOptions && onCCOptionsChange && (

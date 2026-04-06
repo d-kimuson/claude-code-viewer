@@ -5,6 +5,23 @@ import { Badge } from "@/web/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/web/components/ui/card";
 import { CopyableMarkdownContent } from "./CopyableMarkdownContent";
 
+/**
+ * Convert single newlines to Markdown hard line breaks (two trailing spaces + newline).
+ * Preserves double newlines (paragraph breaks) and avoids adding extra spaces
+ * to lines that already end with 2+ spaces.
+ */
+export const convertNewlinesToBreaks = (text: string): string => {
+  // Replace single \n (not preceded or followed by \n) where the preceding text
+  // doesn't already end with 2+ spaces
+  return text.replace(/(?<!\n)( *)\n(?!\n)/g, (match, trailingSpaces: string) => {
+    if (trailingSpaces.length >= 2) {
+      // Already has hard line break formatting
+      return match;
+    }
+    return `  \n`;
+  });
+};
+
 export const UserTextContent: FC<{ text: string; id?: string }> = ({ text, id }) => {
   const parsed = parseUserMessage(text);
 
@@ -83,7 +100,7 @@ export const UserTextContent: FC<{ text: string; id?: string }> = ({ text, id })
   return (
     <CopyableMarkdownContent
       className="w-full px-3 py-3 mb-5 border border-border rounded-lg bg-slate-50 dark:bg-slate-900/50"
-      content={parsed.content}
+      content={convertNewlinesToBreaks(parsed.content)}
     />
   );
 };

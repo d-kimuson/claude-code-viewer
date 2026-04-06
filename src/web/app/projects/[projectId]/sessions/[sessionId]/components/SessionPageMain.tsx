@@ -332,6 +332,31 @@ const SessionPageMainContent: FC<
     hadVirtualMessageRef.current = hasVirtualMessage;
   }, [virtualMessages, sessionId, scrollToBottomSettled]);
 
+  // Esc key to abort running session
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      if (effectiveSessionStatus !== "running") return;
+      if (!relatedSessionProcess) return;
+      if (abortTask.isPending) return;
+
+      const activeEl = document.activeElement;
+      const tagName = activeEl?.tagName?.toLowerCase();
+      if (
+        tagName === "input" ||
+        tagName === "textarea" ||
+        activeEl?.getAttribute("contenteditable") === "true"
+      ) {
+        return;
+      }
+
+      abortTask.mutate(relatedSessionProcess.id);
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [effectiveSessionStatus, relatedSessionProcess, abortTask]);
+
   const sessionTitle = resolveSessionTitle(
     sessionData?.session.meta.customTitle ?? null,
     sessionData?.session.meta.firstUserMessage ?? null,

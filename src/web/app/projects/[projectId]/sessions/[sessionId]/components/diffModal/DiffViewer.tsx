@@ -14,6 +14,7 @@ import { useReviewComments, type ReviewComment } from "@/lib/atoms/reviewComment
 import { Button } from "@/web/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/web/components/ui/popover";
 import { Textarea } from "@/web/components/ui/textarea";
+import { useIsMobile } from "@/web/hooks/useIsMobile";
 import { cn } from "@/web/utils";
 import { codeMonoClass } from "../conversationList/toolVisualizers/constants";
 import type { DiffHunk, DiffLine, FileDiff } from "./types";
@@ -143,7 +144,7 @@ const ExistingComment: FC<{
       <button
         type="button"
         onClick={() => onRemove(comment.id)}
-        className="absolute right-1.5 top-1.5 rounded p-0.5 text-muted-foreground/40 opacity-0 transition-all hover:bg-destructive/10 hover:text-destructive group-hover/comment:opacity-100"
+        className="absolute right-1.5 top-1.5 rounded p-0.5 text-muted-foreground/40 opacity-100 md:opacity-0 transition-all hover:bg-destructive/10 hover:text-destructive md:group-hover/comment:opacity-100 group-focus-within/comment:opacity-100"
       >
         <Trash2Icon className="h-3 w-3" />
       </button>
@@ -159,6 +160,7 @@ const CommentButton: FC<CommentButtonProps> = ({
 }) => {
   const [open, setOpen] = useState(false);
   const hasComments = lineComments.length > 0;
+  const isMobile = useIsMobile();
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -167,7 +169,9 @@ const CommentButton: FC<CommentButtonProps> = ({
           type="button"
           className={cn(
             "absolute left-0.5 top-px z-10 flex items-center rounded-sm transition-all",
-            hasComments ? "opacity-100" : "opacity-0 group-hover:opacity-100",
+            hasComments
+              ? "opacity-100"
+              : "opacity-100 md:opacity-0 md:group-hover:opacity-100 group-focus-within:opacity-100",
           )}
         >
           {hasComments ? (
@@ -182,9 +186,13 @@ const CommentButton: FC<CommentButtonProps> = ({
         </button>
       </PopoverTrigger>
       <PopoverContent
-        side="right"
-        align="start"
-        className="w-80 overflow-hidden rounded-xl border-border/50 p-0 shadow-xl shadow-black/5 dark:shadow-black/20"
+        side={isMobile ? "bottom" : "right"}
+        align={isMobile ? "center" : "start"}
+        collisionPadding={8}
+        className={cn(
+          "overflow-hidden rounded-xl border-border/50 p-0 shadow-xl shadow-black/5 dark:shadow-black/20",
+          isMobile ? "w-[calc(100vw-2rem)]" : "w-80",
+        )}
       >
         {hasComments && (
           <div className="space-y-1.5 border-b border-border/40 bg-muted/20 p-3">

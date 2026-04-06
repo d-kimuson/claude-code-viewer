@@ -3289,7 +3289,7 @@
         44
       ]
     ],
-    "translation": "session.queued_messages.message_label"
+    "translation": "Message"
   },
   "session.queued_messages.position": {
     "message": "#{position}",
@@ -3305,7 +3305,7 @@
         36
       ]
     ],
-    "translation": "session.queued_messages.position"
+    "translation": "#{position}"
   },
   "session.queued_messages.title": {
     "message": "Queued Messages",
@@ -3317,7 +3317,7 @@
         22
       ]
     ],
-    "translation": "session.queued_messages.title"
+    "translation": "Queued Messages"
   },
   "session.scheduled_messages.disabled": {
     "placeholders": {},

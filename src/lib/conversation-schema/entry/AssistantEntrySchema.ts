@@ -12,6 +12,12 @@ export const AssistantEntrySchema = BaseEntrySchema.extend({
   // optional
   requestId: z.string().optional(),
   isApiErrorMessage: z.boolean().optional(),
+  usage: z
+    .object({
+      input_tokens: z.number(),
+      output_tokens: z.number(),
+    })
+    .optional(),
 });
 
 export type AssistantEntry = z.infer<typeof AssistantEntrySchema>;

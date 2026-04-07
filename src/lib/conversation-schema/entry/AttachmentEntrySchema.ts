@@ -25,9 +25,26 @@ const McpInstructionsDeltaSchema = AttachmentBaseEntrySchema.extend({
   }),
 });
 
+const CompanionIntroSchema = AttachmentBaseEntrySchema.extend({
+  attachment: z.object({
+    type: z.literal("companion_intro"),
+    name: z.string(),
+    species: z.string(),
+  }),
+});
+
+/**
+ * Fallback for unknown attachment types to avoid crashes on new Claude Code versions.
+ */
+const UnknownAttachmentSchema = AttachmentBaseEntrySchema.extend({
+  attachment: z.object({ type: z.string() }).loose(),
+});
+
 export const AttachmentEntrySchema = z.union([
   DeferredToolsDeltaSchema,
   McpInstructionsDeltaSchema,
+  CompanionIntroSchema,
+  UnknownAttachmentSchema,
 ]);
 
 export type AttachmentEntry = z.infer<typeof AttachmentEntrySchema>;

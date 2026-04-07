@@ -45,25 +45,30 @@ export const aggregateTokenUsageAndCost = (
 
     for (const conversation of conversations) {
       if (conversation.type === "assistant") {
-        const usage = conversation.message.usage;
+        const messageUsage = conversation.message.usage;
+        const entryUsage = conversation.usage;
+        const inputTokens = messageUsage?.input_tokens ?? entryUsage?.input_tokens ?? 0;
+        const outputTokens = messageUsage?.output_tokens ?? entryUsage?.output_tokens ?? 0;
+        const cacheCreationInputTokens = messageUsage?.cache_creation_input_tokens ?? 0;
+        const cacheReadInputTokens = messageUsage?.cache_read_input_tokens ?? 0;
         const modelName = conversation.message.model;
 
         // Calculate cost for this specific message
         const messageCost = calculateTokenCost(
           {
-            input_tokens: usage.input_tokens,
-            output_tokens: usage.output_tokens,
-            cache_creation_input_tokens: usage.cache_creation_input_tokens ?? 0,
-            cache_read_input_tokens: usage.cache_read_input_tokens ?? 0,
+            input_tokens: inputTokens,
+            output_tokens: outputTokens,
+            cache_creation_input_tokens: cacheCreationInputTokens,
+            cache_read_input_tokens: cacheReadInputTokens,
           },
           modelName,
         );
 
         // Accumulate token counts
-        totalInputTokens += usage.input_tokens;
-        totalOutputTokens += usage.output_tokens;
-        totalCacheCreationTokens += usage.cache_creation_input_tokens ?? 0;
-        totalCacheReadTokens += usage.cache_read_input_tokens ?? 0;
+        totalInputTokens += inputTokens;
+        totalOutputTokens += outputTokens;
+        totalCacheCreationTokens += cacheCreationInputTokens;
+        totalCacheReadTokens += cacheReadInputTokens;
 
         // Accumulate costs
         totalInputTokensUsd += messageCost.breakdown.inputTokensUsd;

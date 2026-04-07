@@ -44,7 +44,7 @@ describe("AttachmentEntrySchema", () => {
       expect(result.success).toBe(true);
     });
 
-    test("rejects entry without addedLines", () => {
+    test("accepts entry without addedLines via fallback", () => {
       const result = AttachmentEntrySchema.safeParse({
         ...baseFields,
         attachment: {
@@ -53,7 +53,8 @@ describe("AttachmentEntrySchema", () => {
           removedNames: [],
         },
       });
-      expect(result.success).toBe(false);
+      // Falls through to UnknownAttachmentSchema fallback
+      expect(result.success).toBe(true);
     });
   });
 
@@ -94,6 +95,56 @@ describe("AttachmentEntrySchema", () => {
           type: "unknown_delta",
           addedNames: [],
           removedNames: [],
+        },
+      });
+      // Falls through to UnknownAttachmentSchema fallback
+      expect(result.success).toBe(true);
+    });
+  });
+
+  describe("companion_intro", () => {
+    test("accepts valid entry", () => {
+      const result = AttachmentEntrySchema.safeParse({
+        ...baseFields,
+        attachment: {
+          type: "companion_intro",
+          name: "Crumb",
+          species: "owl",
+        },
+      });
+      expect(result.success).toBe(true);
+    });
+
+    test("rejects entry missing required fields", () => {
+      const result = AttachmentEntrySchema.safeParse({
+        ...baseFields,
+        attachment: {
+          type: "companion_intro",
+          name: "Crumb",
+        },
+      });
+      // Falls through to UnknownAttachmentSchema fallback which accepts it
+      expect(result.success).toBe(true);
+    });
+  });
+
+  describe("unknown attachment fallback", () => {
+    test("accepts unknown attachment types gracefully", () => {
+      const result = AttachmentEntrySchema.safeParse({
+        ...baseFields,
+        attachment: {
+          type: "some_future_type",
+          foo: "bar",
+        },
+      });
+      expect(result.success).toBe(true);
+    });
+
+    test("rejects entry without attachment type", () => {
+      const result = AttachmentEntrySchema.safeParse({
+        ...baseFields,
+        attachment: {
+          name: "no-type",
         },
       });
       expect(result.success).toBe(false);

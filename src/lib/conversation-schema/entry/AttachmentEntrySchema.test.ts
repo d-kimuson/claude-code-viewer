@@ -44,7 +44,7 @@ describe("AttachmentEntrySchema", () => {
       expect(result.success).toBe(true);
     });
 
-    test("rejects entry without addedLines", () => {
+    test("falls back to unknown schema when addedLines is missing", () => {
       const result = AttachmentEntrySchema.safeParse({
         ...baseFields,
         attachment: {
@@ -53,7 +53,8 @@ describe("AttachmentEntrySchema", () => {
           removedNames: [],
         },
       });
-      expect(result.success).toBe(false);
+      // Accepted by UnknownAttachmentSchema fallback
+      expect(result.success).toBe(true);
     });
   });
 
@@ -87,16 +88,56 @@ describe("AttachmentEntrySchema", () => {
       expect(result.success).toBe(true);
     });
 
-    test("rejects entry with wrong attachment type", () => {
+    test("rejects entry missing attachment type", () => {
       const result = AttachmentEntrySchema.safeParse({
         ...baseFields,
         attachment: {
-          type: "unknown_delta",
           addedNames: [],
           removedNames: [],
         },
       });
       expect(result.success).toBe(false);
+    });
+  });
+
+  describe("companion_intro", () => {
+    test("accepts valid entry", () => {
+      const result = AttachmentEntrySchema.safeParse({
+        ...baseFields,
+        attachment: {
+          type: "companion_intro",
+          name: "Crumb",
+          species: "owl",
+        },
+      });
+      expect(result.success).toBe(true);
+      expect(result.data?.attachment.type).toBe("companion_intro");
+    });
+
+    test("falls back to unknown schema when name is missing", () => {
+      const result = AttachmentEntrySchema.safeParse({
+        ...baseFields,
+        attachment: {
+          type: "companion_intro",
+          species: "owl",
+        },
+      });
+      // Accepted by UnknownAttachmentSchema fallback
+      expect(result.success).toBe(true);
+    });
+  });
+
+  describe("unknown attachment type (fallback)", () => {
+    test("accepts unknown attachment types gracefully", () => {
+      const result = AttachmentEntrySchema.safeParse({
+        ...baseFields,
+        attachment: {
+          type: "some_future_type",
+          someField: "value",
+        },
+      });
+      expect(result.success).toBe(true);
+      expect(result.data?.attachment.type).toBe("some_future_type");
     });
   });
 });

@@ -25,9 +25,23 @@ const McpInstructionsDeltaSchema = AttachmentBaseEntrySchema.extend({
   }),
 });
 
+const CompanionIntroSchema = AttachmentBaseEntrySchema.extend({
+  attachment: z.object({
+    type: z.literal("companion_intro"),
+    name: z.string(),
+    species: z.string(),
+  }),
+});
+
+const UnknownAttachmentSchema = AttachmentBaseEntrySchema.extend({
+  attachment: z.looseObject({ type: z.string() }),
+});
+
 export const AttachmentEntrySchema = z.union([
   DeferredToolsDeltaSchema,
   McpInstructionsDeltaSchema,
+  CompanionIntroSchema,
+  UnknownAttachmentSchema,
 ]);
 
 export type AttachmentEntry = z.infer<typeof AttachmentEntrySchema>;

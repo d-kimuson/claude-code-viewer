@@ -91,7 +91,16 @@ const LayerImpl = Effect.gen(function* () {
 
       const { project } = yield* projectRepository.getProject(projectId);
 
-      if (project.meta.projectPath === null) {
+      // Allow reading files from either the source project directory or the Claude
+      // project data directory (e.g. ~/.claude/projects/.../memory/)
+      const claudeProjectPath = project.claudeProjectPath;
+      const sourceProjectPath = project.meta.projectPath;
+
+      const projectRoot = filePath.startsWith(`${claudeProjectPath}/`)
+        ? claudeProjectPath
+        : sourceProjectPath;
+
+      if (projectRoot === null) {
         return {
           response: {
             success: false,
@@ -103,9 +112,7 @@ const LayerImpl = Effect.gen(function* () {
         } as const satisfies ControllerResponse;
       }
 
-      const projectPath = project.meta.projectPath;
-
-      const result = yield* getFileContentEffect(projectPath, filePath).pipe(
+      const result = yield* getFileContentEffect(projectRoot, filePath).pipe(
         Effect.provideService(Path.Path, path),
         Effect.provideService(FileSystem.FileSystem, fs),
       );

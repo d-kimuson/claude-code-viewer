@@ -4,7 +4,10 @@ import { Effect } from "effect";
 import packageJson from "../../package.json" with { type: "json" };
 import type { CliOptions } from "./core/platform/services/CcvOptionsService.ts";
 import { checkDeprecatedEnvs } from "./core/platform/services/DeprecatedEnvDetector.ts";
+import { checkNodeVersion } from "./nodeVersionCheck.ts";
 import { startServer } from "./startServer.ts";
+
+checkNodeVersion();
 
 const program = new Command();
 

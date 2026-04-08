@@ -44,7 +44,7 @@ describe("AttachmentEntrySchema", () => {
       expect(result.success).toBe(true);
     });
 
-    test("falls back to unknown schema when addedLines is missing", () => {
+    test("accepts entry without addedLines via fallback", () => {
       const result = AttachmentEntrySchema.safeParse({
         ...baseFields,
         attachment: {
@@ -53,7 +53,7 @@ describe("AttachmentEntrySchema", () => {
           removedNames: [],
         },
       });
-      // Accepted by UnknownAttachmentSchema fallback
+      // Falls through to UnknownAttachmentSchema fallback
       expect(result.success).toBe(true);
     });
   });
@@ -138,6 +138,16 @@ describe("AttachmentEntrySchema", () => {
       });
       expect(result.success).toBe(true);
       expect(result.data?.attachment.type).toBe("some_future_type");
+    });
+
+    test("rejects entry without attachment type", () => {
+      const result = AttachmentEntrySchema.safeParse({
+        ...baseFields,
+        attachment: {
+          name: "no-type",
+        },
+      });
+      expect(result.success).toBe(false);
     });
   });
 });

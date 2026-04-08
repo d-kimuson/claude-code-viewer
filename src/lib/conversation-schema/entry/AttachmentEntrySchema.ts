@@ -33,8 +33,11 @@ const CompanionIntroSchema = AttachmentBaseEntrySchema.extend({
   }),
 });
 
+/**
+ * Fallback for unknown attachment types to avoid crashes on new Claude Code versions.
+ */
 const UnknownAttachmentSchema = AttachmentBaseEntrySchema.extend({
-  attachment: z.looseObject({ type: z.string() }),
+  attachment: z.object({ type: z.string() }).loose(),
 });
 
 export const AttachmentEntrySchema = z.union([

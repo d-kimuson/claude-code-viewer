@@ -5,7 +5,6 @@ import { type FC, useRef, useState } from "react";
 import { z } from "zod";
 import type { SidechainConversation } from "@/lib/conversation-schema";
 import type { ToolResultContent } from "@/lib/conversation-schema/content/ToolResultContentSchema";
-import type { UserEntry } from "@/lib/conversation-schema/entry/UserEntrySchema";
 import { Badge } from "@/web/components/ui/badge";
 import { Button } from "@/web/components/ui/button";
 import {
@@ -17,6 +16,7 @@ import {
   DialogTrigger,
 } from "@/web/components/ui/dialog";
 import { agentSessionQuery } from "@/web/lib/api/queries";
+import { buildTaskModalConversations } from "./buildTaskModalConversations";
 import { ConversationList } from "./ConversationList";
 
 type TaskModalProps = {
@@ -126,12 +126,13 @@ export const TaskModal: FC<TaskModalProps> = ({
   });
 
   // Determine which data source to use
+  const apiConversations = data?.conversations ?? [];
   const conversations = hasLocalData
     ? localSidechainConversations.map((original) => ({
         ...original,
         isSidechain: false,
       }))
-    : (data?.conversations ?? []);
+    : apiConversations;
 
   const agentSessionId = hasLocalData ? undefined : data?.agentSessionId;
   const turnId = hasLocalData ? legacyConversation?.uuid : agentSessionId;
@@ -242,35 +243,22 @@ export const TaskModal: FC<TaskModalProps> = ({
           )}
           {showConversations && (
             <ConversationList
-              conversations={[
-                ...(hasLocalData
-                  ? []
-                  : [
-                      {
-                        type: "user",
-                        message: {
-                          role: "user",
-                          content: prompt,
-                        },
-                        isSidechain: false,
-                        userType: "external",
-                        cwd: firstConversation?.cwd ?? "dummy",
-                        sessionId: sessionId,
-                        version: firstConversation?.version ?? "dummy",
-                        uuid: "dummy",
-                        timestamp: firstConversation?.timestamp ?? "dummy",
-                        parentUuid: null,
-                        isMeta: false,
-                        toolUseResult: undefined,
-                        gitBranch: firstConversation?.gitBranch ?? "dummy",
-                        isCompactSummary: false,
-                      } satisfies UserEntry,
-                    ]),
-                ...conversations.map((c) => ({
-                  ...c,
-                  isSidechain: false,
-                })),
-              ]}
+              conversations={buildTaskModalConversations({
+                hasLocalData,
+                apiConversations,
+                conversations,
+                prompt,
+                sessionId,
+                firstConversationMeta:
+                  firstConversation !== undefined
+                    ? {
+                        cwd: firstConversation.cwd,
+                        version: firstConversation.version,
+                        timestamp: firstConversation.timestamp,
+                        gitBranch: firstConversation.gitBranch,
+                      }
+                    : undefined,
+              })}
               getToolResult={getToolResult}
               projectId={projectId}
               sessionId={sessionId}

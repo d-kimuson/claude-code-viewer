@@ -1,0 +1,108 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      id-token: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4.0.0
+        with:
+          node-version-file: '.node-version'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Setup pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm i --frozen-lockfile --ignore-scripts
+
+      - name: Determine npm dist-tag
+        id: dist-tag
+        run: |
+          TAG="${{ github.ref_name }}"
+          if [[ "$TAG" == *-* ]]; then
+            echo "tag=${TAG##*-}" | sed 's/\.[0-9]*$//' >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=latest" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Publish to npm
+        run: pnpm publish --provenance --no-git-checks --access public --tag ${{ steps.dist-tag.outputs.tag }}
+
+  release-notes:
+    needs: publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4.0.0
+        with:
+          node-version-file: '.node-version'
+
+      - name: Setup pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm i --frozen-lockfile --ignore-scripts
+
+      - name: Generate draft release notes
+        run: pnpm exec changelogithub --draft
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install Claude Code
+        run: curl -fsSL https://claude.ai/install.sh | bash
+
+      - name: Refine release notes with Claude
+        env:
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.ANTHROPIC_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ github.ref_name }}"
+          gh release view "$TAG" --json body -q .body > /tmp/draft.md
+          git diff "${TAG}^...${TAG}" -- src/ > /tmp/diff.txt || true
+
+          cat <<'PROMPT' > /tmp/prompt.md
+          You are refining GitHub Release notes for claude-code-viewer.
+          claude-code-viewer is an npm CLI tool that provides a web-based viewer for Claude Code session logs — it reads JSONL files from ~/.claude/projects/ and serves an interactive UI with real-time updates via SSE.
+
+          I will provide the draft release notes and the code diff as files.
+          Rewrite the release notes in concise, user-focused English. Rules:
+          - Group changes into categories: Features, Bug Fixes, Breaking Changes, Internal
+          - Each item should describe the user-visible impact, not the implementation detail
+          - Drop trivial items (typo fixes, formatting, internal refactors with no user impact)
+          - Keep it concise — one line per item
+          - Output only the raw markdown body, no fenced code blocks wrapping the entire output
+          PROMPT
+
+          claude -p \
+            --allowedTools Read \
+            --max-turns 5 \
+            "$(cat /tmp/prompt.md)
+
+          Draft release notes (/tmp/draft.md):
+          $(cat /tmp/draft.md)
+
+          Code diff (/tmp/diff.txt):
+          $(cat /tmp/diff.txt)" \
+            > /tmp/notes.md
+
+          gh release edit "$TAG" --notes-file /tmp/notes.md --draft=false

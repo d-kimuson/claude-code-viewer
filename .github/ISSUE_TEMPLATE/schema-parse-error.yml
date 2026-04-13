@@ -16,10 +16,26 @@ body:
       render: json
     validations:
       required: true
+  - type: input
+    id: claude-code-version
+    attributes:
+      label: Claude Code version
+      description: "Run `claude --version` to check."
+      placeholder: "e.g., 1.0.20"
+    validations:
+      required: true
+  - type: input
+    id: viewer-version
+    attributes:
+      label: Claude Code Viewer version
+      description: "Shown in Settings > System Information."
+      placeholder: "e.g., 0.7.3"
+    validations:
+      required: true
   - type: textarea
     id: context
     attributes:
       label: Additional context
-      description: Any additional information (e.g., Claude Code version, viewer version).
+      description: Any other relevant information.
     validations:
       required: false

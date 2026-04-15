@@ -88,17 +88,15 @@ describe("AttachmentEntrySchema", () => {
       expect(result.success).toBe(true);
     });
 
-    test("rejects entry with wrong attachment type", () => {
+    test("rejects entry missing attachment type", () => {
       const result = AttachmentEntrySchema.safeParse({
         ...baseFields,
         attachment: {
-          type: "unknown_delta",
           addedNames: [],
           removedNames: [],
         },
       });
-      // Falls through to UnknownAttachmentSchema fallback
-      expect(result.success).toBe(true);
+      expect(result.success).toBe(false);
     });
   });
 
@@ -113,31 +111,33 @@ describe("AttachmentEntrySchema", () => {
         },
       });
       expect(result.success).toBe(true);
+      expect(result.data?.attachment.type).toBe("companion_intro");
     });
 
-    test("rejects entry missing required fields", () => {
+    test("falls back to unknown schema when name is missing", () => {
       const result = AttachmentEntrySchema.safeParse({
         ...baseFields,
         attachment: {
           type: "companion_intro",
-          name: "Crumb",
+          species: "owl",
         },
       });
-      // Falls through to UnknownAttachmentSchema fallback which accepts it
+      // Accepted by UnknownAttachmentSchema fallback
       expect(result.success).toBe(true);
     });
   });
 
-  describe("unknown attachment fallback", () => {
+  describe("unknown attachment type (fallback)", () => {
     test("accepts unknown attachment types gracefully", () => {
       const result = AttachmentEntrySchema.safeParse({
         ...baseFields,
         attachment: {
           type: "some_future_type",
-          foo: "bar",
+          someField: "value",
         },
       });
       expect(result.success).toBe(true);
+      expect(result.data?.attachment.type).toBe("some_future_type");
     });
 
     test("rejects entry without attachment type", () => {

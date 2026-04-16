@@ -212,6 +212,15 @@ The application reads Claude Code conversation logs from:
 - **Format**: JSONL files containing conversation entries
 - **Auto-detection**: Automatically discovers new projects and sessions
 
+> [!NOTE]
+> **30 Day Session Cleanup Default:** Claude Code defaults to auto-delete all session transcripts older than 30 days. Claude Code Viewer does not make backups of your session files so when the `.jsonl` files get deleted those sessions will no longer exist in Claude Code Viewer. To override the 30 day retention default, add [`cleanupPeriodDays`](https://code.claude.com/docs/en/settings) with a number greater than 30 in `~/.claude/settings.json` and restart Claude Code.
+>
+> ```json
+> {
+>   "cleanupPeriodDays": 365
+> }
+> ```
+
 ## Internationalization (i18n)
 
 Claude Code Viewer currently supports **English**, **Japanese**, and **Simplified Chinese (简体中文)**. Adding new languages is straightforward—simply add a new `messages.json` file for your locale (see [src/i18n/locales/](./src/i18n/locales/) for examples).

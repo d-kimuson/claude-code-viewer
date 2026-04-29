@@ -1,6 +1,7 @@
 /* oxlint-disable no-restricted-imports */
 /* Exception: node:sqlite is required by drizzle node-sqlite driver. */
 import { DatabaseSync } from "node:sqlite";
+import { fileURLToPath } from "node:url";
 import { FileSystem, Path } from "@effect/platform";
 import { drizzle, type NodeSQLiteDatabase } from "drizzle-orm/node-sqlite";
 import { migrate } from "drizzle-orm/node-sqlite/migrator";
@@ -8,7 +9,7 @@ import { Context, Effect, Layer } from "effect";
 import { ApplicationContext } from "../../core/platform/services/ApplicationContext.ts";
 import * as schema from "./schema.ts";
 
-const migrationsFolder = new URL("./migrations", import.meta.url).pathname;
+const migrationsFolder = fileURLToPath(new URL("./migrations", import.meta.url));
 const FTS5_DDL = `
   CREATE VIRTUAL TABLE IF NOT EXISTS session_messages_fts USING fts5(
     session_id UNINDEXED,

@@ -243,19 +243,21 @@ export const validateFilePath = (
   }
 
   const resolvedRoot = path.resolve(projectRoot);
-  let resolvedPath: string;
+  // path.isAbsolute correctly handles both POSIX (/foo) and Windows (C:\foo) absolute paths.
+  const resolvedPath = path.isAbsolute(filePath)
+    ? path.normalize(filePath)
+    : path.resolve(projectRoot, path.normalize(filePath));
 
-  // Handle absolute paths
-  if (filePath.startsWith("/")) {
-    resolvedPath = path.normalize(filePath);
-  } else {
-    // Handle relative paths
-    const normalizedPath = path.normalize(filePath);
-    resolvedPath = path.resolve(projectRoot, normalizedPath);
-  }
-
-  // Ensure the resolved path is within the project root
-  if (!resolvedPath.startsWith(`${resolvedRoot}/`) && resolvedPath !== resolvedRoot) {
+  // Containment check via path.relative — robust across separators and drive letters.
+  // Anything outside the root yields a result that either starts with ".." or is absolute
+  // (the latter happens on Windows when the two paths live on different drives).
+  const relativePath = path.relative(resolvedRoot, resolvedPath);
+  const escapesRoot =
+    relativePath === ".." ||
+    relativePath.startsWith(`..${path.sep}`) ||
+    relativePath.startsWith("../") || // tolerate POSIX-style separator just in case
+    path.isAbsolute(relativePath);
+  if (escapesRoot) {
     return { valid: false, message: "Path is outside the project root" };
   }
 

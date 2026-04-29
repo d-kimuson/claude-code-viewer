@@ -76,20 +76,36 @@ const LayerImpl = Effect.gen(function* () {
     };
   };
 
-  const ruspty: RusptyModule | null = yield* Effect.tryPromise({
-    try: () => import("@replit/ruspty"),
-    catch: (error) => new Error(`Failed to load @replit/ruspty: ${String(error)}`),
-  }).pipe(
-    Effect.catchAll((error) =>
-      Effect.sync(() => {
-        Effect.runFork(Effect.logWarning(error.message));
-        return null;
-      }),
-    ),
-  );
+  // @replit/ruspty publishes prebuilt binaries only for darwin (x64/arm64) and linux-x64.
+  // On Windows there is no native module to load, so short-circuit instead of triggering
+  // a noisy MODULE_NOT_FOUND on every startup — terminal support is simply disabled.
+  const loadRuspty: Effect.Effect<RusptyModule | null> =
+    process.platform === "win32"
+      ? Effect.sync(() => {
+          Effect.runFork(
+            Effect.logInfo("@replit/ruspty has no Windows build; terminal support is disabled."),
+          );
+          return null;
+        })
+      : Effect.tryPromise({
+          try: () => import("@replit/ruspty"),
+          catch: (error) => new Error(`Failed to load @replit/ruspty: ${String(error)}`),
+        }).pipe(
+          Effect.catchAll((error) =>
+            Effect.sync(() => {
+              Effect.runFork(Effect.logWarning(error.message));
+              return null;
+            }),
+          ),
+        );
+  const ruspty = yield* loadRuspty;
 
   if (!ruspty) {
-    return disabledService("@replit/ruspty failed to load");
+    return disabledService(
+      process.platform === "win32"
+        ? "@replit/ruspty has no Windows build"
+        : "@replit/ruspty failed to load",
+    );
   }
 
   const trimBuffer = (session: TerminalSession) => {

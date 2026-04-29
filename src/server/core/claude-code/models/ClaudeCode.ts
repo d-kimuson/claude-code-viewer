@@ -9,8 +9,11 @@ type AgentSdkQuery = typeof agentSdk.query;
 type AgentSdkPrompt = Parameters<AgentSdkQuery>[0]["prompt"];
 type AgentSdkQueryOptions = NonNullable<Parameters<AgentSdkQuery>[0]["options"]>;
 
+const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const npxCacheRegExp = /_npx[/\\].*node_modules[\\/]\.bin/;
-const localNodeModulesBinRegExp = new RegExp(`${process.cwd()}/node_modules/.bin`);
+const localNodeModulesBinRegExp = new RegExp(
+  `${escapeRegExp(process.cwd())}[/\\\\]node_modules[/\\\\]\\.bin(?:[/\\\\]|$)`,
+);
 
 export const claudeCodePathPriority = (path: string): number => {
   if (npxCacheRegExp.test(path)) {

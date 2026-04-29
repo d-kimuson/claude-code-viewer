@@ -44,8 +44,12 @@ const resolveClaudeCodePath = Effect.gen(function* () {
     return path.resolve(specifiedExecutablePath);
   }
 
-  // System PATH lookup
-  const claudePaths = yield* Command.string(Command.make("which", "-a", "claude")).pipe(
+  // System PATH lookup (`where` on Windows, `which -a` elsewhere — both list every match, one per line)
+  const lookupCommand =
+    process.platform === "win32"
+      ? Command.make("where", "claude")
+      : Command.make("which", "-a", "claude");
+  const claudePaths = yield* Command.string(lookupCommand).pipe(
     Effect.map(
       (output) =>
         output

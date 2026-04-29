@@ -101,7 +101,7 @@ describe("ClaudeCode.Config", () => {
               if (command._tag === "StandardCommand") {
                 shellModes.push(command.shell);
 
-                if (command.command === "which") {
+                if (command.command === "which" || command.command === "where") {
                   return Effect.succeed("/usr/local/bin/claude\n");
                 }
 

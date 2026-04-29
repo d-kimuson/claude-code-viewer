@@ -62,7 +62,25 @@ const CompactBoundaryEntrySchema = BaseEntrySchema.extend({
     .optional(),
 });
 
-// API error entry (tracks API errors and retries)
+// Away summary entry (Claude Code v2.1.112+ surfaces a recap when the user returns)
+const AwaySummaryEntrySchema = BaseEntrySchema.extend({
+  type: z.literal("system"),
+  subtype: z.literal("away_summary"),
+  content: z.string(),
+});
+
+// Informational entry (occasional CLI-side notices, e.g. unknown skill args)
+const InformationalEntrySchema = BaseEntrySchema.extend({
+  type: z.literal("system"),
+  subtype: z.literal("informational"),
+  content: z.string(),
+  level: z.enum(["info", "warning", "error"]).optional(),
+});
+
+// API error entry (tracks API errors and retries).
+// Field shapes vary across providers: Anthropic uses {type, message},
+// while some third-party gateways (e.g. Chinese rate-limit responses) use {code, message}.
+// Keep this lenient — surfacing the entry beats a hard schema reject.
 const ApiErrorEntrySchema = BaseEntrySchema.extend({
   type: z.literal("system"),
   subtype: z.literal("api_error"),
@@ -73,11 +91,13 @@ const ApiErrorEntrySchema = BaseEntrySchema.extend({
     requestID: z.string().nullable().optional(),
     error: z
       .object({
-        type: z.string(),
+        type: z.string().optional(),
+        code: z.string().optional(),
         error: z
           .object({
-            type: z.string(),
-            message: z.string(),
+            type: z.string().optional(),
+            code: z.string().optional(),
+            message: z.string().optional(),
           })
           .optional(),
         message: z.string().optional(),
@@ -95,6 +115,8 @@ export const SystemEntrySchema = z.union([
   TurnDurationEntrySchema,
   CompactBoundaryEntrySchema,
   ApiErrorEntrySchema,
+  AwaySummaryEntrySchema,
+  InformationalEntrySchema,
   SystemEntryWithContentSchema, // Must be last (catch-all for undefined subtype)
 ]);
 

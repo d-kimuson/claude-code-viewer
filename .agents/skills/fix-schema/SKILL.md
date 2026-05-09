@@ -1,5 +1,5 @@
 ---
-description: "セッションログのスキーマパースエラーを修正してPR作成"
+description: "Fix session log schema parse errors and create a pull request"
 allowed-tools: Edit(*.ts), Write(*.ts), Bash(pnpm, git, gh)
 ---
 

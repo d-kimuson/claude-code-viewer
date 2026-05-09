@@ -32,13 +32,13 @@ export const ScheduledMessageNotice: FC<ScheduledMessageNoticeProps> = ({ schedu
               }
 
               const scheduledTime = new Date(job.schedule.reservedExecutionTime);
-              const formattedTime = i18n.date(scheduledTime, {
+              const formattedTime = new Intl.DateTimeFormat(i18n.locale, {
                 year: "numeric",
                 month: "2-digit",
                 day: "2-digit",
                 hour: "2-digit",
                 minute: "2-digit",
-              });
+              }).format(scheduledTime);
 
               return (
                 <div

@@ -33,6 +33,36 @@ const CompanionIntroSchema = AttachmentBaseEntrySchema.extend({
   }),
 });
 
+const CompactFileReferenceSchema = AttachmentBaseEntrySchema.extend({
+  attachment: z.object({
+    type: z.literal("compact_file_reference"),
+    filename: z.string(),
+    displayPath: z.string(),
+  }),
+});
+
+const FileAttachmentContentSchema = z.object({
+  type: z.string(),
+  file: z
+    .object({
+      filePath: z.string(),
+      content: z.string(),
+      numLines: z.number(),
+      startLine: z.number(),
+      totalLines: z.number(),
+    })
+    .optional(),
+});
+
+const FileAttachmentSchema = AttachmentBaseEntrySchema.extend({
+  attachment: z.object({
+    type: z.literal("file"),
+    filename: z.string(),
+    content: FileAttachmentContentSchema,
+    displayPath: z.string(),
+  }),
+});
+
 /**
  * Fallback for unknown attachment types to avoid crashes on new Claude Code versions.
  */
@@ -44,6 +74,8 @@ export const AttachmentEntrySchema = z.union([
   DeferredToolsDeltaSchema,
   McpInstructionsDeltaSchema,
   CompanionIntroSchema,
+  CompactFileReferenceSchema,
+  FileAttachmentSchema,
   UnknownAttachmentSchema,
 ]);
 

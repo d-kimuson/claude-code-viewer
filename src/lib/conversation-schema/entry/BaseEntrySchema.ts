@@ -19,4 +19,6 @@ export const BaseEntrySchema = z.object({
   gitBranch: z.string().optional(),
   isCompactSummary: z.boolean().optional(),
   agentId: z.string().optional(),
+  entrypoint: z.string().optional(),
+  slug: z.string().optional(),
 });

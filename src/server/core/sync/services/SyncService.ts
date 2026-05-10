@@ -9,6 +9,7 @@ import { ApplicationContext } from "../../platform/services/ApplicationContext.t
 import { decodeProjectId, encodeProjectId } from "../../project/functions/id.ts";
 import { extractSearchableText } from "../../search/functions/extractSearchableText.ts";
 import { aggregateTokenUsageAndCost } from "../../session/functions/aggregateTokenUsageAndCost.ts";
+import { extractSessionTitle } from "../../session/functions/extractSessionTitle.ts";
 import { getAgentSessionFilesForSession } from "../../session/functions/getAgentSessionFilesForSession.ts";
 import { decodeSessionId, encodeSessionId } from "../../session/functions/id.ts";
 import { isRegularSessionFile } from "../../session/functions/isRegularSessionFile.ts";
@@ -51,6 +52,8 @@ const extractActualSessionId = (content: string): string | undefined => {
 // directory, which is distinct from the Claude projects log directory.
 // ---------------------------------------------------------------------------
 
+const containsAiTitleEntry = (content: string): boolean => /"type"\s*:\s*"ai-title"/.test(content);
+
 const extractCwdFromContent = (content: string): string | null => {
   const lines = content.split("\n");
 
@@ -63,6 +66,7 @@ const extractCwdFromContent = (content: string): string | null => {
       conversation.type === "file-history-snapshot" ||
       conversation.type === "queue-operation" ||
       conversation.type === "custom-title" ||
+      conversation.type === "ai-title" ||
       conversation.type === "agent-name" ||
       conversation.type === "agent-setting" ||
       conversation.type === "pr-link" ||
@@ -181,17 +185,14 @@ const LayerImpl = Effect.gen(function* () {
         }
       }
 
-      // Extract custom title and PR links
-      let customTitle: string | null = null;
+      // Extract session title and PR links
+      const customTitle = extractSessionTitle(conversations);
       const prLinksMap = new Map<
         string,
         { prNumber: number; prUrl: string; prRepository: string }
       >();
 
       for (const conversation of conversations) {
-        if (conversation.type === "custom-title") {
-          customTitle = conversation.customTitle;
-        }
         if (conversation.type === "pr-link") {
           const key = `${conversation.prRepository}#${conversation.prNumber}`;
           prLinksMap.set(key, {
@@ -426,12 +427,18 @@ const LayerImpl = Effect.gen(function* () {
 
           const fileMtimeMs = Option.getOrElse(fileStat.mtime, () => new Date(0)).getTime();
 
-          // Check if new file or mtime changed
+          // Check if new file, mtime changed, or a previously synced file needs ai-title backfill
           const knownSession = knownSessions.find((s) => s.filePath === filePath);
           const isNew = !knownSessionPaths.has(filePath);
           const isModified = knownSession !== undefined && fileMtimeMs > knownSession.fileMtimeMs;
+          const needsAiTitleBackfill =
+            knownSession !== undefined &&
+            knownSession.customTitle === null &&
+            containsAiTitleEntry(
+              yield* fs.readFileString(filePath).pipe(Effect.catchAll(() => Effect.succeed(""))),
+            );
 
-          if (isNew || isModified) {
+          if (isNew || isModified || needsAiTitleBackfill) {
             const sessionId = encodeSessionId(filePath);
             yield* parseAndUpsertSession(projectId, sessionId, filePath, fileMtimeMs).pipe(
               Effect.catchAll((e) => {
@@ -504,8 +511,13 @@ const LayerImpl = Effect.gen(function* () {
         .get();
 
       if (stored !== undefined && fileMtimeMs <= stored.fileMtimeMs) {
-        // No changes
-        return;
+        const content = yield* fs
+          .readFileString(filePath)
+          .pipe(Effect.catchAll(() => Effect.succeed("")));
+        if (!containsAiTitleEntry(content)) {
+          // No changes
+          return;
+        }
       }
 
       yield* parseAndUpsertSession(projectId, sessionId, filePath, fileMtimeMs);

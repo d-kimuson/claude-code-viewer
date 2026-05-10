@@ -16,6 +16,7 @@ export const useSidechain = (conversations: Conversation[]) => {
             conv.type !== "queue-operation" &&
             conv.type !== "progress" &&
             conv.type !== "custom-title" &&
+            conv.type !== "ai-title" &&
             conv.type !== "agent-name" &&
             conv.type !== "agent-setting" &&
             conv.type !== "pr-link" &&
@@ -110,6 +111,7 @@ export const useSidechain = (conversations: Conversation[]) => {
         conversation.type === "file-history-snapshot" ||
         conversation.type === "queue-operation" ||
         conversation.type === "custom-title" ||
+        conversation.type === "ai-title" ||
         conversation.type === "agent-name" ||
         conversation.type === "agent-setting" ||
         conversation.type === "pr-link" ||

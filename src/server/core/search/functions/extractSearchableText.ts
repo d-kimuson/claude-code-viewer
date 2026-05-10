@@ -22,6 +22,10 @@ export const extractSearchableText = (conversation: ExtendedConversation): strin
     return conversation.customTitle;
   }
 
+  if (conversation.type === "ai-title") {
+    return conversation.aiTitle;
+  }
+
   if (conversation.type === "agent-name") {
     return null;
   }

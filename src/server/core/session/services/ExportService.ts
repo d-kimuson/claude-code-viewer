@@ -382,6 +382,7 @@ const buildSidechainData = (conversations: Array<Conversation>): SidechainData =
       conv.type !== "queue-operation" &&
       conv.type !== "progress" &&
       conv.type !== "custom-title" &&
+      conv.type !== "ai-title" &&
       conv.type !== "agent-name" &&
       conv.type !== "agent-setting" &&
       conv.type !== "pr-link" &&
@@ -1016,6 +1017,7 @@ export const generateSessionHtml = (
         conv.type !== "queue-operation" &&
         conv.type !== "progress" &&
         conv.type !== "custom-title" &&
+        conv.type !== "ai-title" &&
         conv.type !== "agent-name" &&
         conv.type !== "agent-setting" &&
         conv.type !== "pr-link" &&

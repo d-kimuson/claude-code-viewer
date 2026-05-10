@@ -126,6 +126,17 @@ describe("extractSearchableText", () => {
       expect(result).toBe("My Custom Session Name");
     });
 
+    it("returns aiTitle string for ai-title entries", () => {
+      const conversation: Conversation = {
+        type: "ai-title",
+        aiTitle: "AI Generated Session Name",
+        sessionId: "abc-123",
+      };
+
+      const result = extractSearchableText(conversation);
+      expect(result).toBe("AI Generated Session Name");
+    });
+
     it("returns null for agent-name entries", () => {
       const conversation: Conversation = {
         type: "agent-name",

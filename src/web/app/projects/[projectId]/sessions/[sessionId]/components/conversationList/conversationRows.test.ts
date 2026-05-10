@@ -57,16 +57,33 @@ describe("conversationRows", () => {
     const userConversation = createUserConversation("550e8400-e29b-41d4-a716-446655440001");
     const queueConversation = createQueueOperationConversation();
 
-    const rows = buildRenderableConversationRows([userConversation, queueConversation], () => true);
+    const aiTitleConversation: Conversation = {
+      type: "ai-title",
+      aiTitle: "AI title",
+      sessionId: "session-1",
+    };
 
-    expect(rows).toHaveLength(2);
+    const rows = buildRenderableConversationRows(
+      [userConversation, queueConversation, aiTitleConversation],
+      () => true,
+    );
+
+    expect(rows).toHaveLength(3);
     expect(rows[0]?.showTimestamp).toBe(true);
     expect(rows[1]?.showTimestamp).toBe(false);
+    expect(rows[2]?.showTimestamp).toBe(false);
   });
 
   it("generates stable keys for conversation entries", () => {
     const userConversation = createUserConversation("550e8400-e29b-41d4-a716-446655440002");
 
+    const aiTitleConversation: Conversation = {
+      type: "ai-title",
+      aiTitle: "AI title",
+      sessionId: "session-1",
+    };
+
     expect(getConversationKey(userConversation)).toBe("user_550e8400-e29b-41d4-a716-446655440002");
+    expect(getConversationKey(aiTitleConversation)).toBe("ai-title_session-1_AI title");
   });
 });

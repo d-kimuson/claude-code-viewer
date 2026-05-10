@@ -1325,7 +1325,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        209
+        213
       ]
     ],
     "translation": "原始数据:"
@@ -1336,7 +1336,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        202
+        206
       ]
     ],
     "translation": "报告此问题"
@@ -1347,7 +1347,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        180
+        184
       ]
     ],
     "translation": "模式错误"
@@ -1358,7 +1358,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        192
+        196
       ]
     ],
     "translation": "模式验证错误"
@@ -1369,7 +1369,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/ConversationList.tsx",
-        195
+        199
       ]
     ],
     "translation": "无法解析此对话条目。这可能是由于格式更改或解析问题。"

@@ -109,6 +109,10 @@ const getSearchableText = (conversation: Conversation | ErrorJsonl): string => {
     return conversation.customTitle;
   }
 
+  if (conversation.type === "ai-title") {
+    return conversation.aiTitle;
+  }
+
   if (conversation.type === "last-prompt") {
     return conversation.lastPrompt;
   }
@@ -391,6 +395,7 @@ export const ConversationList: FC<ConversationListProps> = ({
 
       if (conv.type === "progress") return false;
       if (conv.type === "custom-title") return false;
+      if (conv.type === "ai-title") return false;
       if (conv.type === "agent-name") return false;
       if (conv.type === "agent-setting") return false;
       if (conv.type === "pr-link") return false;
@@ -631,6 +636,7 @@ export const ConversationList: FC<ConversationListProps> = ({
       conversation.type !== "queue-operation" &&
       conversation.type !== "progress" &&
       conversation.type !== "custom-title" &&
+      conversation.type !== "ai-title" &&
       conversation.type !== "agent-name" &&
       conversation.type !== "agent-setting" &&
       conversation.type !== "pr-link" &&

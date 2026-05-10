@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { AgentNameEntrySchema } from "./entry/AgentNameEntrySchema.ts";
 import { AgentSettingEntrySchema } from "./entry/AgentSettingEntrySchema.ts";
+import { AiTitleEntrySchema } from "./entry/AiTitleEntrySchema.ts";
 import { type AssistantEntry, AssistantEntrySchema } from "./entry/AssistantEntrySchema.ts";
 import { AttachmentEntrySchema } from "./entry/AttachmentEntrySchema.ts";
 import { CustomTitleEntrySchema } from "./entry/CustomTitleEntrySchema.ts";
@@ -23,6 +24,7 @@ export const ConversationSchema = z.union([
   QueueOperationEntrySchema,
   ProgressEntrySchema,
   CustomTitleEntrySchema,
+  AiTitleEntrySchema,
   AgentNameEntrySchema,
   AgentSettingEntrySchema,
   PermissionModeEntrySchema,

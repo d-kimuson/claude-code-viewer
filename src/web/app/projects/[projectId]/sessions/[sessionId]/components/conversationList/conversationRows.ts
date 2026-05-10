@@ -13,6 +13,7 @@ const noTimestampConversationTypes = new Set<Conversation["type"]>([
   "queue-operation",
   "file-history-snapshot",
   "custom-title",
+  "ai-title",
   "agent-name",
   "agent-setting",
   "attachment",
@@ -49,6 +50,10 @@ export const getConversationKey = (conversation: Conversation) => {
 
   if (conversation.type === "custom-title") {
     return `custom-title_${conversation.sessionId}_${conversation.customTitle}`;
+  }
+
+  if (conversation.type === "ai-title") {
+    return `ai-title_${conversation.sessionId}_${conversation.aiTitle}`;
   }
 
   if (conversation.type === "agent-name") {

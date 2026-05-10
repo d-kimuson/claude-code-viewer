@@ -5,6 +5,7 @@ import { parseJsonl } from "./parseJsonl.ts";
 type UserEntry = Extract<ExtendedConversation, { type: "user" }>;
 type SummaryEntry = Extract<ExtendedConversation, { type: "summary" }>;
 type CustomTitleEntry = Extract<ExtendedConversation, { type: "custom-title" }>;
+type AiTitleEntry = Extract<ExtendedConversation, { type: "ai-title" }>;
 type AgentNameEntry = Extract<ExtendedConversation, { type: "agent-name" }>;
 type PrLinkEntry = Extract<ExtendedConversation, { type: "pr-link" }>;
 type LastPromptEntry = Extract<ExtendedConversation, { type: "last-prompt" }>;
@@ -29,6 +30,14 @@ const expectCustomTitleEntry = (entry: ExtendedConversation | undefined): Custom
   expect(entry?.type).toBe("custom-title");
   if (entry?.type !== "custom-title") {
     throw new Error("Expected custom-title entry");
+  }
+  return entry;
+};
+
+const expectAiTitleEntry = (entry: ExtendedConversation | undefined): AiTitleEntry => {
+  expect(entry?.type).toBe("ai-title");
+  if (entry?.type !== "ai-title") {
+    throw new Error("Expected ai-title entry");
   }
   return entry;
 };
@@ -397,6 +406,22 @@ describe("parseJsonl", () => {
       const entry = expectCustomTitleEntry(result[0]);
       expect(entry.customTitle).toBe("My Custom Name");
       expect(entry.sessionId).toBe("abc-123");
+    });
+
+    it("ai-title entry parses correctly", () => {
+      const jsonl = JSON.stringify({
+        type: "ai-title",
+        aiTitle: "macro-dashboard のフォントと UI デザイン修正",
+        sessionId: "379ea227-4913-484f-9a55-fc76a9fc215f",
+      });
+
+      const result = parseJsonl(jsonl);
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toHaveProperty("type", "ai-title");
+      const entry = expectAiTitleEntry(result[0]);
+      expect(entry.aiTitle).toBe("macro-dashboard のフォントと UI デザイン修正");
+      expect(entry.sessionId).toBe("379ea227-4913-484f-9a55-fc76a9fc215f");
     });
 
     it("agent-name entry parses correctly", () => {

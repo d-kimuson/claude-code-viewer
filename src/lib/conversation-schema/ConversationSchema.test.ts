@@ -2,6 +2,19 @@ import { describe, expect, test } from "vitest";
 import { ConversationSchema } from "./index.ts";
 
 describe("ConversationSchema", () => {
+  test("accepts ai-title entries", () => {
+    const data = ConversationSchema.parse({
+      type: "ai-title",
+      aiTitle: "macro-dashboard のフォントと UI デザイン修正",
+      sessionId: "379ea227-4913-484f-9a55-fc76a9fc215f",
+    });
+
+    if (data.type !== "ai-title") {
+      throw new Error("Expected ai-title entry");
+    }
+    expect(data.aiTitle).toBe("macro-dashboard のフォントと UI デザイン修正");
+  });
+
   test("accepts away_summary system entries with entrypoint and slug", () => {
     const data = ConversationSchema.parse({
       parentUuid: "bde9c218-c40b-4d1c-9f2d-643d5fb22bc9",

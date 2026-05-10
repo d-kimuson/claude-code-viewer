@@ -309,7 +309,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        220
+        221
       ]
     ],
     "translation": "タスクの読み込みに失敗しました"
@@ -387,7 +387,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        212
+        213
       ]
     ],
     "translation": "タスクを読み込み中..."
@@ -406,7 +406,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        198
+        199
       ]
     ],
     "translation": "{count}件のメッセージ"
@@ -421,7 +421,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        236
+        237
       ]
     ],
     "translation": "タスクデータがありません"
@@ -432,7 +432,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        239
+        240
       ]
     ],
     "translation": "このタスクのデータは利用できません"
@@ -481,7 +481,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        229
+        230
       ]
     ],
     "translation": "再試行"
@@ -492,7 +492,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        189
+        190
       ]
     ],
     "translation": "タスクID"
@@ -514,7 +514,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        167
+        168
       ]
     ],
     "translation": "タスクを確認"

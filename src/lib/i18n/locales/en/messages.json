@@ -309,7 +309,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        220
+        221
       ]
     ],
     "translation": "Failed to load task"
@@ -387,7 +387,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        212
+        213
       ]
     ],
     "translation": "Loading task..."
@@ -406,7 +406,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        198
+        199
       ]
     ],
     "translation": "{count} messages"
@@ -421,7 +421,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        236
+        237
       ]
     ],
     "translation": "No task data"
@@ -432,7 +432,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        239
+        240
       ]
     ],
     "translation": "No data is available for this task"
@@ -481,7 +481,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        229
+        230
       ]
     ],
     "translation": "Retry"
@@ -492,7 +492,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        189
+        190
       ]
     ],
     "translation": "Task ID"
@@ -514,7 +514,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        167
+        168
       ]
     ],
     "translation": "View Task Details"

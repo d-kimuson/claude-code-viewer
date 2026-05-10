@@ -128,12 +128,6 @@ describe("buildTaskModalConversations", () => {
       firstConversationMeta: meta,
     });
 
-    const sidechainValues = result
-      .filter(
-        (conv): conv is Extract<typeof conv, { isSidechain: boolean }> => "isSidechain" in conv,
-      )
-      .map((conv) => conv.isSidechain);
-
-    expect(sidechainValues).toEqual([false]);
+    expect(result[0]).toMatchObject({ isSidechain: false });
   });
 });

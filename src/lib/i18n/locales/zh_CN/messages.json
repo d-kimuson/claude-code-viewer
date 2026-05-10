@@ -309,7 +309,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        220
+        221
       ]
     ],
     "translation": "加载任务失败"
@@ -387,7 +387,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        212
+        213
       ]
     ],
     "translation": "正在加载任务..."
@@ -406,7 +406,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        198
+        199
       ]
     ],
     "translation": "{count} 条消息"
@@ -421,7 +421,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        236
+        237
       ]
     ],
     "translation": "无任务数据"
@@ -432,7 +432,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        239
+        240
       ]
     ],
     "translation": "此任务的数据不可用"
@@ -481,7 +481,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        229
+        230
       ]
     ],
     "translation": "重试"
@@ -492,7 +492,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        189
+        190
       ]
     ],
     "translation": "任务 ID"
@@ -514,7 +514,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/TaskModal.tsx",
-        167
+        168
       ]
     ],
     "translation": "查看任务详情"

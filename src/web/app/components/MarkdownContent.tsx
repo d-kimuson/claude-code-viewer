@@ -1,3 +1,4 @@
+import "katex/dist/katex.min.css";
 import { type FC, useMemo } from "react";
 import Markdown, { type Components } from "react-markdown";
 import bash from "react-syntax-highlighter/dist/esm/languages/prism/bash";
@@ -17,7 +18,9 @@ import typescript from "react-syntax-highlighter/dist/esm/languages/prism/typesc
 import yaml from "react-syntax-highlighter/dist/esm/languages/prism/yaml";
 import SyntaxHighlighter from "react-syntax-highlighter/dist/esm/prism-light";
 import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
+import rehypeKatex from "rehype-katex";
 import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
 import { useTheme } from "../../hooks/useTheme";
 import { CodeBlock } from "./CodeBlock";
 import { MarkdownLink } from "./MarkdownLink";
@@ -50,9 +53,30 @@ SyntaxHighlighter.registerLanguage("ts", typescript);
 SyntaxHighlighter.registerLanguage("yaml", yaml);
 SyntaxHighlighter.registerLanguage("yml", yaml);
 
+// remark-math (v6) only treats `$$...$$` as display math when the delimiters sit
+// on their own lines. Claude Code, however, emits single-line `$$...$$` blocks,
+// which would otherwise render as small inline math. We normalize those to the
+// block form so they render as centered display equations, while leaving fenced
+// code blocks and inline code spans untouched.
+const normalizeDisplayMath = (content: string): string =>
+  content
+    // Split on fenced code blocks and inline code so we never rewrite math-like
+    // text inside them. Captured groups land on odd indices.
+    .split(/(```[\s\S]*?```|`[^`\n]*`)/g)
+    .map((segment, index) => {
+      if (index % 2 === 1) return segment;
+      return segment.replace(
+        /\$\$([^$\n]+?)\$\$/g,
+        (_match, expression: string) => `\n\n$$\n${expression.trim()}\n$$\n\n`,
+      );
+    })
+    .join("");
+
 export const MarkdownContent: FC<MarkdownContentProps> = ({ content, className = "" }) => {
   const { resolvedTheme } = useTheme();
   const syntaxTheme = resolvedTheme === "dark" ? oneDark : oneLight;
+
+  const normalizedContent = useMemo(() => normalizeDisplayMath(content), [content]);
 
   const markdownComponents = useMemo<Components>(
     () => ({
@@ -235,8 +259,12 @@ export const MarkdownContent: FC<MarkdownContentProps> = ({ content, className =
 
   return (
     <div className={`prose prose-neutral dark:prose-invert max-w-none ${className}`}>
-      <Markdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
-        {content}
+      <Markdown
+        remarkPlugins={[remarkGfm, remarkMath]}
+        rehypePlugins={[rehypeKatex]}
+        components={markdownComponents}
+      >
+        {normalizedContent}
       </Markdown>
     </div>
   );

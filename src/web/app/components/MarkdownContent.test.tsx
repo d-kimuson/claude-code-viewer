@@ -53,4 +53,28 @@ describe("MarkdownContent", () => {
     expect(code?.className).toContain("max-w-full");
     expect(code?.className).toContain("[overflow-wrap:anywhere]");
   });
+
+  it("renders inline math with KaTeX", () => {
+    renderComponent("The mass-energy relation is $E = mc^2$.");
+
+    const katex = container?.querySelector(".katex");
+
+    expect(katex).not.toBeNull();
+  });
+
+  it("renders single-line $$...$$ as display math", () => {
+    // Claude Code emits display equations on a single line.
+    renderComponent("$$\\mathcal{L}_{\\text{pre}} = \\text{MSE}(\\hat{X}, X)$$");
+
+    const displayMath = container?.querySelector(".katex-display");
+
+    expect(displayMath).not.toBeNull();
+  });
+
+  it("does not rewrite $$ inside code spans", () => {
+    renderComponent("Use `$$value$$` as a placeholder.");
+
+    expect(container?.querySelector(".katex")).toBeNull();
+    expect(container?.textContent).toContain("$$value$$");
+  });
 });

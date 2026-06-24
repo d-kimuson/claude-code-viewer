@@ -160,4 +160,63 @@ describe("ConversationSchema", () => {
 
     expect(result.success).toBe(true);
   });
+
+  test("accepts last-prompt entries with leafUuid (#210)", () => {
+    const data = ConversationSchema.parse({
+      type: "last-prompt",
+      leafUuid: "02e5eb93-f937-42d7-a944-d1b3eccdd414",
+      sessionId: "55aa54f1-c57b-476c-be3a-e9aac3b0aa72",
+    });
+    if (data.type !== "last-prompt") {
+      throw new Error("Expected last-prompt entry");
+    }
+    expect(data.leafUuid).toBe("02e5eb93-f937-42d7-a944-d1b3eccdd414");
+  });
+
+  test("accepts mode entries (#211)", () => {
+    const data = ConversationSchema.parse({
+      type: "mode",
+      mode: "normal",
+      sessionId: "3e3c611b-ebc9-42c2-a98a-344693a9a0d2",
+    });
+    if (data.type !== "mode") {
+      throw new Error("Expected mode entry");
+    }
+    expect(data.mode).toBe("normal");
+  });
+
+  test("accepts bridge-session entries (#212)", () => {
+    const data = ConversationSchema.parse({
+      type: "bridge-session",
+      sessionId: "fc90d874-4741-4500-9462-a6255cfff0fe",
+      bridgeSessionId: "cse_011C66zkyVAdqvuayh7XGpto",
+      lastSequenceNum: 0,
+    });
+    if (data.type !== "bridge-session") {
+      throw new Error("Expected bridge-session entry");
+    }
+    expect(data.bridgeSessionId).toBe("cse_011C66zkyVAdqvuayh7XGpto");
+  });
+
+  test("accepts bridge_status system entries (#213)", () => {
+    const result = ConversationSchema.safeParse({
+      parentUuid: null,
+      isSidechain: false,
+      type: "system",
+      subtype: "bridge_status",
+      content:
+        "/remote-control is active · Continue here, on your phone, or at https://claude.ai/code/session_0X0X0X0X0X0X0X0X0X0X0X0X",
+      url: "https://claude.ai/code/session_0X0X0X0X0X0X0X0X0X0X0X0X",
+      isMeta: false,
+      timestamp: "2026-05-29T11:31:46.015Z",
+      uuid: "bdc15df7-bf5a-4732-a51b-348e67975a2d",
+      userType: "external",
+      entrypoint: "cli",
+      cwd: "/Users/rymalia/projects/standup",
+      sessionId: "fc90d874-4741-4500-9462-a6255cfff0fe",
+      version: "2.1.156",
+      gitBranch: "main",
+    });
+    expect(result.success).toBe(true);
+  });
 });

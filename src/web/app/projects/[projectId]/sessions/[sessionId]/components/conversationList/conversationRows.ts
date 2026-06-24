@@ -76,6 +76,14 @@ export const getConversationKey = (conversation: Conversation) => {
     return `permission-mode_${conversation.sessionId}_${conversation.permissionMode}`;
   }
 
+  if (conversation.type === "mode") {
+    return `mode_${conversation.sessionId}_${conversation.mode}`;
+  }
+
+  if (conversation.type === "bridge-session") {
+    return `bridge-session_${conversation.sessionId}_${conversation.bridgeSessionId}`;
+  }
+
   if (conversation.type === "attachment") {
     return `attachment_${conversation.uuid}`;
   }

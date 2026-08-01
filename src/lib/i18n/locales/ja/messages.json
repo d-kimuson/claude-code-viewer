@@ -68,7 +68,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        205
+        206
       ]
     ],
     "translation": "カスタムツール名..."
@@ -124,7 +124,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        97
+        98
       ]
     ],
     "translation": "キー"
@@ -253,7 +253,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        105
+        106
       ]
     ],
     "translation": "値"
@@ -1843,7 +1843,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        536
+        562
       ]
     ],
     "translation": "例: 1.00"
@@ -1854,7 +1854,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        492
+        518
       ]
     ],
     "translation": "例: 10"
@@ -1865,7 +1865,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        513
+        539
       ]
     ],
     "translation": "例: 10000"
@@ -1876,7 +1876,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        424
+        450
       ]
     ],
     "translation": "例: api.example.com, cdn.example.com"
@@ -3398,7 +3398,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        440
+        466
       ]
     ],
     "translation": "詳細設定"
@@ -3420,7 +3420,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        287
+        295
       ]
     ],
     "translation": "無効化するツール"
@@ -3431,7 +3431,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        130
+        131
       ]
     ],
     "translation": "環境変数を追加"
@@ -3443,7 +3443,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        302
+        328
       ]
     ],
     "translation": "環境変数"
@@ -3668,7 +3668,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        526
+        552
       ]
     ],
     "translation": "最大予算 (USD)"
@@ -3680,7 +3680,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        504
+        530
       ]
     ],
     "translation": "最大思考トークン数"
@@ -3692,7 +3692,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        483
+        509
       ]
     ],
     "translation": "最大ターン数"
@@ -3751,7 +3751,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        367
+        393
       ]
     ],
     "translation": "サンドボックス外のコマンドを許可"
@@ -3763,7 +3763,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        347
+        373
       ]
     ],
     "translation": "サンドボックス化されている場合Bashを自動許可"
@@ -3775,7 +3775,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        318
+        344
       ]
     ],
     "translation": "サンドボックス"
@@ -3787,7 +3787,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        399
+        425
       ]
     ],
     "translation": "ローカルバインディングを許可"
@@ -3799,7 +3799,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        408
+        434
       ]
     ],
     "translation": "許可するドメイン (カンマ区切り)"
@@ -3811,7 +3811,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        377
+        403
       ]
     ],
     "translation": "ネットワーク設定"
@@ -3933,7 +3933,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        446
+        472
       ]
     ],
     "translation": "設定ソース"
@@ -3945,7 +3945,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        276
+        284
       ]
     ],
     "translation": "Claude Code のシステムプロンプトを含める"
@@ -4023,7 +4023,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ClaudeCodeSettingsForm.tsx",
-        579
+        605
       ],
       [
         "src/web/components/GlobalSidebar.tsx",

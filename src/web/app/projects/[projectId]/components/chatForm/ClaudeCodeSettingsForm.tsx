@@ -16,6 +16,7 @@ import {
   transformFormToSchema,
   transformSchemaToForm,
 } from "./ccOptionsFormSchema";
+import { applyProviderPreset, providerPresets } from "./providerPresets";
 
 type ClaudeCodeSettingsFormProps = {
   value: CCOptionsSchema | undefined;
@@ -246,6 +247,13 @@ export const ClaudeCodeSettingsForm: FC<ClaudeCodeSettingsFormProps> = ({
   const transformed = useMemo(() => transformFormToSchema(formData), [formData]);
   const lastSerialized = useRef<string | null>(null);
 
+  const handleApplyProviderPreset = (preset: (typeof providerPresets)[number]) => {
+    const nextOptions = applyProviderPreset(transformed, preset);
+    const nextForm = transformSchemaToForm(nextOptions);
+    setValue("model", nextForm.model);
+    setValue("env", nextForm.env);
+  };
+
   // Sync form data to parent component
   useEffect(() => {
     const serialized = stableStringify(transformed);
@@ -298,6 +306,24 @@ export const ClaudeCodeSettingsForm: FC<ClaudeCodeSettingsFormProps> = ({
 
       {/* Environment Variables */}
       <div className="space-y-1.5">
+        <div className="space-y-2 rounded-md border border-border/50 bg-muted/20 p-2">
+          <Label className="text-xs font-medium">Provider Presets</Label>
+          <div className="flex flex-wrap gap-2">
+            {providerPresets.map((preset) => (
+              <Button
+                key={preset.id}
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => handleApplyProviderPreset(preset)}
+                disabled={disabled}
+                className="h-7 text-xs"
+              >
+                {preset.label}
+              </Button>
+            ))}
+          </div>
+        </div>
         <Label className="text-xs font-medium">
           <Trans id="settings.env.label" message="Environment Variables" />
         </Label>

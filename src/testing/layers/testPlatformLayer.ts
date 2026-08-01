@@ -82,7 +82,14 @@ export const testPlatformLayer = (overrides?: {
         findHotkey: overrides?.userConfig?.findHotkey ?? "command-f",
         autoScheduleContinueOnRateLimit:
           overrides?.userConfig?.autoScheduleContinueOnRateLimit ?? false,
-        modelChoices: overrides?.userConfig?.modelChoices ?? ["default", "haiku", "sonnet", "opus"],
+        modelChoices: overrides?.userConfig?.modelChoices ?? [
+          "default",
+          "haiku",
+          "sonnet",
+          "opus",
+          "MiniMax-M3",
+          "MiniMax-M2.7",
+        ],
       }),
   });
 

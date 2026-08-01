@@ -13,7 +13,7 @@ const LayerImpl = Effect.gen(function* () {
     searchHotkey: "command-k",
     findHotkey: "command-f",
     autoScheduleContinueOnRateLimit: false,
-    modelChoices: ["default", "haiku", "sonnet", "opus"],
+    modelChoices: ["default", "haiku", "sonnet", "opus", "MiniMax-M3", "MiniMax-M2.7"],
   });
 
   const setUserConfig = (newConfig: UserConfig) =>

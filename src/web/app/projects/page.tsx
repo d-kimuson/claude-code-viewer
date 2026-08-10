@@ -13,7 +13,7 @@ export const ProjectsPage: FC = () => {
   const [isSystemInfoOpen, setIsSystemInfoOpen] = useState(false);
 
   return (
-    <div className="flex flex-col h-screen max-h-screen overflow-hidden">
+    <div className="flex flex-col h-dvh max-h-dvh overflow-hidden">
       <header className="h-(--spacing-header-height) flex items-center justify-between px-3 bg-muted/30 border-b border-border/40 text-xs flex-shrink-0 select-none">
         <span className="text-sm font-semibold text-foreground">claude-code-viewer</span>
         <div className="flex items-center gap-1">

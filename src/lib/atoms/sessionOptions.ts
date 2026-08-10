@@ -14,9 +14,11 @@ export type PersistedSessionOptions = z.infer<typeof persistedSessionOptionsSche
 
 type SessionOptionsStore = Record<string, PersistedSessionOptions>;
 
-const sessionOptionsAtom = atomWithStorage<SessionOptionsStore>(
+export const sessionOptionsAtom = atomWithStorage<SessionOptionsStore>(
   "claude-code-viewer-session-options",
   {},
+  undefined,
+  { getOnInit: true },
 );
 
 export const useProjectSessionOptions = (projectId: string) => {

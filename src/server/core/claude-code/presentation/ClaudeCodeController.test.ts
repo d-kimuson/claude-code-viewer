@@ -17,6 +17,7 @@ const testClaudeCodeServiceLayer = Layer.succeed(
       Effect.succeed({
         claudeCodeExecutablePath: "/mock/claude",
         claudeCodeVersion: null,
+        defaultPermissionMode: undefined,
       }),
     getAvailableFeatures: () =>
       Effect.succeed({
@@ -27,8 +28,75 @@ const testClaudeCodeServiceLayer = Layer.succeed(
         runSkillsDirectly: false,
       }),
     getMcpList: () => Effect.succeed([]),
+    getUserDefaultPermissionMode: Effect.succeed(undefined),
   }),
 );
+
+describe("ClaudeCodeController.getClaudeCodeMeta", () => {
+  it.live("passes through defaultPermissionMode from the service", () =>
+    Effect.gen(function* () {
+      const projectLayer = testProjectRepositoryLayer({ projects: [] });
+
+      const claudeCodeServiceLayer = Layer.succeed(
+        ClaudeCodeService,
+        ClaudeCodeService.of({
+          getClaudeCodeMeta: () =>
+            Effect.succeed({
+              claudeCodeExecutablePath: "/mock/claude",
+              claudeCodeVersion: null,
+              defaultPermissionMode: "bypassPermissions",
+            }),
+          getAvailableFeatures: () =>
+            Effect.succeed({
+              canUseTool: false,
+              uuidOnSDKMessage: false,
+              agentSdk: false,
+              sidechainSeparation: false,
+              runSkillsDirectly: false,
+            }),
+          getMcpList: () => Effect.succeed([]),
+          getUserDefaultPermissionMode: Effect.succeed("bypassPermissions"),
+        }),
+      );
+
+      const controllerLayer = ClaudeCodeController.Live.pipe(
+        Layer.provide(claudeCodeServiceLayer),
+        Layer.provide(projectLayer),
+        Layer.provide(NodeContext.layer),
+        Layer.provide(testPlatformLayer()),
+      );
+
+      const controller = yield* ClaudeCodeController.pipe(Effect.provide(controllerLayer));
+      const result = yield* controller
+        .getClaudeCodeMeta()
+        .pipe(Effect.provide(NodeContext.layer), Effect.provide(testPlatformLayer()));
+
+      expect(result.status).toBe(200);
+      expect(result.response.defaultPermissionMode).toBe("bypassPermissions");
+    }),
+  );
+
+  it.live("returns undefined defaultPermissionMode when settings.json has no configured mode", () =>
+    Effect.gen(function* () {
+      const projectLayer = testProjectRepositoryLayer({ projects: [] });
+
+      const controllerLayer = ClaudeCodeController.Live.pipe(
+        Layer.provide(testClaudeCodeServiceLayer),
+        Layer.provide(projectLayer),
+        Layer.provide(NodeContext.layer),
+        Layer.provide(testPlatformLayer()),
+      );
+
+      const controller = yield* ClaudeCodeController.pipe(Effect.provide(controllerLayer));
+      const result = yield* controller
+        .getClaudeCodeMeta()
+        .pipe(Effect.provide(NodeContext.layer), Effect.provide(testPlatformLayer()));
+
+      expect(result.status).toBe(200);
+      expect(result.response.defaultPermissionMode).toBeUndefined();
+    }),
+  );
+});
 
 describe("ClaudeCodeController.getClaudeCommands", () => {
   let testDir: string;
@@ -531,6 +599,7 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
             Effect.succeed({
               claudeCodeExecutablePath: "/mock/claude",
               claudeCodeVersion: null,
+              defaultPermissionMode: undefined,
             }),
           getAvailableFeatures: () =>
             Effect.succeed({
@@ -541,6 +610,7 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
               runSkillsDirectly: true, // Enable the flag
             }),
           getMcpList: () => Effect.succeed([]),
+          getUserDefaultPermissionMode: Effect.succeed(undefined),
         }),
       );
 

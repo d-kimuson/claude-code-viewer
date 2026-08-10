@@ -1,5 +1,9 @@
 import { z } from "zod";
 
+export const permissionModeSchema = z.enum(["acceptEdits", "bypassPermissions", "default", "plan"]);
+
+export type PermissionMode = z.infer<typeof permissionModeSchema>;
+
 export const mediaTypeSchema = z.enum(["image/png", "image/jpeg", "image/gif", "image/webp"]);
 
 export type MediaType = z.infer<typeof mediaTypeSchema>;
@@ -100,7 +104,7 @@ export const ccOptionsSchema = z.object({
   env: z.record(z.string(), z.string().optional()).optional(),
   maxBudgetUsd: z.number().optional(),
   effort: z.enum(["low", "medium", "high", "max"]).optional(),
-  permissionMode: z.enum(["acceptEdits", "bypassPermissions", "default", "plan"]).optional(),
+  permissionMode: permissionModeSchema.optional(),
   agent: z.string().optional(),
 });
 

@@ -3,10 +3,10 @@ import { type FC, memo } from "react";
 import { parseUserMessage } from "@/lib/claude-code/parseUserMessage";
 import type { Conversation, SidechainConversation } from "@/lib/conversation-schema";
 import type { ToolResultContent } from "@/lib/conversation-schema/content/ToolResultContentSchema";
-import type { AssistantMessageContent } from "@/lib/conversation-schema/message/AssistantMessageSchema";
 import { formatLocaleDate } from "@/lib/date/formatLocaleDate";
 import { DEFAULT_LOCALE } from "@/lib/i18n/localeDetection";
 import { localeSchema, type SupportedLocale } from "@/lib/i18n/schema";
+import { CopyableAnsiText } from "@/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/CopyableAnsiText";
 import { AssistantConversationContent } from "./AssistantConversationContent";
 import { FileHistorySnapshotConversationContent } from "./FileHistorySnapshotConversationContent";
 import { MetaConversationContent } from "./MetaConversationContent";
@@ -143,11 +143,6 @@ const ConversationItemComponent: FC<ConversationItemProps> = ({
       const parsed = parseUserMessage(conversation.message.content);
 
       if (parsed.kind === "local-command") {
-        const assistantContent: AssistantMessageContent = {
-          type: "text",
-          text: parsed.stdout,
-        };
-
         return (
           <div className="w-full">
             {showTimestamp && conversation.timestamp && (
@@ -160,17 +155,9 @@ const ConversationItemComponent: FC<ConversationItemProps> = ({
             )}
             <ul className="w-full">
               <li>
-                <AssistantConversationContent
-                  content={assistantContent}
-                  getToolResult={getToolResult}
-                  getAgentIdForToolUse={getAgentIdForToolUse}
-                  getToolUseResult={getToolUseResult}
-                  getSidechainConversationByAgentId={getSidechainConversationByAgentId}
-                  getSidechainConversationByPrompt={getSidechainConversationByPrompt}
-                  getSidechainConversations={getSidechainConversations}
-                  projectId={projectId}
-                  sessionId={sessionId}
-                />
+                <div className="w-full mx-1 sm:mx-2 my-4 sm:my-6">
+                  <CopyableAnsiText text={parsed.stdout} />
+                </div>
               </li>
             </ul>
           </div>

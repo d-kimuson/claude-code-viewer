@@ -1301,8 +1301,8 @@
     "comments": [],
     "origin": [
       [
-        "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/CopyableMarkdownContent.tsx",
-        42
+        "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/CopyableContent.tsx",
+        40
       ]
     ],
     "translation": "复制消息"
@@ -1313,8 +1313,8 @@
     "comments": [],
     "origin": [
       [
-        "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/CopyableMarkdownContent.tsx",
-        34
+        "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/CopyableContent.tsx",
+        32
       ]
     ],
     "translation": "复制消息失败"
@@ -1325,8 +1325,8 @@
     "comments": [],
     "origin": [
       [
-        "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/CopyableMarkdownContent.tsx",
-        26
+        "src/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/CopyableContent.tsx",
+        24
       ]
     ],
     "translation": "消息已复制"

@@ -1,11 +1,27 @@
 // @vitest-environment jsdom
-import { createStore } from "jotai/vanilla";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+const storageValues = new Map<string, string>();
+const testLocalStorage: Storage = {
+  get length() {
+    return storageValues.size;
+  },
+  clear: () => storageValues.clear(),
+  getItem: (key) => storageValues.get(key) ?? null,
+  key: (index) => Array.from(storageValues.keys())[index] ?? null,
+  removeItem: (key) => storageValues.delete(key),
+  setItem: (key, value) => storageValues.set(key, value),
+};
 
 describe("sessionOptionsAtom", () => {
   beforeEach(() => {
-    localStorage.clear();
+    storageValues.clear();
+    vi.stubGlobal("localStorage", testLocalStorage);
     vi.resetModules();
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
   });
 
   it("hydrates synchronously from localStorage instead of waiting for a mount/subscribe cycle", async () => {
@@ -14,7 +30,10 @@ describe("sessionOptionsAtom", () => {
       JSON.stringify({ "project-a": { permissionMode: "bypassPermissions" } }),
     );
 
-    const { sessionOptionsAtom } = await import("./sessionOptions.ts");
+    const [{ sessionOptionsAtom }, { createStore }] = await Promise.all([
+      import("./sessionOptions"),
+      import("jotai/vanilla"),
+    ]);
     const store = createStore();
 
     // Reading the atom immediately after creation (no subscribe/mount) must already

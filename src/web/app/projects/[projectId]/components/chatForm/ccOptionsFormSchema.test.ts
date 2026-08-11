@@ -29,6 +29,16 @@ describe("ccOptionsFormSchema", () => {
     });
   });
 
+  describe("dontAsk permission mode", () => {
+    test("should survive a form and schema round trip", () => {
+      const form: CCOptionsForm = { permissionMode: "dontAsk" };
+      const schema = transformFormToSchema(form);
+
+      expect(schema).toEqual({ permissionMode: "dontAsk" });
+      expect(transformSchemaToForm(schema).permissionMode).toBe("dontAsk");
+    });
+  });
+
   describe("transformSchemaToForm", () => {
     test("should handle undefined schema", () => {
       const result = transformSchemaToForm(undefined);

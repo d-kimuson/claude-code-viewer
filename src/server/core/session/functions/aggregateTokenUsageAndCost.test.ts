@@ -17,6 +17,29 @@ describe("aggregateTokenUsageAndCost", () => {
       expect(result.modelName).toBe("claude-3-5-sonnet-20240620");
     });
 
+    test("uses default pricing when an assistant message omits its model", () => {
+      const content =
+        '{"type":"assistant","uuid":"913c40ea-a25c-4a3d-8276-0512be23fb93","timestamp":"2026-07-20T07:13:33.729Z","isSidechain":false,"userType":"external","cwd":"/test","sessionId":"test-session","version":"2.1.97","parentUuid":"3785b0af-9ee8-4c81-8be0-b22536200d48","message":{"type":"message","role":"assistant","content":[],"usage":{"input_tokens":29115,"output_tokens":1837},"stop_reason":"end_turn"}}';
+
+      const result = aggregateTokenUsageAndCost([content]);
+
+      expect(result.totalUsage.input_tokens).toBe(29115);
+      expect(result.totalUsage.output_tokens).toBe(1837);
+      expect(result.totalCost.totalUsd).toBeGreaterThan(0);
+      expect(result.modelName).toBe("claude-3.5-sonnet");
+    });
+
+    test("inherits the last known model when a later assistant message omits it", () => {
+      const content =
+        '{"type":"assistant","uuid":"550e8400-e29b-41d4-a716-446655440001","timestamp":"2024-01-01T00:00:01.000Z","isSidechain":false,"userType":"external","cwd":"/test","sessionId":"test-session","version":"1.0.0","parentUuid":null,"message":{"type":"message","role":"assistant","model":"claude-3-opus-20240229","content":[],"usage":{"input_tokens":1000000,"output_tokens":1000000}}}\n' +
+        '{"type":"assistant","uuid":"550e8400-e29b-41d4-a716-446655440002","timestamp":"2024-01-01T00:00:02.000Z","isSidechain":false,"userType":"external","cwd":"/test","sessionId":"test-session","version":"1.0.0","parentUuid":"550e8400-e29b-41d4-a716-446655440001","message":{"type":"message","role":"assistant","content":[],"usage":{"input_tokens":1000000,"output_tokens":1000000}}}';
+
+      const result = aggregateTokenUsageAndCost([content]);
+
+      expect(result.totalCost.totalUsd).toBeCloseTo(180, 2);
+      expect(result.modelName).toBe("claude-3-opus-20240229");
+    });
+
     test("handles multiple assistant messages in single file", () => {
       const content =
         '{"type":"assistant","uuid":"550e8400-e29b-41d4-a716-446655440001","timestamp":"2024-01-01T00:00:01.000Z","isSidechain":false,"userType":"external","cwd":"/test","sessionId":"test-session","version":"1.0.0","parentUuid":"550e8400-e29b-41d4-a716-446655440000","message":{"type":"message","role":"assistant","model":"claude-3-5-sonnet-20240620","content":[],"usage":{"input_tokens":500,"output_tokens":250,"cache_creation_input_tokens":0,"cache_read_input_tokens":0},"stop_reason":null,"stop_sequence":null,"id":"msg_01"}}\n' +

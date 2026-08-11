@@ -51,7 +51,7 @@ export const aggregateTokenUsageAndCost = (
         const outputTokens = messageUsage?.output_tokens ?? entryUsage?.output_tokens ?? 0;
         const cacheCreationInputTokens = messageUsage?.cache_creation_input_tokens ?? 0;
         const cacheReadInputTokens = messageUsage?.cache_read_input_tokens ?? 0;
-        const modelName = conversation.message.model;
+        const modelName = conversation.message.model ?? lastModelName;
 
         // Calculate cost for this specific message
         const messageCost = calculateTokenCost(

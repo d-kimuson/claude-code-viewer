@@ -102,6 +102,55 @@ describe("ConversationSchema", () => {
     expect(data.message.usage?.speed).toBe("standard");
   });
 
+  test("accepts SDK assistant entries without message id or model (#220)", () => {
+    const data = ConversationSchema.parse({
+      parentUuid: "3785b0af-9ee8-4c81-8be0-b22536200d48",
+      isSidechain: false,
+      message: {
+        type: "message",
+        usage: {
+          input_tokens: 29115,
+          cache_creation_input_tokens: 0,
+          cache_read_input_tokens: 25216,
+          output_tokens: 1837,
+          server_tool_use: {
+            web_search_requests: 0,
+            web_fetch_requests: 0,
+          },
+          service_tier: "standard",
+          cache_creation: {
+            ephemeral_1h_input_tokens: 0,
+            ephemeral_5m_input_tokens: 0,
+          },
+          inference_geo: "",
+          iterations: [],
+          speed: "standard",
+        },
+        role: "assistant",
+        content: [{ type: "text", text: "Read PROJECT_PLAN.md." }],
+        stop_reason: "end_turn",
+      },
+      requestId: "4cfc9f6c79970235d817b63af8e3a96b",
+      type: "assistant",
+      uuid: "913c40ea-a25c-4a3d-8276-0512be23fb93",
+      timestamp: "2026-07-20T07:13:33.729Z",
+      userType: "external",
+      entrypoint: "sdk-ts",
+      cwd: "/home/dji/projects/ai_c/mlvm",
+      sessionId: "0cd2f20c-b786-49c9-aff6-75f4408a0d5f",
+      version: "2.1.97",
+      gitBranch: "HEAD",
+      slug: "binary-jingling-prism",
+    });
+
+    if (data.type !== "assistant") {
+      throw new Error("Expected assistant entry");
+    }
+    expect(data.message.id).toBeUndefined();
+    expect(data.message.model).toBeUndefined();
+    expect(data.message.content[0]?.type).toBe("text");
+  });
+
   test("accepts compact file reference attachments", () => {
     const result = ConversationSchema.safeParse({
       parentUuid: "8e7b736e-08dc-477c-b515-0bc9cf2df8fb",

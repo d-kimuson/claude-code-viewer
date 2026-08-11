@@ -56,4 +56,66 @@ describe("SystemEntrySchema", () => {
       expect(result.success).toBe(false);
     });
   });
+
+  describe("bridge_status subtype", () => {
+    test("accepts valid bridge_status entry", () => {
+      const result = SystemEntrySchema.safeParse({
+        parentUuid: null,
+        isSidechain: false,
+        type: "system",
+        subtype: "bridge_status",
+        content:
+          "/remote-control is active · Continue here, on your phone, or at https://claude.ai/code/session_0X0X0X0X0X0X0X0X0X0X0X0X",
+        url: "https://claude.ai/code/session_0X0X0X0X0X0X0X0X0X0X0X0X",
+        isMeta: false,
+        timestamp: "2026-05-29T11:31:46.015Z",
+        uuid: "bdc15df7-bf5a-4732-a51b-348e67975a2d",
+        userType: "external",
+        entrypoint: "cli",
+        cwd: "/Users/rymalia/projects/standup",
+        sessionId: "fc90d874-4741-4500-9462-a6255cfff0fe",
+        version: "2.1.156",
+        gitBranch: "main",
+      });
+      expect(result.success).toBe(true);
+      const data = result.success ? result.data : undefined;
+      if (data?.type !== "system" || data.subtype !== "bridge_status") {
+        throw new Error("Expected bridge_status system entry");
+      }
+      expect(data.url).toBe("https://claude.ai/code/session_0X0X0X0X0X0X0X0X0X0X0X0X");
+    });
+
+    test("accepts bridge_status entry without url", () => {
+      const result = SystemEntrySchema.safeParse({
+        parentUuid: null,
+        isSidechain: false,
+        type: "system",
+        subtype: "bridge_status",
+        content: "/remote-control is active",
+        timestamp: "2026-05-29T11:31:46.015Z",
+        uuid: "bdc15df7-bf5a-4732-a51b-348e67975a2d",
+        userType: "external",
+        cwd: "/Users/rymalia/projects/standup",
+        sessionId: "fc90d874-4741-4500-9462-a6255cfff0fe",
+        version: "2.1.156",
+      });
+      expect(result.success).toBe(true);
+    });
+
+    test("rejects bridge_status entry without content", () => {
+      const result = SystemEntrySchema.safeParse({
+        parentUuid: null,
+        isSidechain: false,
+        type: "system",
+        subtype: "bridge_status",
+        timestamp: "2026-05-29T11:31:46.015Z",
+        uuid: "bdc15df7-bf5a-4732-a51b-348e67975a2d",
+        userType: "external",
+        cwd: "/Users/rymalia/projects/standup",
+        sessionId: "fc90d874-4741-4500-9462-a6255cfff0fe",
+        version: "2.1.156",
+      });
+      expect(result.success).toBe(false);
+    });
+  });
 });

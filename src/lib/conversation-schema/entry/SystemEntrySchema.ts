@@ -77,6 +77,17 @@ const InformationalEntrySchema = BaseEntrySchema.extend({
   level: z.enum(["info", "warning", "error"]).optional(),
 });
 
+// Bridge status entry (Claude Code v2.1.156+ remote-control sessions).
+// Surfaced when /remote-control is active; carries a status message and the
+// claude.ai continuation URL.
+const BridgeStatusEntrySchema = BaseEntrySchema.extend({
+  type: z.literal("system"),
+  subtype: z.literal("bridge_status"),
+  content: z.string(),
+  url: z.string().optional(),
+  level: z.enum(["info", "warning", "error"]).optional(),
+});
+
 // API error entry (tracks API errors and retries).
 // Field shapes vary across providers: Anthropic uses {type, message},
 // while some third-party gateways (e.g. Chinese rate-limit responses) use {code, message}.
@@ -117,6 +128,7 @@ export const SystemEntrySchema = z.union([
   ApiErrorEntrySchema,
   AwaySummaryEntrySchema,
   InformationalEntrySchema,
+  BridgeStatusEntrySchema,
   SystemEntryWithContentSchema, // Must be last (catch-all for undefined subtype)
 ]);
 

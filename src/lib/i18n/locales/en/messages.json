@@ -612,7 +612,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        695
+        713
       ]
     ],
     "translation": "Recent sessions"
@@ -627,11 +627,11 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        413
+        431
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        683
+        701
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
@@ -873,11 +873,11 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        262
+        265
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        270
+        273
       ]
     ],
     "translation": "No Agent"
@@ -889,7 +889,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        296
+        299
       ]
     ],
     "translation": "Select agent"
@@ -954,6 +954,18 @@
     ],
     "translation": "Default"
   },
+  "chat.toolbar.permission_mode.dont_ask": {
+    "message": "Don't Ask",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
+        196
+      ]
+    ],
+    "translation": "Don't Ask"
+  },
   "chat.toolbar.permission_mode.plan": {
     "message": "Plan",
     "placeholders": {},
@@ -961,7 +973,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        196
+        199
       ]
     ],
     "translation": "Plan"
@@ -973,7 +985,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        203
+        206
       ]
     ],
     "translation": "Select permission mode"
@@ -985,7 +997,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        238
+        241
       ]
     ],
     "translation": "Include default Claude Code prompt"
@@ -1187,7 +1199,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        540
+        558
       ]
     ],
     "translation": "Branch"
@@ -1198,7 +1210,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        521
+        539
       ]
     ],
     "translation": "Metadata"
@@ -1209,7 +1221,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        567
+        585
       ]
     ],
     "translation": "Model"
@@ -1243,7 +1255,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        527
+        545
       ]
     ],
     "translation": "Project Path"
@@ -1278,7 +1290,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        554
+        572
       ]
     ],
     "translation": "Session ID"
@@ -3106,7 +3118,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        621
+        639
       ]
     ],
     "translation": "Cache creation"
@@ -3117,7 +3129,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        635
+        653
       ]
     ],
     "translation": "Cache read"
@@ -3128,7 +3140,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        593
+        611
       ]
     ],
     "translation": "Input tokens"
@@ -3139,7 +3151,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        580
+        598
       ]
     ],
     "translation": "Session Cost"
@@ -3150,7 +3162,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        607
+        625
       ]
     ],
     "translation": "Output tokens"
@@ -3161,7 +3173,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        587
+        605
       ]
     ],
     "translation": "Total"
@@ -3211,7 +3223,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        514
+        532
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/DeleteSessionDialog.tsx",
@@ -3230,7 +3242,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        686
+        704
       ]
     ],
     "translation": "Start a new chat to begin the conversation"
@@ -3241,7 +3253,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        504
+        522
       ]
     ],
     "translation": "Copy session file path"
@@ -3252,7 +3264,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        482
+        500
       ]
     ],
     "translation": "Export to HTML"
@@ -3263,7 +3275,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        491
+        509
       ]
     ],
     "translation": "Export to JSONL"
@@ -3274,7 +3286,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        775
+        793
       ]
     ],
     "translation": "Claude Code is processing..."
@@ -3322,7 +3334,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        740
+        758
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
@@ -3341,7 +3353,7 @@
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/SessionPageMain.tsx",
-        738
+        756
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",

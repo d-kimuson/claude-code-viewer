@@ -1,5 +1,5 @@
 import { Trans } from "@lingui/react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useAtomValue } from "jotai";
 import {
@@ -32,6 +32,7 @@ import { useQuestionRequests } from "@/web/hooks/useQuestionRequests";
 import { useSchedulerJobs } from "@/web/hooks/useScheduler";
 import { useTaskNotifications } from "@/web/hooks/useTaskNotifications";
 import { honoClient } from "@/web/lib/api/client";
+import { claudeCodeMetaQuery } from "@/web/lib/api/queries";
 import { cn } from "@/web/utils";
 import { useProject } from "../../../hooks/useProject";
 import { resolveSessionTitle } from "../../../services/firstCommandToTitle";
@@ -110,6 +111,8 @@ const SessionPageMainContent: FC<
   const sessionProcesses = useAtomValue(sessionProcessesAtom);
   const virtualMessages = useAtomValue(virtualMessagesAtom);
   const { config } = useConfig();
+  const { data: claudeCodeMeta } = useQuery(claudeCodeMetaQuery);
+  const userDefaultPermissionMode = claudeCodeMeta?.defaultPermissionMode;
 
   // CC Options state - lifted here to share between ChatActionMenu and ChatInput
   const [savedOptions, setSavedOptions] = useProjectSessionOptions(projectId);
@@ -124,6 +127,21 @@ const SessionPageMainContent: FC<
       : {}),
     ...(savedOptions.useSystemPromptPreset === false ? { systemPrompt: "" } : {}),
   }));
+
+  // Once the user's ~/.claude/settings.json default permission mode is known, adopt it
+  // explicitly as the current permission mode, unless the user already picked one for this
+  // project. This keeps the sent/displayed mode in sync with the CLI's own configured default
+  // instead of silently falling back to the literal "default" (standard prompting) mode.
+  useEffect(() => {
+    if (savedOptions.permissionMode !== undefined) return;
+    if (userDefaultPermissionMode === undefined) return;
+
+    setCCOptions((prev) => ({
+      ...(prev ?? getDefaultCCOptions()),
+      permissionMode: userDefaultPermissionMode,
+    }));
+  }, [userDefaultPermissionMode, savedOptions.permissionMode]);
+
   const handleCCOptionsChange = useCallback(
     (next: CCOptionsSchema | undefined) => {
       setCCOptions(next);

@@ -126,6 +126,7 @@ const LayerImpl = Effect.gen(function* () {
           version: config.claudeCodeVersion
             ? ClaudeCodeVersion.versionText(config.claudeCodeVersion)
             : null,
+          defaultPermissionMode: config.defaultPermissionMode,
         },
         status: 200,
       } as const satisfies ControllerResponse;

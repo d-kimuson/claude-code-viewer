@@ -10,11 +10,10 @@ import {
 
 describe("ccOptionsFormSchema", () => {
   describe("getDefaultCCOptions", () => {
-    test("should return default CCOptionsSchema with settingSources", () => {
+    test("should not force a permission mode before user settings load", () => {
       const result = getDefaultCCOptions();
       expect(result).toEqual({
         settingSources: ["user", "project", "local"],
-        permissionMode: "default",
         systemPrompt: {
           type: "preset",
           preset: "claude_code",
@@ -27,6 +26,16 @@ describe("ccOptionsFormSchema", () => {
       const result2 = getDefaultCCOptions();
       expect(result1).not.toBe(result2);
       expect(result1.settingSources).not.toBe(result2.settingSources);
+    });
+  });
+
+  describe("dontAsk permission mode", () => {
+    test("should survive a form and schema round trip", () => {
+      const form: CCOptionsForm = { permissionMode: "dontAsk" };
+      const schema = transformFormToSchema(form);
+
+      expect(schema).toEqual({ permissionMode: "dontAsk" });
+      expect(transformSchemaToForm(schema).permissionMode).toBe("dontAsk");
     });
   });
 

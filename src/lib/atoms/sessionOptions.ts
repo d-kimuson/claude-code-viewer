@@ -6,7 +6,9 @@ import { z } from "zod";
 const persistedSessionOptionsSchema = z.object({
   model: z.string().optional(),
   effort: z.enum(["low", "medium", "high", "max"]).optional(),
-  permissionMode: z.enum(["acceptEdits", "bypassPermissions", "default", "plan"]).optional(),
+  permissionMode: z
+    .enum(["acceptEdits", "bypassPermissions", "default", "dontAsk", "plan"])
+    .optional(),
   useSystemPromptPreset: z.boolean().optional(),
 });
 
@@ -14,9 +16,11 @@ export type PersistedSessionOptions = z.infer<typeof persistedSessionOptionsSche
 
 type SessionOptionsStore = Record<string, PersistedSessionOptions>;
 
-const sessionOptionsAtom = atomWithStorage<SessionOptionsStore>(
+export const sessionOptionsAtom = atomWithStorage<SessionOptionsStore>(
   "claude-code-viewer-session-options",
   {},
+  undefined,
+  { getOnInit: true },
 );
 
 export const useProjectSessionOptions = (projectId: string) => {

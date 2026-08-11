@@ -17,6 +17,7 @@ import * as ClaudeCode from "../models/ClaudeCode.ts";
 import type * as CCTurn from "../models/ClaudeCodeTurn.ts";
 import { CCVAskUserQuestionService } from "./CCVAskUserQuestionService.ts";
 import { ClaudeCodePermissionService } from "./ClaudeCodePermissionService.ts";
+import { ClaudeCodeService } from "./ClaudeCodeService.ts";
 import { ClaudeCodeSessionProcessService } from "./ClaudeCodeSessionProcessService.ts";
 
 export type MessageGenerator = () => AsyncGenerator<SDKUserMessage, void, unknown>;
@@ -25,6 +26,7 @@ const LayerImpl = Effect.gen(function* () {
   const eventBusService = yield* EventBus;
   const sessionProcessService = yield* ClaudeCodeSessionProcessService;
   const permissionService = yield* ClaudeCodePermissionService;
+  const claudeCodeService = yield* ClaudeCodeService;
   const ccvAskUserQuestionService = yield* CCVAskUserQuestionService;
 
   const runtime = yield* Effect.runtime<
@@ -193,11 +195,16 @@ const LayerImpl = Effect.gen(function* () {
         );
         const messageIter = await Runtime.runPromise(runtime)(
           Effect.gen(function* () {
+            const permissionMode =
+              task.def.type === "continue"
+                ? undefined
+                : yield* claudeCodeService.resolvePermissionMode(
+                    task.def.ccOptions?.permissionMode,
+                  );
             const permissionOptions = yield* permissionService.createCanUseToolRelatedOptions({
               turnId: task.def.turnId,
               projectId: sessionProcess.def.projectId,
-              permissionMode:
-                task.def.type !== "continue" ? task.def.ccOptions?.permissionMode : undefined,
+              permissionMode,
               sessionId: task.def.type === "new" ? task.def.sessionId : task.def.baseSessionId,
             });
 

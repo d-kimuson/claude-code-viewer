@@ -31,6 +31,14 @@ describe("buildClaudeCommand", () => {
     expect(result).toBe('claude --permission-mode "bypassPermissions" "hello"');
   });
 
+  test("command with permissionMode dontAsk", () => {
+    const result = buildClaudeCommand({
+      text: "hello",
+      ccOptions: { permissionMode: "dontAsk" },
+    });
+    expect(result).toBe('claude --permission-mode "dontAsk" "hello"');
+  });
+
   test("command with permissionMode default is omitted", () => {
     const result = buildClaudeCommand({
       text: "hello",

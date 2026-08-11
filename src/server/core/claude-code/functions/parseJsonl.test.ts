@@ -3,6 +3,7 @@ import type { ErrorJsonl, ExtendedConversation } from "../../types.ts";
 import { parseJsonl } from "./parseJsonl.ts";
 
 type UserEntry = Extract<ExtendedConversation, { type: "user" }>;
+type AssistantEntry = Extract<ExtendedConversation, { type: "assistant" }>;
 type SummaryEntry = Extract<ExtendedConversation, { type: "summary" }>;
 type CustomTitleEntry = Extract<ExtendedConversation, { type: "custom-title" }>;
 type AiTitleEntry = Extract<ExtendedConversation, { type: "ai-title" }>;
@@ -14,6 +15,14 @@ const expectUserEntry = (entry: ExtendedConversation | undefined): UserEntry => 
   expect(entry?.type).toBe("user");
   if (entry?.type !== "user") {
     throw new Error("Expected user entry");
+  }
+  return entry;
+};
+
+const expectAssistantEntry = (entry: ExtendedConversation | undefined): AssistantEntry => {
+  expect(entry?.type).toBe("assistant");
+  if (entry?.type !== "assistant") {
+    throw new Error("Expected assistant entry");
   }
   return entry;
 };
@@ -96,6 +105,35 @@ describe("parseJsonl", () => {
       expect(result[0]).toHaveProperty("type", "user");
       const entry = expectUserEntry(result[0]);
       expect(entry.message.content).toBe("Hello");
+    });
+
+    it("message idとmodelがないSDK Assistantエントリをパースできる (#220)", () => {
+      const jsonl = JSON.stringify({
+        type: "assistant",
+        uuid: "913c40ea-a25c-4a3d-8276-0512be23fb93",
+        timestamp: "2026-07-20T07:13:33.729Z",
+        message: {
+          type: "message",
+          role: "assistant",
+          content: [{ type: "text", text: "Read PROJECT_PLAN.md." }],
+          usage: { input_tokens: 29115, output_tokens: 1837 },
+          stop_reason: "end_turn",
+        },
+        isSidechain: false,
+        userType: "external",
+        entrypoint: "sdk-ts",
+        cwd: "/test",
+        sessionId: "test-session",
+        version: "2.1.97",
+        parentUuid: "3785b0af-9ee8-4c81-8be0-b22536200d48",
+      });
+
+      const result = parseJsonl(jsonl);
+
+      expect(result).toHaveLength(1);
+      const entry = expectAssistantEntry(result[0]);
+      expect(entry.message.id).toBeUndefined();
+      expect(entry.message.model).toBeUndefined();
     });
 
     it("単一のSummaryエントリをパースできる", () => {

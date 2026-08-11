@@ -14,11 +14,11 @@ const AssistantMessageContentSchema = z.union([
 export type AssistantMessageContent = z.infer<typeof AssistantMessageContentSchema>;
 
 export const AssistantMessageSchema = z.object({
-  id: z.string(),
+  id: z.string().optional(),
   container: z.null().optional(),
   type: z.literal("message"),
   role: z.literal("assistant"),
-  model: z.string(),
+  model: z.string().optional(),
   content: z.array(AssistantMessageContentSchema),
   stop_reason: z.string().nullable().optional(),
   stop_sequence: z.string().nullable().optional(),

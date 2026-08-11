@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { buildWebSocketUrl } from "./terminalUrl";
+import { buildWebSocketUrl } from "@/web/lib/terminalUrl";
 
 describe("buildWebSocketUrl", () => {
   test("uses the configured base path and secure websocket protocol", () => {

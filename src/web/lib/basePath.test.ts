@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { getBasePathFromDocumentUrl, toBasePathUrl } from "./basePath";
+import { getBasePathFromDocumentUrl, toBasePathUrl } from "@/web/lib/basePath";
 
 describe("browser base path", () => {
   test("reads the base path from a document base URL", () => {

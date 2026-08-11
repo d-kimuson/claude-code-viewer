@@ -31,6 +31,7 @@ const navigationHandler: typeof precachedNavigationHandler = async (options) => 
   const html = await response.text();
   const headers = new Headers(response.headers);
   headers.delete("Content-Length");
+  headers.delete("Content-Encoding");
   return new Response(
     html.replace('<base href="./" />', `<base href="${getBasePathHref(basePath)}" />`),
     {
@@ -97,7 +98,13 @@ const getNotificationUrl = (value: unknown): string | undefined => {
 self.addEventListener("push", (event) => {
   if (!event.data) return;
 
-  const data = parsePushNotificationData(event.data.json());
+  let value: unknown;
+  try {
+    value = event.data.json();
+  } catch {
+    return;
+  }
+  const data = parsePushNotificationData(value);
   if (data === undefined) return;
 
   event.waitUntil(

@@ -11,6 +11,7 @@ import {
   CardTitle,
 } from "@/web/components/ui/card";
 import { HttpError } from "@/web/lib/api/client";
+import { getBrowserBasePath, toBasePathUrl } from "@/web/lib/basePath";
 
 const errorToString = (error: unknown): string => {
   if (error instanceof Error) {
@@ -24,7 +25,7 @@ export const RootErrorBoundary: FC<PropsWithChildren> = ({ children }) => {
     <ErrorBoundary
       FallbackComponent={({ error, resetErrorBoundary }) => {
         if (error instanceof HttpError && error.status === 401) {
-          window.location.href = "/login";
+          window.location.href = toBasePathUrl(getBrowserBasePath(), "/login");
           return null;
         }
 
@@ -58,7 +59,7 @@ export const RootErrorBoundary: FC<PropsWithChildren> = ({ children }) => {
                   </Button>
                   <Button
                     onClick={() => {
-                      window.location.href = "/";
+                      window.location.href = toBasePathUrl(getBrowserBasePath(), "/");
                     }}
                     variant="outline"
                   >

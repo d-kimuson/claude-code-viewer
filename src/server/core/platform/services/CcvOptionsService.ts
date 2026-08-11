@@ -1,4 +1,5 @@
 import { Context, Effect, Layer, Ref } from "effect";
+import { normalizeBasePath } from "../../../../lib/base-path/basePath.ts";
 import type { InferEffect } from "../../../lib/effect/types.ts";
 
 export type CliOptions = {
@@ -12,6 +13,7 @@ export type CliOptions = {
   terminalShell?: string | undefined;
   terminalUnrestricted?: boolean | undefined;
   apiOnly?: boolean | undefined;
+  basePath?: string | undefined;
 };
 
 export type CcvOptions = {
@@ -25,6 +27,7 @@ export type CcvOptions = {
   terminalShell?: string | undefined;
   terminalUnrestricted?: boolean | undefined;
   apiOnly?: boolean | undefined;
+  basePath: string;
 };
 
 const getOptionalEnv = (key: string): string | undefined => {
@@ -38,7 +41,7 @@ const isFlagEnabled = (value: string | undefined) => {
   return value === "1" || value.toLowerCase() === "true";
 };
 
-const toCcvOptions = (cliOptions?: CliOptions): CcvOptions => {
+export const resolveCcvOptions = (cliOptions?: CliOptions): CcvOptions => {
   return {
     port: Number.parseInt(cliOptions?.port ?? getOptionalEnv("PORT") ?? "3000", 10),
     hostname: cliOptions?.hostname ?? getOptionalEnv("HOSTNAME") ?? "localhost",
@@ -56,15 +59,16 @@ const toCcvOptions = (cliOptions?: CliOptions): CcvOptions => {
       (isFlagEnabled(getOptionalEnv("CCV_TERMINAL_UNRESTRICTED")) ? true : undefined),
     apiOnly:
       cliOptions?.apiOnly ?? (isFlagEnabled(getOptionalEnv("CCV_API_ONLY")) ? true : undefined),
+    basePath: normalizeBasePath(cliOptions?.basePath ?? getOptionalEnv("CCV_BASE_PATH")),
   };
 };
 
 const LayerImpl = Effect.gen(function* () {
-  const ccvOptionsRef = yield* Ref.make<CcvOptions>(toCcvOptions());
+  const ccvOptionsRef = yield* Ref.make<CcvOptions>(resolveCcvOptions());
 
   const loadCliOptions = (cliOptions: CliOptions) => {
     return Effect.gen(function* () {
-      yield* Ref.update(ccvOptionsRef, () => toCcvOptions(cliOptions));
+      yield* Ref.update(ccvOptionsRef, () => resolveCcvOptions(cliOptions));
     });
   };
 

@@ -30,6 +30,21 @@ describe("CcvOptionsService", () => {
     }).pipe(Effect.provide(CcvOptionsService.Live)),
   );
 
+  it.live("normalizes the CLI base path", () =>
+    Effect.gen(function* () {
+      const ccvOptionsService = yield* CcvOptionsService;
+
+      yield* ccvOptionsService.loadCliOptions({
+        port: "3000",
+        hostname: "localhost",
+        basePath: "docs/ccv/",
+      });
+
+      const basePath = yield* ccvOptionsService.getCcvOptions("basePath");
+      expect(basePath).toBe("/docs/ccv");
+    }).pipe(Effect.provide(CcvOptionsService.Live)),
+  );
+
   it.live("defaults verbose option to undefined", () =>
     Effect.gen(function* () {
       const ccvOptionsService = yield* CcvOptionsService;

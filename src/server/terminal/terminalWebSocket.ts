@@ -4,6 +4,8 @@ import type { ServerType } from "@hono/node-server";
 import { Effect, Runtime } from "effect";
 import WebSocket, { WebSocketServer } from "ws";
 import { z } from "zod";
+import { joinBasePath } from "../../lib/base-path/basePath.ts";
+import { CcvOptionsService } from "../core/platform/services/CcvOptionsService.ts";
 import { TerminalService } from "../core/terminal/TerminalService.ts";
 import { AuthMiddleware } from "../hono/middleware/auth.middleware.ts";
 
@@ -62,6 +64,9 @@ const baseUrlForRequest = (req: IncomingMessage) => {
 
 export const setupTerminalWebSocket = (server: ServerType) =>
   Effect.gen(function* () {
+    const ccvOptionsService = yield* CcvOptionsService;
+    const basePath = yield* ccvOptionsService.getCcvOptions("basePath");
+    const terminalPath = joinBasePath(basePath, "/ws/terminal");
     const terminalService = yield* TerminalService;
     const { getAuthState } = yield* AuthMiddleware;
     const { authEnabled, validSessionToken } = yield* getAuthState;
@@ -72,7 +77,7 @@ export const setupTerminalWebSocket = (server: ServerType) =>
 
     server.on("upgrade", (req: IncomingMessage, socket: Duplex, head: Buffer) => {
       const url = new URL(req.url ?? "/", baseUrlForRequest(req));
-      if (url.pathname !== "/ws/terminal") return;
+      if (url.pathname !== terminalPath) return;
 
       if (authEnabled) {
         const cookies = parseCookies(req.headers.cookie);

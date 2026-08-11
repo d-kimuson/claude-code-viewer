@@ -1,4 +1,4 @@
-import { getCookie, setCookie } from "hono/cookie";
+import { deleteCookie, getCookie, setCookie } from "hono/cookie";
 import { createMiddleware } from "hono/factory";
 import {
   DEFAULT_LOCALE,
@@ -8,25 +8,30 @@ import { defaultUserConfig, type UserConfig } from "../../lib/config/config.ts";
 import { parseUserConfig } from "../../lib/config/parseUserConfig.ts";
 import type { HonoContext } from "../app.ts";
 
-export const configMiddleware = createMiddleware<HonoContext>(async (c, next) => {
-  const cookie = getCookie(c, "ccv-config");
-  const parsed = parseUserConfig(cookie);
+export const createConfigMiddleware = (basePath: string) =>
+  createMiddleware<HonoContext>(async (c, next) => {
+    const cookie = getCookie(c, "ccv-config");
+    const parsed = parseUserConfig(cookie);
 
-  if (cookie === undefined) {
-    const preferredLocale =
-      detectLocaleFromAcceptLanguage(c.req.header("accept-language")) ?? DEFAULT_LOCALE;
+    if (cookie === undefined || basePath !== "/") {
+      const config =
+        cookie === undefined
+          ? {
+              ...defaultUserConfig,
+              locale:
+                detectLocaleFromAcceptLanguage(c.req.header("accept-language")) ?? DEFAULT_LOCALE,
+            }
+          : parsed;
 
-    setCookie(
-      c,
-      "ccv-config",
-      JSON.stringify({
-        ...defaultUserConfig,
-        locale: preferredLocale,
-      } satisfies UserConfig),
-    );
-  }
+      if (basePath !== "/") {
+        deleteCookie(c, "ccv-config", { path: "/" });
+      }
+      setCookie(c, "ccv-config", JSON.stringify(config satisfies UserConfig), {
+        path: basePath,
+      });
+    }
 
-  c.set("userConfig", parsed);
+    c.set("userConfig", parsed);
 
-  await next();
-});
+    await next();
+  });

@@ -14,7 +14,7 @@ import { userConfigSchema } from "../../lib/config/config.ts";
 import type { HonoAppType, HonoContext } from "../app.ts";
 import { InitializeService } from "../initialize.ts";
 import { AuthMiddleware } from "../middleware/auth.middleware.ts";
-import { configMiddleware } from "../middleware/config.middleware.ts";
+import { createConfigMiddleware } from "../middleware/config.middleware.ts";
 import { getHonoRuntime } from "../runtime.ts";
 import { authRoutes } from "./authRoutes.ts";
 import { claudeCodeRoutes } from "./claudeCodeRoutes.ts";
@@ -62,6 +62,7 @@ export const routes = (app: HonoAppType, options: CliOptions) =>
 
     const { authRequiredMiddleware } = yield* AuthMiddleware;
     const apiOnly = (yield* ccvOptionsService.getCcvOptions("apiOnly")) === true;
+    const basePath = yield* ccvOptionsService.getCcvOptions("basePath");
     const apiOnlyMiddleware = createApiOnlyMiddleware(apiOnly);
 
     const runtime = yield* getHonoRuntime;
@@ -77,7 +78,7 @@ export const routes = (app: HonoAppType, options: CliOptions) =>
     return (
       app
         // middleware
-        .use(configMiddleware)
+        .use(createConfigMiddleware(basePath))
         .use(apiOnlyMiddleware)
         .use(async (c, next) => {
           await Runtime.runPromise(
@@ -114,7 +115,7 @@ export const routes = (app: HonoAppType, options: CliOptions) =>
         .put("/api/config", zValidator("json", userConfigSchema), (c) => {
           const { ...config } = c.req.valid("json");
 
-          setCookie(c, "ccv-config", JSON.stringify(config));
+          setCookie(c, "ccv-config", JSON.stringify(config), { path: basePath });
 
           return c.json({
             config,

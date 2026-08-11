@@ -1,5 +1,6 @@
 import { hc } from "hono/client";
 import type { RouteType } from "@/server/hono/routes";
+import { getBrowserBasePath } from "@/web/lib/basePath";
 
 type Fetch = typeof fetch;
 
@@ -23,6 +24,6 @@ const customFetch: Fetch = async (...args) => {
   return response;
 };
 
-export const honoClient = hc<RouteType>("/", {
+export const honoClient = hc<RouteType>(getBrowserBasePath(), {
   fetch: customFetch,
 });

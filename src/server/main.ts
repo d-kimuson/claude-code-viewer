@@ -25,6 +25,7 @@ program
   .option("--terminal-shell <path>", "shell executable for terminal sessions")
   .option("--terminal-unrestricted", "disable restricted shell flags for bash sessions")
   .option("--api-only", "run in API-only mode without Web UI")
+  .option("--base-path <path>", "URL base path to serve the app under")
   .action(async (options: CliOptions) => {
     // Check for deprecated environment variables and show migration guide
     await Effect.runPromise(checkDeprecatedEnvs);

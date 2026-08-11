@@ -4,6 +4,7 @@ import { Effect } from "effect";
 import { Hono } from "hono";
 import { deleteCookie, getCookie, setCookie } from "hono/cookie";
 import { z } from "zod";
+import { CcvOptionsService } from "../../core/platform/services/CcvOptionsService.ts";
 import type { HonoContext } from "../app.ts";
 import { AuthMiddleware } from "../middleware/auth.middleware.ts";
 
@@ -17,6 +18,8 @@ const safeEqual = (a: string, b: string): boolean => {
 };
 
 const authRoutes = Effect.gen(function* () {
+  const ccvOptionsService = yield* CcvOptionsService;
+  const basePath = yield* ccvOptionsService.getCcvOptions("basePath");
   const { getAuthState } = yield* AuthMiddleware;
   const { validSessionToken, authEnabled, authPassword } = yield* getAuthState;
 
@@ -39,11 +42,14 @@ const authRoutes = Effect.gen(function* () {
         return c.json({ error: "Invalid password" }, 401);
       }
 
+      if (basePath !== "/") {
+        deleteCookie(c, "ccv-session", { path: "/" });
+      }
       setCookie(c, "ccv-session", validSessionToken, {
         httpOnly: true,
         secure: false, // Set to true in production with HTTPS
         sameSite: "Lax",
-        path: "/",
+        path: basePath,
         maxAge: 60 * 60 * 24 * 7, // 7 days
       });
 
@@ -51,7 +57,10 @@ const authRoutes = Effect.gen(function* () {
     })
 
     .post("/logout", (c) => {
-      deleteCookie(c, "ccv-session", { path: "/" });
+      if (basePath !== "/") {
+        deleteCookie(c, "ccv-session", { path: "/" });
+      }
+      deleteCookie(c, "ccv-session", { path: basePath });
       return c.json({ success: true });
     })
 

@@ -76,6 +76,7 @@ Options:
   -e, --executable <executable>    Path to Claude Code executable
   --claude-dir <claude-dir>        Path to Claude directory
   --api-only                       Run in API-only mode without Web UI
+  --base-path <path>               URL base path to serve the app under
 ```
 
 ### Remote Access via Tailscale (Mobile / PWA)
@@ -92,6 +93,28 @@ Claude Code Viewer works great as a persistent server you access from your phone
 3. **Access from your phone** via the Tailscale HTTPS URL (e.g. `https://your-machine.ts.net:3400`).
 
 Claude Code Viewer is a **PWA (Progressive Web App)**. On mobile, tap "Add to Home Screen" to get an app-like experience with an optimized UI and push notifications when sessions complete.
+
+### Reverse Proxy Sub-Path
+
+Use `--base-path` (or `CCV_BASE_PATH`) when serving Claude Code Viewer below a URL prefix:
+
+```bash
+claude-code-viewer --hostname 127.0.0.1 --port 3400 --base-path /ccv
+```
+
+Configure the reverse proxy to preserve the prefix when forwarding requests. The UI, API, SSE connection, terminal WebSocket, authentication cookies, PWA manifest, and service worker will then use `/ccv`:
+
+```nginx
+location /ccv/ {
+  proxy_pass http://127.0.0.1:3400;
+  proxy_http_version 1.1;
+  proxy_set_header Upgrade $http_upgrade;
+  proxy_set_header Connection "upgrade";
+  proxy_set_header Host $host;
+}
+```
+
+The base path accepts nested URL-safe segments such as `/tools/ccv`. Values containing traversal segments, backslashes, query strings, fragments, spaces, or percent-encoding are rejected.
 
 ## Configuration
 
@@ -111,6 +134,7 @@ Claude Code Viewer can be configured using command-line options or environment v
 | `--terminal-shell <path>`       | `CCV_TERMINAL_SHELL`        | Shell executable for terminal sessions (e.g. `/bin/zsh`)                                                                                                                                                                                                                                                       | (auto-detect) |
 | `--terminal-unrestricted`       | `CCV_TERMINAL_UNRESTRICTED` | When set to `1` (env) or when the flag is present (CLI), disables the restricted shell flags for bash                                                                                                                                                                                                          | (unset)       |
 | `--api-only`                    | `CCV_API_ONLY`              | Run in API-only mode. Disables Web UI, terminal WebSocket, and non-essential endpoints. Only core API routes (`/api/version`, `/api/config`, `/api/projects`, `/api/claude-code`, `/api/search`, `/api/sse`) are exposed. Useful for integrating with external tools like n8n                                  | (unset)       |
+| `--base-path <path>`            | `CCV_BASE_PATH`             | Serve the UI, API, SSE, terminal WebSocket, authentication cookies, and PWA under a URL prefix such as `/ccv`                                                                                                                                                                                                  | `/`           |
 
 **Breaking Change**: Environment variable names have been changed. If you're using environment variables, update them as follows:
 

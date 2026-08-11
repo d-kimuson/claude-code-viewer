@@ -7,6 +7,7 @@ import { DrizzleService } from "../../../lib/db/DrizzleService.ts";
 import { projects } from "../../../lib/db/schema.ts";
 import type { InferEffect } from "../../../lib/effect/types.ts";
 import { EventBus } from "../../events/services/EventBus.ts";
+import { getPermissionModeFallback } from "../functions/getPermissionModeFallback.ts";
 import { matchAnyRule } from "../functions/permissionRule.ts";
 import { SessionAllowlistRepository } from "../infrastructure/SessionAllowlistRepository.ts";
 import * as ClaudeCode from "../models/ClaudeCode.ts";
@@ -92,34 +93,38 @@ const LayerImpl = Effect.gen(function* () {
       }
 
       const canUseTool: CanUseTool = async (toolName, toolInput, _options) => {
-        if (permissionMode !== "default") {
-          // Convert Claude Code permission modes to canUseTool behaviors
-          if (permissionMode === "bypassPermissions" || permissionMode === "acceptEdits") {
-            return {
-              behavior: "allow" as const,
-              updatedInput: toolInput,
-            };
-          } else {
-            // plan mode should deny actual tool execution
-            return {
-              behavior: "deny" as const,
-              message: "Tool execution is disabled in plan mode",
-            };
+        const permissionModeFallback = getPermissionModeFallback(permissionMode);
+        if (permissionModeFallback === "allow") {
+          return {
+            behavior: "allow",
+            updatedInput: toolInput,
+          };
+        }
+
+        // Session grants still apply in dontAsk mode, but plan mode must remain read-only.
+        if (permissionMode !== "plan") {
+          const allowlist = await Effect.runPromise(
+            sessionAllowlistRepository.getAllowlist(sessionId),
+          );
+          if (allowlist.length > 0) {
+            const projectCwd = await Effect.runPromise(resolveProjectCwd(projectId));
+            if (projectCwd !== null && matchAnyRule(allowlist, toolName, toolInput, projectCwd)) {
+              return {
+                behavior: "allow",
+                updatedInput: toolInput,
+              };
+            }
           }
         }
 
-        // Check session allowlist for auto-approve before prompting the user
-        const allowlist = await Effect.runPromise(
-          sessionAllowlistRepository.getAllowlist(sessionId),
-        );
-        if (allowlist.length > 0) {
-          const projectCwd = await Effect.runPromise(resolveProjectCwd(projectId));
-          if (projectCwd !== null && matchAnyRule(allowlist, toolName, toolInput, projectCwd)) {
-            return {
-              behavior: "allow" as const,
-              updatedInput: toolInput,
-            };
-          }
+        if (permissionModeFallback === "deny") {
+          return {
+            behavior: "deny",
+            message:
+              permissionMode === "plan"
+                ? "Tool execution is disabled in plan mode"
+                : "Tool use was denied because permission prompts are disabled",
+          };
         }
 
         const permissionRequest: PermissionRequest = {
@@ -136,12 +141,12 @@ const LayerImpl = Effect.gen(function* () {
 
         if (response.decision === "allow" || response.decision === "always_allow") {
           return {
-            behavior: "allow" as const,
+            behavior: "allow",
             updatedInput: toolInput,
           };
         } else {
           return {
-            behavior: "deny" as const,
+            behavior: "deny",
             message: "Permission denied by user",
           };
         }

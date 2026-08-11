@@ -29,6 +29,7 @@ const testClaudeCodeServiceLayer = Layer.succeed(
       }),
     getMcpList: () => Effect.succeed([]),
     getUserDefaultPermissionMode: Effect.succeed(undefined),
+    resolvePermissionMode: (permissionMode) => Effect.succeed(permissionMode),
   }),
 );
 
@@ -56,6 +57,7 @@ describe("ClaudeCodeController.getClaudeCodeMeta", () => {
             }),
           getMcpList: () => Effect.succeed([]),
           getUserDefaultPermissionMode: Effect.succeed("bypassPermissions"),
+          resolvePermissionMode: (permissionMode) => Effect.succeed(permissionMode),
         }),
       );
 
@@ -611,6 +613,7 @@ describe("ClaudeCodeController.getClaudeCommands", () => {
             }),
           getMcpList: () => Effect.succeed([]),
           getUserDefaultPermissionMode: Effect.succeed(undefined),
+          resolvePermissionMode: (permissionMode) => Effect.succeed(permissionMode),
         }),
       );
 

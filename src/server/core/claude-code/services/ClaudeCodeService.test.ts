@@ -77,4 +77,32 @@ describe("ClaudeCodeService.getUserDefaultPermissionMode", () => {
       expect(result).toBeUndefined();
     }).pipe(Effect.provide(buildTestLayer())),
   );
+
+  it.live("resolves an omitted mode from settings.json", () =>
+    Effect.gen(function* () {
+      const fs = yield* FileSystem.FileSystem;
+      yield* fs.writeFileString(
+        `${testDir}/settings.json`,
+        JSON.stringify({ permissions: { defaultMode: "bypassPermissions" } }),
+      );
+
+      const service = yield* ClaudeCodeService;
+      const result = yield* service.resolvePermissionMode(undefined);
+      expect(result).toBe("bypassPermissions");
+    }).pipe(Effect.provide(buildTestLayer())),
+  );
+
+  it.live("preserves an explicitly requested mode", () =>
+    Effect.gen(function* () {
+      const fs = yield* FileSystem.FileSystem;
+      yield* fs.writeFileString(
+        `${testDir}/settings.json`,
+        JSON.stringify({ permissions: { defaultMode: "bypassPermissions" } }),
+      );
+
+      const service = yield* ClaudeCodeService;
+      const result = yield* service.resolvePermissionMode("plan");
+      expect(result).toBe("plan");
+    }).pipe(Effect.provide(buildTestLayer())),
+  );
 });

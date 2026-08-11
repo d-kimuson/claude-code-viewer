@@ -1,3 +1,4 @@
+import type { PermissionMode } from "@anthropic-ai/claude-agent-sdk";
 import { FileSystem, Path } from "@effect/platform";
 import { Context, Data, Effect, Layer } from "effect";
 import type { InferEffect } from "../../../lib/effect/types.ts";
@@ -30,6 +31,14 @@ const LayerImpl = Effect.gen(function* () {
     return parseUserSettingsDefaultPermissionMode(content);
   }).pipe(Effect.catchAll(() => Effect.succeed(undefined)));
 
+  const resolvePermissionMode = (permissionMode: PermissionMode | undefined) =>
+    Effect.gen(function* () {
+      if (permissionMode !== undefined) {
+        return permissionMode;
+      }
+      return yield* getUserDefaultPermissionMode;
+    });
+
   const getClaudeCodeMeta = () =>
     Effect.gen(function* () {
       const config = yield* ClaudeCode.Config;
@@ -60,6 +69,7 @@ const LayerImpl = Effect.gen(function* () {
     getMcpList,
     getAvailableFeatures,
     getUserDefaultPermissionMode,
+    resolvePermissionMode,
   };
 });
 

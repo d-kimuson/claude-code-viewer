@@ -1,6 +1,12 @@
 import { z } from "zod";
 
-export const permissionModeSchema = z.enum(["acceptEdits", "bypassPermissions", "default", "plan"]);
+export const permissionModeSchema = z.enum([
+  "acceptEdits",
+  "bypassPermissions",
+  "default",
+  "dontAsk",
+  "plan",
+]);
 
 export type PermissionMode = z.infer<typeof permissionModeSchema>;
 

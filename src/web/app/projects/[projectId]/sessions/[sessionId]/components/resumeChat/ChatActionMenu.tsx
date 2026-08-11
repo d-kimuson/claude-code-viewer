@@ -167,7 +167,7 @@ export const ChatActionMenu: FC<ChatActionMenuProps> = ({
                   <Select
                     value={ccOptions?.permissionMode ?? "default"}
                     onValueChange={(
-                      value: "default" | "acceptEdits" | "bypassPermissions" | "plan",
+                      value: "default" | "acceptEdits" | "bypassPermissions" | "dontAsk" | "plan",
                     ) =>
                       onCCOptionsChange({
                         ...ccOptions,
@@ -191,6 +191,9 @@ export const ChatActionMenu: FC<ChatActionMenuProps> = ({
                       </SelectItem>
                       <SelectItem value="bypassPermissions">
                         <Trans id="chat.toolbar.permission_mode.bypass" message="Bypass" />
+                      </SelectItem>
+                      <SelectItem value="dontAsk">
+                        <Trans id="chat.toolbar.permission_mode.dont_ask" message="Don't Ask" />
                       </SelectItem>
                       <SelectItem value="plan">
                         <Trans id="chat.toolbar.permission_mode.plan" message="Plan" />

@@ -44,7 +44,9 @@ export const ccOptionsFormSchema = z.object({
   maxThinkingTokens: z.number().int().positive().optional(),
   maxBudgetUsd: z.number().nonnegative().optional(),
   effort: z.enum(["low", "medium", "high", "max"]).optional(),
-  permissionMode: z.enum(["acceptEdits", "bypassPermissions", "default", "plan"]).optional(),
+  permissionMode: z
+    .enum(["acceptEdits", "bypassPermissions", "default", "dontAsk", "plan"])
+    .optional(),
 });
 
 export type CCOptionsForm = z.infer<typeof ccOptionsFormSchema>;

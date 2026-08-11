@@ -22,10 +22,10 @@ describe("parseUserSettingsDefaultPermissionMode", () => {
     expect(parseUserSettingsDefaultPermissionMode(content)).toBeUndefined();
   });
 
-  it("returns undefined for an unsupported defaultMode value", () => {
+  it("extracts dontAsk mode", () => {
     const content = JSON.stringify({ permissions: { defaultMode: "dontAsk" } });
 
-    expect(parseUserSettingsDefaultPermissionMode(content)).toBeUndefined();
+    expect(parseUserSettingsDefaultPermissionMode(content)).toBe("dontAsk");
   });
 
   it("returns undefined for invalid JSON", () => {

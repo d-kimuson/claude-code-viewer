@@ -873,11 +873,11 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        262
+        265
       ],
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        270
+        273
       ]
     ],
     "translation": "No Agent"
@@ -889,7 +889,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        296
+        299
       ]
     ],
     "translation": "Select agent"
@@ -954,6 +954,18 @@
     ],
     "translation": "Default"
   },
+  "chat.toolbar.permission_mode.dont_ask": {
+    "message": "Don't Ask",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
+        196
+      ]
+    ],
+    "translation": "Don't Ask"
+  },
   "chat.toolbar.permission_mode.plan": {
     "message": "Plan",
     "placeholders": {},
@@ -961,7 +973,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        196
+        199
       ]
     ],
     "translation": "Plan"
@@ -973,7 +985,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        203
+        206
       ]
     ],
     "translation": "Select permission mode"
@@ -985,7 +997,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/resumeChat/ChatActionMenu.tsx",
-        238
+        241
       ]
     ],
     "translation": "Include default Claude Code prompt"

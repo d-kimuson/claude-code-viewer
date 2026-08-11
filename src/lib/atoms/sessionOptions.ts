@@ -6,7 +6,9 @@ import { z } from "zod";
 const persistedSessionOptionsSchema = z.object({
   model: z.string().optional(),
   effort: z.enum(["low", "medium", "high", "max"]).optional(),
-  permissionMode: z.enum(["acceptEdits", "bypassPermissions", "default", "plan"]).optional(),
+  permissionMode: z
+    .enum(["acceptEdits", "bypassPermissions", "default", "dontAsk", "plan"])
+    .optional(),
   useSystemPromptPreset: z.boolean().optional(),
 });
 

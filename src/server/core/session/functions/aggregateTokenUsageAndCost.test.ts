@@ -25,7 +25,7 @@ describe("aggregateTokenUsageAndCost", () => {
 
       expect(result.totalUsage.input_tokens).toBe(29115);
       expect(result.totalUsage.output_tokens).toBe(1837);
-      expect(result.totalCost.totalUsd).toBeGreaterThan(0);
+      expect(result.totalCost.totalUsd).toBeCloseTo(0.1149, 6);
       expect(result.modelName).toBe("claude-3.5-sonnet");
     });
 

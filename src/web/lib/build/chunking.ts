@@ -12,6 +12,10 @@ const CHUNK_RULES = [
     patterns: ["/refractor/"],
   },
   {
+    chunkName: "katex-vendor",
+    patterns: ["/katex/", "/rehype-katex/", "/remark-math/"],
+  },
+  {
     chunkName: "markdown-parser-vendor",
     patterns: [
       "/react-markdown/",

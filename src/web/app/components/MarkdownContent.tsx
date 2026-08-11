@@ -21,6 +21,7 @@ import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/pris
 import rehypeKatex from "rehype-katex";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
+import { normalizeDisplayMath } from "@/lib/markdown/normalizeDisplayMath";
 import { useTheme } from "../../hooks/useTheme";
 import { CodeBlock } from "./CodeBlock";
 import { MarkdownLink } from "./MarkdownLink";
@@ -52,25 +53,6 @@ SyntaxHighlighter.registerLanguage("typescript", typescript);
 SyntaxHighlighter.registerLanguage("ts", typescript);
 SyntaxHighlighter.registerLanguage("yaml", yaml);
 SyntaxHighlighter.registerLanguage("yml", yaml);
-
-// remark-math (v6) only treats `$$...$$` as display math when the delimiters sit
-// on their own lines. Claude Code, however, emits single-line `$$...$$` blocks,
-// which would otherwise render as small inline math. We normalize those to the
-// block form so they render as centered display equations, while leaving fenced
-// code blocks and inline code spans untouched.
-const normalizeDisplayMath = (content: string): string =>
-  content
-    // Split on fenced code blocks and inline code so we never rewrite math-like
-    // text inside them. Captured groups land on odd indices.
-    .split(/(```[\s\S]*?```|`[^`\n]*`)/g)
-    .map((segment, index) => {
-      if (index % 2 === 1) return segment;
-      return segment.replace(
-        /\$\$([^$\n]+?)\$\$/g,
-        (_match, expression: string) => `\n\n$$\n${expression.trim()}\n$$\n\n`,
-      );
-    })
-    .join("");
 
 export const MarkdownContent: FC<MarkdownContentProps> = ({ content, className = "" }) => {
   const { resolvedTheme } = useTheme();

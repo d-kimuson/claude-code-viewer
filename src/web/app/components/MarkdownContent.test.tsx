@@ -20,6 +20,10 @@ vi.mock("react-syntax-highlighter/dist/esm/prism-light", () => {
   };
 });
 
+vi.mock("./CodeBlock", () => ({
+  CodeBlock: ({ code }: { code: string }) => <code>{code}</code>,
+}));
+
 describe("MarkdownContent", () => {
   let root: Root | null = null;
   let container: HTMLDivElement | null = null;
@@ -76,5 +80,34 @@ describe("MarkdownContent", () => {
 
     expect(container?.querySelector(".katex")).toBeNull();
     expect(container?.textContent).toContain("$$value$$");
+  });
+
+  it.each(["```text\n$$value$$\n```", "~~~text\n$$value$$\n~~~"])(
+    "does not render math inside fenced code: %s",
+    (content) => {
+      renderComponent(content);
+
+      expect(container?.querySelector(".katex")).toBeNull();
+      expect(container?.textContent).toContain("$$value$$");
+    },
+  );
+
+  it("does not promote $$ within prose to display math", () => {
+    renderComponent("Keep $$value$$ in this sentence.");
+
+    expect(container?.querySelector(".katex")).not.toBeNull();
+    expect(container?.querySelector(".katex-display")).toBeNull();
+  });
+
+  it("renders escaped dollar signs in single-line display math", () => {
+    renderComponent("$$\\text{Price: \\$5}$$");
+
+    expect(container?.querySelector(".katex-display")).not.toBeNull();
+  });
+
+  it("does not interpret HTML-like math input as DOM elements", () => {
+    renderComponent("$$<img src=x onerror=alert(1)>$$");
+
+    expect(container?.querySelector("img")).toBeNull();
   });
 });

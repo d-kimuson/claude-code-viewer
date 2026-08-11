@@ -28,6 +28,15 @@ describe("getManualChunkName", () => {
     expect(chunkName).toBe("markdown-parser-vendor");
   });
 
+  it.each(["katex", "rehype-katex", "remark-math"])(
+    "returns KaTeX chunk for %s modules",
+    (packageName) => {
+      const chunkName = getManualChunkName(`/repo/node_modules/${packageName}/index.js`);
+
+      expect(chunkName).toBe("katex-vendor");
+    },
+  );
+
   it("returns xterm chunk for xterm dependencies", () => {
     const chunkName = getManualChunkName("/repo/node_modules/@xterm/xterm/lib/xterm.js");
 

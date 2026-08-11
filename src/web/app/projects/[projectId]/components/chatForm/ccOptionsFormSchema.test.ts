@@ -10,11 +10,10 @@ import {
 
 describe("ccOptionsFormSchema", () => {
   describe("getDefaultCCOptions", () => {
-    test("should return default CCOptionsSchema with settingSources", () => {
+    test("should not force a permission mode before user settings load", () => {
       const result = getDefaultCCOptions();
       expect(result).toEqual({
         settingSources: ["user", "project", "local"],
-        permissionMode: "default",
         systemPrompt: {
           type: "preset",
           preset: "claude_code",

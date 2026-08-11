@@ -58,7 +58,6 @@ const defaultSettingSources: Array<"user" | "project" | "local"> = ["user", "pro
 export const getDefaultCCOptions = (): CCOptionsSchema => {
   return {
     settingSources: [...defaultSettingSources],
-    permissionMode: "default",
     systemPrompt: {
       type: "preset",
       preset: "claude_code",

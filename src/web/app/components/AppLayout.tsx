@@ -51,7 +51,7 @@ export const AppLayout: FC<AppLayoutProps> = ({
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   return (
-    <div className="flex flex-col h-screen w-screen overflow-hidden bg-background">
+    <div className="flex flex-col h-dvh w-screen overflow-hidden bg-background">
       {/* Top Status Bar */}
       <header className="h-(--spacing-header-height) flex items-center justify-between px-3 bg-muted/30 border-b border-border/40 text-xs flex-shrink-0 select-none">
         {/* Left: Project/Session Info */}

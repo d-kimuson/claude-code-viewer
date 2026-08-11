@@ -9,6 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/web/components/ui/card";
+import { getBrowserBasePath, toBasePathUrl } from "@/web/lib/basePath";
 
 type NotFoundProps = {
   message?: ReactNode;
@@ -35,7 +36,7 @@ export const NotFound: FC<NotFoundProps> = ({
           <div className="flex gap-2">
             <Button
               onClick={() => {
-                window.location.href = "/";
+                window.location.href = toBasePathUrl(getBrowserBasePath(), "/");
               }}
               variant="default"
             >

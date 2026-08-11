@@ -4,6 +4,7 @@ import ReactDOM from "react-dom/client";
 import { registerSW } from "virtual:pwa-register";
 import { NotFound } from "./components/NotFound";
 import { QueryClientProviderWrapper } from "./lib/api/QueryClientProviderWrapper";
+import { getBrowserBasePath } from "./lib/basePath";
 import { routeTree } from "./routeTree.gen";
 import "./styles.css";
 
@@ -22,6 +23,7 @@ registerSW({
 
 const router = createRouter({
   routeTree,
+  basepath: getBrowserBasePath(),
   context: {},
   defaultPreload: "intent",
   scrollRestoration: true,

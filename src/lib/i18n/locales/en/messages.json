@@ -1980,7 +1980,7 @@
     "origin": [
       [
         "src/web/components/NotFound.tsx",
-        43
+        44
       ]
     ],
     "translation": "Go Home"
@@ -1991,7 +1991,7 @@
     "origin": [
       [
         "src/web/components/NotFound.tsx",
-        20
+        21
       ]
     ],
     "translation": "The page you are looking for does not exist or has been moved."
@@ -2002,7 +2002,7 @@
     "origin": [
       [
         "src/web/components/NotFound.tsx",
-        19
+        20
       ]
     ],
     "translation": "Page Not Found"

@@ -6,11 +6,15 @@ import viteReact from "@vitejs/plugin-react-swc";
 import dotenv from "dotenv";
 import { defineConfig } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
+import { getBasePathHref, joinBasePath, normalizeBasePath } from "./src/lib/base-path/basePath";
 import { getManualChunkName } from "./src/web/lib/build/chunking";
 
 dotenv.config({ path: ".env.local" });
 
-export default defineConfig({
+const configuredBasePath = normalizeBasePath(process.env.CCV_BASE_PATH);
+
+export default defineConfig(({ command }) => ({
+  base: command === "build" ? "./" : getBasePathHref(configuredBasePath),
   plugins: [
     tanstackRouter({
       target: "react",
@@ -33,8 +37,8 @@ export default defineConfig({
         theme_color: "#0a0a0a",
         background_color: "#0a0a0a",
         display: "standalone",
-        start_url: "/",
-        scope: "/",
+        start_url: ".",
+        scope: ".",
         icons: [
           {
             src: "icon-192x192.png",
@@ -84,11 +88,12 @@ export default defineConfig({
   server: {
     port: parseInt(process.env.DEV_FE_PORT ?? "3400", 10),
     proxy: {
-      "/api": `http://localhost:${process.env.DEV_BE_PORT ?? "3401"}`,
-      "/ws": {
+      [joinBasePath(configuredBasePath, "/api")]:
+        `http://localhost:${process.env.DEV_BE_PORT ?? "3401"}`,
+      [joinBasePath(configuredBasePath, "/ws")]: {
         target: `http://localhost:${process.env.DEV_BE_PORT ?? "3401"}`,
         ws: true,
       },
     },
   },
-});
+}));

@@ -1,9 +1,12 @@
 import type { SSEEventMap } from "../../types/sse.ts";
+import { getBrowserBasePath, toBasePathUrl } from "../../web/lib/basePath.ts";
 
 export const callSSE = (options?: { onOpen?: (event: Event) => void }) => {
   const { onOpen } = options ?? {};
 
-  const eventSource = new EventSource(new URL("/api/sse", window.location.origin).href);
+  const eventSource = new EventSource(
+    new URL(toBasePathUrl(getBrowserBasePath(), "/api/sse"), window.location.origin).href,
+  );
 
   const handleOnOpen = (event: Event) => {
     console.log("SSE connection opened", event);

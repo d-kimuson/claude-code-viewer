@@ -25,7 +25,7 @@ import { GitService } from "./core/git/services/GitService.ts";
 import { NotificationController } from "./core/notification/presentation/NotificationController.ts";
 import { NotificationService } from "./core/notification/services/NotificationService.ts";
 import { isDevelopmentEnv } from "./core/platform/ccvEnv.ts";
-import type { CliOptions } from "./core/platform/services/CcvOptionsService.ts";
+import { type CliOptions, resolveCcvOptions } from "./core/platform/services/CcvOptionsService.ts";
 import { ProjectRepository } from "./core/project/infrastructure/ProjectRepository.ts";
 import { ProjectController } from "./core/project/presentation/ProjectController.ts";
 import { ProjectMetaService } from "./core/project/services/ProjectMetaService.ts";
@@ -43,7 +43,9 @@ import { TasksController } from "./core/tasks/presentation/TasksController.ts";
 import { TasksService } from "./core/tasks/services/TasksService.ts";
 import { TerminalService } from "./core/terminal/TerminalService.ts";
 import { honoApp } from "./hono/app.ts";
+import { createBasePathFetch } from "./hono/basePathFetch.ts";
 import { InitializeService } from "./hono/initialize.ts";
+import { injectBasePath } from "./hono/injectBasePath.ts";
 import { AuthMiddleware } from "./hono/middleware/auth.middleware.ts";
 import { routes } from "./hono/routes/index.ts";
 import { DrizzleService } from "./lib/db/DrizzleService.ts";
@@ -60,7 +62,9 @@ export const startServer = async (options: CliOptions) => {
   // biome-ignore lint/style/noProcessEnv: allow only here
   // oxlint-disable-next-line node/no-process-env -- configuration boundary
   const isDevelopment = isDevelopmentEnv(process.env.CCV_ENV);
-  const apiOnly = options.apiOnly === true;
+  const ccvOptions = resolveCcvOptions(options);
+  const apiOnly = ccvOptions.apiOnly === true;
+  const { basePath } = ccvOptions;
 
   if (!isDevelopment && !apiOnly) {
     const staticPath = await Effect.runPromise(
@@ -70,14 +74,17 @@ export const startServer = async (options: CliOptions) => {
       }).pipe(Effect.provide(NodeContext.layer)),
     );
     await runWithLogger(Effect.logInfo(`Serving static files from ${staticPath}`));
-    const indexHtml = await Effect.runPromise(
+    const rawIndexHtml = await Effect.runPromise(
       Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
         const path = yield* Path.Path;
         return yield* fs.readFileString(path.resolve(staticPath, "index.html"));
       }).pipe(Effect.provide(NodeContext.layer)),
     );
+    const indexHtml = injectBasePath(rawIndexHtml, basePath);
 
+    honoApp.get("/", (c) => c.html(indexHtml));
+    honoApp.get("/index.html", (c) => c.html(indexHtml));
     honoApp.use(
       "/*",
       serveStatic({
@@ -95,7 +102,7 @@ export const startServer = async (options: CliOptions) => {
   }
 
   const server = createAdaptorServer({
-    fetch: honoApp.fetch,
+    fetch: createBasePathFetch(basePath, honoApp.fetch),
   });
 
   const program = Effect.gen(function* () {
@@ -112,21 +119,17 @@ export const startServer = async (options: CliOptions) => {
   const port = isDevelopment
     ? // biome-ignore lint/style/noProcessEnv: allow only here
       // oxlint-disable-next-line node/no-process-env -- configuration boundary
-      (process.env.DEV_BE_PORT ?? "3401")
-    : // biome-ignore lint/style/noProcessEnv: allow only here
-      // oxlint-disable-next-line node/no-process-env -- configuration boundary
-      (options.port ?? process.env.PORT ?? "3000");
+      Number.parseInt(process.env.DEV_BE_PORT ?? "3401", 10)
+    : ccvOptions.port;
+  const { hostname } = ccvOptions;
 
-  // biome-ignore lint/style/noProcessEnv: allow only here
-  // oxlint-disable-next-line node/no-process-env -- configuration boundary
-  const hostname = options.hostname ?? process.env.HOSTNAME ?? "localhost";
-
-  server.listen(parseInt(port, 10), hostname, () => {
+  server.listen(port, hostname, () => {
     const info = server.address();
     const serverPort = typeof info === "object" && info !== null ? info.port : port;
     const mode = apiOnly ? " (API-only mode)" : "";
+    const publicPath = basePath === "/" ? "" : basePath;
     void runWithLogger(
-      Effect.logInfo(`Server is running on http://${hostname}:${serverPort}${mode}`),
+      Effect.logInfo(`Server is running on http://${hostname}:${serverPort}${publicPath}${mode}`),
     );
   });
 };

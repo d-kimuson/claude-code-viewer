@@ -2,6 +2,8 @@ import { FitAddon } from "@xterm/addon-fit";
 import { Terminal } from "@xterm/xterm";
 import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
 import "@xterm/xterm/css/xterm.css";
+import { getBrowserBasePath } from "@/web/lib/basePath";
+import { buildWebSocketUrl } from "@/web/lib/terminalUrl";
 
 type ServerMessage =
   | { type: "hello"; sessionId: string; seq: number }
@@ -52,20 +54,6 @@ const getSessionIdStorageKey = (cwd: string | undefined) => {
 const getStoredSessionId = (cwd: string | undefined) => {
   const value = localStorage.getItem(getSessionIdStorageKey(cwd));
   return value !== null && value.length > 0 ? value : undefined;
-};
-
-const buildWebSocketUrl = (sessionId: string | undefined, cwd: string | undefined) => {
-  const protocol = window.location.protocol === "https:" ? "wss" : "ws";
-  const host = window.location.host;
-  const searchParams = new URLSearchParams();
-  if (sessionId !== undefined && sessionId !== "") {
-    searchParams.set("sessionId", sessionId);
-  }
-  if (cwd !== undefined && cwd !== "") {
-    searchParams.set("cwd", cwd);
-  }
-  const query = searchParams.toString();
-  return `${protocol}://${host}/ws/terminal${query ? `?${query}` : ""}`;
 };
 
 const clearStoredSession = (cwd: string | undefined) => {
@@ -153,7 +141,9 @@ export const TerminalPanel = forwardRef<TerminalHandle, TerminalPanelProps>(
       sessionIdRef.current = storedSessionId;
       lastSeqRef.current = 0;
 
-      const socket = new WebSocket(buildWebSocketUrl(storedSessionId, cwd));
+      const socket = new WebSocket(
+        buildWebSocketUrl(window.location.origin, getBrowserBasePath(), storedSessionId, cwd),
+      );
       socketRef.current = socket;
 
       const sendJson = (payload: object) => {

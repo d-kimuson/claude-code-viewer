@@ -1980,7 +1980,7 @@
     "origin": [
       [
         "src/web/components/NotFound.tsx",
-        43
+        44
       ]
     ],
     "translation": "ホームに戻る"
@@ -1991,7 +1991,7 @@
     "origin": [
       [
         "src/web/components/NotFound.tsx",
-        20
+        21
       ]
     ],
     "translation": "お探しのページは存在しないか、移動されました。"
@@ -2002,7 +2002,7 @@
     "origin": [
       [
         "src/web/components/NotFound.tsx",
-        19
+        20
       ]
     ],
     "translation": "ページが見つかりません"

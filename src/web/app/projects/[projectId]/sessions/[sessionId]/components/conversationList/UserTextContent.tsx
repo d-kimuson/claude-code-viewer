@@ -1,6 +1,7 @@
 import { Terminal } from "lucide-react";
 import type { FC } from "react";
 import { parseUserMessage } from "@/lib/claude-code/parseUserMessage";
+import { AnsiText } from "@/web/app/projects/[projectId]/sessions/[sessionId]/components/conversationList/AnsiText";
 import { Badge } from "@/web/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/web/components/ui/card";
 import { CopyableMarkdownContent } from "./CopyableMarkdownContent";
@@ -90,7 +91,7 @@ export const UserTextContent: FC<{ text: string; id?: string }> = ({ text, id })
         </CardHeader>
         <CardContent className="py-0 px-4">
           <pre className="text-xs overflow-x-auto whitespace-pre-wrap break-words">
-            {parsed.stdout}
+            <AnsiText text={parsed.stdout} />
           </pre>
         </CardContent>
       </Card>

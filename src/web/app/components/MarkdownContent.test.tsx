@@ -20,6 +20,10 @@ vi.mock("react-syntax-highlighter/dist/esm/prism-light", () => {
   };
 });
 
+vi.mock("./CodeBlock", () => ({
+  CodeBlock: ({ code }: { code: string }) => <code>{code}</code>,
+}));
+
 describe("MarkdownContent", () => {
   let root: Root | null = null;
   let container: HTMLDivElement | null = null;
@@ -52,5 +56,58 @@ describe("MarkdownContent", () => {
     expect(code?.className).toContain("inline-block");
     expect(code?.className).toContain("max-w-full");
     expect(code?.className).toContain("[overflow-wrap:anywhere]");
+  });
+
+  it("renders inline math with KaTeX", () => {
+    renderComponent("The mass-energy relation is $E = mc^2$.");
+
+    const katex = container?.querySelector(".katex");
+
+    expect(katex).not.toBeNull();
+  });
+
+  it("renders single-line $$...$$ as display math", () => {
+    // Claude Code emits display equations on a single line.
+    renderComponent("$$\\mathcal{L}_{\\text{pre}} = \\text{MSE}(\\hat{X}, X)$$");
+
+    const displayMath = container?.querySelector(".katex-display");
+
+    expect(displayMath).not.toBeNull();
+  });
+
+  it("does not rewrite $$ inside code spans", () => {
+    renderComponent("Use `$$value$$` as a placeholder.");
+
+    expect(container?.querySelector(".katex")).toBeNull();
+    expect(container?.textContent).toContain("$$value$$");
+  });
+
+  it.each(["```text\n$$value$$\n```", "~~~text\n$$value$$\n~~~"])(
+    "does not render math inside fenced code: %s",
+    (content) => {
+      renderComponent(content);
+
+      expect(container?.querySelector(".katex")).toBeNull();
+      expect(container?.textContent).toContain("$$value$$");
+    },
+  );
+
+  it("does not promote $$ within prose to display math", () => {
+    renderComponent("Keep $$value$$ in this sentence.");
+
+    expect(container?.querySelector(".katex")).not.toBeNull();
+    expect(container?.querySelector(".katex-display")).toBeNull();
+  });
+
+  it("renders escaped dollar signs in single-line display math", () => {
+    renderComponent("$$\\text{Price: \\$5}$$");
+
+    expect(container?.querySelector(".katex-display")).not.toBeNull();
+  });
+
+  it("does not interpret HTML-like math input as DOM elements", () => {
+    renderComponent("$$<img src=x onerror=alert(1)>$$");
+
+    expect(container?.querySelector("img")).toBeNull();
   });
 });

@@ -1,3 +1,4 @@
+import "katex/dist/katex.min.css";
 import { type FC, useMemo } from "react";
 import Markdown, { type Components } from "react-markdown";
 import bash from "react-syntax-highlighter/dist/esm/languages/prism/bash";
@@ -17,7 +18,10 @@ import typescript from "react-syntax-highlighter/dist/esm/languages/prism/typesc
 import yaml from "react-syntax-highlighter/dist/esm/languages/prism/yaml";
 import SyntaxHighlighter from "react-syntax-highlighter/dist/esm/prism-light";
 import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
+import rehypeKatex from "rehype-katex";
 import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+import { normalizeDisplayMath } from "@/lib/markdown/normalizeDisplayMath";
 import { useTheme } from "../../hooks/useTheme";
 import { CodeBlock } from "./CodeBlock";
 import { MarkdownLink } from "./MarkdownLink";
@@ -53,6 +57,8 @@ SyntaxHighlighter.registerLanguage("yml", yaml);
 export const MarkdownContent: FC<MarkdownContentProps> = ({ content, className = "" }) => {
   const { resolvedTheme } = useTheme();
   const syntaxTheme = resolvedTheme === "dark" ? oneDark : oneLight;
+
+  const normalizedContent = useMemo(() => normalizeDisplayMath(content), [content]);
 
   const markdownComponents = useMemo<Components>(
     () => ({
@@ -235,8 +241,12 @@ export const MarkdownContent: FC<MarkdownContentProps> = ({ content, className =
 
   return (
     <div className={`prose prose-neutral dark:prose-invert max-w-none ${className}`}>
-      <Markdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
-        {content}
+      <Markdown
+        remarkPlugins={[remarkGfm, remarkMath]}
+        rehypePlugins={[rehypeKatex]}
+        components={markdownComponents}
+      >
+        {normalizedContent}
       </Markdown>
     </div>
   );

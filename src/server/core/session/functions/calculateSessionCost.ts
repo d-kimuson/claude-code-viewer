@@ -63,6 +63,14 @@ export type CostCalculationResult = {
 export const normalizeModelName = (modelName: string): ModelName => {
   const normalized = modelName.toLowerCase();
 
+  if (normalized.includes("minimax-m3")) {
+    return "minimax-m3";
+  }
+
+  if (normalized.includes("minimax-m2.7")) {
+    return "minimax-m2.7";
+  }
+
   // Claude Opus 4.5 patterns (more specific first)
   if (normalized.includes("opus-4-5") || normalized.includes("opus-4.5")) {
     return "claude-opus-4.5";

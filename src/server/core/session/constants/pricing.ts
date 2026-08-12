@@ -7,6 +7,8 @@
  */
 
 export type ModelName =
+  | "minimax-m3"
+  | "minimax-m2.7"
   | "claude-opus-4.5"
   | "claude-opus-4.1"
   | "claude-sonnet-4.5"
@@ -34,6 +36,18 @@ export type ModelPricing = {
  * since prompt length is not tracked at pricing calculation time.
  */
 export const MODEL_PRICING: Record<ModelName, ModelPricing> = {
+  "minimax-m3": {
+    input: 0.6,
+    output: 2.4,
+    cache_creation: 0,
+    cache_read: 0.12,
+  },
+  "minimax-m2.7": {
+    input: 0.3,
+    output: 1.2,
+    cache_creation: 0.375,
+    cache_read: 0.06,
+  },
   "claude-opus-4.5": {
     input: 5.0,
     output: 25.0,

@@ -24,10 +24,15 @@ const normalizeUserMessageInput = (
     type: document.type,
     source: document.source,
   }));
+  const videos = input.videos?.map((video) => ({
+    type: video.type,
+    source: video.source,
+  }));
 
   return {
     text: input.text,
     images,
+    videos,
     documents,
   };
 };

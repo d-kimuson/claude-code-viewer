@@ -1,9 +1,30 @@
 import { z } from "zod";
-import type { DocumentBlockParam, ImageBlockParam } from "@/server/core/claude-code/schema";
+import type {
+  DocumentBlockParam,
+  ImageBlockParam,
+  VideoBlockParam,
+} from "@/server/core/claude-code/schema";
 
 const mediaTypeSchema = z.enum(["image/png", "image/jpeg", "image/gif", "image/webp"]);
+const videoMediaTypeSchema = z.enum([
+  "video/mp4",
+  "video/avi",
+  "video/x-msvideo",
+  "video/mov",
+  "video/x-matroska",
+]);
+type VideoMediaType = z.infer<typeof videoMediaTypeSchema>;
 
-export type FileType = "text" | "image" | "pdf";
+const videoMediaTypeByFileType: Readonly<Record<string, VideoMediaType>> = {
+  "video/mp4": "video/mp4",
+  "video/avi": "video/avi",
+  "video/x-msvideo": "video/x-msvideo",
+  "video/quicktime": "video/mov",
+  "video/mov": "video/mov",
+  "video/x-matroska": "video/x-matroska",
+};
+
+export type FileType = "text" | "image" | "video" | "pdf";
 
 /**
  * Determine file type based on MIME type
@@ -11,6 +32,9 @@ export type FileType = "text" | "image" | "pdf";
 export const determineFileType = (mimeType: string): FileType => {
   if (mimeType.startsWith("image/")) {
     return "image";
+  }
+  if (mimeType.startsWith("video/")) {
+    return "video";
   }
   if (mimeType === "application/pdf") {
     return "pdf";
@@ -28,6 +52,7 @@ export const isSupportedMimeType = (mimeType: string): boolean => {
 
   return (
     supportedImageTypes.includes(mimeType) ||
+    Object.hasOwn(videoMediaTypeByFileType, mimeType) ||
     supportedDocumentTypes.includes(mimeType) ||
     supportedTextTypes.includes(mimeType)
   );
@@ -109,6 +134,7 @@ export const processFile = async (
 ): Promise<
   | { type: "text"; content: string }
   | { type: "image"; block: ImageBlockParam }
+  | { type: "video"; block: VideoBlockParam }
   | { type: "document"; block: DocumentBlockParam }
   | null
 > => {
@@ -131,6 +157,25 @@ export const processFile = async (
       type: "image",
       block: {
         type: "image",
+        source: {
+          type: "base64",
+          media_type: mediaType.data,
+          data: base64Data,
+        },
+      },
+    };
+  }
+
+  if (fileType === "video") {
+    const mediaType = videoMediaTypeSchema.safeParse(videoMediaTypeByFileType[file.type]);
+    if (!mediaType.success) {
+      return null;
+    }
+
+    return {
+      type: "video",
+      block: {
+        type: "video",
         source: {
           type: "base64",
           media_type: mediaType.data,

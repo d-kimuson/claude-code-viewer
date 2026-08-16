@@ -14,10 +14,20 @@ export const mediaTypeSchema = z.enum(["image/png", "image/jpeg", "image/gif", "
 
 export type MediaType = z.infer<typeof mediaTypeSchema>;
 
+export const videoMediaTypeSchema = z.enum([
+  "video/mp4",
+  "video/avi",
+  "video/x-msvideo",
+  "video/mov",
+  "video/x-matroska",
+]);
+
+export type VideoMediaType = z.infer<typeof videoMediaTypeSchema>;
+
 /**
  * Schema for image block parameter
  */
-const imageBlockSchema = z.object({
+export const imageBlockSchema = z.object({
   type: z.literal("image"),
   source: z.object({
     type: z.literal("base64"),
@@ -31,7 +41,7 @@ export type ImageBlockParam = z.infer<typeof imageBlockSchema>;
 /**
  * Schema for document block parameter
  */
-const documentBlockSchema = z.object({
+export const documentBlockSchema = z.object({
   type: z.literal("document"),
   source: z.union([
     z.object({
@@ -49,12 +59,24 @@ const documentBlockSchema = z.object({
 
 export type DocumentBlockParam = z.infer<typeof documentBlockSchema>;
 
+export const videoBlockSchema = z.object({
+  type: z.literal("video"),
+  source: z.object({
+    type: z.literal("base64"),
+    media_type: videoMediaTypeSchema,
+    data: z.string(),
+  }),
+});
+
+export type VideoBlockParam = z.infer<typeof videoBlockSchema>;
+
 /**
- * Schema for user message input with optional images and documents
+ * Schema for user message input with optional media and documents
  */
 export const userMessageInputSchema = z.object({
   text: z.string().min(1),
   images: z.array(imageBlockSchema).optional(),
+  videos: z.array(videoBlockSchema).optional(),
   documents: z.array(documentBlockSchema).optional(),
 });
 

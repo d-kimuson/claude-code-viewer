@@ -135,7 +135,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        487
+        493
       ]
     ],
     "translation": "带补全支持的消息输入"
@@ -536,7 +536,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        579
+        585
       ]
     ],
     "translation": "附加"
@@ -559,7 +559,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        209
+        211
       ]
     ],
     "translation": "复制命令失败"
@@ -571,7 +571,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        202
+        204
       ]
     ],
     "translation": "命令已复制到剪贴板"
@@ -582,7 +582,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        453
+        459
       ]
     ],
     "translation": "发送消息失败。请重试。"
@@ -778,7 +778,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        299
+        304
       ]
     ],
     "translation": "定时发送消息失败"
@@ -790,7 +790,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        283
+        288
       ]
     ],
     "translation": "消息定时发送成功"
@@ -802,7 +802,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        288
+        293
       ]
     ],
     "translation": "您可以在定时任务选项卡中查看和管理"
@@ -824,7 +824,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        532
+        538
       ]
     ],
     "translation": "立即发送"
@@ -835,7 +835,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        517
+        523
       ]
     ],
     "translation": "发送模式"
@@ -846,11 +846,11 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        535
+        541
       ],
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        674
+        680
       ]
     ],
     "translation": "定时发送"
@@ -861,7 +861,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        542
+        548
       ]
     ],
     "translation": "定时发送时间"
@@ -901,7 +901,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        644
+        650
       ]
     ],
     "translation": "选择推理努力程度"
@@ -913,7 +913,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        612
+        618
       ]
     ],
     "translation": "选择模型"
@@ -1009,7 +1009,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/components/chatForm/ChatInput.tsx",
-        714
+        720
       ]
     ],
     "translation": "语音输入"

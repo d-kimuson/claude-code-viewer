@@ -17,6 +17,7 @@ import type {
   CCOptionsSchema,
   DocumentBlockParam,
   ImageBlockParam,
+  VideoBlockParam,
 } from "@/server/core/claude-code/schema";
 import { buildClaudeCommand } from "@/web/lib/claude-command";
 import { Button } from "../../../../../components/ui/button";
@@ -44,6 +45,7 @@ import { InlineCompletion } from "./InlineCompletion";
 export type MessageInput = {
   text: string;
   images?: ImageBlockParam[];
+  videos?: VideoBlockParam[];
   documents?: DocumentBlockParam[];
   ccOptions?: CCOptionsSchema;
 };
@@ -224,6 +226,7 @@ export const ChatInput: FC<ChatInputProps> = ({
     if (isPending || disabled || sendDisabled) return;
 
     const images: ImageBlockParam[] = [];
+    const videos: VideoBlockParam[] = [];
     const documents: DocumentBlockParam[] = [];
 
     for (const { file } of attachedFiles) {
@@ -244,6 +247,8 @@ export const ChatInput: FC<ChatInputProps> = ({
         });
       } else if (result.type === "image") {
         images.push(result.block);
+      } else if (result.type === "video") {
+        videos.push(result.block);
       } else if (result.type === "document") {
         documents.push(result.block);
       }
@@ -311,6 +316,7 @@ export const ChatInput: FC<ChatInputProps> = ({
         await onSubmit({
           text: message,
           images: images.length > 0 ? images : undefined,
+          videos: videos.length > 0 ? videos : undefined,
           documents: documents.length > 0 ? documents : undefined,
           ccOptions,
         });

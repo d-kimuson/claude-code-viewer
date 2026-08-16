@@ -152,6 +152,52 @@ describe("ChatInput", () => {
     expect(container?.textContent).not.toContain("clipboard-image.png");
   });
 
+  it("submits selected video attachments as video blocks", async () => {
+    const onSubmit = vi.fn(async () => {});
+    renderComponent({ onSubmit });
+    const input = container?.querySelector('input[type="file"]');
+    expect(input).not.toBeNull();
+    if (!(input instanceof HTMLInputElement)) {
+      throw new Error("File input not found");
+    }
+
+    const videoFile = new File(["video"], "clip.mp4", { type: "video/mp4" });
+    Object.defineProperty(input, "files", { value: [videoFile] });
+    act(() => {
+      input.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+
+    const buttons = container?.querySelectorAll("button");
+    const sendButton = buttons?.item((buttons?.length ?? 0) - 1);
+    expect(sendButton).not.toBeNull();
+    if (!(sendButton instanceof HTMLButtonElement)) {
+      throw new Error("Send button not found");
+    }
+
+    act(() => {
+      sendButton.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    });
+
+    await vi.waitFor(() => {
+      expect(onSubmit).toHaveBeenCalledWith({
+        text: "",
+        videos: [
+          {
+            type: "video",
+            source: {
+              type: "base64",
+              media_type: "video/mp4",
+              data: "dmlkZW8=",
+            },
+          },
+        ],
+        images: undefined,
+        documents: undefined,
+        ccOptions: undefined,
+      });
+    });
+  });
+
   it("should have correct type definition for enableScheduledSend", () => {
     const props: ChatInputProps = {
       projectId: "test-project",

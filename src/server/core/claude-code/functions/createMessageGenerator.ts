@@ -1,12 +1,43 @@
 import type { SDKMessage, SDKUserMessage } from "@anthropic-ai/claude-agent-sdk";
 import type { DocumentBlockParam, ImageBlockParam } from "@anthropic-ai/sdk/resources";
+import { z } from "zod";
 import { controllablePromise } from "../../../../lib/controllablePromise.ts";
+import {
+  documentBlockSchema,
+  imageBlockSchema,
+  type VideoBlockParam,
+  videoBlockSchema,
+} from "../schema.ts";
 
 export type UserMessageInput = {
   text: string;
   images?: readonly ImageBlockParam[];
+  videos?: readonly VideoBlockParam[];
   documents?: readonly DocumentBlockParam[];
 };
+
+const generatedUserMessageSchema = z.object({
+  type: z.literal("user"),
+  message: z.object({
+    role: z.literal("user"),
+    content: z.union([
+      z.string(),
+      z.array(
+        z.union([
+          z.object({ type: z.literal("text"), text: z.string() }),
+          imageBlockSchema,
+          videoBlockSchema,
+          documentBlockSchema,
+        ]),
+      ),
+    ]),
+  }),
+  parent_tool_use_id: z.null(),
+});
+
+const sdkUserMessageSchema = z.custom<SDKUserMessage>(
+  (value) => generatedUserMessageSchema.safeParse(value).success,
+);
 
 export type OnMessage = (message: SDKMessage) => void | Promise<void>;
 
@@ -30,20 +61,20 @@ export const createMessageGenerator = (): {
   };
 
   const createMessage = (input: UserMessageInput): SDKUserMessage => {
-    const { images = [], documents = [] } = input;
+    const { images = [], videos = [], documents = [] } = input;
 
-    if (images.length === 0 && documents.length === 0) {
-      return {
+    if (images.length === 0 && videos.length === 0 && documents.length === 0) {
+      return sdkUserMessageSchema.parse({
         type: "user",
         message: {
           role: "user",
           content: input.text,
         },
         parent_tool_use_id: null,
-      } satisfies SDKUserMessage;
+      });
     }
 
-    return {
+    return sdkUserMessageSchema.parse({
       type: "user",
       message: {
         role: "user",
@@ -53,11 +84,12 @@ export const createMessageGenerator = (): {
             text: input.text,
           },
           ...images,
+          ...videos,
           ...documents,
         ],
       },
       parent_tool_use_id: null,
-    } satisfies SDKUserMessage;
+    });
   };
 
   const generateMessages = async function* (): ReturnType<MessageGenerator> {

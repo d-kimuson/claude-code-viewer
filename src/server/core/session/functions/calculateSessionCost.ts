@@ -1,5 +1,7 @@
 import {
   DEFAULT_MODEL_PRICING,
+  MINIMAX_M3_LONG_CONTEXT_PRICING,
+  MINIMAX_M3_LONG_CONTEXT_THRESHOLD_TOKENS,
   MODEL_PRICING,
   type ModelName,
   type ModelPricing,
@@ -67,6 +69,10 @@ export const normalizeModelName = (modelName: string): ModelName => {
     return "minimax-m3";
   }
 
+  if (normalized.includes("minimax-m2.7-highspeed")) {
+    return "minimax-m2.7-highspeed";
+  }
+
   if (normalized.includes("minimax-m2.7")) {
     return "minimax-m2.7";
   }
@@ -117,8 +123,17 @@ export const normalizeModelName = (modelName: string): ModelName => {
 /**
  * Gets pricing for a model, with fallback to default pricing
  */
-const getModelPricing = (modelName: string): ModelPricing => {
+const getModelPricing = (modelName: string, usage: TokenUsage): ModelPricing => {
   const normalized = normalizeModelName(modelName);
+  const totalInputTokens =
+    usage.input_tokens +
+    (usage.cache_creation_input_tokens ?? 0) +
+    (usage.cache_read_input_tokens ?? 0);
+
+  if (normalized === "minimax-m3" && totalInputTokens > MINIMAX_M3_LONG_CONTEXT_THRESHOLD_TOKENS) {
+    return MINIMAX_M3_LONG_CONTEXT_PRICING;
+  }
+
   return MODEL_PRICING[normalized] ?? DEFAULT_MODEL_PRICING;
 };
 
@@ -130,7 +145,7 @@ const getModelPricing = (modelName: string): ModelPricing => {
  * @returns Cost calculation result with breakdown
  */
 export const calculateTokenCost = (usage: TokenUsage, modelName: string): CostCalculationResult => {
-  const pricing = getModelPricing(modelName);
+  const pricing = getModelPricing(modelName, usage);
 
   // Convert tokens to millions for cost calculation
   const inputMTok = usage.input_tokens / 1_000_000;

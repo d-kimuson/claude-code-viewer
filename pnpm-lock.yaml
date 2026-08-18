@@ -329,6 +329,9 @@ importers:
       workbox-build:
         specifier: ^7.4.1
         version: 7.4.1
+      workbox-core:
+        specifier: ^7.4.1
+        version: 7.4.1
       workbox-expiration:
         specifier: ^7.4.1
         version: 7.4.1

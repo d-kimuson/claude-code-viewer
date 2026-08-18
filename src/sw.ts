@@ -1,5 +1,6 @@
 /// <reference lib="webworker" />
 
+import { clientsClaim } from "workbox-core";
 import { ExpirationPlugin } from "workbox-expiration";
 import {
   cleanupOutdatedCaches,
@@ -9,10 +10,16 @@ import {
 import { NavigationRoute, registerRoute } from "workbox-routing";
 import { NetworkFirst, NetworkOnly } from "workbox-strategies";
 import { getBasePathHref, joinBasePath, normalizeBasePath } from "./lib/base-path/basePath";
+import { enableImmediateServiceWorkerUpdate } from "./lib/pwa/enableImmediateServiceWorkerUpdate";
 
 declare let self: ServiceWorkerGlobalScope & {
   __WB_MANIFEST: Array<{ url: string; revision: string | null }>;
 };
+
+void enableImmediateServiceWorkerUpdate({
+  claimClients: clientsClaim,
+  skipWaiting: () => self.skipWaiting(),
+});
 
 const escapeRegExp = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&");
 

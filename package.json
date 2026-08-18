@@ -148,6 +148,7 @@
     "web-push": "^3.6.7",
     "webpack": "5.106.2",
     "workbox-build": "^7.4.1",
+    "workbox-core": "^7.4.1",
     "workbox-expiration": "^7.4.1",
     "workbox-precaching": "^7.4.1",
     "workbox-routing": "^7.4.1",

@@ -3,11 +3,21 @@ import { enableImmediateServiceWorkerUpdate } from "./enableImmediateServiceWork
 
 describe("enableImmediateServiceWorkerUpdate", () => {
   test("claims open clients and activates the latest worker without waiting for tabs to close", async () => {
-    const claimClients = vi.fn();
-    const skipWaiting = vi.fn(() => Promise.resolve());
+    const calls: string[] = [];
+    const activation = Promise.resolve();
+    const claimClients = vi.fn(() => {
+      calls.push("claimClients");
+    });
+    const skipWaiting = vi.fn(() => {
+      calls.push("skipWaiting");
+      return activation;
+    });
 
-    await enableImmediateServiceWorkerUpdate({ claimClients, skipWaiting });
+    const result = enableImmediateServiceWorkerUpdate({ claimClients, skipWaiting });
 
+    expect(result).toBe(activation);
+    await result;
+    expect(calls).toEqual(["claimClients", "skipWaiting"]);
     expect(claimClients).toHaveBeenCalledOnce();
     expect(skipWaiting).toHaveBeenCalledOnce();
   });

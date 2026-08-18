@@ -1,12 +1,16 @@
 /**
- * Anthropic Claude API Pricing Information
- * Last updated: 2026-01-08
+ * Model pricing information
  *
  * Prices are in USD per million tokens (MTok)
- * Source: https://claude.com/pricing
+ * Sources:
+ * - https://claude.com/pricing
+ * - https://platform.minimax.io/docs/guides/pricing-paygo
  */
 
 export type ModelName =
+  | "minimax-m3"
+  | "minimax-m2.7-highspeed"
+  | "minimax-m2.7"
   | "claude-opus-4.5"
   | "claude-opus-4.1"
   | "claude-sonnet-4.5"
@@ -30,10 +34,37 @@ export type ModelPricing = {
  * Note: Claude Sonnet 4.5 has tiered pricing based on prompt length:
  * - ≤200K tokens: $3/$15 (standard tier, used here)
  * - >200K tokens: $6/$22.50 (extended context tier, not implemented)
- * This implementation uses standard tier pricing as the default approximation
- * since prompt length is not tracked at pricing calculation time.
+ * This implementation uses standard Claude pricing as the default approximation.
+ * MiniMax-M3 pricing is selected from the total reported input token count.
  */
+export const MINIMAX_M3_LONG_CONTEXT_THRESHOLD_TOKENS = 512_000;
+
+export const MINIMAX_M3_LONG_CONTEXT_PRICING: ModelPricing = {
+  input: 0.6,
+  output: 2.4,
+  cache_creation: 0,
+  cache_read: 0.12,
+};
+
 export const MODEL_PRICING: Record<ModelName, ModelPricing> = {
+  "minimax-m3": {
+    input: 0.3,
+    output: 1.2,
+    cache_creation: 0,
+    cache_read: 0.06,
+  },
+  "minimax-m2.7-highspeed": {
+    input: 0.6,
+    output: 2.4,
+    cache_creation: 0.375,
+    cache_read: 0.06,
+  },
+  "minimax-m2.7": {
+    input: 0.3,
+    output: 1.2,
+    cache_creation: 0.375,
+    cache_read: 0.06,
+  },
   "claude-opus-4.5": {
     input: 5.0,
     output: 25.0,

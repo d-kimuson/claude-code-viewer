@@ -34,6 +34,12 @@ describe("normalizeModelName", () => {
     expect(normalizeModelName("claude-haiku-4-5-20251001")).toBe("claude-haiku-4.5");
   });
 
+  it("should normalize MiniMax model names", () => {
+    expect(normalizeModelName("MiniMax-M3")).toBe("minimax-m3");
+    expect(normalizeModelName("MiniMax-M2.7")).toBe("minimax-m2.7");
+    expect(normalizeModelName("MiniMax-M2.7-highspeed")).toBe("minimax-m2.7-highspeed");
+  });
+
   it("should return claude-3.5-sonnet for unknown model", () => {
     expect(normalizeModelName("unknown-model")).toBe("claude-3.5-sonnet");
   });
@@ -219,6 +225,74 @@ describe("calculateTokenCost", () => {
     expect(result.breakdown.outputTokensUsd).toBeCloseTo(0.25, 4);
     expect(result.breakdown.cacheCreationUsd).toBeCloseTo(0.0125, 4);
     expect(result.breakdown.cacheReadUsd).toBeCloseTo(0.0005, 4);
+  });
+
+  it("should calculate the standard MiniMax-M3 tier at 512k total input tokens", () => {
+    const usage: TokenUsage = {
+      input_tokens: 100_000,
+      output_tokens: 1_000_000,
+      cache_creation_input_tokens: 200_000,
+      cache_read_input_tokens: 212_000,
+    };
+
+    const result = calculateTokenCost(usage, "MiniMax-M3");
+
+    expect(result.totalUsd).toBeCloseTo(1.24272, 5);
+    expect(result.breakdown.inputTokensUsd).toBeCloseTo(0.03, 5);
+    expect(result.breakdown.outputTokensUsd).toBeCloseTo(1.2, 5);
+    expect(result.breakdown.cacheCreationUsd).toBe(0);
+    expect(result.breakdown.cacheReadUsd).toBeCloseTo(0.01272, 5);
+  });
+
+  it("should calculate the long-context MiniMax-M3 tier above 512k total input tokens", () => {
+    const usage: TokenUsage = {
+      input_tokens: 100_000,
+      output_tokens: 1_000_000,
+      cache_creation_input_tokens: 200_000,
+      cache_read_input_tokens: 212_001,
+    };
+
+    const result = calculateTokenCost(usage, "MiniMax-M3");
+
+    expect(result.totalUsd).toBeCloseTo(2.48544012, 6);
+    expect(result.breakdown.inputTokensUsd).toBeCloseTo(0.06, 5);
+    expect(result.breakdown.outputTokensUsd).toBeCloseTo(2.4, 5);
+    expect(result.breakdown.cacheCreationUsd).toBe(0);
+    expect(result.breakdown.cacheReadUsd).toBeCloseTo(0.02544012, 6);
+  });
+
+  it("should calculate cost for MiniMax-M2.7", () => {
+    const usage: TokenUsage = {
+      input_tokens: 1_000_000,
+      output_tokens: 1_000_000,
+      cache_creation_input_tokens: 1_000_000,
+      cache_read_input_tokens: 1_000_000,
+    };
+
+    const result = calculateTokenCost(usage, "MiniMax-M2.7");
+
+    expect(result.totalUsd).toBeCloseTo(1.935, 4);
+    expect(result.breakdown.inputTokensUsd).toBeCloseTo(0.3, 4);
+    expect(result.breakdown.outputTokensUsd).toBeCloseTo(1.2, 4);
+    expect(result.breakdown.cacheCreationUsd).toBeCloseTo(0.375, 4);
+    expect(result.breakdown.cacheReadUsd).toBeCloseTo(0.06, 4);
+  });
+
+  it("should calculate cost for MiniMax-M2.7-highspeed", () => {
+    const usage: TokenUsage = {
+      input_tokens: 1_000_000,
+      output_tokens: 1_000_000,
+      cache_creation_input_tokens: 1_000_000,
+      cache_read_input_tokens: 1_000_000,
+    };
+
+    const result = calculateTokenCost(usage, "MiniMax-M2.7-highspeed");
+
+    expect(result.totalUsd).toBeCloseTo(3.435, 4);
+    expect(result.breakdown.inputTokensUsd).toBeCloseTo(0.6, 4);
+    expect(result.breakdown.outputTokensUsd).toBeCloseTo(2.4, 4);
+    expect(result.breakdown.cacheCreationUsd).toBeCloseTo(0.375, 4);
+    expect(result.breakdown.cacheReadUsd).toBeCloseTo(0.06, 4);
   });
 
   it("should handle optional cache tokens (undefined)", () => {

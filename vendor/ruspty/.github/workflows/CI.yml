@@ -1,0 +1,164 @@
+name: CI
+env:
+  DEBUG: napi:*
+  APP_NAME: ruspty
+  MACOSX_DEPLOYMENT_TARGET: '10.13'
+
+permissions:
+  contents: read
+'on':
+  push:
+    branches:
+      - main
+    tags-ignore:
+      - '**'
+    paths-ignore:
+      - LICENSE
+      - '**/*.gitignore'
+      - .editorconfig
+      - docs/**
+  pull_request: null
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        settings:
+          - host: macos-14-large
+            target: x86_64-apple-darwin
+            description: "macOS 14"
+          - host: macos-latest
+            target: aarch64-apple-darwin
+            description: "macOS latest"
+          - host: ubuntu-22.04
+            target: x86_64-unknown-linux-gnu
+            description: "Ubuntu Container(22.04)"
+    name: Build ${{ matrix.settings.target }} on (${{ matrix.settings.description }})
+    runs-on: ${{ matrix.settings.host }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install container dependencies
+        if: matrix.settings.host == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl build-essential
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+          targets: ${{ matrix.settings.target }}
+      - name: Cache cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            .cargo-cache
+            target/
+          key: ${{ matrix.settings.target }}-cargo-${{ matrix.settings.host }}
+      - name: Install dependencies
+        run: npm ci
+      - name: Build
+        run: |-
+          set -e &&
+          npm run build &&
+          strip -x *.node
+        shell: bash
+      - name: Dump GLIBC symbols
+        if: matrix.settings.host == 'ubuntu-22.04'
+        run: |
+          objdump -T *.node | grep GLIBC | sed 's/.*GLIBC_\([.0-9]*\).*/\1/g' | sort -Vu > glibc_versions.txt
+          
+          if [ -s glibc_versions.txt ]; then
+            MAX_VERSION=$(cat glibc_versions.txt | sort -V | tail -n 1)
+            echo "Highest GLIBC version: $MAX_VERSION"
+            
+            if [ "$(echo "$MAX_VERSION 2.35" | awk '{if ($1 > $2) print "1"; else print "0"}')" -eq 1 ]; then
+              echo "Error: GLIBC version $MAX_VERSION is larger than 2.35"
+              exit 1
+            fi
+          fi
+        shell: bash
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: bindings-${{ matrix.settings.target }}
+          path: ${{ env.APP_NAME }}.*.node
+          if-no-files-found: error
+
+  test:
+    needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        settings:
+          - host: macos-14-large
+            target: x86_64-apple-darwin
+            description: "macOS 14"
+          - host: macos-latest
+            target: aarch64-apple-darwin
+            description: "macOS latest"
+          - host: ubuntu-22.04
+            target: x86_64-unknown-linux-gnu
+            description: "Ubuntu Container(22.04)"
+    name: Test on ${{ matrix.settings.target }} (${{ matrix.settings.description }})
+    runs-on: ${{ matrix.settings.host }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install container dependencies
+        if: matrix.settings.host == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl build-essential cgroup-tools coreutils
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: bindings-${{ matrix.settings.target }}
+      
+      - name: Test bindings
+        run: npm run test:ci
+
+  publish:
+    name: Publish
+    runs-on: ubuntu-22.04
+    if: github.ref == 'refs/heads/main'
+    needs:
+      - test
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+      - name: Install dependencies
+        run: npm ci
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      - name: Move artifacts
+        run: npm run artifacts
+      - name: Build wrapper
+        run: npm run build:wrapper
+      - name: List packages
+        run: ls -R ./npm
+        shell: bash
+      - name: Publish
+        run: npm publish --access public

@@ -1,0 +1,17 @@
+run = "npm run build && npm test"
+modules = ["rust-stable", "nodejs-20", "nix"]
+
+disableGuessImports = true
+disableInstallBeforeRun = true
+
+[nix]
+channel = "stable-23_11"
+
+[rules]
+
+[rules.formatter]
+
+[rules.formatter.fileExtensions]
+
+[rules.formatter.fileExtensions.".ts"]
+id = "module:nodejs-20:v24-20240117-0bd73cd/formatter:prettier"

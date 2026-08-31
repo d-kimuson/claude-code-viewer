@@ -1,5 +1,12 @@
 # syntax=docker/dockerfile:1.7
 
+# @replit/ruspty (used for the in-app terminal) ships no linux-arm64-gnu
+# prebuild on npm. Its optional sandbox module uses x86_64-only ptrace
+# register layouts (see vendor/ruspty/src/lib.rs patch), so on arm64 we
+# vendor + build it from source instead. amd64 keeps using the upstream
+# @replit/ruspty-linux-x64-gnu prebuild as before (this stage is a no-op).
+ARG TARGETARCH
+
 FROM node:24-slim AS base
 ENV PNPM_HOME=/usr/local/share/pnpm
 ENV PATH=${PNPM_HOME}:${PATH}
@@ -15,13 +22,6 @@ COPY . .
 RUN chmod +x scripts/docker-entrypoint.sh
 RUN --mount=type=cache,id=pnpm-store,target=/root/.pnpm-store \
     pnpm build && pnpm prune --prod --ignore-scripts
-
-# @replit/ruspty (used for the in-app terminal) ships no linux-arm64-gnu
-# prebuild on npm. Its optional sandbox module uses x86_64-only ptrace
-# register layouts (see vendor/ruspty/src/lib.rs patch), so on arm64 we
-# vendor + build it from source instead. amd64 keeps using the upstream
-# @replit/ruspty-linux-x64-gnu prebuild as before (this stage is a no-op).
-ARG TARGETARCH
 
 FROM base AS ruspty-builder-amd64
 RUN mkdir -p /out

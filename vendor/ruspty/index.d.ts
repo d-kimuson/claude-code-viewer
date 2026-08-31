@@ -68,7 +68,7 @@ export declare class Pty {
    * once (it will error the second time). The caller is responsible for closing the file
    * descriptor.
    */
-  takeControllerFd(): c_int
+  takeControllerFd(): number
   /**
    * Closes the owned file descriptor for the PTY controller. The Nodejs side must call this
    * when it is done with the file descriptor to avoid leaking FDs.

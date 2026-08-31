@@ -1,0 +1,50 @@
+{
+  "name": "@replit/ruspty",
+  "version": "3.7.0",
+  "main": "dist/wrapper.js",
+  "types": "dist/wrapper.d.ts",
+  "author": "Szymon Kaliski <hi@szymonkaliski.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/replit/ruspty.git"
+  },
+  "homepage": "https://github.com/replit/ruspty#readme",
+  "bugs": {
+    "url": "https://github.com/replit/ruspty/issues"
+  },
+  "napi": {
+    "name": "ruspty",
+    "triples": {
+      "defaults": false,
+      "additional": [
+        "x86_64-apple-darwin",
+        "aarch64-apple-darwin",
+        "x86_64-unknown-linux-gnu"
+      ]
+    }
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@napi-rs/cli": "^2.18.4",
+    "@napi-rs/triples": "^1.2.0",
+    "@types/jest": "^29.5.11",
+    "@types/node": "^20.14.2",
+    "prettier": "^3.2.4",
+    "tsup": "^8.3.5",
+    "typescript": "^5.4.5",
+    "vitest": "^1.6.1"
+  },
+  "scripts": {
+    "artifacts": "napi artifacts",
+    "build": "napi build --platform --release && npm run build:wrapper && npm run format",
+    "build:wrapper": "tsup",
+    "prepublishOnly": "napi prepublish -t npm",
+    "test": "vitest run",
+    "test:ci": "vitest --reporter=verbose --reporter=github-actions --allowOnly run",
+    "test:hang": "vitest run --reporter=hanging-process",
+    "universal": "napi universal",
+    "version": "napi version",
+    "release": "npm publish --access public",
+    "format": "npx prettier *.{js,ts} tests/*.ts --write"
+  }
+}

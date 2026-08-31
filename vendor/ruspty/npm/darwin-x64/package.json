@@ -1,0 +1,22 @@
+{
+  "name": "@replit/ruspty-darwin-x64",
+  "version": "3.7.0",
+  "os": [
+    "darwin"
+  ],
+  "cpu": [
+    "x64"
+  ],
+  "main": "ruspty.darwin-x64.node",
+  "files": [
+    "ruspty.darwin-x64.node"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">= 10"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/replit/ruspty.git"
+  }
+}

@@ -30,7 +30,7 @@ if ! direnv_reload "$CLAUDE_PROJECT_DIR" "SessionStart"; then
   log "FAILED: direnv reload"
 fi
 
-if [ "$CLAUDE_CODE_REMOTE" == "true" ]; then
+if [ "${CLAUDE_CODE_REMOTE:-}" == "true" ]; then
   log "setup remote env"
 
   if [ -n "${CLAUDE_ENV_FILE:-}" ]; then

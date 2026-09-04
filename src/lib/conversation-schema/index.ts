@@ -3,6 +3,7 @@ import { AgentNameEntrySchema } from "./entry/AgentNameEntrySchema.ts";
 import { AgentSettingEntrySchema } from "./entry/AgentSettingEntrySchema.ts";
 import { AiTitleEntrySchema } from "./entry/AiTitleEntrySchema.ts";
 import { type AssistantEntry, AssistantEntrySchema } from "./entry/AssistantEntrySchema.ts";
+import { AtisLatchEntrySchema } from "./entry/AtisLatchEntrySchema.ts";
 import { AttachmentEntrySchema } from "./entry/AttachmentEntrySchema.ts";
 import { BridgeSessionEntrySchema } from "./entry/BridgeSessionEntrySchema.ts";
 import { CustomTitleEntrySchema } from "./entry/CustomTitleEntrySchema.ts";
@@ -35,6 +36,7 @@ export const ConversationSchema = z.union([
   LastPromptEntrySchema,
   BridgeSessionEntrySchema,
   AttachmentEntrySchema,
+  AtisLatchEntrySchema,
 ]);
 
 export type Conversation = z.infer<typeof ConversationSchema>;

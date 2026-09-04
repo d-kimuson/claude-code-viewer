@@ -408,6 +408,7 @@ export const ConversationList: FC<ConversationListProps> = ({
         conv.type !== "summary" &&
         conv.type !== "file-history-snapshot" &&
         conv.type !== "queue-operation" &&
+        conv.type !== "atis-latch" &&
         conv.isSidechain;
 
       if (isSidechain) return false;
@@ -646,6 +647,7 @@ export const ConversationList: FC<ConversationListProps> = ({
       conversation.type !== "permission-mode" &&
       conversation.type !== "mode" &&
       conversation.type !== "bridge-session" &&
+      conversation.type !== "atis-latch" &&
       conversation.isSidechain;
 
     return (

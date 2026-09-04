@@ -268,4 +268,16 @@ describe("ConversationSchema", () => {
     });
     expect(result.success).toBe(true);
   });
+
+  test("accepts atis-latch entries", () => {
+    const data = ConversationSchema.parse({
+      type: "atis-latch",
+      atis: "",
+      sessionId: "0bcfc73d-69ee-40a8-8035-ed1883274d1c",
+    });
+    if (data.type !== "atis-latch") {
+      throw new Error("Expected atis-latch entry");
+    }
+    expect(data.atis).toBe("");
+  });
 });

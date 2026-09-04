@@ -109,6 +109,7 @@ export const useSidechain = (conversations: Conversation[]) => {
   const isRootSidechain = useCallback(
     (conversation: Conversation) => {
       if (
+        !("uuid" in conversation) ||
         conversation.type === "summary" ||
         conversation.type === "file-history-snapshot" ||
         conversation.type === "queue-operation" ||
@@ -121,7 +122,8 @@ export const useSidechain = (conversations: Conversation[]) => {
         conversation.type === "permission-mode" ||
         conversation.type === "mode" ||
         conversation.type === "bridge-session" ||
-        conversation.type === "attachment"
+        conversation.type === "attachment" ||
+        conversation.type === "atis-latch"
       ) {
         return false;
       }

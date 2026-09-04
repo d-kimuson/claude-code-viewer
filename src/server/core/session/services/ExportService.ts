@@ -1027,6 +1027,7 @@ export const generateSessionHtml = (
         conv.type !== "permission-mode" &&
         conv.type !== "mode" &&
         conv.type !== "bridge-session" &&
+        conv.type !== "atis-latch" &&
         conv.isSidechain === true &&
         conv.agentId !== undefined
       ) {

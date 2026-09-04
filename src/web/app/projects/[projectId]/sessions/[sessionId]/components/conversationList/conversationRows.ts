@@ -17,6 +17,7 @@ const noTimestampConversationTypes = new Set<Conversation["type"]>([
   "agent-name",
   "agent-setting",
   "attachment",
+  "atis-latch",
 ]);
 
 export const getConversationKey = (conversation: Conversation) => {
@@ -86,6 +87,10 @@ export const getConversationKey = (conversation: Conversation) => {
 
   if (conversation.type === "attachment") {
     return `attachment_${conversation.uuid}`;
+  }
+
+  if (conversation.type === "atis-latch") {
+    return `atis-latch_${conversation.sessionId}`;
   }
 
   conversation satisfies never;

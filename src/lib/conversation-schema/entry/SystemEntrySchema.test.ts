@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { SystemEntrySchema } from "./SystemEntrySchema.ts";
+import { KNOWN_SYSTEM_SUBTYPES, SystemEntrySchema } from "./SystemEntrySchema.ts";
 
 describe("SystemEntrySchema", () => {
   describe("turn_duration subtype", () => {
@@ -117,5 +117,112 @@ describe("SystemEntrySchema", () => {
       });
       expect(result.success).toBe(false);
     });
+  });
+});
+
+describe("SystemEntrySchema: unmodelled subtypes", () => {
+  test("accepts scheduled_task_fire (CLI 2.1.267, no dedicated schema)", () => {
+    const result = SystemEntrySchema.safeParse({
+      parentUuid: null,
+      isSidechain: false,
+      type: "system",
+      timestamp: "2026-09-14T10:45:16.005Z",
+      uuid: "9d5c86fd-66dc-45c1-b178-689b6acda6b4",
+      userType: "external",
+      entrypoint: "cli",
+      cwd: "/home/user/project",
+      sessionId: "11111111-1111-4111-8111-111111111111",
+      version: "2.1.267",
+      gitBranch: "main",
+      isMeta: false,
+      subtype: "scheduled_task_fire",
+      content: "Claude resuming /loop wakeup (Jun 24 8:39pm)",
+    });
+    expect(result.success).toBe(true);
+    if (!result.success || result.data.subtype !== "unknown-subtype") {
+      throw new Error("Expected unknown-subtype entry");
+    }
+    expect(result.data.originalSubtype).toBe("scheduled_task_fire");
+    expect(result.data.content).toBe("Claude resuming /loop wakeup (Jun 24 8:39pm)");
+  });
+
+  test("accepts model_refusal_fallback with level and extra fields", () => {
+    const result = SystemEntrySchema.safeParse({
+      parentUuid: null,
+      isSidechain: false,
+      type: "system",
+      timestamp: "2026-09-14T10:45:16.005Z",
+      uuid: "9d5c86fd-66dc-45c1-b178-689b6acda6b4",
+      userType: "external",
+      entrypoint: "cli",
+      cwd: "/home/user/project",
+      sessionId: "11111111-1111-4111-8111-111111111111",
+      version: "2.1.267",
+      gitBranch: "main",
+      isMeta: false,
+      subtype: "model_refusal_fallback",
+      level: "warning",
+      content: "Safeguards flagged this message; retrying with a fallback model.",
+      trigger: "refusal",
+      direction: "retry",
+      originalModel: "model-a",
+      fallbackModel: "model-b",
+      retractedMessageUuids: ["da5a8fdb-fef4-4f11-862e-86e2a286bb6b"],
+    });
+    expect(result.success).toBe(true);
+  });
+
+  test("accepts informational with level notice", () => {
+    const result = SystemEntrySchema.safeParse({
+      parentUuid: null,
+      isSidechain: false,
+      type: "system",
+      timestamp: "2026-09-14T10:45:16.005Z",
+      uuid: "9d5c86fd-66dc-45c1-b178-689b6acda6b4",
+      userType: "external",
+      entrypoint: "cli",
+      cwd: "/home/user/project",
+      sessionId: "11111111-1111-4111-8111-111111111111",
+      version: "2.1.267",
+      gitBranch: "main",
+      isMeta: false,
+      subtype: "informational",
+      level: "notice",
+      content: "Saved settings.",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  test("unknown subtype still requires the base fields", () => {
+    const result = SystemEntrySchema.safeParse({
+      type: "system",
+      subtype: "scheduled_task_fire",
+      content: "no base fields",
+    });
+    expect(result.success).toBe(false);
+  });
+
+  test("malformed entry of a modelled subtype is not rescued by the fallback", () => {
+    const result = SystemEntrySchema.safeParse({
+      parentUuid: null,
+      isSidechain: false,
+      type: "system",
+      timestamp: "2026-09-14T10:45:16.005Z",
+      uuid: "9d5c86fd-66dc-45c1-b178-689b6acda6b4",
+      userType: "external",
+      entrypoint: "cli",
+      cwd: "/home/user/project",
+      sessionId: "11111111-1111-4111-8111-111111111111",
+      version: "2.1.267",
+      gitBranch: "main",
+      isMeta: false,
+      subtype: "turn_duration", // requires durationMs
+    });
+    expect(result.success).toBe(false);
+  });
+
+  test("KNOWN_SYSTEM_SUBTYPES matches the modelled union", () => {
+    // union = modelled subtypes + unknown-subtype fallback + undefined-subtype catch-all
+    expect(SystemEntrySchema.options.length - 2).toBe(KNOWN_SYSTEM_SUBTYPES.size);
   });
 });

@@ -102,7 +102,7 @@ const getSearchableText = (conversation: Conversation | ErrorJsonl): string => {
   }
 
   if (conversation.type === "system" && "content" in conversation) {
-    return conversation.content;
+    return conversation.content ?? "";
   }
 
   if (conversation.type === "custom-title") {

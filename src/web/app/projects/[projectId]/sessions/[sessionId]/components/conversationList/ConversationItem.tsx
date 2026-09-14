@@ -36,10 +36,15 @@ const formatSystemMessage = (conversation: Extract<Conversation, { type: "system
   const lines: string[] = [];
 
   if ("subtype" in conversation && conversation.subtype) {
-    lines.push(`[${conversation.subtype}]`);
+    // Unmodelled subtypes are normalised to "unknown-subtype"; show the real one.
+    const subtype =
+      conversation.subtype === "unknown-subtype"
+        ? conversation.originalSubtype
+        : conversation.subtype;
+    lines.push(`[${subtype}]`);
   }
 
-  if ("level" in conversation && conversation.level) {
+  if ("level" in conversation && conversation.level !== undefined && conversation.level !== "") {
     lines.push(`Level: ${conversation.level}`);
   }
 

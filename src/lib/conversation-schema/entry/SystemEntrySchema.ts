@@ -74,7 +74,9 @@ const InformationalEntrySchema = BaseEntrySchema.extend({
   type: z.literal("system"),
   subtype: z.literal("informational"),
   content: z.string(),
-  level: z.enum(["info", "warning", "error"]).optional(),
+  // Free-form: the CLI keeps adding severities (2.1.267 writes "notice") and
+  // the value is only ever displayed.
+  level: z.string().optional(),
 });
 
 // Bridge status entry (Claude Code v2.1.156+ remote-control sessions).
@@ -120,6 +122,38 @@ const ApiErrorEntrySchema = BaseEntrySchema.extend({
   maxRetries: z.number().optional(),
 });
 
+// Subtypes modelled above. The unknown-subtype fallback refuses these, so a
+// malformed entry of a modelled subtype still fails validation.
+export const KNOWN_SYSTEM_SUBTYPES = new Set<string>([
+  "stop_hook_summary",
+  "local_command",
+  "turn_duration",
+  "compact_boundary",
+  "api_error",
+  "away_summary",
+  "informational",
+  "bridge_status",
+]);
+
+// Catch-all for system subtypes the viewer does not model yet
+// (`scheduled_task_fire`, `model_refusal_fallback`, ... — Claude Code keeps
+// adding them). Base fields are still required; `content` and `level` are
+// what the UI renders for a generic system entry. The subtype is normalised
+// to the literal "unknown-subtype" (original kept in `originalSubtype`) so
+// that `subtype === "..."` narrowing on the modelled members stays exact.
+const UnknownSubtypeSystemEntrySchema = BaseEntrySchema.extend({
+  type: z.literal("system"),
+  subtype: z.string().refine((subtype) => !KNOWN_SYSTEM_SUBTYPES.has(subtype), {
+    message: "known system subtypes must match their own schema",
+  }),
+  content: z.string().optional(),
+  level: z.string().optional(),
+}).transform(({ subtype, ...entry }) => ({
+  ...entry,
+  subtype: "unknown-subtype" as const,
+  originalSubtype: subtype,
+}));
+
 export const SystemEntrySchema = z.union([
   StopHookSummaryEntrySchema,
   LocalCommandEntrySchema,
@@ -129,6 +163,7 @@ export const SystemEntrySchema = z.union([
   AwaySummaryEntrySchema,
   InformationalEntrySchema,
   BridgeStatusEntrySchema,
+  UnknownSubtypeSystemEntrySchema, // any subtype not modelled above
   SystemEntryWithContentSchema, // Must be last (catch-all for undefined subtype)
 ]);
 

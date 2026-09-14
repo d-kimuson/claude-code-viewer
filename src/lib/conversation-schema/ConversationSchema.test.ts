@@ -268,4 +268,47 @@ describe("ConversationSchema", () => {
     });
     expect(result.success).toBe(true);
   });
+
+  test("accepts <synthetic> assistant entries whose usage fields are null (rate-limit notices)", () => {
+    const result = ConversationSchema.safeParse({
+      parentUuid: "7931b276-95f1-474f-aa36-a0e951542d94",
+      isSidechain: false,
+      type: "assistant",
+      uuid: "9d5c86fd-66dc-45c1-b178-689b6acda6b4",
+      timestamp: "2026-09-14T10:45:16.005Z",
+      userType: "external",
+      entrypoint: "cli",
+      cwd: "/home/user/project",
+      sessionId: "11111111-1111-4111-8111-111111111111",
+      version: "2.1.260",
+      gitBranch: "main",
+      isApiErrorMessage: true,
+      requestId: "req_011Cf3CLSsS6kb547nLnATUN",
+      message: {
+        id: "1f5543d7-c573-44ad-acbe-afd35dcb4743",
+        container: null,
+        model: "<synthetic>",
+        role: "assistant",
+        stop_reason: "stop_sequence",
+        stop_sequence: "",
+        type: "message",
+        content: [
+          { type: "text", text: "You've hit your session limit · resets 2:40pm (Europe/Moscow)" },
+        ],
+        usage: {
+          input_tokens: 0,
+          output_tokens: 0,
+          cache_creation_input_tokens: 0,
+          cache_read_input_tokens: 0,
+          server_tool_use: { web_search_requests: 0, web_fetch_requests: 0 },
+          service_tier: null,
+          cache_creation: { ephemeral_1h_input_tokens: 0, ephemeral_5m_input_tokens: 0 },
+          inference_geo: null,
+          iterations: null,
+          speed: null,
+        },
+      },
+    });
+    expect(result.success).toBe(true);
+  });
 });

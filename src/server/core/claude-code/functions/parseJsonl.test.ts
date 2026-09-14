@@ -195,7 +195,9 @@ describe("parseJsonl", () => {
 
     it("スキーマに合わないオブジェクトをErrorJsonlとして返す", () => {
       const jsonl = JSON.stringify({
-        type: "unknown",
+        // malformed entry of a modelled type (base fields missing); an unmodelled
+        // `type` is no longer an error — see the "unknown entry types" block below
+        type: "user",
         someField: "value",
       });
 
@@ -236,7 +238,7 @@ describe("parseJsonl", () => {
           version: "1.0.0",
           parentUuid: null,
         }),
-        JSON.stringify({ type: "invalid-schema" }),
+        JSON.stringify({ type: "summary" }), // modelled type, required fields missing
         JSON.stringify({
           type: "summary",
           summary: "Summary text",
@@ -393,7 +395,7 @@ describe("parseJsonl", () => {
           version: "1.0.0",
           parentUuid: null,
         }),
-        JSON.stringify({ type: "invalid", data: "schema error" }),
+        JSON.stringify({ type: "bridge-session", data: "schema error" }),
         JSON.stringify({
           type: "user",
           uuid: "550e8400-e29b-41d4-a716-446655440001",
@@ -406,7 +408,7 @@ describe("parseJsonl", () => {
           version: "1.0.0",
           parentUuid: null,
         }),
-        JSON.stringify({ type: "another-invalid" }),
+        JSON.stringify({ type: "summary" }),
       ].join("\n");
 
       const result = parseJsonl(jsonl);
@@ -419,7 +421,7 @@ describe("parseJsonl", () => {
     });
 
     it("空行フィルタ後の行番号が正確に記録される", () => {
-      const jsonl = ["", "", JSON.stringify({ type: "invalid-schema" })].join("\n");
+      const jsonl = ["", "", JSON.stringify({ type: "user" })].join("\n");
 
       const result = parseJsonl(jsonl);
 
@@ -649,5 +651,27 @@ describe("parseJsonl", () => {
       const entry = expectUserEntry(result[0]);
       expect(entry.parentUuid).toBeNull();
     });
+  });
+});
+
+describe("parseJsonl: unknown entry types", () => {
+  it("does not turn a not-yet-modelled inert entry into x-error (#231)", () => {
+    const line = JSON.stringify({
+      type: "atis-latch",
+      atis: "",
+      sessionId: "0bcfc73d-69ee-40a8-8035-ed1883274d1c",
+    });
+    const [entry] = parseJsonl(line);
+    expect(entry?.type).toBe("unknown-entry");
+    if (entry?.type !== "unknown-entry") {
+      throw new Error("Expected unknown-entry");
+    }
+    expect(entry.originalType).toBe("atis-latch");
+  });
+
+  it("still reports malformed JSON and malformed modelled entries as x-error", () => {
+    const [broken, malformed] = parseJsonl('{not json\n{"type":"bridge-session","sessionId":"s"}');
+    expect(broken?.type).toBe("x-error");
+    expect(malformed?.type).toBe("x-error");
   });
 });

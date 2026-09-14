@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { ConversationSchema } from "./index.ts";
+import { ConversationSchema, KNOWN_ENTRY_TYPES } from "./index.ts";
 
 describe("ConversationSchema", () => {
   test("accepts ai-title entries", () => {
@@ -267,5 +267,45 @@ describe("ConversationSchema", () => {
       gitBranch: "main",
     });
     expect(result.success).toBe(true);
+  });
+
+  test("accepts atis-latch entries as unknown-entry (#231)", () => {
+    const data = ConversationSchema.parse({
+      type: "atis-latch",
+      atis: "",
+      sessionId: "0bcfc73d-69ee-40a8-8035-ed1883274d1c",
+    });
+    if (data.type !== "unknown-entry") {
+      throw new Error("Expected unknown-entry");
+    }
+    expect(data.originalType).toBe("atis-latch");
+    expect(data.sessionId).toBe("0bcfc73d-69ee-40a8-8035-ed1883274d1c");
+    expect(data.raw).toEqual({ atis: "", sessionId: "0bcfc73d-69ee-40a8-8035-ed1883274d1c" });
+  });
+
+  test("accepts any not-yet-modelled inert entry type as unknown-entry", () => {
+    const result = ConversationSchema.safeParse({
+      type: "some-future-entry",
+      sessionId: "0bcfc73d-69ee-40a8-8035-ed1883274d1c",
+      payload: { nested: true },
+    });
+    expect(result.success).toBe(true);
+    expect(result.success && result.data.type).toBe("unknown-entry");
+  });
+
+  test("still rejects malformed entries of a modelled type (fallback must not hide schema drift)", () => {
+    // bridge-session without its required bridgeSessionId
+    expect(ConversationSchema.safeParse({ type: "bridge-session", sessionId: "s" }).success).toBe(
+      false,
+    );
+    // user entry missing every required base field
+    expect(ConversationSchema.safeParse({ type: "user" }).success).toBe(false);
+  });
+
+  test("KNOWN_ENTRY_TYPES matches the modelled union", () => {
+    // Every modelled type must be listed, otherwise a malformed entry of that
+    // type would be swallowed by the unknown-entry fallback.
+    const modelledOptions = ConversationSchema.options.length - 1; // last option is the fallback
+    expect(modelledOptions).toBe(KNOWN_ENTRY_TYPES.size);
   });
 });

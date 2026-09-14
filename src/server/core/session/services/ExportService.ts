@@ -390,6 +390,7 @@ const buildSidechainData = (conversations: Array<Conversation>): SidechainData =
       conv.type !== "permission-mode" &&
       conv.type !== "mode" &&
       conv.type !== "bridge-session" &&
+      conv.type !== "unknown-entry" &&
       conv.isSidechain === true,
   ) as Array<Extract<Conversation, { type: "user" | "assistant" | "system" }>>;
 
@@ -1027,6 +1028,7 @@ export const generateSessionHtml = (
         conv.type !== "permission-mode" &&
         conv.type !== "mode" &&
         conv.type !== "bridge-session" &&
+        conv.type !== "unknown-entry" &&
         conv.isSidechain === true &&
         conv.agentId !== undefined
       ) {

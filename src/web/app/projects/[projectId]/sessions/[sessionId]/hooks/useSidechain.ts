@@ -24,7 +24,8 @@ export const useSidechain = (conversations: Conversation[]) => {
             conv.type !== "permission-mode" &&
             conv.type !== "mode" &&
             conv.type !== "bridge-session" &&
-            conv.type !== "attachment",
+            conv.type !== "attachment" &&
+            conv.type !== "unknown-entry",
         )
         .filter((conv) => conv.isSidechain === true),
     [conversations],
@@ -121,7 +122,8 @@ export const useSidechain = (conversations: Conversation[]) => {
         conversation.type === "permission-mode" ||
         conversation.type === "mode" ||
         conversation.type === "bridge-session" ||
-        conversation.type === "attachment"
+        conversation.type === "attachment" ||
+        conversation.type === "unknown-entry"
       ) {
         return false;
       }

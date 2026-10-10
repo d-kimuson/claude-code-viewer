@@ -2,6 +2,7 @@ import { describe, it } from "@effect/vitest";
 import { Effect } from "effect";
 import { Hono } from "hono";
 import { expect } from "vitest";
+import { AuthThrottleService } from "../../core/platform/services/AuthThrottleService.ts";
 import { CcvOptionsService } from "../../core/platform/services/CcvOptionsService.ts";
 import type { HonoContext } from "../app.ts";
 import { AuthMiddleware } from "./auth.middleware.ts";
@@ -49,7 +50,11 @@ describe("auth required middleware", () => {
         ),
       );
       expect(authorized.status).toBe(200);
-    }).pipe(Effect.provide(AuthMiddleware.Live), Effect.provide(CcvOptionsService.Live)),
+    }).pipe(
+      Effect.provide(AuthMiddleware.Live),
+      Effect.provide(AuthThrottleService.Live),
+      Effect.provide(CcvOptionsService.Live),
+    ),
   );
 
   it.live("accepts bearer token authorization when password is configured", () =>
@@ -77,7 +82,11 @@ describe("auth required middleware", () => {
         ),
       );
       expect(unauthorized.status).toBe(401);
-    }).pipe(Effect.provide(AuthMiddleware.Live), Effect.provide(CcvOptionsService.Live)),
+    }).pipe(
+      Effect.provide(AuthMiddleware.Live),
+      Effect.provide(AuthThrottleService.Live),
+      Effect.provide(CcvOptionsService.Live),
+    ),
   );
 
   it.live("allows access to routes defined before authRequired", () =>
@@ -86,7 +95,64 @@ describe("auth required middleware", () => {
 
       const response = yield* Effect.promise(() => Promise.resolve(app.request("/api/auth/check")));
       expect(response.status).toBe(200);
-    }).pipe(Effect.provide(AuthMiddleware.Live), Effect.provide(CcvOptionsService.Live)),
+    }).pipe(
+      Effect.provide(AuthMiddleware.Live),
+      Effect.provide(AuthThrottleService.Live),
+      Effect.provide(CcvOptionsService.Live),
+    ),
+  );
+
+  it.live("throttles repeated wrong bearer tokens", () =>
+    Effect.gen(function* () {
+      const { app } = yield* createTestApp("secret");
+      const requestWithBearer = (token: string) =>
+        Effect.promise(() =>
+          Promise.resolve(
+            app.request("/api/projects", { headers: { Authorization: `Bearer ${token}` } }),
+          ),
+        );
+
+      for (let i = 0; i < 5; i++) {
+        const response = yield* requestWithBearer("wrong");
+        expect(response.status).toBe(401);
+      }
+
+      const throttled = yield* requestWithBearer("wrong");
+      expect(throttled.status).toBe(429);
+      expect(throttled.headers.get("Retry-After")).toBe("1");
+
+      // Even the right password is rejected while locked out
+      const lockedOut = yield* requestWithBearer("secret");
+      expect(lockedOut.status).toBe(429);
+    }).pipe(
+      Effect.provide(AuthMiddleware.Live),
+      Effect.provide(AuthThrottleService.Live),
+      Effect.provide(CcvOptionsService.Live),
+    ),
+  );
+
+  it.live("does not count cookie failures towards the throttle", () =>
+    Effect.gen(function* () {
+      const { app } = yield* createTestApp("secret");
+
+      for (let i = 0; i < 6; i++) {
+        const response = yield* Effect.promise(() =>
+          Promise.resolve(app.request("/api/projects", { headers: { Cookie: "ccv-session=bad" } })),
+        );
+        expect(response.status).toBe(401);
+      }
+
+      const withBearer = yield* Effect.promise(() =>
+        Promise.resolve(
+          app.request("/api/projects", { headers: { Authorization: "Bearer secret" } }),
+        ),
+      );
+      expect(withBearer.status).toBe(200);
+    }).pipe(
+      Effect.provide(AuthMiddleware.Live),
+      Effect.provide(AuthThrottleService.Live),
+      Effect.provide(CcvOptionsService.Live),
+    ),
   );
 
   it.live("allows API access when password is not configured", () =>
@@ -95,6 +161,10 @@ describe("auth required middleware", () => {
 
       const response = yield* Effect.promise(() => Promise.resolve(app.request("/api/projects")));
       expect(response.status).toBe(200);
-    }).pipe(Effect.provide(AuthMiddleware.Live), Effect.provide(CcvOptionsService.Live)),
+    }).pipe(
+      Effect.provide(AuthMiddleware.Live),
+      Effect.provide(AuthThrottleService.Live),
+      Effect.provide(CcvOptionsService.Live),
+    ),
   );
 });

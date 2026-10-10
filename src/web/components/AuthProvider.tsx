@@ -3,6 +3,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { useAtomValue, useSetAtom } from "jotai";
 import { type FC, type PropsWithChildren, useEffect } from "react";
 import { authAtom } from "@/lib/auth/store/authAtom";
+import { assertLoginSucceeded } from "@/web/components/loginResponse";
 import { honoClient } from "@/web/lib/api/client";
 import { authCheckQuery } from "@/web/lib/api/queries";
 
@@ -31,9 +32,10 @@ export const useAuth = () => {
   const navigate = useNavigate();
   const loginMutation = useMutation({
     mutationFn: async (password: string) => {
-      await honoClient.api.auth.login.$post({
+      const response = await honoClient.api.auth.login.$post({
         json: { password },
       });
+      await assertLoginSucceeded(response);
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({

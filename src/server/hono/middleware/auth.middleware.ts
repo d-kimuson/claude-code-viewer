@@ -2,6 +2,10 @@ import { randomBytes, timingSafeEqual } from "node:crypto";
 import { Context, Effect, Layer, Runtime } from "effect";
 import { getCookie } from "hono/cookie";
 import { createMiddleware } from "hono/factory";
+import {
+  AuthThrottleService,
+  type IAuthThrottleService,
+} from "../../core/platform/services/AuthThrottleService.ts";
 import { CcvOptionsService } from "../../core/platform/services/CcvOptionsService.ts";
 import type { InferEffect } from "../../lib/effect/types.ts";
 import type { HonoContext } from "../app.ts";
@@ -35,6 +39,8 @@ const createAuthRequiredMiddleware = (
   authEnabled: boolean,
   validSessionToken: string,
   authPassword: string | undefined,
+  throttle: IAuthThrottleService,
+  runPromise: <A, E>(effect: Effect.Effect<A, E>) => Promise<A>,
 ) => {
   return createMiddleware<HonoContext>(async (c, next) => {
     // Skip auth for non-API routes (let frontend handle auth state)
@@ -53,21 +59,33 @@ const createAuthRequiredMiddleware = (
       sessionToken !== undefined &&
       validSessionToken !== "" &&
       safeEqual(sessionToken, validSessionToken);
-    const bearerAuthorized =
-      authPassword !== undefined &&
-      bearerToken !== undefined &&
-      safeEqual(bearerToken, authPassword);
-
-    if (!cookieAuthorized && !bearerAuthorized) {
-      return c.json({ error: "Unauthorized" }, 401);
+    if (cookieAuthorized) {
+      return next();
     }
 
-    await next();
+    // A bearer token is the raw password, so a wrong one is a password guess: throttle it.
+    if (bearerToken !== undefined) {
+      const attempt = await runPromise(throttle.beginAttempt);
+      if (!attempt.allowed) {
+        c.header("Retry-After", String(Math.ceil(attempt.retryAfterMs / 1000)));
+        return c.json({ error: "Too many failed attempts" }, 429);
+      }
+
+      if (authPassword !== undefined && safeEqual(bearerToken, authPassword)) {
+        await runPromise(throttle.recordSuccess);
+        return next();
+      }
+
+      await runPromise(throttle.recordFailure);
+    }
+
+    return c.json({ error: "Unauthorized" }, 401);
   });
 };
 
 const LayerImpl = Effect.gen(function* () {
   const ccvOptionsService = yield* CcvOptionsService;
+  const throttle = yield* AuthThrottleService;
   const runtime = yield* Effect.runtime<CcvOptionsService>();
   const runPromise = Runtime.runPromise(runtime);
 
@@ -88,7 +106,13 @@ const LayerImpl = Effect.gen(function* () {
 
     const { authEnabled, validSessionToken, authPassword } = await runPromise(getAuthState);
 
-    return createAuthRequiredMiddleware(authEnabled, validSessionToken, authPassword)(c, next);
+    return createAuthRequiredMiddleware(
+      authEnabled,
+      validSessionToken,
+      authPassword,
+      throttle,
+      runPromise,
+    )(c, next);
   });
 
   return {

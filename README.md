@@ -79,6 +79,18 @@ Options:
   --base-path <path>               URL base path to serve the app under
 ```
 
+### Docker
+
+A multi-arch image (`linux/amd64`, `linux/arm64`) is published to GitHub Container Registry on every release:
+
+```bash
+docker run -d -p 127.0.0.1:3400:3400 -v ~/.claude:/root/.claude ghcr.io/d-kimuson/claude-code-viewer:latest
+```
+
+The port is bound to loopback because authentication is disabled unless a password is configured. To expose the service beyond localhost, set `CCV_PASSWORD` (`-e CCV_PASSWORD=...`) and bind to the desired interface.
+
+Tags follow the release version (`latest`, `0.8`, `0.8.2`, ...). See `docker-compose.yml` for a Compose setup and the supported environment variables.
+
 ### Remote Access via Tailscale (Mobile / PWA)
 
 Claude Code Viewer works great as a persistent server you access from your phone. A convenient approach is to run it on a always-on machine and expose it over [Tailscale](https://tailscale.com/) with HTTPS:

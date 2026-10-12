@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
+import { generateUuid } from "@/lib/uuid";
 import {
   addVirtualMessage,
   removeVirtualMessage,
@@ -29,7 +30,7 @@ export const useCreateSessionProcessMutation = (projectId: string, onSuccess?: (
       const { ccOptions, ...input } = options.input;
       const baseSessionId = options.baseSessionId;
       const resume = baseSessionId !== undefined && baseSessionId !== "";
-      const sessionId = resume ? baseSessionId : crypto.randomUUID();
+      const sessionId = resume ? baseSessionId : generateUuid();
 
       // Snapshot conversation count for resume case (new sessions have no prior conversations)
       const conversationCount = resume

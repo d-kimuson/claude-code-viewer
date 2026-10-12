@@ -1,5 +1,6 @@
 import { Trans, useLingui } from "@lingui/react";
 import { type FC, useEffect, useState } from "react";
+import { generateUuid } from "@/lib/uuid";
 import type { NewSchedulerJob, SchedulerJob } from "@/server/core/scheduler/schema";
 import { InlineCompletion } from "@/web/app/projects/[projectId]/components/chatForm/InlineCompletion";
 import { useMessageCompletion } from "@/web/app/projects/[projectId]/components/chatForm/useMessageCompletion";
@@ -132,7 +133,7 @@ export const SchedulerJobDialog: FC<SchedulerJobDialogProps> = ({
       message: {
         content: messageContent,
         projectId,
-        sessionId: crypto.randomUUID(),
+        sessionId: generateUuid(),
         resume: false,
       },
       enabled,

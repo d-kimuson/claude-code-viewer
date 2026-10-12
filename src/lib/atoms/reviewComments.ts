@@ -2,6 +2,7 @@ import { useAtom } from "jotai";
 import { atomWithStorage, createJSONStorage } from "jotai/utils";
 import { useCallback, useMemo } from "react";
 import { z } from "zod";
+import { generateUuid } from "../uuid.ts";
 
 const lineTypeSchema = z.enum(["added", "deleted", "unchanged", "hunk", "context"]);
 
@@ -90,7 +91,7 @@ export const useReviewComments = (sessionId: string) => {
     (comment: Omit<ReviewComment, "id" | "createdAt">) => {
       const newComment: ReviewComment = {
         ...comment,
-        id: crypto.randomUUID(),
+        id: generateUuid(),
         createdAt: Date.now(),
       };
       setStore((prev) => addCommentToStore(prev, sessionId, newComment));

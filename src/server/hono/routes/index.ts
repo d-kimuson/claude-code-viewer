@@ -24,6 +24,7 @@ import { notificationRoutes } from "./notificationRoutes.ts";
 import { projectRoutes } from "./projectRoutes.ts";
 import { schedulerRoutes } from "./schedulerRoutes.ts";
 import { searchRoutes } from "./searchRoutes.ts";
+import { sidebarLayoutRoutes } from "./sidebarLayoutRoutes.ts";
 import { sseRoutes } from "./sseRoutes.ts";
 import { tasksRoutes } from "./tasksRoutes.ts";
 
@@ -31,6 +32,7 @@ const API_ONLY_ALLOWED_PREFIXES = [
   "/api/version",
   "/api/config",
   "/api/projects",
+  "/api/sidebar-layout",
   "/api/claude-code",
   "/api/search",
   "/api/notifications",
@@ -124,6 +126,7 @@ export const routes = (app: HonoAppType, options: CliOptions) =>
 
         // core routes
         .route("/api/projects", yield* projectRoutes)
+        .route("/api/sidebar-layout", yield* sidebarLayoutRoutes)
         .route("/api/claude-code", yield* claudeCodeRoutes)
         .route("/api/scheduler", yield* schedulerRoutes)
         .route("/api/file-system", yield* fileSystemRoutes)

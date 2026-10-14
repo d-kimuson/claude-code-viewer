@@ -2,10 +2,10 @@ import { Trans } from "@lingui/react";
 import { InfoIcon, SearchIcon } from "lucide-react";
 import { type FC, Suspense, useState } from "react";
 import { NotificationBell } from "@/web/app/components/NotificationBell";
+import { ProjectTree } from "@/web/components/projectTree/ProjectTree";
 import { useSearch } from "@/web/components/SearchProvider";
 import { SystemInfoCard } from "@/web/components/SystemInfoCard";
 import { Dialog, DialogContent, DialogTitle } from "@/web/components/ui/dialog";
-import { ProjectList } from "./components/ProjectList";
 import { SetupProjectDialog } from "./components/SetupProjectDialog";
 
 export const ProjectsPage: FC = () => {
@@ -73,7 +73,7 @@ export const ProjectsPage: FC = () => {
                   </div>
                 }
               >
-                <ProjectList />
+                <ProjectTree />
               </Suspense>
             </section>
           </main>

@@ -419,3 +419,14 @@ export const fileContentQuery = (projectId: string, filePath: string) =>
       return await response.json();
     },
   }) as const;
+
+export const sidebarLayoutQuery = {
+  queryKey: ["sidebar-layout"],
+  queryFn: async () => {
+    const response = await honoClient.api["sidebar-layout"].$get();
+    if (!response.ok) throw new Error((await response.json()).message);
+    return response.json();
+  },
+  refetchOnWindowFocus: true,
+  refetchInterval: 30000,
+};

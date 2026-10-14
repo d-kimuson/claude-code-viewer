@@ -43,6 +43,9 @@
   },
   "dependencies": {
     "@anthropic-ai/claude-code": "2.1.220",
+    "@dnd-kit/core": "6.3.1",
+    "@dnd-kit/sortable": "10.0.0",
+    "@dnd-kit/utilities": "3.2.2",
     "@replit/ruspty": "3.7.0"
   },
   "devDependencies": {

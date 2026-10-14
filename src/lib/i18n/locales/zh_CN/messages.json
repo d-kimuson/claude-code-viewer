@@ -27,7 +27,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        227
+        228
       ]
     ],
     "translation": "关闭侧边栏"
@@ -146,7 +146,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        216
+        217
       ]
     ],
     "translation": "新建聊天"
@@ -1155,6 +1155,14 @@
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
         212
+      ],
+      [
+        "src/web/components/projectTree/GroupSessions.tsx",
+        72
+      ],
+      [
+        "src/web/components/projectTree/ProjectTree.tsx",
+        166
       ]
     ],
     "translation": "加载中..."
@@ -2519,61 +2527,6 @@
     ],
     "translation": "设置新项目"
   },
-  "project_list.last_modified": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/web/app/projects/components/ProjectList.tsx",
-        54
-      ]
-    ],
-    "translation": "最后修改时间:"
-  },
-  "project_list.messages": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/web/app/projects/components/ProjectList.tsx",
-        63
-      ]
-    ],
-    "translation": "消息数:"
-  },
-  "project_list.no_projects.description": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/web/app/projects/components/ProjectList.tsx",
-        31
-      ]
-    ],
-    "translation": "在您的 ~/.claude/projects 目录中未找到 Claude Code 项目。与 Claude Code 开始对话以创建您的第一个项目。"
-  },
-  "project_list.no_projects.title": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/web/app/projects/components/ProjectList.tsx",
-        28
-      ]
-    ],
-    "translation": "未找到项目"
-  },
-  "project_list.view_conversations": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/web/app/projects/components/ProjectList.tsx",
-        69
-      ]
-    ],
-    "translation": "查看对话"
-  },
   "project_switcher.no_project": {
     "placeholders": {},
     "comments": [],
@@ -3339,6 +3292,10 @@
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
         173
+      ],
+      [
+        "src/web/components/projectTree/GroupSessions.tsx",
+        122
       ]
     ],
     "translation": "已暂停"
@@ -3358,6 +3315,10 @@
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
         171
+      ],
+      [
+        "src/web/components/projectTree/GroupSessions.tsx",
+        120
       ]
     ],
     "translation": "运行中"
@@ -3373,6 +3334,10 @@
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
         214
+      ],
+      [
+        "src/web/components/projectTree/GroupSessions.tsx",
+        136
       ]
     ],
     "translation": "加载更多"
@@ -3609,7 +3574,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        138
+        142
       ],
       [
         "src/web/components/GlobalSidebar.tsx",
@@ -3751,7 +3716,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        153
+        157
       ]
     ],
     "translation": "通知"
@@ -3889,7 +3854,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        146
+        150
       ]
     ],
     "translation": "会话显示"
@@ -4110,7 +4075,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        95
+        103
       ]
     ],
     "translation": "返回项目列表"
@@ -4184,7 +4149,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        53
+        61
       ]
     ],
     "translation": "显示 MCP 服务器设置"
@@ -4195,7 +4160,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        68
+        76
       ]
     ],
     "translation": "显示定时任务"
@@ -4206,7 +4171,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        43
+        51
       ]
     ],
     "translation": "显示会话列表"
@@ -4217,7 +4182,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        59
+        67
       ]
     ],
     "translation": "显示任务列表"
@@ -4228,7 +4193,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        62
+        63
       ]
     ],
     "translation": "MCP"
@@ -4240,7 +4205,11 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        195
+        61
+      ],
+      [
+        "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
+        45
       ]
     ],
     "translation": "项目列表"
@@ -4251,7 +4220,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        64
+        65
       ]
     ],
     "translation": "调度器"
@@ -4262,7 +4231,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        61
+        62
       ]
     ],
     "translation": "会话列表"
@@ -4273,7 +4242,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        65
+        66
       ]
     ],
     "translation": "设置"
@@ -4284,7 +4253,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        66
+        67
       ]
     ],
     "translation": "系统信息"
@@ -4295,7 +4264,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        63
+        64
       ]
     ],
     "translation": "任务列表"
@@ -4516,6 +4485,78 @@
       ]
     ],
     "translation": "Claude Code Viewer"
+  },
+  "tree.actions": {
+    "message": "Project actions",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/components/projectTree/ProjectTree.tsx",
+        116
+      ]
+    ],
+    "translation": "项目操作"
+  },
+  "tree.hidden": {
+    "message": "Hidden",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/components/projectTree/ProjectTree.tsx",
+        214
+      ]
+    ],
+    "translation": "已隐藏"
+  },
+  "tree.hide": {
+    "message": "Hide",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/components/projectTree/ProjectTree.tsx",
+        138
+      ]
+    ],
+    "translation": "隐藏"
+  },
+  "tree.no_project": {
+    "message": "No project sessions",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/components/projectTree/ProjectTree.tsx",
+        60
+      ]
+    ],
+    "translation": "无项目会话"
+  },
+  "tree.reorder": {
+    "message": "Reorder project",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/components/projectTree/ProjectTree.tsx",
+        105
+      ]
+    ],
+    "translation": "拖动项目排序"
+  },
+  "tree.unhide": {
+    "message": "Unhide",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/components/projectTree/ProjectTree.tsx",
+        136
+      ]
+    ],
+    "translation": "取消隐藏"
   },
   "usage_mode.api.description": {
     "message": "You use Claude Code with API keys. All features are available.",

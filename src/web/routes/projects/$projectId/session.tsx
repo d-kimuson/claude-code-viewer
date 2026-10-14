@@ -10,7 +10,7 @@ const rightPanelTabSchema = z.enum(["explorer", "git", "review", "browser"]);
 
 const sessionSearchSchema = z.object({
   sessionId: z.string().optional(),
-  tab: tabSchema.optional().default("sessions"),
+  tab: tabSchema.optional().default("projects"),
   rightPanel: z.boolean().optional(),
   rightPanelTab: rightPanelTabSchema.optional(),
 });

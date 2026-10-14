@@ -3,12 +3,14 @@ import { Link } from "@tanstack/react-router";
 import {
   ArrowLeftIcon,
   CalendarClockIcon,
+  FolderTreeIcon,
   ListTodoIcon,
   MessageSquareIcon,
   PlugIcon,
 } from "lucide-react";
 import { type FC, Suspense, useMemo } from "react";
 import { GlobalSidebar, type SidebarTab } from "@/web/components/GlobalSidebar";
+import { ProjectTree } from "@/web/components/projectTree/ProjectTree";
 import {
   Tooltip,
   TooltipContent,
@@ -37,6 +39,12 @@ export const SessionSidebar: FC<{
   const activeSessionId = currentSessionId ?? "";
   const additionalTabs: SidebarTab[] = useMemo(
     () => [
+      {
+        id: "projects",
+        icon: FolderTreeIcon,
+        title: <Trans id="sidebar.tab.projects" message="Projects" />,
+        content: <ProjectTree currentProjectId={projectId} currentSessionId={activeSessionId} />,
+      },
       {
         id: "sessions",
         icon: MessageSquareIcon,

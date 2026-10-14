@@ -27,7 +27,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        227
+        228
       ]
     ],
     "translation": "Close Sidebar"
@@ -146,7 +146,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        216
+        217
       ]
     ],
     "translation": "New Chat"
@@ -1155,6 +1155,14 @@
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
         212
+      ],
+      [
+        "src/web/components/projectTree/GroupSessions.tsx",
+        72
+      ],
+      [
+        "src/web/components/projectTree/ProjectTree.tsx",
+        166
       ]
     ],
     "translation": "Loading..."
@@ -2519,61 +2527,6 @@
     ],
     "translation": "Set Up New Project"
   },
-  "project_list.last_modified": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/web/app/projects/components/ProjectList.tsx",
-        54
-      ]
-    ],
-    "translation": "Last Modified: "
-  },
-  "project_list.messages": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/web/app/projects/components/ProjectList.tsx",
-        63
-      ]
-    ],
-    "translation": "Messages: "
-  },
-  "project_list.no_projects.description": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/web/app/projects/components/ProjectList.tsx",
-        31
-      ]
-    ],
-    "translation": "No Claude Code projects found in your ~/.claude/projects directory. Start a conversation with Claude Code to set up your first project."
-  },
-  "project_list.no_projects.title": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/web/app/projects/components/ProjectList.tsx",
-        28
-      ]
-    ],
-    "translation": "No Projects Found"
-  },
-  "project_list.view_conversations": {
-    "placeholders": {},
-    "comments": [],
-    "origin": [
-      [
-        "src/web/app/projects/components/ProjectList.tsx",
-        69
-      ]
-    ],
-    "translation": "View Conversations"
-  },
   "project_switcher.no_project": {
     "placeholders": {},
     "comments": [],
@@ -3339,6 +3292,10 @@
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
         173
+      ],
+      [
+        "src/web/components/projectTree/GroupSessions.tsx",
+        122
       ]
     ],
     "translation": "Paused"
@@ -3358,6 +3315,10 @@
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
         171
+      ],
+      [
+        "src/web/components/projectTree/GroupSessions.tsx",
+        120
       ]
     ],
     "translation": "Running"
@@ -3373,6 +3334,10 @@
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionsTab.tsx",
         214
+      ],
+      [
+        "src/web/components/projectTree/GroupSessions.tsx",
+        136
       ]
     ],
     "translation": "Load More"
@@ -3609,7 +3574,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        138
+        142
       ],
       [
         "src/web/components/GlobalSidebar.tsx",
@@ -3751,7 +3716,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        153
+        157
       ]
     ],
     "translation": "Notifications"
@@ -3889,7 +3854,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        146
+        150
       ]
     ],
     "translation": "Session Display"
@@ -4110,7 +4075,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        95
+        103
       ]
     ],
     "translation": "Back to Projects"
@@ -4184,7 +4149,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        53
+        61
       ]
     ],
     "translation": "Show MCP Server Settings"
@@ -4195,7 +4160,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        68
+        76
       ]
     ],
     "translation": "Show Scheduler Jobs"
@@ -4206,7 +4171,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        43
+        51
       ]
     ],
     "translation": "Show Session List"
@@ -4217,7 +4182,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
-        59
+        67
       ]
     ],
     "translation": "Show task list"
@@ -4228,7 +4193,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        62
+        63
       ]
     ],
     "translation": "MCP"
@@ -4240,7 +4205,11 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        195
+        61
+      ],
+      [
+        "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/SessionSidebar.tsx",
+        45
       ]
     ],
     "translation": "Projects"
@@ -4251,7 +4220,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        64
+        65
       ]
     ],
     "translation": "Scheduler"
@@ -4262,7 +4231,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        61
+        62
       ]
     ],
     "translation": "Sessions"
@@ -4273,7 +4242,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        65
+        66
       ]
     ],
     "translation": "Settings"
@@ -4284,7 +4253,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        66
+        67
       ]
     ],
     "translation": "System Info"
@@ -4295,7 +4264,7 @@
     "origin": [
       [
         "src/web/app/projects/[projectId]/sessions/[sessionId]/components/sessionSidebar/MobileSidebar.tsx",
-        63
+        64
       ]
     ],
     "translation": "Tasks"
@@ -4516,6 +4485,78 @@
       ]
     ],
     "translation": "Claude Code Viewer"
+  },
+  "tree.actions": {
+    "message": "Project actions",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/components/projectTree/ProjectTree.tsx",
+        116
+      ]
+    ],
+    "translation": "Project actions"
+  },
+  "tree.hidden": {
+    "message": "Hidden",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/components/projectTree/ProjectTree.tsx",
+        214
+      ]
+    ],
+    "translation": "Hidden"
+  },
+  "tree.hide": {
+    "message": "Hide",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/components/projectTree/ProjectTree.tsx",
+        138
+      ]
+    ],
+    "translation": "Hide"
+  },
+  "tree.no_project": {
+    "message": "No project sessions",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/components/projectTree/ProjectTree.tsx",
+        60
+      ]
+    ],
+    "translation": "No project sessions"
+  },
+  "tree.reorder": {
+    "message": "Reorder project",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/components/projectTree/ProjectTree.tsx",
+        105
+      ]
+    ],
+    "translation": "Reorder project"
+  },
+  "tree.unhide": {
+    "message": "Unhide",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/web/components/projectTree/ProjectTree.tsx",
+        136
+      ]
+    ],
+    "translation": "Unhide"
   },
   "usage_mode.api.description": {
     "message": "You use Claude Code with API keys. All features are available.",

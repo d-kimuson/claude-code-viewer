@@ -40,7 +40,7 @@ Claude Code Viewer is a web-based Claude Code client focused on **comprehensive 
 
 ## System Requirements
 
-- **Node.js**: Version 22.13.0 or later
+- **Node.js**: Version 24.0.0 or later
 - **Claude Code**: v1.0.125 or later
 - **Operating Systems**: macOS and Linux (Windows is not supported)
 

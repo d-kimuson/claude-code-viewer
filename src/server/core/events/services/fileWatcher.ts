@@ -1,7 +1,7 @@
 import { FileSystem, Path } from "@effect/platform";
 import { Context, Effect, Fiber, Layer, Ref, Stream } from "effect";
 import { ApplicationContext } from "../../platform/services/ApplicationContext.ts";
-import { encodeProjectIdFromSessionFilePath } from "../../project/functions/id.ts";
+import { encodeProjectId } from "../../project/functions/id.ts";
 import { parseSessionFilePath } from "../functions/parseSessionFilePath.ts";
 import { EventBus } from "./EventBus.ts";
 
@@ -83,7 +83,7 @@ export class FileWatcherService extends Context.Tag("FileWatcherService")<
           const relativePath = changedPath.startsWith(claudeProjectsDirPath)
             ? path.relative(claudeProjectsDirPath, changedPath)
             : changedPath;
-          const parsed = parseSessionFilePath(relativePath);
+          const parsed = parseSessionFilePath(relativePath.split(path.sep).join("/"));
           if (parsed === null) {
             return;
           }
@@ -91,7 +91,7 @@ export class FileWatcherService extends Context.Tag("FileWatcherService")<
           const fullPath = path.isAbsolute(changedPath)
             ? changedPath
             : path.join(claudeProjectsDirPath, changedPath);
-          const encodedProjectId = encodeProjectIdFromSessionFilePath(fullPath);
+          const encodedProjectId = encodeProjectId(path.dirname(fullPath));
 
           if (parsed.type === "agent") {
             const debounceKey = `${encodedProjectId}/agent-${parsed.agentSessionId}`;
